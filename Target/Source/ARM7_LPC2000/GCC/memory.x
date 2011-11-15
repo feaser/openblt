@@ -7,7 +7,7 @@ ENTRY(_startup)
  */
 MEMORY 
 {
-  flash           : ORIGIN = 0x00000000, LENGTH = 16K   /* FLASH ROM reserved for the bootloader	  */	
+  flash           : ORIGIN = 0x00000000, LENGTH = 8K    /* FLASH ROM reserved for the bootloader	  */	
   ram_vectors(A)  : ORIGIN = 0x40000000, LENGTH = 64    /* RAM vectors of the user program          */		 
   ram_monitor(A)  : ORIGIN = 0x40000040, LENGTH = 224   /* variables used by Philips RealMonitor    */		 
   ram_isp_low(A)  : ORIGIN = 0x40000120, LENGTH = 224   /* variables used by Philips ISP bootloader	*/		 
