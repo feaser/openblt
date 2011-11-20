@@ -132,11 +132,11 @@ static void Init(void)
    *   Fcclk <  20 MHz: 1 clock cycle
    */
   MAMCR   = 0x0;
-#if (BOOT_CPU_SYSTEM_SPEED_KHZ >= 60)
+#if (BOOT_CPU_SYSTEM_SPEED_KHZ >= 60000)
   MAMTIM  = 4;
-#elif (BOOT_CPU_SYSTEM_SPEED_KHZ >= 40)  
+#elif (BOOT_CPU_SYSTEM_SPEED_KHZ >= 40000)  
   MAMTIM  = 3;
-#elif (BOOT_CPU_SYSTEM_SPEED_KHZ >= 20)  
+#elif (BOOT_CPU_SYSTEM_SPEED_KHZ >= 20000)  
   MAMTIM  = 2;
 #else
   MAMTIM  = 1;
