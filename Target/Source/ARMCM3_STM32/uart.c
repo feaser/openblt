@@ -29,7 +29,6 @@
 | 
 ****************************************************************************************/
 
-
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
@@ -38,28 +37,50 @@
 
 #if (BOOT_COM_UART_ENABLE > 0)
 /****************************************************************************************
+* Type definitions
+****************************************************************************************/
+typedef struct
+{
+  volatile blt_int16u SR;                             /* status register               */
+  blt_int16u          RESERVED0;
+  volatile blt_int16u DR;                             /* data register                 */
+  blt_int16u          RESERVED1;
+  volatile blt_int16u BRR;                            /* baudrate register             */
+  blt_int16u          RESERVED2;
+  volatile blt_int16u CR1;                            /* control register 1            */
+  blt_int16u          RESERVED3;
+  volatile blt_int16u CR2;                            /* control register 2            */
+  blt_int16u          RESERVED4;
+  volatile blt_int16u CR3;                            /* control register 3            */
+  blt_int16u          RESERVED5;
+  volatile blt_int16u GTPR;                           /* guard time and prescale reg.  */
+  blt_int16u          RESERVED6;
+} tUartRegs;                                          /* UART register layout type     */
+
+
+/****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-#define UART_DLAB      (0x80)                    /* divisor latch access bit           */
-#define UART_MODE_8N1  (0x03)                    /* 8 data and 1 stop bit, no parity   */
-#define UART_FIFO_RX1  (0x07)                    /* FIFO reset and RX FIFO 1 deep      */
-#define UART_RDR       (0x01)                    /* receiver data ready                */
-#define UART_THRE      (0x20)                    /* transmitter holding register empty */
+#define UART_BIT_UE    ((blt_int16u)0x2000)           /* USART enable bit              */
+#define UART_BIT_TE    ((blt_int16u)0x0008)           /* transmitter enable bit        */
+#define UART_BIT_RE    ((blt_int16u)0x0004)           /* receiver enable bit           */
+#define UART_BIT_TXE   ((blt_int16u)0x0080)           /* transmit data reg. empty bit  */
+#define UART_BIT_RXNE  ((blt_int16u)0x0020)           /* read data reg. not empty bit  */
 
 
 /****************************************************************************************
 * Register definitions
 ****************************************************************************************/
-#define U0RBR          (*((volatile blt_int8u *) 0xE000C000))
-#define U0THR          (*((volatile blt_int8u *) 0xE000C000))
-#define U0IER          (*((volatile blt_int8u *) 0xE000C004))
-#define U0IIR          (*((volatile blt_int8u *) 0xE000C008))
-#define U0FCR          (*((volatile blt_int8u *) 0xE000C008))
-#define U0LCR          (*((volatile blt_int8u *) 0xE000C00C))
-#define U0LSR          (*((volatile blt_int8u *) 0xE000C014))
-#define U0SCR          (*((volatile blt_int8u *) 0xE000C01C))
-#define U0DLL          (*((volatile blt_int8u *) 0xE000C000))
-#define U0DLM          (*((volatile blt_int8u *) 0xE000C004))
+#if (BOOT_COM_UART_CHANNEL_INDEX == 0)
+/* set UART base address to USART1 */
+#define UARTx          ((tUartRegs *) (blt_int32u)0x40013800)
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 1)
+/* set UART base address to USART2 */
+#define UARTx          ((tUartRegs *) (blt_int32u)0x40004400)
+#else
+/* set UART base address to USART1 by default */
+#define UARTx          ((tUartRegs *) (blt_int32u)0x40013800)
+#endif
 
 
 /****************************************************************************************
@@ -78,40 +99,24 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  blt_int32u baud_reg_value;                           /* baudrate register value      */
-  
-  /* the current implementation supports UART0. throw an assertion error in case 
-   * a different UART channel is configured.  
+  /* the current implementation supports USART1 and USART1. throw an assertion error in 
+   * case a different UART channel is configured.  
    */
-  ASSERT_CT(BOOT_COM_UART_CHANNEL_INDEX == 0); 
-  /* disable UART related interrupt generation. this driver works in polling mode */
-  U0IER = 0;
-  /* clear interrupt id register */
-  U0IIR = 0;
-  /* clear line status register */
-  U0LSR = 0;
-  /* set divisor latch DLAB = 1 so buadrate can be configured */
-  U0LCR = UART_DLAB;
-  /* Baudrate calculation: 
-   *   y = BOOT_CPU_SYSTEM_SPEED_KHZ * 1000 / 16 / BOOT_COM_UART_BAUDRATE and add 
-   *   smartness to automatically round the value up/down using the following trick:
-   *     y = x/n can round with y = (x + (n + 1)/2 ) / n
+  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) || (BOOT_COM_UART_CHANNEL_INDEX == 1)); 
+  /* first reset the UART configuration. note that this already configures the UART
+   * for 1 stopbit, 8 databits and no parity.
    */
-  /* check that baudrate register value is not 0 */
-  ASSERT_CT((((BOOT_CPU_SYSTEM_SPEED_KHZ*1000/16)+((BOOT_COM_UART_BAUDRATE+1)/2))/  \
-               BOOT_COM_UART_BAUDRATE) > 0);
-  /* check that baudrate register value is not greater than max 16-bit unsigned value */
-  ASSERT_CT((((BOOT_CPU_SYSTEM_SPEED_KHZ*1000/16)+((BOOT_COM_UART_BAUDRATE+1)/2))/  \
-               BOOT_COM_UART_BAUDRATE) <= 65535);
-  baud_reg_value = (((BOOT_CPU_SYSTEM_SPEED_KHZ*1000/16)+ \
-                    ((BOOT_COM_UART_BAUDRATE+1)/2))/BOOT_COM_UART_BAUDRATE);
-  /* write the calculated baudrate selector value to the registers */
-  U0DLL = (blt_int8u)baud_reg_value;
-  U0DLM = (blt_int8u)(baud_reg_value >> 8);
-  /* configure 8 data bits, no parity and 1 stop bit and set DLAB = 0 */
-  U0LCR = UART_MODE_8N1;
-  /* enable and reset transmit and receive FIFO. necessary for UART operation */
-  U0FCR = UART_FIFO_RX1;
+  UARTx->BRR = 0;
+  UARTx->CR1 = 0;
+  UARTx->CR2 = 0;
+  UARTx->CR3 = 0;
+  UARTx->GTPR = 0;
+  /* configure the baudrate, knowing that PCLKx is configured to be half of
+   * BOOT_CPU_SYSTEM_SPEED_KHZ.
+   */
+  UARTx->BRR = ((BOOT_CPU_SYSTEM_SPEED_KHZ/2)*(blt_int32u)1000)/BOOT_COM_UART_BAUDRATE;
+  /* enable the UART including the transmitter and the receiver */
+  UARTx->CR1 |= (UART_BIT_UE | UART_BIT_TE | UART_BIT_RE);
 } /*** end of UartInit ***/
 
 
@@ -191,7 +196,6 @@ blt_bool UartReceivePacket(blt_int8u *data)
       }
     }
   }
-  
   /* packet reception not yet complete */
   return BLT_FALSE;
 } /*** end of UartReceivePacket ***/
@@ -207,10 +211,10 @@ blt_bool UartReceivePacket(blt_int8u *data)
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
   /* check if a new byte was received by means of the RDR-bit */
-  if((U0LSR & UART_RDR) != 0)
+  if((UARTx->SR & UART_BIT_RXNE) != 0)
   {
     /* store the received byte */
-    data[0] = U0RBR;
+    data[0] = UARTx->DR;
     /* inform caller of the newly received byte */
     return BLT_TRUE;
   }
@@ -229,15 +233,15 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 static blt_bool UartTransmitByte(blt_int8u data)
 {
   /* check if tx holding register can accept new data */
-  if ((U0LSR & UART_THRE) == 0)
+  if ((UARTx->SR & UART_BIT_TXE) == 0)
   {
     /* UART not ready. should not happen */
     return BLT_FALSE;
   }
   /* write byte to transmit holding register */
-  U0THR = data;
+  UARTx->DR = data;
   /* wait for tx holding register to be empty */
-  while((U0LSR & UART_THRE) == 0) 
+  while((UARTx->SR & UART_BIT_TXE) == 0) 
   { 
     /* keep the watchdog happy */
     CopService();

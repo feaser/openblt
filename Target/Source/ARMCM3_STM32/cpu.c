@@ -38,21 +38,21 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-#define CPU_USER_PROG_VECTORS_START_ADDR   ((blt_addr)0x00002000)
-#define CPU_RAM_VECTORS_START_ADDR         ((blt_addr)0x40000000)
-#define CPU_VECTORS_TABLE_SIZE             (64)
+#define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x08002004)
+#define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00002000)
 
 
 /****************************************************************************************
 * Register definitions
 ****************************************************************************************/
-#define MEMMAP          (*((volatile blt_int32u *) 0xE01FC040))
+/* vector table offset register */
+#define SCB_VTOR    (*((volatile blt_int32u *) 0xE000ED08))
 
 
 /****************************************************************************************
 * External functions
 ****************************************************************************************/
-extern void Reset_Handler(void);                 /* reset service routine in cstart.s  */
+extern void reset_handler(void);                      /* implemented in cstart.s       */
 
 
 /****************************************************************************************
@@ -66,24 +66,20 @@ extern void Reset_Handler(void);                 /* reset service routine in cst
 void CpuStartUserProgram(void)
 {
   void (*pProgResetHandler)(void);
-  
+
   /* check if a user program is present by verifying the checksum */
   if (NvmVerifyChecksum() == BLT_FALSE)
   {
     /* not a valid user program so it cannot be started */
     return;
   }
-   
-  /* copy the user program's interrupt vector table to RAM */
-  CpuMemCopy(CPU_RAM_VECTORS_START_ADDR, CPU_USER_PROG_VECTORS_START_ADDR, \
-             CPU_VECTORS_TABLE_SIZE);
-  
-  /* select RAM vector table */
-  MEMMAP = 0x02;
-  
-  /* set the address where the bootloader needs to jump to */
-  pProgResetHandler = (void*)CPU_RAM_VECTORS_START_ADDR;
-
+  /* remap user program's vector table */
+  SCB_VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
+  /* set the address where the bootloader needs to jump to. this is the address of
+   * the 2nd entry in the user program's vector table. this address points to the
+   * user program's reset handler.
+   */
+  pProgResetHandler = (void*)(*((blt_addr*)CPU_USER_PROGRAM_STARTADDR_PTR));
   /* start the user program by activating its reset interrupt service routine */
   pProgResetHandler();
 } /*** end of CpuStartUserProgram ***/
@@ -127,11 +123,8 @@ void CpuMemCopy(blt_addr dest, blt_addr src, blt_int16u len)
 ****************************************************************************************/
 void CpuReset(void)
 {
-  /* perform a software reset by calling the reset ISR routine. note that this requires
-   * access to the processor status registers (PSRs), which works because the entire
-   * bootloader runs in supervisor mode.
-   */ 
-  Reset_Handler();
+  /* perform a software reset by calling the reset ISR routine */
+  reset_handler();
 } /*** end of CpuReset ***/
 
 
