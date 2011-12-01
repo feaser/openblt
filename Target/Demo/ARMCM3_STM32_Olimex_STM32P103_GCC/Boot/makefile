@@ -108,7 +108,7 @@ LIB_PATH  = -L../../../Source/ARMCM3_STM32/GCC/
 #|---------------------------------------------------------------------------------------|
 #| Options for compiler binaries                                                         |
 #|---------------------------------------------------------------------------------------|
-CFLAGS   = -g -D inline= -mthumb -mcpu=cortex-m3 -Os -T memory.x
+CFLAGS   = -g -D inline= -mthumb -mcpu=cortex-m3 -O1 -T memory.x
 CFLAGS  += -D PACK_STRUCT_END=__attribute\(\(packed\)\) -Wno-main
 CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) 
 CFLAGS  += -ffunction-sections -fdata-sections $(INC_PATH) -D STM32F10X_MD -D GCC_ARMCM3

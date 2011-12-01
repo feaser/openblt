@@ -35,7 +35,7 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-/* EXTERNAL MEMORY CONTROLLER (EMC) */
+/* EXTERNAL MEMORY CONTROLLER (EMC) */               
 #define BCFG0           (*((volatile unsigned long *) 0xFFE00000))    /* lpc22xx only */
 #define BCFG1           (*((volatile unsigned long *) 0xFFE00004))    /* lpc22xx only */
 #define BCFG2           (*((volatile unsigned long *) 0xFFE00008))    /* lpc22xx only */

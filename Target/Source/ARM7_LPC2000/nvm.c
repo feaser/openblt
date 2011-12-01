@@ -79,7 +79,7 @@ void NvmInit(void)
 blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 {
 #if (BOOT_NVM_HOOKS_ENABLE > 0)
-  blt_int8u result = BTL_NVM_NOT_IN_RANGE;
+  blt_int8u result = BLT_NVM_NOT_IN_RANGE;
 #endif
 
 #if (BOOT_NVM_HOOKS_ENABLE > 0)
@@ -89,14 +89,14 @@ blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
   result = NvmWriteHook(addr, len, data);
   
   /* process the return code */
-  if (result == BTL_NVM_OKAY)
+  if (result == BLT_NVM_OKAY)
   {
     /* data was within range of the additionally supported memory and succesfully
      * programmed, so we are all done. 
      */
     return BLT_TRUE;
   }
-  else if (result == BTL_NVM_ERROR)
+  else if (result == BLT_NVM_ERROR)
   {
     /* data was within range of the additionally supported memory and attempted to be
      * programmed, but an error occurred, so we can't continue.
@@ -105,7 +105,7 @@ blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
   }
 #endif
 
-  /* still here to the internal driver should try and perform the program operation */
+  /* still here so the internal driver should try and perform the program operation */
   return FlashWrite(addr, len, data);
 } /*** end of NvmWrite ***/
 
@@ -121,7 +121,7 @@ blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 blt_bool NvmErase(blt_addr addr, blt_int32u len)
 {
 #if (BOOT_NVM_HOOKS_ENABLE > 0)
-  blt_int8u result = BTL_NVM_NOT_IN_RANGE;
+  blt_int8u result = BLT_NVM_NOT_IN_RANGE;
 #endif
 
 #if (BOOT_NVM_HOOKS_ENABLE > 0)
@@ -131,14 +131,14 @@ blt_bool NvmErase(blt_addr addr, blt_int32u len)
   result = NvmEraseHook(addr, len);
   
   /* process the return code */
-  if (result == BTL_NVM_OKAY)
+  if (result == BLT_NVM_OKAY)
   {
     /* address was within range of the additionally supported memory and succesfully
      * erased, so we are all done. 
      */
     return BLT_TRUE;
   }
-  else if (result == BTL_NVM_ERROR)
+  else if (result == BLT_NVM_ERROR)
   {
     /* address was within range of the additionally supported memory and attempted to be
      * erased, but an error occurred, so we can't continue.
@@ -147,7 +147,7 @@ blt_bool NvmErase(blt_addr addr, blt_int32u len)
   }
 #endif
 
-  /* still here to the internal driver should try and perform the erase operation */
+  /* still here so the internal driver should try and perform the erase operation */
   return FlashErase(addr, len);
 } /*** end of NvmErase ***/
 

@@ -80,6 +80,7 @@ blt_bool BackDoorEntryHook(void)
 ****************************************************************************************/
 
 #if (BOOT_NVM_HOOKS_ENABLE > 0)
+#include "extflash.h"
 /****************************************************************************************
 ** NAME:           NvmInitHook
 ** PARAMETER:      none
@@ -90,6 +91,8 @@ blt_bool BackDoorEntryHook(void)
 ****************************************************************************************/
 void NvmInitHook(void)
 {
+  /* init the external flash driver */
+  ExtFlashInit();
 } /*** end of NvmInitHook ***/
 
 
@@ -98,20 +101,21 @@ void NvmInitHook(void)
 ** PARAMETER:      addr start address
 **                 len  length in bytes
 **                 data pointer to the data buffer.
-** RETURN VALUE:   BTL_NVM_OKAY if successful, BTL_NVM_NOT_IN_RANGE if the address is
-**                 not within the supported memory range, or BTL_NVM_ERROR is the write
+** RETURN VALUE:   BLT_NVM_OKAY if successful, BLT_NVM_NOT_IN_RANGE if the address is
+**                 not within the supported memory range, or BLT_NVM_ERROR is the write
 **                 operation failed.
 ** DESCRIPTION:    Callback that gets called at the start of the NVM driver write 
 **                 routine. It allows additional memory to be operated on. If the address
 **                 is not within the range of the additional memory, then 
-**                 BTL_NVM_NOT_IN_RANGE must be returned to indicate that the data hasn't
+**                 BLT_NVM_NOT_IN_RANGE must be returned to indicate that the data hasn't
 **                 been written yet.
 **               
 **
 ****************************************************************************************/
 blt_int8u NvmWriteHook(blt_addr addr, blt_int32u len, blt_int8u *data)
 {
-  return BTL_NVM_NOT_IN_RANGE;
+  /* attempt to write with the external flash driver */
+  return ExtFlashWrite(addr, len, data);
 } /*** end of NvmWriteHook ***/
 
 
@@ -119,19 +123,20 @@ blt_int8u NvmWriteHook(blt_addr addr, blt_int32u len, blt_int8u *data)
 ** NAME:           NvmEraseHook
 ** PARAMETER:      addr start address
 **                 len  length in bytes
-** RETURN VALUE:   BTL_NVM_OKAY if successful, BTL_NVM_NOT_IN_RANGE if the address is
-**                 not within the supported memory range, or BTL_NVM_ERROR is the erase
+** RETURN VALUE:   BLT_NVM_OKAY if successful, BLT_NVM_NOT_IN_RANGE if the address is
+**                 not within the supported memory range, or BLT_NVM_ERROR is the erase
 **                 operation failed.
 ** DESCRIPTION:    Callback that gets called at the start of the NVM driver erase 
 **                 routine. It allows additional memory to be operated on. If the address
 **                 is not within the range of the additional memory, then
-**                 BTL_NVM_NOT_IN_RANGE must be returned to indicate that the memory
+**                 BLT_NVM_NOT_IN_RANGE must be returned to indicate that the memory
 **                 hasn't been erased yet.
 **
 ****************************************************************************************/
-blt_bool NvmEraseHook(blt_addr addr, blt_int32u len)
+blt_int8u NvmEraseHook(blt_addr addr, blt_int32u len)
 {
-  return BTL_NVM_NOT_IN_RANGE;
+  /* attempt to erase with the external flash driver */
+  return ExtFlashErase(addr, len);
 } /*** end of NvmEraseHook ***/
 
 
@@ -144,7 +149,8 @@ blt_bool NvmEraseHook(blt_addr addr, blt_int32u len)
 ****************************************************************************************/
 blt_bool NvmDoneHook(void)
 {
-  return BLT_TRUE;
+  /* finish up the operations of the external flash driver */
+  return ExtFlashDone();
 } /*** end of NvmDoneHook ***/
 #endif /* BOOT_NVM_HOOKS_ENABLE > 0 */
 

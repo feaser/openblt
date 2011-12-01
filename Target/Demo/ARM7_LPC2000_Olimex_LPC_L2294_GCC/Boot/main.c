@@ -80,7 +80,7 @@ int main(void)
 static void Init(void)
 {
   blt_int8u m_sel;                                    /* pll multiplier register value */
-  blt_int8u pll_dividers[] = { 1, 2, 4, 8 };          /* possible pll dividers         */
+  static blt_int8u pll_dividers[] = { 1, 2, 4, 8 };   /* possible pll dividers         */
   blt_int8u p_sel_cnt;                                /* loop counter to find p_sel    */
   blt_int32u f_cco;                                   /* current controller oscillator */
     
@@ -144,6 +144,29 @@ static void Init(void)
   MAMCR   = 0x2;
   /* setting peripheral Clock (pclk) to System Clock (cclk) */
   VPBDIV  = 0x1;
+#if (BOOT_NVM_HOOKS_ENABLE > 0)
+  /* in this the external memory on the Olimex LPC-L2294 board is used so configure
+   * the memory banks for the external flash EEPROM and RAM
+   */
+  /* external flash EEPROM:
+   *   IDCY=3 (idle timing)
+   *   WST1=4 (read timing)
+   *   RBLE=1 
+   *   WST2=6 (write timing)
+   *   MW=1   (16-bit data bus)
+   */
+  BCFG0 = (0x3 << 0) | (0x4 << 5) | (0x1 << 10) | (0x6 << 11) | (0x1 << 28);
+  /* external RAM:
+   *   IDCY=0 (idle timing)
+   *   WST1=0 (read timing)
+   *   RBLE=1 
+   *   WST2=0 (write timing)
+   *   MW=2   (32-bit data bus)
+   */
+  BCFG1 = (0x0 << 0) | (0x0 << 5) | (0x1 << 10) | (0x0 << 11) | (0x2 << 28);
+  /* configure use of data bus and strobe pins for the external memory */
+  PINSEL2 = 0x0F000924;
+#endif
 #if (BOOT_COM_UART_ENABLE > 0)
   /* configure P0.0 for UART0 Tx and P0.1 for UART0 Rx functionality */  
   PINSEL0 |= 0x05;

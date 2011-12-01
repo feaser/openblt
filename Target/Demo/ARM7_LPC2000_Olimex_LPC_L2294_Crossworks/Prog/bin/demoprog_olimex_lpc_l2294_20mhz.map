@@ -785,7 +785,7 @@ VPB_Peripherals  0xe0000000         0x00200000         xw
 BANK3            0x83000000         0x01000000         xw
 BANK2            0x82000000         0x01000000         xw
 External_SRAM    0x81000000         0x00100000         xw
-External_FLASH   0x80000000         0x00400000         xr
+External_FLASH   0x80000000         0x00200000         xr
 SRAM             0x40000200         0x00003ce0         xw
 FLASH            0x00002000         0x0003e000         xr
 *default*        0x00000000         0xffffffff
@@ -806,7 +806,7 @@ Linker script and memory map
                 0x81000000                __External_SRAM_segment_start__ = 0x81000000
                 0x81100000                __External_SRAM_segment_end__ = 0x81100000
                 0x80000000                __External_FLASH_segment_start__ = 0x80000000
-                0x80400000                __External_FLASH_segment_end__ = 0x80400000
+                0x80200000                __External_FLASH_segment_end__ = 0x80200000
                 0x40002000                __SRAM_segment_start__ = 0x40002000
                 0x40003ee0                __SRAM_segment_end__ = 0x40003ee0
                 0x00002000                __FLASH_segment_start__ = 0x2000
@@ -1310,20 +1310,20 @@ OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARM7_LPC2000_Olimex_LPC_L2294_
  .debug_ranges  0x000007e0       0x50 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
  .debug_ranges  0x00000830       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm_run_dcc_port_server.o)
 
-.debug_line     0x00000000     0x12a0
+.debug_line     0x00000000     0x12a1
  .debug_line    0x00000000       0xec ARM Flash Debug/../../obj/boot.o
  .debug_line    0x000000ec      0x11e ARM Flash Debug/../../obj/cstart.o
  .debug_line    0x0000020a       0xe8 ARM Flash Debug/../../obj/irq.o
  .debug_line    0x000002f2       0xb6 ARM Flash Debug/../../obj/led.o
- .debug_line    0x000003a8       0xe9 ARM Flash Debug/../../obj/main.o
- .debug_line    0x00000491       0xd5 ARM Flash Debug/../../obj/timer.o
- .debug_line    0x00000566       0x9d ARM Flash Debug/../../obj/vectors.o
- .debug_line    0x00000603       0x75 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfprintf_int.o)
- .debug_line    0x00000678       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
- .debug_line    0x000006ec      0x54f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
- .debug_line    0x00000c3b      0x56a C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v4t_a_le.a(libdebugio.o)
- .debug_line    0x000011a5       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
- .debug_line    0x00001219       0x87 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm_run_dcc_port_server.o)
+ .debug_line    0x000003a8       0xea ARM Flash Debug/../../obj/main.o
+ .debug_line    0x00000492       0xd5 ARM Flash Debug/../../obj/timer.o
+ .debug_line    0x00000567       0x9d ARM Flash Debug/../../obj/vectors.o
+ .debug_line    0x00000604       0x75 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfprintf_int.o)
+ .debug_line    0x00000679       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
+ .debug_line    0x000006ed      0x54f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+ .debug_line    0x00000c3c      0x56a C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v4t_a_le.a(libdebugio.o)
+ .debug_line    0x000011a6       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
+ .debug_line    0x0000121a       0x87 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm_run_dcc_port_server.o)
 
 .debug_str      0x00000000      0xfc6
  .debug_str     0x00000000      0x132 ARM Flash Debug/../../obj/boot.o

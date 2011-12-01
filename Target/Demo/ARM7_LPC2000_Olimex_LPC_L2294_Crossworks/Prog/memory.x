@@ -6,7 +6,7 @@ MEMORY
   BANK3 (wx) : ORIGIN = 0x83000000, LENGTH = 0x01000000
   BANK2 (wx) : ORIGIN = 0x82000000, LENGTH = 0x01000000
   External_SRAM (wx) : ORIGIN = 0x81000000, LENGTH = 0x00100000
-  External_FLASH (rx) : ORIGIN = 0x80000000, LENGTH = 0x00400000
+  External_FLASH (rx) : ORIGIN = 0x80000000, LENGTH = 0x00200000
   SRAM (wx) : ORIGIN = 0x40000200, LENGTH = 0x00003CE0
   FLASH (rx) : ORIGIN = 0x00002000, LENGTH = 0x0003E000
 }
@@ -25,7 +25,7 @@ SECTIONS
   __External_SRAM_segment_start__ = 0x81000000;
   __External_SRAM_segment_end__ = 0x81100000;
   __External_FLASH_segment_start__ = 0x80000000;
-  __External_FLASH_segment_end__ = 0x80400000;
+  __External_FLASH_segment_end__ = 0x80200000;
   __SRAM_segment_start__ = 0x40002000;
   __SRAM_segment_end__ = 0x40003EE0;
   __FLASH_segment_start__ = 0x00002000;

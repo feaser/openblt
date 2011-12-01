@@ -1,6 +1,6 @@
 /****************************************************************************************
-|  Description: bootloader non-volatile memory driver header file
-|    File Name: nvm.h
+|  Description: bootloader external flash driver header file
+|    File Name: extflash.h
 |
 |----------------------------------------------------------------------------------------
 |                          C O P Y R I G H T
@@ -28,33 +28,18 @@
 | file <license.html>.
 | 
 ****************************************************************************************/
-#ifndef NVM_H
-#define NVM_H
+#ifndef EXTFLASH_H
+#define EXTFLASH_H
 
-/****************************************************************************************
-* Include files
-****************************************************************************************/
-#include "flash.h"                                     /* LPC2xxx flash driver         */
-
-
+#if (BOOT_NVM_HOOKS_ENABLE > 0)
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void     NvmInit(void);
-blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data);
-blt_bool NvmErase(blt_addr addr, blt_int32u len);
-blt_bool NvmVerifyChecksum(void);
-blt_bool NvmDone(void);
+void      ExtFlashInit(void);
+blt_int8u ExtFlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data);
+blt_int8u ExtFlashErase(blt_addr addr, blt_int32u len);
+blt_bool  ExtFlashDone(void);
+#endif
 
-
-/****************************************************************************************
-* Macro definitions
-****************************************************************************************/
-/* return codes for hook function NvmWrite/Erase */
-#define BLT_NVM_ERROR                   (0x00)         /* return code for success      */
-#define BLT_NVM_OKAY                    (0x01)         /* return code for error        */
-#define BLT_NVM_NOT_IN_RANGE            (0x02)         /* return code for not in range */
-
-
-#endif /* NVM_H */
-/*********************************** end of nvm.h **************************************/
+#endif /* EXTFLASH_H */
+/*********************************** end of extflash.h *********************************/

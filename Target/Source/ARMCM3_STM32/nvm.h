@@ -51,9 +51,9 @@ blt_bool NvmDone(void);
 * Macro definitions
 ****************************************************************************************/
 /* return codes for hook function NvmWrite/Erase */
-#define BTL_NVM_ERROR                   (0x00)         /* return code for success      */
-#define BTL_NVM_OKAY                    (0x01)         /* return code for error        */
-#define BTL_NVM_NOT_IN_RANGE            (0x02)         /* return code for not in range */
+#define BLT_NVM_ERROR                   (0x00)         /* return code for success      */
+#define BLT_NVM_OKAY                    (0x01)         /* return code for error        */
+#define BLT_NVM_NOT_IN_RANGE            (0x02)         /* return code for not in range */
 
 
 #endif /* NVM_H */

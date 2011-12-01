@@ -19,50 +19,50 @@ Discarded input sections
  .text.__get_PSP
                 0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__set_PSP
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__get_MSP
                 0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__set_MSP
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__get_BASEPRI
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__set_BASEPRI
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__get_PRIMASK
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__set_PRIMASK
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__get_FAULTMASK
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__set_FAULTMASK
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__get_CONTROL
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__set_CONTROL
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__REV    0x00000000        0x4 THUMB Debug/../../obj/core_cm3.o
  .text.__REV16  0x00000000        0x4 THUMB Debug/../../obj/core_cm3.o
  .text.__REVSH  0x00000000        0x4 THUMB Debug/../../obj/core_cm3.o
- .text.__RBIT   0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+ .text.__RBIT   0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__LDREXB
                 0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__LDREXH
                 0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__LDREXW
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__STREXB
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__STREXH
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text.__STREXW
-                0x00000000        0x6 THUMB Debug/../../obj/core_cm3.o
+                0x00000000        0x8 THUMB Debug/../../obj/core_cm3.o
  .text          0x00000000        0x0 THUMB Debug/../../obj/system_stm32f10x.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/system_stm32f10x.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/system_stm32f10x.o
  .text.SystemInit
-                0x00000000       0xf8 THUMB Debug/../../obj/system_stm32f10x.o
+                0x00000000      0x130 THUMB Debug/../../obj/system_stm32f10x.o
  .text.SystemCoreClockUpdate
-                0x00000000       0x64 THUMB Debug/../../obj/system_stm32f10x.o
+                0x00000000       0xe0 THUMB Debug/../../obj/system_stm32f10x.o
  .data.AHBPrescTable
                 0x00000000       0x10 THUMB Debug/../../obj/system_stm32f10x.o
  .data.SystemCoreClock
@@ -89,8 +89,6 @@ Discarded input sections
  .text          0x00000000        0x0 THUMB Debug/../../obj/timer.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/timer.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/timer.o
- .text.TimerSet
-                0x00000000        0xc THUMB Debug/../../obj/timer.o
  .text          0x00000000        0x0 THUMB Debug/../../obj/uart.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/uart.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/uart.o
@@ -164,7 +162,7 @@ CM3_System_Control_Space 0xe000e000         0x00001000         xw
 
 Linker script and memory map
 
-                0x08000d70                __do_debug_operation = __do_debug_operation_bkpt
+                0x0800122c                __do_debug_operation = __do_debug_operation_bkpt
                 0x08000000                __FLASH_segment_start__ = 0x8000000
                 0x08004000                __FLASH_segment_end__ = 0x8004000
                 0x20000000                __RAM_segment_start__ = 0x20000000
@@ -213,146 +211,159 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .init is too large to fit in FLASH memory segment)
                 0x080002e8                __text_load_start__ = ALIGN (__init_end__, 0x4)
 
-.text           0x080002e8      0xaa8
+.text           0x080002e8      0xf64
                 0x080002e8                __text_start__ = .
  *(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table .ARM.extab* .gnu.linkonce.armextab.*)
  .glue_7        0x00000000        0x0 linker stubs
  .glue_7t       0x00000000        0x0 linker stubs
- .text.startup.main
-                0x080002e8      0x12c THUMB Debug/../../obj/main.o
+ .text.main     0x080002e8      0x170 THUMB Debug/../../obj/main.o
                 0x080002e8                main
  .text.UnusedISR
-                0x08000414        0xc THUMB Debug/../../obj/vectors.o
-                0x08000414                UnusedISR
+                0x08000458       0x18 THUMB Debug/../../obj/vectors.o
+                0x08000458                UnusedISR
  .text.CpuStartUserProgram
-                0x08000420       0x24 THUMB Debug/../../obj/cpu.o
-                0x08000420                CpuStartUserProgram
+                0x08000470       0x28 THUMB Debug/../../obj/cpu.o
+                0x08000470                CpuStartUserProgram
  .text.CpuMemCopy
-                0x08000444       0x20 THUMB Debug/../../obj/cpu.o
-                0x08000444                CpuMemCopy
+                0x08000498       0x28 THUMB Debug/../../obj/cpu.o
+                0x08000498                CpuMemCopy
  .text.CpuReset
-                0x08000464        0x4 THUMB Debug/../../obj/cpu.o
-                0x08000464                CpuReset
- .text.NvmInit  0x08000468        0x4 THUMB Debug/../../obj/nvm.o
-                0x08000468                NvmInit
+                0x080004c0        0xc THUMB Debug/../../obj/cpu.o
+                0x080004c0                CpuReset
+ .text.NvmInit  0x080004cc        0xc THUMB Debug/../../obj/nvm.o
+                0x080004cc                NvmInit
  .text.NvmWrite
-                0x0800046c        0x4 THUMB Debug/../../obj/nvm.o
-                0x0800046c                NvmWrite
+                0x080004d8        0xc THUMB Debug/../../obj/nvm.o
+                0x080004d8                NvmWrite
  .text.NvmErase
-                0x08000470        0x4 THUMB Debug/../../obj/nvm.o
-                0x08000470                NvmErase
+                0x080004e4        0xc THUMB Debug/../../obj/nvm.o
+                0x080004e4                NvmErase
  .text.NvmVerifyChecksum
-                0x08000474        0x4 THUMB Debug/../../obj/nvm.o
-                0x08000474                NvmVerifyChecksum
- .text.NvmDone  0x08000478       0x14 THUMB Debug/../../obj/nvm.o
-                0x08000478                NvmDone
- .text.TimerInit
-                0x0800048c       0x24 THUMB Debug/../../obj/timer.o
-                0x0800048c                TimerInit
+                0x080004f0        0xc THUMB Debug/../../obj/nvm.o
+                0x080004f0                NvmVerifyChecksum
+ .text.NvmDone  0x080004fc       0x18 THUMB Debug/../../obj/nvm.o
+                0x080004fc                NvmDone
  .text.TimerReset
-                0x080004b0        0xc THUMB Debug/../../obj/timer.o
-                0x080004b0                TimerReset
+                0x08000514       0x10 THUMB Debug/../../obj/timer.o
+                0x08000514                TimerReset
  .text.TimerUpdate
-                0x080004bc       0x1c THUMB Debug/../../obj/timer.o
-                0x080004bc                TimerUpdate
+                0x08000524       0x24 THUMB Debug/../../obj/timer.o
+                0x08000524                TimerUpdate
+ .text.TimerSet
+                0x08000548        0xc THUMB Debug/../../obj/timer.o
+                0x08000548                TimerSet
+ .text.TimerInit
+                0x08000554       0x2c THUMB Debug/../../obj/timer.o
+                0x08000554                TimerInit
  .text.TimerGet
-                0x080004d8       0x14 THUMB Debug/../../obj/timer.o
-                0x080004d8                TimerGet
+                0x08000580       0x14 THUMB Debug/../../obj/timer.o
+                0x08000580                TimerGet
+ .text.UartReceiveByte
+                0x08000594       0x24 THUMB Debug/../../obj/uart.o
+ .text.UartTransmitByte
+                0x080005b8       0x4c THUMB Debug/../../obj/uart.o
  .text.UartInit
-                0x080004ec       0x28 THUMB Debug/../../obj/uart.o
-                0x080004ec                UartInit
+                0x08000604       0x2c THUMB Debug/../../obj/uart.o
+                0x08000604                UartInit
  .text.UartTransmitPacket
-                0x08000514       0x7c THUMB Debug/../../obj/uart.o
-                0x08000514                UartTransmitPacket
+                0x08000630       0x70 THUMB Debug/../../obj/uart.o
+                0x08000630                UartTransmitPacket
  .text.UartReceivePacket
-                0x08000590       0x6c THUMB Debug/../../obj/uart.o
-                0x08000590                UartReceivePacket
+                0x080006a0       0xb0 THUMB Debug/../../obj/uart.o
+                0x080006a0                UartReceivePacket
+ .text.FlashUnlock
+                0x08000750       0x24 THUMB Debug/../../obj/flash.o
  .text.FlashLock
-                0x080005fc       0x10 THUMB Debug/../../obj/flash.o
+                0x08000774       0x14 THUMB Debug/../../obj/flash.o
  .text.FlashGetSector
-                0x0800060c       0x38 THUMB Debug/../../obj/flash.o
+                0x08000788       0x48 THUMB Debug/../../obj/flash.o
  .text.FlashWriteBlock
-                0x08000644       0xa0 THUMB Debug/../../obj/flash.o
+                0x080007d0       0xc4 THUMB Debug/../../obj/flash.o
+ .text.FlashGetSectorBaseAddr
+                0x08000894       0x40 THUMB Debug/../../obj/flash.o
+ .text.FlashInitBlock
+                0x080008d4       0x38 THUMB Debug/../../obj/flash.o
  .text.FlashSwitchBlock
-                0x080006e4       0x54 THUMB Debug/../../obj/flash.o
+                0x0800090c       0x50 THUMB Debug/../../obj/flash.o
  .text.FlashAddToBlock
-                0x08000738       0x8a THUMB Debug/../../obj/flash.o
- *fill*         0x080007c2        0x2 00
+                0x0800095c       0xa0 THUMB Debug/../../obj/flash.o
  .text.FlashInit
-                0x080007c4       0x18 THUMB Debug/../../obj/flash.o
-                0x080007c4                FlashInit
+                0x080009fc       0x1c THUMB Debug/../../obj/flash.o
+                0x080009fc                FlashInit
  .text.FlashWrite
-                0x080007dc       0x4c THUMB Debug/../../obj/flash.o
-                0x080007dc                FlashWrite
+                0x08000a18       0x58 THUMB Debug/../../obj/flash.o
+                0x08000a18                FlashWrite
  .text.FlashErase
-                0x08000828      0x13c THUMB Debug/../../obj/flash.o
-                0x08000828                FlashErase
+                0x08000a70      0x144 THUMB Debug/../../obj/flash.o
+                0x08000a70                FlashErase
  .text.FlashVerifyChecksum
-                0x08000964       0x54 THUMB Debug/../../obj/flash.o
-                0x08000964                FlashVerifyChecksum
+                0x08000bb4       0x68 THUMB Debug/../../obj/flash.o
+                0x08000bb4                FlashVerifyChecksum
  .text.FlashWriteChecksum
-                0x080009b8       0x44 THUMB Debug/../../obj/flash.o
-                0x080009b8                FlashWriteChecksum
+                0x08000c1c       0x50 THUMB Debug/../../obj/flash.o
+                0x08000c1c                FlashWriteChecksum
  .text.FlashDone
-                0x080009fc       0x34 THUMB Debug/../../obj/flash.o
-                0x080009fc                FlashDone
+                0x08000c6c       0x58 THUMB Debug/../../obj/flash.o
+                0x08000c6c                FlashDone
  .text.AssertFailure
-                0x08000a30       0x18 THUMB Debug/../../obj/assert.o
-                0x08000a30                AssertFailure
+                0x08000cc4       0x1c THUMB Debug/../../obj/assert.o
+                0x08000cc4                AssertFailure
  .text.BackDoorCheck
-                0x08000a48       0x30 THUMB Debug/../../obj/backdoor.o
-                0x08000a48                BackDoorCheck
+                0x08000ce0       0x3c THUMB Debug/../../obj/backdoor.o
+                0x08000ce0                BackDoorCheck
  .text.BackDoorInit
-                0x08000a78       0x18 THUMB Debug/../../obj/backdoor.o
-                0x08000a78                BackDoorInit
+                0x08000d1c       0x1c THUMB Debug/../../obj/backdoor.o
+                0x08000d1c                BackDoorInit
  .text.BootInit
-                0x08000a90       0x16 THUMB Debug/../../obj/boot.o
-                0x08000a90                BootInit
+                0x08000d38       0x18 THUMB Debug/../../obj/boot.o
+                0x08000d38                BootInit
  .text.BootTask
-                0x08000aa6       0x12 THUMB Debug/../../obj/boot.o
-                0x08000aa6                BootTask
- .text.ComInit  0x08000ab8       0x2c THUMB Debug/../../obj/com.o
-                0x08000ab8                ComInit
- .text.ComTask  0x08000ae4       0x20 THUMB Debug/../../obj/com.o
-                0x08000ae4                ComTask
+                0x08000d50       0x14 THUMB Debug/../../obj/boot.o
+                0x08000d50                BootTask
+ .text.ComInit  0x08000d64       0x34 THUMB Debug/../../obj/com.o
+                0x08000d64                ComInit
+ .text.ComTask  0x08000d98       0x24 THUMB Debug/../../obj/com.o
+                0x08000d98                ComTask
  .text.ComTransmitPacket
-                0x08000b04       0x10 THUMB Debug/../../obj/com.o
-                0x08000b04                ComTransmitPacket
+                0x08000dbc       0x10 THUMB Debug/../../obj/com.o
+                0x08000dbc                ComTransmitPacket
  .text.ComSetConnectEntryState
-                0x08000b14        0xc THUMB Debug/../../obj/com.o
-                0x08000b14                ComSetConnectEntryState
+                0x08000dcc       0x10 THUMB Debug/../../obj/com.o
+                0x08000dcc                ComSetConnectEntryState
  .text.ComIsConnected
-                0x08000b20        0x4 THUMB Debug/../../obj/com.o
-                0x08000b20                ComIsConnected
- .text.CopInit  0x08000b24        0x2 THUMB Debug/../../obj/cop.o
-                0x08000b24                CopInit
+                0x08000ddc        0xc THUMB Debug/../../obj/com.o
+                0x08000ddc                ComIsConnected
+ .text.CopInit  0x08000de8        0x4 THUMB Debug/../../obj/cop.o
+                0x08000de8                CopInit
  .text.CopService
-                0x08000b26        0x2 THUMB Debug/../../obj/cop.o
-                0x08000b26                CopService
+                0x08000dec        0x4 THUMB Debug/../../obj/cop.o
+                0x08000dec                CopService
+ .text.XcpProtectResources
+                0x08000df0       0x10 THUMB Debug/../../obj/xcp.o
  .text.XcpSetCtoError
-                0x08000b28       0x14 THUMB Debug/../../obj/xcp.o
- .text.XcpInit  0x08000b3c       0x1c THUMB Debug/../../obj/xcp.o
-                0x08000b3c                XcpInit
+                0x08000e00       0x1c THUMB Debug/../../obj/xcp.o
+ .text.XcpInit  0x08000e1c       0x20 THUMB Debug/../../obj/xcp.o
+                0x08000e1c                XcpInit
  .text.XcpIsConnected
-                0x08000b58       0x10 THUMB Debug/../../obj/xcp.o
-                0x08000b58                XcpIsConnected
+                0x08000e3c       0x14 THUMB Debug/../../obj/xcp.o
+                0x08000e3c                XcpIsConnected
  .text.XcpPacketTransmitted
-                0x08000b68       0x10 THUMB Debug/../../obj/xcp.o
-                0x08000b68                XcpPacketTransmitted
+                0x08000e50       0x14 THUMB Debug/../../obj/xcp.o
+                0x08000e50                XcpPacketTransmitted
  .text.XcpPacketReceived
-                0x08000b78      0x1f8 THUMB Debug/../../obj/xcp.o
-                0x08000b78                XcpPacketReceived
+                0x08000e64      0x3c8 THUMB Debug/../../obj/xcp.o
+                0x08000e64                XcpPacketReceived
  .text.libdebugio_bkpt.__do_debug_operation_bkpt
-                0x08000d70       0x18 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v7m_t_le.a(libdebugio_asm.o)
-                0x08000d70                __do_debug_operation_bkpt
+                0x0800122c       0x18 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v7m_t_le.a(libdebugio_asm.o)
+                0x0800122c                __do_debug_operation_bkpt
  .text.libc.__debug_io_lock
-                0x08000d88        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
-                0x08000d88                __debug_io_lock
+                0x08001244        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+                0x08001244                __debug_io_lock
  .text.libc.__debug_io_unlock
-                0x08000d8c        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
-                0x08000d8c                __debug_io_unlock
-                0x08000d90                __text_end__ = (__text_start__ + SIZEOF (.text))
-                0x08000d90                __text_load_end__ = __text_end__
+                0x08001248        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+                0x08001248                __debug_io_unlock
+                0x0800124c                __text_end__ = (__text_start__ + SIZEOF (.text))
+                0x0800124c                __text_load_end__ = __text_end__
 
 .vfp11_veneer   0x00000000        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
@@ -360,62 +371,65 @@ Linker script and memory map
 .v4_bx          0x00000000        0x0
  .v4_bx         0x00000000        0x0 linker stubs
                 0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .text is too large to fit in FLASH memory segment)
-                0x08000d90                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
+                0x0800124c                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
 
-.dtors          0x08000d90        0x0
-                0x08000d90                __dtors_start__ = .
+.dtors          0x0800124c        0x0
+                0x0800124c                __dtors_start__ = .
  *(SORT(.dtors.*))
  *(.dtors)
  *(.fini_array .fini_array.*)
-                0x08000d90                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
-                0x08000d90                __dtors_load_end__ = __dtors_end__
+                0x0800124c                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
+                0x0800124c                __dtors_load_end__ = __dtors_end__
                 0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .dtors is too large to fit in FLASH memory segment)
-                0x08000d90                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
+                0x0800124c                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
 
-.ctors          0x08000d90        0x0
-                0x08000d90                __ctors_start__ = .
+.ctors          0x0800124c        0x0
+                0x0800124c                __ctors_start__ = .
  *(SORT(.ctors.*))
  *(.ctors)
  *(.init_array .init_array.*)
-                0x08000d90                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
-                0x08000d90                __ctors_load_end__ = __ctors_end__
+                0x0800124c                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
+                0x0800124c                __ctors_load_end__ = __ctors_end__
                 0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .ctors is too large to fit in FLASH memory segment)
-                0x08000d90                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
+                0x0800124c                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
 
-.rodata         0x08000d90      0x23c
-                0x08000d90                __rodata_start__ = .
+.rodata         0x0800124c      0x23c
+                0x0800124c                __rodata_start__ = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
- .rodata.str1.1
-                0x08000d90       0x67 THUMB Debug/../../obj/main.o
- .rodata.str1.1
-                0x08000df7       0x92 THUMB Debug/../../obj/vectors.o
- .rodata.str1.1
-                0x08000e89       0x84 THUMB Debug/../../obj/uart.o
- *fill*         0x08000f0d        0x3 00
+ .rodata.str1.4
+                0x0800124c       0x67 THUMB Debug/../../obj/main.o
+                                 0x68 (size before relaxing)
+ *fill*         0x080012b3        0x1 00
+ .rodata.str1.4
+                0x080012b4       0x92 THUMB Debug/../../obj/vectors.o
+                                 0x94 (size before relaxing)
+ *fill*         0x08001346        0x2 00
+ .rodata.str1.4
+                0x08001348       0x84 THUMB Debug/../../obj/uart.o
  .rodata.flashLayout
-                0x08000f10       0xb4 THUMB Debug/../../obj/flash.o
+                0x080013cc       0xb4 THUMB Debug/../../obj/flash.o
  .rodata.xcpStationId
-                0x08000fc4        0x8 THUMB Debug/../../obj/xcp.o
-                0x08000fcc                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
-                0x08000fcc                __rodata_load_end__ = __rodata_end__
+                0x08001480        0x8 THUMB Debug/../../obj/xcp.o
+                0x08001488                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
+                0x08001488                __rodata_load_end__ = __rodata_end__
                 0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .rodata is too large to fit in FLASH memory segment)
-                0x08000fcc                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
+                0x08001488                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
 
-.ARM.exidx      0x08000fcc        0x0
-                0x08000fcc                __ARM.exidx_start__ = .
-                0x08000fcc                __exidx_start = __ARM.exidx_start__
+.ARM.exidx      0x08001488        0x0
+                0x08001488                __ARM.exidx_start__ = .
+                0x08001488                __exidx_start = __ARM.exidx_start__
  *(.ARM.exidx .ARM.exidx.*)
-                0x08000fcc                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
-                0x08000fcc                __exidx_end = __ARM.exidx_end__
-                0x08000fcc                __ARM.exidx_load_end__ = __ARM.exidx_end__
+                0x08001488                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
+                0x08001488                __exidx_end = __ARM.exidx_end__
+                0x08001488                __ARM.exidx_load_end__ = __ARM.exidx_end__
                 0x00000001                . = ASSERT (((__ARM.exidx_end__ >= __FLASH_segment_start__) && (__ARM.exidx_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .ARM.exidx is too large to fit in FLASH memory segment)
-                0x08000fcc                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
+                0x08001488                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
 
-.fast           0x20000000        0x0 load address 0x08000fcc
+.fast           0x20000000        0x0 load address 0x08001488
                 0x20000000                __fast_start__ = .
  *(.fast .fast.*)
                 0x20000000                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
-                0x08000fcc                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
+                0x08001488                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
                 0x00000001                . = ASSERT ((((__fast_load_start__ + SIZEOF (.fast)) >= __FLASH_segment_start__) && ((__fast_load_start__ + SIZEOF (.fast)) <= (__FLASH_segment_start__ + 0x20000))), error: .fast is too large to fit in FLASH memory segment)
 
 .fast_run       0x20000000        0x0
@@ -424,13 +438,13 @@ Linker script and memory map
                 0x20000000                __fast_run_end__ = (__fast_run_start__ + SIZEOF (.fast_run))
                 0x20000000                __fast_run_load_end__ = __fast_run_end__
                 0x00000001                . = ASSERT (((__fast_run_end__ >= __RAM_segment_start__) && (__fast_run_end__ <= (__RAM_segment_start__ + 0x5000))), error: .fast_run is too large to fit in RAM memory segment)
-                0x08000fcc                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
+                0x08001488                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
 
-.data           0x20000000        0x0 load address 0x08000fcc
+.data           0x20000000        0x0 load address 0x08001488
                 0x20000000                __data_start__ = .
  *(.data .data.* .gnu.linkonce.d.*)
                 0x20000000                __data_end__ = (__data_start__ + SIZEOF (.data))
-                0x08000fcc                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
+                0x08001488                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
                 0x00000001                . = ASSERT ((((__data_load_start__ + SIZEOF (.data)) >= __FLASH_segment_start__) && ((__data_load_start__ + SIZEOF (.data)) <= (__FLASH_segment_start__ + 0x20000))), error: .data is too large to fit in FLASH memory segment)
 
 .data_run       0x20000000        0x0
@@ -441,99 +455,100 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__data_run_end__ >= __RAM_segment_start__) && (__data_run_end__ <= (__RAM_segment_start__ + 0x5000))), error: .data_run is too large to fit in RAM memory segment)
                 0x20000000                __bss_load_start__ = ALIGN (__data_run_end__, 0x4)
 
-.bss            0x20000000      0x4e8
+.bss            0x20000000      0x4ec
                 0x20000000                __bss_start__ = .
  *(.bss .bss.* .gnu.linkonce.b.*)
  .bss.millisecond_counter
                 0x20000000        0x2 THUMB Debug/../../obj/timer.o
+ *fill*         0x20000002        0x2 00
  .bss.xcpCtoReqPacket.876
-                0x20000002       0x41 THUMB Debug/../../obj/uart.o
+                0x20000004       0x44 THUMB Debug/../../obj/uart.o
  .bss.xcpCtoRxInProgress.878
-                0x20000043        0x1 THUMB Debug/../../obj/uart.o
+                0x20000048        0x1 THUMB Debug/../../obj/uart.o
  .bss.xcpCtoRxLength.877
-                0x20000044        0x1 THUMB Debug/../../obj/uart.o
- *fill*         0x20000045        0x3 00
+                0x20000049        0x1 THUMB Debug/../../obj/uart.o
+ *fill*         0x2000004a        0x2 00
  .bss.bootBlockInfo
-                0x20000048      0x204 THUMB Debug/../../obj/flash.o
+                0x2000004c      0x204 THUMB Debug/../../obj/flash.o
  .bss.blockInfo
-                0x2000024c      0x204 THUMB Debug/../../obj/flash.o
+                0x20000250      0x204 THUMB Debug/../../obj/flash.o
  .bss.assert_failure_file
-                0x20000450        0x4 THUMB Debug/../../obj/assert.o
- .bss.assert_failure_line
                 0x20000454        0x4 THUMB Debug/../../obj/assert.o
+ .bss.assert_failure_line
+                0x20000458        0x4 THUMB Debug/../../obj/assert.o
  .bss.backdoorOpen
-                0x20000458        0x1 THUMB Debug/../../obj/backdoor.o
+                0x2000045c        0x1 THUMB Debug/../../obj/backdoor.o
  .bss.comEntryStateConnect
-                0x20000459        0x1 THUMB Debug/../../obj/com.o
+                0x2000045d        0x1 THUMB Debug/../../obj/com.o
+ *fill*         0x2000045e        0x2 00
  .bss.xcpCtoReqPacket.855
-                0x2000045a       0x40 THUMB Debug/../../obj/com.o
- *fill*         0x2000049a        0x2 00
- .bss.xcpInfo   0x2000049c       0x4c THUMB Debug/../../obj/xcp.o
+                0x20000460       0x40 THUMB Debug/../../obj/com.o
+ .bss.xcpInfo   0x200004a0       0x4c THUMB Debug/../../obj/xcp.o
  *(COMMON)
-                0x200004e8                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
-                0x200004e8                __bss_load_end__ = __bss_end__
+                0x200004ec                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
+                0x200004ec                __bss_load_end__ = __bss_end__
                 0x00000001                . = ASSERT (((__bss_end__ >= __RAM_segment_start__) && (__bss_end__ <= (__RAM_segment_start__ + 0x5000))), error: .bss is too large to fit in RAM memory segment)
-                0x200004e8                __non_init_load_start__ = ALIGN (__bss_end__, 0x4)
+                0x200004ec                __non_init_load_start__ = ALIGN (__bss_end__, 0x4)
 
-.non_init       0x200004e8        0x0
-                0x200004e8                __non_init_start__ = .
+.non_init       0x200004ec        0x0
+                0x200004ec                __non_init_start__ = .
  *(.non_init .non_init.*)
-                0x200004e8                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
-                0x200004e8                __non_init_load_end__ = __non_init_end__
+                0x200004ec                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
+                0x200004ec                __non_init_load_end__ = __non_init_end__
                 0x00000001                . = ASSERT (((__non_init_end__ >= __RAM_segment_start__) && (__non_init_end__ <= (__RAM_segment_start__ + 0x5000))), error: .non_init is too large to fit in RAM memory segment)
-                0x200004e8                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
+                0x200004ec                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
 
-.heap           0x200004e8       0x80
-                0x200004e8                __heap_start__ = .
+.heap           0x200004ec       0x80
+                0x200004ec                __heap_start__ = .
  *(.heap .heap.*)
-                0x20000568                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
- *fill*         0x200004e8       0x80 00
-                0x20000568                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
-                0x20000568                __heap_load_end__ = __heap_end__
+                0x2000056c                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
+ *fill*         0x200004ec       0x80 00
+                0x2000056c                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
+                0x2000056c                __heap_load_end__ = __heap_end__
                 0x00000001                . = ASSERT (((__heap_end__ >= __RAM_segment_start__) && (__heap_end__ <= (__RAM_segment_start__ + 0x5000))), error: .heap is too large to fit in RAM memory segment)
-                0x20000568                __stack_load_start__ = ALIGN (__heap_end__, 0x4)
+                0x2000056c                __stack_load_start__ = ALIGN (__heap_end__, 0x4)
 
-.stack          0x20000568      0x100
-                0x20000568                __stack_start__ = .
+.stack          0x2000056c      0x100
+                0x2000056c                __stack_start__ = .
  *(.stack .stack.*)
-                0x20000668                . = ALIGN (MAX ((__stack_start__ + __STACKSIZE__), .), 0x4)
- *fill*         0x20000568      0x100 00
-                0x20000668                __stack_end__ = (__stack_start__ + SIZEOF (.stack))
-                0x20000668                __stack_load_end__ = __stack_end__
+                0x2000066c                . = ALIGN (MAX ((__stack_start__ + __STACKSIZE__), .), 0x4)
+ *fill*         0x2000056c      0x100 00
+                0x2000066c                __stack_end__ = (__stack_start__ + SIZEOF (.stack))
+                0x2000066c                __stack_load_end__ = __stack_end__
                 0x00000001                . = ASSERT (((__stack_end__ >= __RAM_segment_start__) && (__stack_end__ <= (__RAM_segment_start__ + 0x5000))), error: .stack is too large to fit in RAM memory segment)
-                0x20000668                __stack_process_load_start__ = ALIGN (__stack_end__, 0x4)
+                0x2000066c                __stack_process_load_start__ = ALIGN (__stack_end__, 0x4)
 
-.stack_process  0x20000668        0x0
-                0x20000668                __stack_process_start__ = .
+.stack_process  0x2000066c        0x0
+                0x2000066c                __stack_process_start__ = .
  *(.stack_process .stack_process.*)
-                0x20000668                . = ALIGN (MAX ((__stack_process_start__ + __STACKSIZE_PROCESS__), .), 0x4)
-                0x20000668                __stack_process_end__ = (__stack_process_start__ + SIZEOF (.stack_process))
-                0x20000668                __stack_process_load_end__ = __stack_process_end__
+                0x2000066c                . = ALIGN (MAX ((__stack_process_start__ + __STACKSIZE_PROCESS__), .), 0x4)
+                0x2000066c                __stack_process_end__ = (__stack_process_start__ + SIZEOF (.stack_process))
+                0x2000066c                __stack_process_load_end__ = __stack_process_end__
                 0x00000001                . = ASSERT (((__stack_process_end__ >= __RAM_segment_start__) && (__stack_process_end__ <= (__RAM_segment_start__ + 0x5000))), error: .stack_process is too large to fit in RAM memory segment)
-                0x20000668                __tbss_load_start__ = ALIGN (__stack_process_end__, 0x4)
+                0x2000066c                __tbss_load_start__ = ALIGN (__stack_process_end__, 0x4)
 
-.tbss           0x20000668        0x0
-                0x20000668                __tbss_start__ = .
+.tbss           0x2000066c        0x0
+                0x2000066c                __tbss_start__ = .
  *(.tbss .tbss.*)
-                0x20000668                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
-                0x20000668                __tbss_load_end__ = __tbss_end__
+                0x2000066c                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
+                0x2000066c                __tbss_load_end__ = __tbss_end__
                 0x00000001                . = ASSERT (((__tbss_end__ >= __RAM_segment_start__) && (__tbss_end__ <= (__RAM_segment_start__ + 0x5000))), error: .tbss is too large to fit in RAM memory segment)
-                0x08000fcc                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
+                0x08001488                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
 
-.tdata          0x20000668        0x0 load address 0x08000fcc
-                0x20000668                __tdata_start__ = .
+.tdata          0x2000066c        0x0 load address 0x08001488
+                0x2000066c                __tdata_start__ = .
  *(.tdata .tdata.*)
-                0x20000668                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
-                0x08000fcc                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
-                0x08000fcc                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
+                0x2000066c                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
+                0x08001488                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
+                0x08001488                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
                 0x00000001                . = ASSERT ((((__tdata_load_start__ + SIZEOF (.tdata)) >= __FLASH_segment_start__) && ((__tdata_load_start__ + SIZEOF (.tdata)) <= (__FLASH_segment_start__ + 0x20000))), error: .tdata is too large to fit in FLASH memory segment)
 
-.tdata_run      0x20000668        0x0
-                0x20000668                __tdata_run_start__ = .
-                0x20000668                . = MAX ((__tdata_run_start__ + SIZEOF (.tdata)), .)
-                0x20000668                __tdata_run_end__ = (__tdata_run_start__ + SIZEOF (.tdata_run))
-                0x20000668                __tdata_run_load_end__ = __tdata_run_end__
-                0x20000668                __RAM_segment_used_end__ = (ALIGN (__tbss_end__, 0x4) + SIZEOF (.tdata_run))
+.tdata_run      0x2000066c        0x0
+                0x2000066c                __tdata_run_start__ = .
+                0x2000066c                . = MAX ((__tdata_run_start__ + SIZEOF (.tdata)), .)
+                0x2000066c                __tdata_run_end__ = (__tdata_run_start__ + SIZEOF (.tdata_run))
+                0x2000066c                __tdata_run_load_end__ = __tdata_run_end__
+                0x2000066c                __RAM_segment_used_end__ = (ALIGN (__tbss_end__, 0x4) + SIZEOF (.tdata_run))
                 0x00000001                . = ASSERT (((__tdata_run_end__ >= __RAM_segment_start__) && (__tdata_run_end__ <= (__RAM_segment_start__ + 0x5000))), error: .tdata_run is too large to fit in RAM memory segment)
 START GROUP
 LOAD THUMB Debug/../../obj/hooks.o
@@ -563,28 +578,28 @@ LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib
 END GROUP
 OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARMCM3_STM32_Olimex_STM32P103_Crossworks/Boot/ide/../bin/openbtl_olimex_stm32p103.elf elf32-littlearm)
 
-.debug_info     0x00000000     0x29b6
+.debug_info     0x00000000     0x27fc
  .debug_info    0x00000000       0x5e THUMB Debug/../../obj/hooks.o
  .debug_info    0x0000005e      0x32a THUMB Debug/../../obj/main.o
  .debug_info    0x00000388      0x53d THUMB Debug/../../obj/core_cm3.o
  .debug_info    0x000008c5      0x4d9 THUMB Debug/../../obj/system_stm32f10x.o
  .debug_info    0x00000d9e      0x114 THUMB Debug/../../obj/cstart.o
- .debug_info    0x00000eb2       0xf4 THUMB Debug/../../obj/vectors.o
- .debug_info    0x00000fa6       0x5e THUMB Debug/../../obj/can.o
- .debug_info    0x00001004      0x13d THUMB Debug/../../obj/cpu.o
- .debug_info    0x00001141      0x15e THUMB Debug/../../obj/nvm.o
- .debug_info    0x0000129f      0x187 THUMB Debug/../../obj/timer.o
- .debug_info    0x00001426      0x300 THUMB Debug/../../obj/uart.o
- .debug_info    0x00001726      0x7b4 THUMB Debug/../../obj/flash.o
- .debug_info    0x00001eda       0xe8 THUMB Debug/../../obj/assert.o
- .debug_info    0x00001fc2       0xa8 THUMB Debug/../../obj/backdoor.o
- .debug_info    0x0000206a       0x8c THUMB Debug/../../obj/boot.o
- .debug_info    0x000020f6      0x18e THUMB Debug/../../obj/com.o
- .debug_info    0x00002284       0x8a THUMB Debug/../../obj/cop.o
- .debug_info    0x0000230e      0x5db THUMB Debug/../../obj/xcp.o
- .debug_info    0x000028e9       0xcd C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+ .debug_info    0x00000eb2       0xf5 THUMB Debug/../../obj/vectors.o
+ .debug_info    0x00000fa7       0x5e THUMB Debug/../../obj/can.o
+ .debug_info    0x00001005      0x13e THUMB Debug/../../obj/cpu.o
+ .debug_info    0x00001143      0x162 THUMB Debug/../../obj/nvm.o
+ .debug_info    0x000012a5      0x148 THUMB Debug/../../obj/timer.o
+ .debug_info    0x000013ed      0x28d THUMB Debug/../../obj/uart.o
+ .debug_info    0x0000167a      0x671 THUMB Debug/../../obj/flash.o
+ .debug_info    0x00001ceb       0xe8 THUMB Debug/../../obj/assert.o
+ .debug_info    0x00001dd3       0xa8 THUMB Debug/../../obj/backdoor.o
+ .debug_info    0x00001e7b       0x8c THUMB Debug/../../obj/boot.o
+ .debug_info    0x00001f07      0x18f THUMB Debug/../../obj/com.o
+ .debug_info    0x00002096       0x8a THUMB Debug/../../obj/cop.o
+ .debug_info    0x00002120      0x60f THUMB Debug/../../obj/xcp.o
+ .debug_info    0x0000272f       0xcd C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
 
-.debug_abbrev   0x00000000      0xf0d
+.debug_abbrev   0x00000000      0xe19
  .debug_abbrev  0x00000000       0x2a THUMB Debug/../../obj/hooks.o
  .debug_abbrev  0x0000002a      0x109 THUMB Debug/../../obj/main.o
  .debug_abbrev  0x00000133       0xa9 THUMB Debug/../../obj/core_cm3.o
@@ -593,38 +608,38 @@ OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARMCM3_STM32_Olimex_STM32P103_
  .debug_abbrev  0x0000037c       0xc0 THUMB Debug/../../obj/vectors.o
  .debug_abbrev  0x0000043c       0x2a THUMB Debug/../../obj/can.o
  .debug_abbrev  0x00000466       0xb1 THUMB Debug/../../obj/cpu.o
- .debug_abbrev  0x00000517       0xbc THUMB Debug/../../obj/nvm.o
- .debug_abbrev  0x000005d3      0x13a THUMB Debug/../../obj/timer.o
- .debug_abbrev  0x0000070d      0x16d THUMB Debug/../../obj/uart.o
- .debug_abbrev  0x0000087a      0x279 THUMB Debug/../../obj/flash.o
- .debug_abbrev  0x00000af3       0x7e THUMB Debug/../../obj/assert.o
- .debug_abbrev  0x00000b71       0x5d THUMB Debug/../../obj/backdoor.o
- .debug_abbrev  0x00000bce       0x41 THUMB Debug/../../obj/boot.o
- .debug_abbrev  0x00000c0f       0xcb THUMB Debug/../../obj/com.o
- .debug_abbrev  0x00000cda       0x41 THUMB Debug/../../obj/cop.o
- .debug_abbrev  0x00000d1b      0x1cd THUMB Debug/../../obj/xcp.o
- .debug_abbrev  0x00000ee8       0x25 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+ .debug_abbrev  0x00000517       0xa5 THUMB Debug/../../obj/nvm.o
+ .debug_abbrev  0x000005bc       0xe1 THUMB Debug/../../obj/timer.o
+ .debug_abbrev  0x0000069d      0x133 THUMB Debug/../../obj/uart.o
+ .debug_abbrev  0x000007d0      0x229 THUMB Debug/../../obj/flash.o
+ .debug_abbrev  0x000009f9       0x7e THUMB Debug/../../obj/assert.o
+ .debug_abbrev  0x00000a77       0x5d THUMB Debug/../../obj/backdoor.o
+ .debug_abbrev  0x00000ad4       0x41 THUMB Debug/../../obj/boot.o
+ .debug_abbrev  0x00000b15       0xe2 THUMB Debug/../../obj/com.o
+ .debug_abbrev  0x00000bf7       0x41 THUMB Debug/../../obj/cop.o
+ .debug_abbrev  0x00000c38      0x1bc THUMB Debug/../../obj/xcp.o
+ .debug_abbrev  0x00000df4       0x25 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
 
-.debug_line     0x00000000     0x179e
+.debug_line     0x00000000     0x177d
  .debug_line    0x00000000       0x1d THUMB Debug/../../obj/hooks.o
- .debug_line    0x0000001d      0x1d6 THUMB Debug/../../obj/main.o
- .debug_line    0x000001f3      0x295 THUMB Debug/../../obj/core_cm3.o
- .debug_line    0x00000488      0x219 THUMB Debug/../../obj/system_stm32f10x.o
- .debug_line    0x000006a1      0x15c THUMB Debug/../../obj/cstart.o
- .debug_line    0x000007fd       0xf1 THUMB Debug/../../obj/vectors.o
- .debug_line    0x000008ee       0x1d THUMB Debug/../../obj/can.o
- .debug_line    0x0000090b      0x113 THUMB Debug/../../obj/cpu.o
- .debug_line    0x00000a1e      0x133 THUMB Debug/../../obj/nvm.o
- .debug_line    0x00000b51      0x140 THUMB Debug/../../obj/timer.o
- .debug_line    0x00000c91      0x17d THUMB Debug/../../obj/uart.o
- .debug_line    0x00000e0e      0x2aa THUMB Debug/../../obj/flash.o
- .debug_line    0x000010b8       0xde THUMB Debug/../../obj/assert.o
- .debug_line    0x00001196       0xfb THUMB Debug/../../obj/backdoor.o
- .debug_line    0x00001291       0xbf THUMB Debug/../../obj/boot.o
- .debug_line    0x00001350      0x138 THUMB Debug/../../obj/com.o
- .debug_line    0x00001488       0xb7 THUMB Debug/../../obj/cop.o
- .debug_line    0x0000153f      0x1eb THUMB Debug/../../obj/xcp.o
- .debug_line    0x0000172a       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+ .debug_line    0x0000001d      0x1d7 THUMB Debug/../../obj/main.o
+ .debug_line    0x000001f4      0x295 THUMB Debug/../../obj/core_cm3.o
+ .debug_line    0x00000489      0x217 THUMB Debug/../../obj/system_stm32f10x.o
+ .debug_line    0x000006a0      0x15c THUMB Debug/../../obj/cstart.o
+ .debug_line    0x000007fc       0xf0 THUMB Debug/../../obj/vectors.o
+ .debug_line    0x000008ec       0x1d THUMB Debug/../../obj/can.o
+ .debug_line    0x00000909      0x116 THUMB Debug/../../obj/cpu.o
+ .debug_line    0x00000a1f      0x133 THUMB Debug/../../obj/nvm.o
+ .debug_line    0x00000b52      0x131 THUMB Debug/../../obj/timer.o
+ .debug_line    0x00000c83      0x16b THUMB Debug/../../obj/uart.o
+ .debug_line    0x00000dee      0x2c8 THUMB Debug/../../obj/flash.o
+ .debug_line    0x000010b6       0xdc THUMB Debug/../../obj/assert.o
+ .debug_line    0x00001192       0xf4 THUMB Debug/../../obj/backdoor.o
+ .debug_line    0x00001286       0xbf THUMB Debug/../../obj/boot.o
+ .debug_line    0x00001345      0x136 THUMB Debug/../../obj/com.o
+ .debug_line    0x0000147b       0xb7 THUMB Debug/../../obj/cop.o
+ .debug_line    0x00001532      0x1d7 THUMB Debug/../../obj/xcp.o
+ .debug_line    0x00001709       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
 
 .debug_str      0x00000000     0x13e2
  .debug_str     0x00000000       0xfc THUMB Debug/../../obj/hooks.o
@@ -728,41 +743,42 @@ OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARMCM3_STM32_Olimex_STM32P103_
  .ARM.attributes
                 0x00000130       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
 
-.debug_frame    0x00000000      0x810
+.debug_frame    0x00000000      0x8fc
  .debug_frame   0x00000000       0x30 THUMB Debug/../../obj/main.o
  .debug_frame   0x00000030      0x170 THUMB Debug/../../obj/core_cm3.o
  .debug_frame   0x000001a0       0x38 THUMB Debug/../../obj/system_stm32f10x.o
- .debug_frame   0x000001d8       0x20 THUMB Debug/../../obj/vectors.o
- .debug_frame   0x000001f8       0x5c THUMB Debug/../../obj/cpu.o
- .debug_frame   0x00000254       0x6c THUMB Debug/../../obj/nvm.o
- .debug_frame   0x000002c0       0x6c THUMB Debug/../../obj/timer.o
- .debug_frame   0x0000032c       0x64 THUMB Debug/../../obj/uart.o
- .debug_frame   0x00000390      0x150 THUMB Debug/../../obj/flash.o
- .debug_frame   0x000004e0       0x2c THUMB Debug/../../obj/assert.o
- .debug_frame   0x0000050c       0x48 THUMB Debug/../../obj/backdoor.o
- .debug_frame   0x00000554       0x48 THUMB Debug/../../obj/boot.o
- .debug_frame   0x0000059c       0x94 THUMB Debug/../../obj/com.o
- .debug_frame   0x00000630       0x30 THUMB Debug/../../obj/cop.o
- .debug_frame   0x00000660       0x70 THUMB Debug/../../obj/xcp.o
- .debug_frame   0x000006d0       0xa0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v7m_t_le.a(libdebugio_asm.o)
- .debug_frame   0x00000770       0xa0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+ .debug_frame   0x000001d8       0x2c THUMB Debug/../../obj/vectors.o
+ .debug_frame   0x00000204       0x68 THUMB Debug/../../obj/cpu.o
+ .debug_frame   0x0000026c       0x9c THUMB Debug/../../obj/nvm.o
+ .debug_frame   0x00000308       0x78 THUMB Debug/../../obj/timer.o
+ .debug_frame   0x00000380       0x90 THUMB Debug/../../obj/uart.o
+ .debug_frame   0x00000410      0x19c THUMB Debug/../../obj/flash.o
+ .debug_frame   0x000005ac       0x2c THUMB Debug/../../obj/assert.o
+ .debug_frame   0x000005d8       0x48 THUMB Debug/../../obj/backdoor.o
+ .debug_frame   0x00000620       0x48 THUMB Debug/../../obj/boot.o
+ .debug_frame   0x00000668       0xa4 THUMB Debug/../../obj/com.o
+ .debug_frame   0x0000070c       0x30 THUMB Debug/../../obj/cop.o
+ .debug_frame   0x0000073c       0x80 THUMB Debug/../../obj/xcp.o
+ .debug_frame   0x000007bc       0xa0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v7m_t_le.a(libdebugio_asm.o)
+ .debug_frame   0x0000085c       0xa0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
 
-.debug_loc      0x00000000     0x100c
- .debug_loc     0x00000000       0x76 THUMB Debug/../../obj/main.o
- .debug_loc     0x00000076      0x2ae THUMB Debug/../../obj/core_cm3.o
- .debug_loc     0x00000324      0x10e THUMB Debug/../../obj/system_stm32f10x.o
- .debug_loc     0x00000432       0xc1 THUMB Debug/../../obj/cpu.o
- .debug_loc     0x000004f3       0x7f THUMB Debug/../../obj/nvm.o
- .debug_loc     0x00000572       0x20 THUMB Debug/../../obj/timer.o
- .debug_loc     0x00000592      0x105 THUMB Debug/../../obj/uart.o
- .debug_loc     0x00000697      0x6b4 THUMB Debug/../../obj/flash.o
- .debug_loc     0x00000d4b       0x46 THUMB Debug/../../obj/assert.o
- .debug_loc     0x00000d91       0x40 THUMB Debug/../../obj/backdoor.o
- .debug_loc     0x00000dd1       0x40 THUMB Debug/../../obj/boot.o
- .debug_loc     0x00000e11       0x86 THUMB Debug/../../obj/com.o
- .debug_loc     0x00000e97      0x175 THUMB Debug/../../obj/xcp.o
+.debug_loc      0x00000000     0x11fe
+ .debug_loc     0x00000000       0x82 THUMB Debug/../../obj/main.o
+ .debug_loc     0x00000082      0x2ae THUMB Debug/../../obj/core_cm3.o
+ .debug_loc     0x00000330      0x165 THUMB Debug/../../obj/system_stm32f10x.o
+ .debug_loc     0x00000495       0x20 THUMB Debug/../../obj/vectors.o
+ .debug_loc     0x000004b5      0x111 THUMB Debug/../../obj/cpu.o
+ .debug_loc     0x000005c6       0xff THUMB Debug/../../obj/nvm.o
+ .debug_loc     0x000006c5       0x40 THUMB Debug/../../obj/timer.o
+ .debug_loc     0x00000705      0x115 THUMB Debug/../../obj/uart.o
+ .debug_loc     0x0000081a      0x6c5 THUMB Debug/../../obj/flash.o
+ .debug_loc     0x00000edf       0x46 THUMB Debug/../../obj/assert.o
+ .debug_loc     0x00000f25       0x40 THUMB Debug/../../obj/backdoor.o
+ .debug_loc     0x00000f65       0x40 THUMB Debug/../../obj/boot.o
+ .debug_loc     0x00000fa5       0xb2 THUMB Debug/../../obj/com.o
+ .debug_loc     0x00001057      0x1a7 THUMB Debug/../../obj/xcp.o
 
-.debug_aranges  0x00000000      0x420
+.debug_aranges  0x00000000      0x450
  .debug_aranges
                 0x00000000       0x20 THUMB Debug/../../obj/main.o
  .debug_aranges
@@ -780,38 +796,38 @@ OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARMCM3_STM32_Olimex_STM32P103_
  .debug_aranges
                 0x000001c0       0x40 THUMB Debug/../../obj/timer.o
  .debug_aranges
-                0x00000200       0x30 THUMB Debug/../../obj/uart.o
+                0x00000200       0x40 THUMB Debug/../../obj/uart.o
  .debug_aranges
-                0x00000230       0x70 THUMB Debug/../../obj/flash.o
+                0x00000240       0x88 THUMB Debug/../../obj/flash.o
  .debug_aranges
-                0x000002a0       0x20 THUMB Debug/../../obj/assert.o
+                0x000002c8       0x20 THUMB Debug/../../obj/assert.o
  .debug_aranges
-                0x000002c0       0x28 THUMB Debug/../../obj/backdoor.o
+                0x000002e8       0x28 THUMB Debug/../../obj/backdoor.o
  .debug_aranges
-                0x000002e8       0x28 THUMB Debug/../../obj/boot.o
+                0x00000310       0x28 THUMB Debug/../../obj/boot.o
  .debug_aranges
-                0x00000310       0x48 THUMB Debug/../../obj/com.o
+                0x00000338       0x48 THUMB Debug/../../obj/com.o
  .debug_aranges
-                0x00000358       0x28 THUMB Debug/../../obj/cop.o
+                0x00000380       0x28 THUMB Debug/../../obj/cop.o
  .debug_aranges
-                0x00000380       0x40 THUMB Debug/../../obj/xcp.o
+                0x000003a8       0x48 THUMB Debug/../../obj/xcp.o
  .debug_aranges
-                0x000003c0       0x60 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+                0x000003f0       0x60 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
 
-.debug_ranges   0x00000000      0x420
+.debug_ranges   0x00000000      0x360
  .debug_ranges  0x00000000       0x10 THUMB Debug/../../obj/main.o
  .debug_ranges  0x00000010       0xb8 THUMB Debug/../../obj/core_cm3.o
  .debug_ranges  0x000000c8       0x18 THUMB Debug/../../obj/system_stm32f10x.o
  .debug_ranges  0x000000e0       0x10 THUMB Debug/../../obj/vectors.o
  .debug_ranges  0x000000f0       0x20 THUMB Debug/../../obj/cpu.o
  .debug_ranges  0x00000110       0x30 THUMB Debug/../../obj/nvm.o
- .debug_ranges  0x00000140       0x48 THUMB Debug/../../obj/timer.o
- .debug_ranges  0x00000188       0xb0 THUMB Debug/../../obj/uart.o
- .debug_ranges  0x00000238       0x78 THUMB Debug/../../obj/flash.o
- .debug_ranges  0x000002b0       0x10 THUMB Debug/../../obj/assert.o
- .debug_ranges  0x000002c0       0x18 THUMB Debug/../../obj/backdoor.o
- .debug_ranges  0x000002d8       0x18 THUMB Debug/../../obj/boot.o
- .debug_ranges  0x000002f0       0x38 THUMB Debug/../../obj/com.o
- .debug_ranges  0x00000328       0x18 THUMB Debug/../../obj/cop.o
- .debug_ranges  0x00000340       0x90 THUMB Debug/../../obj/xcp.o
- .debug_ranges  0x000003d0       0x50 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+ .debug_ranges  0x00000140       0x30 THUMB Debug/../../obj/timer.o
+ .debug_ranges  0x00000170       0x30 THUMB Debug/../../obj/uart.o
+ .debug_ranges  0x000001a0       0xa8 THUMB Debug/../../obj/flash.o
+ .debug_ranges  0x00000248       0x10 THUMB Debug/../../obj/assert.o
+ .debug_ranges  0x00000258       0x18 THUMB Debug/../../obj/backdoor.o
+ .debug_ranges  0x00000270       0x18 THUMB Debug/../../obj/boot.o
+ .debug_ranges  0x00000288       0x38 THUMB Debug/../../obj/com.o
+ .debug_ranges  0x000002c0       0x18 THUMB Debug/../../obj/cop.o
+ .debug_ranges  0x000002d8       0x38 THUMB Debug/../../obj/xcp.o
+ .debug_ranges  0x00000310       0x50 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)

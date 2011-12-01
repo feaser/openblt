@@ -7,42 +7,42 @@ start address 0x08000000
 
 Program Header:
     LOAD off    0x00008000 vaddr 0x08000000 paddr 0x08000000 align 2**15
-         filesz 0x00000f87 memsz 0x00000f87 flags r-x
-    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08000f87 align 2**15
+         filesz 0x000014c8 memsz 0x000014c8 flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x080014c8 align 2**15
          filesz 0x00000014 memsz 0x00000600 flags rw-
 private flags = 5000002: [Version5 EABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000f87  08000000  08000000  00008000  2**2
+  0 .text         000014c8  08000000  08000000  00008000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000014  20000000  08000f87  00010000  2**2
+  1 .data         00000014  20000000  080014c8  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          000005ec  20000014  08000f9b  00010014  2**2
+  2 .bss          000005ec  20000014  080014dc  00010014  2**2
                   ALLOC
-  3 .debug_abbrev 00000ed3  00000000  00000000  00010014  2**0
+  3 .debug_abbrev 00000e79  00000000  00000000  00010014  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   000026dd  00000000  00000000  00010ee7  2**0
+  4 .debug_info   0000273b  00000000  00000000  00010e8d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_line   00001045  00000000  00000000  000135c4  2**0
+  5 .debug_line   00001000  00000000  00000000  000135c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_pubtypes 00000471  00000000  00000000  00014609  2**0
+  6 .debug_pubtypes 00000471  00000000  00000000  000145c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_str    00000cfa  00000000  00000000  00014a7a  2**0
+  7 .debug_str    00000cfa  00000000  00000000  00014a39  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .comment      0000002a  00000000  00000000  00015774  2**0
+  8 .comment      0000002a  00000000  00000000  00015733  2**0
                   CONTENTS, READONLY
-  9 .ARM.attributes 00000031  00000000  00000000  0001579e  2**0
+  9 .ARM.attributes 00000031  00000000  00000000  0001575d  2**0
                   CONTENTS, READONLY
- 10 .debug_loc    00000f72  00000000  00000000  000157cf  2**0
+ 10 .debug_loc    00001163  00000000  00000000  0001578e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_pubnames 00000593  00000000  00000000  00016741  2**0
+ 11 .debug_pubnames 00000593  00000000  00000000  000168f1  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_aranges 000003f8  00000000  00000000  00016cd4  2**0
+ 12 .debug_aranges 000003f8  00000000  00000000  00016e84  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000328  00000000  00000000  000170cc  2**0
+ 13 .debug_ranges 000002f8  00000000  00000000  0001727c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_frame  000007c0  00000000  00000000  000173f4  2**2
+ 14 .debug_frame  0000080c  00000000  00000000  00017574  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08000000 l    d  .text	00000000 .text
@@ -62,8 +62,8 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 cstart.c
-0800017a l     F .text	00000000 zero_loop2
-08000e52 l     F .text	00000000 zero_loop
+0800019e l     F .text	00000000 zero_loop2
+0800139c l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 hooks.c
 00000000 l    df *ABS*	00000000 main.c
 00000000 l    df *ABS*	00000000 core_cm3.c
@@ -71,11 +71,11 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 boot.c
 00000000 l    df *ABS*	00000000 com.c
 20000014 l     O .bss	00000001 comEntryStateConnect
-20000015 l     O .bss	00000040 xcpCtoReqPacket.1371
+20000018 l     O .bss	00000040 xcpCtoReqPacket.1371
 00000000 l    df *ABS*	00000000 xcp.c
-0800056c l     F .text	0000000c XcpProtectResources
-08000578 l     F .text	00000014 XcpSetCtoError
-08000e7b l     O .text	00000008 xcpStationId
+0800069c l     F .text	00000010 XcpProtectResources
+080006ac l     F .text	0000001a XcpSetCtoError
+080013bc l     O .text	00000008 xcpStationId
 20000058 l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 backdoor.c
 200000a4 l     O .bss	00000001 backdoorOpen
@@ -86,103 +86,103 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 cpu.c
 00000000 l    df *ABS*	00000000 can.c
 00000000 l    df *ABS*	00000000 uart.c
-08000858 l     F .text	0000001c UartReceiveByte
-08000874 l     F .text	0000002c UartTransmitByte
+08000b88 l     F .text	00000024 UartReceiveByte
+08000bac l     F .text	0000004a UartTransmitByte
 200000b0 l     O .bss	00000041 xcpCtoReqPacket.1392
-200000f1 l     O .bss	00000001 xcpCtoRxLength.1393
-200000f2 l     O .bss	00000001 xcpCtoRxInProgress.1394
+200000f4 l     O .bss	00000001 xcpCtoRxLength.1393
+200000f5 l     O .bss	00000001 xcpCtoRxInProgress.1394
 00000000 l    df *ABS*	00000000 nvm.c
 00000000 l    df *ABS*	00000000 timer.c
-200000f4 l     O .bss	00000002 millisecond_counter
+200000f6 l     O .bss	00000002 millisecond_counter
 00000000 l    df *ABS*	00000000 flash.c
-08000a0c l     F .text	0000001c FlashUnlock
-08000a28 l     F .text	00000010 FlashLock
-08000a38 l     F .text	00000038 FlashGetSector
-08000a70 l     F .text	0000008c FlashWriteBlock
-08000afc l     F .text	00000030 FlashGetSectorBaseAddr
-08000b2c l     F .text	00000026 FlashInitBlock
-08000b54 l     F .text	00000044 FlashSwitchBlock
-08000b98 l     F .text	00000080 FlashAddToBlock
-08000ea8 l     O .text	000000b4 flashLayout
+08000dec l     F .text	00000024 FlashUnlock
+08000e10 l     F .text	00000012 FlashLock
+08000e24 l     F .text	0000004c FlashGetSector
+08000e70 l     F .text	000000c2 FlashWriteBlock
+08000f34 l     F .text	0000003e FlashGetSectorBaseAddr
+08000f74 l     F .text	00000030 FlashInitBlock
+08000fa4 l     F .text	00000050 FlashSwitchBlock
+08000ff4 l     F .text	0000009a FlashAddToBlock
+080013e8 l     O .text	000000b4 flashLayout
 200000f8 l     O .bss	00000204 bootBlockInfo
 200002fc l     O .bss	00000204 blockInfo
-080004f8 g     F .text	0000002c ComInit
-08000c30 g     F .text	0000004c FlashWrite
-08000312 g     F .text	00000006 __set_PRIMASK
-080007fc g     F .text	00000018 AssertFailure
-08000e34 g     F .text	00000038 reset_handler
-080009b0 g     F .text	0000001c TimerUpdate
-080005b8 g     F .text	00000010 XcpPacketTransmitted
-08000524 g     F .text	0000001c ComTask
-08000550 g     F .text	0000000c ComSetConnectEntryState
-08000318 g     F .text	00000006 __get_FAULTMASK
-08000330 g     F .text	00000004 __REV
-080004d0 g     F .text	00000016 BootInit
-080007e0 g     F .text	00000018 BackDoorInit
-08000364 g     F .text	00000006 __STREXW
-08000352 g     F .text	00000006 __LDREXW
-080007fa g     F .text	00000002 CopService
-08000f87 g       .text	00000000 _etext
-080009a4 g     F .text	0000000c TimerReset
+08000614 g     F .text	00000034 ComInit
+080010ac g     F .text	00000058 FlashWrite
+08000374 g     F .text	00000006 __set_PRIMASK
+08000b1c g     F .text	0000001c AssertFailure
+08001358 g     F .text	00000054 reset_handler
+08000d7c g     F .text	00000022 TimerUpdate
+080006fc g     F .text	00000012 XcpPacketTransmitted
+08000648 g     F .text	00000020 ComTask
+08000678 g     F .text	00000010 ComSetConnectEntryState
+0800037c g     F .text	00000006 __get_FAULTMASK
+0800039c g     F .text	00000004 __REV
+080005f0 g     F .text	00000014 BootInit
+08000af8 g     F .text	0000001a BackDoorInit
+080003d8 g     F .text	00000006 __STREXW
+080003c0 g     F .text	00000006 __LDREXW
+08000b18 g     F .text	00000002 CopService
+080014c8 g       .text	00000000 _etext
+08000d6c g     F .text	00000010 TimerReset
 20000010 g     O .data	00000004 SystemCoreClock
-0800033c g     F .text	00000006 __RBIT
-080004e6 g     F .text	00000012 BootTask
-08000dac g     F .text	00000048 FlashWriteChecksum
-0800031e g     F .text	00000006 __set_FAULTMASK
-08000540 g     F .text	00000010 ComTransmitPacket
-08000324 g     F .text	00000006 __get_CONTROL
-080005a8 g     F .text	00000010 XcpIsConnected
-08000980 g     F .text	00000004 NvmInit
-08000c18 g     F .text	00000018 FlashInit
-080002e4 g     F .text	00000008 __get_PSP
+080003a8 g     F .text	00000006 __RBIT
+08000604 g     F .text	00000010 BootTask
+080012a0 g     F .text	00000054 FlashWriteChecksum
+08000384 g     F .text	00000006 __set_FAULTMASK
+08000668 g     F .text	0000000e ComTransmitPacket
+0800038c g     F .text	00000006 __get_CONTROL
+080006e8 g     F .text	00000012 XcpIsConnected
+08000d38 g     F .text	00000008 NvmInit
+08001090 g     F .text	0000001a FlashInit
+0800033c g     F .text	00000008 __get_PSP
 20000500 g       .bss	00000000 _ebss
-080002ec g     F .text	00000006 __set_PSP
+08000344 g     F .text	00000006 __set_PSP
 00000100 g       *ABS*	00000000 __STACKSIZE__
-08000e28 g     F .text	0000000c UnusedISR
-08000342 g     F .text	00000008 __LDREXB
-080008a0 g     F .text	00000028 UartInit
-08000988 g     F .text	00000004 NvmErase
+08001344 g     F .text	00000014 UnusedISR
+080003b0 g     F .text	00000008 __LDREXB
+08000bf8 g     F .text	0000002c UartInit
+08000d48 g     F .text	00000008 NvmErase
 20000014 g       .bss	00000000 _bss
-0800030c g     F .text	00000006 __get_PRIMASK
-080005c8 g     F .text	000001e8 XcpPacketReceived
+0800036c g     F .text	00000006 __get_PRIMASK
+08000710 g     F .text	000003ae XcpPacketReceived
 20000000 g     O .data	00000010 AHBPrescTable
-08000df4 g     F .text	00000034 FlashDone
-08000338 g     F .text	00000004 __REVSH
-08000150 g     F .text	0000004c EntryFromProg
-0800055c g     F .text	0000000c ComIsConnectEntryState
-0800058c g     F .text	0000001c XcpInit
-08000c7c g     F .text	000000dc FlashErase
-080001b0 g     F .text	00000134 main
-0800032a g     F .text	00000006 __set_CONTROL
-08000990 g     F .text	00000012 NvmDone
-080008c8 g     F .text	00000050 UartTransmitPacket
-0800098c g     F .text	00000004 NvmVerifyChecksum
-08000834 g     F .text	00000020 CpuMemCopy
-080009cc g     F .text	0000000c TimerSet
-080002f2 g     F .text	00000008 __get_MSP
-0800036c g     F .text	000000fc SystemInit
-08000918 g     F .text	00000068 UartReceivePacket
-08000334 g     F .text	00000004 __REV16
+080012f4 g     F .text	00000050 FlashDone
+080003a4 g     F .text	00000004 __REVSH
+08000150 g     F .text	00000062 EntryFromProg
+08000688 g     F .text	0000000c ComIsConnectEntryState
+080006c8 g     F .text	0000001e XcpInit
+08001104 g     F .text	00000134 FlashErase
+080001c8 g     F .text	00000174 main
+08000394 g     F .text	00000006 __set_CONTROL
+08000d58 g     F .text	00000014 NvmDone
+08000c24 g     F .text	0000006e UartTransmitPacket
+08000d50 g     F .text	00000008 NvmVerifyChecksum
+08000b5c g     F .text	00000022 CpuMemCopy
+08000da0 g     F .text	0000000c TimerSet
+0800034c g     F .text	00000008 __get_MSP
+080003e0 g     F .text	00000130 SystemInit
+08000c94 g     F .text	000000a4 UartReceivePacket
+080003a0 g     F .text	00000004 __REV16
 20000000 g       .data	00000000 _data
-080002fa g     F .text	00000006 __set_MSP
-080007f8 g     F .text	00000002 CopInit
-08000854 g     F .text	00000004 CpuReset
-08000984 g     F .text	00000004 NvmWrite
-08000814 g     F .text	00000020 CpuStartUserProgram
+08000354 g     F .text	00000006 __set_MSP
+08000b14 g     F .text	00000002 CopInit
+08000b80 g     F .text	00000008 CpuReset
+08000d40 g     F .text	00000008 NvmWrite
+08000b38 g     F .text	00000024 CpuStartUserProgram
 20000600 g       .bss	00000000 _estack
-08000d58 g     F .text	00000054 FlashVerifyChecksum
-08000306 g     F .text	00000006 __set_BASEPRI
+08001238 g     F .text	00000068 FlashVerifyChecksum
+08000364 g     F .text	00000006 __set_BASEPRI
 20000014 g       .data	00000000 _edata
 08000000 g     O .text	00000150 _vectab
-0800035e g     F .text	00000006 __STREXH
-08000468 g     F .text	00000068 SystemCoreClockUpdate
-0800034a g     F .text	00000008 __LDREXH
-08000568 g     F .text	00000004 ComIsConnected
-08000300 g     F .text	00000006 __get_BASEPRI
-080007b0 g     F .text	00000030 BackDoorCheck
+080003d0 g     F .text	00000006 __STREXH
+08000510 g     F .text	000000e0 SystemCoreClockUpdate
+080003b8 g     F .text	00000008 __LDREXH
+08000694 g     F .text	00000008 ComIsConnected
+0800035c g     F .text	00000006 __get_BASEPRI
+08000ac0 g     F .text	00000038 BackDoorCheck
 20000500 g       .bss	00000000 _stack
-080009fc g     F .text	00000010 TimerGet
-08000358 g     F .text	00000006 __STREXB
-080009d8 g     F .text	00000024 TimerInit
+08000dd8 g     F .text	00000012 TimerGet
+080003c8 g     F .text	00000006 __STREXB
+08000dac g     F .text	0000002a TimerInit
 
 

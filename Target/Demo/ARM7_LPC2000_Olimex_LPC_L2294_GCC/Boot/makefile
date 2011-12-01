@@ -38,6 +38,8 @@ PROJ_FILES= \
 config.h \
 hooks.c \
 main.c \
+extflash.c \
+extflash.h \
 lpc2294.h \
 ../../../Source/boot.c \
 ../../../Source/boot.h \
@@ -105,7 +107,7 @@ LIB_PATH  = -L../../../Source/ARM7_LPC2000/GCC/
 #| Options for compiler binaries                                                         |
 #|---------------------------------------------------------------------------------------|
 AFLAGS   = -ahls -mapcs-32 -mcpu=arm7tdmi-s -mfpu=softfpa
-CFLAGS   = $(INC_PATH) -O1 -Wall -fmessage-length=0 -mcpu=arm7tdmi-s -g -mlong-calls
+CFLAGS   = $(INC_PATH) -O1 -Wall -fmessage-length=0 -mcpu=arm7tdmi-s -g
 CFLAGS  += -Wa,-adhlns="$(OBJ_PATH)/$(subst .o,.lst,$@)"
 LFLAGS   = $(LIB_PATH) -T"memory.x" -g -mcpu=arm7tdmi-s -nostartfiles
 OCFLAGS  = -O ihex
