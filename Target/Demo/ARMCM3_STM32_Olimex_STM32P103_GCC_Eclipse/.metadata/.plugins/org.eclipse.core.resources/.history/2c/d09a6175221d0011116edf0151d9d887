@@ -1,0 +1,86 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+-include ../makefile.init
+
+RM := cs-rm -rf
+
+# All of the sources participating in the build are defined here
+-include sources.mk
+-include source/ARMCM3_STM32/GCC/subdir.mk
+-include source/ARMCM3_STM32/subdir.mk
+-include source/subdir.mk
+-include lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/subdir.mk
+-include lib/CMSIS/CM3/CoreSupport/subdir.mk
+-include Source/ARMCM3_STM32/GCC/subdir.mk
+-include Source/ARMCM3_STM32/subdir.mk
+-include Source/subdir.mk
+-include subdir.mk
+-include objects.mk
+
+ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(strip $(C_DEPS)),)
+-include $(C_DEPS)
+endif
+ifneq ($(strip $(ASM_DEPS)),)
+-include $(ASM_DEPS)
+endif
+ifneq ($(strip $(S_UPPER_DEPS)),)
+-include $(S_UPPER_DEPS)
+endif
+endif
+
+-include ../makefile.defs
+
+# Add inputs and outputs from these tool invocations to the build variables 
+SECONDARY_FLASH += \
+openbtl_olimex_stm32p103.hex \
+
+SECONDARY_LIST += \
+openbtl_olimex_stm32p103.lst \
+
+SECONDARY_SIZE += \
+openbtl_olimex_stm32p103.siz \
+
+
+# All Target
+all: openbtl_olimex_stm32p103.elf secondary-outputs
+
+# Tool invocations
+openbtl_olimex_stm32p103.elf: $(OBJS) $(USER_OBJS)
+	@echo 'Building target: $@'
+	@echo 'Invoking: ARM Sourcery Windows GCC C Linker'
+	arm-none-eabi-gcc -T"memory.x" -nostartfiles -Wl,-Map,openbtl_olimex_stm32p103.map -mcpu=cortex-m3 -mthumb -g3 -gdwarf-2 -o "openbtl_olimex_stm32p103.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	@echo 'Finished building target: $@'
+	@echo ' '
+
+openbtl_olimex_stm32p103.hex: openbtl_olimex_stm32p103.elf
+	@echo 'Invoking: ARM Sourcery Windows GNU Create Flash Image'
+	arm-none-eabi-objcopy -O srec openbtl_olimex_stm32p103.elf  openbtl_olimex_stm32p103.srec
+	@echo 'Finished building: $@'
+	@echo ' '
+
+openbtl_olimex_stm32p103.lst: openbtl_olimex_stm32p103.elf
+	@echo 'Invoking: ARM Sourcery Windows GNU Create Listing'
+	arm-none-eabi-objdump -h -S openbtl_olimex_stm32p103.elf > "openbtl_olimex_stm32p103.lst"
+	@echo 'Finished building: $@'
+	@echo ' '
+
+openbtl_olimex_stm32p103.siz: openbtl_olimex_stm32p103.elf
+	@echo 'Invoking: ARM Sourcery Windows GNU Print Size'
+	arm-none-eabi-size  --format=berkeley openbtl_olimex_stm32p103.elf
+	@echo 'Finished building: $@'
+	@echo ' '
+
+# Other Targets
+clean:
+	-$(RM) $(SECONDARY_SIZE)$(OBJS)$(C_DEPS)$(ASM_DEPS)$(SECONDARY_FLASH)$(EXECUTABLES)$(SECONDARY_LIST)$(S_UPPER_DEPS) openbtl_olimex_stm32p103.elf
+	-@echo ' '
+
+secondary-outputs: $(SECONDARY_FLASH) $(SECONDARY_LIST) $(SECONDARY_SIZE)
+
+.PHONY: all clean dependents
+.SECONDARY:
+
+-include ../makefile.targets

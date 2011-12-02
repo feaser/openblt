@@ -1,0 +1,212 @@
+/****************************************************************************************
+|  Description: Newlib system calls remapping source file
+|    File Name: syscalls.c
+|
+|----------------------------------------------------------------------------------------
+|                          C O P Y R I G H T
+|----------------------------------------------------------------------------------------
+|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+|
+|----------------------------------------------------------------------------------------
+|                            L I C E N S E
+|----------------------------------------------------------------------------------------
+| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+| modify it under the terms of the GNU General Public License as published by the Free
+| Software Foundation, either version 3 of the License, or (at your option) any later
+| version.
+|
+| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+| PURPOSE. See the GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License along with OpenBLT.
+| If not, see <http://www.gnu.org/licenses/>.
+|
+| A special exception to the GPL is included to allow you to distribute a combined work
+| that includes OpenBLT without being obliged to provide the source code for any
+| proprietary components. The exception text is included at the bottom of the license
+| file <license.html>.
+|
+****************************************************************************************/
+
+/****************************************************************************************
+* Include files
+****************************************************************************************/
+#include <stdlib.h>
+#include <reent.h>
+#include <sys/stat.h>
+#include "uart.h"
+
+
+/****************************************************************************************
+** NAME:           _read_r
+** PARAMETER:      len number of character to read.
+** RETURN VALUE:   number of characters read
+** DESCRIPTION:    Reentrant function for reading data from a file. In this case the
+**                 read is performed from the UART interface, so only the len parameter
+**                 is used.
+**
+****************************************************************************************/
+_ssize_t _read_r(struct _reent *r, int file, void *ptr, size_t len)
+{
+  char c;
+  int  i;
+  unsigned char *p;
+
+  p = (unsigned char*)ptr;
+
+  /* receive all characters with echo */
+  for (i = 0; i < len; i++)
+  {
+    c = UartRxChar(1);
+
+    *p++ = c;
+    UartTxChar(c);
+
+    /* was this a \n newline code? */
+    if (c == 0x0D && i <= (len - 2))
+    {
+      /* automatically add cariage return after a new line */
+      *p = 0x0A;
+      UartTxChar(0x0A);
+      return i + 2;
+    }
+  }
+  return i;
+} /*** end of _read_r ***/
+
+
+/****************************************************************************************
+** NAME:           _write_r
+** PARAMETER:      len number of character to write
+** RETURN VALUE:   number of characters written.
+** DESCRIPTION:    Reentrant function for writing data from a file. In this case the
+**                 write is performed to the UART interface, so only the len parameter
+**                 is used.
+**
+****************************************************************************************/
+_ssize_t _write_r(struct _reent *r, int file, const void *ptr, size_t len)
+{
+	int i;
+	const unsigned char *p;
+	
+	p = (const unsigned char*) ptr;
+	
+	/* transmit all characters */
+	for (i = 0; i < len; i++)
+	{
+		if (*p == '\n' )
+		{
+		  /* automatically add cariage return after a new line */
+		  UartTxChar('\r');
+		}
+		UartTxChar(*p++);
+	}
+	
+	return len;
+} /*** end of _write_r ***/
+
+
+/****************************************************************************************
+** NAME:           _close_r
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    Reentrant function for closing a file. Since UART is used, no further
+**                 action is required here.
+**
+****************************************************************************************/
+int _close_r(struct _reent *r, int file)
+{
+	return 0;
+} /*** end of _close_r ***/
+
+
+/****************************************************************************************
+** NAME:           _lseek_r
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    Reentrant function for obtaining the file pointer. Since UART is
+**                 used, no further action is required here.
+**
+****************************************************************************************/
+_off_t _lseek_r(struct _reent *r, int file, _off_t ptr,  int dir)
+{
+  /* always at the beginning of the file */
+	return (_off_t)0;
+} /*** end of _lseek_r ***/
+
+
+/****************************************************************************************
+ *
+** NAME:           _fstat_r
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    Reentrant function for setting the device mode.
+**
+****************************************************************************************/
+int _fstat_r(struct _reent *r, int file, struct stat *st)
+{
+	/* set as character device */
+	st->st_mode = S_IFCHR;	
+	return 0;
+} /*** end of _fstat_r ***/
+
+
+
+/****************************************************************************************
+** NAME:           isatty
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    Not supported
+**
+****************************************************************************************/
+int isatty(int file)
+{
+	return 1;
+} /*** end of isatty ***/
+
+
+#if 0
+static void _exit (int n) {
+label:  goto label; /* endless loop */
+}
+#endif 
+
+/* "malloc clue function" */
+
+	/**** Locally used variables. ****/
+extern char end[];              /*  end is set in the linker command 	*/
+				/* file and is the end of statically 	*/
+				/* allocated data (thus start of heap).	*/
+
+static char *heap_ptr;		/* Points to current end of the heap.	*/
+
+/************************** _sbrk_r *************************************/
+/*  Support function.  Adjusts end of heap to provide more memory to	*/
+/* memory allocator. Simple and dumb with no sanity checks.		*/
+/*  struct _reent *r	-- re-entrancy structure, used by newlib to 	*/
+/*			support multiple threads of operation.		*/
+/*  ptrdiff_t nbytes	-- number of bytes to add.			*/
+/*  Returns pointer to start of new heap area.				*/
+/*  Note:  This implementation is not thread safe (despite taking a	*/
+/* _reent structure as a parameter).  					*/
+/*  Since _s_r is not used in the current implementation, the following	*/
+/* messages must be suppressed.						*/
+
+void * _sbrk_r(
+    struct _reent *_s_r, 
+    ptrdiff_t nbytes)
+{
+	char  *base;		/*  errno should be set to  ENOMEM on error	*/
+
+	if (!heap_ptr) {	/*  Initialize if first time through.		*/
+		heap_ptr = end;
+	}
+	base = heap_ptr;	/*  Point to end of heap.			*/
+	heap_ptr += nbytes;	/*  Increase heap.				*/
+	
+	return base;		/*  Return pointer to start of new heap area.	*/
+}
+
+
+/*********************************** end of syscalls.c *********************************/
