@@ -74,90 +74,90 @@ __attribute__ ((section(".vectors")))
 const tIsrFunc _vectors[] =
 {
   { .ptr = (unsigned long)&__stack_end__ },           /* the initial stack pointer     */
-  reset_handler,                                      /* the reset handler             */
-  UnusedISR,                                          /* NMI Handler                   */
-  UnusedISR,                                          /* Hard Fault Handler            */
-  UnusedISR,                                          /* MPU Fault Handler             */
-  UnusedISR,                                          /* Bus Fault Handler             */
-  UnusedISR,                                          /* Usage Fault Handler           */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* SVCall Handler                */
-  UnusedISR,                                          /* Debug Monitor Handler         */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* PendSV Handler                */
-  TimerISRHandler,                                    /* SysTick Handler               */
-  UnusedISR,                                          /* Window Watchdog               */
-  UnusedISR,                                          /* PVD through EXTI Line detect  */
-  UnusedISR,                                          /* Tamper                        */
-  UnusedISR,                                          /* RTC                           */
-  UnusedISR,                                          /* Flash                         */
-  UnusedISR,                                          /* RCC                           */
-  UnusedISR,                                          /* EXTI Line 0                   */
-  UnusedISR,                                          /* EXTI Line 1                   */
-  UnusedISR,                                          /* EXTI Line 2                   */
-  UnusedISR,                                          /* EXTI Line 3                   */
-  UnusedISR,                                          /* EXTI Line 4                   */
-  UnusedISR,                                          /* DMA1 Channel 1                */
-  UnusedISR,                                          /* DMA1 Channel 2                */
-  UnusedISR,                                          /* DMA1 Channel 3                */
-  UnusedISR,                                          /* DMA1 Channel 4                */
-  UnusedISR,                                          /* DMA1 Channel 5                */
-  UnusedISR,                                          /* DMA1 Channel 6                */
-  UnusedISR,                                          /* DMA1 Channel 7                */
-  UnusedISR,                                          /* ADC1 and ADC2                 */
-  UnusedISR,                                          /* CAN1 TX                       */
-  UnusedISR,                                          /* CAN1 RX0                      */
-  UnusedISR,                                          /* CAN1 RX1                      */
-  UnusedISR,                                          /* CAN1 SCE                      */
-  UnusedISR,                                          /* EXTI Line 9..5                */
-  UnusedISR,                                          /* TIM1 Break                    */
-  UnusedISR,                                          /* TIM1 Update                   */
-  UnusedISR,                                          /* TIM1 Trigger and Commutation  */
-  UnusedISR,                                          /* TIM1 Capture Compare          */
-  UnusedISR,                                          /* TIM2                          */
-  UnusedISR,                                          /* TIM3                          */
-  UnusedISR,                                          /* TIM4                          */
-  UnusedISR,                                          /* I2C1 Event                    */
-  UnusedISR,                                          /* I2C1 Error                    */
-  UnusedISR,                                          /* I2C2 Event                    */
-  UnusedISR,                                          /* I2C1 Error                    */
-  UnusedISR,                                          /* SPI1                          */
-  UnusedISR,                                          /* SPI2                          */
-  UnusedISR,                                          /* USART1                        */
-  UnusedISR,                                          /* USART2                        */
-  UnusedISR,                                          /* USART3                        */
-  UnusedISR,                                          /* EXTI Line 15..10              */
-  UnusedISR,                                          /* RTC alarm through EXTI line   */
-  UnusedISR,                                          /* USB OTG FS Wakeup             */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* Reserved                      */
-  UnusedISR,                                          /* TIM5                          */
-  UnusedISR,                                          /* SPI3                          */
-  UnusedISR,                                          /* UART4                         */
-  UnusedISR,                                          /* UART5                         */
-  UnusedISR,                                          /* TIM6                          */
-  UnusedISR,                                          /* TIM7                          */
-  UnusedISR,                                          /* DMA2 Channel1                 */
-  UnusedISR,                                          /* DMA2 Channel2                 */
-  UnusedISR,                                          /* DMA2 Channel3                 */
-  UnusedISR,                                          /* DMA2 Channel4                 */
-  UnusedISR,                                          /* DMA2 Channel5                 */
-  UnusedISR,                                          /* Ethernet                      */
-  UnusedISR,                                          /* Ethernet Wakeup               */
-  UnusedISR,                                          /* CAN2 TX                       */
-  UnusedISR,                                          /* CAN2 RX0                      */
-  UnusedISR,                                          /* CAN2 RX1                      */
-  UnusedISR,                                          /* CAN2 SCE                      */
-  UnusedISR,                                          /* USB OTG FS                    */
-  (void*)0x55AA11EE,                                  /* Reserved for OpenBLT checksum */
+  { reset_handler                  },                 /* the reset handler             */
+  { UnusedISR                      },                 /* NMI Handler                   */
+  { UnusedISR                      },                 /* Hard Fault Handler            */
+  { UnusedISR                      },                 /* MPU Fault Handler             */
+  { UnusedISR                      },                 /* Bus Fault Handler             */
+  { UnusedISR                      },                 /* Usage Fault Handler           */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* SVCall Handler                */
+  { UnusedISR                      },                 /* Debug Monitor Handler         */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* PendSV Handler                */
+  { TimerISRHandler                },                 /* SysTick Handler               */
+  { UnusedISR                      },                 /* Window Watchdog               */
+  { UnusedISR                      },                 /* PVD through EXTI Line detect  */
+  { UnusedISR                      },                 /* Tamper                        */
+  { UnusedISR                      },                 /* RTC                           */
+  { UnusedISR                      },                 /* Flash                         */
+  { UnusedISR                      },                 /* RCC                           */
+  { UnusedISR                      },                 /* EXTI Line 0                   */
+  { UnusedISR                      },                 /* EXTI Line 1                   */
+  { UnusedISR                      },                 /* EXTI Line 2                   */
+  { UnusedISR                      },                 /* EXTI Line 3                   */
+  { UnusedISR                      },                 /* EXTI Line 4                   */
+  { UnusedISR                      },                 /* DMA1 Channel 1                */
+  { UnusedISR                      },                 /* DMA1 Channel 2                */
+  { UnusedISR                      },                 /* DMA1 Channel 3                */
+  { UnusedISR                      },                 /* DMA1 Channel 4                */
+  { UnusedISR                      },                 /* DMA1 Channel 5                */
+  { UnusedISR                      },                 /* DMA1 Channel 6                */
+  { UnusedISR                      },                 /* DMA1 Channel 7                */
+  { UnusedISR                      },                 /* ADC1 and ADC2                 */
+  { UnusedISR                      },                 /* CAN1 TX                       */
+  { UnusedISR                      },                 /* CAN1 RX0                      */
+  { UnusedISR                      },                 /* CAN1 RX1                      */
+  { UnusedISR                      },                 /* CAN1 SCE                      */
+  { UnusedISR                      },                 /* EXTI Line 9..5                */
+  { UnusedISR                      },                 /* TIM1 Break                    */
+  { UnusedISR                      },                 /* TIM1 Update                   */
+  { UnusedISR                      },                 /* TIM1 Trigger and Commutation  */
+  { UnusedISR                      },                 /* TIM1 Capture Compare          */
+  { UnusedISR                      },                 /* TIM2                          */
+  { UnusedISR                      },                 /* TIM3                          */
+  { UnusedISR                      },                 /* TIM4                          */
+  { UnusedISR                      },                 /* I2C1 Event                    */
+  { UnusedISR                      },                 /* I2C1 Error                    */
+  { UnusedISR                      },                 /* I2C2 Event                    */
+  { UnusedISR                      },                 /* I2C1 Error                    */
+  { UnusedISR                      },                 /* SPI1                          */
+  { UnusedISR                      },                 /* SPI2                          */
+  { UnusedISR                      },                 /* USART1                        */
+  { UnusedISR                      },                 /* USART2                        */
+  { UnusedISR                      },                 /* USART3                        */
+  { UnusedISR                      },                 /* EXTI Line 15..10              */
+  { UnusedISR                      },                 /* RTC alarm through EXTI line   */
+  { UnusedISR                      },                 /* USB OTG FS Wakeup             */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* Reserved                      */
+  { UnusedISR                      },                 /* TIM5                          */
+  { UnusedISR                      },                 /* SPI3                          */
+  { UnusedISR                      },                 /* UART4                         */
+  { UnusedISR                      },                 /* UART5                         */
+  { UnusedISR                      },                 /* TIM6                          */
+  { UnusedISR                      },                 /* TIM7                          */
+  { UnusedISR                      },                 /* DMA2 Channel1                 */
+  { UnusedISR                      },                 /* DMA2 Channel2                 */
+  { UnusedISR                      },                 /* DMA2 Channel3                 */
+  { UnusedISR                      },                 /* DMA2 Channel4                 */
+  { UnusedISR                      },                 /* DMA2 Channel5                 */
+  { UnusedISR                      },                 /* Ethernet                      */
+  { UnusedISR                      },                 /* Ethernet Wakeup               */
+  { UnusedISR                      },                 /* CAN2 TX                       */
+  { UnusedISR                      },                 /* CAN2 RX0                      */
+  { UnusedISR                      },                 /* CAN2 RX1                      */
+  { UnusedISR                      },                 /* CAN2 SCE                      */
+  { UnusedISR                      },                 /* USB OTG FS                    */
+  { (void*)0x55AA11EE              },                 /* Reserved for OpenBLT checksum */
 };
 
 
