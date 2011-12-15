@@ -49,8 +49,6 @@
 ****************************************************************************************/
 void BackDoorInitHook(void)
 {
-  /* configure the button connected to P0.16 as a digital input */
-  IO0DIR &= ~(1<<16);
 } /*** end of BackDoorInitHook ***/
 
 
@@ -63,13 +61,8 @@ void BackDoorInitHook(void)
 ****************************************************************************************/
 blt_bool BackDoorEntryHook(void)
 {
-  /* button P0.16 has a pullup, so will read high by default. enter backdoor only when
-   * this button is pressed. this is the case when it reads low */
-  if ((IO0PIN & (1<<16)) == 0)
-  {
-    return BLT_TRUE;
-  }
-  return BLT_FALSE;
+  /* default implementation always activates the bootloader after a reset */
+  return BLT_TRUE;
 } /*** end of BackDoorEntryHook ***/
 #endif /* BOOT_BACKDOOR_HOOKS_ENABLE > 0 */
 

@@ -99,7 +99,7 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  /* the current implementation supports USART1 and USART1. throw an assertion error in 
+  /* the current implementation supports USART1 and USART2. throw an assertion error in 
    * case a different UART channel is configured.  
    */
   ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) || (BOOT_COM_UART_CHANNEL_INDEX == 1)); 

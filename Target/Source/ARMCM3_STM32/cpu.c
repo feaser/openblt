@@ -38,9 +38,16 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-#define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x08002004)
-#define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00002000)
-
+#if (BOOT_COM_USB_ENABLE > 0)
+/* the size of the bootloader with support for USB is larger so the start address of the
+ * user program is at a different location.
+ */
+  #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x08004004)
+  #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00004000)
+#else
+  #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x08002004)
+  #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00002000)
+#endif
 
 /****************************************************************************************
 * Register definitions
@@ -73,6 +80,8 @@ void CpuStartUserProgram(void)
     /* not a valid user program so it cannot be started */
     return;
   }
+  /* release the communication interface */
+  ComFree();
   /* remap user program's vector table */
   SCB_VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of

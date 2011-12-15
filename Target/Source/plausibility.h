@@ -154,12 +154,31 @@
   #endif
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
-#if (BOOT_COM_CAN_ENABLE == 0) && \
-    (BOOT_COM_UART_ENABLE == 0)
+#if (BOOT_COM_USB_ENABLE > 0)
+  #ifndef BOOT_COM_USB_TX_MAX_DATA
+  #error "BOOT_COM_USB_TX_MAX_DATA is missing in config.h"
+  #endif
+
+  #if (BOOT_COM_USB_TX_MAX_DATA <= 0)
+  #error "BOOT_COM_USB_TX_MAX_DATA must be > 0"
+  #endif
+  
+  #ifndef BOOT_COM_USB_RX_MAX_DATA
+  #error "BOOT_COM_USB_RX_MAX_DATA is missing in config.h"
+  #endif
+
+  #if (BOOT_COM_USB_RX_MAX_DATA <= 0)
+  #error "BOOT_COM_USB_RX_MAX_DATA must be > 0"
+  #endif
+#endif /* BOOT_COM_USB_ENABLE > 0 */
+
+#if (BOOT_COM_CAN_ENABLE == 0)  && \
+    (BOOT_COM_UART_ENABLE == 0) && \
+    (BOOT_COM_USB_ENABLE == 0)
 #error "No communication interface enabled (BOOT_COM_XXX_ENABLE) in config.h"
 #endif
 
-#if ((BOOT_COM_CAN_ENABLE + BOOT_COM_UART_ENABLE) > 1)
+#if ((BOOT_COM_CAN_ENABLE + BOOT_COM_UART_ENABLE + BOOT_COM_USB_ENABLE) > 1)
 #error "Too many communication interfaces enabled (BOOT_COM_XXX_ENABLE) in config.h"
 #endif
 

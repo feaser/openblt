@@ -39,6 +39,9 @@
 #if (BOOT_COM_UART_ENABLE > 0)
   #include "uart.h"                                   /* uart driver module            */
 #endif
+#if (BOOT_COM_USB_ENABLE > 0)
+  #include "usb.h"                                    /* usb driver module             */
+#endif
 
 
 /****************************************************************************************
@@ -77,6 +80,10 @@ void ComInit(void)
   /* initialize the UART interface */
   UartInit();
 #endif
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* initialize the USB interface */
+  UsbInit();
+#endif
   /* simulate the reception of a CONNECT command if requested */
   if (comEntryStateConnect == BLT_TRUE)
   {
@@ -102,6 +109,9 @@ void ComTask(void)
 #if (BOOT_COM_UART_ENABLE > 0)
   static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA];
 #endif
+#if (BOOT_COM_USB_ENABLE > 0)
+  static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA];
+#endif
  
 #if (BOOT_COM_CAN_ENABLE > 0)
   if (CanReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
@@ -117,7 +127,30 @@ void ComTask(void)
     XcpPacketReceived(&xcpCtoReqPacket[0]);
   }
 #endif
+#if (BOOT_COM_USB_ENABLE > 0)
+  if (UsbReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+  {
+    /* process packet */
+    XcpPacketReceived(&xcpCtoReqPacket[0]);
+  }
+#endif
 } /*** end of ComTask ***/
+
+
+/****************************************************************************************
+** NAME:           ComFree
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    Releases the communication module.
+**
+****************************************************************************************/
+void ComFree(void)
+{
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* disconnect the usb device from the usb host */
+  UsbFree();
+#endif
+} /*** end of ComFree ***/
 
 
 /****************************************************************************************
@@ -137,6 +170,10 @@ void ComTransmitPacket(blt_int8u *data, blt_int16u len)
 #if (BOOT_COM_UART_ENABLE > 0)
   /* transmit the packet */
   UartTransmitPacket(data, len);
+#endif
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* transmit the packet */
+  UsbTransmitPacket(data, len);
 #endif
 
   /* send signal that the packet was transmitted */

@@ -43,6 +43,10 @@
   #define BOOT_COM_TX_MAX_DATA          (BOOT_COM_UART_TX_MAX_DATA)
   #define BOOT_COM_RX_MAX_DATA          (BOOT_COM_UART_RX_MAX_DATA)
 #endif
+#if (BOOT_COM_USB_ENABLE > 0)
+  #define BOOT_COM_TX_MAX_DATA          (BOOT_COM_USB_TX_MAX_DATA)
+  #define BOOT_COM_RX_MAX_DATA          (BOOT_COM_USB_RX_MAX_DATA)
+#endif
 
 
 
@@ -52,6 +56,7 @@
 ****************************************************************************************/
 void     ComInit(void);
 void     ComTask(void);
+void     ComFree(void);
 void     ComTransmitPacket(blt_int8u *data, blt_int16u len);
 void     ComSetConnectEntryState(void);
 blt_bool ComIsConnectEntryState(void);

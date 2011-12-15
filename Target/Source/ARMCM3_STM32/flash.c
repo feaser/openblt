@@ -119,14 +119,22 @@ static blt_addr  FlashGetSectorSize(blt_int8u sector);
 * Local constant declarations
 ****************************************************************************************/
 /* The current flash layout does not reflect the minimum sector size of the physical
- * flash (1 - 2kb), because this would make the table quit long and a wast or ROM. The
+ * flash (1 - 2kb), because this would make the table quit long and a waste of ROM. The
  * minumum sector size is only really needed when erasing the flash. This can still be
  * done in combination with macro FLASH_ERASE_BLOCK_SIZE.
  */
 static const tFlashSector flashLayout[] =
 {
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* the size of the bootloader with support for USB is larger so the start address of the
+   * user program is at a different location.
+   */
+  /* { 0x08000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
+  /* { 0x08002000, 0x02000,  1},           flash sector  1 - reserved for bootloader   */
+#else
   /* { 0x08000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
   { 0x08002000, 0x02000,  1},           /* flash sector  1 - 8kb                       */
+#endif
   { 0x08004000, 0x02000,  2},           /* flash sector  2 - 8kb                       */
   { 0x08006000, 0x02000,  3},           /* flash sector  3 - 8kb                       */
 #if (BOOT_NVM_SIZE_KB > 32)

@@ -73,7 +73,8 @@ void CpuStartUserProgram(void)
     /* not a valid user program so it cannot be started */
     return;
   }
-   
+  /* release the communication interface */
+  ComFree();
   /* copy the user program's interrupt vector table to RAM */
   CpuMemCopy(CPU_RAM_VECTORS_START_ADDR, CPU_USER_PROG_VECTORS_START_ADDR, \
              CPU_VECTORS_TABLE_SIZE);
