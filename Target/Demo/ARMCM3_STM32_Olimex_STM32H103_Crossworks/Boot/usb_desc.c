@@ -45,8 +45,8 @@ const uint8_t Bulk_DeviceDescriptor[] =
   {
     0x12,   /* bLength */
     USB_DEVICE_DESCRIPTOR_TYPE,     /* bDescriptorType */
-    0x00,
-    0x02,   /* bcdUSB = 2.00 */
+    0x10,
+    0x01,   /* bcdUSB = 1.1 */
     0x00,   /* bDeviceClass: each interface defines the device class */
     0x00,   /* bDeviceSubClass */
     0x00,   /* bDeviceProtocol */
