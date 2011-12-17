@@ -1313,12 +1313,6 @@ static void XcpCmdProgramPrepare(blt_int8u *data)
   /* programming with kernel currently not needed and therefore not supported */
   XcpSetCtoError(XCP_ERR_GENERIC);
   return;
-
-  /* set packet id to command response packet */
-  xcpInfo.ctoData[0] = XCP_PID_RES;
-
-  /* set packet length */
-  xcpInfo.ctoLen = 1;
 } /*** end of XcpCmdProgramPrepare ***/
 #endif /* XCP_RES_PROGRAMMING_EN == 1 */
 

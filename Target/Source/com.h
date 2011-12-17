@@ -59,6 +59,7 @@ void     ComTask(void);
 void     ComFree(void);
 void     ComTransmitPacket(blt_int8u *data, blt_int16u len);
 void     ComSetConnectEntryState(void);
+void     ComSetDisconnectEntryState(void);
 blt_bool ComIsConnectEntryState(void);
 void     ComSetConnected(blt_bool connected);
 blt_bool ComIsConnected(void);

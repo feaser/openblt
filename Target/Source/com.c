@@ -55,7 +55,33 @@
  * assembly, which might cause the C compiler to incorrectly remove this variable during
  * an optimization step.
  */
+
+/* after a normal reset event, variable comEntryStateConnect must be set to BLT_FALSE
+ * right before function main() is called. After an entry from the user program, the
+ * variable must be set to BLT_TRUE right before function main() is called. There are
+ * typically two methods to correctly implement this functionality:
+ * 
+ * (1) Initialize comEntryStateConnect to BLT_FALSE upon declaration. After a regular
+ *     reset, the C-startup will then set it when initializing the .data and .bss 
+ *     sections. When the bootloader is re-entered from the user program, function
+ *     ComSetConnectEntryState() must be called AFTER the .data and .bss sections
+ *     are initialized, but BEFORE function main is called.
+ * (2) Don't give comEntryStateConnect an initialize value and add a compiler specific 
+ *     keyword that results in this variable being skipped during the .data and .bss
+ *     section initialization. In this case function ComSetDisconnectEntryState() must
+ *     be called before main() when starting from a regular reset. When re-entering from
+ *     the user program, function ComSetConnectEntryState() must be called before main().
+ *    
+ * The compiler specific keyword for method 2 can be defined through preprocessor macro
+ * BOOT_CPU_CONNECT_STATE_PREFIX or BOOT_CPU_CONNECT_STATE_POSTFIX.
+ */
+#if defined (BOOT_CPU_CONNECT_STATE_PREFIX)
+BOOT_CPU_CONNECT_STATE_PREFIX static volatile blt_bool comEntryStateConnect;
+#elif defined (BOOT_CPU_CONNECT_STATE_POSTFIX)
+static volatile blt_bool comEntryStateConnect BOOT_CPU_CONNECT_STATE_POSTFIX;
+#else
 static volatile blt_bool comEntryStateConnect = BLT_FALSE;
+#endif
 
 
 /****************************************************************************************
@@ -196,6 +222,22 @@ void ComSetConnectEntryState(void)
 {
   comEntryStateConnect = BLT_TRUE;
 } /*** end of ComSetConnectEntryState ***/
+
+
+/****************************************************************************************
+** NAME:           ComSetDisconnectEntryState
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    This function should be called by the reset handler after the stack 
+**                 pointer, data section and bss section are initialized, but before 
+**                 function main is called. It stores state information that indicates 
+**                 that the COM module must be initialized in a disconnected state.
+**
+****************************************************************************************/
+void ComSetDisconnectEntryState(void)
+{
+  comEntryStateConnect = BLT_FALSE;
+} /*** end of ComSetDisconnectEntryState ***/
 
 
 /****************************************************************************************

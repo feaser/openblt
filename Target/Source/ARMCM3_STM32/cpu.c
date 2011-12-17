@@ -88,7 +88,7 @@ void CpuStartUserProgram(void)
    * the 2nd entry in the user program's vector table. this address points to the
    * user program's reset handler.
    */
-  pProgResetHandler = (void*)(*((blt_addr*)CPU_USER_PROGRAM_STARTADDR_PTR));
+  pProgResetHandler = (void(*)(void))(*((blt_addr*)CPU_USER_PROGRAM_STARTADDR_PTR));
   /* start the user program by activating its reset interrupt service routine */
   pProgResetHandler();
 } /*** end of CpuStartUserProgram ***/
