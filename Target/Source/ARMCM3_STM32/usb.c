@@ -332,8 +332,6 @@ void UsbTransmitPipeBulkIN(void)
     ASSERT_RT(result == BLT_TRUE);
     /* store it in the endpoint's RAM */
     USB_Tx_Buffer[byte_counter] = byte_value; 
-
-    UserToPMABufferCopy(&byte_value, ENDP1_TXADDR, 1);
   }
   /* store it in the endpoint's RAM */
   UserToPMABufferCopy(&USB_Tx_Buffer[0], ENDP1_TXADDR, nr_of_bytes_for_tx_endpoint);

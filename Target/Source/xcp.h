@@ -159,7 +159,7 @@ void     XcpPacketReceived(blt_int8u *data);
 #endif
 
 #if (XCP_DTO_PACKET_LEN > 65536)
-#error  "XCP.H, XCP_DTO_PACKET_LEN cannot be larger than 256."
+#error  "XCP.H, XCP_DTO_PACKET_LEN cannot be larger than 65536."
 #endif
 
 
