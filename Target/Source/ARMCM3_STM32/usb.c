@@ -349,7 +349,7 @@ void UsbTransmitPipeBulkIN(void)
 ** DESCRIPTION:    Stores data that was received on the Bulk OUT pipe in the fifo.
 **
 ****************************************************************************************/
-void UsbReceivePipeBulkOUT(blt_int8u data)
+void UsbReceivePipeBulkOUT(void)
 {
   /* USB_Rx_Buffer is static for run-time optimalization */
   static uint8_t USB_Rx_Buffer[BULK_DATA_SIZE];
@@ -370,7 +370,7 @@ void UsbReceivePipeBulkOUT(blt_int8u data)
     /* verify that the fifo wasn't full */
     ASSERT_RT(result == BLT_TRUE);
   }
-  /* Enable the reception of data on EP3 */
+  /* Enable the reception of data on EP1 */
   SetEPRxValid(ENDP1);
 } /*** end of UsbReceivePipeBulkOUT ***/
 
