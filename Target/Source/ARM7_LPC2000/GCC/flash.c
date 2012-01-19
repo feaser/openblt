@@ -297,6 +297,15 @@ blt_bool FlashWriteChecksum(void)
    *   signature_checksum = Two's complement of (SUM(exception address values))
    */
 
+  /* first check that the bootblock contains valid data. if not, this means the
+   * bootblock is not part of the reprogramming this time and therefore no
+   * new checksum needs to be written
+   */
+   if (bootBlockInfo.base_addr == FLASH_INVALID_ADDRESS)
+   {
+    return BLT_TRUE;
+   }
+
   /* compute the checksum. note that the user program's vectors are not yet written
    * to flash but are present in the bootblock data structure at this point.
    */
@@ -310,16 +319,6 @@ blt_bool FlashWriteChecksum(void)
   signature_checksum  = ~signature_checksum; /* one's complement */
   signature_checksum += 1; /* two's complement */
 
-  /* check that this value of the checksum is not already present, which means
-   * the program area with the vector table was not programmed, so the checksum
-   * also doesn't need to be written. this check is important because it allows
-   * for additional data to be programmed, such as calibration parameters, in
-   * which case the checksum doesn't not need to be rewritten
-   */
-  if (signature_checksum == FlashVerifyChecksum())
-  {
-    return BLT_TRUE;
-  }
   /* write the checksum */
   return FlashWrite(flashLayout[0].sector_start+0x14, sizeof(blt_addr), 
                     (blt_int8u*)&signature_checksum);
