@@ -50,7 +50,7 @@ interface
 
 uses
   // Delphi units
-  Windows, Messages, SysUtils, Classes, Forms
+  Windows, Messages, SysUtils, Forms, Classes
   // ComDrv32 units
   ;
 

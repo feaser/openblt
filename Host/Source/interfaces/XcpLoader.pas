@@ -1212,7 +1212,7 @@ begin
 	while len > 0 do
 	begin
 		// set the current write length to make optimal use of the available packet data
-		currentWriteCnt := len mod (FCtoPGMPacketLen-1);
+		currentWriteCnt := Integer(len) mod (Integer(FCtoPGMPacketLen)-1);
 		if currentWriteCnt = 0 then currentWriteCnt := FCtoPGMPacketLen-1;
 
 		// prepare the packet data for PROGRAM
