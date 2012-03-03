@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="DemoBoot" InternalType="">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="Source">
+    <VirtualDirectory Name="ARMCM3_LM3S">
+      <VirtualDirectory Name="GCC">
+        <File Name="../../../../Source/ARMCM3_LM3S/GCC/cstart.c"/>
+        <File Name="../../../../Source/ARMCM3_LM3S/GCC/vectors.c"/>
+      </VirtualDirectory>
+      <File Name="../../../../Source/ARMCM3_LM3S/cpu.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/cpu.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/flash.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/flash.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/nvm.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/nvm.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/timer.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/timer.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/types.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/uart.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/uart.h"/>
+    </VirtualDirectory>
+    <File Name="../../../../Source/assert.c"/>
+    <File Name="../../../../Source/assert.h"/>
+    <File Name="../../../../Source/backdoor.c"/>
+    <File Name="../../../../Source/backdoor.h"/>
+    <File Name="../../../../Source/boot.c"/>
+    <File Name="../../../../Source/boot.h"/>
+    <File Name="../../../../Source/com.c"/>
+    <File Name="../../../../Source/com.h"/>
+    <File Name="../../../../Source/cop.c"/>
+    <File Name="../../../../Source/cop.h"/>
+    <File Name="../../../../Source/plausibility.h"/>
+    <File Name="../../../../Source/xcp.c"/>
+    <File Name="../../../../Source/xcp.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Demo">
+    <VirtualDirectory Name="ARMCM3_LM3S_EK_LM3S6965_GCC">
+      <VirtualDirectory Name="Boot">
+        <VirtualDirectory Name="lib">
+          <VirtualDirectory Name="driverlib">
+            <File Name="../lib/driverlib/cpulib.c"/>
+            <File Name="../lib/driverlib/cpulib.h"/>
+            <File Name="../lib/driverlib/debug.h"/>
+            <File Name="../lib/driverlib/flashlib.c"/>
+            <File Name="../lib/driverlib/flashlib.h"/>
+            <File Name="../lib/driverlib/gpio.c"/>
+            <File Name="../lib/driverlib/gpio.h"/>
+            <File Name="../lib/driverlib/interrupt.c"/>
+            <File Name="../lib/driverlib/interrupt.h"/>
+            <File Name="../lib/driverlib/sysctl.c"/>
+            <File Name="../lib/driverlib/sysctl.h"/>
+            <File Name="../lib/driverlib/uartlib.c"/>
+            <File Name="../lib/driverlib/uartlib.h"/>
+          </VirtualDirectory>
+          <VirtualDirectory Name="inc">
+            <File Name="../lib/inc/hw_flash.h"/>
+            <File Name="../lib/inc/hw_gpio.h"/>
+            <File Name="../lib/inc/hw_ints.h"/>
+            <File Name="../lib/inc/hw_memmap.h"/>
+            <File Name="../lib/inc/hw_nvic.h"/>
+            <File Name="../lib/inc/hw_sysctl.h"/>
+            <File Name="../lib/inc/hw_types.h"/>
+            <File Name="../lib/inc/hw_uart.h"/>
+          </VirtualDirectory>
+        </VirtualDirectory>
+        <File Name="../config.h"/>
+        <File Name="../hooks.c"/>
+        <File Name="../main.c"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <Settings Type="Dynamic Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="" IntermediateDirectory="../obj" Command="openbtl_olimex_lpc_l2294_20mhz.elf" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(WorkspacePath)/../bin" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="yes" RemoteHostName="localhost" RemoteHostPort="3333" DebuggerPath="C:\Program Files (x86)\CodeSourcery\Sourcery G++ Lite\bin\arm-none-eabi-gdb.exe">
+        <PostConnectCommands/>
+        <StartupCommands>break main
+continue
+</StartupCommands>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand/>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory>$(WorkspacePath)/..</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="-O2" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand/>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory>$(WorkspacePath)</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>
