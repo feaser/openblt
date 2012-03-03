@@ -74,7 +74,7 @@
 **                         {
 **                           void (*pEntryFromProgFnc)(void);
 **
-**                           pEntryFromProgFnc = (void*)0x08000150 + 1;
+**                           pEntryFromProgFnc = (void*)0x000000B8 + 1;
 **                           pEntryFromProgFnc();
 **                         }
 **                 Note that the + 1 added to the function address is neccassary to

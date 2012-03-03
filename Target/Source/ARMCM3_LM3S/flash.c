@@ -97,7 +97,7 @@ static blt_addr  FlashGetSectorSize(blt_int8u sector);
  */
 static const tFlashSector flashLayout[] =
 {
-#if defined(ewarm)
+#if defined(__ICCARM__)
 /* the IAR compiler generates compact code and therefore the space occupied by the
  * bootloader is less.
  */

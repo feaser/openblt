@@ -92,10 +92,20 @@ static void Init(void)
   CMU->HFCORECLKEN0 |= 0x0F;
   CMU->HFPERCLKEN0 |= 0xFFFF;
   /* disable clocking of the modules that are not in use */
-  CMU_ClockEnable(cmuClock_AES | cmuClock_DMA | cmuClock_EBI | cmuClock_PRS, false);
-  CMU_ClockEnable(cmuClock_USART0 | cmuClock_USART1 | cmuClock_USART2, false);
-  CMU_ClockEnable(cmuClock_UART0 | cmuClock_ACMP0 | cmuClock_ACMP1, false);
-  CMU_ClockEnable(cmuClock_DAC0 | cmuClock_ADC0 | cmuClock_I2C0 | cmuClock_VCMP, false);
+  CMU_ClockEnable(cmuClock_AES, false);
+  CMU_ClockEnable(cmuClock_DMA, false);
+  CMU_ClockEnable(cmuClock_EBI, false);
+  CMU_ClockEnable(cmuClock_PRS, false);
+  CMU_ClockEnable(cmuClock_USART0, false);
+  CMU_ClockEnable(cmuClock_USART1, false);
+  CMU_ClockEnable(cmuClock_USART2, false);
+  CMU_ClockEnable(cmuClock_UART0, false);
+  CMU_ClockEnable(cmuClock_ACMP0, false);
+  CMU_ClockEnable(cmuClock_ACMP1, false);
+  CMU_ClockEnable(cmuClock_DAC0, false);
+  CMU_ClockEnable(cmuClock_ADC0, false);
+  CMU_ClockEnable(cmuClock_I2C0, false);
+  CMU_ClockEnable(cmuClock_VCMP, false);
 #if (BOOT_COM_UART_ENABLE > 0)
   /* enable power to U2 (RS232_PWR_E) */
   GPIO_PinModeSet(gpioPortB, 9, gpioModePushPullDrive, 1);

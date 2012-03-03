@@ -95,10 +95,20 @@ static blt_int32u FlashCalcPageSize(void);
  */
 static const tFlashSector flashLayout[] =
 {
+#if defined(__ICCARM__)
+/* the IAR compiler generates compact code and therefore the space occupied by the
+ * bootloader is less.
+ */
+  /* { 0x00000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
+  { 0x00002000, 0x02000,  1},           /* flash sector  1 - 8kb                       */
+  { 0x00004000, 0x02000,  2},           /* flash sector  2 - 8kb                       */
+  { 0x00006000, 0x02000,  3},           /* flash sector  3 - 8kb                       */
+#else
   /* { 0x00000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
   /* { 0x00002000, 0x02000,  1},           flash sector  1 - reserved for bootloader   */
   { 0x00004000, 0x02000,  2},           /* flash sector  2 - 8kb                       */
   { 0x00006000, 0x02000,  3},           /* flash sector  3 - 8kb                       */
+#endif
 #if (BOOT_NVM_SIZE_KB > 32)
   { 0x00008000, 0x02000,  4},           /* flash sector  4 - 8kb                       */
   { 0x0000A000, 0x02000,  5},           /* flash sector  5 - 8kb                       */
@@ -542,7 +552,7 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
   blt_int8u  sector_num;
-  msc_Return_TypeDef result;
+  blt_bool   result = BLT_TRUE;
   blt_addr   prog_addr;
   blt_int32u prog_data;
   blt_int32u word_cnt;
@@ -576,7 +586,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
     }
   }
   /* still here so all is okay */
-  return BLT_TRUE;
+  return result;
 } /*** end of FlashWriteBlock ***/
 
 

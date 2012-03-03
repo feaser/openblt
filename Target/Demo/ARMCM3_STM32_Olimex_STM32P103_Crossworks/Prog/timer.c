@@ -58,6 +58,19 @@ void TimerInit(void)
 
 
 /****************************************************************************************
+** NAME:           TimerDeinit
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    Stops the timer.
+**
+****************************************************************************************/
+void TimerDeinit(void)
+{
+  SysTick->CTRL = 0;
+} /*** end of TimerDeinit ***/
+
+
+/****************************************************************************************
 ** NAME:           TimerSet
 ** PARAMETER:      timer_value initialize value of the millisecond timer.
 ** RETURN VALUE:   none

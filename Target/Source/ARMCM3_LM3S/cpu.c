@@ -38,7 +38,7 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-#if defined(ewarm)
+#if defined(__ICCARM__)
 /* the IAR compiler generates compact code and therefore the space occupied by the
  * bootloader is less.
  */

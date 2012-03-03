@@ -67,7 +67,7 @@ extern blt_int32u _estack;
 **                         {
 **                           void (*pEntryFromProgFnc)(void);
 **
-**                           pEntryFromProgFnc = (void*)0x08000150;
+**                           pEntryFromProgFnc = (void*)0x000000F0;
 **                           pEntryFromProgFnc();
 **                         }
 **

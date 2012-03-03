@@ -46,6 +46,8 @@ static void BootActivate(void)
 {
   void (*pEntryFromProgFnc)(void);
 
+  /* stop the timer interrupt */
+  TimerDeinit();
   /* set pointer to the address of function EntryFromProg in the bootloader. note that
    * 1 is added to this address to enable a switch from Thumb2 to Thumb mode
    */
