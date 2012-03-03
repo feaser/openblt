@@ -38,9 +38,16 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+#if defined(ewarm)
+/* the IAR compiler generates compact code and therefore the space occupied by the
+ * bootloader is less.
+ */
+#define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x00002004)
+#define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00002000)
+#else
 #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x00004004)
 #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00004000)
-
+#endif
   
 /****************************************************************************************
 * Register definitions
