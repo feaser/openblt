@@ -3,7 +3,7 @@ MEMORY
   UNPLACED_SECTIONS (wx) : ORIGIN = 0x100000000, LENGTH = 0
   CM3_System_Control_Space (wx) : ORIGIN = 0xe000e000, LENGTH = 0x00001000
   RAM (wx) : ORIGIN = 0x20000000, LENGTH = 0x00001000
-  FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x00004000
+  FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x00002000
 }
 
 
@@ -14,7 +14,7 @@ SECTIONS
   __RAM_segment_start__ = 0x20000000;
   __RAM_segment_end__ = 0x20001000;
   __FLASH_segment_start__ = 0x00000000;
-  __FLASH_segment_end__ = 0x00004000;
+  __FLASH_segment_end__ = 0x00002000;
 
   __STACKSIZE__ = 256;
   __STACKSIZE_PROCESS__ = 0;
