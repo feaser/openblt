@@ -5,7 +5,7 @@
 #|---------------------------------------------------------------------------------------
 #|                          C O P Y R I G H T
 #|---------------------------------------------------------------------------------------
-#|   Copyright (c) 2011  by Feaser LLC    http://www.feaser.com    All rights reserved
+#|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
 #|
 #|---------------------------------------------------------------------------------------
 #|                            L I C E N S E
@@ -114,7 +114,7 @@ CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\)
 CFLAGS  += -ffunction-sections -fdata-sections $(INC_PATH) -D STM32F10X_MD -D GCC_ARMCM3
 CFLAGS  += -Wa,-adhlns="$(OBJ_PATH)/$(subst .o,.lst,$@)"
 LFLAGS   = -nostartfiles -Xlinker -M -Xlinker -Map=$(BIN_PATH)/$(PROJ_NAME).map
-LFLAGS  += $(LIB_PATH) -Xlinker --no-gc-sections
+LFLAGS  += $(LIB_PATH) -Xlinker --gc-sections
 OFLAGS   = -O srec
 ODFLAGS  = -x
 SZFLAGS  = -B -d

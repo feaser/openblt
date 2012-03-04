@@ -44,9 +44,9 @@ Discarded input sections
  .bss.interruptNesting
                 0x00000000        0x1 ARM Flash Debug/../../obj/irq.o
  .text.IrqInterruptDisable
-                0x00000000       0x6c ARM Flash Debug/../../obj/irq.o
+                0x00000000       0x84 ARM Flash Debug/../../obj/irq.o
  .text.IrqInterruptRestore
-                0x00000000       0x70 ARM Flash Debug/../../obj/irq.o
+                0x00000000       0x88 ARM Flash Debug/../../obj/irq.o
  .text          0x00000000        0x0 ARM Flash Debug/../../obj/led.o
  .data          0x00000000        0x0 ARM Flash Debug/../../obj/led.o
  .bss           0x00000000        0x0 ARM Flash Debug/../../obj/led.o
@@ -792,9 +792,9 @@ FLASH            0x00002000         0x0003e000         xr
 
 Linker script and memory map
 
-                0x00003c44                __do_debug_operation = __do_debug_operation_dcc
-                0x00002a10                __vfprintf = __vfprintf_int
-                0x000034dc                __vfscanf = __vfscanf_int
+                0x00003d04                __do_debug_operation = __do_debug_operation_dcc
+                0x00002ad0                __vfprintf = __vfprintf_int
+                0x0000359c                __vfscanf = __vfscanf_int
                 0xffe00000                __AHB_Peripherals_segment_start__ = 0xffe00000
                 0x00000000                __AHB_Peripherals_segment_end__ = 0x0
                 0xe0000000                __VPB_Peripherals_segment_start__ = 0xe0000000
@@ -900,7 +900,7 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .init is too large to fit in FLASH memory segment)
                 0x00002250                __text_load_start__ = ALIGN (__init_end__, 0x4)
 
-.text           0x00002250     0x1ca8
+.text           0x00002250     0x1d68
                 0x00002250                __text_start__ = .
  *(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table)
  .glue_7        0x00000000        0x0 linker stubs
@@ -911,105 +911,105 @@ Linker script and memory map
                 0x0000227c       0xb8 ARM Flash Debug/../../obj/boot.o
                 0x0000227c                BootComInit
  .text.BootComCheckActivationRequest
-                0x00002334       0xe8 ARM Flash Debug/../../obj/boot.o
+                0x00002334      0x108 ARM Flash Debug/../../obj/boot.o
                 0x00002334                BootComCheckActivationRequest
  .text.UartReceiveByte
-                0x0000241c       0x64 ARM Flash Debug/../../obj/boot.o
+                0x0000243c       0x64 ARM Flash Debug/../../obj/boot.o
  .text.IrqGetCPSR
-                0x00002480       0x28 ARM Flash Debug/../../obj/irq.o
+                0x000024a0       0x28 ARM Flash Debug/../../obj/irq.o
  .text.IrqSetCPSR
-                0x000024a8       0x24 ARM Flash Debug/../../obj/irq.o
+                0x000024c8       0x24 ARM Flash Debug/../../obj/irq.o
  .text.IrqInterruptEnable
-                0x000024cc       0x30 ARM Flash Debug/../../obj/irq.o
-                0x000024cc                IrqInterruptEnable
- .text.LedInit  0x000024fc       0x3c ARM Flash Debug/../../obj/led.o
-                0x000024fc                LedInit
+                0x000024ec       0x48 ARM Flash Debug/../../obj/irq.o
+                0x000024ec                IrqInterruptEnable
+ .text.LedInit  0x00002534       0x3c ARM Flash Debug/../../obj/led.o
+                0x00002534                LedInit
  .text.LedToggle
-                0x00002538       0xa8 ARM Flash Debug/../../obj/led.o
-                0x00002538                LedToggle
- .text.main     0x000025e0       0x1c ARM Flash Debug/../../obj/main.o
-                0x000025e0                main
- .text.Init     0x000025fc      0x1e8 ARM Flash Debug/../../obj/main.o
+                0x00002570       0xb4 ARM Flash Debug/../../obj/led.o
+                0x00002570                LedToggle
+ .text.main     0x00002624       0x4c ARM Flash Debug/../../obj/main.o
+                0x00002624                main
+ .text.Init     0x00002670      0x218 ARM Flash Debug/../../obj/main.o
  .text.TimerInit
-                0x000027e4       0x84 ARM Flash Debug/../../obj/timer.o
-                0x000027e4                TimerInit
+                0x00002888       0x90 ARM Flash Debug/../../obj/timer.o
+                0x00002888                TimerInit
  .text.TimerUpdate
-                0x00002868       0x2c ARM Flash Debug/../../obj/timer.o
-                0x00002868                TimerUpdate
+                0x00002918       0x2c ARM Flash Debug/../../obj/timer.o
+                0x00002918                TimerUpdate
  .text.TimerSet
-                0x00002894       0x2c ARM Flash Debug/../../obj/timer.o
-                0x00002894                TimerSet
+                0x00002944       0x2c ARM Flash Debug/../../obj/timer.o
+                0x00002944                TimerSet
  .text.TimerGet
-                0x000028c0       0x24 ARM Flash Debug/../../obj/timer.o
-                0x000028c0                TimerGet
+                0x00002970       0x24 ARM Flash Debug/../../obj/timer.o
+                0x00002970                TimerGet
  .text.TIMER0_ISR
-                0x000028e4       0x38 ARM Flash Debug/../../obj/vectors.o
-                0x000028e4                TIMER0_ISR
- *fill*         0x0000291c        0x4 00
+                0x00002994       0x44 ARM Flash Debug/../../obj/vectors.o
+                0x00002994                TIMER0_ISR
+ *fill*         0x000029d8        0x8 00
  .text.libc.memcpy
-                0x00002920       0x60 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2_asm.o)
-                0x00002920                memcpy
+                0x000029e0       0x60 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2_asm.o)
+                0x000029e0                memcpy
  .text.libc.strlen
-                0x00002980       0x90 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2_asm.o)
-                0x00002980                strlen
+                0x00002a40       0x90 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2_asm.o)
+                0x00002a40                strlen
  .text.libc.__vfprintf_int
-                0x00002a10      0x8c0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfprintf_int.o)
-                0x00002a10                __vfprintf_int
+                0x00002ad0      0x8c0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfprintf_int.o)
+                0x00002ad0                __vfprintf_int
  .text.libc.__ungetc
-                0x000032d0       0x40 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
+                0x00003390       0x40 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
  .text.libc.rd_int
-                0x00003310      0x1cc C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
+                0x000033d0      0x1cc C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
  .text.libc.__vfscanf_int
-                0x000034dc      0x5a4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
-                0x000034dc                __vfscanf_int
+                0x0000359c      0x5a4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
+                0x0000359c                __vfscanf_int
  .text.libc.__getc
-                0x00003a80       0x4c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003a80                __getc
+                0x00003b40       0x4c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003b40                __getc
  .text.libc.__putc
-                0x00003acc       0x6c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003acc                __putc
+                0x00003b8c       0x6c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003b8c                __putc
  .text.libc.__print_padding
-                0x00003b38       0x3c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003b38                __print_padding
+                0x00003bf8       0x3c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003bf8                __print_padding
  .text.libc.__pre_padding
-                0x00003b74       0x28 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003b74                __pre_padding
+                0x00003c34       0x28 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003c34                __pre_padding
  .text.libc.isupper
-                0x00003b9c       0x14 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003b9c                isupper
+                0x00003c5c       0x14 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003c5c                isupper
  .text.libc.islower
-                0x00003bb0       0x14 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003bb0                islower
+                0x00003c70       0x14 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003c70                islower
  .text.libc.isdigit
-                0x00003bc4       0x14 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003bc4                isdigit
+                0x00003c84       0x14 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003c84                isdigit
  .text.libc.__digit
-                0x00003bd8       0x54 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003bd8                __digit
+                0x00003c98       0x54 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003c98                __digit
  .text.libc.isspace
-                0x00003c2c       0x18 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003c2c                isspace
+                0x00003cec       0x18 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003cec                isspace
  .text.libdebugio.__do_debug_operation_dcc
-                0x00003c44       0x40 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v4t_a_le.a(libdebugio.o)
-                0x00003c44                __do_debug_operation_dcc
+                0x00003d04       0x40 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v4t_a_le.a(libdebugio.o)
+                0x00003d04                __do_debug_operation_dcc
  .text.libc.__debug_io_lock
-                0x00003c84        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
-                0x00003c84                __debug_io_lock
+                0x00003d44        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
+                0x00003d44                __debug_io_lock
  .text.libc.__debug_io_unlock
-                0x00003c88        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
-                0x00003c88                __debug_io_unlock
- *fill*         0x00003c8c        0x4 00
+                0x00003d48        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
+                0x00003d48                __debug_io_unlock
+ *fill*         0x00003d4c        0x4 00
  .text.libdebugio_dcc.libarm_dcc_read
-                0x00003c90       0x20 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm.o)
-                0x00003c90                libarm_dcc_read
+                0x00003d50       0x20 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm.o)
+                0x00003d50                libarm_dcc_read
  .text.libdebugio_dcc.libarm_dcc_write
-                0x00003cb0       0x20 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm.o)
-                0x00003cb0                libarm_dcc_write
+                0x00003d70       0x20 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm.o)
+                0x00003d70                libarm_dcc_write
  .text.libarm.libarm_run_dcc_port_server
-                0x00003cd0      0x228 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm_run_dcc_port_server.o)
-                0x00003cd0                libarm_run_dcc_port_server
-                0x00003ef8                __text_end__ = (__text_start__ + SIZEOF (.text))
-                0x00003ef8                __text_load_end__ = __text_end__
+                0x00003d90      0x228 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm_run_dcc_port_server.o)
+                0x00003d90                libarm_run_dcc_port_server
+                0x00003fb8                __text_end__ = (__text_start__ + SIZEOF (.text))
+                0x00003fb8                __text_load_end__ = __text_end__
 
 .vfp11_veneer   0x00000000        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
@@ -1017,46 +1017,46 @@ Linker script and memory map
 .v4_bx          0x00000000        0x0
  .v4_bx         0x00000000        0x0 linker stubs
                 0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .text is too large to fit in FLASH memory segment)
-                0x00003ef8                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
+                0x00003fb8                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
 
-.dtors          0x00003ef8        0x0
-                0x00003ef8                __dtors_start__ = .
+.dtors          0x00003fb8        0x0
+                0x00003fb8                __dtors_start__ = .
  *(SORT(.dtors.*))
  *(.dtors)
-                0x00003ef8                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
-                0x00003ef8                __dtors_load_end__ = __dtors_end__
+                0x00003fb8                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
+                0x00003fb8                __dtors_load_end__ = __dtors_end__
                 0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .dtors is too large to fit in FLASH memory segment)
-                0x00003ef8                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
+                0x00003fb8                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
 
-.ctors          0x00003ef8        0x0
-                0x00003ef8                __ctors_start__ = .
+.ctors          0x00003fb8        0x0
+                0x00003fb8                __ctors_start__ = .
  *(SORT(.ctors.*))
  *(.ctors)
-                0x00003ef8                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
-                0x00003ef8                __ctors_load_end__ = __ctors_end__
+                0x00003fb8                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
+                0x00003fb8                __ctors_load_end__ = __ctors_end__
                 0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .ctors is too large to fit in FLASH memory segment)
-                0x00003ef8                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
+                0x00003fb8                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
 
-.rodata         0x00003ef8       0x24
-                0x00003ef8                __rodata_start__ = .
+.rodata         0x00003fb8       0x24
+                0x00003fb8                __rodata_start__ = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
- .rodata        0x00003ef8        0x4 ARM Flash Debug/../../obj/main.o
+ .rodata        0x00003fb8        0x4 ARM Flash Debug/../../obj/main.o
  .rodata.libc.__hex_lc
-                0x00003efc       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003efc                __hex_lc
+                0x00003fbc       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003fbc                __hex_lc
  .rodata.libc.__hex_uc
-                0x00003f0c       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
-                0x00003f0c                __hex_uc
-                0x00003f1c                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
-                0x00003f1c                __rodata_load_end__ = __rodata_end__
+                0x00003fcc       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+                0x00003fcc                __hex_uc
+                0x00003fdc                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
+                0x00003fdc                __rodata_load_end__ = __rodata_end__
                 0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .rodata is too large to fit in FLASH memory segment)
-                0x00003f1c                __data_load_start__ = ALIGN (__rodata_end__, 0x4)
+                0x00003fdc                __data_load_start__ = ALIGN (__rodata_end__, 0x4)
 
-.data           0x4000203c        0x0 load address 0x00003f1c
+.data           0x4000203c        0x0 load address 0x00003fdc
                 0x4000203c                __data_start__ = .
  *(.data .data.* .gnu.linkonce.d.*)
                 0x4000203c                __data_end__ = (__data_start__ + SIZEOF (.data))
-                0x00003f1c                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
+                0x00003fdc                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
                 0x00000001                . = ASSERT ((((__data_load_start__ + SIZEOF (.data)) >= __FLASH_segment_start__) && ((__data_load_start__ + SIZEOF (.data)) <= (__FLASH_segment_start__ + 0x40000))), error: .data is too large to fit in FLASH memory segment)
 
 .data_run       0x4000203c        0x0
@@ -1170,14 +1170,14 @@ Linker script and memory map
                 0x40002d98                __stack_und_end__ = (__stack_und_start__ + SIZEOF (.stack_und))
                 0x40002d98                __stack_und_load_end__ = __stack_und_end__
                 0x00000001                . = ASSERT (((__stack_und_end__ >= __SRAM_segment_start__) && (__stack_und_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .stack_und is too large to fit in SRAM memory segment)
-                0x00003f1c                __fast_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
+                0x00003fdc                __fast_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
 
-.fast           0x40002d98        0x0 load address 0x00003f1c
+.fast           0x40002d98        0x0 load address 0x00003fdc
                 0x40002d98                __fast_start__ = .
  *(.fast .fast.*)
                 0x40002d98                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
-                0x00003f1c                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
-                0x00003f1c                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.fast))
+                0x00003fdc                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
+                0x00003fdc                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.fast))
                 0x00000001                . = ASSERT ((((__fast_load_start__ + SIZEOF (.fast)) >= __FLASH_segment_start__) && ((__fast_load_start__ + SIZEOF (.fast)) <= (__FLASH_segment_start__ + 0x40000))), error: .fast is too large to fit in FLASH memory segment)
 
 .fast_run       0x40002d98        0x0
@@ -1310,20 +1310,20 @@ OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARM7_LPC2000_Olimex_LPC_L2294_
  .debug_ranges  0x000007e0       0x50 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
  .debug_ranges  0x00000830       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm_run_dcc_port_server.o)
 
-.debug_line     0x00000000     0x12a1
+.debug_line     0x00000000     0x12a3
  .debug_line    0x00000000       0xec ARM Flash Debug/../../obj/boot.o
  .debug_line    0x000000ec      0x11e ARM Flash Debug/../../obj/cstart.o
- .debug_line    0x0000020a       0xe8 ARM Flash Debug/../../obj/irq.o
- .debug_line    0x000002f2       0xb6 ARM Flash Debug/../../obj/led.o
- .debug_line    0x000003a8       0xea ARM Flash Debug/../../obj/main.o
- .debug_line    0x00000492       0xd5 ARM Flash Debug/../../obj/timer.o
- .debug_line    0x00000567       0x9d ARM Flash Debug/../../obj/vectors.o
- .debug_line    0x00000604       0x75 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfprintf_int.o)
- .debug_line    0x00000679       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
- .debug_line    0x000006ed      0x54f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
- .debug_line    0x00000c3c      0x56a C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v4t_a_le.a(libdebugio.o)
- .debug_line    0x000011a6       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
- .debug_line    0x0000121a       0x87 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm_run_dcc_port_server.o)
+ .debug_line    0x0000020a       0xe9 ARM Flash Debug/../../obj/irq.o
+ .debug_line    0x000002f3       0xb6 ARM Flash Debug/../../obj/led.o
+ .debug_line    0x000003a9       0xeb ARM Flash Debug/../../obj/main.o
+ .debug_line    0x00000494       0xd5 ARM Flash Debug/../../obj/timer.o
+ .debug_line    0x00000569       0x9d ARM Flash Debug/../../obj/vectors.o
+ .debug_line    0x00000606       0x75 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfprintf_int.o)
+ .debug_line    0x0000067b       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(__vfscanf_int.o)
+ .debug_line    0x000006ef      0x54f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a(libc2.o)
+ .debug_line    0x00000c3e      0x56a C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v4t_a_le.a(libdebugio.o)
+ .debug_line    0x000011a8       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a(user_libc.o)
+ .debug_line    0x0000121c       0x87 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a(libarm_run_dcc_port_server.o)
 
 .debug_str      0x00000000      0xfc6
  .debug_str     0x00000000      0x132 ARM Flash Debug/../../obj/boot.o

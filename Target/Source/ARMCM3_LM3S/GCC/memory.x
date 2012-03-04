@@ -1,6 +1,6 @@
 MEMORY
 {
-    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 16K
+    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 8K
     SRAM (rwx) : ORIGIN = 0x20000000, LENGTH = 4K
 }
 
@@ -11,6 +11,7 @@ SECTIONS
     .text :
     {
         KEEP(*(.isr_vector))
+        KEEP(*(.entry))
         *(.entry*)
         *(.text*)
         *(.rodata*)

@@ -7,47 +7,44 @@ start address 0x00000000
 
 Program Header:
     LOAD off    0x00008000 vaddr 0x00000000 paddr 0x00000000 align 2**15
-         filesz 0x000036ae memsz 0x000036ae flags r-x
-    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x000036ae align 2**15
-         filesz 0x0000011c memsz 0x00000708 flags rw-
+         filesz 0x000016ba memsz 0x000016ba flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x20000000 align 2**15
+         filesz 0x00000000 memsz 0x000005ec flags rw-
 private flags = 5000000: [Version5 EABI]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000036ae  00000000  00000000  00008000  2**2
+  0 .text         000016ba  00000000  00000000  00008000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         0000011c  20000000  000036ae  00010000  2**2
-                  CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          000005ec  2000011c  000037ca  0001011c  2**2
+  1 .bss          000005ec  20000000  20000000  00010000  2**2
                   ALLOC
-  3 .debug_abbrev 00001319  00000000  00000000  0001011c  2**0
+  2 .debug_abbrev 00001319  00000000  00000000  000096ba  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   00003c91  00000000  00000000  00011435  2**0
+  3 .debug_info   00003c91  00000000  00000000  0000a9d3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_line   000023cc  00000000  00000000  000150c6  2**0
+  4 .debug_line   000023cf  00000000  00000000  0000e664  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_pubtypes 000003ef  00000000  00000000  00017492  2**0
+  5 .debug_pubtypes 000003ef  00000000  00000000  00010a33  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_str    000017f3  00000000  00000000  00017881  2**0
+  6 .debug_str    000017f3  00000000  00000000  00010e22  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .comment      0000002a  00000000  00000000  00019074  2**0
+  7 .comment      0000002a  00000000  00000000  00012615  2**0
                   CONTENTS, READONLY
-  9 .ARM.attributes 00000031  00000000  00000000  0001909e  2**0
+  8 .ARM.attributes 00000031  00000000  00000000  0001263f  2**0
                   CONTENTS, READONLY
- 10 .debug_loc    000036c2  00000000  00000000  000190cf  2**0
+  9 .debug_loc    0000370f  00000000  00000000  00012670  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_pubnames 000010f0  00000000  00000000  0001c791  2**0
+ 10 .debug_pubnames 000010f0  00000000  00000000  00015d7f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_aranges 00000878  00000000  00000000  0001d881  2**0
+ 11 .debug_aranges 00000878  00000000  00000000  00016e6f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000768  00000000  00000000  0001e0f9  2**0
+ 12 .debug_ranges 00000768  00000000  00000000  000176e7  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_frame  000016d0  00000000  00000000  0001e864  2**2
+ 13 .debug_frame  000016d0  00000000  00000000  00017e50  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00000000 l    d  .text	00000000 .text
-20000000 l    d  .data	00000000 .data
-2000011c l    d  .bss	00000000 .bss
+20000000 l    d  .bss	00000000 .bss
 00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
 00000000 l    d  .debug_info	00000000 .debug_info
 00000000 l    d  .debug_line	00000000 .debug_line
@@ -63,272 +60,121 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 cstart.c
 0000011a l     F .text	00000000 zero_loop2
-00003366 l     F .text	00000000 zero_loop
-00000000 l    df *ABS*	00000000 hooks.c
+0000148e l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 main.c
-00000000 l    df *ABS*	00000000 cpulib.c
 00000000 l    df *ABS*	00000000 flashlib.c
-00003388 l     O .text	00000010 g_pulFMPPERegs
-000033b4 l     O .text	00000010 g_pulFMPRERegs
-000033c4 l     O .text	00000003 CSWTCH.4
 00000000 l    df *ABS*	00000000 sysctl.c
-00000664 l     F .text	00000168 SysCtlPeripheralValid
-000033c8 l     O .text	00000010 g_pulDCRegs
-000033d8 l     O .text	0000005c g_pulXtals
-00003450 l     O .text	0000000c g_pulDCGCRegs
-0000345c l     O .text	0000000c g_pulRCGCRegs
-00003468 l     O .text	0000000c g_pulSCGCRegs
-00003474 l     O .text	0000000c g_pulSRCRRegs
-00000000 l    df *ABS*	00000000 interrupt.c
-000012d0 l     F .text	00000002 IntDefaultHandler
-20000000 l     O .data	0000011c g_pfnRAMVectors
-0000349c l     O .text	00000020 g_pulPriority
-000034bc l     O .text	00000048 g_pulRegs
+00000298 l     F .text	00000168 SysCtlPeripheralValid
+000014cc l     O .text	0000005c g_pulXtals
+00001544 l     O .text	0000000c g_pulRCGCRegs
 00000000 l    df *ABS*	00000000 gpio.c
-00001628 l     F .text	000000c4 GPIOBaseValid
-000016ec l     F .text	000000f4 GPIOGetIntNumber
-0000351c l     O .text	00000048 g_pulGPIOBaseAddrs
+00000774 l     F .text	000000c4 GPIOBaseValid
 00000000 l    df *ABS*	00000000 uartlib.c
-00002044 l     F .text	0000002c UARTBaseValid
+000009e0 l     F .text	0000002c UARTBaseValid
 00000000 l    df *ABS*	00000000 boot.c
 00000000 l    df *ABS*	00000000 com.c
-2000011c l     O .bss	00000001 comEntryStateConnect
-2000011d l     O .bss	00000040 xcpCtoReqPacket.1375
+20000000 l     O .bss	00000001 comEntryStateConnect
+20000001 l     O .bss	00000040 xcpCtoReqPacket.1375
 00000000 l    df *ABS*	00000000 xcp.c
-00002b48 l     F .text	0000000c XcpProtectResources
-00002b54 l     F .text	00000014 XcpSetCtoError
-0000357e l     O .text	00000008 xcpStationId
-20000160 l     O .bss	0000004c xcpInfo
+00000c68 l     F .text	0000000c XcpProtectResources
+00000c74 l     F .text	00000014 XcpSetCtoError
+00001581 l     O .text	00000008 xcpStationId
+20000044 l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 backdoor.c
-200001ac l     O .bss	00000001 backdoorOpen
+20000090 l     O .bss	00000001 backdoorOpen
 00000000 l    df *ABS*	00000000 cop.c
 00000000 l    df *ABS*	00000000 assert.c
-200001b0 l     O .bss	00000004 assert_failure_file
-200001b4 l     O .bss	00000004 assert_failure_line
+20000094 l     O .bss	00000004 assert_failure_file
+20000098 l     O .bss	00000004 assert_failure_line
 00000000 l    df *ABS*	00000000 cpu.c
 00000000 l    df *ABS*	00000000 uart.c
-00002e38 l     F .text	00000020 UartReceiveByte
-00002e58 l     F .text	00000024 UartTransmitByte
-200001b8 l     O .bss	00000041 xcpCtoReqPacket.1577
-200001f9 l     O .bss	00000001 xcpCtoRxLength.1578
-200001fa l     O .bss	00000001 xcpCtoRxInProgress.1579
+00000f58 l     F .text	00000020 UartReceiveByte
+00000f78 l     F .text	00000024 UartTransmitByte
+2000009c l     O .bss	00000041 xcpCtoReqPacket.1577
+200000dd l     O .bss	00000001 xcpCtoRxLength.1578
+200000de l     O .bss	00000001 xcpCtoRxInProgress.1579
 00000000 l    df *ABS*	00000000 nvm.c
 00000000 l    df *ABS*	00000000 timer.c
-200001fc l     O .bss	00000002 millisecond_counter
+200000e0 l     O .bss	00000002 millisecond_counter
 00000000 l    df *ABS*	00000000 flash.c
-00002fe4 l     F .text	00000038 FlashGetSector
-0000301c l     F .text	00000030 FlashGetSectorBaseAddr
-0000304c l     F .text	0000004e FlashWriteBlock
-0000309a l     F .text	00000026 FlashInitBlock
-000030c0 l     F .text	00000040 FlashSwitchBlock
-00003100 l     F .text	00000080 FlashAddToBlock
-000035ac l     O .text	000000d8 flashLayout
-20000200 l     O .bss	00000204 bootBlockInfo
-20000404 l     O .bss	00000204 blockInfo
-000020b0 g     F .text	00000020 UARTParityModeGet
-00002ac4 g     F .text	0000002c ComInit
-00003198 g     F .text	00000048 FlashWrite
-00000b88 g     F .text	0000000c SysCtlLDOGet
-00000b3c g     F .text	00000018 SysCtlIntStatus
-00002dd8 g     F .text	00000018 AssertFailure
-00001cfc g     F .text	00000034 GPIOPinTypeGPIOInput
-00001e34 g     F .text	00000034 GPIOPinTypeSSI
-00002a38 g     F .text	00000024 UARTDMADisable
-00003348 g     F .text	00000038 reset_handler
-00001158 g     F .text	0000005c SysCtlGPIOAHBDisable
-0000106c g     F .text	0000002c SysCtlADCSpeedGet
-00001bec g     F .text	00000030 GPIOPortIntUnregister
-00002f88 g     F .text	0000001c TimerUpdate
-00002b94 g     F .text	00000010 XcpPacketTransmitted
-000029ac g     F .text	00000024 UARTIntDisable
-00002af0 g     F .text	0000001c ComTask
-000029f4 g     F .text	00000020 UARTIntClear
-00000c3c g     F .text	00000006 SysCtlDelay
-00000630 g     F .text	00000010 FlashIntDisable
-00002b20 g     F .text	0000000c ComSetConnectEntryState
-00000fdc g     F .text	00000034 SysCtlPWMClockGet
-00002a9c g     F .text	00000016 BootInit
-00000620 g     F .text	00000010 FlashIntEnable
-00001bb8 g     F .text	00000034 GPIOPortIntRegister
-00002dbc g     F .text	00000018 BackDoorInit
-00002dd6 g     F .text	00000002 CopService
-000036ae g       .text	00000000 _etext
-0000091c g     F .text	00000054 SysCtlPeripheralReset
-00000bc4 g     F .text	00000004 SysCtlSleep
-00000be8 g     F .text	0000000c SysCtlResetCauseGet
-000013fc g     F .text	00000034 IntPriorityGet
-00001398 g     F .text	00000024 IntPriorityGroupingGet
-00001b20 g     F .text	00000028 GPIOPinIntEnable
-000028a8 g     F .text	00000034 UARTBreakCtl
-00001c3c g     F .text	00000024 GPIOPinWrite
-0000019c g     F .text	00000006 CPUbasepriGet
-000027e0 g     F .text	00000028 UARTSpaceAvail
-00000a58 g     F .text	00000038 SysCtlPeripheralDeepSleepEnable
-00001540 g     F .text	00000078 IntPendSet
-00002f7c g     F .text	0000000c TimerReset
-000028fc g     F .text	00000048 UARTIntRegister
-00002854 g     F .text	0000002c UARTCharPutNonBlocking
-00002ab2 g     F .text	00000012 BootTask
-00002988 g     F .text	00000024 UARTIntEnable
-0000327c g     F .text	00000044 FlashWriteChecksum
-00002b0e g     F .text	00000010 ComTransmitPacket
-0000234c g     F .text	00000024 UARTDisableSIR
-00001a7c g     F .text	000000a4 GPIOPadConfigGet
-000025f0 g     F .text	00000078 UARTModemStatusGet
-00001dcc g     F .text	00000034 GPIOPinTypePWM
-000009e4 g     F .text	00000038 SysCtlPeripheralSleepEnable
-00000970 g     F .text	00000038 SysCtlPeripheralEnable
-00002880 g     F .text	00000028 UARTCharPut
-00002370 g     F .text	00000080 UARTSmartCardEnable
-00001620 g     F .text	00000004 IntPriorityMaskSet
-00002b84 g     F .text	00000010 XcpIsConnected
-00002144 g     F .text	00000044 UARTConfigGetExpClk
-00002f58 g     F .text	00000004 NvmInit
-00000bb4 g     F .text	00000010 SysCtlReset
-00003180 g     F .text	00000018 FlashInit
-00001b48 g     F .text	00000028 GPIOPinIntDisable
-00002464 g     F .text	0000008c UARTModemControlSet
-20000608 g       .bss	00000000 _ebss
-00000b20 g     F .text	00000010 SysCtlIntDisable
-000007e0 g     F .text	00000014 SysCtlFlashSizeGet
+00001104 l     F .text	00000038 FlashGetSector
+0000113c l     F .text	00000030 FlashGetSectorBaseAddr
+0000116c l     F .text	0000004e FlashWriteBlock
+000011ba l     F .text	00000026 FlashInitBlock
+000011e0 l     F .text	00000040 FlashSwitchBlock
+00001220 l     F .text	00000080 FlashAddToBlock
+000015ac l     O .text	000000e4 flashLayout
+200000e4 l     O .bss	00000204 bootBlockInfo
+200002e8 l     O .bss	00000204 blockInfo
+00000000 l    df *ABS*	00000000 hooks.c
+00000000 l    df *ABS*	00000000 cpulib.c
+00000000 l    df *ABS*	00000000 interrupt.c
+00000bfc g     F .text	0000002c ComInit
+000012b8 g     F .text	00000048 FlashWrite
+00000ef8 g     F .text	00000018 AssertFailure
+00001470 g     F .text	00000038 reset_handler
+000010a8 g     F .text	0000001c TimerUpdate
+00000cb4 g     F .text	00000010 XcpPacketTransmitted
+00000c28 g     F .text	0000001c ComTask
+00000438 g     F .text	00000006 SysCtlDelay
+00000c58 g     F .text	0000000c ComSetConnectEntryState
+00000bd4 g     F .text	00000016 BootInit
+00000edc g     F .text	00000018 BackDoorInit
+00000ef6 g     F .text	00000002 CopService
+000016ba g       .text	00000000 _etext
+00000b58 g     F .text	00000028 UARTSpaceAvail
+0000109c g     F .text	0000000c TimerReset
+00000ba8 g     F .text	0000002c UARTCharPutNonBlocking
+00000bea g     F .text	00000012 BootTask
+000013a4 g     F .text	00000044 FlashWriteChecksum
+00000c46 g     F .text	00000010 ComTransmitPacket
+00000400 g     F .text	00000038 SysCtlPeripheralEnable
+00000ca4 g     F .text	00000010 XcpIsConnected
+00001078 g     F .text	00000004 NvmInit
+000012a0 g     F .text	00000018 FlashInit
+200004ec g       .bss	00000000 _ebss
 00000100 g       *ABS*	00000000 __STACKSIZE__
-00000bf4 g     F .text	00000010 SysCtlResetCauseClear
-0000333c g     F .text	0000000c UnusedISR
-00001f04 g     F .text	00000034 GPIOPinTypeUSBAnalog
-000007cc g     F .text	00000014 SysCtlSRAMSizeGet
-00001c1c g     F .text	00000020 GPIOPinRead
-00002b0c g     F .text	00000002 ComFree
-00000a1c g     F .text	0000003c SysCtlPeripheralSleepDisable
-00001f6c g     F .text	00000034 GPIOPinTypeEthernetLED
-00001834 g     F .text	0000004c GPIODirModeGet
-00001c60 g     F .text	00000034 GPIOPinTypeADC
-00002668 g     F .text	00000088 UARTFlowControlSet
-000010fc g     F .text	0000005c SysCtlGPIOAHBEnable
-00000acc g     F .text	0000001c SysCtlPeripheralClockGating
-000027b8 g     F .text	00000028 UARTCharsAvail
-00002e7c g     F .text	00000028 UartInit
-000007f4 g     F .text	000000cc SysCtlPinPresent
-000023f0 g     F .text	00000074 UARTSmartCardDisable
-00002f60 g     F .text	00000004 NvmErase
-00001d98 g     F .text	00000034 GPIOPinTypeI2C
-00002808 g     F .text	00000028 UARTCharGetNonBlocking
-000015b8 g     F .text	00000068 IntPendClear
-00001d64 g     F .text	00000034 GPIOPinTypeGPIOOutputOD
-2000011c g       .bss	00000000 _bss
-00002ba4 g     F .text	000001e8 XcpPacketReceived
-000022f8 g     F .text	00000024 UARTFIFODisable
-00000b94 g     F .text	00000020 SysCtlLDOConfigSet
-00000554 g     F .text	0000003c FlashUserSet
-00003308 g     F .text	00000034 FlashDone
-00001e00 g     F .text	00000034 GPIOPinTypeQEI
-00002b2c g     F .text	0000000c ComSetDisconnectEntryState
+00001464 g     F .text	0000000c UnusedISR
+00000c44 g     F .text	00000002 ComFree
+00000f9c g     F .text	00000028 UartInit
+00001080 g     F .text	00000004 NvmErase
+00000b80 g     F .text	00000028 UARTCharGetNonBlocking
+20000000 g       .bss	00000000 _bss
+00000cc4 g     F .text	000001e8 XcpPacketReceived
+00001430 g     F .text	00000034 FlashDone
 000000f0 g     F .text	0000004c EntryFromProg
-00001364 g     F .text	00000034 IntPriorityGroupingSet
-00002b38 g     F .text	0000000c ComIsConnectEntryState
-00001880 g     F .text	00000080 GPIOIntTypeSet
-000001a4 g     F .text	0000000c FlashUsecGet
-000024f0 g     F .text	0000008c UARTModemControlClear
-0000017c g     F .text	00000008 CPUcpsid
-00000658 g     F .text	0000000c FlashIntClear
-00000192 g     F .text	00000004 CPUwfi
-00000bc8 g     F .text	00000020 SysCtlDeepSleep
-00000184 g     F .text	00000006 CPUprimask
-0000257c g     F .text	00000074 UARTModemControlGet
-0000020c g     F .text	000000cc FlashProgram
-00002b68 g     F .text	0000001c XcpInit
-00002118 g     F .text	0000002c UARTFIFOLevelGet
-0000049c g     F .text	00000050 FlashProtectSave
-000031e0 g     F .text	0000009c FlashErase
-00000b54 g     F .text	00000034 SysCtlLDOSet
+000001cc g     F .text	000000cc FlashProgram
+00000c88 g     F .text	0000001c XcpInit
+00001300 g     F .text	000000a4 FlashErase
 00000150 g     F .text	0000002c main
-00000d9c g     F .text	000001dc SysCtlClockGet
-000011d4 g     F .text	000000fc SysCtlI2SMClkSet
-00001098 g     F .text	0000001c SysCtlIOSCVerificationSet
-0000060c g     F .text	00000012 FlashIntUnregister
-00002760 g     F .text	00000038 UARTTxIntModeSet
-000021b8 g     F .text	00000038 UARTDisable
-00002f68 g     F .text	00000012 NvmDone
-00002ea4 g     F .text	00000050 UartTransmitPacket
-00002f64 g     F .text	00000004 NvmVerifyChecksum
-00002e14 g     F .text	00000020 CpuMemCopy
-00000ae8 g     F .text	00000014 SysCtlIntRegister
-00002fa4 g     F .text	0000000c TimerSet
-000011b4 g     F .text	00000010 SysCtlUSBPLLEnable
-0000133c g     F .text	00000028 IntUnregister
-00001c94 g     F .text	00000034 GPIOPinTypeCAN
-00000afc g     F .text	00000012 SysCtlIntUnregister
-00001fa0 g     F .text	00000034 GPIOPinTypeEPI
-00000640 g     F .text	00000018 FlashIntStatus
-000029d0 g     F .text	00000024 UARTIntStatus
-00001f38 g     F .text	00000034 GPIOPinTypeI2S
-000012d2 g     F .text	0000000a IntMasterEnable
-00002ef4 g     F .text	00000064 UartReceivePacket
-000012e8 g     F .text	00000054 IntRegister
-00002a5c g     F .text	00000020 UARTRxErrorGet
-00001010 g     F .text	0000005c SysCtlADCSpeedSet
-00000c04 g     F .text	00000038 SysCtlBrownOutConfigSet
-000012dc g     F .text	0000000a IntMasterDisable
-00001ed0 g     F .text	00000034 GPIOPinTypeUSBDigital
-000014b8 g     F .text	00000088 IntDisable
-000013bc g     F .text	00000040 IntPrioritySet
-00001b98 g     F .text	00000020 GPIOPinIntClear
-000005f8 g     F .text	00000014 FlashIntRegister
-20000000 g       .data	00000000 _data
-00002dd4 g     F .text	00000002 CopInit
-00002e34 g     F .text	00000004 CpuReset
-00002830 g     F .text	00000024 UARTCharGet
-000020d0 g     F .text	00000048 UARTFIFOLevelSet
-00002f5c g     F .text	00000004 NvmWrite
-000022d4 g     F .text	00000024 UARTFIFOEnable
-00000590 g     F .text	00000068 FlashUserSave
-00002df0 g     F .text	00000024 CpuStartUserProgram
-000010b4 g     F .text	0000001c SysCtlMOSCVerificationSet
-00000b10 g     F .text	00000010 SysCtlIntEnable
-000026f0 g     F .text	00000070 UARTFlowControlGet
-20000708 g       .bss	00000000 _estack
-00002798 g     F .text	00000020 UARTTxIntModeGet
-000032c0 g     F .text	00000046 FlashVerifyChecksum
-2000011c g       .data	00000000 _edata
-000001b0 g     F .text	0000000c FlashUsecSet
+00000598 g     F .text	000001dc SysCtlClockGet
+00000a3c g     F .text	00000038 UARTDisable
+00001088 g     F .text	00000012 NvmDone
+00000fc4 g     F .text	00000050 UartTransmitPacket
+00001084 g     F .text	00000004 NvmVerifyChecksum
+00000f34 g     F .text	00000020 CpuMemCopy
+000010c4 g     F .text	0000000c TimerSet
+00001014 g     F .text	00000064 UartReceivePacket
+20000000 g       .text	00000000 _data
+00000ef4 g     F .text	00000002 CopInit
+00000f54 g     F .text	00000004 CpuReset
+0000107c g     F .text	00000004 NvmWrite
+00000f10 g     F .text	00000024 CpuStartUserProgram
+200005ec g       .bss	00000000 _estack
+000013e8 g     F .text	00000046 FlashVerifyChecksum
+20000000 g       .text	00000000 _edata
 00000000 g     O .text	000000f0 _vectab
-000004ec g     F .text	00000068 FlashUserGet
-00001624 g     F .text	00000004 IntPriorityMaskGet
-00001e68 g     F .text	00000034 GPIOPinTypeTimer
-000010d0 g     F .text	0000001c SysCtlPLLVerificationSet
-00001e9c g     F .text	00000034 GPIOPinTypeUART
-00001cc8 g     F .text	00000034 GPIOPinTypeComparator
-00000196 g     F .text	00000006 CPUbasepriSet
-00001d30 g     F .text	00000034 GPIOPinTypeGPIOOutput
-00000f78 g     F .text	00000064 SysCtlPWMClockSet
-000002d8 g     F .text	0000009c FlashProtectGet
-00002b44 g     F .text	00000004 ComIsConnected
-00000b30 g     F .text	0000000c SysCtlIntClear
-00001430 g     F .text	00000088 IntEnable
-000028dc g     F .text	00000020 UARTBusy
-00001fd4 g     F .text	00000070 GPIOPinConfigure
-000010ec g     F .text	00000010 SysCtlClkVerificationClear
-0000018a g     F .text	00000008 CPUcpsie
-000017e0 g     F .text	00000054 GPIODirModeSet
-00002944 g     F .text	00000044 UARTIntUnregister
-00002d8c g     F .text	00000030 BackDoorCheck
-00000a90 g     F .text	0000003c SysCtlPeripheralDeepSleepDisable
-20000608 g       .bss	00000000 _stack
-00001900 g     F .text	0000005c GPIOIntTypeGet
-00000374 g     F .text	00000128 FlashProtectSet
-00002fd4 g     F .text	00000010 TimerGet
-00002a7c g     F .text	00000020 UARTRxErrorClear
-000009a8 g     F .text	0000003c SysCtlPeripheralDisable
-00002a14 g     F .text	00000024 UARTDMAEnable
-000021f0 g     F .text	000000e4 UARTConfigSetExpClk
-00001b70 g     F .text	00000028 GPIOPinIntStatus
-000011c4 g     F .text	00000010 SysCtlUSBPLLDisable
-00000c44 g     F .text	00000158 SysCtlClockSet
-000008c0 g     F .text	0000005c SysCtlPeripheralPresent
-0000195c g     F .text	00000120 GPIOPadConfigSet
-00002fb0 g     F .text	00000024 TimerInit
-0000231c g     F .text	00000030 UARTEnableSIR
-000001bc g     F .text	00000050 FlashClear
-00002188 g     F .text	00000030 UARTEnable
-00002070 g     F .text	00000040 UARTParityModeSet
+000009ac g     F .text	00000034 GPIOPinTypeUART
+00000c64 g     F .text	00000004 ComIsConnected
+00000838 g     F .text	00000054 GPIODirModeSet
+00000eac g     F .text	00000030 BackDoorCheck
+200004ec g       .bss	00000000 _stack
+000010f4 g     F .text	00000010 TimerGet
+00000a74 g     F .text	000000e4 UARTConfigSetExpClk
+00000440 g     F .text	00000158 SysCtlClockSet
+0000088c g     F .text	00000120 GPIOPadConfigSet
+000010d0 g     F .text	00000024 TimerInit
+0000017c g     F .text	00000050 FlashClear
+00000a0c g     F .text	00000030 UARTEnable
 
 

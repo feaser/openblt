@@ -1,4 +1,43 @@
 
+Discarded input sections
+
+ .text          0x00000000      0x20c ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
+ .data          0x00000000       0x14 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
+ .bss           0x00000000        0x0 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
+ .text          0x00000000       0xa4 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
+ .data          0x00000000        0x0 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
+ .bss           0x00000000        0x0 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
+ .data          0x00000000        0x0 ./Source/ARMCM3_STM32/GCC/cstart.o
+ .bss           0x00000000        0x0 ./Source/ARMCM3_STM32/GCC/cstart.o
+ .data          0x00000000        0x0 ./Source/ARMCM3_STM32/GCC/vectors.o
+ .bss           0x00000000        0x0 ./Source/ARMCM3_STM32/GCC/vectors.o
+ .text          0x00000000        0x0 ./Source/ARMCM3_STM32/can.o
+ .data          0x00000000        0x0 ./Source/ARMCM3_STM32/can.o
+ .bss           0x00000000        0x0 ./Source/ARMCM3_STM32/can.o
+ .data          0x00000000        0x0 ./Source/ARMCM3_STM32/cpu.o
+ .bss           0x00000000        0x0 ./Source/ARMCM3_STM32/cpu.o
+ .data          0x00000000        0x0 ./Source/ARMCM3_STM32/flash.o
+ .data          0x00000000        0x0 ./Source/ARMCM3_STM32/nvm.o
+ .bss           0x00000000        0x0 ./Source/ARMCM3_STM32/nvm.o
+ .data          0x00000000        0x0 ./Source/ARMCM3_STM32/timer.o
+ .data          0x00000000        0x0 ./Source/ARMCM3_STM32/uart.o
+ .text          0x00000000        0x0 ./Source/ARMCM3_STM32/usb.o
+ .data          0x00000000        0x0 ./Source/ARMCM3_STM32/usb.o
+ .bss           0x00000000        0x0 ./Source/ARMCM3_STM32/usb.o
+ .data          0x00000000        0x0 ./Source/assert.o
+ .data          0x00000000        0x0 ./Source/backdoor.o
+ .data          0x00000000        0x0 ./Source/boot.o
+ .bss           0x00000000        0x0 ./Source/boot.o
+ .data          0x00000000        0x0 ./Source/com.o
+ .data          0x00000000        0x0 ./Source/cop.o
+ .bss           0x00000000        0x0 ./Source/cop.o
+ .data          0x00000000        0x0 ./Source/xcp.o
+ .text          0x00000000        0x0 ./hooks.o
+ .data          0x00000000        0x0 ./hooks.o
+ .bss           0x00000000        0x0 ./hooks.o
+ .data          0x00000000        0x0 ./main.o
+ .bss           0x00000000        0x0 ./main.o
+
 Memory Configuration
 
 Name             Origin             Length             Attributes
@@ -18,6 +57,7 @@ LOAD ./Source/ARMCM3_STM32/flash.o
 LOAD ./Source/ARMCM3_STM32/nvm.o
 LOAD ./Source/ARMCM3_STM32/timer.o
 LOAD ./Source/ARMCM3_STM32/uart.o
+LOAD ./Source/ARMCM3_STM32/usb.o
 LOAD ./Source/assert.o
 LOAD ./Source/backdoor.o
 LOAD ./Source/boot.o
@@ -32,241 +72,188 @@ LOAD c:/program files (x86)/codesourcery/sourcery g++ lite/bin/../lib/gcc/arm-no
 END GROUP
                 0x00000100                __STACKSIZE__ = 0x100
 
-.text           0x08000000     0x14e0
+.text           0x08000000     0x1250
  *(.isr_vector)
  .isr_vector    0x08000000      0x150 ./Source/ARMCM3_STM32/GCC/vectors.o
                 0x08000000                _vectab
- *(.entry*)
+ *(.entry)
  .entry         0x08000150       0x78 ./Source/ARMCM3_STM32/GCC/cstart.o
                 0x08000150                EntryFromProg
+ *(.entry*)
  *(.text*)
- .text          0x080001c8      0x20c ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
-                0x080001c8                SystemInit
-                0x080002f8                SystemCoreClockUpdate
- .text          0x080003d4       0xa4 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
-                0x080003d4                __get_PSP
-                0x080003dc                __set_PSP
-                0x080003e4                __get_MSP
-                0x080003ec                __set_MSP
-                0x080003f4                __get_BASEPRI
-                0x080003fc                __set_BASEPRI
-                0x08000404                __get_PRIMASK
-                0x0800040c                __set_PRIMASK
-                0x08000414                __get_FAULTMASK
-                0x0800041c                __set_FAULTMASK
-                0x08000424                __get_CONTROL
-                0x0800042c                __set_CONTROL
-                0x08000434                __REV
-                0x08000438                __REV16
-                0x0800043c                __REVSH
-                0x08000440                __RBIT
-                0x08000448                __LDREXB
-                0x08000450                __LDREXH
-                0x08000458                __LDREXW
-                0x08000460                __STREXB
-                0x08000468                __STREXH
-                0x08000470                __STREXW
- .text          0x08000478       0x5c ./Source/ARMCM3_STM32/GCC/cstart.o
-                0x08000478                reset_handler
- .text          0x080004d4       0x14 ./Source/ARMCM3_STM32/GCC/vectors.o
-                0x080004d4                UnusedISR
- .text          0x080004e8        0x0 ./Source/ARMCM3_STM32/can.o
- .text          0x080004e8       0x50 ./Source/ARMCM3_STM32/cpu.o
-                0x080004e8                CpuStartUserProgram
-                0x0800050c                CpuMemCopy
-                0x08000530                CpuReset
- .text          0x08000538      0x550 ./Source/ARMCM3_STM32/flash.o
-                0x080007d4                FlashInit
-                0x080007e8                FlashWrite
-                0x08000840                FlashErase
-                0x08000974                FlashVerifyChecksum
-                0x080009dc                FlashWriteChecksum
-                0x08000a38                FlashDone
- .text          0x08000a88       0x34 ./Source/ARMCM3_STM32/nvm.o
-                0x08000a88                NvmInit
-                0x08000a90                NvmWrite
-                0x08000a98                NvmErase
-                0x08000aa0                NvmVerifyChecksum
-                0x08000aa8                NvmDone
- .text          0x08000abc       0x80 ./Source/ARMCM3_STM32/timer.o
-                0x08000abc                TimerReset
-                0x08000acc                TimerUpdate
-                0x08000af0                TimerSet
-                0x08000afc                TimerInit
-                0x08000b28                TimerGet
- .text          0x08000b3c      0x1a4 ./Source/ARMCM3_STM32/uart.o
-                0x08000bac                UartInit
-                0x08000bd8                UartTransmitPacket
-                0x08000c48                UartReceivePacket
- .text          0x08000ce0       0x14 ./Source/assert.o
-                0x08000ce0                AssertFailure
- .text          0x08000cf4       0x54 ./Source/backdoor.o
-                0x08000cf4                BackDoorCheck
-                0x08000d2c                BackDoorInit
- .text          0x08000d48       0x24 ./Source/boot.o
-                0x08000d48                BootInit
-                0x08000d5c                BootTask
- .text          0x08000d6c       0x80 ./Source/com.o
-                0x08000d6c                ComInit
-                0x08000da0                ComTask
-                0x08000db8                ComTransmitPacket
-                0x08000dc8                ComSetConnectEntryState
-                0x08000dd8                ComIsConnectEntryState
-                0x08000de4                ComIsConnected
- .text          0x08000dec        0x8 ./Source/cop.o
-                0x08000dec                CopInit
-                0x08000df0                CopService
- .text          0x08000df4      0x424 ./Source/xcp.o
-                0x08000e20                XcpInit
-                0x08000e40                XcpIsConnected
-                0x08000e54                XcpPacketTransmitted
-                0x08000e68                XcpPacketReceived
- .text          0x08001218        0x0 ./hooks.o
- .text          0x08001218      0x174 ./main.o
-                0x08001218                main
+ .text          0x080001c8       0x5c ./Source/ARMCM3_STM32/GCC/cstart.o
+                0x080001c8                reset_handler
+ .text          0x08000224       0x14 ./Source/ARMCM3_STM32/GCC/vectors.o
+                0x08000224                UnusedISR
+ .text          0x08000238       0x54 ./Source/ARMCM3_STM32/cpu.o
+                0x08000238                CpuStartUserProgram
+                0x08000260                CpuMemCopy
+                0x08000284                CpuReset
+ .text          0x0800028c      0x558 ./Source/ARMCM3_STM32/flash.o
+                0x08000528                FlashInit
+                0x0800053c                FlashWrite
+                0x08000594                FlashErase
+                0x080006c8                FlashWriteChecksum
+                0x0800072c                FlashVerifyChecksum
+                0x08000794                FlashDone
+ .text          0x080007e4       0x34 ./Source/ARMCM3_STM32/nvm.o
+                0x080007e4                NvmInit
+                0x080007ec                NvmWrite
+                0x080007f4                NvmErase
+                0x080007fc                NvmVerifyChecksum
+                0x08000804                NvmDone
+ .text          0x08000818       0x80 ./Source/ARMCM3_STM32/timer.o
+                0x08000818                TimerReset
+                0x08000828                TimerUpdate
+                0x0800084c                TimerSet
+                0x08000858                TimerInit
+                0x08000884                TimerGet
+ .text          0x08000898      0x1a4 ./Source/ARMCM3_STM32/uart.o
+                0x08000908                UartInit
+                0x08000934                UartTransmitPacket
+                0x080009a4                UartReceivePacket
+ .text          0x08000a3c       0x14 ./Source/assert.o
+                0x08000a3c                AssertFailure
+ .text          0x08000a50       0x54 ./Source/backdoor.o
+                0x08000a50                BackDoorCheck
+                0x08000a88                BackDoorInit
+ .text          0x08000aa4       0x24 ./Source/boot.o
+                0x08000aa4                BootInit
+                0x08000ab8                BootTask
+ .text          0x08000ac8       0x94 ./Source/com.o
+                0x08000ac8                ComInit
+                0x08000afc                ComTask
+                0x08000b14                ComFree
+                0x08000b18                ComTransmitPacket
+                0x08000b28                ComSetConnectEntryState
+                0x08000b38                ComSetDisconnectEntryState
+                0x08000b48                ComIsConnectEntryState
+                0x08000b54                ComIsConnected
+ .text          0x08000b5c        0x8 ./Source/cop.o
+                0x08000b5c                CopInit
+                0x08000b60                CopService
+ .text          0x08000b64      0x424 ./Source/xcp.o
+                0x08000b90                XcpInit
+                0x08000bb0                XcpIsConnected
+                0x08000bc4                XcpPacketTransmitted
+                0x08000bd8                XcpPacketReceived
+ .text          0x08000f88      0x174 ./main.o
+                0x08000f88                main
  *(.rodata*)
  .rodata.str1.4
-                0x0800138c       0x48 ./Source/ARMCM3_STM32/GCC/vectors.o
- .rodata        0x080013d4       0xb4 ./Source/ARMCM3_STM32/flash.o
+                0x080010fc       0x48 ./Source/ARMCM3_STM32/GCC/vectors.o
+ .rodata        0x08001144       0xb4 ./Source/ARMCM3_STM32/flash.o
  .rodata.str1.4
-                0x08001488       0x41 ./Source/ARMCM3_STM32/uart.o
+                0x080011f8       0x41 ./Source/ARMCM3_STM32/uart.o
                                  0x44 (size before relaxing)
- *fill*         0x080014c9        0x3 00
- .rodata        0x080014cc        0x8 ./Source/xcp.o
+ *fill*         0x08001239        0x3 00
+ .rodata        0x0800123c        0x8 ./Source/xcp.o
  .rodata.str1.4
-                0x080014d4        0xc ./main.o
-                0x080014e0                _etext = .
+                0x08001244        0xc ./main.o
+                0x08001250                _etext = .
 
-.glue_7         0x080014e0        0x0
+.glue_7         0x08001250        0x0
  .glue_7        0x00000000        0x0 linker stubs
 
-.glue_7t        0x080014e0        0x0
+.glue_7t        0x08001250        0x0
  .glue_7t       0x00000000        0x0 linker stubs
 
-.vfp11_veneer   0x080014e0        0x0
+.vfp11_veneer   0x08001250        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
 
-.v4_bx          0x080014e0        0x0
+.v4_bx          0x08001250        0x0
  .v4_bx         0x00000000        0x0 linker stubs
 
-.data           0x20000000       0x14 load address 0x080014e0
+.data           0x20000000        0x0 load address 0x08001250
                 0x20000000                _data = .
  *(vtable)
  *(.data*)
- .data          0x20000000       0x14 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
-                0x20000000                SystemCoreClock
-                0x20000004                AHBPrescTable
- .data          0x20000014        0x0 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
- .data          0x20000014        0x0 ./Source/ARMCM3_STM32/GCC/cstart.o
- .data          0x20000014        0x0 ./Source/ARMCM3_STM32/GCC/vectors.o
- .data          0x20000014        0x0 ./Source/ARMCM3_STM32/can.o
- .data          0x20000014        0x0 ./Source/ARMCM3_STM32/cpu.o
- .data          0x20000014        0x0 ./Source/ARMCM3_STM32/flash.o
- .data          0x20000014        0x0 ./Source/ARMCM3_STM32/nvm.o
- .data          0x20000014        0x0 ./Source/ARMCM3_STM32/timer.o
- .data          0x20000014        0x0 ./Source/ARMCM3_STM32/uart.o
- .data          0x20000014        0x0 ./Source/assert.o
- .data          0x20000014        0x0 ./Source/backdoor.o
- .data          0x20000014        0x0 ./Source/boot.o
- .data          0x20000014        0x0 ./Source/com.o
- .data          0x20000014        0x0 ./Source/cop.o
- .data          0x20000014        0x0 ./Source/xcp.o
- .data          0x20000014        0x0 ./hooks.o
- .data          0x20000014        0x0 ./main.o
-                0x20000014                _edata = .
+                0x20000000                _edata = .
 
-.bss            0x20000014      0x5f0 load address 0x080014f4
-                0x20000014                _bss = .
+.bss            0x20000000      0x5f0
+                0x20000000                _bss = .
  *(.bss*)
- .bss           0x20000014        0x0 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
- .bss           0x20000014        0x0 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
- .bss           0x20000014        0x0 ./Source/ARMCM3_STM32/GCC/cstart.o
- .bss           0x20000014        0x0 ./Source/ARMCM3_STM32/GCC/vectors.o
- .bss           0x20000014        0x0 ./Source/ARMCM3_STM32/can.o
- .bss           0x20000014        0x0 ./Source/ARMCM3_STM32/cpu.o
- .bss           0x20000014      0x408 ./Source/ARMCM3_STM32/flash.o
- .bss           0x2000041c        0x0 ./Source/ARMCM3_STM32/nvm.o
- .bss           0x2000041c        0x2 ./Source/ARMCM3_STM32/timer.o
- *fill*         0x2000041e        0x2 00
- .bss           0x20000420       0x48 ./Source/ARMCM3_STM32/uart.o
- .bss           0x20000468        0x8 ./Source/assert.o
- .bss           0x20000470        0x1 ./Source/backdoor.o
- .bss           0x20000471        0x0 ./Source/boot.o
- *fill*         0x20000471        0x3 00
- .bss           0x20000474       0x44 ./Source/com.o
- .bss           0x200004b8        0x0 ./Source/cop.o
- .bss           0x200004b8       0x4c ./Source/xcp.o
- .bss           0x20000504        0x0 ./hooks.o
- .bss           0x20000504        0x0 ./main.o
+ .bss           0x20000000      0x408 ./Source/ARMCM3_STM32/flash.o
+ .bss           0x20000408        0x2 ./Source/ARMCM3_STM32/timer.o
+ *fill*         0x2000040a        0x2 00
+ .bss           0x2000040c       0x48 ./Source/ARMCM3_STM32/uart.o
+ .bss           0x20000454        0x8 ./Source/assert.o
+ .bss           0x2000045c        0x1 ./Source/backdoor.o
+ *fill*         0x2000045d        0x3 00
+ .bss           0x20000460       0x44 ./Source/com.o
+ .bss           0x200004a4       0x4c ./Source/xcp.o
  *(COMMON)
-                0x20000504                _ebss = .
-                0x20000504                _stack = .
-                0x20000604                . = ALIGN (MAX ((_stack + __STACKSIZE__), .), 0x4)
- *fill*         0x20000504      0x100 00
-                0x20000604                _estack = .
+                0x200004f0                _ebss = .
+                0x200004f0                _stack = .
+                0x200005f0                . = ALIGN (MAX ((_stack + __STACKSIZE__), .), 0x4)
+ *fill*         0x200004f0      0x100 00
+                0x200005f0                _estack = .
 OUTPUT(openbtl_olimex_stm32p103.elf elf32-littlearm)
 
-.debug_abbrev   0x00000000      0xe63
+.debug_abbrev   0x00000000      0xe9c
  .debug_abbrev  0x00000000      0x1a8 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
  .debug_abbrev  0x000001a8       0xb6 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
  .debug_abbrev  0x0000025e       0x86 ./Source/ARMCM3_STM32/GCC/cstart.o
  .debug_abbrev  0x000002e4       0xbe ./Source/ARMCM3_STM32/GCC/vectors.o
  .debug_abbrev  0x000003a2       0x2a ./Source/ARMCM3_STM32/can.o
  .debug_abbrev  0x000003cc       0xaf ./Source/ARMCM3_STM32/cpu.o
- .debug_abbrev  0x0000047b      0x211 ./Source/ARMCM3_STM32/flash.o
- .debug_abbrev  0x0000068c       0xa3 ./Source/ARMCM3_STM32/nvm.o
- .debug_abbrev  0x0000072f       0xdf ./Source/ARMCM3_STM32/timer.o
- .debug_abbrev  0x0000080e      0x131 ./Source/ARMCM3_STM32/uart.o
- .debug_abbrev  0x0000093f       0x7c ./Source/assert.o
- .debug_abbrev  0x000009bb       0x5b ./Source/backdoor.o
- .debug_abbrev  0x00000a16       0x3f ./Source/boot.o
- .debug_abbrev  0x00000a55       0xe0 ./Source/com.o
- .debug_abbrev  0x00000b35       0x3f ./Source/cop.o
- .debug_abbrev  0x00000b74      0x1ba ./Source/xcp.o
- .debug_abbrev  0x00000d2e       0x2c ./hooks.o
- .debug_abbrev  0x00000d5a      0x109 ./main.o
+ .debug_abbrev  0x0000047b      0x220 ./Source/ARMCM3_STM32/flash.o
+ .debug_abbrev  0x0000069b       0xa3 ./Source/ARMCM3_STM32/nvm.o
+ .debug_abbrev  0x0000073e       0xdf ./Source/ARMCM3_STM32/timer.o
+ .debug_abbrev  0x0000081d      0x131 ./Source/ARMCM3_STM32/uart.o
+ .debug_abbrev  0x0000094e       0x2a ./Source/ARMCM3_STM32/usb.o
+ .debug_abbrev  0x00000978       0x7c ./Source/assert.o
+ .debug_abbrev  0x000009f4       0x5b ./Source/backdoor.o
+ .debug_abbrev  0x00000a4f       0x3f ./Source/boot.o
+ .debug_abbrev  0x00000a8e       0xe0 ./Source/com.o
+ .debug_abbrev  0x00000b6e       0x3f ./Source/cop.o
+ .debug_abbrev  0x00000bad      0x1ba ./Source/xcp.o
+ .debug_abbrev  0x00000d67       0x2c ./hooks.o
+ .debug_abbrev  0x00000d93      0x109 ./main.o
 
-.debug_info     0x00000000     0x270f
+.debug_info     0x00000000     0x2795
  .debug_info    0x00000000      0x4cb ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
  .debug_info    0x000004cb      0x54f ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
  .debug_info    0x00000a1a      0x129 ./Source/ARMCM3_STM32/GCC/cstart.o
  .debug_info    0x00000b43       0xf1 ./Source/ARMCM3_STM32/GCC/vectors.o
  .debug_info    0x00000c34       0x5e ./Source/ARMCM3_STM32/can.o
  .debug_info    0x00000c92      0x13a ./Source/ARMCM3_STM32/cpu.o
- .debug_info    0x00000dcc      0x671 ./Source/ARMCM3_STM32/flash.o
- .debug_info    0x0000143d      0x15e ./Source/ARMCM3_STM32/nvm.o
- .debug_info    0x0000159b      0x144 ./Source/ARMCM3_STM32/timer.o
- .debug_info    0x000016df      0x289 ./Source/ARMCM3_STM32/uart.o
- .debug_info    0x00001968       0xe4 ./Source/assert.o
- .debug_info    0x00001a4c       0xa4 ./Source/backdoor.o
- .debug_info    0x00001af0       0x88 ./Source/boot.o
- .debug_info    0x00001b78      0x18b ./Source/com.o
- .debug_info    0x00001d03       0x86 ./Source/cop.o
- .debug_info    0x00001d89      0x607 ./Source/xcp.o
- .debug_info    0x00002390       0x62 ./hooks.o
- .debug_info    0x000023f2      0x31d ./main.o
+ .debug_info    0x00000dcc      0x670 ./Source/ARMCM3_STM32/flash.o
+ .debug_info    0x0000143c      0x15e ./Source/ARMCM3_STM32/nvm.o
+ .debug_info    0x0000159a      0x144 ./Source/ARMCM3_STM32/timer.o
+ .debug_info    0x000016de      0x289 ./Source/ARMCM3_STM32/uart.o
+ .debug_info    0x00001967       0x5e ./Source/ARMCM3_STM32/usb.o
+ .debug_info    0x000019c5       0xe4 ./Source/assert.o
+ .debug_info    0x00001aa9       0xa4 ./Source/backdoor.o
+ .debug_info    0x00001b4d       0x88 ./Source/boot.o
+ .debug_info    0x00001bd5      0x1b4 ./Source/com.o
+ .debug_info    0x00001d89       0x86 ./Source/cop.o
+ .debug_info    0x00001e0f      0x607 ./Source/xcp.o
+ .debug_info    0x00002416       0x62 ./hooks.o
+ .debug_info    0x00002478      0x31d ./main.o
 
-.debug_line     0x00000000     0x23cb
+.debug_line     0x00000000     0x2584
  .debug_line    0x00000000      0x24d ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
  .debug_line    0x0000024d      0x1b7 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
  .debug_line    0x00000404      0x1ef ./Source/ARMCM3_STM32/GCC/cstart.o
  .debug_line    0x000005f3      0x1ca ./Source/ARMCM3_STM32/GCC/vectors.o
  .debug_line    0x000007bd      0x1b1 ./Source/ARMCM3_STM32/can.o
- .debug_line    0x0000096e      0x1d2 ./Source/ARMCM3_STM32/cpu.o
- .debug_line    0x00000b40      0x2fa ./Source/ARMCM3_STM32/flash.o
- .debug_line    0x00000e3a      0x1e0 ./Source/ARMCM3_STM32/nvm.o
- .debug_line    0x0000101a      0x1de ./Source/ARMCM3_STM32/timer.o
- .debug_line    0x000011f8      0x219 ./Source/ARMCM3_STM32/uart.o
- .debug_line    0x00001411      0x190 ./Source/assert.o
- .debug_line    0x000015a1      0x19b ./Source/backdoor.o
- .debug_line    0x0000173c      0x193 ./Source/boot.o
- .debug_line    0x000018cf      0x1b3 ./Source/com.o
- .debug_line    0x00001a82      0x18b ./Source/cop.o
- .debug_line    0x00001c0d      0x26b ./Source/xcp.o
- .debug_line    0x00001e78      0x17c ./hooks.o
- .debug_line    0x00001ff4      0x3d7 ./main.o
+ .debug_line    0x0000096e      0x1d3 ./Source/ARMCM3_STM32/cpu.o
+ .debug_line    0x00000b41      0x2f8 ./Source/ARMCM3_STM32/flash.o
+ .debug_line    0x00000e39      0x1e0 ./Source/ARMCM3_STM32/nvm.o
+ .debug_line    0x00001019      0x1de ./Source/ARMCM3_STM32/timer.o
+ .debug_line    0x000011f7      0x219 ./Source/ARMCM3_STM32/uart.o
+ .debug_line    0x00001410      0x1b1 ./Source/ARMCM3_STM32/usb.o
+ .debug_line    0x000015c1      0x190 ./Source/assert.o
+ .debug_line    0x00001751      0x19b ./Source/backdoor.o
+ .debug_line    0x000018ec      0x193 ./Source/boot.o
+ .debug_line    0x00001a7f      0x1bc ./Source/com.o
+ .debug_line    0x00001c3b      0x18b ./Source/cop.o
+ .debug_line    0x00001dc6      0x26b ./Source/xcp.o
+ .debug_line    0x00002031      0x17c ./hooks.o
+ .debug_line    0x000021ad      0x3d7 ./main.o
 
-.debug_macinfo  0x00000000    0x86508
+.debug_macinfo  0x00000000    0x882ef
  .debug_macinfo
                 0x00000000    0x33a7f ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
  .debug_macinfo
@@ -288,41 +275,43 @@ OUTPUT(openbtl_olimex_stm32p103.elf elf32-littlearm)
  .debug_macinfo
                 0x00042f66     0x1ec8 ./Source/ARMCM3_STM32/uart.o
  .debug_macinfo
-                0x00044e2e     0x1de7 ./Source/assert.o
+                0x00044e2e     0x1de7 ./Source/ARMCM3_STM32/usb.o
  .debug_macinfo
-                0x00046c15     0x1e08 ./Source/backdoor.o
+                0x00046c15     0x1de7 ./Source/assert.o
  .debug_macinfo
-                0x00048a1d     0x1de7 ./Source/boot.o
+                0x000489fc     0x1e08 ./Source/backdoor.o
  .debug_macinfo
-                0x0004a804     0x1df5 ./Source/com.o
+                0x0004a804     0x1de7 ./Source/boot.o
  .debug_macinfo
-                0x0004c5f9     0x1de7 ./Source/cop.o
+                0x0004c5eb     0x1df5 ./Source/com.o
  .debug_macinfo
-                0x0004e3e0     0x2188 ./Source/xcp.o
+                0x0004e3e0     0x1de7 ./Source/cop.o
  .debug_macinfo
-                0x00050568     0x1de7 ./hooks.o
+                0x000501c7     0x2188 ./Source/xcp.o
  .debug_macinfo
-                0x0005234f    0x341b9 ./main.o
+                0x0005234f     0x1de7 ./hooks.o
+ .debug_macinfo
+                0x00054136    0x341b9 ./main.o
 
-.debug_loc      0x00000000     0x1163
+.debug_loc      0x00000000     0x1150
  .debug_loc     0x00000000       0xfe ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
  .debug_loc     0x000000fe      0x298 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
  .debug_loc     0x00000396       0x66 ./Source/ARMCM3_STM32/GCC/cstart.o
  .debug_loc     0x000003fc       0x20 ./Source/ARMCM3_STM32/GCC/vectors.o
  .debug_loc     0x0000041c       0xee ./Source/ARMCM3_STM32/cpu.o
- .debug_loc     0x0000050a      0x6e7 ./Source/ARMCM3_STM32/flash.o
- .debug_loc     0x00000bf1       0xff ./Source/ARMCM3_STM32/nvm.o
- .debug_loc     0x00000cf0       0x40 ./Source/ARMCM3_STM32/timer.o
- .debug_loc     0x00000d30       0xff ./Source/ARMCM3_STM32/uart.o
- .debug_loc     0x00000e2f       0x46 ./Source/assert.o
- .debug_loc     0x00000e75       0x40 ./Source/backdoor.o
- .debug_loc     0x00000eb5       0x40 ./Source/boot.o
- .debug_loc     0x00000ef5       0xb2 ./Source/com.o
- .debug_loc     0x00000fa7      0x190 ./Source/xcp.o
- .debug_loc     0x00001137       0x2c ./main.o
+ .debug_loc     0x0000050a      0x6d4 ./Source/ARMCM3_STM32/flash.o
+ .debug_loc     0x00000bde       0xff ./Source/ARMCM3_STM32/nvm.o
+ .debug_loc     0x00000cdd       0x40 ./Source/ARMCM3_STM32/timer.o
+ .debug_loc     0x00000d1d       0xff ./Source/ARMCM3_STM32/uart.o
+ .debug_loc     0x00000e1c       0x46 ./Source/assert.o
+ .debug_loc     0x00000e62       0x40 ./Source/backdoor.o
+ .debug_loc     0x00000ea2       0x40 ./Source/boot.o
+ .debug_loc     0x00000ee2       0xb2 ./Source/com.o
+ .debug_loc     0x00000f94      0x190 ./Source/xcp.o
+ .debug_loc     0x00001124       0x2c ./main.o
 
 .debug_pubnames
-                0x00000000      0x593
+                0x00000000      0x5be
  .debug_pubnames
                 0x00000000       0x61 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
  .debug_pubnames
@@ -348,16 +337,16 @@ OUTPUT(openbtl_olimex_stm32p103.elf elf32-littlearm)
  .debug_pubnames
                 0x00000435       0x2c ./Source/boot.o
  .debug_pubnames
-                0x00000461       0x8a ./Source/com.o
+                0x00000461       0xb5 ./Source/com.o
  .debug_pubnames
-                0x000004eb       0x2d ./Source/cop.o
+                0x00000516       0x2d ./Source/cop.o
  .debug_pubnames
-                0x00000518       0x60 ./Source/xcp.o
+                0x00000543       0x60 ./Source/xcp.o
  .debug_pubnames
-                0x00000578       0x1b ./main.o
+                0x000005a3       0x1b ./main.o
 
 .debug_pubtypes
-                0x00000000      0x471
+                0x00000000      0x483
  .debug_pubtypes
                 0x00000000       0x67 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
  .debug_pubtypes
@@ -379,21 +368,23 @@ OUTPUT(openbtl_olimex_stm32p103.elf elf32-littlearm)
  .debug_pubtypes
                 0x00000279       0x59 ./Source/ARMCM3_STM32/uart.o
  .debug_pubtypes
-                0x000002d2       0x2e ./Source/assert.o
+                0x000002d2       0x12 ./Source/ARMCM3_STM32/usb.o
  .debug_pubtypes
-                0x00000300       0x1f ./Source/backdoor.o
+                0x000002e4       0x2e ./Source/assert.o
  .debug_pubtypes
-                0x0000031f       0x12 ./Source/boot.o
+                0x00000312       0x1f ./Source/backdoor.o
  .debug_pubtypes
-                0x00000331       0x3c ./Source/com.o
+                0x00000331       0x12 ./Source/boot.o
  .debug_pubtypes
-                0x0000036d       0x12 ./Source/cop.o
+                0x00000343       0x3c ./Source/com.o
  .debug_pubtypes
-                0x0000037f       0x73 ./Source/xcp.o
+                0x0000037f       0x12 ./Source/cop.o
  .debug_pubtypes
-                0x000003f2       0x12 ./hooks.o
+                0x00000391       0x73 ./Source/xcp.o
  .debug_pubtypes
-                0x00000404       0x6d ./main.o
+                0x00000404       0x12 ./hooks.o
+ .debug_pubtypes
+                0x00000416       0x6d ./main.o
 
 .debug_aranges  0x00000000      0x208
  .debug_aranges
@@ -429,7 +420,7 @@ OUTPUT(openbtl_olimex_stm32p103.elf elf32-littlearm)
  .debug_aranges
                 0x000001e8       0x20 ./main.o
 
-.debug_str      0x00000000      0xea4
+.debug_str      0x00000000      0xf07
  .debug_str     0x00000000      0x25d ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
                                 0x296 (size before relaxing)
  .debug_str     0x0000025d      0x156 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
@@ -450,21 +441,23 @@ OUTPUT(openbtl_olimex_stm32p103.elf elf32-littlearm)
                                 0x129 (size before relaxing)
  .debug_str     0x000008f7      0x122 ./Source/ARMCM3_STM32/uart.o
                                 0x1b7 (size before relaxing)
- .debug_str     0x00000a19       0x75 ./Source/assert.o
+ .debug_str     0x00000a19       0x40 ./Source/ARMCM3_STM32/usb.o
+                                 0xa7 (size before relaxing)
+ .debug_str     0x00000a59       0x75 ./Source/assert.o
                                  0xf1 (size before relaxing)
- .debug_str     0x00000a8e       0x60 ./Source/backdoor.o
+ .debug_str     0x00000ace       0x60 ./Source/backdoor.o
                                  0xd0 (size before relaxing)
- .debug_str     0x00000aee       0x46 ./Source/boot.o
+ .debug_str     0x00000b2e       0x46 ./Source/boot.o
                                  0xad (size before relaxing)
- .debug_str     0x00000b34       0xbf ./Source/com.o
-                                0x159 (size before relaxing)
- .debug_str     0x00000bf3       0x46 ./Source/cop.o
+ .debug_str     0x00000b74       0xe2 ./Source/com.o
+                                0x17c (size before relaxing)
+ .debug_str     0x00000c56       0x46 ./Source/cop.o
                                  0xad (size before relaxing)
- .debug_str     0x00000c39      0x22b ./Source/xcp.o
+ .debug_str     0x00000c9c      0x22b ./Source/xcp.o
                                 0x2cf (size before relaxing)
- .debug_str     0x00000e64        0xb ./hooks.o
+ .debug_str     0x00000ec7        0xb ./hooks.o
                                  0xd0 (size before relaxing)
- .debug_str     0x00000e6f       0x35 ./main.o
+ .debug_str     0x00000ed2       0x35 ./main.o
                                 0x1dd (size before relaxing)
 
 .comment        0x00000000       0x2a
@@ -479,6 +472,7 @@ OUTPUT(openbtl_olimex_stm32p103.elf elf32-littlearm)
  .comment       0x00000000       0x2b ./Source/ARMCM3_STM32/nvm.o
  .comment       0x00000000       0x2b ./Source/ARMCM3_STM32/timer.o
  .comment       0x00000000       0x2b ./Source/ARMCM3_STM32/uart.o
+ .comment       0x00000000       0x2b ./Source/ARMCM3_STM32/usb.o
  .comment       0x00000000       0x2b ./Source/assert.o
  .comment       0x00000000       0x2b ./Source/backdoor.o
  .comment       0x00000000       0x2b ./Source/boot.o
@@ -511,23 +505,25 @@ OUTPUT(openbtl_olimex_stm32p103.elf elf32-littlearm)
  .ARM.attributes
                 0x000001b9       0x31 ./Source/ARMCM3_STM32/uart.o
  .ARM.attributes
-                0x000001ea       0x31 ./Source/assert.o
+                0x000001ea       0x31 ./Source/ARMCM3_STM32/usb.o
  .ARM.attributes
-                0x0000021b       0x31 ./Source/backdoor.o
+                0x0000021b       0x31 ./Source/assert.o
  .ARM.attributes
-                0x0000024c       0x31 ./Source/boot.o
+                0x0000024c       0x31 ./Source/backdoor.o
  .ARM.attributes
-                0x0000027d       0x31 ./Source/com.o
+                0x0000027d       0x31 ./Source/boot.o
  .ARM.attributes
-                0x000002ae       0x31 ./Source/cop.o
+                0x000002ae       0x31 ./Source/com.o
  .ARM.attributes
-                0x000002df       0x31 ./Source/xcp.o
+                0x000002df       0x31 ./Source/cop.o
  .ARM.attributes
-                0x00000310       0x31 ./hooks.o
+                0x00000310       0x31 ./Source/xcp.o
  .ARM.attributes
-                0x00000341       0x31 ./main.o
+                0x00000341       0x31 ./hooks.o
+ .ARM.attributes
+                0x00000372       0x31 ./main.o
 
-.debug_frame    0x00000000      0x80c
+.debug_frame    0x00000000      0x82c
  .debug_frame   0x00000000       0x34 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.o
  .debug_frame   0x00000034      0x170 ./lib/CMSIS/CM3/CoreSupport/core_cm3.o
  .debug_frame   0x000001a4       0x48 ./Source/ARMCM3_STM32/GCC/cstart.o
@@ -540,10 +536,10 @@ OUTPUT(openbtl_olimex_stm32p103.elf elf32-littlearm)
  .debug_frame   0x000005d4       0x2c ./Source/assert.o
  .debug_frame   0x00000600       0x48 ./Source/backdoor.o
  .debug_frame   0x00000648       0x48 ./Source/boot.o
- .debug_frame   0x00000690       0xa0 ./Source/com.o
- .debug_frame   0x00000730       0x30 ./Source/cop.o
- .debug_frame   0x00000760       0x80 ./Source/xcp.o
- .debug_frame   0x000007e0       0x2c ./main.o
+ .debug_frame   0x00000690       0xc0 ./Source/com.o
+ .debug_frame   0x00000750       0x30 ./Source/cop.o
+ .debug_frame   0x00000780       0x80 ./Source/xcp.o
+ .debug_frame   0x00000800       0x2c ./main.o
 
 .debug_ranges   0x00000000       0x18
  .debug_ranges  0x00000000       0x18 ./Source/ARMCM3_STM32/GCC/cstart.o

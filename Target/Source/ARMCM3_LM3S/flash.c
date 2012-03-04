@@ -97,20 +97,10 @@ static blt_addr  FlashGetSectorSize(blt_int8u sector);
  */
 static const tFlashSector flashLayout[] =
 {
-#if defined(__ICCARM__)
-/* the IAR compiler generates compact code and therefore the space occupied by the
- * bootloader is less.
- */
   /* { 0x00000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
   { 0x00002000, 0x02000,  1},           /* flash sector  1 - 8kb                       */
   { 0x00004000, 0x02000,  2},           /* flash sector  2 - 8kb                       */
   { 0x00006000, 0x02000,  3},           /* flash sector  3 - 8kb                       */
-#else
-  /* { 0x00000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
-  /* { 0x00002000, 0x02000,  1},           flash sector  1 - reserved for bootloader   */
-  { 0x00004000, 0x02000,  2},           /* flash sector  2 - 8kb                       */
-  { 0x00006000, 0x02000,  3},           /* flash sector  3 - 8kb                       */
-#endif
 #if (BOOT_NVM_SIZE_KB > 32)
   { 0x00008000, 0x02000,  4},           /* flash sector  4 - 8kb                       */
   { 0x0000A000, 0x02000,  5},           /* flash sector  5 - 8kb                       */

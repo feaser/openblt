@@ -34,9 +34,9 @@ Discarded input sections
  .bss.interruptNesting
                 0x00000000        0x1 THUMB Debug/../../obj/irq.o
  .text.IrqInterruptDisable
-                0x00000000       0x34 THUMB Debug/../../obj/irq.o
+                0x00000000       0x38 THUMB Debug/../../obj/irq.o
  .text.IrqInterruptRestore
-                0x00000000       0x34 THUMB Debug/../../obj/irq.o
+                0x00000000       0x38 THUMB Debug/../../obj/irq.o
  .text          0x00000000        0x0 THUMB Debug/../../obj/boot.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/boot.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/boot.o
@@ -57,7 +57,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_adc.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_adc.o
  .text.ADC_DeInit
-                0x00000000       0x88 THUMB Debug/../../obj/stm32f10x_adc.o
+                0x00000000       0xac THUMB Debug/../../obj/stm32f10x_adc.o
  .text.ADC_Init
                 0x00000000       0xb0 THUMB Debug/../../obj/stm32f10x_adc.o
  .text.ADC_StructInit
@@ -131,7 +131,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_bkp.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_bkp.o
  .text.BKP_DeInit
-                0x00000000       0x18 THUMB Debug/../../obj/stm32f10x_bkp.o
+                0x00000000       0x24 THUMB Debug/../../obj/stm32f10x_bkp.o
  .text.BKP_TamperPinLevelConfig
                 0x00000000       0x20 THUMB Debug/../../obj/stm32f10x_bkp.o
  .text.BKP_TamperPinCmd
@@ -158,7 +158,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_can.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_can.o
  .text.CAN_DeInit
-                0x00000000       0x50 THUMB Debug/../../obj/stm32f10x_can.o
+                0x00000000       0x68 THUMB Debug/../../obj/stm32f10x_can.o
  .text.CAN_Init
                 0x00000000      0x1c0 THUMB Debug/../../obj/stm32f10x_can.o
  .text.CAN_FilterInit
@@ -202,7 +202,7 @@ Discarded input sections
  .text.CAN_ClearFlag
                 0x00000000       0x7c THUMB Debug/../../obj/stm32f10x_can.o
  .text.CAN_GetITStatus
-                0x00000000      0x1b8 THUMB Debug/../../obj/stm32f10x_can.o
+                0x00000000      0x214 THUMB Debug/../../obj/stm32f10x_can.o
  .text.CAN_ClearITPendingBit
                 0x00000000       0xfc THUMB Debug/../../obj/stm32f10x_can.o
  .text.CheckITStatus
@@ -211,7 +211,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_cec.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_cec.o
  .text.CEC_DeInit
-                0x00000000       0x20 THUMB Debug/../../obj/stm32f10x_cec.o
+                0x00000000       0x2c THUMB Debug/../../obj/stm32f10x_cec.o
  .text.CEC_Init
                 0x00000000       0x4c THUMB Debug/../../obj/stm32f10x_cec.o
  .text.CEC_Cmd  0x00000000       0x3c THUMB Debug/../../obj/stm32f10x_cec.o
@@ -256,7 +256,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_dac.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_dac.o
  .text.DAC_DeInit
-                0x00000000       0x20 THUMB Debug/../../obj/stm32f10x_dac.o
+                0x00000000       0x2c THUMB Debug/../../obj/stm32f10x_dac.o
  .text.DAC_Init
                 0x00000000       0x74 THUMB Debug/../../obj/stm32f10x_dac.o
  .text.DAC_StructInit
@@ -348,25 +348,25 @@ Discarded input sections
  .text.FLASH_LockBank1
                 0x00000000       0x24 THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_ErasePage
-                0x00000000       0x90 THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000       0x9c THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_EraseAllPages
-                0x00000000       0x80 THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000       0x8c THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_EraseAllBank1Pages
-                0x00000000       0x80 THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000       0x8c THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_EraseOptionBytes
-                0x00000000      0x134 THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000      0x14c THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_ProgramWord
-                0x00000000       0xbc THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000       0xd0 THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_ProgramHalfWord
-                0x00000000       0x74 THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000       0x80 THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_ProgramOptionByteData
-                0x00000000       0xa0 THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000       0xac THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_EnableWriteProtection
-                0x00000000      0x15c THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000      0x178 THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_ReadOutProtection
-                0x00000000      0x138 THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000      0x14c THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_UserOptionByteConfig
-                0x00000000       0xbc THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000       0xc8 THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_GetUserOptionByte
                 0x00000000       0x1c THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_GetWriteProtectionOptionByte
@@ -386,9 +386,9 @@ Discarded input sections
  .text.FLASH_GetBank1Status
                 0x00000000       0x70 THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_WaitForLastOperation
-                0x00000000       0x4c THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000       0x58 THUMB Debug/../../obj/stm32f10x_flash.o
  .text.FLASH_WaitForLastBank1Operation
-                0x00000000       0x4c THUMB Debug/../../obj/stm32f10x_flash.o
+                0x00000000       0x58 THUMB Debug/../../obj/stm32f10x_flash.o
  .text          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_fsmc.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_fsmc.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_fsmc.o
@@ -434,9 +434,9 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_gpio.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_gpio.o
  .text.GPIO_DeInit
-                0x00000000      0x128 THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x00000000      0x17c THUMB Debug/../../obj/stm32f10x_gpio.o
  .text.GPIO_AFIODeInit
-                0x00000000       0x20 THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x00000000       0x2c THUMB Debug/../../obj/stm32f10x_gpio.o
  .text.GPIO_StructInit
                 0x00000000       0x2c THUMB Debug/../../obj/stm32f10x_gpio.o
  .text.GPIO_ReadInputDataBit
@@ -467,9 +467,9 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_i2c.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_i2c.o
  .text.I2C_DeInit
-                0x00000000       0x50 THUMB Debug/../../obj/stm32f10x_i2c.o
+                0x00000000       0x68 THUMB Debug/../../obj/stm32f10x_i2c.o
  .text.I2C_Init
-                0x00000000      0x1ac THUMB Debug/../../obj/stm32f10x_i2c.o
+                0x00000000      0x1b4 THUMB Debug/../../obj/stm32f10x_i2c.o
  .text.I2C_StructInit
                 0x00000000       0x44 THUMB Debug/../../obj/stm32f10x_i2c.o
  .text.I2C_Cmd  0x00000000       0x3c THUMB Debug/../../obj/stm32f10x_i2c.o
@@ -552,7 +552,7 @@ Discarded input sections
  .text.__WFI    0x00000000        0xc THUMB Debug/../../obj/stm32f10x_pwr.o
  .text.__WFE    0x00000000        0xc THUMB Debug/../../obj/stm32f10x_pwr.o
  .text.PWR_DeInit
-                0x00000000       0x20 THUMB Debug/../../obj/stm32f10x_pwr.o
+                0x00000000       0x2c THUMB Debug/../../obj/stm32f10x_pwr.o
  .text.PWR_BackupAccessCmd
                 0x00000000       0x20 THUMB Debug/../../obj/stm32f10x_pwr.o
  .text.PWR_PVDCmd
@@ -562,9 +562,9 @@ Discarded input sections
  .text.PWR_WakeUpPinCmd
                 0x00000000       0x20 THUMB Debug/../../obj/stm32f10x_pwr.o
  .text.PWR_EnterSTOPMode
-                0x00000000       0x84 THUMB Debug/../../obj/stm32f10x_pwr.o
+                0x00000000       0x90 THUMB Debug/../../obj/stm32f10x_pwr.o
  .text.PWR_EnterSTANDBYMode
-                0x00000000       0x54 THUMB Debug/../../obj/stm32f10x_pwr.o
+                0x00000000       0x58 THUMB Debug/../../obj/stm32f10x_pwr.o
  .text.PWR_GetFlagStatus
                 0x00000000       0x3c THUMB Debug/../../obj/stm32f10x_pwr.o
  .text.PWR_ClearFlag
@@ -577,7 +577,7 @@ Discarded input sections
  .text.RCC_HSEConfig
                 0x00000000       0x88 THUMB Debug/../../obj/stm32f10x_rcc.o
  .text.RCC_WaitForHSEStartUp
-                0x00000000       0x64 THUMB Debug/../../obj/stm32f10x_rcc.o
+                0x00000000       0x70 THUMB Debug/../../obj/stm32f10x_rcc.o
  .text.RCC_AdjustHSICalibrationValue
                 0x00000000       0x48 THUMB Debug/../../obj/stm32f10x_rcc.o
  .text.RCC_HSICmd
@@ -642,11 +642,11 @@ Discarded input sections
  .text.RTC_GetCounter
                 0x00000000       0x38 THUMB Debug/../../obj/stm32f10x_rtc.o
  .text.RTC_SetCounter
-                0x00000000       0x38 THUMB Debug/../../obj/stm32f10x_rtc.o
+                0x00000000       0x44 THUMB Debug/../../obj/stm32f10x_rtc.o
  .text.RTC_SetPrescaler
-                0x00000000       0x3c THUMB Debug/../../obj/stm32f10x_rtc.o
+                0x00000000       0x48 THUMB Debug/../../obj/stm32f10x_rtc.o
  .text.RTC_SetAlarm
-                0x00000000       0x38 THUMB Debug/../../obj/stm32f10x_rtc.o
+                0x00000000       0x44 THUMB Debug/../../obj/stm32f10x_rtc.o
  .text.RTC_GetDivider
                 0x00000000       0x44 THUMB Debug/../../obj/stm32f10x_rtc.o
  .text.RTC_WaitForLastTask
@@ -728,11 +728,11 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_spi.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_spi.o
  .text.SPI_I2S_DeInit
-                0x00000000       0x88 THUMB Debug/../../obj/stm32f10x_spi.o
+                0x00000000       0xac THUMB Debug/../../obj/stm32f10x_spi.o
  .text.SPI_Init
                 0x00000000       0x88 THUMB Debug/../../obj/stm32f10x_spi.o
  .text.I2S_Init
-                0x00000000      0x198 THUMB Debug/../../obj/stm32f10x_spi.o
+                0x00000000      0x1a0 THUMB Debug/../../obj/stm32f10x_spi.o
  .text.SPI_StructInit
                 0x00000000       0x5c THUMB Debug/../../obj/stm32f10x_spi.o
  .text.I2S_StructInit
@@ -775,7 +775,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_tim.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_DeInit
-                0x00000000      0x2b0 THUMB Debug/../../obj/stm32f10x_tim.o
+                0x00000000      0x37c THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_TimeBaseInit
                 0x00000000      0x11c THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_OC1Init
@@ -787,9 +787,9 @@ Discarded input sections
  .text.TIM_OC4Init
                 0x00000000       0xe0 THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_ICInit
-                0x00000000       0xb8 THUMB Debug/../../obj/stm32f10x_tim.o
+                0x00000000       0xe8 THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_PWMIConfig
-                0x00000000       0xcc THUMB Debug/../../obj/stm32f10x_tim.o
+                0x00000000       0xfc THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_BDTRConfig
                 0x00000000       0x50 THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_TimeBaseStructInit
@@ -814,13 +814,13 @@ Discarded input sections
  .text.TIM_InternalClockConfig
                 0x00000000       0x24 THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_ITRxExternalClockConfig
-                0x00000000       0x30 THUMB Debug/../../obj/stm32f10x_tim.o
- .text.TIM_TIxExternalClockConfig
-                0x00000000       0x58 THUMB Debug/../../obj/stm32f10x_tim.o
- .text.TIM_ETRClockMode1Config
-                0x00000000       0x54 THUMB Debug/../../obj/stm32f10x_tim.o
- .text.TIM_ETRClockMode2Config
                 0x00000000       0x34 THUMB Debug/../../obj/stm32f10x_tim.o
+ .text.TIM_TIxExternalClockConfig
+                0x00000000       0x6c THUMB Debug/../../obj/stm32f10x_tim.o
+ .text.TIM_ETRClockMode1Config
+                0x00000000       0x5c THUMB Debug/../../obj/stm32f10x_tim.o
+ .text.TIM_ETRClockMode2Config
+                0x00000000       0x38 THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_ETRConfig
                 0x00000000       0x4c THUMB Debug/../../obj/stm32f10x_tim.o
  .text.TIM_PrescalerConfig
@@ -959,7 +959,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_usart.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_usart.o
  .text.USART_DeInit
-                0x00000000       0xd8 THUMB Debug/../../obj/stm32f10x_usart.o
+                0x00000000      0x114 THUMB Debug/../../obj/stm32f10x_usart.o
  .text.USART_StructInit
                 0x00000000       0x44 THUMB Debug/../../obj/stm32f10x_usart.o
  .text.USART_ClockInit
@@ -1012,7 +1012,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_wwdg.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/stm32f10x_wwdg.o
  .text.WWDG_DeInit
-                0x00000000       0x20 THUMB Debug/../../obj/stm32f10x_wwdg.o
+                0x00000000       0x2c THUMB Debug/../../obj/stm32f10x_wwdg.o
  .text.WWDG_SetPrescaler
                 0x00000000       0x3c THUMB Debug/../../obj/stm32f10x_wwdg.o
  .text.WWDG_SetWindowValue
@@ -1078,11 +1078,11 @@ Discarded input sections
  .data.AHBPrescTable
                 0x00000000       0x10 THUMB Debug/../../obj/system_stm32f10x.o
  .text.SystemInit
-                0x00000000       0xa8 THUMB Debug/../../obj/system_stm32f10x.o
+                0x00000000       0xb0 THUMB Debug/../../obj/system_stm32f10x.o
  .text.SystemCoreClockUpdate
                 0x00000000      0x148 THUMB Debug/../../obj/system_stm32f10x.o
  .text.SetSysClock
-                0x00000000        0xc THUMB Debug/../../obj/system_stm32f10x.o
+                0x00000000       0x10 THUMB Debug/../../obj/system_stm32f10x.o
  .text.SetSysClockTo72
                 0x00000000      0x1ac THUMB Debug/../../obj/system_stm32f10x.o
  .text.libdebugio
@@ -1132,7 +1132,7 @@ CM3_System_Control_Space 0xe000e000         0x00001000         xw
 
 Linker script and memory map
 
-                0x08002f80                __do_debug_operation = __do_debug_operation_bkpt
+                0x08003030                __do_debug_operation = __do_debug_operation_bkpt
                 0x08002000                __FLASH_segment_start__ = 0x8002000
                 0x08020000                __FLASH_segment_end__ = 0x8020000
                 0x20000000                __RAM_segment_start__ = 0x20000000
@@ -1181,97 +1181,97 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .init is too large to fit in FLASH memory segment)
                 0x08002268                __text_load_start__ = ALIGN (__init_end__, 0x4)
 
-.text           0x08002268      0xd38
+.text           0x08002268      0xde8
                 0x08002268                __text_start__ = .
  *(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table .ARM.extab* .gnu.linkonce.armextab.*)
  .glue_7        0x00000000        0x0 linker stubs
  .glue_7t       0x00000000        0x0 linker stubs
- .text.LedInit  0x08002268       0x3c THUMB Debug/../../obj/led.o
+ .text.LedInit  0x08002268       0x48 THUMB Debug/../../obj/led.o
                 0x08002268                LedInit
  .text.LedToggle
-                0x080022a4       0x88 THUMB Debug/../../obj/led.o
-                0x080022a4                LedToggle
- .text.main     0x0800232c       0x18 THUMB Debug/../../obj/main.o
-                0x0800232c                main
- .text.Init     0x08002344      0x24c THUMB Debug/../../obj/main.o
+                0x080022b0       0x9c THUMB Debug/../../obj/led.o
+                0x080022b0                LedToggle
+ .text.main     0x0800234c       0x30 THUMB Debug/../../obj/main.o
+                0x0800234c                main
+ .text.Init     0x0800237c      0x260 THUMB Debug/../../obj/main.o
  .text.NVIC_SetPriority
-                0x08002590       0x58 THUMB Debug/../../obj/timer.o
+                0x080025dc       0x58 THUMB Debug/../../obj/timer.o
  .text.SysTick_Config
-                0x080025e8       0x64 THUMB Debug/../../obj/timer.o
+                0x08002634       0x68 THUMB Debug/../../obj/timer.o
  .text.TimerInit
-                0x0800264c       0x1c THUMB Debug/../../obj/timer.o
-                0x0800264c                TimerInit
+                0x0800269c       0x28 THUMB Debug/../../obj/timer.o
+                0x0800269c                TimerInit
  .text.TimerDeinit
-                0x08002668       0x18 THUMB Debug/../../obj/timer.o
-                0x08002668                TimerDeinit
+                0x080026c4       0x18 THUMB Debug/../../obj/timer.o
+                0x080026c4                TimerDeinit
  .text.TimerSet
-                0x08002680       0x20 THUMB Debug/../../obj/timer.o
-                0x08002680                TimerSet
+                0x080026dc       0x20 THUMB Debug/../../obj/timer.o
+                0x080026dc                TimerSet
  .text.TimerGet
-                0x080026a0       0x18 THUMB Debug/../../obj/timer.o
-                0x080026a0                TimerGet
+                0x080026fc       0x18 THUMB Debug/../../obj/timer.o
+                0x080026fc                TimerGet
  .text.TimerISRHandler
-                0x080026b8       0x24 THUMB Debug/../../obj/timer.o
-                0x080026b8                TimerISRHandler
+                0x08002714       0x24 THUMB Debug/../../obj/timer.o
+                0x08002714                TimerISRHandler
  .text.UnusedISR
-                0x080026dc        0x8 THUMB Debug/../../obj/vectors.o
-                0x080026dc                UnusedISR
+                0x08002738        0x8 THUMB Debug/../../obj/vectors.o
+                0x08002738                UnusedISR
  .text.__enable_irq
-                0x080026e4        0xc THUMB Debug/../../obj/irq.o
+                0x08002740        0xc THUMB Debug/../../obj/irq.o
  .text.IrqInterruptEnable
-                0x080026f0        0xc THUMB Debug/../../obj/irq.o
-                0x080026f0                IrqInterruptEnable
+                0x0800274c       0x10 THUMB Debug/../../obj/irq.o
+                0x0800274c                IrqInterruptEnable
  .text.BootActivate
-                0x080026fc       0x20 THUMB Debug/../../obj/boot.o
+                0x0800275c       0x28 THUMB Debug/../../obj/boot.o
  .text.BootComInit
-                0x0800271c       0xac THUMB Debug/../../obj/boot.o
-                0x0800271c                BootComInit
+                0x08002784       0xd0 THUMB Debug/../../obj/boot.o
+                0x08002784                BootComInit
  .text.BootComCheckActivationRequest
-                0x080027c8       0xc8 THUMB Debug/../../obj/boot.o
-                0x080027c8                BootComCheckActivationRequest
+                0x08002854       0xdc THUMB Debug/../../obj/boot.o
+                0x08002854                BootComCheckActivationRequest
  .text.UartReceiveByte
-                0x08002890       0x48 THUMB Debug/../../obj/boot.o
+                0x08002930       0x54 THUMB Debug/../../obj/boot.o
  .text.GPIO_Init
-                0x080028d8      0x1b0 THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x080028d8                GPIO_Init
+                0x08002984      0x1b0 THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x08002984                GPIO_Init
  .text.GPIO_SetBits
-                0x08002a88       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x08002a88                GPIO_SetBits
+                0x08002b34       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x08002b34                GPIO_SetBits
  .text.GPIO_ResetBits
-                0x08002aa4       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x08002aa4                GPIO_ResetBits
+                0x08002b50       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x08002b50                GPIO_ResetBits
  .text.RCC_GetClocksFreq
-                0x08002ac0      0x1d4 THUMB Debug/../../obj/stm32f10x_rcc.o
-                0x08002ac0                RCC_GetClocksFreq
+                0x08002b6c      0x1d4 THUMB Debug/../../obj/stm32f10x_rcc.o
+                0x08002b6c                RCC_GetClocksFreq
  .text.RCC_APB2PeriphClockCmd
-                0x08002c94       0x50 THUMB Debug/../../obj/stm32f10x_rcc.o
-                0x08002c94                RCC_APB2PeriphClockCmd
+                0x08002d40       0x50 THUMB Debug/../../obj/stm32f10x_rcc.o
+                0x08002d40                RCC_APB2PeriphClockCmd
  .text.RCC_APB1PeriphClockCmd
-                0x08002ce4       0x50 THUMB Debug/../../obj/stm32f10x_rcc.o
-                0x08002ce4                RCC_APB1PeriphClockCmd
+                0x08002d90       0x50 THUMB Debug/../../obj/stm32f10x_rcc.o
+                0x08002d90                RCC_APB1PeriphClockCmd
  .text.USART_Init
-                0x08002d34      0x1ac THUMB Debug/../../obj/stm32f10x_usart.o
-                0x08002d34                USART_Init
+                0x08002de0      0x1b0 THUMB Debug/../../obj/stm32f10x_usart.o
+                0x08002de0                USART_Init
  .text.USART_Cmd
-                0x08002ee0       0x3c THUMB Debug/../../obj/stm32f10x_usart.o
-                0x08002ee0                USART_Cmd
+                0x08002f90       0x3c THUMB Debug/../../obj/stm32f10x_usart.o
+                0x08002f90                USART_Cmd
  .text.USART_ReceiveData
-                0x08002f1c       0x24 THUMB Debug/../../obj/stm32f10x_usart.o
-                0x08002f1c                USART_ReceiveData
+                0x08002fcc       0x24 THUMB Debug/../../obj/stm32f10x_usart.o
+                0x08002fcc                USART_ReceiveData
  .text.USART_GetFlagStatus
-                0x08002f40       0x40 THUMB Debug/../../obj/stm32f10x_usart.o
-                0x08002f40                USART_GetFlagStatus
+                0x08002ff0       0x40 THUMB Debug/../../obj/stm32f10x_usart.o
+                0x08002ff0                USART_GetFlagStatus
  .text.libdebugio_bkpt.__do_debug_operation_bkpt
-                0x08002f80       0x18 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v7m_t_le.a(libdebugio_asm.o)
-                0x08002f80                __do_debug_operation_bkpt
+                0x08003030       0x18 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v7m_t_le.a(libdebugio_asm.o)
+                0x08003030                __do_debug_operation_bkpt
  .text.libc.__debug_io_lock
-                0x08002f98        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
-                0x08002f98                __debug_io_lock
+                0x08003048        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+                0x08003048                __debug_io_lock
  .text.libc.__debug_io_unlock
-                0x08002f9c        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
-                0x08002f9c                __debug_io_unlock
-                0x08002fa0                __text_end__ = (__text_start__ + SIZEOF (.text))
-                0x08002fa0                __text_load_end__ = __text_end__
+                0x0800304c        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+                0x0800304c                __debug_io_unlock
+                0x08003050                __text_end__ = (__text_start__ + SIZEOF (.text))
+                0x08003050                __text_load_end__ = __text_end__
 
 .vfp11_veneer   0x00000000        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
@@ -1279,51 +1279,51 @@ Linker script and memory map
 .v4_bx          0x00000000        0x0
  .v4_bx         0x00000000        0x0 linker stubs
                 0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .text is too large to fit in FLASH memory segment)
-                0x08002fa0                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
+                0x08003050                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
 
-.dtors          0x08002fa0        0x0
-                0x08002fa0                __dtors_start__ = .
+.dtors          0x08003050        0x0
+                0x08003050                __dtors_start__ = .
  *(SORT(.dtors.*))
  *(.dtors)
  *(.fini_array .fini_array.*)
-                0x08002fa0                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
-                0x08002fa0                __dtors_load_end__ = __dtors_end__
+                0x08003050                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
+                0x08003050                __dtors_load_end__ = __dtors_end__
                 0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .dtors is too large to fit in FLASH memory segment)
-                0x08002fa0                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
+                0x08003050                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
 
-.ctors          0x08002fa0        0x0
-                0x08002fa0                __ctors_start__ = .
+.ctors          0x08003050        0x0
+                0x08003050                __ctors_start__ = .
  *(SORT(.ctors.*))
  *(.ctors)
  *(.init_array .init_array.*)
-                0x08002fa0                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
-                0x08002fa0                __ctors_load_end__ = __ctors_end__
+                0x08003050                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
+                0x08003050                __ctors_load_end__ = __ctors_end__
                 0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .ctors is too large to fit in FLASH memory segment)
-                0x08002fa0                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
+                0x08003050                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
 
-.rodata         0x08002fa0        0x0
-                0x08002fa0                __rodata_start__ = .
+.rodata         0x08003050        0x0
+                0x08003050                __rodata_start__ = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
-                0x08002fa0                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
-                0x08002fa0                __rodata_load_end__ = __rodata_end__
+                0x08003050                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
+                0x08003050                __rodata_load_end__ = __rodata_end__
                 0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .rodata is too large to fit in FLASH memory segment)
-                0x08002fa0                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
+                0x08003050                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
 
-.ARM.exidx      0x08002fa0        0x0
-                0x08002fa0                __ARM.exidx_start__ = .
-                0x08002fa0                __exidx_start = __ARM.exidx_start__
+.ARM.exidx      0x08003050        0x0
+                0x08003050                __ARM.exidx_start__ = .
+                0x08003050                __exidx_start = __ARM.exidx_start__
  *(.ARM.exidx .ARM.exidx.*)
-                0x08002fa0                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
-                0x08002fa0                __exidx_end = __ARM.exidx_end__
-                0x08002fa0                __ARM.exidx_load_end__ = __ARM.exidx_end__
+                0x08003050                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
+                0x08003050                __exidx_end = __ARM.exidx_end__
+                0x08003050                __ARM.exidx_load_end__ = __ARM.exidx_end__
                 0x00000001                . = ASSERT (((__ARM.exidx_end__ >= __FLASH_segment_start__) && (__ARM.exidx_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .ARM.exidx is too large to fit in FLASH memory segment)
-                0x08002fa0                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
+                0x08003050                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
 
-.fast           0x20000000        0x0 load address 0x08002fa0
+.fast           0x20000000        0x0 load address 0x08003050
                 0x20000000                __fast_start__ = .
  *(.fast .fast.*)
                 0x20000000                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
-                0x08002fa0                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
+                0x08003050                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
                 0x00000001                . = ASSERT ((((__fast_load_start__ + SIZEOF (.fast)) >= __FLASH_segment_start__) && ((__fast_load_start__ + SIZEOF (.fast)) <= (__FLASH_segment_start__ + 0x20000))), error: .fast is too large to fit in FLASH memory segment)
 
 .fast_run       0x20000000        0x0
@@ -1332,9 +1332,9 @@ Linker script and memory map
                 0x20000000                __fast_run_end__ = (__fast_run_start__ + SIZEOF (.fast_run))
                 0x20000000                __fast_run_load_end__ = __fast_run_end__
                 0x00000001                . = ASSERT (((__fast_run_end__ >= __RAM_segment_start__) && (__fast_run_end__ <= (__RAM_segment_start__ + 0x5000))), error: .fast_run is too large to fit in RAM memory segment)
-                0x08002fa0                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
+                0x08003050                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
 
-.data           0x20000000       0x14 load address 0x08002fa0
+.data           0x20000000       0x14 load address 0x08003050
                 0x20000000                __data_start__ = .
  *(.data .data.* .gnu.linkonce.d.*)
  .data.APBAHBPrescTable
@@ -1342,10 +1342,10 @@ Linker script and memory map
  .data.ADCPrescTable
                 0x20000010        0x4 THUMB Debug/../../obj/stm32f10x_rcc.o
                 0x20000014                __data_end__ = (__data_start__ + SIZEOF (.data))
-                0x08002fb4                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
+                0x08003064                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
                 0x00000001                . = ASSERT ((((__data_load_start__ + SIZEOF (.data)) >= __FLASH_segment_start__) && ((__data_load_start__ + SIZEOF (.data)) <= (__FLASH_segment_start__ + 0x20000))), error: .data is too large to fit in FLASH memory segment)
 
-.data_run       0x20000000       0x14 load address 0x08002fa0
+.data_run       0x20000000       0x14 load address 0x08003050
                 0x20000000                __data_run_start__ = .
                 0x20000014                . = MAX ((__data_run_start__ + SIZEOF (.data)), .)
  *fill*         0x20000000       0x14 00
@@ -1420,14 +1420,14 @@ Linker script and memory map
                 0x200001ec                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
                 0x200001ec                __tbss_load_end__ = __tbss_end__
                 0x00000001                . = ASSERT (((__tbss_end__ >= __RAM_segment_start__) && (__tbss_end__ <= (__RAM_segment_start__ + 0x5000))), error: .tbss is too large to fit in RAM memory segment)
-                0x08002fb4                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
+                0x08003064                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
 
-.tdata          0x200001ec        0x0 load address 0x08002fb4
+.tdata          0x200001ec        0x0 load address 0x08003064
                 0x200001ec                __tdata_start__ = .
  *(.tdata .tdata.*)
                 0x200001ec                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
-                0x08002fb4                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
-                0x08002fb4                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
+                0x08003064                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
+                0x08003064                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
                 0x00000001                . = ASSERT ((((__tdata_load_start__ + SIZEOF (.tdata)) >= __FLASH_segment_start__) && ((__tdata_load_start__ + SIZEOF (.tdata)) <= (__FLASH_segment_start__ + 0x20000))), error: .tdata is too large to fit in FLASH memory segment)
 
 .tdata_run      0x200001ec        0x0
