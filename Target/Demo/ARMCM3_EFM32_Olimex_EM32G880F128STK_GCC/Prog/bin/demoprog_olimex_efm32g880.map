@@ -1,0 +1,174 @@
+
+bin/demoprog_olimex_efm32g880.elf:     file format elf32-littlearm
+bin/demoprog_olimex_efm32g880.elf
+architecture: arm, flags 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+start address 0x00002000
+
+Program Header:
+    LOAD off    0x00000000 vaddr 0x00000000 paddr 0x00000000 align 2**15
+         filesz 0x0000344c memsz 0x0000344c flags r-x
+    LOAD off    0x00008000 vaddr 0x20000000 paddr 0x0000344c align 2**15
+         filesz 0x00000008 memsz 0x00000168 flags rw-
+private flags = 5000002: [Version5 EABI] [has entry point]
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000144c  00002000  00002000  00002000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000008  20000000  0000344c  00008000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000160  20000008  00003454  00008008  2**2
+                  ALLOC
+  3 .debug_abbrev 000039ba  00000000  00000000  00008008  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   0000db0e  00000000  00000000  0000b9c2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_line   0000554b  00000000  00000000  000194d0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_loc    000065d3  00000000  00000000  0001ea1b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_pubnames 0000138d  00000000  00000000  00024fee  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_pubtypes 00001700  00000000  00000000  0002637b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_aranges 00000b10  00000000  00000000  00027a7b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 000008f0  00000000  00000000  0002858b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    000051e2  00000000  00000000  00028e7b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .comment      0000002a  00000000  00000000  0002e05d  2**0
+                  CONTENTS, READONLY
+ 13 .ARM.attributes 00000031  00000000  00000000  0002e087  2**0
+                  CONTENTS, READONLY
+ 14 .debug_frame  000017ac  00000000  00000000  0002e0b8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+SYMBOL TABLE:
+00002000 l    d  .text	00000000 .text
+20000000 l    d  .data	00000000 .data
+20000008 l    d  .bss	00000000 .bss
+00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
+00000000 l    d  .debug_info	00000000 .debug_info
+00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_loc	00000000 .debug_loc
+00000000 l    d  .debug_pubnames	00000000 .debug_pubnames
+00000000 l    d  .debug_pubtypes	00000000 .debug_pubtypes
+00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_ranges	00000000 .debug_ranges
+00000000 l    d  .debug_str	00000000 .debug_str
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
+00000000 l    d  .debug_frame	00000000 .debug_frame
+00000000 l    df *ABS*	00000000 vectors.c
+00000000 l    df *ABS*	00000000 boot.c
+000020bc l     F .text	00000034 UartReceiveByte
+20000008 l     O .bss	00000001 xcpCtoRxLength.2654
+20000009 l     O .bss	00000001 xcpCtoRxInProgress.2655
+0000343c l     O .text	00000010 C.3.3551
+2000000c l     O .bss	00000041 xcpCtoReqPacket.2653
+00000000 l    df *ABS*	00000000 cstart.c
+000022de l     F .text	00000000 zero_loop
+00000000 l    df *ABS*	00000000 irq.c
+00000000 l    df *ABS*	00000000 led.c
+20000050 l     O .bss	00000004 timer_counter_last.2646
+20000054 l     O .bss	00000001 led_toggle_state.2645
+00000000 l    df *ABS*	00000000 main.c
+00000000 l    df *ABS*	00000000 timer.c
+20000058 l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 system_efm32.c
+20000000 l     O .data	00000004 SystemLFXOClock
+20000004 l     O .data	00000004 SystemHFXOClock
+00000000 l    df *ABS*	00000000 lcdcontroller.c
+000027e4 l     F .text	00000060 LCD_enableSegment
+00002844 l     F .text	00000070 LCD_disableSegment
+00000000 l    df *ABS*	00000000 efm32_cmu.c
+00002a40 l     F .text	00000010 BITBAND_Peripheral
+00002a50 l     F .text	00000038 CMU_FlashWaitStateMax
+00002a88 l     F .text	0000000c CMU_DivToLog2
+00002a94 l     F .text	00000064 CMU_FlashWaitStateControl
+00002af8 l     F .text	0000000a CMU_AUXClkGet
+00002b04 l     F .text	00000020 CMU_Sync
+00002b24 l     F .text	00000052 CMU_LFClkGet
+00000000 l    df *ABS*	00000000 efm32_emu.c
+20000060 l     O .bss	00000002 cmuStatus
+00000000 l    df *ABS*	00000000 efm32_gpio.c
+00000000 l    df *ABS*	00000000 efm32_leuart.c
+000032f8 l     F .text	00000010 LEUART_Sync
+00000000 l    df *ABS*	00000000 efm32_system.c
+00000000 l    df *ABS*	00000000 core_cm3.c
+00000000 l    df *ABS*	00000000 efm32_acmp.c
+00000000 l    df *ABS*	00000000 efm32_adc.c
+00000000 l    df *ABS*	00000000 efm32_aes.c
+00000000 l    df *ABS*	00000000 efm32_assert.c
+00000000 l    df *ABS*	00000000 efm32_dac.c
+00000000 l    df *ABS*	00000000 efm32_dbg.c
+00000000 l    df *ABS*	00000000 efm32_dma.c
+00000000 l    df *ABS*	00000000 efm32_ebi.c
+00000000 l    df *ABS*	00000000 efm32_i2c.c
+00000000 l    df *ABS*	00000000 efm32_int.c
+00000000 l    df *ABS*	00000000 efm32_lcd.c
+00000000 l    df *ABS*	00000000 efm32_lesense.c
+00000000 l    df *ABS*	00000000 efm32_letimer.c
+00000000 l    df *ABS*	00000000 efm32_mpu.c
+00000000 l    df *ABS*	00000000 efm32_msc.c
+00000000 l    df *ABS*	00000000 efm32_opamp.c
+00000000 l    df *ABS*	00000000 efm32_pcnt.c
+00000000 l    df *ABS*	00000000 efm32_prs.c
+00000000 l    df *ABS*	00000000 efm32_rmu.c
+00000000 l    df *ABS*	00000000 efm32_rtc.c
+00000000 l    df *ABS*	00000000 efm32_timer.c
+00000000 l    df *ABS*	00000000 efm32_usart.c
+00000000 l    df *ABS*	00000000 efm32_vcmp.c
+00000000 l    df *ABS*	00000000 efm32_wdog.c
+00000000 l    df *ABS*	00000000 strlen.c
+000031f4 g     F .text	0000001e GPIO_DriveModeSet
+000031dc g     F .text	00000016 EMU_UpdateOscConfig
+00002298 g     F .text	0000005c reset_handler
+00002e5c g     F .text	000001e6 CMU_ClockFreqGet
+0000336c g     F .text	00000022 LEUART_Enable
+00003390 g     F .text	00000018 LEUART_FreezeEnable
+00002300 g     F .text	00000004 IrqInterruptEnable
+2000005c g     O .bss	00000004 frameCounter
+00003044 g     F .text	00000074 CMU_OscillatorEnable
+000028f0 g     F .text	000000a8 LCD_Symbol
+0000344c g       .text	00000000 _etext
+000026d0 g     F .text	00000012 TimerISRHandler
+00002db0 g     F .text	000000aa CMU_ClockSelectGet
+20000064 g     O .bss	00000004 SystemCoreClock
+000027d8 g     F .text	0000000c SystemLFXOClockGet
+00002d28 g     F .text	00000088 CMU_ClockEnable
+000028d4 g     F .text	0000001c LCD_AllOff
+00003408 g     F .text	0000000e LEUART_Rx
+20000068 g       .bss	00000000 _ebss
+000028b4 g     F .text	00000020 LCD_IRQHandler
+00000100 g       *ABS*	00000000 __STACKSIZE__
+000026e4 g     F .text	00000002 UnusedISR
+00002304 g     F .text	00000016 LedInit
+000033a8 g     F .text	0000005e LEUART_Init
+000030b8 g     F .text	00000122 CMU_ClockSelectSet
+20000008 g       .bss	00000000 _bss
+000026e8 g     F .text	000000b6 SystemHFClockGet
+00002998 g     F .text	000000a6 LCD_Init
+0000239c g     F .text	000002b0 main
+0000265c g     F .text	0000000c TimerSet
+00003214 g     F .text	000000e2 GPIO_PinModeSet
+000020f0 g     F .text	000000ea BootComInit
+000027cc g     F .text	00000002 SystemInit
+00002b78 g     F .text	000001b0 CMU_ClockDivSet
+0000264c g     F .text	00000010 TimerDeinit
+20000000 g       .data	00000000 _data
+0000231c g     F .text	00000080 LedToggle
+000027d0 g     F .text	00000006 SystemLFRCOClockGet
+00003308 g     F .text	00000064 LEUART_BaudrateSet
+00003418 g     F .text	00000024 SYSTEM_ChipRevisionGet
+000027a0 g     F .text	0000002a SystemCoreClockGet
+20000168 g       .bss	00000000 _estack
+20000008 g       .data	00000000 _edata
+00002000 g     O .text	000000bc _vectab
+000021dc g     F .text	000000bc BootComCheckActivationRequest
+20000068 g       .bss	00000000 _stack
+000026c4 g     F .text	0000000c TimerGet
+00002668 g     F .text	0000005a TimerInit
+
+
