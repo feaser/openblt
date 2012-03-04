@@ -36,6 +36,7 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #if (BOOT_COM_UART_ENABLE > 0)
+#include "driverlib/sysctl.h"
 #include "driverlib/uartlib.h"
 #endif
 
