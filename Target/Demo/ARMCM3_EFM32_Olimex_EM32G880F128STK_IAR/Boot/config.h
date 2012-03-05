@@ -45,6 +45,7 @@
 #define BOOT_CPU_XTAL_SPEED_KHZ         (32000)
 #define BOOT_CPU_SYSTEM_SPEED_KHZ       (14000)
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
+#define BOOT_CPU_CONNECT_STATE_PREFIX   __no_init
 
 
 /****************************************************************************************
