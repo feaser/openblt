@@ -44,10 +44,18 @@
  */
   #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x08004004)
   #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00004000)
+#elif (BOOT_FILE_SYS_ENABLE > 0)
+  /* the size of the bootloader with support for firmware update from a locally attached
+   * storage disk is larger so the start address of the user program is at a different 
+   * location.
+   */
+  #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x08006004)
+  #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00006000)
 #else
   #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x08002004)
   #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00002000)
 #endif
+
 
 /****************************************************************************************
 * Register definitions

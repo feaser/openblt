@@ -169,6 +169,7 @@
         <option>
           <name>CCDefines</name>
           <state>STM32F10X_MD</state>
+          <state>USE_STDPERIPH_DRIVER</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -298,11 +299,15 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\fatfs\src</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32\IAR</state>
           <state>$PROJ_DIR$\..</state>
+          <state>$PROJ_DIR$\..\lib\fatfs</state>
           <state>$PROJ_DIR$\..\lib\CMSIS\CM3\CoreSupport</state>
           <state>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x</state>
+          <state>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\inc</state>
+          <state>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1843,21 +1848,63 @@
     <name>Boot</name>
     <group>
       <name>lib</name>
-      <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\CoreSupport\core_cm3.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h</name>
-      </file>
+      <group>
+        <name>cmsis</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\CM3\CoreSupport\core_cm3.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h</name>
+        </file>
+      </group>
+      <group>
+        <name>fatfs</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\fatfs\ffconf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\fatfs\mmc.c</name>
+        </file>
+      </group>
+      <group>
+        <name>stdperiphlib</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\stm32f10x_conf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h</name>
+        </file>
+      </group>
     </group>
     <file>
       <name>$PROJ_DIR$\..\config.h</name>
@@ -1928,6 +1975,24 @@
         <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32\usb.h</name>
       </file>
     </group>
+    <group>
+      <name>fatfs</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\diskio.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\ff.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\ff.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\integer.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\option\unicode.c</name>
+      </file>
+    </group>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\assert.c</name>
     </file>
@@ -1957,6 +2022,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\cop.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\file.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\file.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\plausibility.h</name>

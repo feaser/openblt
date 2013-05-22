@@ -38,11 +38,27 @@ PROJ_FILES= \
 config.h \
 hooks.c \
 main.c \
+./lib/fatfs/ffconf.h \
+./lib/fatfs/mmc.c \
 ./lib/CMSIS/CM3/CoreSupport/core_cm3.c \
 ./lib/CMSIS/CM3/CoreSupport/core_cm3.h \
 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h \
 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c \
 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h \
+./lib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h \
+./lib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_rcc.h \
+./lib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_spi.h \
+./lib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_usart.h \
+./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c \
+./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c \
+./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c \
+./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c \
+./lib/STM32F10x_StdPeriph_Driver/stm32f10x_conf.h \
+../../../Source/fatfs/src/diskio.h \
+../../../Source/fatfs/src/ff.c \
+../../../Source/fatfs/src/ff.h \
+../../../Source/fatfs/src/integer.h \
+../../../Source/fatfs/src/option/unicode.c \
 ../../../Source/boot.c \
 ../../../Source/boot.h \
 ../../../Source/com.c \
@@ -53,6 +69,8 @@ main.c \
 ../../../Source/backdoor.h \
 ../../../Source/cop.c \
 ../../../Source/cop.h \
+../../../Source/file.c \
+../../../Source/file.h \
 ../../../Source/assert.c \
 ../../../Source/assert.h \
 ../../../Source/plausibility.h \
@@ -112,7 +130,7 @@ CFLAGS   = -g -D inline= -mthumb -mcpu=cortex-m3 -O1 -T memory.x
 CFLAGS  += -D PACK_STRUCT_END=__attribute\(\(packed\)\) -Wno-main
 CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) 
 CFLAGS  += -ffunction-sections -fdata-sections $(INC_PATH) -D STM32F10X_MD -D GCC_ARMCM3
-CFLAGS  += -Wa,-adhlns="$(OBJ_PATH)/$(subst .o,.lst,$@)"
+CFLAGS  += -D USE_STDPERIPH_DRIVER -D VECT_TAB_FLASH -Wa,-adhlns="$(OBJ_PATH)/$(subst .o,.lst,$@)"
 LFLAGS   = -nostartfiles -Xlinker -M -Xlinker -Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS  += $(LIB_PATH) -Xlinker --gc-sections
 OFLAGS   = -O srec

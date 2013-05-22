@@ -659,7 +659,7 @@ DRESULT disk_ioctl (
 
 DWORD get_fattime (void)
 {
-  /* No RTC supprt. Return a fixed value 2010/4/26 0:00:00 */
+  /* No RTC supprt. Return a fixed value 2013/5/10 0:00:00 */
   return    ((DWORD)(2013 - 1980) << 25)  /* Y */
       | ((DWORD)5  << 21)       /* M */
       | ((DWORD)10 << 16)       /* D */
