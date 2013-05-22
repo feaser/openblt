@@ -31,6 +31,7 @@
 #ifndef XCP_H
 #define XCP_H
 
+#if (BOOT_COM_ENABLE > 0)
 /****************************************************************************************
 * Configuration
 ****************************************************************************************/
@@ -221,6 +222,7 @@ void     XcpPacketReceived(blt_int8u *data);
 #error  "XCP.H, XCP_SEED_KEY_PROTECTION_EN must be 0 or 1."
 #endif
 
+#endif /* BOOT_COM_ENABLE > 0 */
 
 #endif /* XCP_H */
 /******************************** end of xcp.h *~~~~~***********************************/

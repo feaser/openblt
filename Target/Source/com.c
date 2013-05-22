@@ -44,6 +44,7 @@
 #endif
 
 
+#if (BOOT_COM_ENABLE > 0)
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
@@ -266,5 +267,45 @@ blt_bool ComIsConnected(void)
   return XcpIsConnected();
 } /*** end of ComIsConnected ***/
 
+#else
+/****************************************************************************************
+** NAME:           ComSetConnectEntryState
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    This function should be called by the function that is called to 
+**                 enter the bootloader from a running user program after the stack 
+**                 pointer, data section and bss section are initialized, but before 
+**                 function main is called. It stores state information that indicates 
+**                 that the COM module must be initialized in a connected state.
+**
+****************************************************************************************/
+void ComSetConnectEntryState(void)
+{
+  /* empty placeholder function because this one is called from the c-startup. on some
+   * targets, this one is written in assembly that doesn't support precompiler 
+   * statements
+   */
+} /*** end of ComSetConnectEntryState ***/
+
+
+/****************************************************************************************
+** NAME:           ComSetDisconnectEntryState
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    This function should be called by the reset handler after the stack 
+**                 pointer, data section and bss section are initialized, but before 
+**                 function main is called. It stores state information that indicates 
+**                 that the COM module must be initialized in a disconnected state.
+**
+****************************************************************************************/
+void ComSetDisconnectEntryState(void)
+{
+  /* empty placeholder function because this one is called from the c-startup. on some
+   * targets, this one is written in assembly that doesn't support precompiler 
+   * statements
+   */
+} /*** end of ComSetDisconnectEntryState ***/
+
+#endif /* BOOT_COM_ENABLE > 0 */
 
 /*********************************** end of com.c **************************************/

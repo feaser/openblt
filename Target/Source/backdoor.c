@@ -47,8 +47,8 @@
 * Hook functions
 ****************************************************************************************/
 #if (BOOT_BACKDOOR_HOOKS_ENABLE > 0)
-void BackDoorInitHook(void);
-blt_bool BackDoorEntryHook(void);
+extern void BackDoorInitHook(void);
+extern blt_bool BackDoorEntryHook(void);
 #endif
 
 
@@ -57,6 +57,7 @@ blt_bool BackDoorEntryHook(void);
 ****************************************************************************************/
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
 static blt_bool backdoorOpen;
+static blt_int32u backdoorOpenTime;
 #endif
 
 
@@ -85,8 +86,7 @@ void BackDoorInit(void)
 #else
   /* open the backdoor after a reset */
   backdoorOpen = BLT_TRUE;
-  /* initialize default backdoor entry */
-  TimerInit();
+  backdoorOpenTime = TimerGet();
 #endif
   /* perform the first check that open/closes the backdoor */
   BackDoorCheck();
@@ -106,24 +106,34 @@ void BackDoorInit(void)
 void BackDoorCheck(void)
 {
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+  #if (BOOT_COM_ENABLE > 0)
   /* check if a connection with the host was already established. in this case the
-   * backdoor stays open anyway, so no need to check if it needs to be closed
+   * backdoor stays open anyway, so no need to check if it needs to be closed. 
    */
   if (ComIsConnected() == BLT_TRUE)
   {
     return;
   }
+  #endif
+  #if (BOOT_FILE_SYS_ENABLE > 0)
+  /* check if the file module is busy, indicating that a firmware update through the
+   * locally attached storage is in progress. in this case the backdoor stays open 
+   * anyway, so no need to check if it needs to be closed. 
+   */
+  if (FileIsIdle() == BLT_FALSE)
+  {
+    return;
+  }
+  #endif  
   
   /* when the backdoor is still open, check if it's time to close it */
   if (backdoorOpen == BLT_TRUE)
   {
     /* check if the backdoor entry time window elapsed */
-    if (TimerGet() >= BACKDOOR_ENTRY_TIMEOUT_MS)
+    if (TimerGet() >= (BACKDOOR_ENTRY_TIMEOUT_MS + backdoorOpenTime))
     {
       /* close the backdoor */
       backdoorOpen = BLT_FALSE;
-      /* reset the timer */
-      TimerReset();
       /* this function does not return if a valid user program is present */
       CpuStartUserProgram();
     }

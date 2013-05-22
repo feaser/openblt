@@ -32,6 +32,7 @@
 #define COM_H
 
 
+#if (BOOT_COM_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
@@ -64,6 +65,7 @@ blt_bool ComIsConnectEntryState(void);
 void     ComSetConnected(blt_bool connected);
 blt_bool ComIsConnected(void);
 
+#endif /* BOOT_COM_ENABLE > 0 */
 
 #endif /* COM_H */
 /*********************************** end of com.h **************************************/

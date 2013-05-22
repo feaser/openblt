@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="FatFs" href="../00index_e.html">
+<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/mount.html">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - f_mount</title>
+</head>
+
+<body>
+
+<div class="para func">
+<h2>f_mount</h2>
+<p>The f_mount fucntion registers/unregisters file system object (work area) to the FatFs module.</p>
+<pre>
+FRESULT f_mount (
+  BYTE  <span class="arg">vol</span>,     <span class="c">/* [IN] Logical drive number */</span>
+  FATFS*  <span class="arg">fatfs</span>  <span class="c">/* [IN] File system object */</span>
+);
+</pre>
+</div>
+
+<div class="para arg">
+<h4>Parameters</h4>
+<dl class="par">
+<dt>vol</dt>
+<dd>Logical drive number to register/unregister file system object. (0 to <tt>_VOLUMES - 1</tt>)</dd>
+<dt>fatfs</dt>
+<dd>Pointer to the file system object to be registered. Null pointer unregisters the registered file system object.</dd>
+</dl>
+</div>
+
+<div class="para ret">
+<h4>Return Values</h4>
+<p>
+<a href="rc.html#ok">FR_OK</a>,
+<a href="rc.html#id">FR_INVALID_DRIVE</a>
+</p>
+</div>
+
+
+<div class="para desc">
+<h4>Description</h4>
+<p>The <tt>f_mount()</tt> function registers/unregisters a file system object to the FatFs module. The file system object is the work area needed for each logical drive. It must be given to the logical drive with this function prior to use any other file functions. To unregister a work area, specify a NULL to the <tt class="arg">fatfs</tt>, and then the work area can be discarded.</p>
+<p>This function always succeeds regardless of the physical drive status. No media access is occured in this function. It only de-initializes the given work area and registers its address to the internal table. It can also be used to force de-initialized the registered work area of a logical drive. The volume mount process, initialize the corresponding physical drive, find the FAT volume in it and initialize the work area, is performed when either or both of following condition is true:</p>
+<ul>
+<li>File system object is not initialized. (by <tt>f_mount()</tt>)</li>
+<li>Physical drive is not initialized. (by system reset or media removal)</li>
+</ul>
+<p>If the disk I/O layer does not detect media change, application program needs to perform <tt>f_mount()</tt> every media change.</p>
+</div>
+
+
+<div class="para comp">
+<h4>QuickInfo</h4>
+<p>Always available.</p>
+</div>
+
+
+<div class="para ref">
+<h4>See Also</h4>
+<p><tt><a href="sfatfs.html">FATFS</a></tt></p>
+</div>
+
+<p class="foot"><a href="../00index_e.html">Return</a></p>
+</body>
+</html>

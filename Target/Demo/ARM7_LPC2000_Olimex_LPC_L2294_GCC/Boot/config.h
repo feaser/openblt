@@ -41,10 +41,15 @@
  * not dependent on the targets architecture, the byte ordering needs to be known. 
  * Setting BOOT_CPU_BYTE_ORDER_MOTOROLA to 1 selects little endian mode and 0 selects 
  * big endian mode.
+ * 
+ * Set BOOT_CPU_USER_PROGRAM_START_HOOK to 1 if you would like a hook function to be
+ * called the moment the user program is about to be started. This could be used to
+ * de-initialize application specific parts, for example to stop blinking an LED, etc.
  */ 
 #define BOOT_CPU_XTAL_SPEED_KHZ         (20000)
 #define BOOT_CPU_SYSTEM_SPEED_KHZ       (60000)
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
+#define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
 
 
 /****************************************************************************************

@@ -57,6 +57,14 @@
 
 
 /****************************************************************************************
+* Hook functions
+****************************************************************************************/
+#if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+extern blt_bool CpuUserProgramStartHook(void);
+#endif
+
+
+/****************************************************************************************
 * External functions
 ****************************************************************************************/
 extern void reset_handler(void);                      /* implemented in cstart.s       */
@@ -80,8 +88,20 @@ void CpuStartUserProgram(void)
     /* not a valid user program so it cannot be started */
     return;
   }
+  #if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+  /* invoke callback */
+  if (CpuUserProgramStartHook() == BLT_FALSE)
+  {
+    /* callback requests the user program to not be started */
+    return;
+  }
+  #endif
+  #if (BOOT_COM_ENABLE > 0)
   /* release the communication interface */
   ComFree();
+  #endif
+  /* reset the timer */
+  TimerReset();
   /* remap user program's vector table */
   SCB_VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of

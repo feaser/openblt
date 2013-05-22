@@ -38,8 +38,17 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-#define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x00002004)
-#define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00002000)
+#if (BOOT_FILE_SYS_ENABLE > 0)
+  /* the size of the bootloader with support for firmware update from a locally attached
+   * storage disk is larger so the start address of the user program is at a different 
+   * location.
+   */
+  #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x00006004)
+  #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00006000)
+#else
+  #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x00002004)
+  #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00002000)
+#endif
 
   
 /****************************************************************************************
@@ -47,6 +56,14 @@
 ****************************************************************************************/
 /* vector table offset register */
 #define SCB_VTOR    (*((volatile blt_int32u *) 0xE000ED08))
+
+
+/****************************************************************************************
+* Hook functions
+****************************************************************************************/
+#if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+extern blt_bool CpuUserProgramStartHook(void);
+#endif
 
 
 /****************************************************************************************
@@ -73,8 +90,20 @@ void CpuStartUserProgram(void)
     /* not a valid user program so it cannot be started */
     return;
   }
+  #if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+  /* invoke callback */
+  if (CpuUserProgramStartHook() == BLT_FALSE)
+  {
+    /* callback requests the user program to not be started */
+    return;
+  }
+  #endif
+  #if (BOOT_COM_ENABLE > 0)
   /* release the communication interface */
   ComFree();
+  #endif
+  /* reset the timer */
+  TimerReset();
   /* remap user program's vector table */
   SCB_VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of

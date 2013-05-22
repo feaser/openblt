@@ -2,23 +2,38 @@
 //
 // hw_sysctl.h - Macros used when accessing the system control hardware.
 //
-// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 6852 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 10636 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -77,6 +92,7 @@
 #define SYSCTL_DCGC2            0x400FE128  // Deep Sleep Mode Clock Gating
                                             // Control Register 2
 #define SYSCTL_DSLPCLKCFG       0x400FE144  // Deep Sleep Clock Configuration
+#define SYSCTL_SYSPROP          0x400FE14C  // System Properties
 #define SYSCTL_PIOSCCAL         0x400FE150  // Precision Internal Oscillator
                                             // Calibration
 #define SYSCTL_CLKVCLR          0x400FE150  // Clock Verification Clear
@@ -84,6 +100,9 @@
                                             // Statistics
 #define SYSCTL_LDOARST          0x400FE160  // Allow Unregulated LDO to Reset
                                             // the Part
+#define SYSCTL_PLLFREQ0         0x400FE160  // PLL Frequency 0
+#define SYSCTL_PLLFREQ1         0x400FE164  // PLL Frequency 1
+#define SYSCTL_PLLSTAT          0x400FE168  // PLL Status
 #define SYSCTL_I2SMCLKCFG       0x400FE170  // I2S MCLK Configuration
 #define SYSCTL_DC9              0x400FE190  // Device Capabilities 9 ADC
                                             // Digital Comparators
@@ -109,6 +128,9 @@
                                             // devices
 #define SYSCTL_DID0_CLASS_TEMPEST \
                                 0x00040000  // Stellaris(R) Tempest-class
+                                            // microcontrollers
+#define SYSCTL_DID0_CLASS_FIRESTORM \
+                                0x00060000  // Stellaris(R) Firestorm-class
                                             // microcontrollers
 #define SYSCTL_DID0_MAJ_M       0x0000FF00  // Major Revision
 #define SYSCTL_DID0_MAJ_REVA    0x00000000  // Revision A (initial device)
@@ -179,6 +201,7 @@
 #define SYSCTL_DID1_PRTNO_1150  0x00C10000  // LM3S1150
 #define SYSCTL_DID1_PRTNO_1162  0x00C40000  // LM3S1162
 #define SYSCTL_DID1_PRTNO_1165  0x00C20000  // LM3S1165
+#define SYSCTL_DID1_PRTNO_1166  0x00EC0000  // LM3S1166
 #define SYSCTL_DID1_PRTNO_1332  0x00C60000  // LM3S1332
 #define SYSCTL_DID1_PRTNO_1435  0x00BC0000  // LM3S1435
 #define SYSCTL_DID1_PRTNO_1439  0x00BA0000  // LM3S1439
@@ -188,10 +211,12 @@
 #define SYSCTL_DID1_PRTNO_1607  0x00060000  // LM3S1607
 #define SYSCTL_DID1_PRTNO_1608  0x00DA0000  // LM3S1608
 #define SYSCTL_DID1_PRTNO_1620  0x00C00000  // LM3S1620
+#define SYSCTL_DID1_PRTNO_1621  0x00CD0000  // LM3S1621
 #define SYSCTL_DID1_PRTNO_1625  0x00030000  // LM3S1625
 #define SYSCTL_DID1_PRTNO_1626  0x00040000  // LM3S1626
 #define SYSCTL_DID1_PRTNO_1627  0x00050000  // LM3S1627
 #define SYSCTL_DID1_PRTNO_1635  0x00B30000  // LM3S1635
+#define SYSCTL_DID1_PRTNO_1636  0x00EB0000  // LM3S1636
 #define SYSCTL_DID1_PRTNO_1637  0x00BD0000  // LM3S1637
 #define SYSCTL_DID1_PRTNO_1651  0x00B10000  // LM3S1651
 #define SYSCTL_DID1_PRTNO_1751  0x00B90000  // LM3S1751
@@ -205,14 +230,29 @@
 #define SYSCTL_DID1_PRTNO_1958  0x00BE0000  // LM3S1958
 #define SYSCTL_DID1_PRTNO_1960  0x00B50000  // LM3S1960
 #define SYSCTL_DID1_PRTNO_1968  0x00B80000  // LM3S1968
+#define SYSCTL_DID1_PRTNO_1969  0x00EA0000  // LM3S1969
+#define SYSCTL_DID1_PRTNO_1B21  0x00CE0000  // LM3S1B21
+#define SYSCTL_DID1_PRTNO_1C21  0x00CA0000  // LM3S1C21
+#define SYSCTL_DID1_PRTNO_1C26  0x00CB0000  // LM3S1C26
+#define SYSCTL_DID1_PRTNO_1C58  0x00980000  // LM3S1C58
+#define SYSCTL_DID1_PRTNO_1D21  0x00B00000  // LM3S1D21
+#define SYSCTL_DID1_PRTNO_1D26  0x00CC0000  // LM3S1D26
+#define SYSCTL_DID1_PRTNO_1F11  0x001D0000  // LM3S1F11
+#define SYSCTL_DID1_PRTNO_1F16  0x001B0000  // LM3S1F16
+#define SYSCTL_DID1_PRTNO_1G21  0x00AF0000  // LM3S1G21
+#define SYSCTL_DID1_PRTNO_1G58  0x00950000  // LM3S1G58
+#define SYSCTL_DID1_PRTNO_1H11  0x001E0000  // LM3S1H11
+#define SYSCTL_DID1_PRTNO_1H16  0x001C0000  // LM3S1H16
 #define SYSCTL_DID1_PRTNO_1J11  0x000F0000  // LM3S1J11
 #define SYSCTL_DID1_PRTNO_1J16  0x003C0000  // LM3S1J16
 #define SYSCTL_DID1_PRTNO_1N11  0x000E0000  // LM3S1N11
 #define SYSCTL_DID1_PRTNO_1N16  0x003B0000  // LM3S1N16
 #define SYSCTL_DID1_PRTNO_1P51  0x00B20000  // LM3S1P51
 #define SYSCTL_DID1_PRTNO_1R21  0x009E0000  // LM3S1R21
+#define SYSCTL_DID1_PRTNO_1R26  0x00C90000  // LM3S1R26
 #define SYSCTL_DID1_PRTNO_1W16  0x00300000  // LM3S1W16
 #define SYSCTL_DID1_PRTNO_1Z16  0x002F0000  // LM3S1Z16
+#define SYSCTL_DID1_PRTNO_2016  0x00D40000  // LM3S2016
 #define SYSCTL_DID1_PRTNO_2110  0x00510000  // LM3S2110
 #define SYSCTL_DID1_PRTNO_2139  0x00840000  // LM3S2139
 #define SYSCTL_DID1_PRTNO_2276  0x00390000  // LM3S2276
@@ -234,13 +274,17 @@
 #define SYSCTL_DID1_PRTNO_2793  0x006D0000  // LM3S2793
 #define SYSCTL_DID1_PRTNO_2911  0x00E30000  // LM3S2911
 #define SYSCTL_DID1_PRTNO_2918  0x00E20000  // LM3S2918
+#define SYSCTL_DID1_PRTNO_2919  0x00ED0000  // LM3S2919
 #define SYSCTL_DID1_PRTNO_2939  0x00540000  // LM3S2939
 #define SYSCTL_DID1_PRTNO_2948  0x008F0000  // LM3S2948
 #define SYSCTL_DID1_PRTNO_2950  0x00580000  // LM3S2950
 #define SYSCTL_DID1_PRTNO_2965  0x00550000  // LM3S2965
 #define SYSCTL_DID1_PRTNO_2B93  0x006C0000  // LM3S2B93
+#define SYSCTL_DID1_PRTNO_2D93  0x00940000  // LM3S2D93
+#define SYSCTL_DID1_PRTNO_2U93  0x00930000  // LM3S2U93
 #define SYSCTL_DID1_PRTNO_3634  0x00080000  // LM3S3634
 #define SYSCTL_DID1_PRTNO_3651  0x00430000  // LM3S3651
+#define SYSCTL_DID1_PRTNO_3654  0x00C80000  // LM3S3654
 #define SYSCTL_DID1_PRTNO_3739  0x00440000  // LM3S3739
 #define SYSCTL_DID1_PRTNO_3748  0x00490000  // LM3S3748
 #define SYSCTL_DID1_PRTNO_3749  0x00450000  // LM3S3749
@@ -265,15 +309,28 @@
 #define SYSCTL_DID1_PRTNO_5951  0x000B0000  // LM3S5951
 #define SYSCTL_DID1_PRTNO_5956  0x004E0000  // LM3S5956
 #define SYSCTL_DID1_PRTNO_5B91  0x00680000  // LM3S5B91
+#define SYSCTL_DID1_PRTNO_5C31  0x002E0000  // LM3S5C31
+#define SYSCTL_DID1_PRTNO_5C36  0x002C0000  // LM3S5C36
+#define SYSCTL_DID1_PRTNO_5C51  0x005E0000  // LM3S5C51
+#define SYSCTL_DID1_PRTNO_5C56  0x005B0000  // LM3S5C56
+#define SYSCTL_DID1_PRTNO_5D51  0x005F0000  // LM3S5D51
+#define SYSCTL_DID1_PRTNO_5D56  0x005C0000  // LM3S5D56
+#define SYSCTL_DID1_PRTNO_5D91  0x00870000  // LM3S5D91
+#define SYSCTL_DID1_PRTNO_5G31  0x002D0000  // LM3S5G31
+#define SYSCTL_DID1_PRTNO_5G36  0x001F0000  // LM3S5G36
+#define SYSCTL_DID1_PRTNO_5G51  0x005D0000  // LM3S5G51
+#define SYSCTL_DID1_PRTNO_5G56  0x004F0000  // LM3S5G56
 #define SYSCTL_DID1_PRTNO_5K31  0x00090000  // LM3S5K31
 #define SYSCTL_DID1_PRTNO_5K36  0x004A0000  // LM3S5K36
 #define SYSCTL_DID1_PRTNO_5P31  0x000A0000  // LM3S5P31
 #define SYSCTL_DID1_PRTNO_5P36  0x00480000  // LM3S5P36
+#define SYSCTL_DID1_PRTNO_5P3B  0x00B60000  // LM3S5P3B
 #define SYSCTL_DID1_PRTNO_5P51  0x000D0000  // LM3S5P51
 #define SYSCTL_DID1_PRTNO_5P56  0x004C0000  // LM3S5P56
 #define SYSCTL_DID1_PRTNO_5R31  0x00070000  // LM3S5R31
 #define SYSCTL_DID1_PRTNO_5R36  0x004B0000  // LM3S5R36
 #define SYSCTL_DID1_PRTNO_5T36  0x00470000  // LM3S5T36
+#define SYSCTL_DID1_PRTNO_5U91  0x007F0000  // LM3S5U91
 #define SYSCTL_DID1_PRTNO_5Y36  0x00460000  // LM3S5Y36
 #define SYSCTL_DID1_PRTNO_6100  0x00A10000  // LM3S6100
 #define SYSCTL_DID1_PRTNO_6110  0x00740000  // LM3S6110
@@ -288,12 +345,18 @@
 #define SYSCTL_DID1_PRTNO_6637  0x008B0000  // LM3S6637
 #define SYSCTL_DID1_PRTNO_6730  0x00A30000  // LM3S6730
 #define SYSCTL_DID1_PRTNO_6753  0x00770000  // LM3S6753
+#define SYSCTL_DID1_PRTNO_6816  0x00D10000  // LM3S6816
 #define SYSCTL_DID1_PRTNO_6911  0x00E90000  // LM3S6911
+#define SYSCTL_DID1_PRTNO_6916  0x00D30000  // LM3S6916
 #define SYSCTL_DID1_PRTNO_6918  0x00E80000  // LM3S6918
 #define SYSCTL_DID1_PRTNO_6938  0x00890000  // LM3S6938
 #define SYSCTL_DID1_PRTNO_6950  0x00720000  // LM3S6950
 #define SYSCTL_DID1_PRTNO_6952  0x00780000  // LM3S6952
 #define SYSCTL_DID1_PRTNO_6965  0x00730000  // LM3S6965
+#define SYSCTL_DID1_PRTNO_6C11  0x00AA0000  // LM3S6C11
+#define SYSCTL_DID1_PRTNO_6C65  0x00AC0000  // LM3S6C65
+#define SYSCTL_DID1_PRTNO_6G11  0x009F0000  // LM3S6G11
+#define SYSCTL_DID1_PRTNO_6G65  0x00AB0000  // LM3S6G65
 #define SYSCTL_DID1_PRTNO_8530  0x00640000  // LM3S8530
 #define SYSCTL_DID1_PRTNO_8538  0x008E0000  // LM3S8538
 #define SYSCTL_DID1_PRTNO_8630  0x00610000  // LM3S8630
@@ -306,16 +369,41 @@
 #define SYSCTL_DID1_PRTNO_8962  0x00A60000  // LM3S8962
 #define SYSCTL_DID1_PRTNO_8970  0x00620000  // LM3S8970
 #define SYSCTL_DID1_PRTNO_8971  0x00D70000  // LM3S8971
+#define SYSCTL_DID1_PRTNO_8C62  0x00AE0000  // LM3S8C62
+#define SYSCTL_DID1_PRTNO_8G62  0x00AD0000  // LM3S8G62
+#define SYSCTL_DID1_PRTNO_9781  0x00CF0000  // LM3S9781
 #define SYSCTL_DID1_PRTNO_9790  0x00670000  // LM3S9790
 #define SYSCTL_DID1_PRTNO_9792  0x006B0000  // LM3S9792
+#define SYSCTL_DID1_PRTNO_9971  0x002D0000  // LM3S9971
 #define SYSCTL_DID1_PRTNO_9997  0x00200000  // LM3S9997
+#define SYSCTL_DID1_PRTNO_9B81  0x00D00000  // LM3S9B81
 #define SYSCTL_DID1_PRTNO_9B90  0x00660000  // LM3S9B90
 #define SYSCTL_DID1_PRTNO_9B92  0x006A0000  // LM3S9B92
 #define SYSCTL_DID1_PRTNO_9B95  0x006E0000  // LM3S9B95
 #define SYSCTL_DID1_PRTNO_9B96  0x006F0000  // LM3S9B96
+#define SYSCTL_DID1_PRTNO_9BN2  0x001D0000  // LM3S9BN2
+#define SYSCTL_DID1_PRTNO_9BN5  0x001E0000  // LM3S9BN5
+#define SYSCTL_DID1_PRTNO_9BN6  0x001F0000  // LM3S9BN6
+#define SYSCTL_DID1_PRTNO_9C97  0x00700000  // LM3S9C97
+#define SYSCTL_DID1_PRTNO_9CN5  0x007A0000  // LM3S9CN5
+#define SYSCTL_DID1_PRTNO_9D81  0x00A90000  // LM3S9D81
+#define SYSCTL_DID1_PRTNO_9D90  0x007E0000  // LM3S9D90
+#define SYSCTL_DID1_PRTNO_9D92  0x00920000  // LM3S9D92
+#define SYSCTL_DID1_PRTNO_9D95  0x00C80000  // LM3S9D95
+#define SYSCTL_DID1_PRTNO_9D96  0x009D0000  // LM3S9D96
+#define SYSCTL_DID1_PRTNO_9DN5  0x007B0000  // LM3S9DN5
+#define SYSCTL_DID1_PRTNO_9DN6  0x007C0000  // LM3S9DN6
+#define SYSCTL_DID1_PRTNO_9G97  0x00600000  // LM3S9G97
+#define SYSCTL_DID1_PRTNO_9GN5  0x00790000  // LM3S9GN5
+#define SYSCTL_DID1_PRTNO_9L71  0x001B0000  // LM3S9L71
 #define SYSCTL_DID1_PRTNO_9L97  0x00180000  // LM3S9L97
+#define SYSCTL_DID1_PRTNO_9U81  0x00A80000  // LM3S9U81
+#define SYSCTL_DID1_PRTNO_9U90  0x007D0000  // LM3S9U90
+#define SYSCTL_DID1_PRTNO_9U92  0x00900000  // LM3S9U92
+#define SYSCTL_DID1_PRTNO_9U95  0x00B70000  // LM3S9U95
+#define SYSCTL_DID1_PRTNO_9U96  0x009B0000  // LM3S9U96
 #define SYSCTL_DID1_PINCNT_M    0x0000E000  // Package Pin Count
-#define SYSCTL_DID1_PINCNT_28   0x00000000  // 28 pin package
+#define SYSCTL_DID1_PINCNT_28   0x00000000  // 28-pin package
 #define SYSCTL_DID1_PINCNT_48   0x00002000  // 48-pin package
 #define SYSCTL_DID1_PINCNT_100  0x00004000  // 100-pin package
 #define SYSCTL_DID1_PINCNT_64   0x00006000  // 64-pin package
@@ -353,6 +441,7 @@
 #define SYSCTL_DC0_SRAMSZ_20KB  0x004F0000  // 20 KB of SRAM
 #define SYSCTL_DC0_SRAMSZ_24KB  0x005F0000  // 24 KB of SRAM
 #define SYSCTL_DC0_SRAMSZ_32KB  0x007F0000  // 32 KB of SRAM
+#define SYSCTL_DC0_SRAMSZ_48KB  0x00BF0000  // 48 KB of SRAM
 #define SYSCTL_DC0_SRAMSZ_64KB  0x00FF0000  // 64 KB of SRAM
 #define SYSCTL_DC0_SRAMSZ_96KB  0x017F0000  // 96 KB of SRAM
 #define SYSCTL_DC0_FLASHSZ_M    0x0000FFFF  // Flash Size
@@ -362,7 +451,10 @@
 #define SYSCTL_DC0_FLASHSZ_64KB 0x0000001F  // 64 KB of Flash
 #define SYSCTL_DC0_FLASHSZ_96KB 0x0000002F  // 96 KB of Flash
 #define SYSCTL_DC0_FLASHSZ_128K 0x0000003F  // 128 KB of Flash
+#define SYSCTL_DC0_FLASHSZ_192K 0x0000005F  // 192 KB of Flash
 #define SYSCTL_DC0_FLASHSZ_256K 0x0000007F  // 256 KB of Flash
+#define SYSCTL_DC0_FLASHSZ_384K 0x000000BF  // 384 KB of Flash
+#define SYSCTL_DC0_FLASHSZ_512K 0x000000FF  // 512 KB of Flash
 #define SYSCTL_DC0_SRAMSZ_S     16          // SRAM size shift
 #define SYSCTL_DC0_FLASHSZ_S    0           // Flash size shift
 
@@ -375,7 +467,8 @@
 #define SYSCTL_DC1_CAN2         0x04000000  // CAN Module 2 Present
 #define SYSCTL_DC1_CAN1         0x02000000  // CAN Module 1 Present
 #define SYSCTL_DC1_CAN0         0x01000000  // CAN Module 0 Present
-#define SYSCTL_DC1_PWM          0x00100000  // PWM Module Present
+#define SYSCTL_DC1_PWM1         0x00200000  // PWM Module 1 Present
+#define SYSCTL_DC1_PWM0         0x00100000  // PWM Module 0 Present
 #define SYSCTL_DC1_ADC1         0x00020000  // ADC Module 1 Present
 #define SYSCTL_DC1_ADC0         0x00010000  // ADC Module 0 Present
 #define SYSCTL_DC1_MINSYSDIV_M  0x0000F000  // System Clock Divider
@@ -385,18 +478,21 @@
                                             // 6 minimum
 #define SYSCTL_DC1_MINSYSDIV_50 0x00003000  // Specifies a 50-MHz CPU clock
                                             // with a PLL divider of 4
+#define SYSCTL_DC1_MINSYSDIV_40 0x00004000  // Specifies a 40-MHz CPU clock
+                                            // with a PLL divider of 5
 #define SYSCTL_DC1_MINSYSDIV_25 0x00007000  // Specifies a 25-MHz clock with a
                                             // PLL divider of 8
 #define SYSCTL_DC1_MINSYSDIV_20 0x00009000  // Specifies a 20-MHz clock with a
                                             // PLL divider of 10
-#define SYSCTL_DC1_ADCSPD_M     0x00000F00  // Max ADC Speed
-#define SYSCTL_DC1_ADCSPD_125K  0x00000000  // 125Ksps ADC
-#define SYSCTL_DC1_ADCSPD_250K  0x00000100  // 250K samples/second
-#define SYSCTL_DC1_ADCSPD_500K  0x00000200  // 500K samples/second
-#define SYSCTL_DC1_ADCSPD_1M    0x00000300  // 1M samples/second
 #define SYSCTL_DC1_ADC1SPD_M    0x00000C00  // Max ADC1 Speed
+#define SYSCTL_DC1_ADC1SPD_125K 0x00000000  // 125K samples/second
+#define SYSCTL_DC1_ADC1SPD_250K 0x00000400  // 250K samples/second
+#define SYSCTL_DC1_ADC1SPD_500K 0x00000800  // 500K samples/second
 #define SYSCTL_DC1_ADC1SPD_1M   0x00000C00  // 1M samples/second
 #define SYSCTL_DC1_ADC0SPD_M    0x00000300  // Max ADC0 Speed
+#define SYSCTL_DC1_ADC0SPD_125K 0x00000000  // 125K samples/second
+#define SYSCTL_DC1_ADC0SPD_250K 0x00000100  // 250K samples/second
+#define SYSCTL_DC1_ADC0SPD_500K 0x00000200  // 500K samples/second
 #define SYSCTL_DC1_ADC0SPD_1M   0x00000300  // 1M samples/second
 #define SYSCTL_DC1_MPU          0x00000080  // MPU Present
 #define SYSCTL_DC1_HIB          0x00000040  // Hibernation Module Present
@@ -421,7 +517,9 @@
 #define SYSCTL_DC2_TIMER2       0x00040000  // Timer Module 2 Present
 #define SYSCTL_DC2_TIMER1       0x00020000  // Timer Module 1 Present
 #define SYSCTL_DC2_TIMER0       0x00010000  // Timer Module 0 Present
+#define SYSCTL_DC2_I2C1HS       0x00008000  // I2C Module 1 Speed
 #define SYSCTL_DC2_I2C1         0x00004000  // I2C Module 1 Present
+#define SYSCTL_DC2_I2C0HS       0x00002000  // I2C Module 0 Speed
 #define SYSCTL_DC2_I2C0         0x00001000  // I2C Module 0 Present
 #define SYSCTL_DC2_QEI1         0x00000200  // QEI Module 1 Present
 #define SYSCTL_DC2_QEI0         0x00000100  // QEI Module 0 Present
@@ -650,7 +748,7 @@
 #define SYSCTL_SRCR0_CAN2       0x04000000  // CAN2 Reset Control
 #define SYSCTL_SRCR0_CAN1       0x02000000  // CAN1 Reset Control
 #define SYSCTL_SRCR0_CAN0       0x01000000  // CAN0 Reset Control
-#define SYSCTL_SRCR0_PWM        0x00100000  // PWM Reset Control
+#define SYSCTL_SRCR0_PWM0       0x00100000  // PWM Reset Control
 #define SYSCTL_SRCR0_ADC1       0x00020000  // ADC1 Reset Control
 #define SYSCTL_SRCR0_ADC0       0x00010000  // ADC0 Reset Control
 #define SYSCTL_SRCR0_HIB        0x00000040  // HIB Reset Control
@@ -831,6 +929,10 @@
 #define SYSCTL_RCC_XTAL_14_3MHZ 0x00000500  // 14.31818 MHz
 #define SYSCTL_RCC_XTAL_16MHZ   0x00000540  // 16 MHz
 #define SYSCTL_RCC_XTAL_16_3MHZ 0x00000580  // 16.384 MHz
+#define SYSCTL_RCC_XTAL_18MHZ   0x000005C0  // 18.0 MHz
+#define SYSCTL_RCC_XTAL_20MHZ   0x00000600  // 20.0 MHz
+#define SYSCTL_RCC_XTAL_24MHZ   0x00000640  // 24.0 MHz
+#define SYSCTL_RCC_XTAL_25MHZ   0x00000680  // 25.0 MHz
 #define SYSCTL_RCC_PLLVER       0x00000400  // PLL Verification
 #define SYSCTL_RCC_OSCSRC_M     0x00000030  // Oscillator Source
 #define SYSCTL_RCC_OSCSRC_MAIN  0x00000000  // MOSC
@@ -977,6 +1079,8 @@
 // The following are defines for the bit fields in the SYSCTL_MOSCCTL register.
 //
 //*****************************************************************************
+#define SYSCTL_MOSCCTL_NOXTAL   0x00000004  // No Crystal Connected
+#define SYSCTL_MOSCCTL_MOSCIM   0x00000002  // MOSC Failure Action
 #define SYSCTL_MOSCCTL_CVAL     0x00000001  // Clock Validation for MOSC
 
 //*****************************************************************************
@@ -988,7 +1092,7 @@
 #define SYSCTL_RCGC0_CAN2       0x04000000  // CAN2 Clock Gating Control
 #define SYSCTL_RCGC0_CAN1       0x02000000  // CAN1 Clock Gating Control
 #define SYSCTL_RCGC0_CAN0       0x01000000  // CAN0 Clock Gating Control
-#define SYSCTL_RCGC0_PWM        0x00100000  // PWM Clock Gating Control
+#define SYSCTL_RCGC0_PWM0       0x00100000  // PWM Clock Gating Control
 #define SYSCTL_RCGC0_ADC1       0x00020000  // ADC1 Clock Gating Control
 #define SYSCTL_RCGC0_ADC0       0x00010000  // ADC0 Clock Gating Control
 #define SYSCTL_RCGC0_ADCSPD_M   0x00000F00  // ADC Sample Speed
@@ -1067,7 +1171,7 @@
 #define SYSCTL_SCGC0_CAN2       0x04000000  // CAN2 Clock Gating Control
 #define SYSCTL_SCGC0_CAN1       0x02000000  // CAN1 Clock Gating Control
 #define SYSCTL_SCGC0_CAN0       0x01000000  // CAN0 Clock Gating Control
-#define SYSCTL_SCGC0_PWM        0x00100000  // PWM Clock Gating Control
+#define SYSCTL_SCGC0_PWM0       0x00100000  // PWM Clock Gating Control
 #define SYSCTL_SCGC0_ADC1       0x00020000  // ADC1 Clock Gating Control
 #define SYSCTL_SCGC0_ADC0       0x00010000  // ADC0 Clock Gating Control
 #define SYSCTL_SCGC0_ADCSPD_M   0x00000F00  // ADC Sample Speed
@@ -1146,7 +1250,7 @@
 #define SYSCTL_DCGC0_CAN2       0x04000000  // CAN2 Clock Gating Control
 #define SYSCTL_DCGC0_CAN1       0x02000000  // CAN1 Clock Gating Control
 #define SYSCTL_DCGC0_CAN0       0x01000000  // CAN0 Clock Gating Control
-#define SYSCTL_DCGC0_PWM        0x00100000  // PWM Clock Gating Control
+#define SYSCTL_DCGC0_PWM0       0x00100000  // PWM Clock Gating Control
 #define SYSCTL_DCGC0_ADC1       0x00020000  // ADC1 Clock Gating Control
 #define SYSCTL_DCGC0_ADC0       0x00010000  // ADC0 Clock Gating Control
 #define SYSCTL_DCGC0_HIB        0x00000040  // HIB Clock Gating Control
@@ -1271,8 +1375,17 @@
 #define SYSCTL_DSLPCLKCFG_O_IO  0x00000010  // PIOSC
 #define SYSCTL_DSLPCLKCFG_O_30  0x00000030  // 30 kHz
 #define SYSCTL_DSLPCLKCFG_O_32  0x00000070  // 32.768 kHz
+#define SYSCTL_DSLPCLKCFG_PIOSCPD \
+                                0x00000002  // PIOSC Power Down Request
 #define SYSCTL_DSLPCLKCFG_IOSC  0x00000001  // IOSC Clock Source
 #define SYSCTL_DSLPCLKCFG_D_S   23
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the SYSCTL_SYSPROP register.
+//
+//*****************************************************************************
+#define SYSCTL_SYSPROP_FPU      0x00000001  // FPU Present
 
 //*****************************************************************************
 //
@@ -1317,6 +1430,35 @@
 //
 //*****************************************************************************
 #define SYSCTL_LDOARST_LDOARST  0x00000001  // LDO Reset
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the SYSCTL_PLLFREQ0
+// register.
+//
+//*****************************************************************************
+#define SYSCTL_PLLFREQ0_MFRAC_M 0x000FFC00  // PLL M Fractional Value
+#define SYSCTL_PLLFREQ0_MINT_M  0x000003FF  // PLL M Integer Value
+#define SYSCTL_PLLFREQ0_MFRAC_S 10
+#define SYSCTL_PLLFREQ0_MINT_S  0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the SYSCTL_PLLFREQ1
+// register.
+//
+//*****************************************************************************
+#define SYSCTL_PLLFREQ1_Q_M     0x00001F00  // PLL Q Value
+#define SYSCTL_PLLFREQ1_N_M     0x0000001F  // PLL N Value
+#define SYSCTL_PLLFREQ1_Q_S     8
+#define SYSCTL_PLLFREQ1_N_S     0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the SYSCTL_PLLSTAT register.
+//
+//*****************************************************************************
+#define SYSCTL_PLLSTAT_LOCK     0x00000001  // PLL Lock
 
 //*****************************************************************************
 //
@@ -1430,9 +1572,15 @@
 // register.
 //
 //*****************************************************************************
+#define SYSCTL_DC1_PWM          0x00100000  // PWM Module Present
 #define SYSCTL_DC1_ADC          0x00010000  // ADC Module Present
 #define SYSCTL_DC1_SYSDIV_MASK  0x0000F000  // Minimum system divider mask
 #define SYSCTL_DC1_ADCSPD_MASK  0x00000F00  // ADC speed mask
+#define SYSCTL_DC1_ADCSPD_M     0x00000F00  // Max ADC Speed
+#define SYSCTL_DC1_ADCSPD_125K  0x00000000  // 125Ksps ADC
+#define SYSCTL_DC1_ADCSPD_250K  0x00000100  // 250K samples/second
+#define SYSCTL_DC1_ADCSPD_500K  0x00000200  // 500K samples/second
+#define SYSCTL_DC1_ADCSPD_1M    0x00000300  // 1M samples/second
 #define SYSCTL_DC1_WDOG         0x00000008  // Watchdog present
 #define SYSCTL_DC1_WDT          0x00000008  // Watchdog Timer Present
 
@@ -1485,6 +1633,7 @@
 // register.
 //
 //*****************************************************************************
+#define SYSCTL_SRCR0_PWM        0x00100000  // PWM Reset Control
 #define SYSCTL_SRCR0_ADC        0x00010000  // ADC0 Reset Control
 #define SYSCTL_SRCR0_WDT        0x00000008  // WDT Reset Control
 
@@ -1561,6 +1710,7 @@
 // register.
 //
 //*****************************************************************************
+#define SYSCTL_RCGC0_PWM        0x00100000  // PWM Clock Gating Control
 #define SYSCTL_RCGC0_ADC        0x00010000  // ADC0 Clock Gating Control
 #define SYSCTL_RCGC0_WDT        0x00000008  // WDT Clock Gating Control
 
@@ -1570,6 +1720,7 @@
 // register.
 //
 //*****************************************************************************
+#define SYSCTL_SCGC0_PWM        0x00100000  // PWM Clock Gating Control
 #define SYSCTL_SCGC0_ADC        0x00010000  // ADC0 Clock Gating Control
 #define SYSCTL_SCGC0_WDT        0x00000008  // WDT Clock Gating Control
 
@@ -1579,6 +1730,7 @@
 // register.
 //
 //*****************************************************************************
+#define SYSCTL_DCGC0_PWM        0x00100000  // PWM Clock Gating Control
 #define SYSCTL_DCGC0_ADC        0x00010000  // ADC0 Clock Gating Control
 #define SYSCTL_DCGC0_WDT        0x00000008  // WDT Clock Gating Control
 

@@ -23,8 +23,6 @@ Discarded input sections
  .text          0x00000000        0x0 THUMB Flash Debug/../../obj/timer.o
  .data          0x00000000        0x0 THUMB Flash Debug/../../obj/timer.o
  .bss           0x00000000        0x0 THUMB Flash Debug/../../obj/timer.o
- .text.TimerSet
-                0x00000000        0xc THUMB Flash Debug/../../obj/timer.o
  .text          0x00000000        0x0 THUMB Flash Debug/../../obj/uart.o
  .data          0x00000000        0x0 THUMB Flash Debug/../../obj/uart.o
  .bss           0x00000000        0x0 THUMB Flash Debug/../../obj/uart.o
@@ -106,7 +104,7 @@ Discarded input sections
  .text.AES_CBC256
                 0x00000000      0x130 THUMB Flash Debug/../../obj/efm32_aes.o
  .text.AES_CFB128
-                0x00000000       0x98 THUMB Flash Debug/../../obj/efm32_aes.o
+                0x00000000       0x9c THUMB Flash Debug/../../obj/efm32_aes.o
  .text.AES_CFB256
                 0x00000000       0xa8 THUMB Flash Debug/../../obj/efm32_aes.o
  .text.AES_CTR128
@@ -120,7 +118,7 @@ Discarded input sections
  .text.AES_DecryptKey256
                 0x00000000       0x44 THUMB Flash Debug/../../obj/efm32_aes.o
  .text.AES_ECB128
-                0x00000000       0x70 THUMB Flash Debug/../../obj/efm32_aes.o
+                0x00000000       0x74 THUMB Flash Debug/../../obj/efm32_aes.o
  .text.AES_ECB256
                 0x00000000       0x88 THUMB Flash Debug/../../obj/efm32_aes.o
  .text.AES_OFB128
@@ -136,7 +134,7 @@ Discarded input sections
  .text.CMU_Calibrate
                 0x00000000       0x40 THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_ClockDivGet
-                0x00000000       0x64 THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x00000000       0x60 THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_FreezeEnable
                 0x00000000       0x1c THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_HFRCOBandGet
@@ -150,7 +148,7 @@ Discarded input sections
  .text.CMU_LCDClkFDIVGet
                 0x00000000       0x10 THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_LCDClkFDIVSet
-                0x00000000       0x20 THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x00000000       0x1c THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_OscillatorTuningGet
                 0x00000000       0x2c THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_OscillatorTuningSet
@@ -165,7 +163,7 @@ Discarded input sections
  .text.DAC_Enable
                 0x00000000       0x14 THUMB Flash Debug/../../obj/efm32_dac.o
  .text.DAC_Init
-                0x00000000       0x78 THUMB Flash Debug/../../obj/efm32_dac.o
+                0x00000000       0x7c THUMB Flash Debug/../../obj/efm32_dac.o
  .text.DAC_InitChannel
                 0x00000000       0x28 THUMB Flash Debug/../../obj/efm32_dac.o
  .text.DAC_PrescaleCalc
@@ -176,7 +174,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Flash Debug/../../obj/efm32_dbg.o
  .bss           0x00000000        0x0 THUMB Flash Debug/../../obj/efm32_dbg.o
  .text.DBG_SWOEnable
-                0x00000000       0x58 THUMB Flash Debug/../../obj/efm32_dbg.o
+                0x00000000       0x48 THUMB Flash Debug/../../obj/efm32_dbg.o
  .text          0x00000000        0x0 THUMB Flash Debug/../../obj/efm32_dma.o
  .data          0x00000000        0x0 THUMB Flash Debug/../../obj/efm32_dma.o
  .bss           0x00000000        0x0 THUMB Flash Debug/../../obj/efm32_dma.o
@@ -252,11 +250,11 @@ Discarded input sections
  .text.GPIO_IntConfig
                 0x00000000       0x88 THUMB Flash Debug/../../obj/efm32_gpio.o
  .text.GPIO_PinInGet
-                0x00000000       0x16 THUMB Flash Debug/../../obj/efm32_gpio.o
+                0x00000000       0x18 THUMB Flash Debug/../../obj/efm32_gpio.o
  .text.GPIO_PinOutClear
                 0x00000000       0x16 THUMB Flash Debug/../../obj/efm32_gpio.o
  .text.GPIO_PinOutGet
-                0x00000000       0x16 THUMB Flash Debug/../../obj/efm32_gpio.o
+                0x00000000       0x18 THUMB Flash Debug/../../obj/efm32_gpio.o
  .text.GPIO_PinOutSet
                 0x00000000       0x16 THUMB Flash Debug/../../obj/efm32_gpio.o
  .text.GPIO_PinOutToggle
@@ -354,7 +352,7 @@ Discarded input sections
  .text.LEUART_BaudrateCalc
                 0x00000000       0x1e THUMB Flash Debug/../../obj/efm32_leuart.o
  .text.LEUART_BaudrateGet
-                0x00000000       0x40 THUMB Flash Debug/../../obj/efm32_leuart.o
+                0x00000000       0x3c THUMB Flash Debug/../../obj/efm32_leuart.o
  .text.LEUART_Reset
                 0x00000000       0x30 THUMB Flash Debug/../../obj/efm32_leuart.o
  .text.LEUART_RxExt
@@ -435,7 +433,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Flash Debug/../../obj/efm32_timer.o
  .bss           0x00000000        0x0 THUMB Flash Debug/../../obj/efm32_timer.o
  .text.TIMER_Enable
-                0x00000000        0xe THUMB Flash Debug/../../obj/efm32_timer.o
+                0x00000000       0x10 THUMB Flash Debug/../../obj/efm32_timer.o
  .text.TIMER_Init
                 0x00000000       0x6e THUMB Flash Debug/../../obj/efm32_timer.o
  .text.TIMER_InitCC
@@ -450,7 +448,7 @@ Discarded input sections
  .data          0x00000000        0x0 THUMB Flash Debug/../../obj/efm32_usart.o
  .bss           0x00000000        0x0 THUMB Flash Debug/../../obj/efm32_usart.o
  .text.USART_BaudrateAsyncSet
-                0x00000000       0x5c THUMB Flash Debug/../../obj/efm32_usart.o
+                0x00000000       0x60 THUMB Flash Debug/../../obj/efm32_usart.o
  .text.USART_BaudrateCalc
                 0x00000000       0x48 THUMB Flash Debug/../../obj/efm32_usart.o
  .text.USART_BaudrateGet
@@ -514,17 +512,14 @@ Memory Configuration
 
 Name             Origin             Length             Attributes
 UNPLACED_SECTIONS 0xffffffff         0x00000000         xw
-CM3_System_Control_Space 0xe000e000         0x00001000         xw
-RAM              0x20000000         0x00001000         xw
+SRAM             0x20000000         0x00001000         xw
 FLASH            0x00000000         0x00002000         xr
 *default*        0x00000000         0xffffffff
 
 Linker script and memory map
 
-                0xe000e000                __CM3_System_Control_Space_segment_start__ = 0xe000e000
-                0xe000f000                __CM3_System_Control_Space_segment_end__ = 0xe000f000
-                0x20000000                __RAM_segment_start__ = 0x20000000
-                0x20001000                __RAM_segment_end__ = 0x20001000
+                0x20000000                __SRAM_segment_start__ = 0x20000000
+                0x20001000                __SRAM_segment_end__ = 0x20001000
                 0x00000000                __FLASH_segment_start__ = 0x0
                 0x00002000                __FLASH_segment_end__ = 0x2000
                 0x00000100                __STACKSIZE__ = 0x100
@@ -535,14 +530,14 @@ Linker script and memory map
                 0x00000000                __STACKSIZE_ABT__ = 0x0
                 0x00000000                __STACKSIZE_UND__ = 0x0
                 0x00000080                __HEAPSIZE__ = 0x80
-                0x20000000                __vectors_ram_load_start__ = ALIGN (__RAM_segment_start__, 0x100)
+                0x20000000                __vectors_ram_load_start__ = ALIGN (__SRAM_segment_start__, 0x100)
 
 .vectors_ram    0x20000000        0x0
                 0x20000000                __vectors_ram_start__ = .
  *(.vectors_ram .vectors_ram.*)
                 0x20000000                __vectors_ram_end__ = (__vectors_ram_start__ + SIZEOF (.vectors_ram))
                 0x20000000                __vectors_ram_load_end__ = __vectors_ram_end__
-                0x00000001                . = ASSERT (((__vectors_ram_end__ >= __RAM_segment_start__) && (__vectors_ram_end__ <= (__RAM_segment_start__ + 0x4000))), error: .vectors_ram is too large to fit in RAM memory segment)
+                0x00000001                . = ASSERT (((__vectors_ram_end__ >= __SRAM_segment_start__) && (__vectors_ram_end__ <= __SRAM_segment_end__)), error: .vectors_ram is too large to fit in SRAM memory segment)
                 0x00000000                __vectors_load_start__ = ALIGN (__FLASH_segment_start__, 0x100)
 
 .vectors        0x00000000       0xb8
@@ -552,7 +547,7 @@ Linker script and memory map
                 0x00000000                _vectors
                 0x000000b8                __vectors_end__ = (__vectors_start__ + SIZEOF (.vectors))
                 0x000000b8                __vectors_load_end__ = __vectors_end__
-                0x00000001                . = ASSERT (((__vectors_end__ >= __FLASH_segment_start__) && (__vectors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .vectors is too large to fit in FLASH memory segment)
+                0x00000001                . = ASSERT (((__vectors_end__ >= __FLASH_segment_start__) && (__vectors_end__ <= __FLASH_segment_end__)), error: .vectors is too large to fit in FLASH memory segment)
                 0x000000b8                __init_load_start__ = ALIGN (__vectors_end__, 0x4)
 
 .init           0x000000b8      0x1c4
@@ -564,10 +559,10 @@ Linker script and memory map
                 0x000001e6                exit
                 0x0000027c                __init_end__ = (__init_start__ + SIZEOF (.init))
                 0x0000027c                __init_load_end__ = __init_end__
-                0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .init is too large to fit in FLASH memory segment)
+                0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= __FLASH_segment_end__)), error: .init is too large to fit in FLASH memory segment)
                 0x0000027c                __text_load_start__ = ALIGN (__init_end__, 0x4)
 
-.text           0x0000027c     0x14ac
+.text           0x0000027c     0x14b0
                 0x0000027c                __text_start__ = .
  *(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table .ARM.extab* .gnu.linkonce.armextab.*)
  .glue_7        0x00000000        0x0 linker stubs
@@ -576,146 +571,146 @@ Linker script and memory map
                 0x0000027c       0x18 THUMB Flash Debug/../../obj/vectors.o
                 0x0000027c                UnusedISR
  .text.CpuStartUserProgram
-                0x00000294       0x2c THUMB Flash Debug/../../obj/cpu.o
+                0x00000294       0x34 THUMB Flash Debug/../../obj/cpu.o
                 0x00000294                CpuStartUserProgram
  .text.CpuMemCopy
-                0x000002c0       0x24 THUMB Flash Debug/../../obj/cpu.o
-                0x000002c0                CpuMemCopy
+                0x000002c8       0x24 THUMB Flash Debug/../../obj/cpu.o
+                0x000002c8                CpuMemCopy
  .text.CpuReset
-                0x000002e4       0x10 THUMB Flash Debug/../../obj/cpu.o
-                0x000002e4                CpuReset
+                0x000002ec       0x10 THUMB Flash Debug/../../obj/cpu.o
+                0x000002ec                CpuReset
  .text.FlashGetSector
-                0x000002f4       0x3c THUMB Flash Debug/../../obj/flash.o
+                0x000002fc       0x3c THUMB Flash Debug/../../obj/flash.o
  .text.FlashWriteBlock
-                0x00000330       0x58 THUMB Flash Debug/../../obj/flash.o
+                0x00000338       0x58 THUMB Flash Debug/../../obj/flash.o
  .text.FlashSwitchBlock
-                0x00000388       0x58 THUMB Flash Debug/../../obj/flash.o
+                0x00000390       0x58 THUMB Flash Debug/../../obj/flash.o
  .text.FlashAddToBlock
-                0x000003e0       0xa0 THUMB Flash Debug/../../obj/flash.o
+                0x000003e8       0xa0 THUMB Flash Debug/../../obj/flash.o
  .text.FlashInit
-                0x00000480       0x24 THUMB Flash Debug/../../obj/flash.o
-                0x00000480                FlashInit
+                0x00000488       0x24 THUMB Flash Debug/../../obj/flash.o
+                0x00000488                FlashInit
  .text.FlashWrite
-                0x000004a4       0x54 THUMB Flash Debug/../../obj/flash.o
-                0x000004a4                FlashWrite
+                0x000004ac       0x54 THUMB Flash Debug/../../obj/flash.o
+                0x000004ac                FlashWrite
  .text.FlashErase
-                0x000004f8      0x13c THUMB Flash Debug/../../obj/flash.o
-                0x000004f8                FlashErase
+                0x00000500      0x124 THUMB Flash Debug/../../obj/flash.o
+                0x00000500                FlashErase
  .text.FlashWriteChecksum
-                0x00000634       0x48 THUMB Flash Debug/../../obj/flash.o
-                0x00000634                FlashWriteChecksum
+                0x00000624       0x48 THUMB Flash Debug/../../obj/flash.o
+                0x00000624                FlashWriteChecksum
  .text.FlashVerifyChecksum
-                0x0000067c       0x48 THUMB Flash Debug/../../obj/flash.o
-                0x0000067c                FlashVerifyChecksum
+                0x0000066c       0x48 THUMB Flash Debug/../../obj/flash.o
+                0x0000066c                FlashVerifyChecksum
  .text.FlashDone
-                0x000006c4       0x38 THUMB Flash Debug/../../obj/flash.o
-                0x000006c4                FlashDone
- .text.NvmInit  0x000006fc       0x10 THUMB Flash Debug/../../obj/nvm.o
-                0x000006fc                NvmInit
+                0x000006b4       0x38 THUMB Flash Debug/../../obj/flash.o
+                0x000006b4                FlashDone
+ .text.NvmInit  0x000006ec       0x10 THUMB Flash Debug/../../obj/nvm.o
+                0x000006ec                NvmInit
  .text.NvmWrite
-                0x0000070c       0x10 THUMB Flash Debug/../../obj/nvm.o
-                0x0000070c                NvmWrite
+                0x000006fc       0x10 THUMB Flash Debug/../../obj/nvm.o
+                0x000006fc                NvmWrite
  .text.NvmErase
-                0x0000071c       0x10 THUMB Flash Debug/../../obj/nvm.o
-                0x0000071c                NvmErase
+                0x0000070c       0x10 THUMB Flash Debug/../../obj/nvm.o
+                0x0000070c                NvmErase
  .text.NvmVerifyChecksum
-                0x0000072c       0x10 THUMB Flash Debug/../../obj/nvm.o
-                0x0000072c                NvmVerifyChecksum
- .text.NvmDone  0x0000073c       0x18 THUMB Flash Debug/../../obj/nvm.o
-                0x0000073c                NvmDone
+                0x0000071c       0x10 THUMB Flash Debug/../../obj/nvm.o
+                0x0000071c                NvmVerifyChecksum
+ .text.NvmDone  0x0000072c       0x18 THUMB Flash Debug/../../obj/nvm.o
+                0x0000072c                NvmDone
  .text.TimerInit
-                0x00000754       0x20 THUMB Flash Debug/../../obj/timer.o
-                0x00000754                TimerInit
+                0x00000744       0x20 THUMB Flash Debug/../../obj/timer.o
+                0x00000744                TimerInit
  .text.TimerReset
-                0x00000774        0xc THUMB Flash Debug/../../obj/timer.o
-                0x00000774                TimerReset
+                0x00000764        0xc THUMB Flash Debug/../../obj/timer.o
+                0x00000764                TimerReset
  .text.TimerUpdate
-                0x00000780       0x1c THUMB Flash Debug/../../obj/timer.o
-                0x00000780                TimerUpdate
+                0x00000770       0x1c THUMB Flash Debug/../../obj/timer.o
+                0x00000770                TimerUpdate
  .text.TimerGet
-                0x0000079c       0x18 THUMB Flash Debug/../../obj/timer.o
-                0x0000079c                TimerGet
+                0x0000078c       0x18 THUMB Flash Debug/../../obj/timer.o
+                0x0000078c                TimerGet
  .text.UartInit
-                0x000007b4       0xb8 THUMB Flash Debug/../../obj/uart.o
-                0x000007b4                UartInit
+                0x000007a4       0xb8 THUMB Flash Debug/../../obj/uart.o
+                0x000007a4                UartInit
  .text.UartTransmitPacket
-                0x0000086c       0x8c THUMB Flash Debug/../../obj/uart.o
-                0x0000086c                UartTransmitPacket
+                0x0000085c       0x8c THUMB Flash Debug/../../obj/uart.o
+                0x0000085c                UartTransmitPacket
  .text.UartReceivePacket
-                0x000008f8       0x7c THUMB Flash Debug/../../obj/uart.o
-                0x000008f8                UartReceivePacket
+                0x000008e8       0x7c THUMB Flash Debug/../../obj/uart.o
+                0x000008e8                UartReceivePacket
  .text.AssertFailure
-                0x00000974       0x1c THUMB Flash Debug/../../obj/assert.o
-                0x00000974                AssertFailure
+                0x00000964       0x1c THUMB Flash Debug/../../obj/assert.o
+                0x00000964                AssertFailure
  .text.BackDoorCheck
-                0x00000990       0x3c THUMB Flash Debug/../../obj/backdoor.o
-                0x00000990                BackDoorCheck
+                0x00000980       0x40 THUMB Flash Debug/../../obj/backdoor.o
+                0x00000980                BackDoorCheck
  .text.BackDoorInit
-                0x000009cc       0x20 THUMB Flash Debug/../../obj/backdoor.o
-                0x000009cc                BackDoorInit
+                0x000009c0       0x28 THUMB Flash Debug/../../obj/backdoor.o
+                0x000009c0                BackDoorInit
  .text.BootInit
-                0x000009ec       0x28 THUMB Flash Debug/../../obj/boot.o
-                0x000009ec                BootInit
+                0x000009e8       0x30 THUMB Flash Debug/../../obj/boot.o
+                0x000009e8                BootInit
  .text.BootTask
-                0x00000a14       0x20 THUMB Flash Debug/../../obj/boot.o
-                0x00000a14                BootTask
- .text.ComInit  0x00000a34       0x38 THUMB Flash Debug/../../obj/com.o
-                0x00000a34                ComInit
- .text.ComTask  0x00000a6c       0x24 THUMB Flash Debug/../../obj/com.o
-                0x00000a6c                ComTask
- .text.ComFree  0x00000a90        0x2 THUMB Flash Debug/../../obj/com.o
-                0x00000a90                ComFree
- *fill*         0x00000a92        0x2 00
+                0x00000a18       0x28 THUMB Flash Debug/../../obj/boot.o
+                0x00000a18                BootTask
+ .text.ComInit  0x00000a40       0x38 THUMB Flash Debug/../../obj/com.o
+                0x00000a40                ComInit
+ .text.ComTask  0x00000a78       0x24 THUMB Flash Debug/../../obj/com.o
+                0x00000a78                ComTask
+ .text.ComFree  0x00000a9c        0x2 THUMB Flash Debug/../../obj/com.o
+                0x00000a9c                ComFree
+ *fill*         0x00000a9e        0x2 00
  .text.ComTransmitPacket
-                0x00000a94       0x18 THUMB Flash Debug/../../obj/com.o
-                0x00000a94                ComTransmitPacket
+                0x00000aa0       0x18 THUMB Flash Debug/../../obj/com.o
+                0x00000aa0                ComTransmitPacket
  .text.ComSetConnectEntryState
-                0x00000aac        0xc THUMB Flash Debug/../../obj/com.o
-                0x00000aac                ComSetConnectEntryState
+                0x00000ab8        0xc THUMB Flash Debug/../../obj/com.o
+                0x00000ab8                ComSetConnectEntryState
  .text.ComIsConnected
-                0x00000ab8       0x10 THUMB Flash Debug/../../obj/com.o
-                0x00000ab8                ComIsConnected
- .text.CopInit  0x00000ac8        0x2 THUMB Flash Debug/../../obj/cop.o
-                0x00000ac8                CopInit
+                0x00000ac4       0x10 THUMB Flash Debug/../../obj/com.o
+                0x00000ac4                ComIsConnected
+ .text.CopInit  0x00000ad4        0x2 THUMB Flash Debug/../../obj/cop.o
+                0x00000ad4                CopInit
  .text.CopService
-                0x00000aca        0x2 THUMB Flash Debug/../../obj/cop.o
-                0x00000aca                CopService
+                0x00000ad6        0x2 THUMB Flash Debug/../../obj/cop.o
+                0x00000ad6                CopService
  .text.XcpSetCtoError
-                0x00000acc       0x14 THUMB Flash Debug/../../obj/xcp.o
- .text.XcpInit  0x00000ae0       0x1c THUMB Flash Debug/../../obj/xcp.o
-                0x00000ae0                XcpInit
+                0x00000ad8       0x14 THUMB Flash Debug/../../obj/xcp.o
+ .text.XcpInit  0x00000aec       0x1c THUMB Flash Debug/../../obj/xcp.o
+                0x00000aec                XcpInit
  .text.XcpIsConnected
-                0x00000afc       0x10 THUMB Flash Debug/../../obj/xcp.o
-                0x00000afc                XcpIsConnected
+                0x00000b08       0x10 THUMB Flash Debug/../../obj/xcp.o
+                0x00000b08                XcpIsConnected
  .text.XcpPacketTransmitted
-                0x00000b0c       0x10 THUMB Flash Debug/../../obj/xcp.o
-                0x00000b0c                XcpPacketTransmitted
+                0x00000b18       0x10 THUMB Flash Debug/../../obj/xcp.o
+                0x00000b18                XcpPacketTransmitted
  .text.XcpPacketReceived
-                0x00000b1c      0x210 THUMB Flash Debug/../../obj/xcp.o
-                0x00000b1c                XcpPacketReceived
+                0x00000b28      0x204 THUMB Flash Debug/../../obj/xcp.o
+                0x00000b28                XcpPacketReceived
  .text.SystemHFClockGet
                 0x00000d2c       0x98 THUMB Flash Debug/../../obj/system_efm32.o
                 0x00000d2c                SystemHFClockGet
  .text.SystemCoreClockGet
-                0x00000dc4       0x24 THUMB Flash Debug/../../obj/system_efm32.o
+                0x00000dc4       0x28 THUMB Flash Debug/../../obj/system_efm32.o
                 0x00000dc4                SystemCoreClockGet
  .text.SystemInit
-                0x00000de8        0x2 THUMB Flash Debug/../../obj/system_efm32.o
-                0x00000de8                SystemInit
+                0x00000dec        0x2 THUMB Flash Debug/../../obj/system_efm32.o
+                0x00000dec                SystemInit
  .text.SystemLFRCOClockGet
-                0x00000dea        0x6 THUMB Flash Debug/../../obj/system_efm32.o
-                0x00000dea                SystemLFRCOClockGet
+                0x00000dee        0x6 THUMB Flash Debug/../../obj/system_efm32.o
+                0x00000dee                SystemLFRCOClockGet
  .text.SystemLFXOClockGet
-                0x00000df0        0xc THUMB Flash Debug/../../obj/system_efm32.o
-                0x00000df0                SystemLFXOClockGet
+                0x00000df4        0xc THUMB Flash Debug/../../obj/system_efm32.o
+                0x00000df4                SystemLFXOClockGet
  .text.CMU_FlashWaitStateMax
-                0x00000dfc       0x30 THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x00000e00       0x30 THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_FlashWaitStateControl
-                0x00000e2c       0x54 THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x00000e30       0x54 THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_Sync
-                0x00000e80       0x14 THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x00000e84       0x14 THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_LFClkGet
-                0x00000e94       0x4c THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x00000e98       0x48 THUMB Flash Debug/../../obj/efm32_cmu.o
  .text.CMU_ClockDivSet
                 0x00000ee0      0x12c THUMB Flash Debug/../../obj/efm32_cmu.o
                 0x00000ee0                CMU_ClockDivSet
@@ -723,11 +718,11 @@ Linker script and memory map
                 0x0000100c       0x70 THUMB Flash Debug/../../obj/efm32_cmu.o
                 0x0000100c                CMU_ClockEnable
  .text.CMU_ClockSelectGet
-                0x0000107c       0x70 THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x0000107c       0x6c THUMB Flash Debug/../../obj/efm32_cmu.o
                 0x0000107c                CMU_ClockSelectGet
  .text.CMU_ClockFreqGet
-                0x000010ec      0x138 THUMB Flash Debug/../../obj/efm32_cmu.o
-                0x000010ec                CMU_ClockFreqGet
+                0x000010e8      0x13c THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x000010e8                CMU_ClockFreqGet
  .text.CMU_OscillatorEnable
                 0x00001224       0x54 THUMB Flash Debug/../../obj/efm32_cmu.o
                 0x00001224                CMU_OscillatorEnable
@@ -741,120 +736,122 @@ Linker script and memory map
                 0x00001354       0x18 THUMB Flash Debug/../../obj/efm32_gpio.o
                 0x00001354                GPIO_DriveModeSet
  .text.GPIO_PinModeSet
-                0x0000136c       0x7a THUMB Flash Debug/../../obj/efm32_gpio.o
+                0x0000136c       0x80 THUMB Flash Debug/../../obj/efm32_gpio.o
                 0x0000136c                GPIO_PinModeSet
  .text.LEUART_Sync
-                0x000013e6        0xe THUMB Flash Debug/../../obj/efm32_leuart.o
+                0x000013ec        0xe THUMB Flash Debug/../../obj/efm32_leuart.o
+ *fill*         0x000013fa        0x2 00
  .text.LEUART_BaudrateSet
-                0x000013f4       0x50 THUMB Flash Debug/../../obj/efm32_leuart.o
-                0x000013f4                LEUART_BaudrateSet
+                0x000013fc       0x4c THUMB Flash Debug/../../obj/efm32_leuart.o
+                0x000013fc                LEUART_BaudrateSet
  .text.LEUART_Enable
-                0x00001444       0x1c THUMB Flash Debug/../../obj/efm32_leuart.o
-                0x00001444                LEUART_Enable
+                0x00001448       0x1c THUMB Flash Debug/../../obj/efm32_leuart.o
+                0x00001448                LEUART_Enable
  .text.LEUART_FreezeEnable
-                0x00001460       0x14 THUMB Flash Debug/../../obj/efm32_leuart.o
-                0x00001460                LEUART_FreezeEnable
+                0x00001464       0x14 THUMB Flash Debug/../../obj/efm32_leuart.o
+                0x00001464                LEUART_FreezeEnable
  .text.LEUART_Init
-                0x00001474       0x50 THUMB Flash Debug/../../obj/efm32_leuart.o
-                0x00001474                LEUART_Init
+                0x00001478       0x50 THUMB Flash Debug/../../obj/efm32_leuart.o
+                0x00001478                LEUART_Init
  .text.LEUART_Rx
-                0x000014c4        0xc THUMB Flash Debug/../../obj/efm32_leuart.o
-                0x000014c4                LEUART_Rx
+                0x000014c8        0xc THUMB Flash Debug/../../obj/efm32_leuart.o
+                0x000014c8                LEUART_Rx
  .text.LEUART_Tx
-                0x000014d0       0x1c THUMB Flash Debug/../../obj/efm32_leuart.o
-                0x000014d0                LEUART_Tx
+                0x000014d4       0x1c THUMB Flash Debug/../../obj/efm32_leuart.o
+                0x000014d4                LEUART_Tx
  .text.MSC_Init
-                0x000014ec       0x20 THUMB Flash Debug/../../obj/efm32_msc.o
-                0x000014ec                MSC_Init
+                0x000014f0       0x20 THUMB Flash Debug/../../obj/efm32_msc.o
+                0x000014f0                MSC_Init
  .text.MSC_Deinit
-                0x0000150c       0x1c THUMB Flash Debug/../../obj/efm32_msc.o
-                0x0000150c                MSC_Deinit
+                0x00001510       0x1c THUMB Flash Debug/../../obj/efm32_msc.o
+                0x00001510                MSC_Deinit
  .text.SYSTEM_ChipRevisionGet
-                0x00001528       0x20 THUMB Flash Debug/../../obj/efm32_system.o
-                0x00001528                SYSTEM_ChipRevisionGet
+                0x0000152c       0x20 THUMB Flash Debug/../../obj/efm32_system.o
+                0x0000152c                SYSTEM_ChipRevisionGet
  .text.startup.main
-                0x00001548      0x1e0 THUMB Flash Debug/../../obj/main.o
-                0x00001548                main
-                0x00001728                __text_end__ = (__text_start__ + SIZEOF (.text))
-                0x00001728                __text_load_end__ = __text_end__
+                0x0000154c      0x1e0 THUMB Flash Debug/../../obj/main.o
+                0x0000154c                main
+                0x0000172c                __text_end__ = (__text_start__ + SIZEOF (.text))
+                0x0000172c                __text_load_end__ = __text_end__
 
 .vfp11_veneer   0x00000000        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
 
 .v4_bx          0x00000000        0x0
  .v4_bx         0x00000000        0x0 linker stubs
-                0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .text is too large to fit in FLASH memory segment)
-                0x00001728                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
+                0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= __FLASH_segment_end__)), error: .text is too large to fit in FLASH memory segment)
+                0x0000172c                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
 
-.dtors          0x00001728        0x0
-                0x00001728                __dtors_start__ = .
+.dtors          0x0000172c        0x0
+                0x0000172c                __dtors_start__ = .
  *(SORT(.dtors.*))
  *(.dtors)
  *(.fini_array .fini_array.*)
-                0x00001728                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
-                0x00001728                __dtors_load_end__ = __dtors_end__
-                0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .dtors is too large to fit in FLASH memory segment)
-                0x00001728                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
+                0x0000172c                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
+                0x0000172c                __dtors_load_end__ = __dtors_end__
+                0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= __FLASH_segment_end__)), error: .dtors is too large to fit in FLASH memory segment)
+                0x0000172c                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
 
-.ctors          0x00001728        0x0
-                0x00001728                __ctors_start__ = .
+.ctors          0x0000172c        0x0
+                0x0000172c                __ctors_start__ = .
  *(SORT(.ctors.*))
  *(.ctors)
  *(.init_array .init_array.*)
-                0x00001728                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
-                0x00001728                __ctors_load_end__ = __ctors_end__
-                0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .ctors is too large to fit in FLASH memory segment)
-                0x00001728                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
+                0x0000172c                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
+                0x0000172c                __ctors_load_end__ = __ctors_end__
+                0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= __FLASH_segment_end__)), error: .ctors is too large to fit in FLASH memory segment)
+                0x0000172c                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
 
-.rodata         0x00001728      0x1f9
-                0x00001728                __rodata_start__ = .
+.rodata         0x0000172c      0x1ef
+                0x0000172c                __rodata_start__ = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
  .rodata.str1.1
-                0x00001728       0x98 THUMB Flash Debug/../../obj/vectors.o
+                0x0000172c       0x92 THUMB Flash Debug/../../obj/vectors.o
+ *fill*         0x000017be        0x2 00
  .rodata.flashLayout
                 0x000017c0       0xb4 THUMB Flash Debug/../../obj/flash.o
  .rodata        0x00001874       0x18 THUMB Flash Debug/../../obj/uart.o
  .rodata.str1.1
-                0x0000188c       0x8a THUMB Flash Debug/../../obj/uart.o
+                0x0000188c       0x84 THUMB Flash Debug/../../obj/uart.o
  .rodata.xcpStationId
-                0x00001916        0x8 THUMB Flash Debug/../../obj/xcp.o
+                0x00001910        0x8 THUMB Flash Debug/../../obj/xcp.o
  .rodata.CSWTCH.5
-                0x0000191e        0x3 THUMB Flash Debug/../../obj/efm32_cmu.o
-                0x00001921                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
-                0x00001921                __rodata_load_end__ = __rodata_end__
-                0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .rodata is too large to fit in FLASH memory segment)
-                0x00001924                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
+                0x00001918        0x3 THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x0000191b                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
+                0x0000191b                __rodata_load_end__ = __rodata_end__
+                0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= __FLASH_segment_end__)), error: .rodata is too large to fit in FLASH memory segment)
+                0x0000191c                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
 
-.ARM.exidx      0x00001924        0x0
-                0x00001924                __ARM.exidx_start__ = .
-                0x00001924                __exidx_start = __ARM.exidx_start__
+.ARM.exidx      0x0000191c        0x0
+                0x0000191c                __ARM.exidx_start__ = .
+                0x0000191c                __exidx_start = __ARM.exidx_start__
  *(.ARM.exidx .ARM.exidx.*)
-                0x00001924                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
-                0x00001924                __exidx_end = __ARM.exidx_end__
-                0x00001924                __ARM.exidx_load_end__ = __ARM.exidx_end__
-                0x00000001                . = ASSERT (((__ARM.exidx_end__ >= __FLASH_segment_start__) && (__ARM.exidx_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .ARM.exidx is too large to fit in FLASH memory segment)
-                0x00001924                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
+                0x0000191c                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
+                0x0000191c                __exidx_end = __ARM.exidx_end__
+                0x0000191c                __ARM.exidx_load_end__ = __ARM.exidx_end__
+                0x00000001                . = ASSERT (((__ARM.exidx_end__ >= __FLASH_segment_start__) && (__ARM.exidx_end__ <= __FLASH_segment_end__)), error: .ARM.exidx is too large to fit in FLASH memory segment)
+                0x0000191c                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
 
-.fast           0x20000000      0x138 load address 0x00001924
+.fast           0x20000000      0x138 load address 0x0000191c
                 0x20000000                __fast_start__ = .
  *(.fast .fast.*)
  .fast          0x20000000      0x138 THUMB Flash Debug/../../obj/efm32_msc.o
                 0x20000000                MSC_ErasePage
                 0x20000078                MSC_WriteWord
                 0x20000138                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
-                0x00001a5c                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
-                0x00000001                . = ASSERT ((((__fast_load_start__ + SIZEOF (.fast)) >= __FLASH_segment_start__) && ((__fast_load_start__ + SIZEOF (.fast)) <= (__FLASH_segment_start__ + 0x20000))), error: .fast is too large to fit in FLASH memory segment)
+                0x00001a54                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
+                0x00000001                . = ASSERT (((__fast_load_end__ >= __FLASH_segment_start__) && (__fast_load_end__ <= __FLASH_segment_end__)), error: .fast is too large to fit in FLASH memory segment)
 
-.fast_run       0x20000000      0x138 load address 0x00001924
+.fast_run       0x20000000      0x138 load address 0x0000191c
                 0x20000000                __fast_run_start__ = .
                 0x20000138                . = MAX ((__fast_run_start__ + SIZEOF (.fast)), .)
  *fill*         0x20000000      0x138 00
                 0x20000138                __fast_run_end__ = (__fast_run_start__ + SIZEOF (.fast_run))
                 0x20000138                __fast_run_load_end__ = __fast_run_end__
-                0x00000001                . = ASSERT (((__fast_run_end__ >= __RAM_segment_start__) && (__fast_run_end__ <= (__RAM_segment_start__ + 0x4000))), error: .fast_run is too large to fit in RAM memory segment)
-                0x00001a5c                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
+                0x00000001                . = ASSERT (((__fast_run_end__ >= __SRAM_segment_start__) && (__fast_run_end__ <= __SRAM_segment_end__)), error: .fast_run is too large to fit in SRAM memory segment)
+                0x00001a54                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
 
-.data           0x20000138        0x8 load address 0x00001a5c
+.data           0x20000138        0x8 load address 0x00001a54
                 0x20000138                __data_start__ = .
  *(.data .data.* .gnu.linkonce.d.*)
  .data.SystemLFXOClock
@@ -862,19 +859,19 @@ Linker script and memory map
  .data.SystemHFXOClock
                 0x2000013c        0x4 THUMB Flash Debug/../../obj/system_efm32.o
                 0x20000140                __data_end__ = (__data_start__ + SIZEOF (.data))
-                0x00001a64                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
-                0x00000001                . = ASSERT ((((__data_load_start__ + SIZEOF (.data)) >= __FLASH_segment_start__) && ((__data_load_start__ + SIZEOF (.data)) <= (__FLASH_segment_start__ + 0x20000))), error: .data is too large to fit in FLASH memory segment)
+                0x00001a5c                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
+                0x00000001                . = ASSERT (((__data_load_end__ >= __FLASH_segment_start__) && (__data_load_end__ <= __FLASH_segment_end__)), error: .data is too large to fit in FLASH memory segment)
 
-.data_run       0x20000138        0x8 load address 0x00001a5c
+.data_run       0x20000138        0x8 load address 0x00001a54
                 0x20000138                __data_run_start__ = .
                 0x20000140                . = MAX ((__data_run_start__ + SIZEOF (.data)), .)
  *fill*         0x20000138        0x8 00
                 0x20000140                __data_run_end__ = (__data_run_start__ + SIZEOF (.data_run))
                 0x20000140                __data_run_load_end__ = __data_run_end__
-                0x00000001                . = ASSERT (((__data_run_end__ >= __RAM_segment_start__) && (__data_run_end__ <= (__RAM_segment_start__ + 0x4000))), error: .data_run is too large to fit in RAM memory segment)
+                0x00000001                . = ASSERT (((__data_run_end__ >= __SRAM_segment_start__) && (__data_run_end__ <= __SRAM_segment_end__)), error: .data_run is too large to fit in SRAM memory segment)
                 0x20000140                __bss_load_start__ = ALIGN (__data_run_end__, 0x4)
 
-.bss            0x20000140      0x4ee
+.bss            0x20000140      0x4f6
                 0x20000140                __bss_start__ = .
  *(.bss .bss.* .gnu.linkonce.b.*)
  .bss.bootBlockInfo
@@ -883,11 +880,11 @@ Linker script and memory map
                 0x20000344      0x204 THUMB Flash Debug/../../obj/flash.o
  .bss.millisecond_counter
                 0x20000548        0x2 THUMB Flash Debug/../../obj/timer.o
- .bss.xcpCtoReqPacket.2157
+ .bss.xcpCtoReqPacket.2187
                 0x2000054a       0x41 THUMB Flash Debug/../../obj/uart.o
- .bss.xcpCtoRxLength.2158
+ .bss.xcpCtoRxLength.2188
                 0x2000058b        0x1 THUMB Flash Debug/../../obj/uart.o
- .bss.xcpCtoRxInProgress.2159
+ .bss.xcpCtoRxInProgress.2189
                 0x2000058c        0x1 THUMB Flash Debug/../../obj/uart.o
  *fill*         0x2000058d        0x3 00
  .bss.assert_failure_file
@@ -896,83 +893,86 @@ Linker script and memory map
                 0x20000594        0x4 THUMB Flash Debug/../../obj/assert.o
  .bss.backdoorOpen
                 0x20000598        0x1 THUMB Flash Debug/../../obj/backdoor.o
+ *fill*         0x20000599        0x3 00
+ .bss.backdoorOpenTime
+                0x2000059c        0x4 THUMB Flash Debug/../../obj/backdoor.o
  .bss.comEntryStateConnect
-                0x20000599        0x1 THUMB Flash Debug/../../obj/com.o
- .bss.xcpCtoReqPacket.859
-                0x2000059a       0x40 THUMB Flash Debug/../../obj/com.o
- *fill*         0x200005da        0x2 00
- .bss.xcpInfo   0x200005dc       0x4c THUMB Flash Debug/../../obj/xcp.o
+                0x200005a0        0x1 THUMB Flash Debug/../../obj/com.o
+ .bss.xcpCtoReqPacket.889
+                0x200005a1       0x40 THUMB Flash Debug/../../obj/com.o
+ *fill*         0x200005e1        0x3 00
+ .bss.xcpInfo   0x200005e4       0x4c THUMB Flash Debug/../../obj/xcp.o
  .bss.SystemCoreClock
-                0x20000628        0x4 THUMB Flash Debug/../../obj/system_efm32.o
-                0x20000628                SystemCoreClock
+                0x20000630        0x4 THUMB Flash Debug/../../obj/system_efm32.o
+                0x20000630                SystemCoreClock
  .bss.cmuStatus
-                0x2000062c        0x2 THUMB Flash Debug/../../obj/efm32_emu.o
+                0x20000634        0x2 THUMB Flash Debug/../../obj/efm32_emu.o
  *(COMMON)
-                0x2000062e                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
-                0x2000062e                __bss_load_end__ = __bss_end__
-                0x00000001                . = ASSERT (((__bss_end__ >= __RAM_segment_start__) && (__bss_end__ <= (__RAM_segment_start__ + 0x4000))), error: .bss is too large to fit in RAM memory segment)
-                0x20000630                __non_init_load_start__ = ALIGN (__bss_end__, 0x4)
+                0x20000636                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
+                0x20000636                __bss_load_end__ = __bss_end__
+                0x00000001                . = ASSERT (((__bss_end__ >= __SRAM_segment_start__) && (__bss_end__ <= __SRAM_segment_end__)), error: .bss is too large to fit in SRAM memory segment)
+                0x20000638                __non_init_load_start__ = ALIGN (__bss_end__, 0x4)
 
-.non_init       0x20000630        0x0
-                0x20000630                __non_init_start__ = .
+.non_init       0x20000638        0x0
+                0x20000638                __non_init_start__ = .
  *(.non_init .non_init.*)
-                0x20000630                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
-                0x20000630                __non_init_load_end__ = __non_init_end__
-                0x00000001                . = ASSERT (((__non_init_end__ >= __RAM_segment_start__) && (__non_init_end__ <= (__RAM_segment_start__ + 0x4000))), error: .non_init is too large to fit in RAM memory segment)
-                0x20000630                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
+                0x20000638                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
+                0x20000638                __non_init_load_end__ = __non_init_end__
+                0x00000001                . = ASSERT (((__non_init_end__ >= __SRAM_segment_start__) && (__non_init_end__ <= __SRAM_segment_end__)), error: .non_init is too large to fit in SRAM memory segment)
+                0x20000638                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
 
-.heap           0x20000630       0x80
-                0x20000630                __heap_start__ = .
+.heap           0x20000638       0x80
+                0x20000638                __heap_start__ = .
  *(.heap .heap.*)
-                0x200006b0                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
- *fill*         0x20000630       0x80 00
-                0x200006b0                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
-                0x200006b0                __heap_load_end__ = __heap_end__
-                0x00000001                . = ASSERT (((__heap_end__ >= __RAM_segment_start__) && (__heap_end__ <= (__RAM_segment_start__ + 0x4000))), error: .heap is too large to fit in RAM memory segment)
-                0x200006b0                __stack_load_start__ = ALIGN (__heap_end__, 0x4)
+                0x200006b8                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
+ *fill*         0x20000638       0x80 00
+                0x200006b8                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
+                0x200006b8                __heap_load_end__ = __heap_end__
+                0x00000001                . = ASSERT (((__heap_end__ >= __SRAM_segment_start__) && (__heap_end__ <= __SRAM_segment_end__)), error: .heap is too large to fit in SRAM memory segment)
+                0x200006b8                __stack_load_start__ = ALIGN (__heap_end__, 0x4)
 
-.stack          0x200006b0      0x100
-                0x200006b0                __stack_start__ = .
+.stack          0x200006b8      0x100
+                0x200006b8                __stack_start__ = .
  *(.stack .stack.*)
-                0x200007b0                . = ALIGN (MAX ((__stack_start__ + __STACKSIZE__), .), 0x4)
- *fill*         0x200006b0      0x100 00
-                0x200007b0                __stack_end__ = (__stack_start__ + SIZEOF (.stack))
-                0x200007b0                __stack_load_end__ = __stack_end__
-                0x00000001                . = ASSERT (((__stack_end__ >= __RAM_segment_start__) && (__stack_end__ <= (__RAM_segment_start__ + 0x4000))), error: .stack is too large to fit in RAM memory segment)
-                0x200007b0                __stack_process_load_start__ = ALIGN (__stack_end__, 0x4)
+                0x200007b8                . = ALIGN (MAX ((__stack_start__ + __STACKSIZE__), .), 0x4)
+ *fill*         0x200006b8      0x100 00
+                0x200007b8                __stack_end__ = (__stack_start__ + SIZEOF (.stack))
+                0x200007b8                __stack_load_end__ = __stack_end__
+                0x00000001                . = ASSERT (((__stack_end__ >= __SRAM_segment_start__) && (__stack_end__ <= __SRAM_segment_end__)), error: .stack is too large to fit in SRAM memory segment)
+                0x200007b8                __stack_process_load_start__ = ALIGN (__stack_end__, 0x4)
 
-.stack_process  0x200007b0        0x0
-                0x200007b0                __stack_process_start__ = .
+.stack_process  0x200007b8        0x0
+                0x200007b8                __stack_process_start__ = .
  *(.stack_process .stack_process.*)
-                0x200007b0                . = ALIGN (MAX ((__stack_process_start__ + __STACKSIZE_PROCESS__), .), 0x4)
-                0x200007b0                __stack_process_end__ = (__stack_process_start__ + SIZEOF (.stack_process))
-                0x200007b0                __stack_process_load_end__ = __stack_process_end__
-                0x00000001                . = ASSERT (((__stack_process_end__ >= __RAM_segment_start__) && (__stack_process_end__ <= (__RAM_segment_start__ + 0x4000))), error: .stack_process is too large to fit in RAM memory segment)
-                0x200007b0                __tbss_load_start__ = ALIGN (__stack_process_end__, 0x4)
+                0x200007b8                . = ALIGN (MAX ((__stack_process_start__ + __STACKSIZE_PROCESS__), .), 0x4)
+                0x200007b8                __stack_process_end__ = (__stack_process_start__ + SIZEOF (.stack_process))
+                0x200007b8                __stack_process_load_end__ = __stack_process_end__
+                0x00000001                . = ASSERT (((__stack_process_end__ >= __SRAM_segment_start__) && (__stack_process_end__ <= __SRAM_segment_end__)), error: .stack_process is too large to fit in SRAM memory segment)
+                0x200007b8                __tbss_load_start__ = ALIGN (__stack_process_end__, 0x4)
 
-.tbss           0x200007b0        0x0
-                0x200007b0                __tbss_start__ = .
+.tbss           0x200007b8        0x0
+                0x200007b8                __tbss_start__ = .
  *(.tbss .tbss.*)
-                0x200007b0                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
-                0x200007b0                __tbss_load_end__ = __tbss_end__
-                0x00000001                . = ASSERT (((__tbss_end__ >= __RAM_segment_start__) && (__tbss_end__ <= (__RAM_segment_start__ + 0x4000))), error: .tbss is too large to fit in RAM memory segment)
-                0x00001a64                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
+                0x200007b8                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
+                0x200007b8                __tbss_load_end__ = __tbss_end__
+                0x00000001                . = ASSERT (((__tbss_end__ >= __SRAM_segment_start__) && (__tbss_end__ <= __SRAM_segment_end__)), error: .tbss is too large to fit in SRAM memory segment)
+                0x00001a5c                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
 
-.tdata          0x200007b0        0x0 load address 0x00001a64
-                0x200007b0                __tdata_start__ = .
+.tdata          0x200007b8        0x0 load address 0x00001a5c
+                0x200007b8                __tdata_start__ = .
  *(.tdata .tdata.*)
-                0x200007b0                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
-                0x00001a64                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
-                0x00001a64                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
-                0x00000001                . = ASSERT ((((__tdata_load_start__ + SIZEOF (.tdata)) >= __FLASH_segment_start__) && ((__tdata_load_start__ + SIZEOF (.tdata)) <= (__FLASH_segment_start__ + 0x20000))), error: .tdata is too large to fit in FLASH memory segment)
+                0x200007b8                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
+                0x00001a5c                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
+                0x00001a5c                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
+                0x00000001                . = ASSERT (((__tdata_load_end__ >= __FLASH_segment_start__) && (__tdata_load_end__ <= __FLASH_segment_end__)), error: .tdata is too large to fit in FLASH memory segment)
 
-.tdata_run      0x200007b0        0x0
-                0x200007b0                __tdata_run_start__ = .
-                0x200007b0                . = MAX ((__tdata_run_start__ + SIZEOF (.tdata)), .)
-                0x200007b0                __tdata_run_end__ = (__tdata_run_start__ + SIZEOF (.tdata_run))
-                0x200007b0                __tdata_run_load_end__ = __tdata_run_end__
-                0x200007b0                __RAM_segment_used_end__ = (ALIGN (__tbss_end__, 0x4) + SIZEOF (.tdata_run))
-                0x00000001                . = ASSERT (((__tdata_run_end__ >= __RAM_segment_start__) && (__tdata_run_end__ <= (__RAM_segment_start__ + 0x4000))), error: .tdata_run is too large to fit in RAM memory segment)
+.tdata_run      0x200007b8        0x0
+                0x200007b8                __tdata_run_start__ = .
+                0x200007b8                . = MAX ((__tdata_run_start__ + SIZEOF (.tdata)), .)
+                0x200007b8                __tdata_run_end__ = (__tdata_run_start__ + SIZEOF (.tdata_run))
+                0x200007b8                __tdata_run_load_end__ = __tdata_run_end__
+                0x200007b8                __SRAM_segment_used_end__ = (ALIGN (__tbss_end__, 0x4) + SIZEOF (.tdata_run))
+                0x00000001                . = ASSERT (((__tdata_run_end__ >= __SRAM_segment_start__) && (__tdata_run_end__ <= __SRAM_segment_end__)), error: .tdata_run is too large to fit in SRAM memory segment)
 START GROUP
 LOAD THUMB Flash Debug/../../obj/cstart.o
 LOAD THUMB Flash Debug/../../obj/vectors.o
@@ -1118,198 +1118,198 @@ OUTPUT(THUMB Flash Debug/../../bin/openbtl_olimex_efm32g880.elf elf32-littlearm)
  .ARM.attributes
                 0x000002d0       0x10 THUMB Flash Debug/../../obj/main.o
 
-.comment        0x00000000       0x11
- .comment       0x00000000       0x11 THUMB Flash Debug/../../obj/vectors.o
-                                 0x12 (size before relaxing)
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/cpu.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/flash.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/nvm.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/timer.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/uart.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/assert.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/backdoor.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/boot.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/com.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/cop.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/xcp.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/core_cm3.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/system_efm32.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_acmp.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_adc.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_aes.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_assert.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_cmu.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_dac.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_dbg.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_dma.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_ebi.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_emu.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_gpio.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_i2c.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_int.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_lcd.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_lesense.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_letimer.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_leuart.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_mpu.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_msc.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_opamp.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_pcnt.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_prs.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_rmu.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_rtc.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_system.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_timer.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_usart.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_vcmp.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/efm32_wdog.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/hooks.o
- .comment       0x00000000       0x12 THUMB Flash Debug/../../obj/main.o
+.comment        0x00000000       0x4e
+ .comment       0x00000000       0x4e THUMB Flash Debug/../../obj/vectors.o
+                                 0x4f (size before relaxing)
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/cpu.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/flash.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/nvm.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/timer.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/uart.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/assert.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/backdoor.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/boot.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/com.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/cop.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/xcp.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/core_cm3.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/system_efm32.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_acmp.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_adc.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_aes.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_assert.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_cmu.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_dac.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_dbg.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_dma.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_ebi.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_emu.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_gpio.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_i2c.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_int.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_lcd.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_lesense.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_letimer.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_leuart.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_mpu.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_msc.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_opamp.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_pcnt.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_prs.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_rmu.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_rtc.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_system.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_timer.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_usart.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_vcmp.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/efm32_wdog.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/hooks.o
+ .comment       0x00000000       0x4f THUMB Flash Debug/../../obj/main.o
 
-.debug_line     0x00000000     0x8909
- .debug_line    0x00000000      0x170 THUMB Flash Debug/../../obj/cstart.o
- .debug_line    0x00000170      0x157 THUMB Flash Debug/../../obj/vectors.o
- .debug_line    0x000002c7       0xf9 THUMB Flash Debug/../../obj/cpu.o
- .debug_line    0x000003c0      0x40e THUMB Flash Debug/../../obj/flash.o
- .debug_line    0x000007ce      0x116 THUMB Flash Debug/../../obj/nvm.o
- .debug_line    0x000008e4      0x124 THUMB Flash Debug/../../obj/timer.o
- .debug_line    0x00000a08      0x3ba THUMB Flash Debug/../../obj/uart.o
- .debug_line    0x00000dc2      0x147 THUMB Flash Debug/../../obj/assert.o
- .debug_line    0x00000f09      0x161 THUMB Flash Debug/../../obj/backdoor.o
- .debug_line    0x0000106a       0xc5 THUMB Flash Debug/../../obj/boot.o
- .debug_line    0x0000112f      0x1c0 THUMB Flash Debug/../../obj/com.o
- .debug_line    0x000012ef       0xbd THUMB Flash Debug/../../obj/cop.o
- .debug_line    0x000013ac      0x24c THUMB Flash Debug/../../obj/xcp.o
- .debug_line    0x000015f8       0x1d THUMB Flash Debug/../../obj/core_cm3.o
- .debug_line    0x00001615      0x293 THUMB Flash Debug/../../obj/system_efm32.o
- .debug_line    0x000018a8      0x3bf THUMB Flash Debug/../../obj/efm32_acmp.o
- .debug_line    0x00001c67      0x3e6 THUMB Flash Debug/../../obj/efm32_adc.o
- .debug_line    0x0000204d      0xc40 THUMB Flash Debug/../../obj/efm32_aes.o
- .debug_line    0x00002c8d        0x0 THUMB Flash Debug/../../obj/efm32_assert.o
- .debug_line    0x00002c8d      0x707 THUMB Flash Debug/../../obj/efm32_cmu.o
- .debug_line    0x00003394      0x391 THUMB Flash Debug/../../obj/efm32_dac.o
- .debug_line    0x00003725      0x309 THUMB Flash Debug/../../obj/efm32_dbg.o
- .debug_line    0x00003a2e      0x521 THUMB Flash Debug/../../obj/efm32_dma.o
- .debug_line    0x00003f4f      0x400 THUMB Flash Debug/../../obj/efm32_ebi.o
- .debug_line    0x0000434f      0x3dd THUMB Flash Debug/../../obj/efm32_emu.o
- .debug_line    0x0000472c      0x417 THUMB Flash Debug/../../obj/efm32_gpio.o
- .debug_line    0x00004b43      0x4a0 THUMB Flash Debug/../../obj/efm32_i2c.o
- .debug_line    0x00004fe3      0x213 THUMB Flash Debug/../../obj/efm32_int.o
- .debug_line    0x000051f6      0x45c THUMB Flash Debug/../../obj/efm32_lcd.o
- .debug_line    0x00005652      0x107 THUMB Flash Debug/../../obj/efm32_lesense.o
- .debug_line    0x00005759      0x3dd THUMB Flash Debug/../../obj/efm32_letimer.o
- .debug_line    0x00005b36      0x419 THUMB Flash Debug/../../obj/efm32_leuart.o
- .debug_line    0x00005f4f      0x235 THUMB Flash Debug/../../obj/efm32_mpu.o
- .debug_line    0x00006184      0x37c THUMB Flash Debug/../../obj/efm32_msc.o
- .debug_line    0x00006500      0x107 THUMB Flash Debug/../../obj/efm32_opamp.o
- .debug_line    0x00006607      0x43c THUMB Flash Debug/../../obj/efm32_pcnt.o
- .debug_line    0x00006a43      0x2d0 THUMB Flash Debug/../../obj/efm32_prs.o
- .debug_line    0x00006d13      0x339 THUMB Flash Debug/../../obj/efm32_rmu.o
- .debug_line    0x0000704c      0x396 THUMB Flash Debug/../../obj/efm32_rtc.o
- .debug_line    0x000073e2      0x2fc THUMB Flash Debug/../../obj/efm32_system.o
- .debug_line    0x000076de      0x385 THUMB Flash Debug/../../obj/efm32_timer.o
- .debug_line    0x00007a63      0x4b6 THUMB Flash Debug/../../obj/efm32_usart.o
- .debug_line    0x00007f19      0x338 THUMB Flash Debug/../../obj/efm32_vcmp.o
- .debug_line    0x00008251      0x358 THUMB Flash Debug/../../obj/efm32_wdog.o
- .debug_line    0x000085a9       0x1d THUMB Flash Debug/../../obj/hooks.o
- .debug_line    0x000085c6      0x343 THUMB Flash Debug/../../obj/main.o
+.debug_line     0x00000000     0x868f
+ .debug_line    0x00000000      0x16a THUMB Flash Debug/../../obj/cstart.o
+ .debug_line    0x0000016a      0x14b THUMB Flash Debug/../../obj/vectors.o
+ .debug_line    0x000002b5       0xf6 THUMB Flash Debug/../../obj/cpu.o
+ .debug_line    0x000003ab      0x3ff THUMB Flash Debug/../../obj/flash.o
+ .debug_line    0x000007aa      0x110 THUMB Flash Debug/../../obj/nvm.o
+ .debug_line    0x000008ba      0x108 THUMB Flash Debug/../../obj/timer.o
+ .debug_line    0x000009c2      0x3a2 THUMB Flash Debug/../../obj/uart.o
+ .debug_line    0x00000d64      0x13b THUMB Flash Debug/../../obj/assert.o
+ .debug_line    0x00000e9f      0x156 THUMB Flash Debug/../../obj/backdoor.o
+ .debug_line    0x00000ff5       0xc1 THUMB Flash Debug/../../obj/boot.o
+ .debug_line    0x000010b6      0x1b4 THUMB Flash Debug/../../obj/com.o
+ .debug_line    0x0000126a       0xb7 THUMB Flash Debug/../../obj/cop.o
+ .debug_line    0x00001321      0x233 THUMB Flash Debug/../../obj/xcp.o
+ .debug_line    0x00001554       0x1d THUMB Flash Debug/../../obj/core_cm3.o
+ .debug_line    0x00001571      0x287 THUMB Flash Debug/../../obj/system_efm32.o
+ .debug_line    0x000017f8      0x3a7 THUMB Flash Debug/../../obj/efm32_acmp.o
+ .debug_line    0x00001b9f      0x3ce THUMB Flash Debug/../../obj/efm32_adc.o
+ .debug_line    0x00001f6d      0xd02 THUMB Flash Debug/../../obj/efm32_aes.o
+ .debug_line    0x00002c6f        0x0 THUMB Flash Debug/../../obj/efm32_assert.o
+ .debug_line    0x00002c6f      0x6e9 THUMB Flash Debug/../../obj/efm32_cmu.o
+ .debug_line    0x00003358      0x372 THUMB Flash Debug/../../obj/efm32_dac.o
+ .debug_line    0x000036ca      0x2f0 THUMB Flash Debug/../../obj/efm32_dbg.o
+ .debug_line    0x000039ba      0x50c THUMB Flash Debug/../../obj/efm32_dma.o
+ .debug_line    0x00003ec6      0x3e2 THUMB Flash Debug/../../obj/efm32_ebi.o
+ .debug_line    0x000042a8      0x3c5 THUMB Flash Debug/../../obj/efm32_emu.o
+ .debug_line    0x0000466d      0x3ff THUMB Flash Debug/../../obj/efm32_gpio.o
+ .debug_line    0x00004a6c      0x485 THUMB Flash Debug/../../obj/efm32_i2c.o
+ .debug_line    0x00004ef1      0x201 THUMB Flash Debug/../../obj/efm32_int.o
+ .debug_line    0x000050f2      0x440 THUMB Flash Debug/../../obj/efm32_lcd.o
+ .debug_line    0x00005532      0x101 THUMB Flash Debug/../../obj/efm32_lesense.o
+ .debug_line    0x00005633      0x3c5 THUMB Flash Debug/../../obj/efm32_letimer.o
+ .debug_line    0x000059f8      0x3ff THUMB Flash Debug/../../obj/efm32_leuart.o
+ .debug_line    0x00005df7      0x223 THUMB Flash Debug/../../obj/efm32_mpu.o
+ .debug_line    0x0000601a      0x364 THUMB Flash Debug/../../obj/efm32_msc.o
+ .debug_line    0x0000637e      0x101 THUMB Flash Debug/../../obj/efm32_opamp.o
+ .debug_line    0x0000647f      0x424 THUMB Flash Debug/../../obj/efm32_pcnt.o
+ .debug_line    0x000068a3      0x2b8 THUMB Flash Debug/../../obj/efm32_prs.o
+ .debug_line    0x00006b5b      0x321 THUMB Flash Debug/../../obj/efm32_rmu.o
+ .debug_line    0x00006e7c      0x37e THUMB Flash Debug/../../obj/efm32_rtc.o
+ .debug_line    0x000071fa      0x2e4 THUMB Flash Debug/../../obj/efm32_system.o
+ .debug_line    0x000074de      0x36d THUMB Flash Debug/../../obj/efm32_timer.o
+ .debug_line    0x0000784b      0x49d THUMB Flash Debug/../../obj/efm32_usart.o
+ .debug_line    0x00007ce8      0x31f THUMB Flash Debug/../../obj/efm32_vcmp.o
+ .debug_line    0x00008007      0x340 THUMB Flash Debug/../../obj/efm32_wdog.o
+ .debug_line    0x00008347       0x1d THUMB Flash Debug/../../obj/hooks.o
+ .debug_line    0x00008364      0x32b THUMB Flash Debug/../../obj/main.o
 
-.debug_info     0x00000000     0xe2e8
- .debug_info    0x00000000      0x120 THUMB Flash Debug/../../obj/cstart.o
- .debug_info    0x00000120       0xf1 THUMB Flash Debug/../../obj/vectors.o
- .debug_info    0x00000211      0x13a THUMB Flash Debug/../../obj/cpu.o
- .debug_info    0x0000034b      0x72a THUMB Flash Debug/../../obj/flash.o
- .debug_info    0x00000a75      0x15e THUMB Flash Debug/../../obj/nvm.o
- .debug_info    0x00000bd3      0x183 THUMB Flash Debug/../../obj/timer.o
- .debug_info    0x00000d56      0x7a6 THUMB Flash Debug/../../obj/uart.o
- .debug_info    0x000014fc       0xe4 THUMB Flash Debug/../../obj/assert.o
- .debug_info    0x000015e0       0xa4 THUMB Flash Debug/../../obj/backdoor.o
- .debug_info    0x00001684       0x88 THUMB Flash Debug/../../obj/boot.o
- .debug_info    0x0000170c      0x1b4 THUMB Flash Debug/../../obj/com.o
- .debug_info    0x000018c0       0x86 THUMB Flash Debug/../../obj/cop.o
- .debug_info    0x00001946      0x5d7 THUMB Flash Debug/../../obj/xcp.o
- .debug_info    0x00001f1d       0x5a THUMB Flash Debug/../../obj/core_cm3.o
- .debug_info    0x00001f77      0x429 THUMB Flash Debug/../../obj/system_efm32.o
- .debug_info    0x000023a0      0x5f6 THUMB Flash Debug/../../obj/efm32_acmp.o
- .debug_info    0x00002996      0xa57 THUMB Flash Debug/../../obj/efm32_adc.o
- .debug_info    0x000033ed     0x1532 THUMB Flash Debug/../../obj/efm32_aes.o
- .debug_info    0x0000491f     0x11a2 THUMB Flash Debug/../../obj/efm32_cmu.o
- .debug_info    0x00005ac1      0x809 THUMB Flash Debug/../../obj/efm32_dac.o
- .debug_info    0x000062ca      0x410 THUMB Flash Debug/../../obj/efm32_dbg.o
- .debug_info    0x000066da     0x10ad THUMB Flash Debug/../../obj/efm32_dma.o
- .debug_info    0x00007787      0x589 THUMB Flash Debug/../../obj/efm32_ebi.o
- .debug_info    0x00007d10      0x681 THUMB Flash Debug/../../obj/efm32_emu.o
- .debug_info    0x00008391      0x7cc THUMB Flash Debug/../../obj/efm32_gpio.o
- .debug_info    0x00008b5d      0x82a THUMB Flash Debug/../../obj/efm32_i2c.o
- .debug_info    0x00009387       0xb0 THUMB Flash Debug/../../obj/efm32_int.o
- .debug_info    0x00009437      0xaa1 THUMB Flash Debug/../../obj/efm32_lcd.o
- .debug_info    0x00009ed8       0x86 THUMB Flash Debug/../../obj/efm32_lesense.o
- .debug_info    0x00009f5e      0x59e THUMB Flash Debug/../../obj/efm32_letimer.o
- .debug_info    0x0000a4fc      0x78c THUMB Flash Debug/../../obj/efm32_leuart.o
- .debug_info    0x0000ac88      0x33f THUMB Flash Debug/../../obj/efm32_mpu.o
- .debug_info    0x0000afc7      0x2b6 THUMB Flash Debug/../../obj/efm32_msc.o
- .debug_info    0x0000b27d       0x86 THUMB Flash Debug/../../obj/efm32_opamp.o
- .debug_info    0x0000b303      0x68b THUMB Flash Debug/../../obj/efm32_pcnt.o
- .debug_info    0x0000b98e      0x1bf THUMB Flash Debug/../../obj/efm32_prs.o
- .debug_info    0x0000bb4d      0x2ea THUMB Flash Debug/../../obj/efm32_rmu.o
- .debug_info    0x0000be37      0x3a8 THUMB Flash Debug/../../obj/efm32_rtc.o
- .debug_info    0x0000c1df      0x241 THUMB Flash Debug/../../obj/efm32_system.o
- .debug_info    0x0000c420      0x703 THUMB Flash Debug/../../obj/efm32_timer.o
- .debug_info    0x0000cb23      0xafd THUMB Flash Debug/../../obj/efm32_usart.o
- .debug_info    0x0000d620      0x2fc THUMB Flash Debug/../../obj/efm32_vcmp.o
- .debug_info    0x0000d91c      0x39a THUMB Flash Debug/../../obj/efm32_wdog.o
- .debug_info    0x0000dcb6       0x5a THUMB Flash Debug/../../obj/hooks.o
- .debug_info    0x0000dd10      0x5d8 THUMB Flash Debug/../../obj/main.o
+.debug_info     0x00000000     0xe2c5
+ .debug_info    0x00000000      0x116 THUMB Flash Debug/../../obj/cstart.o
+ .debug_info    0x00000116       0xf1 THUMB Flash Debug/../../obj/vectors.o
+ .debug_info    0x00000207      0x13a THUMB Flash Debug/../../obj/cpu.o
+ .debug_info    0x00000341      0x72a THUMB Flash Debug/../../obj/flash.o
+ .debug_info    0x00000a6b      0x15e THUMB Flash Debug/../../obj/nvm.o
+ .debug_info    0x00000bc9      0x137 THUMB Flash Debug/../../obj/timer.o
+ .debug_info    0x00000d00      0x7a6 THUMB Flash Debug/../../obj/uart.o
+ .debug_info    0x000014a6       0xe4 THUMB Flash Debug/../../obj/assert.o
+ .debug_info    0x0000158a       0xc0 THUMB Flash Debug/../../obj/backdoor.o
+ .debug_info    0x0000164a       0x88 THUMB Flash Debug/../../obj/boot.o
+ .debug_info    0x000016d2      0x1b4 THUMB Flash Debug/../../obj/com.o
+ .debug_info    0x00001886       0x86 THUMB Flash Debug/../../obj/cop.o
+ .debug_info    0x0000190c      0x5db THUMB Flash Debug/../../obj/xcp.o
+ .debug_info    0x00001ee7       0x5a THUMB Flash Debug/../../obj/core_cm3.o
+ .debug_info    0x00001f41      0x429 THUMB Flash Debug/../../obj/system_efm32.o
+ .debug_info    0x0000236a      0x5f6 THUMB Flash Debug/../../obj/efm32_acmp.o
+ .debug_info    0x00002960      0xa59 THUMB Flash Debug/../../obj/efm32_adc.o
+ .debug_info    0x000033b9     0x152c THUMB Flash Debug/../../obj/efm32_aes.o
+ .debug_info    0x000048e5     0x11a2 THUMB Flash Debug/../../obj/efm32_cmu.o
+ .debug_info    0x00005a87      0x809 THUMB Flash Debug/../../obj/efm32_dac.o
+ .debug_info    0x00006290      0x410 THUMB Flash Debug/../../obj/efm32_dbg.o
+ .debug_info    0x000066a0     0x10ad THUMB Flash Debug/../../obj/efm32_dma.o
+ .debug_info    0x0000774d      0x590 THUMB Flash Debug/../../obj/efm32_ebi.o
+ .debug_info    0x00007cdd      0x681 THUMB Flash Debug/../../obj/efm32_emu.o
+ .debug_info    0x0000835e      0x7cc THUMB Flash Debug/../../obj/efm32_gpio.o
+ .debug_info    0x00008b2a      0x82a THUMB Flash Debug/../../obj/efm32_i2c.o
+ .debug_info    0x00009354       0xb0 THUMB Flash Debug/../../obj/efm32_int.o
+ .debug_info    0x00009404      0xab1 THUMB Flash Debug/../../obj/efm32_lcd.o
+ .debug_info    0x00009eb5       0x86 THUMB Flash Debug/../../obj/efm32_lesense.o
+ .debug_info    0x00009f3b      0x59e THUMB Flash Debug/../../obj/efm32_letimer.o
+ .debug_info    0x0000a4d9      0x78c THUMB Flash Debug/../../obj/efm32_leuart.o
+ .debug_info    0x0000ac65      0x33f THUMB Flash Debug/../../obj/efm32_mpu.o
+ .debug_info    0x0000afa4      0x2b6 THUMB Flash Debug/../../obj/efm32_msc.o
+ .debug_info    0x0000b25a       0x86 THUMB Flash Debug/../../obj/efm32_opamp.o
+ .debug_info    0x0000b2e0      0x68b THUMB Flash Debug/../../obj/efm32_pcnt.o
+ .debug_info    0x0000b96b      0x1bf THUMB Flash Debug/../../obj/efm32_prs.o
+ .debug_info    0x0000bb2a      0x2ea THUMB Flash Debug/../../obj/efm32_rmu.o
+ .debug_info    0x0000be14      0x3a8 THUMB Flash Debug/../../obj/efm32_rtc.o
+ .debug_info    0x0000c1bc      0x241 THUMB Flash Debug/../../obj/efm32_system.o
+ .debug_info    0x0000c3fd      0x703 THUMB Flash Debug/../../obj/efm32_timer.o
+ .debug_info    0x0000cb00      0xafd THUMB Flash Debug/../../obj/efm32_usart.o
+ .debug_info    0x0000d5fd      0x2fc THUMB Flash Debug/../../obj/efm32_vcmp.o
+ .debug_info    0x0000d8f9      0x39a THUMB Flash Debug/../../obj/efm32_wdog.o
+ .debug_info    0x0000dc93       0x5a THUMB Flash Debug/../../obj/hooks.o
+ .debug_info    0x0000dced      0x5d8 THUMB Flash Debug/../../obj/main.o
 
-.debug_abbrev   0x00000000     0x414e
+.debug_abbrev   0x00000000     0x40ea
  .debug_abbrev  0x00000000       0x14 THUMB Flash Debug/../../obj/cstart.o
  .debug_abbrev  0x00000014       0xbe THUMB Flash Debug/../../obj/vectors.o
  .debug_abbrev  0x000000d2       0xaf THUMB Flash Debug/../../obj/cpu.o
  .debug_abbrev  0x00000181      0x273 THUMB Flash Debug/../../obj/flash.o
  .debug_abbrev  0x000003f4       0xa3 THUMB Flash Debug/../../obj/nvm.o
- .debug_abbrev  0x00000497      0x138 THUMB Flash Debug/../../obj/timer.o
- .debug_abbrev  0x000005cf      0x1ef THUMB Flash Debug/../../obj/uart.o
- .debug_abbrev  0x000007be       0x7c THUMB Flash Debug/../../obj/assert.o
- .debug_abbrev  0x0000083a       0x5b THUMB Flash Debug/../../obj/backdoor.o
- .debug_abbrev  0x00000895       0x3f THUMB Flash Debug/../../obj/boot.o
- .debug_abbrev  0x000008d4       0xe0 THUMB Flash Debug/../../obj/com.o
- .debug_abbrev  0x000009b4       0x3f THUMB Flash Debug/../../obj/cop.o
- .debug_abbrev  0x000009f3      0x1da THUMB Flash Debug/../../obj/xcp.o
- .debug_abbrev  0x00000bcd       0x1d THUMB Flash Debug/../../obj/core_cm3.o
- .debug_abbrev  0x00000bea      0x1a5 THUMB Flash Debug/../../obj/system_efm32.o
- .debug_abbrev  0x00000d8f      0x1c2 THUMB Flash Debug/../../obj/efm32_acmp.o
- .debug_abbrev  0x00000f51      0x1fb THUMB Flash Debug/../../obj/efm32_adc.o
- .debug_abbrev  0x0000114c      0x29e THUMB Flash Debug/../../obj/efm32_aes.o
- .debug_abbrev  0x000013ea        0x1 THUMB Flash Debug/../../obj/efm32_assert.o
- .debug_abbrev  0x000013eb      0x38a THUMB Flash Debug/../../obj/efm32_cmu.o
- .debug_abbrev  0x00001775      0x21c THUMB Flash Debug/../../obj/efm32_dac.o
- .debug_abbrev  0x00001991      0x17f THUMB Flash Debug/../../obj/efm32_dbg.o
- .debug_abbrev  0x00001b10      0x314 THUMB Flash Debug/../../obj/efm32_dma.o
- .debug_abbrev  0x00001e24      0x204 THUMB Flash Debug/../../obj/efm32_ebi.o
- .debug_abbrev  0x00002028      0x1d0 THUMB Flash Debug/../../obj/efm32_emu.o
- .debug_abbrev  0x000021f8      0x235 THUMB Flash Debug/../../obj/efm32_gpio.o
- .debug_abbrev  0x0000242d      0x2a8 THUMB Flash Debug/../../obj/efm32_i2c.o
- .debug_abbrev  0x000026d5       0x64 THUMB Flash Debug/../../obj/efm32_int.o
- .debug_abbrev  0x00002739      0x296 THUMB Flash Debug/../../obj/efm32_lcd.o
- .debug_abbrev  0x000029cf       0x42 THUMB Flash Debug/../../obj/efm32_lesense.o
- .debug_abbrev  0x00002a11      0x223 THUMB Flash Debug/../../obj/efm32_letimer.o
- .debug_abbrev  0x00002c34      0x21c THUMB Flash Debug/../../obj/efm32_leuart.o
- .debug_abbrev  0x00002e50       0xf3 THUMB Flash Debug/../../obj/efm32_mpu.o
- .debug_abbrev  0x00002f43      0x112 THUMB Flash Debug/../../obj/efm32_msc.o
- .debug_abbrev  0x00003055       0x42 THUMB Flash Debug/../../obj/efm32_opamp.o
- .debug_abbrev  0x00003097      0x304 THUMB Flash Debug/../../obj/efm32_pcnt.o
- .debug_abbrev  0x0000339b       0xe8 THUMB Flash Debug/../../obj/efm32_prs.o
- .debug_abbrev  0x00003483      0x1ab THUMB Flash Debug/../../obj/efm32_rmu.o
- .debug_abbrev  0x0000362e      0x214 THUMB Flash Debug/../../obj/efm32_rtc.o
- .debug_abbrev  0x00003842      0x110 THUMB Flash Debug/../../obj/efm32_system.o
- .debug_abbrev  0x00003952      0x16b THUMB Flash Debug/../../obj/efm32_timer.o
- .debug_abbrev  0x00003abd      0x1d1 THUMB Flash Debug/../../obj/efm32_usart.o
- .debug_abbrev  0x00003c8e      0x16b THUMB Flash Debug/../../obj/efm32_vcmp.o
- .debug_abbrev  0x00003df9      0x1b4 THUMB Flash Debug/../../obj/efm32_wdog.o
- .debug_abbrev  0x00003fad       0x28 THUMB Flash Debug/../../obj/hooks.o
- .debug_abbrev  0x00003fd5      0x179 THUMB Flash Debug/../../obj/main.o
+ .debug_abbrev  0x00000497       0xe8 THUMB Flash Debug/../../obj/timer.o
+ .debug_abbrev  0x0000057f      0x1ef THUMB Flash Debug/../../obj/uart.o
+ .debug_abbrev  0x0000076e       0x7c THUMB Flash Debug/../../obj/assert.o
+ .debug_abbrev  0x000007ea       0x5b THUMB Flash Debug/../../obj/backdoor.o
+ .debug_abbrev  0x00000845       0x3f THUMB Flash Debug/../../obj/boot.o
+ .debug_abbrev  0x00000884       0xe0 THUMB Flash Debug/../../obj/com.o
+ .debug_abbrev  0x00000964       0x3f THUMB Flash Debug/../../obj/cop.o
+ .debug_abbrev  0x000009a3      0x1cd THUMB Flash Debug/../../obj/xcp.o
+ .debug_abbrev  0x00000b70       0x1d THUMB Flash Debug/../../obj/core_cm3.o
+ .debug_abbrev  0x00000b8d      0x1a5 THUMB Flash Debug/../../obj/system_efm32.o
+ .debug_abbrev  0x00000d32      0x1c2 THUMB Flash Debug/../../obj/efm32_acmp.o
+ .debug_abbrev  0x00000ef4      0x1fb THUMB Flash Debug/../../obj/efm32_adc.o
+ .debug_abbrev  0x000010ef      0x29e THUMB Flash Debug/../../obj/efm32_aes.o
+ .debug_abbrev  0x0000138d        0x1 THUMB Flash Debug/../../obj/efm32_assert.o
+ .debug_abbrev  0x0000138e      0x38a THUMB Flash Debug/../../obj/efm32_cmu.o
+ .debug_abbrev  0x00001718      0x21c THUMB Flash Debug/../../obj/efm32_dac.o
+ .debug_abbrev  0x00001934      0x17f THUMB Flash Debug/../../obj/efm32_dbg.o
+ .debug_abbrev  0x00001ab3      0x314 THUMB Flash Debug/../../obj/efm32_dma.o
+ .debug_abbrev  0x00001dc7      0x204 THUMB Flash Debug/../../obj/efm32_ebi.o
+ .debug_abbrev  0x00001fcb      0x1d0 THUMB Flash Debug/../../obj/efm32_emu.o
+ .debug_abbrev  0x0000219b      0x235 THUMB Flash Debug/../../obj/efm32_gpio.o
+ .debug_abbrev  0x000023d0      0x2a8 THUMB Flash Debug/../../obj/efm32_i2c.o
+ .debug_abbrev  0x00002678       0x64 THUMB Flash Debug/../../obj/efm32_int.o
+ .debug_abbrev  0x000026dc      0x28f THUMB Flash Debug/../../obj/efm32_lcd.o
+ .debug_abbrev  0x0000296b       0x42 THUMB Flash Debug/../../obj/efm32_lesense.o
+ .debug_abbrev  0x000029ad      0x223 THUMB Flash Debug/../../obj/efm32_letimer.o
+ .debug_abbrev  0x00002bd0      0x21c THUMB Flash Debug/../../obj/efm32_leuart.o
+ .debug_abbrev  0x00002dec       0xf3 THUMB Flash Debug/../../obj/efm32_mpu.o
+ .debug_abbrev  0x00002edf      0x112 THUMB Flash Debug/../../obj/efm32_msc.o
+ .debug_abbrev  0x00002ff1       0x42 THUMB Flash Debug/../../obj/efm32_opamp.o
+ .debug_abbrev  0x00003033      0x304 THUMB Flash Debug/../../obj/efm32_pcnt.o
+ .debug_abbrev  0x00003337       0xe8 THUMB Flash Debug/../../obj/efm32_prs.o
+ .debug_abbrev  0x0000341f      0x1ab THUMB Flash Debug/../../obj/efm32_rmu.o
+ .debug_abbrev  0x000035ca      0x214 THUMB Flash Debug/../../obj/efm32_rtc.o
+ .debug_abbrev  0x000037de      0x110 THUMB Flash Debug/../../obj/efm32_system.o
+ .debug_abbrev  0x000038ee      0x16b THUMB Flash Debug/../../obj/efm32_timer.o
+ .debug_abbrev  0x00003a59      0x1d1 THUMB Flash Debug/../../obj/efm32_usart.o
+ .debug_abbrev  0x00003c2a      0x16b THUMB Flash Debug/../../obj/efm32_vcmp.o
+ .debug_abbrev  0x00003d95      0x1b4 THUMB Flash Debug/../../obj/efm32_wdog.o
+ .debug_abbrev  0x00003f49       0x28 THUMB Flash Debug/../../obj/hooks.o
+ .debug_abbrev  0x00003f71      0x179 THUMB Flash Debug/../../obj/main.o
 
-.debug_aranges  0x00000000      0xbb8
+.debug_aranges  0x00000000      0xbb0
  .debug_aranges
                 0x00000000       0x20 THUMB Flash Debug/../../obj/cstart.o
  .debug_aranges
@@ -1321,283 +1321,283 @@ OUTPUT(THUMB Flash Debug/../../bin/openbtl_olimex_efm32g880.elf elf32-littlearm)
  .debug_aranges
                 0x000000d8       0x40 THUMB Flash Debug/../../obj/nvm.o
  .debug_aranges
-                0x00000118       0x40 THUMB Flash Debug/../../obj/timer.o
+                0x00000118       0x38 THUMB Flash Debug/../../obj/timer.o
  .debug_aranges
-                0x00000158       0x30 THUMB Flash Debug/../../obj/uart.o
+                0x00000150       0x30 THUMB Flash Debug/../../obj/uart.o
  .debug_aranges
-                0x00000188       0x20 THUMB Flash Debug/../../obj/assert.o
+                0x00000180       0x20 THUMB Flash Debug/../../obj/assert.o
  .debug_aranges
-                0x000001a8       0x28 THUMB Flash Debug/../../obj/backdoor.o
+                0x000001a0       0x28 THUMB Flash Debug/../../obj/backdoor.o
  .debug_aranges
-                0x000001d0       0x28 THUMB Flash Debug/../../obj/boot.o
+                0x000001c8       0x28 THUMB Flash Debug/../../obj/boot.o
  .debug_aranges
-                0x000001f8       0x58 THUMB Flash Debug/../../obj/com.o
+                0x000001f0       0x58 THUMB Flash Debug/../../obj/com.o
  .debug_aranges
-                0x00000250       0x28 THUMB Flash Debug/../../obj/cop.o
+                0x00000248       0x28 THUMB Flash Debug/../../obj/cop.o
  .debug_aranges
-                0x00000278       0x40 THUMB Flash Debug/../../obj/xcp.o
+                0x00000270       0x40 THUMB Flash Debug/../../obj/xcp.o
  .debug_aranges
-                0x000002b8       0x60 THUMB Flash Debug/../../obj/system_efm32.o
+                0x000002b0       0x60 THUMB Flash Debug/../../obj/system_efm32.o
  .debug_aranges
-                0x00000318       0x58 THUMB Flash Debug/../../obj/efm32_acmp.o
+                0x00000310       0x58 THUMB Flash Debug/../../obj/efm32_acmp.o
  .debug_aranges
-                0x00000370       0x48 THUMB Flash Debug/../../obj/efm32_adc.o
+                0x00000368       0x48 THUMB Flash Debug/../../obj/efm32_adc.o
  .debug_aranges
-                0x000003b8       0x80 THUMB Flash Debug/../../obj/efm32_aes.o
+                0x000003b0       0x80 THUMB Flash Debug/../../obj/efm32_aes.o
  .debug_aranges
-                0x00000438       0xd0 THUMB Flash Debug/../../obj/efm32_cmu.o
+                0x00000430       0xd0 THUMB Flash Debug/../../obj/efm32_cmu.o
  .debug_aranges
-                0x00000508       0x40 THUMB Flash Debug/../../obj/efm32_dac.o
+                0x00000500       0x40 THUMB Flash Debug/../../obj/efm32_dac.o
  .debug_aranges
-                0x00000548       0x20 THUMB Flash Debug/../../obj/efm32_dbg.o
+                0x00000540       0x20 THUMB Flash Debug/../../obj/efm32_dbg.o
  .debug_aranges
-                0x00000568       0x80 THUMB Flash Debug/../../obj/efm32_dma.o
+                0x00000560       0x80 THUMB Flash Debug/../../obj/efm32_dma.o
  .debug_aranges
-                0x000005e8       0x68 THUMB Flash Debug/../../obj/efm32_ebi.o
+                0x000005e0       0x68 THUMB Flash Debug/../../obj/efm32_ebi.o
  .debug_aranges
-                0x00000650       0x48 THUMB Flash Debug/../../obj/efm32_emu.o
+                0x00000648       0x48 THUMB Flash Debug/../../obj/efm32_emu.o
  .debug_aranges
-                0x00000698       0x90 THUMB Flash Debug/../../obj/efm32_gpio.o
+                0x00000690       0x90 THUMB Flash Debug/../../obj/efm32_gpio.o
  .debug_aranges
-                0x00000728       0x50 THUMB Flash Debug/../../obj/efm32_i2c.o
+                0x00000720       0x50 THUMB Flash Debug/../../obj/efm32_i2c.o
  .debug_aranges
-                0x00000778       0x70 THUMB Flash Debug/../../obj/efm32_lcd.o
+                0x00000770       0x70 THUMB Flash Debug/../../obj/efm32_lcd.o
  .debug_aranges
-                0x000007e8       0x60 THUMB Flash Debug/../../obj/efm32_letimer.o
+                0x000007e0       0x60 THUMB Flash Debug/../../obj/efm32_letimer.o
  .debug_aranges
-                0x00000848       0x78 THUMB Flash Debug/../../obj/efm32_leuart.o
+                0x00000840       0x78 THUMB Flash Debug/../../obj/efm32_leuart.o
  .debug_aranges
-                0x000008c0       0x20 THUMB Flash Debug/../../obj/efm32_mpu.o
+                0x000008b8       0x20 THUMB Flash Debug/../../obj/efm32_mpu.o
  .debug_aranges
-                0x000008e0       0x38 THUMB Flash Debug/../../obj/efm32_msc.o
+                0x000008d8       0x38 THUMB Flash Debug/../../obj/efm32_msc.o
  .debug_aranges
-                0x00000918       0x60 THUMB Flash Debug/../../obj/efm32_pcnt.o
+                0x00000910       0x60 THUMB Flash Debug/../../obj/efm32_pcnt.o
  .debug_aranges
-                0x00000978       0x20 THUMB Flash Debug/../../obj/efm32_prs.o
+                0x00000970       0x20 THUMB Flash Debug/../../obj/efm32_prs.o
  .debug_aranges
-                0x00000998       0x30 THUMB Flash Debug/../../obj/efm32_rmu.o
+                0x00000990       0x30 THUMB Flash Debug/../../obj/efm32_rmu.o
  .debug_aranges
-                0x000009c8       0x58 THUMB Flash Debug/../../obj/efm32_rtc.o
+                0x000009c0       0x58 THUMB Flash Debug/../../obj/efm32_rtc.o
  .debug_aranges
-                0x00000a20       0x28 THUMB Flash Debug/../../obj/efm32_system.o
+                0x00000a18       0x28 THUMB Flash Debug/../../obj/efm32_system.o
  .debug_aranges
-                0x00000a48       0x48 THUMB Flash Debug/../../obj/efm32_timer.o
+                0x00000a40       0x48 THUMB Flash Debug/../../obj/efm32_timer.o
  .debug_aranges
-                0x00000a90       0xa0 THUMB Flash Debug/../../obj/efm32_usart.o
+                0x00000a88       0xa0 THUMB Flash Debug/../../obj/efm32_usart.o
  .debug_aranges
-                0x00000b30       0x30 THUMB Flash Debug/../../obj/efm32_vcmp.o
+                0x00000b28       0x30 THUMB Flash Debug/../../obj/efm32_vcmp.o
  .debug_aranges
-                0x00000b60       0x38 THUMB Flash Debug/../../obj/efm32_wdog.o
+                0x00000b58       0x38 THUMB Flash Debug/../../obj/efm32_wdog.o
  .debug_aranges
-                0x00000b98       0x20 THUMB Flash Debug/../../obj/main.o
+                0x00000b90       0x20 THUMB Flash Debug/../../obj/main.o
 
-.debug_frame    0x00000000     0x1a80
+.debug_frame    0x00000000     0x1a6c
  .debug_frame   0x00000000       0x2c THUMB Flash Debug/../../obj/vectors.o
  .debug_frame   0x0000002c       0x6c THUMB Flash Debug/../../obj/cpu.o
  .debug_frame   0x00000098      0x15c THUMB Flash Debug/../../obj/flash.o
  .debug_frame   0x000001f4       0x9c THUMB Flash Debug/../../obj/nvm.o
- .debug_frame   0x00000290       0x6c THUMB Flash Debug/../../obj/timer.o
- .debug_frame   0x000002fc       0x80 THUMB Flash Debug/../../obj/uart.o
- .debug_frame   0x0000037c       0x2c THUMB Flash Debug/../../obj/assert.o
- .debug_frame   0x000003a8       0x48 THUMB Flash Debug/../../obj/backdoor.o
- .debug_frame   0x000003f0       0x48 THUMB Flash Debug/../../obj/boot.o
- .debug_frame   0x00000438       0xc0 THUMB Flash Debug/../../obj/com.o
- .debug_frame   0x000004f8       0x30 THUMB Flash Debug/../../obj/cop.o
- .debug_frame   0x00000528       0x70 THUMB Flash Debug/../../obj/xcp.o
- .debug_frame   0x00000598       0xc4 THUMB Flash Debug/../../obj/system_efm32.o
- .debug_frame   0x0000065c       0xb4 THUMB Flash Debug/../../obj/efm32_acmp.o
- .debug_frame   0x00000710       0xa8 THUMB Flash Debug/../../obj/efm32_adc.o
- .debug_frame   0x000007b8      0x204 THUMB Flash Debug/../../obj/efm32_aes.o
- .debug_frame   0x000009bc      0x1e8 THUMB Flash Debug/../../obj/efm32_cmu.o
- .debug_frame   0x00000ba4       0x78 THUMB Flash Debug/../../obj/efm32_dac.o
- .debug_frame   0x00000c1c       0x34 THUMB Flash Debug/../../obj/efm32_dbg.o
- .debug_frame   0x00000c50      0x1b0 THUMB Flash Debug/../../obj/efm32_dma.o
- .debug_frame   0x00000e00      0x10c THUMB Flash Debug/../../obj/efm32_ebi.o
- .debug_frame   0x00000f0c       0x94 THUMB Flash Debug/../../obj/efm32_emu.o
- .debug_frame   0x00000fa0      0x128 THUMB Flash Debug/../../obj/efm32_gpio.o
- .debug_frame   0x000010c8       0xcc THUMB Flash Debug/../../obj/efm32_i2c.o
- .debug_frame   0x00001194       0xcc THUMB Flash Debug/../../obj/efm32_lcd.o
- .debug_frame   0x00001260       0xf4 THUMB Flash Debug/../../obj/efm32_letimer.o
- .debug_frame   0x00001354      0x13c THUMB Flash Debug/../../obj/efm32_leuart.o
- .debug_frame   0x00001490       0x20 THUMB Flash Debug/../../obj/efm32_mpu.o
- .debug_frame   0x000014b0       0x70 THUMB Flash Debug/../../obj/efm32_msc.o
- .debug_frame   0x00001520      0x114 THUMB Flash Debug/../../obj/efm32_pcnt.o
- .debug_frame   0x00001634       0x2c THUMB Flash Debug/../../obj/efm32_prs.o
- .debug_frame   0x00001660       0x40 THUMB Flash Debug/../../obj/efm32_rmu.o
- .debug_frame   0x000016a0       0xc4 THUMB Flash Debug/../../obj/efm32_rtc.o
- .debug_frame   0x00001764       0x30 THUMB Flash Debug/../../obj/efm32_system.o
- .debug_frame   0x00001794       0x88 THUMB Flash Debug/../../obj/efm32_timer.o
- .debug_frame   0x0000181c      0x18c THUMB Flash Debug/../../obj/efm32_usart.o
- .debug_frame   0x000019a8       0x50 THUMB Flash Debug/../../obj/efm32_vcmp.o
- .debug_frame   0x000019f8       0x5c THUMB Flash Debug/../../obj/efm32_wdog.o
- .debug_frame   0x00001a54       0x2c THUMB Flash Debug/../../obj/main.o
+ .debug_frame   0x00000290       0x5c THUMB Flash Debug/../../obj/timer.o
+ .debug_frame   0x000002ec       0x80 THUMB Flash Debug/../../obj/uart.o
+ .debug_frame   0x0000036c       0x2c THUMB Flash Debug/../../obj/assert.o
+ .debug_frame   0x00000398       0x48 THUMB Flash Debug/../../obj/backdoor.o
+ .debug_frame   0x000003e0       0x48 THUMB Flash Debug/../../obj/boot.o
+ .debug_frame   0x00000428       0xc0 THUMB Flash Debug/../../obj/com.o
+ .debug_frame   0x000004e8       0x30 THUMB Flash Debug/../../obj/cop.o
+ .debug_frame   0x00000518       0x70 THUMB Flash Debug/../../obj/xcp.o
+ .debug_frame   0x00000588       0xc4 THUMB Flash Debug/../../obj/system_efm32.o
+ .debug_frame   0x0000064c       0xb4 THUMB Flash Debug/../../obj/efm32_acmp.o
+ .debug_frame   0x00000700       0xa8 THUMB Flash Debug/../../obj/efm32_adc.o
+ .debug_frame   0x000007a8      0x204 THUMB Flash Debug/../../obj/efm32_aes.o
+ .debug_frame   0x000009ac      0x1e8 THUMB Flash Debug/../../obj/efm32_cmu.o
+ .debug_frame   0x00000b94       0x78 THUMB Flash Debug/../../obj/efm32_dac.o
+ .debug_frame   0x00000c0c       0x30 THUMB Flash Debug/../../obj/efm32_dbg.o
+ .debug_frame   0x00000c3c      0x1b0 THUMB Flash Debug/../../obj/efm32_dma.o
+ .debug_frame   0x00000dec      0x10c THUMB Flash Debug/../../obj/efm32_ebi.o
+ .debug_frame   0x00000ef8       0x94 THUMB Flash Debug/../../obj/efm32_emu.o
+ .debug_frame   0x00000f8c      0x128 THUMB Flash Debug/../../obj/efm32_gpio.o
+ .debug_frame   0x000010b4       0xcc THUMB Flash Debug/../../obj/efm32_i2c.o
+ .debug_frame   0x00001180       0xcc THUMB Flash Debug/../../obj/efm32_lcd.o
+ .debug_frame   0x0000124c       0xf4 THUMB Flash Debug/../../obj/efm32_letimer.o
+ .debug_frame   0x00001340      0x13c THUMB Flash Debug/../../obj/efm32_leuart.o
+ .debug_frame   0x0000147c       0x20 THUMB Flash Debug/../../obj/efm32_mpu.o
+ .debug_frame   0x0000149c       0x70 THUMB Flash Debug/../../obj/efm32_msc.o
+ .debug_frame   0x0000150c      0x114 THUMB Flash Debug/../../obj/efm32_pcnt.o
+ .debug_frame   0x00001620       0x2c THUMB Flash Debug/../../obj/efm32_prs.o
+ .debug_frame   0x0000164c       0x40 THUMB Flash Debug/../../obj/efm32_rmu.o
+ .debug_frame   0x0000168c       0xc4 THUMB Flash Debug/../../obj/efm32_rtc.o
+ .debug_frame   0x00001750       0x30 THUMB Flash Debug/../../obj/efm32_system.o
+ .debug_frame   0x00001780       0x88 THUMB Flash Debug/../../obj/efm32_timer.o
+ .debug_frame   0x00001808      0x18c THUMB Flash Debug/../../obj/efm32_usart.o
+ .debug_frame   0x00001994       0x50 THUMB Flash Debug/../../obj/efm32_vcmp.o
+ .debug_frame   0x000019e4       0x5c THUMB Flash Debug/../../obj/efm32_wdog.o
+ .debug_frame   0x00001a40       0x2c THUMB Flash Debug/../../obj/main.o
 
-.debug_loc      0x00000000     0x63b4
+.debug_loc      0x00000000     0x647f
  .debug_loc     0x00000000       0x20 THUMB Flash Debug/../../obj/vectors.o
  .debug_loc     0x00000020       0xdf THUMB Flash Debug/../../obj/cpu.o
- .debug_loc     0x000000ff      0x6a0 THUMB Flash Debug/../../obj/flash.o
- .debug_loc     0x0000079f       0xff THUMB Flash Debug/../../obj/nvm.o
- .debug_loc     0x0000089e       0x20 THUMB Flash Debug/../../obj/timer.o
- .debug_loc     0x000008be      0x1f8 THUMB Flash Debug/../../obj/uart.o
- .debug_loc     0x00000ab6       0x46 THUMB Flash Debug/../../obj/assert.o
- .debug_loc     0x00000afc       0x40 THUMB Flash Debug/../../obj/backdoor.o
- .debug_loc     0x00000b3c       0x40 THUMB Flash Debug/../../obj/boot.o
- .debug_loc     0x00000b7c       0xa6 THUMB Flash Debug/../../obj/com.o
- .debug_loc     0x00000c22      0x175 THUMB Flash Debug/../../obj/xcp.o
- .debug_loc     0x00000d97       0xf1 THUMB Flash Debug/../../obj/system_efm32.o
- .debug_loc     0x00000e88      0x17a THUMB Flash Debug/../../obj/efm32_acmp.o
- .debug_loc     0x00001002      0x1ec THUMB Flash Debug/../../obj/efm32_adc.o
- .debug_loc     0x000011ee     0x1493 THUMB Flash Debug/../../obj/efm32_aes.o
- .debug_loc     0x00002681      0xe57 THUMB Flash Debug/../../obj/efm32_cmu.o
- .debug_loc     0x000034d8      0x1eb THUMB Flash Debug/../../obj/efm32_dac.o
- .debug_loc     0x000036c3       0x96 THUMB Flash Debug/../../obj/efm32_dbg.o
- .debug_loc     0x00003759      0x6fd THUMB Flash Debug/../../obj/efm32_dma.o
- .debug_loc     0x00003e56      0x38d THUMB Flash Debug/../../obj/efm32_ebi.o
- .debug_loc     0x000041e3       0xf7 THUMB Flash Debug/../../obj/efm32_emu.o
- .debug_loc     0x000042da      0x2a6 THUMB Flash Debug/../../obj/efm32_gpio.o
- .debug_loc     0x00004580      0x3a3 THUMB Flash Debug/../../obj/efm32_i2c.o
- .debug_loc     0x00004923      0x561 THUMB Flash Debug/../../obj/efm32_lcd.o
- .debug_loc     0x00004e84      0x34e THUMB Flash Debug/../../obj/efm32_letimer.o
- .debug_loc     0x000051d2      0x338 THUMB Flash Debug/../../obj/efm32_leuart.o
- .debug_loc     0x0000550a      0x11f THUMB Flash Debug/../../obj/efm32_msc.o
- .debug_loc     0x00005629      0x35d THUMB Flash Debug/../../obj/efm32_pcnt.o
- .debug_loc     0x00005986       0x66 THUMB Flash Debug/../../obj/efm32_prs.o
- .debug_loc     0x000059ec       0x40 THUMB Flash Debug/../../obj/efm32_rmu.o
- .debug_loc     0x00005a2c      0x165 THUMB Flash Debug/../../obj/efm32_rtc.o
- .debug_loc     0x00005b91       0x7d THUMB Flash Debug/../../obj/efm32_system.o
- .debug_loc     0x00005c0e       0xbe THUMB Flash Debug/../../obj/efm32_timer.o
- .debug_loc     0x00005ccc      0x492 THUMB Flash Debug/../../obj/efm32_usart.o
- .debug_loc     0x0000615e       0x51 THUMB Flash Debug/../../obj/efm32_vcmp.o
- .debug_loc     0x000061af       0xcc THUMB Flash Debug/../../obj/efm32_wdog.o
- .debug_loc     0x0000627b      0x139 THUMB Flash Debug/../../obj/main.o
+ .debug_loc     0x000000ff      0x6c1 THUMB Flash Debug/../../obj/flash.o
+ .debug_loc     0x000007c0       0xff THUMB Flash Debug/../../obj/nvm.o
+ .debug_loc     0x000008bf       0x20 THUMB Flash Debug/../../obj/timer.o
+ .debug_loc     0x000008df      0x1f8 THUMB Flash Debug/../../obj/uart.o
+ .debug_loc     0x00000ad7       0x46 THUMB Flash Debug/../../obj/assert.o
+ .debug_loc     0x00000b1d       0x40 THUMB Flash Debug/../../obj/backdoor.o
+ .debug_loc     0x00000b5d       0x40 THUMB Flash Debug/../../obj/boot.o
+ .debug_loc     0x00000b9d       0xa6 THUMB Flash Debug/../../obj/com.o
+ .debug_loc     0x00000c43      0x175 THUMB Flash Debug/../../obj/xcp.o
+ .debug_loc     0x00000db8       0xf1 THUMB Flash Debug/../../obj/system_efm32.o
+ .debug_loc     0x00000ea9      0x16a THUMB Flash Debug/../../obj/efm32_acmp.o
+ .debug_loc     0x00001013      0x220 THUMB Flash Debug/../../obj/efm32_adc.o
+ .debug_loc     0x00001233     0x1479 THUMB Flash Debug/../../obj/efm32_aes.o
+ .debug_loc     0x000026ac      0xe7d THUMB Flash Debug/../../obj/efm32_cmu.o
+ .debug_loc     0x00003529      0x1eb THUMB Flash Debug/../../obj/efm32_dac.o
+ .debug_loc     0x00003714       0x96 THUMB Flash Debug/../../obj/efm32_dbg.o
+ .debug_loc     0x000037aa      0x70d THUMB Flash Debug/../../obj/efm32_dma.o
+ .debug_loc     0x00003eb7      0x37d THUMB Flash Debug/../../obj/efm32_ebi.o
+ .debug_loc     0x00004234       0xf7 THUMB Flash Debug/../../obj/efm32_emu.o
+ .debug_loc     0x0000432b      0x2a6 THUMB Flash Debug/../../obj/efm32_gpio.o
+ .debug_loc     0x000045d1      0x39b THUMB Flash Debug/../../obj/efm32_i2c.o
+ .debug_loc     0x0000496c      0x5ba THUMB Flash Debug/../../obj/efm32_lcd.o
+ .debug_loc     0x00004f26      0x34e THUMB Flash Debug/../../obj/efm32_letimer.o
+ .debug_loc     0x00005274      0x338 THUMB Flash Debug/../../obj/efm32_leuart.o
+ .debug_loc     0x000055ac      0x11f THUMB Flash Debug/../../obj/efm32_msc.o
+ .debug_loc     0x000056cb      0x386 THUMB Flash Debug/../../obj/efm32_pcnt.o
+ .debug_loc     0x00005a51       0x66 THUMB Flash Debug/../../obj/efm32_prs.o
+ .debug_loc     0x00005ab7       0x40 THUMB Flash Debug/../../obj/efm32_rmu.o
+ .debug_loc     0x00005af7      0x165 THUMB Flash Debug/../../obj/efm32_rtc.o
+ .debug_loc     0x00005c5c       0x7d THUMB Flash Debug/../../obj/efm32_system.o
+ .debug_loc     0x00005cd9       0xbe THUMB Flash Debug/../../obj/efm32_timer.o
+ .debug_loc     0x00005d97      0x492 THUMB Flash Debug/../../obj/efm32_usart.o
+ .debug_loc     0x00006229       0x51 THUMB Flash Debug/../../obj/efm32_vcmp.o
+ .debug_loc     0x0000627a       0xcc THUMB Flash Debug/../../obj/efm32_wdog.o
+ .debug_loc     0x00006346      0x139 THUMB Flash Debug/../../obj/main.o
 
-.debug_ranges   0x00000000     0x1080
+.debug_ranges   0x00000000     0x1048
  .debug_ranges  0x00000000       0x10 THUMB Flash Debug/../../obj/vectors.o
  .debug_ranges  0x00000010       0x20 THUMB Flash Debug/../../obj/cpu.o
  .debug_ranges  0x00000030      0x150 THUMB Flash Debug/../../obj/flash.o
  .debug_ranges  0x00000180       0x30 THUMB Flash Debug/../../obj/nvm.o
- .debug_ranges  0x000001b0       0x48 THUMB Flash Debug/../../obj/timer.o
- .debug_ranges  0x000001f8       0xd0 THUMB Flash Debug/../../obj/uart.o
- .debug_ranges  0x000002c8       0x10 THUMB Flash Debug/../../obj/assert.o
- .debug_ranges  0x000002d8       0x18 THUMB Flash Debug/../../obj/backdoor.o
- .debug_ranges  0x000002f0       0x18 THUMB Flash Debug/../../obj/boot.o
- .debug_ranges  0x00000308       0x48 THUMB Flash Debug/../../obj/com.o
- .debug_ranges  0x00000350       0x18 THUMB Flash Debug/../../obj/cop.o
- .debug_ranges  0x00000368       0x78 THUMB Flash Debug/../../obj/xcp.o
- .debug_ranges  0x000003e0       0x50 THUMB Flash Debug/../../obj/system_efm32.o
- .debug_ranges  0x00000430       0x48 THUMB Flash Debug/../../obj/efm32_acmp.o
- .debug_ranges  0x00000478       0x38 THUMB Flash Debug/../../obj/efm32_adc.o
- .debug_ranges  0x000004b0       0x70 THUMB Flash Debug/../../obj/efm32_aes.o
- .debug_ranges  0x00000520      0x420 THUMB Flash Debug/../../obj/efm32_cmu.o
- .debug_ranges  0x00000940       0x30 THUMB Flash Debug/../../obj/efm32_dac.o
- .debug_ranges  0x00000970       0x10 THUMB Flash Debug/../../obj/efm32_dbg.o
- .debug_ranges  0x00000980       0x88 THUMB Flash Debug/../../obj/efm32_dma.o
- .debug_ranges  0x00000a08       0x58 THUMB Flash Debug/../../obj/efm32_ebi.o
- .debug_ranges  0x00000a60       0x50 THUMB Flash Debug/../../obj/efm32_emu.o
- .debug_ranges  0x00000ab0       0x80 THUMB Flash Debug/../../obj/efm32_gpio.o
- .debug_ranges  0x00000b30       0xb8 THUMB Flash Debug/../../obj/efm32_i2c.o
- .debug_ranges  0x00000be8       0x78 THUMB Flash Debug/../../obj/efm32_lcd.o
- .debug_ranges  0x00000c60       0x50 THUMB Flash Debug/../../obj/efm32_letimer.o
- .debug_ranges  0x00000cb0       0x68 THUMB Flash Debug/../../obj/efm32_leuart.o
- .debug_ranges  0x00000d18       0x10 THUMB Flash Debug/../../obj/efm32_mpu.o
- .debug_ranges  0x00000d28       0x28 THUMB Flash Debug/../../obj/efm32_msc.o
- .debug_ranges  0x00000d50       0xd8 THUMB Flash Debug/../../obj/efm32_pcnt.o
- .debug_ranges  0x00000e28       0x10 THUMB Flash Debug/../../obj/efm32_prs.o
- .debug_ranges  0x00000e38       0xb0 THUMB Flash Debug/../../obj/efm32_rmu.o
- .debug_ranges  0x00000ee8       0x48 THUMB Flash Debug/../../obj/efm32_rtc.o
- .debug_ranges  0x00000f30       0x18 THUMB Flash Debug/../../obj/efm32_system.o
- .debug_ranges  0x00000f48       0x38 THUMB Flash Debug/../../obj/efm32_timer.o
- .debug_ranges  0x00000f80       0x90 THUMB Flash Debug/../../obj/efm32_usart.o
- .debug_ranges  0x00001010       0x20 THUMB Flash Debug/../../obj/efm32_vcmp.o
- .debug_ranges  0x00001030       0x28 THUMB Flash Debug/../../obj/efm32_wdog.o
- .debug_ranges  0x00001058       0x28 THUMB Flash Debug/../../obj/main.o
+ .debug_ranges  0x000001b0       0x40 THUMB Flash Debug/../../obj/timer.o
+ .debug_ranges  0x000001f0       0xd0 THUMB Flash Debug/../../obj/uart.o
+ .debug_ranges  0x000002c0       0x10 THUMB Flash Debug/../../obj/assert.o
+ .debug_ranges  0x000002d0       0x18 THUMB Flash Debug/../../obj/backdoor.o
+ .debug_ranges  0x000002e8       0x18 THUMB Flash Debug/../../obj/boot.o
+ .debug_ranges  0x00000300       0x48 THUMB Flash Debug/../../obj/com.o
+ .debug_ranges  0x00000348       0x18 THUMB Flash Debug/../../obj/cop.o
+ .debug_ranges  0x00000360       0x48 THUMB Flash Debug/../../obj/xcp.o
+ .debug_ranges  0x000003a8       0x50 THUMB Flash Debug/../../obj/system_efm32.o
+ .debug_ranges  0x000003f8       0x48 THUMB Flash Debug/../../obj/efm32_acmp.o
+ .debug_ranges  0x00000440       0x38 THUMB Flash Debug/../../obj/efm32_adc.o
+ .debug_ranges  0x00000478       0x70 THUMB Flash Debug/../../obj/efm32_aes.o
+ .debug_ranges  0x000004e8      0x420 THUMB Flash Debug/../../obj/efm32_cmu.o
+ .debug_ranges  0x00000908       0x30 THUMB Flash Debug/../../obj/efm32_dac.o
+ .debug_ranges  0x00000938       0x10 THUMB Flash Debug/../../obj/efm32_dbg.o
+ .debug_ranges  0x00000948       0x88 THUMB Flash Debug/../../obj/efm32_dma.o
+ .debug_ranges  0x000009d0       0x58 THUMB Flash Debug/../../obj/efm32_ebi.o
+ .debug_ranges  0x00000a28       0x50 THUMB Flash Debug/../../obj/efm32_emu.o
+ .debug_ranges  0x00000a78       0x80 THUMB Flash Debug/../../obj/efm32_gpio.o
+ .debug_ranges  0x00000af8       0xb8 THUMB Flash Debug/../../obj/efm32_i2c.o
+ .debug_ranges  0x00000bb0       0x78 THUMB Flash Debug/../../obj/efm32_lcd.o
+ .debug_ranges  0x00000c28       0x50 THUMB Flash Debug/../../obj/efm32_letimer.o
+ .debug_ranges  0x00000c78       0x68 THUMB Flash Debug/../../obj/efm32_leuart.o
+ .debug_ranges  0x00000ce0       0x10 THUMB Flash Debug/../../obj/efm32_mpu.o
+ .debug_ranges  0x00000cf0       0x28 THUMB Flash Debug/../../obj/efm32_msc.o
+ .debug_ranges  0x00000d18       0xd8 THUMB Flash Debug/../../obj/efm32_pcnt.o
+ .debug_ranges  0x00000df0       0x10 THUMB Flash Debug/../../obj/efm32_prs.o
+ .debug_ranges  0x00000e00       0xb0 THUMB Flash Debug/../../obj/efm32_rmu.o
+ .debug_ranges  0x00000eb0       0x48 THUMB Flash Debug/../../obj/efm32_rtc.o
+ .debug_ranges  0x00000ef8       0x18 THUMB Flash Debug/../../obj/efm32_system.o
+ .debug_ranges  0x00000f10       0x38 THUMB Flash Debug/../../obj/efm32_timer.o
+ .debug_ranges  0x00000f48       0x90 THUMB Flash Debug/../../obj/efm32_usart.o
+ .debug_ranges  0x00000fd8       0x20 THUMB Flash Debug/../../obj/efm32_vcmp.o
+ .debug_ranges  0x00000ff8       0x28 THUMB Flash Debug/../../obj/efm32_wdog.o
+ .debug_ranges  0x00001020       0x28 THUMB Flash Debug/../../obj/main.o
 
-.debug_str      0x00000000     0x667d
- .debug_str     0x00000000      0x109 THUMB Flash Debug/../../obj/vectors.o
-                                0x139 (size before relaxing)
- .debug_str     0x00000109       0xeb THUMB Flash Debug/../../obj/cpu.o
-                                0x15d (size before relaxing)
- .debug_str     0x000001f4      0x334 THUMB Flash Debug/../../obj/flash.o
-                                0x3f0 (size before relaxing)
- .debug_str     0x00000528       0xbd THUMB Flash Debug/../../obj/nvm.o
-                                0x155 (size before relaxing)
- .debug_str     0x000005e5       0xf0 THUMB Flash Debug/../../obj/timer.o
-                                0x172 (size before relaxing)
- .debug_str     0x000006d5      0x729 THUMB Flash Debug/../../obj/uart.o
-                                0x829 (size before relaxing)
- .debug_str     0x00000dfe       0xbe THUMB Flash Debug/../../obj/assert.o
-                                0x13a (size before relaxing)
- .debug_str     0x00000ebc       0xa9 THUMB Flash Debug/../../obj/backdoor.o
-                                0x119 (size before relaxing)
- .debug_str     0x00000f65       0x8f THUMB Flash Debug/../../obj/boot.o
-                                 0xf6 (size before relaxing)
- .debug_str     0x00000ff4      0x12b THUMB Flash Debug/../../obj/com.o
-                                0x1c5 (size before relaxing)
- .debug_str     0x0000111f       0x8f THUMB Flash Debug/../../obj/cop.o
-                                 0xf6 (size before relaxing)
- .debug_str     0x000011ae      0x274 THUMB Flash Debug/../../obj/xcp.o
-                                0x318 (size before relaxing)
- .debug_str     0x00001422       0x8b THUMB Flash Debug/../../obj/core_cm3.o
-                                0x10e (size before relaxing)
- .debug_str     0x000014ad      0x253 THUMB Flash Debug/../../obj/system_efm32.o
-                                0x32f (size before relaxing)
- .debug_str     0x00001700      0x470 THUMB Flash Debug/../../obj/efm32_acmp.o
-                                0x534 (size before relaxing)
- .debug_str     0x00001b70      0x752 THUMB Flash Debug/../../obj/efm32_adc.o
-                                0xa27 (size before relaxing)
- .debug_str     0x000022c2      0x1ba THUMB Flash Debug/../../obj/efm32_aes.o
-                                0x2a9 (size before relaxing)
- .debug_str     0x0000247c      0x44d THUMB Flash Debug/../../obj/efm32_cmu.o
-                                0x95e (size before relaxing)
- .debug_str     0x000028c9      0x311 THUMB Flash Debug/../../obj/efm32_dac.o
-                                0x6cb (size before relaxing)
- .debug_str     0x00002bda      0x136 THUMB Flash Debug/../../obj/efm32_dbg.o
-                                0x40e (size before relaxing)
- .debug_str     0x00002d10      0x7f5 THUMB Flash Debug/../../obj/efm32_dma.o
-                                0xb39 (size before relaxing)
- .debug_str     0x00003505      0x359 THUMB Flash Debug/../../obj/efm32_ebi.o
-                                0x439 (size before relaxing)
- .debug_str     0x0000385e      0x18f THUMB Flash Debug/../../obj/efm32_emu.o
-                                0x360 (size before relaxing)
- .debug_str     0x000039ed      0x211 THUMB Flash Debug/../../obj/efm32_gpio.o
-                                0x544 (size before relaxing)
- .debug_str     0x00003bfe      0x366 THUMB Flash Debug/../../obj/efm32_i2c.o
-                                0x68f (size before relaxing)
- .debug_str     0x00003f64       0x8f THUMB Flash Debug/../../obj/efm32_int.o
-                                0x130 (size before relaxing)
- .debug_str     0x00003ff3      0x63e THUMB Flash Debug/../../obj/efm32_lcd.o
-                                0x73d (size before relaxing)
- .debug_str     0x00004631       0x87 THUMB Flash Debug/../../obj/efm32_lesense.o
-                                0x11f (size before relaxing)
- .debug_str     0x000046b8      0x29b THUMB Flash Debug/../../obj/efm32_letimer.o
-                                0x39a (size before relaxing)
- .debug_str     0x00004953      0x157 THUMB Flash Debug/../../obj/efm32_leuart.o
-                                0x612 (size before relaxing)
- .debug_str     0x00004aaa      0x3dc THUMB Flash Debug/../../obj/efm32_mpu.o
-                                0x49a (size before relaxing)
- .debug_str     0x00004e86       0xf7 THUMB Flash Debug/../../obj/efm32_msc.o
-                                0x253 (size before relaxing)
- .debug_str     0x00004f7d       0x85 THUMB Flash Debug/../../obj/efm32_opamp.o
-                                0x11d (size before relaxing)
- .debug_str     0x00005002      0x1a5 THUMB Flash Debug/../../obj/efm32_pcnt.o
-                                0x2c1 (size before relaxing)
- .debug_str     0x000051a7      0x10c THUMB Flash Debug/../../obj/efm32_prs.o
-                                0x1d0 (size before relaxing)
- .debug_str     0x000052b3       0xf8 THUMB Flash Debug/../../obj/efm32_rmu.o
-                                0x1e7 (size before relaxing)
- .debug_str     0x000053ab      0x107 THUMB Flash Debug/../../obj/efm32_rtc.o
-                                0x233 (size before relaxing)
- .debug_str     0x000054b2      0x152 THUMB Flash Debug/../../obj/efm32_system.o
-                                0x1fb (size before relaxing)
- .debug_str     0x00005604      0x55b THUMB Flash Debug/../../obj/efm32_timer.o
-                                0x6c0 (size before relaxing)
- .debug_str     0x00005b5f      0x5cb THUMB Flash Debug/../../obj/efm32_usart.o
-                                0x931 (size before relaxing)
- .debug_str     0x0000612a      0x227 THUMB Flash Debug/../../obj/efm32_vcmp.o
-                                0x308 (size before relaxing)
- .debug_str     0x00006351      0x23a THUMB Flash Debug/../../obj/efm32_wdog.o
-                                0x330 (size before relaxing)
- .debug_str     0x0000658b       0x6e THUMB Flash Debug/../../obj/hooks.o
-                                 0xd5 (size before relaxing)
- .debug_str     0x000065f9       0x84 THUMB Flash Debug/../../obj/main.o
-                                0x6ac (size before relaxing)
+.debug_str      0x00000000     0x65b4
+ .debug_str     0x00000000      0x140 THUMB Flash Debug/../../obj/vectors.o
+                                0x170 (size before relaxing)
+ .debug_str     0x00000140       0xe5 THUMB Flash Debug/../../obj/cpu.o
+                                0x194 (size before relaxing)
+ .debug_str     0x00000225      0x32e THUMB Flash Debug/../../obj/flash.o
+                                0x427 (size before relaxing)
+ .debug_str     0x00000553       0xb7 THUMB Flash Debug/../../obj/nvm.o
+                                0x18c (size before relaxing)
+ .debug_str     0x0000060a       0xd5 THUMB Flash Debug/../../obj/timer.o
+                                0x194 (size before relaxing)
+ .debug_str     0x000006df      0x723 THUMB Flash Debug/../../obj/uart.o
+                                0x860 (size before relaxing)
+ .debug_str     0x00000e02       0xb8 THUMB Flash Debug/../../obj/assert.o
+                                0x171 (size before relaxing)
+ .debug_str     0x00000eba       0xb4 THUMB Flash Debug/../../obj/backdoor.o
+                                0x16c (size before relaxing)
+ .debug_str     0x00000f6e       0x89 THUMB Flash Debug/../../obj/boot.o
+                                0x12d (size before relaxing)
+ .debug_str     0x00000ff7      0x125 THUMB Flash Debug/../../obj/com.o
+                                0x1fc (size before relaxing)
+ .debug_str     0x0000111c       0x89 THUMB Flash Debug/../../obj/cop.o
+                                0x12d (size before relaxing)
+ .debug_str     0x000011a5      0x26e THUMB Flash Debug/../../obj/xcp.o
+                                0x34f (size before relaxing)
+ .debug_str     0x00001413       0x85 THUMB Flash Debug/../../obj/core_cm3.o
+                                0x145 (size before relaxing)
+ .debug_str     0x00001498      0x24d THUMB Flash Debug/../../obj/system_efm32.o
+                                0x366 (size before relaxing)
+ .debug_str     0x000016e5      0x46a THUMB Flash Debug/../../obj/efm32_acmp.o
+                                0x56b (size before relaxing)
+ .debug_str     0x00001b4f      0x74c THUMB Flash Debug/../../obj/efm32_adc.o
+                                0xa5e (size before relaxing)
+ .debug_str     0x0000229b      0x1ba THUMB Flash Debug/../../obj/efm32_aes.o
+                                0x2e0 (size before relaxing)
+ .debug_str     0x00002455      0x447 THUMB Flash Debug/../../obj/efm32_cmu.o
+                                0x995 (size before relaxing)
+ .debug_str     0x0000289c      0x30b THUMB Flash Debug/../../obj/efm32_dac.o
+                                0x702 (size before relaxing)
+ .debug_str     0x00002ba7      0x130 THUMB Flash Debug/../../obj/efm32_dbg.o
+                                0x445 (size before relaxing)
+ .debug_str     0x00002cd7      0x7ef THUMB Flash Debug/../../obj/efm32_dma.o
+                                0xb70 (size before relaxing)
+ .debug_str     0x000034c6      0x353 THUMB Flash Debug/../../obj/efm32_ebi.o
+                                0x47d (size before relaxing)
+ .debug_str     0x00003819      0x189 THUMB Flash Debug/../../obj/efm32_emu.o
+                                0x397 (size before relaxing)
+ .debug_str     0x000039a2      0x20b THUMB Flash Debug/../../obj/efm32_gpio.o
+                                0x57b (size before relaxing)
+ .debug_str     0x00003bad      0x360 THUMB Flash Debug/../../obj/efm32_i2c.o
+                                0x6c6 (size before relaxing)
+ .debug_str     0x00003f0d       0x89 THUMB Flash Debug/../../obj/efm32_int.o
+                                0x167 (size before relaxing)
+ .debug_str     0x00003f96      0x638 THUMB Flash Debug/../../obj/efm32_lcd.o
+                                0x774 (size before relaxing)
+ .debug_str     0x000045ce       0x81 THUMB Flash Debug/../../obj/efm32_lesense.o
+                                0x156 (size before relaxing)
+ .debug_str     0x0000464f      0x295 THUMB Flash Debug/../../obj/efm32_letimer.o
+                                0x3d1 (size before relaxing)
+ .debug_str     0x000048e4      0x151 THUMB Flash Debug/../../obj/efm32_leuart.o
+                                0x649 (size before relaxing)
+ .debug_str     0x00004a35      0x3d6 THUMB Flash Debug/../../obj/efm32_mpu.o
+                                0x4d1 (size before relaxing)
+ .debug_str     0x00004e0b       0xf1 THUMB Flash Debug/../../obj/efm32_msc.o
+                                0x28a (size before relaxing)
+ .debug_str     0x00004efc       0x7f THUMB Flash Debug/../../obj/efm32_opamp.o
+                                0x154 (size before relaxing)
+ .debug_str     0x00004f7b      0x19f THUMB Flash Debug/../../obj/efm32_pcnt.o
+                                0x2f8 (size before relaxing)
+ .debug_str     0x0000511a      0x106 THUMB Flash Debug/../../obj/efm32_prs.o
+                                0x207 (size before relaxing)
+ .debug_str     0x00005220       0xf2 THUMB Flash Debug/../../obj/efm32_rmu.o
+                                0x21e (size before relaxing)
+ .debug_str     0x00005312      0x101 THUMB Flash Debug/../../obj/efm32_rtc.o
+                                0x26a (size before relaxing)
+ .debug_str     0x00005413      0x14c THUMB Flash Debug/../../obj/efm32_system.o
+                                0x232 (size before relaxing)
+ .debug_str     0x0000555f      0x555 THUMB Flash Debug/../../obj/efm32_timer.o
+                                0x6f7 (size before relaxing)
+ .debug_str     0x00005ab4      0x5c5 THUMB Flash Debug/../../obj/efm32_usart.o
+                                0x968 (size before relaxing)
+ .debug_str     0x00006079      0x221 THUMB Flash Debug/../../obj/efm32_vcmp.o
+                                0x33f (size before relaxing)
+ .debug_str     0x0000629a      0x234 THUMB Flash Debug/../../obj/efm32_wdog.o
+                                0x367 (size before relaxing)
+ .debug_str     0x000064ce       0x68 THUMB Flash Debug/../../obj/hooks.o
+                                0x10c (size before relaxing)
+ .debug_str     0x00006536       0x7e THUMB Flash Debug/../../obj/main.o
+                                0x6e3 (size before relaxing)

@@ -84,7 +84,7 @@ void TimerInit(void)
   /* select core clock as source and enable the timer */
   SYSTICK->CTRL = SYSTICK_BIT_CLKSOURCE | SYSTICK_BIT_ENABLE;
   /* reset the millisecond counter value */
-  TimerSet(0);
+  millisecond_counter = 0;
 } /*** end of TimerInit ***/
 
 
@@ -112,27 +112,13 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* check if the milliseond event occurred */
+  /* check if the millisecond event occurred */
   if ((SYSTICK->CTRL & SYSTICK_BIT_COUNTERFLAG) != 0)
   {
     /* increment the millisecond counter */
     millisecond_counter++;
   }
 } /*** end of TimerUpdate ***/
-
-
-/****************************************************************************************
-** NAME:           TimerSet
-** PARAMETER:      timer_value initialize value of the millisecond timer.
-** RETURN VALUE:   none
-** DESCRIPTION:    Sets the initial counter value of the millisecond timer.
-**
-****************************************************************************************/
-void TimerSet(blt_int32u timer_value)
-{
-  /* set the millisecond counter value */
-  millisecond_counter = timer_value;
-} /*** end of TimerSet ***/
 
 
 /****************************************************************************************

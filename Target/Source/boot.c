@@ -46,12 +46,20 @@ void BootInit(void)
 {
   /* initialize the watchdog */
   CopInit();
-  /* initialize the backdoor entry */
-  BackDoorInit();
+  /* initialize the millisecond timer */
+  TimerInit();
   /* initialize the non-volatile memory driver */
   NvmInit();
+  #if (BOOT_FILE_SYS_ENABLE > 0)
+  /* initialize the file system module */
+  FileInit();
+  #endif 
+  #if (BOOT_COM_ENABLE > 0)
   /* initialize the communication module */
   ComInit();
+  #endif
+  /* initialize the backdoor entry */
+  BackDoorInit();
 } /*** end of BootInit ***/
 
 
@@ -66,8 +74,16 @@ void BootTask(void)
 {
   /* service the watchdog */
   CopService();
+  /* update the millisecond timer */
+  TimerUpdate();
+  #if (BOOT_FILE_SYS_ENABLE > 0)
+  /* call worker task for updating firmware from locally attached file storage */
+  FileTask();
+  #endif /* BOOT_FILE_SYS_ENABLE > 0 */
+  #if (BOOT_COM_ENABLE > 0)
   /* process possibly pending communication data */
   ComTask();
+  #endif
   /* control the backdoor */
   BackDoorCheck();
 } /*** end of BootTask ***/

@@ -29,8 +29,8 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -87,7 +87,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.3.53229</state>
+          <state>6.50.5.4846</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -99,7 +99,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>LM3Sx9xx	TexasInstruments LM3Sx9xx</state>
+          <state>LM3S6965	TexasInstruments LM3S6965</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -137,13 +137,13 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -162,6 +162,10 @@
         <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
+          <state>0</state>
+        </option>
         <option>
           <name>CCDefines</name>
           <state>ewarm</state>
@@ -295,12 +299,14 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\fatfs\src</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR</state>
           <state>$PROJ_DIR$\..</state>
           <state>$PROJ_DIR$\..\lib</state>
           <state>$PROJ_DIR$\..\lib\inc</state>
           <state>$PROJ_DIR$\..\lib\driverlib</state>
+          <state>$PROJ_DIR$\..\lib\fatfs</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -325,7 +331,7 @@
         <option>
           <name>CCOptStrategy</name>
           <version>0</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCOptLevelSlave</name>
@@ -612,7 +618,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>14</version>
+        <version>15</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -781,10 +787,6 @@
           <state>1</state>
         </option>
         <option>
-          <name>CrcAlgo</name>
-          <state>1</state>
-        </option>
-        <option>
           <name>CrcPoly</name>
           <state>0x11021</state>
         </option>
@@ -886,6 +888,16 @@
           <name>IlinkStackCallGraphFile</name>
           <state></state>
         </option>
+        <option>
+          <name>CrcAlgorithm</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -942,7 +954,7 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>19</version>
+          <version>20</version>
           <state>0</state>
         </option>
         <option>
@@ -1050,12 +1062,12 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>19</version>
+          <version>20</version>
           <state>0</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>19</version>
+          <version>20</version>
           <state>0</state>
         </option>
         <option>
@@ -1075,6 +1087,10 @@
         <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
+          <state>0</state>
+        </option>
         <option>
           <name>CCDefines</name>
           <state>NDEBUG</state>
@@ -1518,7 +1534,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>14</version>
+        <version>15</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1687,10 +1703,6 @@
           <state>1</state>
         </option>
         <option>
-          <name>CrcAlgo</name>
-          <state>1</state>
-        </option>
-        <option>
           <name>CrcPoly</name>
           <state>0x11021</state>
         </option>
@@ -1792,6 +1804,16 @@
           <name>IlinkStackCallGraphFile</name>
           <state></state>
         </option>
+        <option>
+          <name>CrcAlgorithm</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -1855,6 +1877,15 @@
           <name>$PROJ_DIR$\..\lib\driverlib\interrupt.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\lib\driverlib\pin_map.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\driverlib\ssi.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\driverlib\ssi.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\lib\driverlib\sysctl.c</name>
         </file>
         <file>
@@ -1865,6 +1896,15 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\lib\driverlib\uartlib.h</name>
+        </file>
+      </group>
+      <group>
+        <name>fatfs</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\fatfs\ffconf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\fatfs\mmc.c</name>
         </file>
       </group>
       <group>
@@ -1883,6 +1923,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\lib\inc\hw_nvic.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\inc\hw_ssi.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\lib\inc\hw_sysctl.h</name>
@@ -1952,6 +1995,24 @@
         <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\uart.h</name>
       </file>
     </group>
+    <group>
+      <name>fatfs</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\diskio.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\ff.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\ff.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\integer.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\option\unicode.c</name>
+      </file>
+    </group>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\assert.c</name>
     </file>
@@ -1981,6 +2042,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\cop.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\file.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\file.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\plausibility.h</name>

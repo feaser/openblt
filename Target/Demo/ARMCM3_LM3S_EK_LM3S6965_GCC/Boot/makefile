@@ -46,6 +46,7 @@ main.c \
 ./lib/inc/hw_sysctl.h \
 ./lib/inc/hw_types.h \
 ./lib/inc/hw_uart.h \
+./lib/inc/hw_ssi.h \
 ./lib/driverlib/cpulib.c \
 ./lib/driverlib/flashlib.c \
 ./lib/driverlib/gpio.h \
@@ -59,6 +60,11 @@ main.c \
 ./lib/driverlib/gpio.c \
 ./lib/driverlib/interrupt.h \
 ./lib/driverlib/uartlib.c \
+./lib/driverlib/pin_map.h \
+./lib/driverlib/ssi.c \
+./lib/driverlib/ssi.h \
+./lib/fatfs/ffconf.h \
+./lib/fatfs/mmc.c \
 ../../../Source/boot.c \
 ../../../Source/boot.h \
 ../../../Source/com.c \
@@ -69,9 +75,16 @@ main.c \
 ../../../Source/backdoor.h \
 ../../../Source/cop.c \
 ../../../Source/cop.h \
+../../../Source/file.c \
+../../../Source/file.h \
 ../../../Source/assert.c \
 ../../../Source/assert.h \
 ../../../Source/plausibility.h \
+../../../Source/fatfs/src/diskio.h \
+../../../Source/fatfs/src/ff.c \
+../../../Source/fatfs/src/ff.h \
+../../../Source/fatfs/src/integer.h \
+../../../Source/fatfs/src/option/unicode.c \
 ../../../Source/ARMCM3_LM3S/types.h \
 ../../../Source/ARMCM3_LM3S/cpu.c \
 ../../../Source/ARMCM3_LM3S/cpu.h \

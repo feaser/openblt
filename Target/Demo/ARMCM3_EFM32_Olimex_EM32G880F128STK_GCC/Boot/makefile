@@ -172,7 +172,7 @@ LIB_PATH  = -L../../../Source/ARMCM3_EFM32/GCC/
 #|---------------------------------------------------------------------------------------|
 CFLAGS   = -g -D inline= -mthumb -mcpu=cortex-m3 -Os -T memory.x
 CFLAGS  += -D PACK_STRUCT_END=__attribute\(\(packed\)\) -Wno-main
-CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) 
+CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) -Wno-attributes
 CFLAGS  += -ffunction-sections -fdata-sections $(INC_PATH) -D EFM32G880F128
 CFLAGS  += -Wa,-adhlns="$(OBJ_PATH)/$(subst .o,.lst,$@)"
 LFLAGS   = -nostartfiles -Xlinker -M -Xlinker -Map=$(BIN_PATH)/$(PROJ_NAME).map

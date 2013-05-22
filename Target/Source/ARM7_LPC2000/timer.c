@@ -72,7 +72,7 @@ void TimerInit(void)
   /* store the start value of the free running counter */
   free_running_counter_last = T0TC;
   /* reset the millisecond counter value */
-  TimerSet(0);
+  millisecond_counter = 0;
 } /*** end of TimerInit ***/
 
 
@@ -114,20 +114,6 @@ void TimerUpdate(void)
   /* store current free running counter value for next time around */
   free_running_counter_last = free_running_counter_now;
 } /*** end of TimerUpdate ***/
-
-
-/****************************************************************************************
-** NAME:           TimerSet
-** PARAMETER:      timer_value initialize value of the millisecond timer.
-** RETURN VALUE:   none
-** DESCRIPTION:    Sets the initial counter value of the millisecond timer.
-**
-****************************************************************************************/
-void TimerSet(blt_int32u timer_value)
-{
-  /* set the millisecond counter value */
-  millisecond_counter = timer_value;
-} /*** end of TimerSet ***/
 
 
 /****************************************************************************************

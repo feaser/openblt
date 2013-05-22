@@ -2,23 +2,38 @@
 //
 // hw_flash.h - Macros used when accessing the flash controller.
 //
-// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 6852 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 10636 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -42,6 +57,9 @@
 #define FLASH_FWBVAL            0x400FD030  // Flash Write Buffer Valid
 #define FLASH_FCTL              0x400FD0F8  // Flash Control
 #define FLASH_FWBN              0x400FD100  // Flash Write Buffer n
+#define FLASH_FSIZE             0x400FDFC0  // Flash Size
+#define FLASH_SSIZE             0x400FDFC4  // SRAM Size
+#define FLASH_ROMSWMAP          0x400FDFCC  // ROM Software Map
 #define FLASH_RMCTL             0x400FE0F0  // ROM Control
 #define FLASH_FMPRE             0x400FE130  // Flash Memory Protection Read
                                             // Enable
@@ -62,6 +80,14 @@
                                             // Enable 2
 #define FLASH_FMPRE3            0x400FE20C  // Flash Memory Protection Read
                                             // Enable 3
+#define FLASH_FMPRE4            0x400FE210  // Flash Memory Protection Read
+                                            // Enable 4
+#define FLASH_FMPRE5            0x400FE214  // Flash Memory Protection Read
+                                            // Enable 5
+#define FLASH_FMPRE6            0x400FE218  // Flash Memory Protection Read
+                                            // Enable 6
+#define FLASH_FMPRE7            0x400FE21C  // Flash Memory Protection Read
+                                            // Enable 7
 #define FLASH_FMPPE0            0x400FE400  // Flash Memory Protection Program
                                             // Enable 0
 #define FLASH_FMPPE1            0x400FE404  // Flash Memory Protection Program
@@ -70,13 +96,21 @@
                                             // Enable 2
 #define FLASH_FMPPE3            0x400FE40C  // Flash Memory Protection Program
                                             // Enable 3
+#define FLASH_FMPPE4            0x400FE410  // Flash Memory Protection Program
+                                            // Enable 4
+#define FLASH_FMPPE5            0x400FE414  // Flash Memory Protection Program
+                                            // Enable 5
+#define FLASH_FMPPE6            0x400FE418  // Flash Memory Protection Program
+                                            // Enable 6
+#define FLASH_FMPPE7            0x400FE41C  // Flash Memory Protection Program
+                                            // Enable 7
 
 //*****************************************************************************
 //
 // The following are defines for the bit fields in the FLASH_FMA register.
 //
 //*****************************************************************************
-#define FLASH_FMA_OFFSET_M      0x0003FFFF  // Address Offset
+#define FLASH_FMA_OFFSET_M      0x0007FFFF  // Address Offset
 #define FLASH_FMA_OFFSET_S      0
 
 //*****************************************************************************
@@ -103,6 +137,12 @@
 // The following are defines for the bit fields in the FLASH_FCRIS register.
 //
 //*****************************************************************************
+#define FLASH_FCRIS_PROGRIS     0x00002000  // PROGVER Raw Interrupt Status
+#define FLASH_FCRIS_ERRIS       0x00000800  // ERVER Raw Interrupt Status
+#define FLASH_FCRIS_INVDRIS     0x00000400  // Invalid Data Raw Interrupt
+                                            // Status
+#define FLASH_FCRIS_VOLTRIS     0x00000200  // VOLTSTAT Raw Interrupt Status
+#define FLASH_FCRIS_ERIS        0x00000004  // EEPROM Raw Interrupt Status
 #define FLASH_FCRIS_PRIS        0x00000002  // Programming Raw Interrupt Status
 #define FLASH_FCRIS_ARIS        0x00000001  // Access Raw Interrupt Status
 
@@ -111,6 +151,11 @@
 // The following are defines for the bit fields in the FLASH_FCIM register.
 //
 //*****************************************************************************
+#define FLASH_FCIM_PROGMASK     0x00002000  // PROGVER Interrupt Mask
+#define FLASH_FCIM_ERMASK       0x00000800  // ERVER Interrupt Mask
+#define FLASH_FCIM_INVDMASK     0x00000400  // Invalid Data Interrupt Mask
+#define FLASH_FCIM_VOLTMASK     0x00000200  // VOLT Interrupt Mask
+#define FLASH_FCIM_EMASK        0x00000004  // EEPROM Interrupt Mask
 #define FLASH_FCIM_PMASK        0x00000002  // Programming Interrupt Mask
 #define FLASH_FCIM_AMASK        0x00000001  // Access Interrupt Mask
 
@@ -119,6 +164,16 @@
 // The following are defines for the bit fields in the FLASH_FCMISC register.
 //
 //*****************************************************************************
+#define FLASH_FCMISC_PROGMISC   0x00002000  // PROGVER Masked Interrupt Status
+                                            // and Clear
+#define FLASH_FCMISC_ERMISC     0x00000800  // ERVER Masked Interrupt Status
+                                            // and Clear
+#define FLASH_FCMISC_INVDMISC   0x00000400  // Invalid Data Masked Interrupt
+                                            // Status and Clear
+#define FLASH_FCMISC_VOLTMISC   0x00000200  // VOLT Masked Interrupt Status and
+                                            // Clear
+#define FLASH_FCMISC_EMISC      0x00000004  // EEPROM Masked Interrupt Status
+                                            // and Clear
 #define FLASH_FCMISC_PMISC      0x00000002  // Programming Masked Interrupt
                                             // Status and Clear
 #define FLASH_FCMISC_AMISC      0x00000001  // Access Masked Interrupt Status
@@ -153,6 +208,44 @@
 //
 //*****************************************************************************
 #define FLASH_FWBN_DATA_M       0xFFFFFFFF  // Data
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the FLASH_FSIZE register.
+//
+//*****************************************************************************
+#define FLASH_FSIZE_SIZE_M      0x0000FFFF  // Flash Size
+#define FLASH_FSIZE_SIZE_8KB    0x00000003  // 8 KB of Flash
+#define FLASH_FSIZE_SIZE_16KB   0x00000007  // 16 KB of Flash
+#define FLASH_FSIZE_SIZE_32KB   0x0000000F  // 32 KB of Flash
+#define FLASH_FSIZE_SIZE_64KB   0x0000001F  // 64 KB of Flash
+#define FLASH_FSIZE_SIZE_96KB   0x0000002F  // 96 KB of Flash
+#define FLASH_FSIZE_SIZE_128KB  0x0000003F  // 128 KB of Flash
+#define FLASH_FSIZE_SIZE_192KB  0x0000005F  // 192 KB of Flash
+#define FLASH_FSIZE_SIZE_256KB  0x0000007F  // 256 KB of Flash
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the FLASH_SSIZE register.
+//
+//*****************************************************************************
+#define FLASH_SSIZE_SIZE_M      0x0000FFFF  // SRAM Size
+#define FLASH_SSIZE_SIZE_2KB    0x00000007  // 2 KB of SRAM
+#define FLASH_SSIZE_SIZE_4KB    0x0000000F  // 4 KB of SRAM
+#define FLASH_SSIZE_SIZE_6KB    0x00000017  // 6 KB of SRAM
+#define FLASH_SSIZE_SIZE_8KB    0x0000001F  // 8 KB of SRAM
+#define FLASH_SSIZE_SIZE_12KB   0x0000002F  // 12 KB of SRAM
+#define FLASH_SSIZE_SIZE_16KB   0x0000003F  // 16 KB of SRAM
+#define FLASH_SSIZE_SIZE_20KB   0x0000004F  // 20 KB of SRAM
+#define FLASH_SSIZE_SIZE_24KB   0x0000005F  // 24 KB of SRAM
+#define FLASH_SSIZE_SIZE_32KB   0x0000007F  // 32 KB of SRAM
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the FLASH_ROMSWMAP register.
+//
+//*****************************************************************************
+#define FLASH_ROMSWMAP_SAFERTOS 0x00000001  // SafeRTOS Present
 
 //*****************************************************************************
 //
@@ -214,8 +307,8 @@
 // The following are defines for the bit fields in the FLASH_USERREG0 register.
 //
 //*****************************************************************************
+#define FLASH_USERREG0_DATA_M   0xFFFFFFFF  // User Data
 #define FLASH_USERREG0_NW       0x80000000  // Not Written
-#define FLASH_USERREG0_DATA_M   0x7FFFFFFF  // User Data
 #define FLASH_USERREG0_DATA_S   0
 
 //*****************************************************************************
@@ -223,8 +316,8 @@
 // The following are defines for the bit fields in the FLASH_USERREG1 register.
 //
 //*****************************************************************************
+#define FLASH_USERREG1_DATA_M   0xFFFFFFFF  // User Data
 #define FLASH_USERREG1_NW       0x80000000  // Not Written
-#define FLASH_USERREG1_DATA_M   0x7FFFFFFF  // User Data
 #define FLASH_USERREG1_DATA_S   0
 
 //*****************************************************************************
@@ -232,8 +325,8 @@
 // The following are defines for the bit fields in the FLASH_USERREG2 register.
 //
 //*****************************************************************************
+#define FLASH_USERREG2_DATA_M   0xFFFFFFFF  // User Data
 #define FLASH_USERREG2_NW       0x80000000  // Not Written
-#define FLASH_USERREG2_DATA_M   0x7FFFFFFF  // User Data
 #define FLASH_USERREG2_DATA_S   0
 
 //*****************************************************************************
@@ -241,8 +334,8 @@
 // The following are defines for the bit fields in the FLASH_USERREG3 register.
 //
 //*****************************************************************************
+#define FLASH_USERREG3_DATA_M   0xFFFFFFFF  // User Data
 #define FLASH_USERREG3_NW       0x80000000  // Not Written
-#define FLASH_USERREG3_DATA_M   0x7FFFFFFF  // User Data
 #define FLASH_USERREG3_DATA_S   0
 
 //*****************************************************************************
@@ -314,8 +407,8 @@
 // register.
 //
 //*****************************************************************************
-#define FLASH_FMC_WRKEY_MASK    0xFFFF0000  // FLASH write key mask
 #define FLASH_FMC_WRKEY_M       0xFFFF0000  // Flash Memory Write Key
+#define FLASH_FMC_WRKEY_MASK    0xFFFF0000  // FLASH write key mask
 #define FLASH_FMC_WRKEY_S       16
 
 //*****************************************************************************

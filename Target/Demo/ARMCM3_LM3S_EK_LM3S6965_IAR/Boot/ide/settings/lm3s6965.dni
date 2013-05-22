@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-2002676506
+Checksum=2089260222
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -17,6 +17,10 @@ StopOnThrow=_ 0
 ShowArgs=0
 [Disassembly]
 MixedMode=1
+[LMIFTDIDriver]
+LMI_ResetMode=0x00000000
+[watch_formats]
+Fmt0={W}0:test_address	4	0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

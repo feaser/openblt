@@ -33,6 +33,11 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "driverlib/uartlib.h"
+#endif
 
 
 /****************************************************************************************
@@ -65,6 +70,30 @@ blt_bool BackDoorEntryHook(void)
   return BLT_TRUE;
 } /*** end of BackDoorEntryHook ***/
 #endif /* BOOT_BACKDOOR_HOOKS_ENABLE > 0 */
+
+
+/****************************************************************************************
+*   C P U   D R I V E R   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+/****************************************************************************************
+** NAME:           CpuUserProgramStartHook
+** PARAMETER:      none
+** RETURN VALUE:   BLT_TRUE if it is okay to start the user program, BLT_FALSE to keep
+**                 keep the bootloader active.
+** DESCRIPTION:    Callback that gets called when the bootloader is about to exit and
+**                 hand over control to the user program. This is the last moment that
+**                 some final checking can be performed and if necessary prevent the
+**                 bootloader from activiting the user program.
+**
+****************************************************************************************/
+blt_bool CpuUserProgramStartHook(void)
+{
+  /* okay to start the user program */
+  return BLT_TRUE;
+} /*** end of CpuUserProgramStartHook ***/
+#endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */
 
 
 /****************************************************************************************
@@ -174,6 +203,182 @@ void CopServiceHook(void)
 {
 } /*** end of CopServiceHook ***/
 #endif /* BOOT_COP_HOOKS_ENABLE > 0 */
+
+
+/****************************************************************************************
+*   F I L E   S Y S T E M   I N T E R F A C E   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_FILE_SYS_ENABLE > 0)
+
+/****************************************************************************************
+* Constant data declarations
+****************************************************************************************/
+static const blt_char firmwareFilename[] = "/demoprog_ek_lm3s6965.srec";
+
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+static struct 
+{
+  FIL      handle;
+  blt_bool canUse;
+} logfile;
+#endif
+
+
+/****************************************************************************************
+** NAME:           FileIsFirmwareUpdateRequestedHook
+** PARAMETER:      none
+** RETURN VALUE:   BLT_TRUE if a firmware update is requested, BLT_FALSE otherwise.
+** DESCRIPTION:    Callback that gets called continuously when the bootloader is idle to
+**                 check whether a firmware update from local file storage should be
+**                 started. This could for example be when a switch is pressed, when a 
+**                 certain file is found on the local file storage, etc.
+**
+****************************************************************************************/
+blt_bool FileIsFirmwareUpdateRequestedHook(void)
+{
+  FILINFO fileInfoObject = { 0 }; /* needs to be zeroed according to f_stat docs */;
+
+  /* Current example implementation looks for a predetermined firmware file on the 
+   * SD-card. If the SD-card is accessible and the firmware file was found the firmware
+   * update is started. When successfully completed, the firmware file is deleted.
+   * During the firmware update, progress information is written to a file called
+   * bootlog.txt and additionally outputted on UART @57600 bps for debugging purposes.
+   */
+  /* check if firmware file is present and SD-card is accessible */
+  if (f_stat(firmwareFilename, &fileInfoObject) == FR_OK) 
+  {
+    /* check if the filesize is valid and that it is not a directory */
+    if ( (fileInfoObject.fsize > 0) && (!(fileInfoObject.fattrib & AM_DIR)) )
+    {
+      /* all conditions are met to start a firmware update from local file storage */
+      return BLT_TRUE;
+    }
+  }
+  /* still here so no firmware update request is pending */  
+  return BLT_FALSE;
+} /*** end of FileIsFirmwareUpdateRequestedHook ***/
+
+
+/****************************************************************************************
+** NAME:           FileGetFirmwareFilenameHook
+** PARAMETER:      none
+** RETURN VALUE:   valid firmware filename with full path or BLT_NULL.
+** DESCRIPTION:    Callback to obtain the filename of the firmware file that should be
+**                 used during the firmware update from the local file storage. This 
+**                 hook function is called at the beginning of the firmware update from
+**                 local storage sequence. 
+**
+****************************************************************************************/
+const blt_char *FileGetFirmwareFilenameHook(void)
+{
+  return firmwareFilename;
+} /*** end of FileGetFirmwareFilenameHook ***/
+
+
+#if (BOOT_FILE_STARTED_HOOK_ENABLE > 0)
+/****************************************************************************************
+** NAME:           FileFirmwareUpdateStartedHook
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    Callback that gets called to inform the application that a firmware
+**                 update from local storage just started.
+**
+****************************************************************************************/
+void FileFirmwareUpdateStartedHook(void)
+{
+  #if (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* create/overwrite the logfile */
+  logfile.canUse = BLT_FALSE;
+  if (f_open(&logfile.handle, "/bootlog.txt", FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
+  {
+    logfile.canUse = BLT_TRUE;
+  }
+  #endif
+} /*** end of FileFirmwareUpdateStartedHook ***/
+#endif /* BOOT_FILE_STARTED_HOOK_ENABLE > 0 */
+
+
+#if (BOOT_FILE_COMPLETED_HOOK_ENABLE > 0)
+/****************************************************************************************
+** NAME:           FileFirmwareUpdateCompletedHook
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    Callback that gets called to inform the application that a firmware
+**                 update was successfully completed.
+**
+****************************************************************************************/
+void FileFirmwareUpdateCompletedHook(void)
+{
+  #if (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* close the log file */
+  if (logfile.canUse == BLT_TRUE)
+  {
+    f_close(&logfile.handle);
+  }
+  /* wait for all logging related transmission to complete */
+  while (UARTBusy(UART0_BASE) == true);
+  #endif
+  /* now delete the firmware file from the disk since the update was successful */
+  f_unlink(firmwareFilename);
+} /*** end of FileFirmwareUpdateCompletedHook ***/
+#endif /* BOOT_FILE_COMPLETED_HOOK_ENABLE > 0 */
+
+
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+/****************************************************************************************
+** NAME:           FileFirmwareUpdateErrorHook
+** PARAMETER:      error_code additional information on the error that occurred.
+** RETURN VALUE:   none
+** DESCRIPTION:    Callback that gets called in case an error occurred during a firmware
+**                 update. Refer to <file.h> for a list of available error codes.
+**
+****************************************************************************************/
+void FileFirmwareUpdateErrorHook(blt_int8u error_code)
+{
+} /*** end of FileFirmwareUpdateErrorHook ***/
+#endif /* BOOT_FILE_ERROR_HOOK_ENABLE > 0 */
+
+
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+/****************************************************************************************
+** NAME:           FileFirmwareUpdateLogHook
+** PARAMETER:      info_string pointer to a character array with the log entry info.
+** RETURN VALUE:   none
+** DESCRIPTION:    Callback that gets called each time new log information becomes 
+**                 available during a firmware update.
+**
+****************************************************************************************/
+void FileFirmwareUpdateLogHook(blt_char *info_string)
+{
+  /* write the string to the log file */
+  if (logfile.canUse == BLT_TRUE)
+  {
+    if (f_puts(info_string, &logfile.handle) < 0)
+    {
+      logfile.canUse = BLT_FALSE;
+      f_close(&logfile.handle);
+    }
+  }
+  /* echo all characters in the string on UART */
+  while(*info_string != '\0')
+  {
+    /* write character to transmit holding register */
+    UARTCharPutNonBlocking(UART0_BASE, *info_string);
+    /* wait for tx holding register to be empty */
+    while(UARTSpaceAvail(UART0_BASE) == false);
+    /* point to the next character in the string */
+    info_string++;
+  }
+} /*** end of FileFirmwareUpdateLogHook ***/
+#endif /* BOOT_FILE_LOGGING_ENABLE > 0 */
+
+
+#endif /* BOOT_FILE_SYS_ENABLE > 0 */
 
 
 /*********************************** end of hooks.c ************************************/

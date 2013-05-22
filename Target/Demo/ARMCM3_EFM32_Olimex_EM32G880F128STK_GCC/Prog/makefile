@@ -160,7 +160,7 @@ CFLAGS   = -g -D inline= -mthumb -mcpu=cortex-m3 -mlong-calls -O1 -T memory.x
 CFLAGS  += -D PACK_STRUCT_END=__attribute\(\(packed\)\) -D sprintf=usprintf -Wno-main
 CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) -D snprintf=usnprintf
 CFLAGS  += -D printf=uipprintf -ffunction-sections -fdata-sections $(INC_PATH)
-CFLAGS  += -D EFM32G880F128
+CFLAGS  += -D EFM32G880F128  -Wno-attributes
 LFLAGS   = -nostartfiles -Xlinker -M -Xlinker -Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS  += $(LIB_PATH) -Xlinker --gc-sections
 OFLAGS   = -O srec

@@ -58,6 +58,14 @@
 #error "BOOT_CPU_BYTE_ORDER_MOTOROLA must be 0 or 1"
 #endif
 
+#ifndef BOOT_CPU_USER_PROGRAM_START_HOOK
+#define BOOT_CPU_USER_PROGRAM_START_HOOK   (0)
+#endif
+
+#if (BOOT_CPU_USER_PROGRAM_START_HOOK < 0) || (BOOT_CPU_USER_PROGRAM_START_HOOK > 1)
+#error "BOOT_CPU_USER_PROGRAM_START_HOOK must be 0 or 1"
+#endif
+
 
 /****************************************************************************************
 *   C O M M U N I C A T I O N   I N T E R F A C E   C O N F I G U R A T I O N   C H E C K
@@ -172,16 +180,67 @@
   #endif
 #endif /* BOOT_COM_USB_ENABLE > 0 */
 
-#if (BOOT_COM_CAN_ENABLE == 0)  && \
-    (BOOT_COM_UART_ENABLE == 0) && \
-    (BOOT_COM_USB_ENABLE == 0)
-#error "No communication interface enabled (BOOT_COM_XXX_ENABLE) in config.h"
+#ifndef BOOT_FILE_SYS_ENABLE
+#define BOOT_FILE_SYS_ENABLE      (0)
 #endif
 
+#if (BOOT_FILE_SYS_ENABLE < 0) || (BOOT_FILE_SYS_ENABLE > 1)
+#error "BOOT_FILE_SYS_ENABLE must be 0 or 1"
+#endif
+
+#if (BOOT_FILE_SYS_ENABLE > 0)
+  #ifndef BOOT_FILE_LOGGING_ENABLE
+  #define BOOT_FILE_LOGGING_ENABLE         (0)
+  #endif
+
+  #if (BOOT_FILE_LOGGING_ENABLE < 0) || (BOOT_FILE_LOGGING_ENABLE > 1)
+  #error "BOOT_FILE_LOGGING_ENABLE must be 0 or 1"
+  #endif
+
+  #ifndef BOOT_FILE_ERROR_HOOK_ENABLE
+  #define BOOT_FILE_ERROR_HOOK_ENABLE      (0)
+  #endif
+
+  #if (BOOT_FILE_ERROR_HOOK_ENABLE < 0) || (BOOT_FILE_ERROR_HOOK_ENABLE > 1)
+  #error "BOOT_FILE_ERROR_HOOK_ENABLE must be 0 or 1"
+  #endif
+
+  #ifndef BOOT_FILE_STARTED_HOOK_ENABLE
+  #define BOOT_FILE_STARTED_HOOK_ENABLE    (0)
+  #endif
+
+  #if (BOOT_FILE_STARTED_HOOK_ENABLE < 0) || (BOOT_FILE_STARTED_HOOK_ENABLE > 1)
+  #error "BOOT_FILE_STARTED_HOOK_ENABLE must be 0 or 1"
+  #endif
+
+  #ifndef BOOT_FILE_COMPLETED_HOOK_ENABLE
+  #define BOOT_FILE_COMPLETED_HOOK_ENABLE  (0)
+  #endif
+
+  #if (BOOT_FILE_COMPLETED_HOOK_ENABLE < 0) || (BOOT_FILE_COMPLETED_HOOK_ENABLE > 1)
+  #error "BOOT_FILE_COMPLETED_HOOK_ENABLE must be 0 or 1"
+  #endif
+#endif /* BOOT_FILE_SYS_ENABLE > 0 */
+
+      
+#if (BOOT_FILE_SYS_ENABLE == 0)
+  #if (BOOT_COM_CAN_ENABLE == 0)  && \
+      (BOOT_COM_UART_ENABLE == 0) && \
+      (BOOT_COM_USB_ENABLE == 0)
+  #error "If not booting from file system (BOOT_FILE_SYS_ENABLE) then a communication interface must be enabled (BOOT_COM_XXX_ENABLE) in config.h"
+  #endif
+#endif /* BOOT_FILE_SYS_ENABLE == 0 */
+            
 #if ((BOOT_COM_CAN_ENABLE + BOOT_COM_UART_ENABLE + BOOT_COM_USB_ENABLE) > 1)
 #error "Too many communication interfaces enabled (BOOT_COM_XXX_ENABLE) in config.h"
 #endif
-
+        
+#if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
+#define BOOT_COM_ENABLE   (1)
+#else
+#define BOOT_COM_ENABLE   (0)
+#endif        
+        
 
 /****************************************************************************************
 *   B A C K D O O R   E N T R Y   C H E C K

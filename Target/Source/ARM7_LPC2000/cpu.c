@@ -50,6 +50,14 @@
 
 
 /****************************************************************************************
+* Hook functions
+****************************************************************************************/
+#if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+extern blt_bool CpuUserProgramStartHook(void);
+#endif
+
+
+/****************************************************************************************
 * External functions
 ****************************************************************************************/
 extern void Reset_Handler(void);                 /* reset service routine in cstart.s  */
@@ -73,8 +81,20 @@ void CpuStartUserProgram(void)
     /* not a valid user program so it cannot be started */
     return;
   }
+  #if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+  /* invoke callback */
+  if (CpuUserProgramStartHook() == BLT_FALSE)
+  {
+    /* callback requests the user program to not be started */
+    return;
+  }
+  #endif
+  #if (BOOT_COM_ENABLE > 0)
   /* release the communication interface */
   ComFree();
+  #endif
+  /* reset the timer */
+  TimerReset();
   /* copy the user program's interrupt vector table to RAM */
   CpuMemCopy(CPU_RAM_VECTORS_START_ADDR, CPU_USER_PROG_VECTORS_START_ADDR, \
              CPU_VECTORS_TABLE_SIZE);

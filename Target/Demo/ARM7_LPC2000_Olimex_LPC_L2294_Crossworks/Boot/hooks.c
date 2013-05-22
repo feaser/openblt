@@ -76,6 +76,30 @@ blt_bool BackDoorEntryHook(void)
 
 
 /****************************************************************************************
+*   C P U   D R I V E R   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+/****************************************************************************************
+** NAME:           CpuUserProgramStartHook
+** PARAMETER:      none
+** RETURN VALUE:   BLT_TRUE if it is okay to start the user program, BLT_FALSE to keep
+**                 keep the bootloader active.
+** DESCRIPTION:    Callback that gets called when the bootloader is about to exit and
+**                 hand over control to the user program. This is the last moment that
+**                 some final checking can be performed and if necessary prevent the
+**                 bootloader from activiting the user program.
+**
+****************************************************************************************/
+blt_bool CpuUserProgramStartHook(void)
+{
+  /* okay to start the user program */
+  return BLT_TRUE;
+} /*** end of CpuUserProgramStartHook ***/
+#endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */
+
+
+/****************************************************************************************
 *   N O N - V O L A T I L E   M E M O R Y   D R I V E R   H O O K   F U N C T I O N S
 ****************************************************************************************/
 

@@ -35,6 +35,7 @@
 #include "boot.h"                                /* bootloader generic header          */
 
 
+#if (BOOT_COM_ENABLE > 0)
 /****************************************************************************************
 * Defines
 ****************************************************************************************/
@@ -514,6 +515,19 @@ static void XcpCmdConnect(blt_int8u *data)
 {
   /* suppress compiler warning for unused parameter */
   data = data;
+
+  #if (BOOT_FILE_SYS_ENABLE > 0)
+  /* reject the connection if the file module is not idle. this means that a firmware
+   * update from the locally attached storage is in progress
+   */
+  if (FileIsIdle() == BLT_FALSE)
+  {
+    /* command not processed because we are busy */
+    XcpSetCtoError(XCP_ERR_CMD_BUSY);
+    return;
+  }
+  #endif  
+
 
   /* enable resource protection */
   XcpProtectResources();
@@ -1315,6 +1329,8 @@ static void XcpCmdProgramPrepare(blt_int8u *data)
   return;
 } /*** end of XcpCmdProgramPrepare ***/
 #endif /* XCP_RES_PROGRAMMING_EN == 1 */
+
+#endif /* BOOT_COM_ENABLE > 0 */
 
 
 /******************************** end of xcp.c *****************************************/

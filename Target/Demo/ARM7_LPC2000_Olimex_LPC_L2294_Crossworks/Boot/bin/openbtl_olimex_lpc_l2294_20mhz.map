@@ -50,6 +50,8 @@ Discarded input sections
  .text          0x00000000        0x0 ARM Flash Debug/../../obj/com.o
  .data          0x00000000        0x0 ARM Flash Debug/../../obj/com.o
  .bss           0x00000000        0x0 ARM Flash Debug/../../obj/com.o
+ .text.ComSetDisconnectEntryState
+                0x00000000       0x14 ARM Flash Debug/../../obj/com.o
  .text.ComIsConnectEntryState
                 0x00000000       0x10 ARM Flash Debug/../../obj/com.o
  .text          0x00000000        0x0 ARM Flash Debug/../../obj/cop.o
@@ -180,7 +182,7 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .init is too large to fit in FLASH memory segment)
                 0x00000370                __text_load_start__ = ALIGN (__init_end__, 0x4)
 
-.text           0x00000370     0x110c
+.text           0x00000370     0x1130
                 0x00000370                __text_start__ = .
  *(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table)
  .glue_7        0x00000000        0x0 linker stubs
@@ -206,115 +208,114 @@ Linker script and memory map
  .text.FlashErase
                 0x00000788      0x130 ARM Flash Debug/../../obj/flash.o
                 0x00000788                FlashErase
- .text.FlashVerifyChecksum
-                0x000008b8       0x48 ARM Flash Debug/../../obj/flash.o
-                0x000008b8                FlashVerifyChecksum
  .text.FlashWriteChecksum
-                0x00000900       0x74 ARM Flash Debug/../../obj/flash.o
-                0x00000900                FlashWriteChecksum
+                0x000008b8       0x80 ARM Flash Debug/../../obj/flash.o
+                0x000008b8                FlashWriteChecksum
+ .text.FlashVerifyChecksum
+                0x00000938       0x48 ARM Flash Debug/../../obj/flash.o
+                0x00000938                FlashVerifyChecksum
  .text.FlashDone
-                0x00000974       0x5c ARM Flash Debug/../../obj/flash.o
-                0x00000974                FlashDone
+                0x00000980       0x5c ARM Flash Debug/../../obj/flash.o
+                0x00000980                FlashDone
  .text.CpuMemCopy
-                0x000009d0       0x44 ARM Flash Debug/../../obj/cpu.o
-                0x000009d0                CpuMemCopy
+                0x000009dc       0x44 ARM Flash Debug/../../obj/cpu.o
+                0x000009dc                CpuMemCopy
  .text.CpuStartUserProgram
-                0x00000a14       0x44 ARM Flash Debug/../../obj/cpu.o
-                0x00000a14                CpuStartUserProgram
+                0x00000a20       0x4c ARM Flash Debug/../../obj/cpu.o
+                0x00000a20                CpuStartUserProgram
  .text.CpuReset
-                0x00000a58       0x10 ARM Flash Debug/../../obj/cpu.o
-                0x00000a58                CpuReset
- .text.NvmInit  0x00000a68       0x10 ARM Flash Debug/../../obj/nvm.o
-                0x00000a68                NvmInit
+                0x00000a6c       0x10 ARM Flash Debug/../../obj/cpu.o
+                0x00000a6c                CpuReset
+ .text.NvmInit  0x00000a7c       0x10 ARM Flash Debug/../../obj/nvm.o
+                0x00000a7c                NvmInit
  .text.NvmWrite
-                0x00000a78       0x10 ARM Flash Debug/../../obj/nvm.o
-                0x00000a78                NvmWrite
+                0x00000a8c       0x10 ARM Flash Debug/../../obj/nvm.o
+                0x00000a8c                NvmWrite
  .text.NvmErase
-                0x00000a88       0x10 ARM Flash Debug/../../obj/nvm.o
-                0x00000a88                NvmErase
+                0x00000a9c       0x10 ARM Flash Debug/../../obj/nvm.o
+                0x00000a9c                NvmErase
  .text.NvmVerifyChecksum
-                0x00000a98       0x10 ARM Flash Debug/../../obj/nvm.o
-                0x00000a98                NvmVerifyChecksum
- .text.NvmDone  0x00000aa8       0x1c ARM Flash Debug/../../obj/nvm.o
-                0x00000aa8                NvmDone
- .text.TimerReset
-                0x00000ac4       0x20 ARM Flash Debug/../../obj/timer.o
-                0x00000ac4                TimerReset
- .text.TimerUpdate
-                0x00000ae4       0x38 ARM Flash Debug/../../obj/timer.o
-                0x00000ae4                TimerUpdate
- .text.TimerSet
-                0x00000b1c       0x10 ARM Flash Debug/../../obj/timer.o
-                0x00000b1c                TimerSet
+                0x00000aac       0x10 ARM Flash Debug/../../obj/nvm.o
+                0x00000aac                NvmVerifyChecksum
+ .text.NvmDone  0x00000abc       0x1c ARM Flash Debug/../../obj/nvm.o
+                0x00000abc                NvmDone
  .text.TimerInit
-                0x00000b2c       0x48 ARM Flash Debug/../../obj/timer.o
-                0x00000b2c                TimerInit
+                0x00000ad8       0x48 ARM Flash Debug/../../obj/timer.o
+                0x00000ad8                TimerInit
+ .text.TimerReset
+                0x00000b20       0x20 ARM Flash Debug/../../obj/timer.o
+                0x00000b20                TimerReset
+ .text.TimerUpdate
+                0x00000b40       0x38 ARM Flash Debug/../../obj/timer.o
+                0x00000b40                TimerUpdate
  .text.TimerGet
-                0x00000b74       0x1c ARM Flash Debug/../../obj/timer.o
-                0x00000b74                TimerGet
+                0x00000b78       0x1c ARM Flash Debug/../../obj/timer.o
+                0x00000b78                TimerGet
  .text.UartReceiveByte
-                0x00000b90       0x28 ARM Flash Debug/../../obj/uart.o
+                0x00000b94       0x28 ARM Flash Debug/../../obj/uart.o
  .text.UartTransmitByte
-                0x00000bb8       0x54 ARM Flash Debug/../../obj/uart.o
+                0x00000bbc       0x54 ARM Flash Debug/../../obj/uart.o
  .text.UartInit
-                0x00000c0c       0x40 ARM Flash Debug/../../obj/uart.o
-                0x00000c0c                UartInit
+                0x00000c10       0x40 ARM Flash Debug/../../obj/uart.o
+                0x00000c10                UartInit
  .text.UartTransmitPacket
-                0x00000c4c       0x84 ARM Flash Debug/../../obj/uart.o
-                0x00000c4c                UartTransmitPacket
+                0x00000c50       0x84 ARM Flash Debug/../../obj/uart.o
+                0x00000c50                UartTransmitPacket
  .text.UartReceivePacket
-                0x00000cd0       0xc0 ARM Flash Debug/../../obj/uart.o
-                0x00000cd0                UartReceivePacket
+                0x00000cd4       0xc0 ARM Flash Debug/../../obj/uart.o
+                0x00000cd4                UartReceivePacket
  .text.AssertFailure
-                0x00000d90       0x24 ARM Flash Debug/../../obj/assert.o
-                0x00000d90                AssertFailure
+                0x00000d94       0x24 ARM Flash Debug/../../obj/assert.o
+                0x00000d94                AssertFailure
  .text.BackDoorCheck
-                0x00000db4       0x4c ARM Flash Debug/../../obj/backdoor.o
-                0x00000db4                BackDoorCheck
+                0x00000db8       0x54 ARM Flash Debug/../../obj/backdoor.o
+                0x00000db8                BackDoorCheck
  .text.BackDoorInit
-                0x00000e00       0x24 ARM Flash Debug/../../obj/backdoor.o
-                0x00000e00                BackDoorInit
+                0x00000e0c       0x30 ARM Flash Debug/../../obj/backdoor.o
+                0x00000e0c                BackDoorInit
  .text.BootInit
-                0x00000e24       0x1c ARM Flash Debug/../../obj/boot.o
-                0x00000e24                BootInit
+                0x00000e3c       0x20 ARM Flash Debug/../../obj/boot.o
+                0x00000e3c                BootInit
  .text.BootTask
-                0x00000e40       0x18 ARM Flash Debug/../../obj/boot.o
-                0x00000e40                BootTask
- .text.ComInit  0x00000e58       0x44 ARM Flash Debug/../../obj/com.o
-                0x00000e58                ComInit
- .text.ComTask  0x00000e9c       0x24 ARM Flash Debug/../../obj/com.o
-                0x00000e9c                ComTask
+                0x00000e5c       0x1c ARM Flash Debug/../../obj/boot.o
+                0x00000e5c                BootTask
+ .text.ComInit  0x00000e78       0x44 ARM Flash Debug/../../obj/com.o
+                0x00000e78                ComInit
+ .text.ComTask  0x00000ebc       0x24 ARM Flash Debug/../../obj/com.o
+                0x00000ebc                ComTask
+ .text.ComFree  0x00000ee0        0x4 ARM Flash Debug/../../obj/com.o
+                0x00000ee0                ComFree
  .text.ComTransmitPacket
-                0x00000ec0       0x18 ARM Flash Debug/../../obj/com.o
-                0x00000ec0                ComTransmitPacket
+                0x00000ee4       0x18 ARM Flash Debug/../../obj/com.o
+                0x00000ee4                ComTransmitPacket
  .text.ComSetConnectEntryState
-                0x00000ed8       0x14 ARM Flash Debug/../../obj/com.o
-                0x00000ed8                ComSetConnectEntryState
+                0x00000efc       0x14 ARM Flash Debug/../../obj/com.o
+                0x00000efc                ComSetConnectEntryState
  .text.ComIsConnected
-                0x00000eec       0x10 ARM Flash Debug/../../obj/com.o
-                0x00000eec                ComIsConnected
- .text.CopInit  0x00000efc        0x4 ARM Flash Debug/../../obj/cop.o
-                0x00000efc                CopInit
+                0x00000f10       0x10 ARM Flash Debug/../../obj/com.o
+                0x00000f10                ComIsConnected
+ .text.CopInit  0x00000f20        0x4 ARM Flash Debug/../../obj/cop.o
+                0x00000f20                CopInit
  .text.CopService
-                0x00000f00        0x4 ARM Flash Debug/../../obj/cop.o
-                0x00000f00                CopService
+                0x00000f24        0x4 ARM Flash Debug/../../obj/cop.o
+                0x00000f24                CopService
  .text.XcpProtectResources
-                0x00000f04       0x14 ARM Flash Debug/../../obj/xcp.o
+                0x00000f28       0x14 ARM Flash Debug/../../obj/xcp.o
  .text.XcpSetCtoError
-                0x00000f18       0x20 ARM Flash Debug/../../obj/xcp.o
- .text.XcpInit  0x00000f38       0x28 ARM Flash Debug/../../obj/xcp.o
-                0x00000f38                XcpInit
+                0x00000f3c       0x20 ARM Flash Debug/../../obj/xcp.o
+ .text.XcpInit  0x00000f5c       0x28 ARM Flash Debug/../../obj/xcp.o
+                0x00000f5c                XcpInit
  .text.XcpIsConnected
-                0x00000f60       0x18 ARM Flash Debug/../../obj/xcp.o
-                0x00000f60                XcpIsConnected
+                0x00000f84       0x18 ARM Flash Debug/../../obj/xcp.o
+                0x00000f84                XcpIsConnected
  .text.XcpPacketTransmitted
-                0x00000f78       0x14 ARM Flash Debug/../../obj/xcp.o
-                0x00000f78                XcpPacketTransmitted
+                0x00000f9c       0x14 ARM Flash Debug/../../obj/xcp.o
+                0x00000f9c                XcpPacketTransmitted
  .text.XcpPacketReceived
-                0x00000f8c      0x4f0 ARM Flash Debug/../../obj/xcp.o
-                0x00000f8c                XcpPacketReceived
-                0x0000147c                __text_end__ = (__text_start__ + SIZEOF (.text))
-                0x0000147c                __text_load_end__ = __text_end__
+                0x00000fb0      0x4f0 ARM Flash Debug/../../obj/xcp.o
+                0x00000fb0                XcpPacketReceived
+                0x000014a0                __text_end__ = (__text_start__ + SIZEOF (.text))
+                0x000014a0                __text_load_end__ = __text_end__
 
 .vfp11_veneer   0x00000000        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
@@ -322,45 +323,45 @@ Linker script and memory map
 .v4_bx          0x00000000        0x0
  .v4_bx         0x00000000        0x0 linker stubs
                 0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .text is too large to fit in FLASH memory segment)
-                0x0000147c                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
+                0x000014a0                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
 
-.dtors          0x0000147c        0x0
-                0x0000147c                __dtors_start__ = .
+.dtors          0x000014a0        0x0
+                0x000014a0                __dtors_start__ = .
  *(SORT(.dtors.*))
  *(.dtors)
-                0x0000147c                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
-                0x0000147c                __dtors_load_end__ = __dtors_end__
+                0x000014a0                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
+                0x000014a0                __dtors_load_end__ = __dtors_end__
                 0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .dtors is too large to fit in FLASH memory segment)
-                0x0000147c                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
+                0x000014a0                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
 
-.ctors          0x0000147c        0x0
-                0x0000147c                __ctors_start__ = .
+.ctors          0x000014a0        0x0
+                0x000014a0                __ctors_start__ = .
  *(SORT(.ctors.*))
  *(.ctors)
-                0x0000147c                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
-                0x0000147c                __ctors_load_end__ = __ctors_end__
+                0x000014a0                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
+                0x000014a0                __ctors_load_end__ = __ctors_end__
                 0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .ctors is too large to fit in FLASH memory segment)
-                0x0000147c                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
+                0x000014a0                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
 
-.rodata         0x0000147c      0x14c
-                0x0000147c                __rodata_start__ = .
+.rodata         0x000014a0      0x148
+                0x000014a0                __rodata_start__ = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
  .rodata.flashLayout
-                0x0000147c       0xc0 ARM Flash Debug/../../obj/flash.o
+                0x000014a0       0xc0 ARM Flash Debug/../../obj/flash.o
  .rodata.str1.4
-                0x0000153c       0x84 ARM Flash Debug/../../obj/uart.o
+                0x00001560       0x80 ARM Flash Debug/../../obj/uart.o
  .rodata.xcpStationId
-                0x000015c0        0x8 ARM Flash Debug/../../obj/xcp.o
-                0x000015c8                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
-                0x000015c8                __rodata_load_end__ = __rodata_end__
+                0x000015e0        0x8 ARM Flash Debug/../../obj/xcp.o
+                0x000015e8                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
+                0x000015e8                __rodata_load_end__ = __rodata_end__
                 0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .rodata is too large to fit in FLASH memory segment)
-                0x000015c8                __data_load_start__ = ALIGN (__rodata_end__, 0x4)
+                0x000015e8                __data_load_start__ = ALIGN (__rodata_end__, 0x4)
 
-.data           0x4000023c        0x0 load address 0x000015c8
+.data           0x4000023c        0x0 load address 0x000015e8
                 0x4000023c                __data_start__ = .
  *(.data .data.* .gnu.linkonce.d.*)
                 0x4000023c                __data_end__ = (__data_start__ + SIZEOF (.data))
-                0x000015c8                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
+                0x000015e8                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
                 0x00000001                . = ASSERT ((((__data_load_start__ + SIZEOF (.data)) >= __FLASH_segment_start__) && ((__data_load_start__ + SIZEOF (.data)) <= (__FLASH_segment_start__ + 0x40000))), error: .data is too large to fit in FLASH memory segment)
 
 .data_run       0x4000023c        0x0
@@ -371,7 +372,7 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__data_run_end__ >= __SRAM_segment_start__) && (__data_run_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .data_run is too large to fit in SRAM memory segment)
                 0x4000023c                __bss_load_start__ = ALIGN (__data_run_end__, 0x4)
 
-.bss            0x4000023c      0x4f4
+.bss            0x4000023c      0x4fc
                 0x4000023c                __bss_start__ = .
  *(.bss .bss.* .gnu.linkonce.b.*)
  .bss.bootBlockInfo
@@ -382,12 +383,12 @@ Linker script and memory map
                 0x40000644        0x4 ARM Flash Debug/../../obj/timer.o
  .bss.free_running_counter_last
                 0x40000648        0x4 ARM Flash Debug/../../obj/timer.o
- .bss.xcpCtoRxLength.866
+ .bss.xcpCtoRxLength.900
                 0x4000064c        0x1 ARM Flash Debug/../../obj/uart.o
  *fill*         0x4000064d        0x3 00
- .bss.xcpCtoReqPacket.865
+ .bss.xcpCtoReqPacket.899
                 0x40000650       0x44 ARM Flash Debug/../../obj/uart.o
- .bss.xcpCtoRxInProgress.867
+ .bss.xcpCtoRxInProgress.901
                 0x40000694        0x1 ARM Flash Debug/../../obj/uart.o
  *fill*         0x40000695        0x3 00
  .bss.assert_failure_file
@@ -396,107 +397,110 @@ Linker script and memory map
                 0x4000069c        0x4 ARM Flash Debug/../../obj/assert.o
  .bss.backdoorOpen
                 0x400006a0        0x1 ARM Flash Debug/../../obj/backdoor.o
+ *fill*         0x400006a1        0x3 00
+ .bss.backdoorOpenTime
+                0x400006a4        0x4 ARM Flash Debug/../../obj/backdoor.o
  .bss.comEntryStateConnect
-                0x400006a1        0x1 ARM Flash Debug/../../obj/com.o
- *fill*         0x400006a2        0x2 00
- .bss.xcpCtoReqPacket.855
-                0x400006a4       0x40 ARM Flash Debug/../../obj/com.o
- .bss.xcpInfo   0x400006e4       0x4c ARM Flash Debug/../../obj/xcp.o
+                0x400006a8        0x1 ARM Flash Debug/../../obj/com.o
+ *fill*         0x400006a9        0x3 00
+ .bss.xcpCtoReqPacket.889
+                0x400006ac       0x40 ARM Flash Debug/../../obj/com.o
+ .bss.xcpInfo   0x400006ec       0x4c ARM Flash Debug/../../obj/xcp.o
  *(COMMON)
-                0x40000730                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
-                0x40000730                __bss_load_end__ = __bss_end__
+                0x40000738                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
+                0x40000738                __bss_load_end__ = __bss_end__
                 0x00000001                . = ASSERT (((__bss_end__ >= __SRAM_segment_start__) && (__bss_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .bss is too large to fit in SRAM memory segment)
-                0x40000730                __non_init_load_start__ = ALIGN (__bss_end__, 0x4)
+                0x40000738                __non_init_load_start__ = ALIGN (__bss_end__, 0x4)
 
-.non_init       0x40000730        0x0
-                0x40000730                __non_init_start__ = .
+.non_init       0x40000738        0x0
+                0x40000738                __non_init_start__ = .
  *(.non_init .non_init.*)
-                0x40000730                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
-                0x40000730                __non_init_load_end__ = __non_init_end__
+                0x40000738                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
+                0x40000738                __non_init_load_end__ = __non_init_end__
                 0x00000001                . = ASSERT (((__non_init_end__ >= __SRAM_segment_start__) && (__non_init_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .non_init is too large to fit in SRAM memory segment)
-                0x40000730                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
+                0x40000738                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
 
-.heap           0x40000730      0x400
-                0x40000730                __heap_start__ = .
+.heap           0x40000738      0x400
+                0x40000738                __heap_start__ = .
  *(.heap .heap.*)
-                0x40000b30                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
- *fill*         0x40000730      0x400 00
-                0x40000b30                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
-                0x40000b30                __heap_load_end__ = __heap_end__
+                0x40000b38                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
+ *fill*         0x40000738      0x400 00
+                0x40000b38                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
+                0x40000b38                __heap_load_end__ = __heap_end__
                 0x00000001                . = ASSERT (((__heap_end__ >= __SRAM_segment_start__) && (__heap_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .heap is too large to fit in SRAM memory segment)
-                0x40000b30                __stack_load_start__ = ALIGN (__heap_end__, 0x4)
+                0x40000b38                __stack_load_start__ = ALIGN (__heap_end__, 0x4)
 
-.stack          0x40000b30      0x400
-                0x40000b30                __stack_start__ = .
+.stack          0x40000b38      0x400
+                0x40000b38                __stack_start__ = .
  *(.stack .stack.*)
-                0x40000f30                . = ALIGN (MAX ((__stack_start__ + __STACKSIZE__), .), 0x4)
- *fill*         0x40000b30      0x400 00
-                0x40000f30                __stack_end__ = (__stack_start__ + SIZEOF (.stack))
-                0x40000f30                __stack_load_end__ = __stack_end__
+                0x40000f38                . = ALIGN (MAX ((__stack_start__ + __STACKSIZE__), .), 0x4)
+ *fill*         0x40000b38      0x400 00
+                0x40000f38                __stack_end__ = (__stack_start__ + SIZEOF (.stack))
+                0x40000f38                __stack_load_end__ = __stack_end__
                 0x00000001                . = ASSERT (((__stack_end__ >= __SRAM_segment_start__) && (__stack_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .stack is too large to fit in SRAM memory segment)
-                0x40000f30                __stack_irq_load_start__ = ALIGN (__stack_end__, 0x4)
+                0x40000f38                __stack_irq_load_start__ = ALIGN (__stack_end__, 0x4)
 
-.stack_irq      0x40000f30      0x100
-                0x40000f30                __stack_irq_start__ = .
+.stack_irq      0x40000f38      0x100
+                0x40000f38                __stack_irq_start__ = .
  *(.stack_irq .stack_irq.*)
-                0x40001030                . = ALIGN (MAX ((__stack_irq_start__ + __STACKSIZE_IRQ__), .), 0x4)
- *fill*         0x40000f30      0x100 00
-                0x40001030                __stack_irq_end__ = (__stack_irq_start__ + SIZEOF (.stack_irq))
-                0x40001030                __stack_irq_load_end__ = __stack_irq_end__
+                0x40001038                . = ALIGN (MAX ((__stack_irq_start__ + __STACKSIZE_IRQ__), .), 0x4)
+ *fill*         0x40000f38      0x100 00
+                0x40001038                __stack_irq_end__ = (__stack_irq_start__ + SIZEOF (.stack_irq))
+                0x40001038                __stack_irq_load_end__ = __stack_irq_end__
                 0x00000001                . = ASSERT (((__stack_irq_end__ >= __SRAM_segment_start__) && (__stack_irq_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .stack_irq is too large to fit in SRAM memory segment)
-                0x40001030                __stack_fiq_load_start__ = ALIGN (__stack_irq_end__, 0x4)
+                0x40001038                __stack_fiq_load_start__ = ALIGN (__stack_irq_end__, 0x4)
 
-.stack_fiq      0x40001030      0x100
-                0x40001030                __stack_fiq_start__ = .
+.stack_fiq      0x40001038      0x100
+                0x40001038                __stack_fiq_start__ = .
  *(.stack_fiq .stack_fiq.*)
-                0x40001130                . = ALIGN (MAX ((__stack_fiq_start__ + __STACKSIZE_FIQ__), .), 0x4)
- *fill*         0x40001030      0x100 00
-                0x40001130                __stack_fiq_end__ = (__stack_fiq_start__ + SIZEOF (.stack_fiq))
-                0x40001130                __stack_fiq_load_end__ = __stack_fiq_end__
+                0x40001138                . = ALIGN (MAX ((__stack_fiq_start__ + __STACKSIZE_FIQ__), .), 0x4)
+ *fill*         0x40001038      0x100 00
+                0x40001138                __stack_fiq_end__ = (__stack_fiq_start__ + SIZEOF (.stack_fiq))
+                0x40001138                __stack_fiq_load_end__ = __stack_fiq_end__
                 0x00000001                . = ASSERT (((__stack_fiq_end__ >= __SRAM_segment_start__) && (__stack_fiq_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .stack_fiq is too large to fit in SRAM memory segment)
-                0x40001130                __stack_svc_load_start__ = ALIGN (__stack_fiq_end__, 0x4)
+                0x40001138                __stack_svc_load_start__ = ALIGN (__stack_fiq_end__, 0x4)
 
-.stack_svc      0x40001130        0x0
-                0x40001130                __stack_svc_start__ = .
+.stack_svc      0x40001138        0x0
+                0x40001138                __stack_svc_start__ = .
  *(.stack_svc .stack_svc.*)
-                0x40001130                . = ALIGN (MAX ((__stack_svc_start__ + __STACKSIZE_SVC__), .), 0x4)
-                0x40001130                __stack_svc_end__ = (__stack_svc_start__ + SIZEOF (.stack_svc))
-                0x40001130                __stack_svc_load_end__ = __stack_svc_end__
+                0x40001138                . = ALIGN (MAX ((__stack_svc_start__ + __STACKSIZE_SVC__), .), 0x4)
+                0x40001138                __stack_svc_end__ = (__stack_svc_start__ + SIZEOF (.stack_svc))
+                0x40001138                __stack_svc_load_end__ = __stack_svc_end__
                 0x00000001                . = ASSERT (((__stack_svc_end__ >= __SRAM_segment_start__) && (__stack_svc_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .stack_svc is too large to fit in SRAM memory segment)
-                0x40001130                __stack_abt_load_start__ = ALIGN (__stack_svc_end__, 0x4)
+                0x40001138                __stack_abt_load_start__ = ALIGN (__stack_svc_end__, 0x4)
 
-.stack_abt      0x40001130        0x0
-                0x40001130                __stack_abt_start__ = .
+.stack_abt      0x40001138        0x0
+                0x40001138                __stack_abt_start__ = .
  *(.stack_abt .stack_abt.*)
-                0x40001130                . = ALIGN (MAX ((__stack_abt_start__ + __STACKSIZE_ABT__), .), 0x4)
-                0x40001130                __stack_abt_end__ = (__stack_abt_start__ + SIZEOF (.stack_abt))
-                0x40001130                __stack_abt_load_end__ = __stack_abt_end__
+                0x40001138                . = ALIGN (MAX ((__stack_abt_start__ + __STACKSIZE_ABT__), .), 0x4)
+                0x40001138                __stack_abt_end__ = (__stack_abt_start__ + SIZEOF (.stack_abt))
+                0x40001138                __stack_abt_load_end__ = __stack_abt_end__
                 0x00000001                . = ASSERT (((__stack_abt_end__ >= __SRAM_segment_start__) && (__stack_abt_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .stack_abt is too large to fit in SRAM memory segment)
-                0x40001130                __stack_und_load_start__ = ALIGN (__stack_abt_end__, 0x4)
+                0x40001138                __stack_und_load_start__ = ALIGN (__stack_abt_end__, 0x4)
 
-.stack_und      0x40001130        0x0
-                0x40001130                __stack_und_start__ = .
+.stack_und      0x40001138        0x0
+                0x40001138                __stack_und_start__ = .
  *(.stack_und .stack_und.*)
-                0x40001130                . = ALIGN (MAX ((__stack_und_start__ + __STACKSIZE_UND__), .), 0x4)
-                0x40001130                __stack_und_end__ = (__stack_und_start__ + SIZEOF (.stack_und))
-                0x40001130                __stack_und_load_end__ = __stack_und_end__
+                0x40001138                . = ALIGN (MAX ((__stack_und_start__ + __STACKSIZE_UND__), .), 0x4)
+                0x40001138                __stack_und_end__ = (__stack_und_start__ + SIZEOF (.stack_und))
+                0x40001138                __stack_und_load_end__ = __stack_und_end__
                 0x00000001                . = ASSERT (((__stack_und_end__ >= __SRAM_segment_start__) && (__stack_und_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .stack_und is too large to fit in SRAM memory segment)
-                0x000015c8                __fast_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
+                0x000015e8                __fast_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
 
-.fast           0x40001130        0x0 load address 0x000015c8
-                0x40001130                __fast_start__ = .
+.fast           0x40001138        0x0 load address 0x000015e8
+                0x40001138                __fast_start__ = .
  *(.fast .fast.*)
-                0x40001130                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
-                0x000015c8                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
-                0x000015c8                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.fast))
+                0x40001138                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
+                0x000015e8                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
+                0x000015e8                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.fast))
                 0x00000001                . = ASSERT ((((__fast_load_start__ + SIZEOF (.fast)) >= __FLASH_segment_start__) && ((__fast_load_start__ + SIZEOF (.fast)) <= (__FLASH_segment_start__ + 0x40000))), error: .fast is too large to fit in FLASH memory segment)
 
-.fast_run       0x40001130        0x0
-                0x40001130                __fast_run_start__ = .
-                0x40001130                . = MAX ((__fast_run_start__ + SIZEOF (.fast)), .)
-                0x40001130                __fast_run_end__ = (__fast_run_start__ + SIZEOF (.fast_run))
-                0x40001130                __fast_run_load_end__ = __fast_run_end__
-                0x40001130                __SRAM_segment_used_end__ = (ALIGN (__stack_und_end__, 0x4) + SIZEOF (.fast_run))
+.fast_run       0x40001138        0x0
+                0x40001138                __fast_run_start__ = .
+                0x40001138                . = MAX ((__fast_run_start__ + SIZEOF (.fast)), .)
+                0x40001138                __fast_run_end__ = (__fast_run_start__ + SIZEOF (.fast_run))
+                0x40001138                __fast_run_load_end__ = __fast_run_end__
+                0x40001138                __SRAM_segment_used_end__ = (ALIGN (__stack_und_end__, 0x4) + SIZEOF (.fast_run))
                 0x00000001                . = ASSERT (((__fast_run_end__ >= __SRAM_segment_start__) && (__fast_run_end__ <= (__SRAM_segment_start__ + 0x4000))), error: .fast_run is too large to fit in SRAM memory segment)
 START GROUP
 LOAD ARM Flash Debug/../../obj/hooks.o
@@ -516,35 +520,35 @@ LOAD ARM Flash Debug/../../obj/com.o
 LOAD ARM Flash Debug/../../obj/cop.o
 LOAD ARM Flash Debug/../../obj/xcp.o
 LOAD C:/Users/voorburg/AppData/Local/Rowley Associates Limited/CrossWorks for ARM/packages/lib/liblpc2000_v4t_a_le.a
-LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libarm_v4t_a_le.a
-LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libm_v4t_a_le.a
-LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_v4t_a_le.a
-LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libcpp_v4t_a_le.a
-LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libdebugio_v4t_a_le.a
-LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_targetio_impl_v4t_a_le.a
-LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.1/lib/libc_user_libc_v4t_a_le.a
+LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libarm_v4t_a_le.a
+LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libm_v4t_a_le.a
+LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v4t_a_le.a
+LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libcpp_v4t_a_le.a
+LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v4t_a_le.a
+LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_targetio_impl_v4t_a_le.a
+LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v4t_a_le.a
 END GROUP
-OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARM7_LPC2000_Olimex_LPC_L2294_Crossworks/Boot/ide/../bin/openbtl_olimex_lpc_l2294_20mhz.elf elf32-littlearm)
+OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARM7_LPC2000_Olimex_LPC_L2294_Crossworks/Boot/ide/../bin/openbtl_olimex_lpc_l2294_20mhz.elf elf32-littlearm)
 
-.debug_info     0x00000000     0x1809
+.debug_info     0x00000000     0x181c
  .debug_info    0x00000000       0x5a ARM Flash Debug/../../obj/hooks.o
  .debug_info    0x0000005a      0x116 ARM Flash Debug/../../obj/main.o
  .debug_info    0x00000170       0x5a ARM Flash Debug/../../obj/extflash.o
- .debug_info    0x000001ca      0x110 ARM Flash Debug/../../obj/cstart.o
- .debug_info    0x000002da      0x539 ARM Flash Debug/../../obj/flash.o
- .debug_info    0x00000813       0x5a ARM Flash Debug/../../obj/can.o
- .debug_info    0x0000086d      0x13a ARM Flash Debug/../../obj/cpu.o
- .debug_info    0x000009a7      0x15e ARM Flash Debug/../../obj/nvm.o
- .debug_info    0x00000b05      0x119 ARM Flash Debug/../../obj/timer.o
- .debug_info    0x00000c1e      0x1bf ARM Flash Debug/../../obj/uart.o
- .debug_info    0x00000ddd       0xe4 ARM Flash Debug/../../obj/assert.o
- .debug_info    0x00000ec1       0xa4 ARM Flash Debug/../../obj/backdoor.o
- .debug_info    0x00000f65       0x88 ARM Flash Debug/../../obj/boot.o
- .debug_info    0x00000fed      0x18b ARM Flash Debug/../../obj/com.o
- .debug_info    0x00001178       0x86 ARM Flash Debug/../../obj/cop.o
- .debug_info    0x000011fe      0x60b ARM Flash Debug/../../obj/xcp.o
+ .debug_info    0x000001ca      0x106 ARM Flash Debug/../../obj/cstart.o
+ .debug_info    0x000002d0      0x538 ARM Flash Debug/../../obj/flash.o
+ .debug_info    0x00000808       0x5a ARM Flash Debug/../../obj/can.o
+ .debug_info    0x00000862      0x13a ARM Flash Debug/../../obj/cpu.o
+ .debug_info    0x0000099c      0x15e ARM Flash Debug/../../obj/nvm.o
+ .debug_info    0x00000afa       0xf2 ARM Flash Debug/../../obj/timer.o
+ .debug_info    0x00000bec      0x1bf ARM Flash Debug/../../obj/uart.o
+ .debug_info    0x00000dab       0xe4 ARM Flash Debug/../../obj/assert.o
+ .debug_info    0x00000e8f       0xc0 ARM Flash Debug/../../obj/backdoor.o
+ .debug_info    0x00000f4f       0x88 ARM Flash Debug/../../obj/boot.o
+ .debug_info    0x00000fd7      0x1b4 ARM Flash Debug/../../obj/com.o
+ .debug_info    0x0000118b       0x86 ARM Flash Debug/../../obj/cop.o
+ .debug_info    0x00001211      0x60b ARM Flash Debug/../../obj/xcp.o
 
-.debug_abbrev   0x00000000      0xa6c
+.debug_abbrev   0x00000000      0xa48
  .debug_abbrev  0x00000000       0x28 ARM Flash Debug/../../obj/hooks.o
  .debug_abbrev  0x00000028       0xc5 ARM Flash Debug/../../obj/main.o
  .debug_abbrev  0x000000ed       0x28 ARM Flash Debug/../../obj/extflash.o
@@ -553,82 +557,82 @@ OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARM7_LPC2000_Olimex_LPC_L2294_
  .debug_abbrev  0x00000346       0x28 ARM Flash Debug/../../obj/can.o
  .debug_abbrev  0x0000036e       0xaf ARM Flash Debug/../../obj/cpu.o
  .debug_abbrev  0x0000041d       0xa3 ARM Flash Debug/../../obj/nvm.o
- .debug_abbrev  0x000004c0       0xad ARM Flash Debug/../../obj/timer.o
- .debug_abbrev  0x0000056d      0x110 ARM Flash Debug/../../obj/uart.o
- .debug_abbrev  0x0000067d       0x7c ARM Flash Debug/../../obj/assert.o
- .debug_abbrev  0x000006f9       0x5b ARM Flash Debug/../../obj/backdoor.o
- .debug_abbrev  0x00000754       0x3f ARM Flash Debug/../../obj/boot.o
- .debug_abbrev  0x00000793       0xe0 ARM Flash Debug/../../obj/com.o
- .debug_abbrev  0x00000873       0x3f ARM Flash Debug/../../obj/cop.o
- .debug_abbrev  0x000008b2      0x1ba ARM Flash Debug/../../obj/xcp.o
+ .debug_abbrev  0x000004c0       0x89 ARM Flash Debug/../../obj/timer.o
+ .debug_abbrev  0x00000549      0x110 ARM Flash Debug/../../obj/uart.o
+ .debug_abbrev  0x00000659       0x7c ARM Flash Debug/../../obj/assert.o
+ .debug_abbrev  0x000006d5       0x5b ARM Flash Debug/../../obj/backdoor.o
+ .debug_abbrev  0x00000730       0x3f ARM Flash Debug/../../obj/boot.o
+ .debug_abbrev  0x0000076f       0xe0 ARM Flash Debug/../../obj/com.o
+ .debug_abbrev  0x0000084f       0x3f ARM Flash Debug/../../obj/cop.o
+ .debug_abbrev  0x0000088e      0x1ba ARM Flash Debug/../../obj/xcp.o
 
-.debug_line     0x00000000     0x1245
+.debug_line     0x00000000     0x11ef
  .debug_line    0x00000000       0x1d ARM Flash Debug/../../obj/hooks.o
- .debug_line    0x0000001d      0x13a ARM Flash Debug/../../obj/main.o
- .debug_line    0x00000157       0x1d ARM Flash Debug/../../obj/extflash.o
- .debug_line    0x00000174      0x19e ARM Flash Debug/../../obj/cstart.o
- .debug_line    0x00000312      0x2db ARM Flash Debug/../../obj/flash.o
- .debug_line    0x000005ed       0x1d ARM Flash Debug/../../obj/can.o
- .debug_line    0x0000060a       0xf6 ARM Flash Debug/../../obj/cpu.o
- .debug_line    0x00000700      0x112 ARM Flash Debug/../../obj/nvm.o
- .debug_line    0x00000812      0x113 ARM Flash Debug/../../obj/timer.o
- .debug_line    0x00000925      0x15e ARM Flash Debug/../../obj/uart.o
- .debug_line    0x00000a83      0x137 ARM Flash Debug/../../obj/assert.o
- .debug_line    0x00000bba      0x150 ARM Flash Debug/../../obj/backdoor.o
- .debug_line    0x00000d0a       0xbf ARM Flash Debug/../../obj/boot.o
- .debug_line    0x00000dc9      0x192 ARM Flash Debug/../../obj/com.o
- .debug_line    0x00000f5b       0xb7 ARM Flash Debug/../../obj/cop.o
- .debug_line    0x00001012      0x233 ARM Flash Debug/../../obj/xcp.o
+ .debug_line    0x0000001d      0x12e ARM Flash Debug/../../obj/main.o
+ .debug_line    0x0000014b       0x1d ARM Flash Debug/../../obj/extflash.o
+ .debug_line    0x00000168      0x198 ARM Flash Debug/../../obj/cstart.o
+ .debug_line    0x00000300      0x2d1 ARM Flash Debug/../../obj/flash.o
+ .debug_line    0x000005d1       0x1d ARM Flash Debug/../../obj/can.o
+ .debug_line    0x000005ee       0xf4 ARM Flash Debug/../../obj/cpu.o
+ .debug_line    0x000006e2      0x10c ARM Flash Debug/../../obj/nvm.o
+ .debug_line    0x000007ee       0xfb ARM Flash Debug/../../obj/timer.o
+ .debug_line    0x000008e9      0x158 ARM Flash Debug/../../obj/uart.o
+ .debug_line    0x00000a41      0x12b ARM Flash Debug/../../obj/assert.o
+ .debug_line    0x00000b6c      0x145 ARM Flash Debug/../../obj/backdoor.o
+ .debug_line    0x00000cb1       0xbb ARM Flash Debug/../../obj/boot.o
+ .debug_line    0x00000d6c      0x1ab ARM Flash Debug/../../obj/com.o
+ .debug_line    0x00000f17       0xb1 ARM Flash Debug/../../obj/cop.o
+ .debug_line    0x00000fc8      0x227 ARM Flash Debug/../../obj/xcp.o
 
-.debug_str      0x00000000      0xe15
- .debug_str     0x00000000       0xb1 ARM Flash Debug/../../obj/hooks.o
-                                 0xcf (size before relaxing)
- .debug_str     0x000000b1       0xa4 ARM Flash Debug/../../obj/main.o
-                                0x110 (size before relaxing)
- .debug_str     0x00000155       0x6b ARM Flash Debug/../../obj/extflash.o
-                                 0xd2 (size before relaxing)
- .debug_str     0x000001c0      0x24d ARM Flash Debug/../../obj/flash.o
-                                0x2d8 (size before relaxing)
- .debug_str     0x0000040d       0x83 ARM Flash Debug/../../obj/can.o
-                                 0xea (size before relaxing)
- .debug_str     0x00000490       0xc7 ARM Flash Debug/../../obj/cpu.o
-                                0x157 (size before relaxing)
- .debug_str     0x00000557       0xb7 ARM Flash Debug/../../obj/nvm.o
-                                0x14f (size before relaxing)
- .debug_str     0x0000060e      0x10b ARM Flash Debug/../../obj/timer.o
-                                0x17d (size before relaxing)
- .debug_str     0x00000719      0x11f ARM Flash Debug/../../obj/uart.o
-                                0x1b4 (size before relaxing)
- .debug_str     0x00000838       0xb8 ARM Flash Debug/../../obj/assert.o
-                                0x134 (size before relaxing)
- .debug_str     0x000008f0       0xa3 ARM Flash Debug/../../obj/backdoor.o
-                                0x113 (size before relaxing)
- .debug_str     0x00000993       0x89 ARM Flash Debug/../../obj/boot.o
-                                 0xf0 (size before relaxing)
- .debug_str     0x00000a1c      0x102 ARM Flash Debug/../../obj/com.o
-                                0x19c (size before relaxing)
- .debug_str     0x00000b1e       0x89 ARM Flash Debug/../../obj/cop.o
-                                 0xf0 (size before relaxing)
- .debug_str     0x00000ba7      0x26e ARM Flash Debug/../../obj/xcp.o
-                                0x312 (size before relaxing)
+.debug_str      0x00000000      0xe17
+ .debug_str     0x00000000       0xe8 ARM Flash Debug/../../obj/hooks.o
+                                0x106 (size before relaxing)
+ .debug_str     0x000000e8       0x9e ARM Flash Debug/../../obj/main.o
+                                0x147 (size before relaxing)
+ .debug_str     0x00000186       0x65 ARM Flash Debug/../../obj/extflash.o
+                                0x109 (size before relaxing)
+ .debug_str     0x000001eb      0x247 ARM Flash Debug/../../obj/flash.o
+                                0x30f (size before relaxing)
+ .debug_str     0x00000432       0x7d ARM Flash Debug/../../obj/can.o
+                                0x121 (size before relaxing)
+ .debug_str     0x000004af       0xc1 ARM Flash Debug/../../obj/cpu.o
+                                0x18e (size before relaxing)
+ .debug_str     0x00000570       0xb1 ARM Flash Debug/../../obj/nvm.o
+                                0x186 (size before relaxing)
+ .debug_str     0x00000621       0xf0 ARM Flash Debug/../../obj/timer.o
+                                0x19f (size before relaxing)
+ .debug_str     0x00000711      0x119 ARM Flash Debug/../../obj/uart.o
+                                0x1eb (size before relaxing)
+ .debug_str     0x0000082a       0xb2 ARM Flash Debug/../../obj/assert.o
+                                0x16b (size before relaxing)
+ .debug_str     0x000008dc       0xae ARM Flash Debug/../../obj/backdoor.o
+                                0x166 (size before relaxing)
+ .debug_str     0x0000098a       0x83 ARM Flash Debug/../../obj/boot.o
+                                0x127 (size before relaxing)
+ .debug_str     0x00000a0d      0x11f ARM Flash Debug/../../obj/com.o
+                                0x1f6 (size before relaxing)
+ .debug_str     0x00000b2c       0x83 ARM Flash Debug/../../obj/cop.o
+                                0x127 (size before relaxing)
+ .debug_str     0x00000baf      0x268 ARM Flash Debug/../../obj/xcp.o
+                                0x349 (size before relaxing)
 
-.comment        0x00000000       0x11
- .comment       0x00000000       0x11 ARM Flash Debug/../../obj/hooks.o
-                                 0x12 (size before relaxing)
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/main.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/extflash.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/flash.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/can.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/cpu.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/nvm.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/timer.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/uart.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/assert.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/backdoor.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/boot.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/com.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/cop.o
- .comment       0x00000000       0x12 ARM Flash Debug/../../obj/xcp.o
+.comment        0x00000000       0x4e
+ .comment       0x00000000       0x4e ARM Flash Debug/../../obj/hooks.o
+                                 0x4f (size before relaxing)
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/main.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/extflash.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/flash.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/can.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/cpu.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/nvm.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/timer.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/uart.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/assert.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/backdoor.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/boot.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/com.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/cop.o
+ .comment       0x00000000       0x4f ARM Flash Debug/../../obj/xcp.o
 
 .ARM.attributes
                 0x00000000       0x10
@@ -667,32 +671,32 @@ OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARM7_LPC2000_Olimex_LPC_L2294_
 
 .debug_frame    0x00000000      0x5a8
  .debug_frame   0x00000000       0x2c ARM Flash Debug/../../obj/main.o
- .debug_frame   0x0000002c      0x160 ARM Flash Debug/../../obj/flash.o
- .debug_frame   0x0000018c       0x68 ARM Flash Debug/../../obj/cpu.o
- .debug_frame   0x000001f4       0x9c ARM Flash Debug/../../obj/nvm.o
- .debug_frame   0x00000290       0x78 ARM Flash Debug/../../obj/timer.o
- .debug_frame   0x00000308       0x90 ARM Flash Debug/../../obj/uart.o
- .debug_frame   0x00000398       0x2c ARM Flash Debug/../../obj/assert.o
- .debug_frame   0x000003c4       0x48 ARM Flash Debug/../../obj/backdoor.o
- .debug_frame   0x0000040c       0x48 ARM Flash Debug/../../obj/boot.o
- .debug_frame   0x00000454       0xa4 ARM Flash Debug/../../obj/com.o
+ .debug_frame   0x0000002c      0x15c ARM Flash Debug/../../obj/flash.o
+ .debug_frame   0x00000188       0x68 ARM Flash Debug/../../obj/cpu.o
+ .debug_frame   0x000001f0       0x9c ARM Flash Debug/../../obj/nvm.o
+ .debug_frame   0x0000028c       0x5c ARM Flash Debug/../../obj/timer.o
+ .debug_frame   0x000002e8       0x90 ARM Flash Debug/../../obj/uart.o
+ .debug_frame   0x00000378       0x2c ARM Flash Debug/../../obj/assert.o
+ .debug_frame   0x000003a4       0x48 ARM Flash Debug/../../obj/backdoor.o
+ .debug_frame   0x000003ec       0x48 ARM Flash Debug/../../obj/boot.o
+ .debug_frame   0x00000434       0xc4 ARM Flash Debug/../../obj/com.o
  .debug_frame   0x000004f8       0x30 ARM Flash Debug/../../obj/cop.o
  .debug_frame   0x00000528       0x80 ARM Flash Debug/../../obj/xcp.o
 
-.debug_loc      0x00000000      0xb16
+.debug_loc      0x00000000      0xae3
  .debug_loc     0x00000000       0x20 ARM Flash Debug/../../obj/main.o
- .debug_loc     0x00000020      0x4a6 ARM Flash Debug/../../obj/flash.o
- .debug_loc     0x000004c6      0x109 ARM Flash Debug/../../obj/cpu.o
- .debug_loc     0x000005cf       0xff ARM Flash Debug/../../obj/nvm.o
- .debug_loc     0x000006ce       0x40 ARM Flash Debug/../../obj/timer.o
- .debug_loc     0x0000070e       0xe9 ARM Flash Debug/../../obj/uart.o
- .debug_loc     0x000007f7       0x46 ARM Flash Debug/../../obj/assert.o
- .debug_loc     0x0000083d       0x40 ARM Flash Debug/../../obj/backdoor.o
- .debug_loc     0x0000087d       0x40 ARM Flash Debug/../../obj/boot.o
- .debug_loc     0x000008bd       0xb2 ARM Flash Debug/../../obj/com.o
- .debug_loc     0x0000096f      0x1a7 ARM Flash Debug/../../obj/xcp.o
+ .debug_loc     0x00000020      0x493 ARM Flash Debug/../../obj/flash.o
+ .debug_loc     0x000004b3      0x109 ARM Flash Debug/../../obj/cpu.o
+ .debug_loc     0x000005bc       0xff ARM Flash Debug/../../obj/nvm.o
+ .debug_loc     0x000006bb       0x20 ARM Flash Debug/../../obj/timer.o
+ .debug_loc     0x000006db       0xe9 ARM Flash Debug/../../obj/uart.o
+ .debug_loc     0x000007c4       0x46 ARM Flash Debug/../../obj/assert.o
+ .debug_loc     0x0000080a       0x40 ARM Flash Debug/../../obj/backdoor.o
+ .debug_loc     0x0000084a       0x40 ARM Flash Debug/../../obj/boot.o
+ .debug_loc     0x0000088a       0xb2 ARM Flash Debug/../../obj/com.o
+ .debug_loc     0x0000093c      0x1a7 ARM Flash Debug/../../obj/xcp.o
 
-.debug_aranges  0x00000000      0x2d0
+.debug_aranges  0x00000000      0x2d8
  .debug_aranges
                 0x00000000       0x20 ARM Flash Debug/../../obj/main.o
  .debug_aranges
@@ -704,33 +708,33 @@ OUTPUT(D:/usr/feaser/software/OpenBLT/Target/Demo/ARM7_LPC2000_Olimex_LPC_L2294_
  .debug_aranges
                 0x000000e8       0x40 ARM Flash Debug/../../obj/nvm.o
  .debug_aranges
-                0x00000128       0x40 ARM Flash Debug/../../obj/timer.o
+                0x00000128       0x38 ARM Flash Debug/../../obj/timer.o
  .debug_aranges
-                0x00000168       0x40 ARM Flash Debug/../../obj/uart.o
+                0x00000160       0x40 ARM Flash Debug/../../obj/uart.o
  .debug_aranges
-                0x000001a8       0x20 ARM Flash Debug/../../obj/assert.o
+                0x000001a0       0x20 ARM Flash Debug/../../obj/assert.o
  .debug_aranges
-                0x000001c8       0x28 ARM Flash Debug/../../obj/backdoor.o
+                0x000001c0       0x28 ARM Flash Debug/../../obj/backdoor.o
  .debug_aranges
-                0x000001f0       0x28 ARM Flash Debug/../../obj/boot.o
+                0x000001e8       0x28 ARM Flash Debug/../../obj/boot.o
  .debug_aranges
-                0x00000218       0x48 ARM Flash Debug/../../obj/com.o
+                0x00000210       0x58 ARM Flash Debug/../../obj/com.o
  .debug_aranges
-                0x00000260       0x28 ARM Flash Debug/../../obj/cop.o
+                0x00000268       0x28 ARM Flash Debug/../../obj/cop.o
  .debug_aranges
-                0x00000288       0x48 ARM Flash Debug/../../obj/xcp.o
+                0x00000290       0x48 ARM Flash Debug/../../obj/xcp.o
 
-.debug_ranges   0x00000000      0x208
+.debug_ranges   0x00000000      0x210
  .debug_ranges  0x00000000       0x10 ARM Flash Debug/../../obj/main.o
  .debug_ranges  0x00000010       0x20 ARM Flash Debug/../../obj/cstart.o
  .debug_ranges  0x00000030       0x60 ARM Flash Debug/../../obj/flash.o
  .debug_ranges  0x00000090       0x20 ARM Flash Debug/../../obj/cpu.o
  .debug_ranges  0x000000b0       0x30 ARM Flash Debug/../../obj/nvm.o
- .debug_ranges  0x000000e0       0x30 ARM Flash Debug/../../obj/timer.o
- .debug_ranges  0x00000110       0x30 ARM Flash Debug/../../obj/uart.o
- .debug_ranges  0x00000140       0x10 ARM Flash Debug/../../obj/assert.o
- .debug_ranges  0x00000150       0x18 ARM Flash Debug/../../obj/backdoor.o
- .debug_ranges  0x00000168       0x18 ARM Flash Debug/../../obj/boot.o
- .debug_ranges  0x00000180       0x38 ARM Flash Debug/../../obj/com.o
- .debug_ranges  0x000001b8       0x18 ARM Flash Debug/../../obj/cop.o
- .debug_ranges  0x000001d0       0x38 ARM Flash Debug/../../obj/xcp.o
+ .debug_ranges  0x000000e0       0x28 ARM Flash Debug/../../obj/timer.o
+ .debug_ranges  0x00000108       0x30 ARM Flash Debug/../../obj/uart.o
+ .debug_ranges  0x00000138       0x10 ARM Flash Debug/../../obj/assert.o
+ .debug_ranges  0x00000148       0x18 ARM Flash Debug/../../obj/backdoor.o
+ .debug_ranges  0x00000160       0x18 ARM Flash Debug/../../obj/boot.o
+ .debug_ranges  0x00000178       0x48 ARM Flash Debug/../../obj/com.o
+ .debug_ranges  0x000001c0       0x18 ARM Flash Debug/../../obj/cop.o
+ .debug_ranges  0x000001d8       0x38 ARM Flash Debug/../../obj/xcp.o

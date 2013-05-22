@@ -41,10 +41,15 @@
  * not dependent on the targets architecture, the byte ordering needs to be known. 
  * Setting BOOT_CPU_BYTE_ORDER_MOTOROLA to 1 selects little endian mode and 0 selects 
  * big endian mode.
+ * 
+ * Set BOOT_CPU_USER_PROGRAM_START_HOOK to 1 if you would like a hook function to be
+ * called the moment the user program is about to be started. This could be used to
+ * de-initialize application specific parts, for example to stop blinking an LED, etc.
  */ 
 #define BOOT_CPU_XTAL_SPEED_KHZ         (8000)
 #define BOOT_CPU_SYSTEM_SPEED_KHZ       (50000)
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
+#define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
 
 
 /****************************************************************************************
@@ -65,6 +70,37 @@
 #define BOOT_COM_UART_CHANNEL_INDEX     (0)
 
 
+/****************************************************************************************
+*   F I L E   S Y S T E M   I N T E R F A C E   C O N F I G U R A T I O N
+****************************************************************************************/
+/* The file system interface is selected by setting the BOOT_FILE_SYS_ENABLE configurable
+ * to 1. This enables support for firmware updates from a file stored on a locally 
+ * attached file system such as an SD-card. Note that this interface can be enabled 
+ * together with one of the remote communication interfaces such as UART, CAN or USB.
+ *
+ * Set BOOT_FILE_LOGGING_ENABLE to 1 if you would like log messages to be created during
+ * a firmware update. The hook function FileFirmwareUpdateLogHook() will be called each
+ * time a new string formatted log entry is available. This could be used during testing
+ * by outputting the string on UART or to create a log file on the file system itself.
+ *
+ * Set BOOT_FILE_ERROR_HOOK_ENABLE to 1 if you would like to be informed in case an error
+ * occurs during the firmware update. This could for example be used to turn on an error
+ * LED to inform the user that something went wrong. Inspecting the log messages provides
+ * additional information on the error cause.
+ *
+ * Set BOOT_FILE_STARTED_HOOK_ENABLE to 1 if you would like to be informed when a new
+ * firmware update is started by the bootloader. 
+ *
+ * Set BOOT_FILE_COMPLETED_HOOK_ENABLE to 1 if you would like to be informed when a
+ * firmware update is completed by the bootloader. 
+ */
+#define BOOT_FILE_SYS_ENABLE            (1)
+#define BOOT_FILE_LOGGING_ENABLE        (1)
+#define BOOT_FILE_ERROR_HOOK_ENABLE     (1)   
+#define BOOT_FILE_STARTED_HOOK_ENABLE   (1)   
+#define BOOT_FILE_COMPLETED_HOOK_ENABLE (1)   
+
+   
 /****************************************************************************************
 *   B A C K D O O R   E N T R Y   C O N F I G U R A T I O N
 ****************************************************************************************/
