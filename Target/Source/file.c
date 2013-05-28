@@ -196,7 +196,7 @@ void FileTask(void)
       FileFirmwareUpdateStartedHook();
       #endif
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("Firmware update request detected\n");
+      FileFirmwareUpdateLogHook("Firmware update request detected\n\r");
       FileFirmwareUpdateLogHook("Opening firmware file for reading...");
       #endif
       /* attempt to obtain a file object for the firmware file */
@@ -204,7 +204,7 @@ void FileTask(void)
       {
         /* can't open file */
         #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("ERROR\n");
+        FileFirmwareUpdateLogHook("ERROR\n\r");
         #endif
         #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_OPEN_FIRMWARE_FILE);
@@ -213,8 +213,8 @@ void FileTask(void)
         return;
       }
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("OK\n");
-      FileFirmwareUpdateLogHook("Starting the programming sequence\n");
+      FileFirmwareUpdateLogHook("OK\n\r");
+      FileFirmwareUpdateLogHook("Starting the programming sequence\n\r");
       #endif
       /* prepare data objects for the erasing state */
       eraseInfo.start_address = 0;
@@ -232,7 +232,7 @@ void FileTask(void)
     if (f_error(&fatFsObjects.file) > 0)
     {
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("Reading line from file...ERROR\n");
+      FileFirmwareUpdateLogHook("Reading line from file...ERROR\n\r");
       #endif
       #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
       FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_READ_FROM_FILE);
@@ -251,7 +251,7 @@ void FileTask(void)
       if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
       {
         #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("Invalid checksum found...ERROR\n");
+        FileFirmwareUpdateLogHook("Invalid checksum found...ERROR\n\r");
         #endif
         #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_INVALID_CHECKSUM_IN_FILE);
@@ -290,7 +290,7 @@ void FileTask(void)
       if (f_lseek(&fatFsObjects.file, 0) != FR_OK)
       {
         #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("Failed to rewind file read pointer...ERROR\n");
+        FileFirmwareUpdateLogHook("Failed to rewind file read pointer...ERROR\n\r");
         #endif
         #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_REWINDING_FILE_READ_POINTER);
@@ -319,7 +319,7 @@ void FileTask(void)
       if (NvmErase(eraseInfo.start_address, eraseInfo.total_size) == BLT_FALSE)
       {
         #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("ERROR\n");
+        FileFirmwareUpdateLogHook("ERROR\n\r");
         #endif
         #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_ERASE_MEMORY);
@@ -331,7 +331,7 @@ void FileTask(void)
         return;
       }
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("OK\n");
+      FileFirmwareUpdateLogHook("OK\n\r");
       #endif
       /* all okay, then go to programming state */
       firmwareUpdateState = FIRMWARE_UPDATE_STATE_PROGRAMMING;
@@ -346,7 +346,7 @@ void FileTask(void)
     if (f_error(&fatFsObjects.file) > 0)
     {
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("Reading line from file...ERROR\n");
+      FileFirmwareUpdateLogHook("Reading line from file...ERROR\n\r");
       #endif
       #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
       FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_READ_FROM_FILE);
@@ -365,7 +365,7 @@ void FileTask(void)
       if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
       {
         #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("Invalid checksum found...ERROR\n");
+        FileFirmwareUpdateLogHook("Invalid checksum found...ERROR\n\r");
         #endif
         #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_INVALID_CHECKSUM_IN_FILE);
@@ -398,7 +398,7 @@ void FileTask(void)
       if (NvmWrite(lineParseObject.address, parse_result, lineParseObject.data) == BLT_FALSE)
       {
         #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("ERROR\n");
+        FileFirmwareUpdateLogHook("ERROR\n\r");
         #endif
         #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_PROGRAM_MEMORY);
@@ -410,7 +410,7 @@ void FileTask(void)
         return;
       }
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("OK\n");
+      FileFirmwareUpdateLogHook("OK\n\r");
       #endif
     }
     /* check if the end of the file was reached */
@@ -423,7 +423,7 @@ void FileTask(void)
       if (NvmDone() == BLT_FALSE)
       {
         #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("ERROR\n");
+        FileFirmwareUpdateLogHook("ERROR\n\r");
         #endif
         #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_WRITE_CHECKSUM);
@@ -435,13 +435,13 @@ void FileTask(void)
         return;
       }
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("OK\n");
-      FileFirmwareUpdateLogHook("Closing firmware file\n");
+      FileFirmwareUpdateLogHook("OK\n\r");
+      FileFirmwareUpdateLogHook("Closing firmware file\n\r");
       #endif
       /* close the file */
       f_close(&fatFsObjects.file);
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("Firmware update successfully completed\n");
+      FileFirmwareUpdateLogHook("Firmware update successfully completed\n\r");
       #endif
       /* all done so transistion back to idle mode */
       firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
