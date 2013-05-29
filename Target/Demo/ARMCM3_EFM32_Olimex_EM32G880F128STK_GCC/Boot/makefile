@@ -129,8 +129,8 @@ main.c \
 ../../../Source/ARMCM3_EFM32/nvm.h \
 ../../../Source/ARMCM3_EFM32/timer.c \
 ../../../Source/ARMCM3_EFM32/timer.h \
-../../../Source/ARMCM3_EFM32/GCC/flash.c \
-../../../Source/ARMCM3_EFM32/GCC/flash.h \
+../../../Source/ARMCM3_EFM32/flash.c \
+../../../Source/ARMCM3_EFM32/flash.h \
 ../../../Source/ARMCM3_EFM32/GCC/vectors.c \
 ../../../Source/ARMCM3_EFM32/GCC/cstart.c
 

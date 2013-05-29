@@ -94,8 +94,8 @@ usb_pwr.c \
 ../../../Source/ARMCM3_STM32/nvm.h \
 ../../../Source/ARMCM3_STM32/timer.c \
 ../../../Source/ARMCM3_STM32/timer.h \
-../../../Source/ARMCM3_STM32/GCC/flash.c \
-../../../Source/ARMCM3_STM32/GCC/flash.h \
+../../../Source/ARMCM3_STM32/flash.c \
+../../../Source/ARMCM3_STM32/flash.h \
 ../../../Source/ARMCM3_STM32/GCC/vectors.c \
 ../../../Source/ARMCM3_STM32/GCC/cstart.c
 

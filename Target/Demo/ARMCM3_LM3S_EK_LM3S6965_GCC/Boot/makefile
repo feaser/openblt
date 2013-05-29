@@ -94,8 +94,8 @@ main.c \
 ../../../Source/ARMCM3_LM3S/nvm.h \
 ../../../Source/ARMCM3_LM3S/timer.c \
 ../../../Source/ARMCM3_LM3S/timer.h \
-../../../Source/ARMCM3_LM3S/GCC/flash.c \
-../../../Source/ARMCM3_LM3S/GCC/flash.h \
+../../../Source/ARMCM3_LM3S/flash.c \
+../../../Source/ARMCM3_LM3S/flash.h \
 ../../../Source/ARMCM3_LM3S/GCC/vectors.c \
 ../../../Source/ARMCM3_LM3S/GCC/cstart.c
 

@@ -9,7 +9,7 @@ Program Header:
     LOAD off    0x00008000 vaddr 0x08000000 paddr 0x08000000 align 2**15
          filesz 0x000026b8 memsz 0x000026b8 flags r-x
     LOAD off    0x00010000 vaddr 0x20000000 paddr 0x080026b8 align 2**15
-         filesz 0x000000ec memsz 0x0000085c flags rw-
+         filesz 0x000000ec memsz 0x0000095c flags rw-
 private flags = 5000002: [Version5 EABI] [has entry point]
 
 Sections:
@@ -18,7 +18,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   1 .data         000000ec  20000000  080026b8  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000770  200000ec  080027a4  000100ec  2**2
+  2 .bss          00000870  200000ec  080027a4  000100ec  2**2
                   ALLOC
   3 .debug_info   00006d48  00000000  00000000  000100ec  2**0
                   CONTENTS, READONLY, DEBUGGING
@@ -120,7 +120,7 @@ SYMBOL TABLE:
 20000518 l     O .bss	00000204 blockInfo
 00000000 l    df *ABS*	00000000 usb_desc.c
 00000000 l    df *ABS*	00000000 
-00000100 l       *ABS*	00000000 __STACKSIZE__
+00000200 l       *ABS*	00000000 __STACKSIZE__
 08001664 g     F .text	00000034 ComInit
 20000756 g     O .bss	00000002 SaveRState
 08001430 g     F .text	00000024 SetEPRxValid
@@ -235,7 +235,7 @@ SYMBOL TABLE:
 08000438 g     F .text	00000028 Bulk_GetStringDescriptor
 08001f28 g     F .text	00000008 NvmWrite
 08001ab0 g     F .text	00000028 CpuStartUserProgram
-2000085c g       .bss	00000000 _estack
+2000095c g       .bss	00000000 _estack
 08001d5c g     F .text	00000088 UsbReceivePacket
 080023f8 g     F .text	00000058 FlashVerifyChecksum
 200000f4 g     O .bss	00000001 Data_Mul_MaxPacketSize

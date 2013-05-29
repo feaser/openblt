@@ -1,6 +1,6 @@
 /****************************************************************************************
-|  Description: LED driver source file
-|    File Name: led.c
+|  Description: IRQ driver source file
+|    File Name: irq.c
 |
 |----------------------------------------------------------------------------------------
 |                          C O P Y R I G H T
@@ -36,73 +36,62 @@
 
 
 /****************************************************************************************
-* Macro definitions
+* Local data definitions
 ****************************************************************************************/
-#define LED_TOGGLE_MS  (100)                   /* toggle interval time in milliseconds */
+static unsigned char interruptNesting = 0;     /* used for global interrupt en/disable */
 
 
 /****************************************************************************************
-** NAME:           LedInit
+** NAME:           IrqInterruptEnable
 ** PARAMETER:      none
 ** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the LED.
+** DESCRIPTION:    Enables the generation IRQ interrupts. Typically called once during
+**                 software startup after completion of the initialization.
 **
 ****************************************************************************************/
-void LedInit(void)
+void IrqInterruptEnable(void)
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
-  
-  /* enable the GPIO_LED Clock */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-  /* configure the GPIO_LED pin */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-  GPIO_SetBits(GPIOC, GPIO_Pin_13);
-} /*** end of LedInit ***/
+  __enable_irq();
+} /*** end of IrqInterruptEnable ***/
 
 
 /****************************************************************************************
-** NAME:           LedToggle
+** NAME:           HwInterruptDisable
 ** PARAMETER:      none
 ** RETURN VALUE:   none
-** DESCRIPTION:    Toggles the LED at a fixed time interval.
+** DESCRIPTION:    Disables the generation IRQ interrupts and stores information on
+**                 whether or not the interrupts were already disabled before explicitly
+**                 disabling them with this function. Normally used as a pair together
+**                 with IrqInterruptRestore during a critical section.
 **
 ****************************************************************************************/
-void LedToggle(void)
+void IrqInterruptDisable(void)
 {
-  static unsigned char led_toggle_state = 0;
-  static unsigned long timer_counter_last = 0;
-  unsigned long timer_counter_now;
-
-  /* check if toggle interval time passed */
-  timer_counter_now = TimerGet();
-  if ( (timer_counter_now - timer_counter_last) < LED_TOGGLE_MS)
+  if (interruptNesting == 0)
   {
-    /* not yet time to toggle */
-    return;
+    __disable_irq();
   }
-  
-  /* determine toggle action */
-  if (led_toggle_state == 0)
+  interruptNesting++;
+} /*** end of IrqInterruptDisable ***/
+
+
+/****************************************************************************************
+** NAME:           IrqInterruptRestore
+** PARAMETER:      none
+** RETURN VALUE:   none
+** DESCRIPTION:    Restore the generation IRQ interrupts to the setting it had prior to
+**                 calling IrqInterruptDisable. Normally used as a pair together with
+**                 IrqInterruptDisable during a critical section.
+**
+****************************************************************************************/
+void IrqInterruptRestore(void)
+{
+  interruptNesting--;
+  if (interruptNesting == 0)
   {
-    led_toggle_state = 1;
-    /* turn the LED on */
-    GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+    __enable_irq();
   }
-  else
-  {
-    led_toggle_state = 0;
-    /* turn the LED off */
-    GPIO_SetBits(GPIOC, GPIO_Pin_13);
-  }
-
-  /* store toggle time to determine next toggle interval */
-  timer_counter_last = timer_counter_now;
-} /*** end of LedToggle ***/
+} /*** end of IrqInterruptRestore ***/
 
 
-/*********************************** end of led.c **************************************/
+/*********************************** end of irq.c **************************************/

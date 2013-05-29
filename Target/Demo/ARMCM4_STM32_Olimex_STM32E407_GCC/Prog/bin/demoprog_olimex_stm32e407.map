@@ -1,0 +1,114 @@
+
+bin/demoprog_olimex_stm32e407.elf:     file format elf32-littlearm
+bin/demoprog_olimex_stm32e407.elf
+architecture: arm, flags 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+start address 0x08008000
+
+Program Header:
+    LOAD off    0x00008000 vaddr 0x08008000 paddr 0x08008000 align 2**15
+         filesz 0x000008e4 memsz 0x000008e4 flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x080088e4 align 2**15
+         filesz 0x00000014 memsz 0x00000868 flags rw-
+private flags = 5000002: [Version5 EABI] [has entry point]
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000008e4  08008000  08008000  00008000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000014  20000000  080088e4  00010000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000854  20000014  080088f8  00010014  2**2
+                  ALLOC
+  3 .debug_info   00003af0  00000000  00000000  00010014  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 00000f22  00000000  00000000  00013b04  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_loc    00001a28  00000000  00000000  00014a26  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_aranges 00000458  00000000  00000000  0001644e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_ranges 000003a8  00000000  00000000  000168a6  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00001814  00000000  00000000  00016c4e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000017e2  00000000  00000000  00018462  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .comment      00000030  00000000  00000000  00019c44  2**0
+                  CONTENTS, READONLY
+ 11 .ARM.attributes 00000033  00000000  00000000  00019c74  2**0
+                  CONTENTS, READONLY
+ 12 .debug_frame  0000080c  00000000  00000000  00019ca8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+SYMBOL TABLE:
+08008000 l    d  .text	00000000 .text
+20000000 l    d  .data	00000000 .data
+20000014 l    d  .bss	00000000 .bss
+00000000 l    d  .debug_info	00000000 .debug_info
+00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
+00000000 l    d  .debug_loc	00000000 .debug_loc
+00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_ranges	00000000 .debug_ranges
+00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_str	00000000 .debug_str
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
+00000000 l    d  .debug_frame	00000000 .debug_frame
+00000000 l    df *ABS*	00000000 vectors.c
+00000000 l    df *ABS*	00000000 boot.c
+0800818c l     F .text	00000034 UartReceiveByte
+20000014 l     O .bss	00000001 xcpCtoRxLength.7478
+20000015 l     O .bss	00000001 xcpCtoRxInProgress.7479
+20000018 l     O .bss	00000041 xcpCtoReqPacket.7477
+00000000 l    df *ABS*	00000000 cstart.c
+0800834a l     F .text	00000000 zero_loop
+00000000 l    df *ABS*	00000000 irq.c
+00000000 l    df *ABS*	00000000 led.c
+2000005c l     O .bss	00000004 timer_counter_last.7469
+20000060 l     O .bss	00000001 led_toggle_state.7468
+00000000 l    df *ABS*	00000000 main.c
+00000000 l    df *ABS*	00000000 timer.c
+20000064 l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 stm32f4xx_gpio.c
+00000000 l    df *ABS*	00000000 stm32f4xx_rcc.c
+20000000 l     O .data	00000010 APBAHBPrescTable
+00000000 l    df *ABS*	00000000 stm32f4xx_usart.c
+00000000 l    df *ABS*	00000000 system_stm32f4xx.c
+00000000 l    df *ABS*	00000000 
+00000800 l       *ABS*	00000000 __STACKSIZE__
+08008310 g     F .text	00000060 reset_handler
+080085a4 g     F .text	00000038 GPIO_PinAFConfig
+0800837c g     F .text	00000004 IrqInterruptEnable
+080087ec g     F .text	0000000c USART_GetFlagStatus
+080088e4 g       .text	00000000 _etext
+080084e4 g     F .text	00000010 TimerISRHandler
+20000010 g     O .data	00000004 SystemCoreClock
+080087e0 g     F .text	0000000c USART_ReceiveData
+080086ac g     F .text	0000001c RCC_APB2PeriphClockCmd
+080084f8 g     F .text	000000a2 GPIO_Init
+080087c0 g     F .text	00000020 USART_Cmd
+20000068 g       .bss	00000000 _ebss
+080084f4 g     F .text	00000002 UnusedISR
+08008380 g     F .text	00000058 LedInit
+0800859c g     F .text	00000004 GPIO_SetBits
+080085dc g     F .text	000000b4 RCC_GetClocksFreq
+080086c8 g     F .text	000000f8 USART_Init
+20000014 g       .bss	00000000 _bss
+080085a0 g     F .text	00000004 GPIO_ResetBits
+08008438 g     F .text	0000003c main
+08008484 g     F .text	0000000c TimerSet
+080081c0 g     F .text	000000cc BootComInit
+080087f8 g     F .text	000000ec SystemInit
+08008474 g     F .text	00000010 TimerDeinit
+20000000 g       .data	00000000 _data
+080083d8 g     F .text	00000060 LedToggle
+20000868 g       .bss	00000000 _estack
+20000014 g       .data	00000000 _edata
+08008000 g     O .text	0000018c _vectab
+0800828c g     F .text	00000084 BootComCheckActivationRequest
+08008690 g     F .text	0000001c RCC_AHB1PeriphClockCmd
+20000068 g       .bss	00000000 _stack
+080084d8 g     F .text	0000000c TimerGet
+08008490 g     F .text	00000048 TimerInit
+
+

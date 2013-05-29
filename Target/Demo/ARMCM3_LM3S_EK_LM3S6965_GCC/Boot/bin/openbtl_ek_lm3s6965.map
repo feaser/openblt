@@ -7,18 +7,18 @@ start address 0x00000000
 
 Program Header:
     LOAD off    0x00008000 vaddr 0x00000000 paddr 0x00000000 align 2**15
-         filesz 0x00004b98 memsz 0x00004b98 flags r-x
-    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x00004b98 align 2**15
+         filesz 0x00004ba0 memsz 0x00004ba0 flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x00004ba0 align 2**15
          filesz 0x00000008 memsz 0x00001154 flags rw-
 private flags = 5000000: [Version5 EABI]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00004b98  00000000  00000000  00008000  2**2
+  0 .text         00004ba0  00000000  00000000  00008000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000008  20000000  00004b98  00010000  2**2
+  1 .data         00000008  20000000  00004ba0  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000114c  20000008  00004ba0  00010008  2**2
+  2 .bss          0000114c  20000008  00004ba8  00010008  2**2
                   ALLOC
   3 .debug_info   0000d769  00000000  00000000  00010008  2**0
                   CONTENTS, READONLY, DEBUGGING
@@ -131,13 +131,13 @@ SYMBOL TABLE:
 000030b8 l     F .text	000001dc dir_register
 200008fc l     O .bss	00000200 LfnBuf
 20000afc l     O .bss	00000002 Fsid
-00004429 l     O .text	00000080 ExCvt
-000044a9 l     O .text	0000000d LfnOfs
+00004431 l     O .text	00000080 ExCvt
+000044b1 l     O .text	0000000d LfnOfs
 20000b00 l     O .bss	00000004 FatFs
 00000000 l    df *ABS*	00000000 unicode.c
-000044b6 l     O .text	000001e0 tbl_lower.4261
-00004696 l     O .text	00000100 Tbl
-00004796 l     O .text	000001e0 tbl_upper.4262
+000044be l     O .text	000001e0 tbl_lower.4261
+0000469e l     O .text	00000100 Tbl
+0000479e l     O .text	000001e0 tbl_upper.4262
 00000000 l    df *ABS*	00000000 cpu.c
 00000000 l    df *ABS*	00000000 uart.c
 20000b04 l     O .bss	00000001 xcpCtoRxLength.4596
@@ -151,7 +151,7 @@ SYMBOL TABLE:
 00003d3c l     F .text	00000044 FlashWriteBlock
 00003d80 l     F .text	0000004c FlashSwitchBlock
 00003dcc l     F .text	00000084 FlashAddToBlock
-0000499c l     O .text	000000cc flashLayout
+000049a4 l     O .text	000000cc flashLayout
 20000b4c l     O .bss	00000204 bootBlockInfo
 20000d50 l     O .bss	00000204 blockInfo
 00000000 l    df *ABS*	00000000 memset.c
@@ -176,7 +176,7 @@ SYMBOL TABLE:
 00001a98 g     F .text	00000020 BackDoorInit
 00000ecc g     F .text	000000d0 SSIConfigSetExpClk
 00001aba g     F .text	00000002 CopService
-00004b98 g       .text	00000000 _etext
+00004ba0 g       .text	00000000 _etext
 00003b10 g     F .text	00000024 ff_wtoupper
 00000bc8 g     F .text	00000024 GPIOPinWrite
 00001d88 g     F .text	00000330 FileTask
@@ -252,7 +252,7 @@ SYMBOL TABLE:
 000001ec g     F .text	0000004c FileFirmwareUpdateLogHook
 20000004 g     O .data	00000004 __ctype_ptr__
 00001818 g     F .text	00000004 ComIsConnected
-00004a94 g     O .text	00000101 _ctype_
+00004a9c g     O .text	00000101 _ctype_
 00000154 g     F .text	00000034 FileIsFirmwareUpdateRequestedHook
 00000e80 g     F .text	00000020 UARTBusy
 00000a68 g     F .text	00000058 GPIODirModeSet
