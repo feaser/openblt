@@ -1,0 +1,145 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="stm32f407_crossworks" target="8" version="2">
+  <project Name="openbtl_olimex_stm32e407">
+    <configuration Name="Common" Placement="Flash" Target="STM32F407ZG" arm_architecture="v7EM" arm_core_type="Cortex-M4" arm_fpu_type="FPv4-SP-D16" arm_gcc_target="arm-unknown-eabi" arm_linker_heap_size="128" arm_linker_jtag_pad_pre_dr="1" arm_linker_jtag_pad_pre_ir="5" arm_linker_process_stack_size="0" arm_linker_stack_size="128" arm_simulator_memory_simulation_filename="$(TargetsDir)/STM32/STM32SimulatorMemory.dll" arm_simulator_memory_simulation_parameter="STM32F407ZG;0x100000;0x20000" arm_target_debug_interface_type="ADIv5" arm_target_interface_type="Default" arm_target_loader_applicable_loaders="Flash" arm_target_loader_default_loader="Flash" arm_target_loader_parameter="8000000" arm_use_gcc_libraries="Yes" build_intermediate_directory="$(Configuration)/../../obj" build_output_directory="$(ProjectDir)/../bin" c_only_additional_options="-I./..;-I./../lib/stdperiphlib;-I./../lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Include;-I./../lib/stdperiphlib/CMSIS/Include;-I./../lib/fatfs;-I./../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc;-I./../../../../Source;-I./../../../../Source/ARMCM4_STM32;-I./../../../../Source/fatfs/src" c_preprocessor_definitions="USE_STDPERIPH_DRIVER;HSE_VALUE=12000000;VECT_TAB_FLASH" c_user_include_directories="$(TargetsDir)/STM32/include" gcc_optimization_level="Level 1" link_IOLibraryName="target" link_include_standard_libraries="Yes" linker_keep_symbols="_vectors;EntryFromProg" linker_memory_map_file="$(TargetsDir)/STM32/STM32F407ZG_MemoryMap.xml" linker_output_format="srec" linker_printf_enabled="No" linker_printf_width_precision_supported="No" linker_scanf_enabled="No" linker_section_placement_file="$(StudioDir)/targets/Cortex_M/flash_placement.xml" oscillator_frequency="8MHz" project_directory="" project_type="Executable" property_groups_file_path="$(TargetsDir)/STM32/propertyGroups.xml" target_get_partname_script="GetPartName()" target_match_partname_script="MatchPartName(&quot;$(Target)&quot;)" target_reset_script="Reset()"/>
+    <configuration Name="Flash" arm_target_flash_loader_file_path="$(TargetsDir)/STM32/Release/STM32F2xx_Loader_rpc.elf" arm_target_flash_loader_type="LIBMEM RPC Loader" arm_target_loader_can_erase_all="Yes" arm_target_loader_can_lock_all="No" arm_target_loader_can_lock_range="No" arm_target_loader_can_unlock_all="No" arm_target_loader_can_unlock_range="No" target_reset_script="FLASHReset()"/>
+    <folder Name="Source Files">
+      <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc"/>
+      <folder Name="Demo">
+        <folder Name="Boot" file_name="">
+          <folder Name="lib">
+            <folder Name="fatfs" file_name="">
+              <file file_name="../lib/fatfs/ffconf.h"/>
+              <file file_name="../lib/fatfs/mmc.c"/>
+            </folder>
+            <folder Name="stdperiphlib" file_name="">
+              <file file_name="../lib/stdperiphlib/stm32f4xx_conf.h"/>
+              <file file_name="../lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"/>
+              <file file_name="../lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"/>
+              <file file_name="../lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Source/system_stm32f4xx.c"/>
+              <file file_name="../lib/stdperiphlib/CMSIS/Include/core_cm4.h"/>
+              <file file_name="../lib/stdperiphlib/CMSIS/Include/core_cm4_simd.h"/>
+              <file file_name="../lib/stdperiphlib/CMSIS/Include/core_cmFunc.h"/>
+              <file file_name="../lib/stdperiphlib/CMSIS/Include/core_cmInstr.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/misc.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_can.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_crc.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_cryp.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dac.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dbgmcu.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dcmi.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_exti.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_flash.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fsmc.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_hash.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_iwdg.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_pwr.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rng.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rtc.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_usart.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_wwdg.h"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/misc.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_adc.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_crc.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp_aes.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp_des.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp_tdes.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dac.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dcmi.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_flash.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_fsmc.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_hash.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_hash_md5.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_hash_sha1.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_iwdg.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_syscfg.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c"/>
+              <file file_name="../lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_wwdg.c"/>
+            </folder>
+          </folder>
+          <file file_name="../config.h"/>
+          <file file_name="../hooks.c"/>
+          <file file_name="../main.c"/>
+        </folder>
+      </folder>
+      <folder Name="Source" file_name="">
+        <folder Name="ARMCM4_STM32" file_name="">
+          <folder Name="Crossworks" file_name="">
+            <file file_name="../../../../Source/ARMCM4_STM32/Crossworks/cstart.s"/>
+            <file file_name="../../../../Source/ARMCM4_STM32/Crossworks/vectors.c"/>
+          </folder>
+          <file file_name="../../../../Source/ARMCM4_STM32/cpu.c"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/cpu.h"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/flash.c"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/flash.h"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/nvm.c"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/nvm.h"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/timer.c"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/timer.h"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/types.h"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/uart.c"/>
+          <file file_name="../../../../Source/ARMCM4_STM32/uart.h"/>
+        </folder>
+        <file file_name="../../../../Source/assert.c"/>
+        <file file_name="../../../../Source/assert.h"/>
+        <file file_name="../../../../Source/backdoor.c"/>
+        <file file_name="../../../../Source/backdoor.h"/>
+        <file file_name="../../../../Source/boot.c"/>
+        <file file_name="../../../../Source/boot.h"/>
+        <file file_name="../../../../Source/com.c"/>
+        <file file_name="../../../../Source/com.h"/>
+        <file file_name="../../../../Source/cop.c"/>
+        <file file_name="../../../../Source/cop.h"/>
+        <file file_name="../../../../Source/plausibility.h"/>
+        <file file_name="../../../../Source/xcp.c"/>
+        <file file_name="../../../../Source/xcp.h"/>
+        <folder Name="fatfs" file_name="">
+          <file file_name="../../../../Source/fatfs/src/diskio.h"/>
+          <file file_name="../../../../Source/fatfs/src/ff.c"/>
+          <file file_name="../../../../Source/fatfs/src/ff.h"/>
+          <file file_name="../../../../Source/fatfs/src/integer.h"/>
+          <file file_name="../../../../Source/fatfs/src/option/unicode.c"/>
+        </folder>
+        <file file_name="../../../../Source/file.c"/>
+        <file file_name="../../../../Source/file.h"/>
+      </folder>
+    </folder>
+    <folder Name="System Files" file_name="">
+      <file file_name="$(TargetsDir)/STM32/STM32_Target.js">
+        <configuration Name="Common" file_type="Reset Script"/>
+      </file>
+      <file file_name="../../../../Source/ARMCM4_STM32/Crossworks/memory.x">
+        <configuration Name="Common" file_type="Linker Script"/>
+      </file>
+    </folder>
+    <configuration Name="Debug" c_only_additional_options=""/>
+  </project>
+  <configuration Name="THUMB Debug" inherited_configurations="THUMB;Debug"/>
+  <configuration Name="THUMB" Platform="ARM" arm_instruction_set="THUMB" arm_library_instruction_set="THUMB" c_preprocessor_definitions="__THUMB" hidden="Yes"/>
+  <configuration Name="Debug" build_debug_information="Yes" c_preprocessor_definitions="DEBUG" gcc_optimization_level="None" hidden="Yes" link_include_startup_code="No"/>
+  <configuration Name="THUMB Release" inherited_configurations="THUMB;Release"/>
+  <configuration Name="Release" build_debug_information="No" c_additional_options="-g1" c_preprocessor_definitions="NDEBUG" gcc_optimization_level="Level 1" hidden="Yes" link_include_startup_code="No"/>
+</solution>
