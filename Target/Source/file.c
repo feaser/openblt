@@ -215,6 +215,7 @@ void FileTask(void)
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("OK\n\r");
       FileFirmwareUpdateLogHook("Starting the programming sequence\n\r");
+      FileFirmwareUpdateLogHook("Parsing firmware file to obtain erase size...");
       #endif
       /* prepare data objects for the erasing state */
       eraseInfo.start_address = 0;
@@ -232,7 +233,7 @@ void FileTask(void)
     if (f_error(&fatFsObjects.file) > 0)
     {
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("Reading line from file...ERROR\n\r");
+      FileFirmwareUpdateLogHook("ERROR\n\r");
       #endif
       #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
       FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_READ_FROM_FILE);
@@ -251,7 +252,7 @@ void FileTask(void)
       if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
       {
         #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("Invalid checksum found...ERROR\n\r");
+        FileFirmwareUpdateLogHook("ERROR\n\r");
         #endif
         #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_INVALID_CHECKSUM_IN_FILE);
@@ -290,7 +291,7 @@ void FileTask(void)
       if (f_lseek(&fatFsObjects.file, 0) != FR_OK)
       {
         #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("Failed to rewind file read pointer...ERROR\n\r");
+        FileFirmwareUpdateLogHook("ERROR\n\r");
         #endif
         #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_REWINDING_FILE_READ_POINTER);
@@ -302,6 +303,7 @@ void FileTask(void)
         return;
       }
       #if (BOOT_FILE_LOGGING_ENABLE > 0)
+      FileFirmwareUpdateLogHook("OK\n\r");
       FileFirmwareUpdateLogHook("Erasing ");
       /* convert size to string  */
       FileLibLongToIntString(eraseInfo.total_size, loggingStr);
@@ -449,8 +451,12 @@ void FileTask(void)
       /* inform application about update completed event via hook function */
       FileFirmwareUpdateCompletedHook();
       #endif
-      /* initiate reset */
-      CpuReset();
+      /* attempt to start the user program now that programming is done. note that
+       * a call to CpuReset() won't work correctly here, because if the same firmware
+       * file is still on the locally attached storage, it will just restart the
+       * firmware update again and again..
+       */
+      CpuStartUserProgram();
     }
   }
 } /*** end of FileTask ***/
