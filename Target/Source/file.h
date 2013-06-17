@@ -56,6 +56,7 @@
 void     FileInit(void);
 void     FileTask(void);
 blt_bool FileIsIdle(void);
+blt_bool FileHandleFirmwareUpdateRequest(void);
 
 #endif /* BOOT_FILE_SYS_ENABLE > 0 */
 

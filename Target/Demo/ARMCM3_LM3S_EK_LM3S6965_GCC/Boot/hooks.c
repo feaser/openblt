@@ -233,10 +233,10 @@ static struct
 ** NAME:           FileIsFirmwareUpdateRequestedHook
 ** PARAMETER:      none
 ** RETURN VALUE:   BLT_TRUE if a firmware update is requested, BLT_FALSE otherwise.
-** DESCRIPTION:    Callback that gets called continuously when the bootloader is idle to
-**                 check whether a firmware update from local file storage should be
-**                 started. This could for example be when a switch is pressed, when a 
-**                 certain file is found on the local file storage, etc.
+** DESCRIPTION:    Callback that gets called to check whether a firmware update from 
+**                 local file storage should be started. This could for example be when
+**                 a switch is pressed, when a certain file is found on the local file 
+**                 storage, etc.
 **
 ****************************************************************************************/
 blt_bool FileIsFirmwareUpdateRequestedHook(void)
@@ -340,6 +340,13 @@ void FileFirmwareUpdateCompletedHook(void)
 ****************************************************************************************/
 void FileFirmwareUpdateErrorHook(blt_int8u error_code)
 {
+  #if (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* error detected which stops the firmware update, so close the log file */
+  if (logfile.canUse == BLT_TRUE)
+  {
+    f_close(&logfile.handle);
+  }
+  #endif
 } /*** end of FileFirmwareUpdateErrorHook ***/
 #endif /* BOOT_FILE_ERROR_HOOK_ENABLE > 0 */
 

@@ -54,6 +54,7 @@
 typedef enum 
 { 
   FIRMWARE_UPDATE_STATE_IDLE,                    /* idle state                         */
+  FIRMWARE_UPDATE_STATE_STARTING,                /* starting state                     */
   FIRMWARE_UPDATE_STATE_ERASING,                 /* erasing state                      */
   FIRMWARE_UPDATE_STATE_PROGRAMMING              /* programming state                  */
 } tFirmwareUpdateState;                          /* state identifier type              */
@@ -164,6 +165,43 @@ blt_bool FileIsIdle(void)
 
 
 /****************************************************************************************
+** NAME:           FileHandleFirmwareUpdateRequest
+** PARAMETER:      none
+** RETURN VALUE:   BLT_TRUE when a firmware update is requested, BLT_FALSE otherwise. 
+** DESCRIPTION:    This function checks if a firmware update through the locally attached
+**                 storage is requested to be started and if so processes this request
+**                 by transitioning from the IDLE to the STARTING state.
+**
+****************************************************************************************/
+blt_bool FileHandleFirmwareUpdateRequest(void)
+{
+  #if (BOOT_COM_ENABLE > 0)
+  /* make sure that there is no connection with a remote host to prevent two firmware
+   * updates happening at the same time
+   */
+  if (ComIsConnected() == BLT_TRUE)
+  {
+    return BLT_FALSE;
+  }
+  #endif
+  /* a new firmware update request can only be handled if not already busy with one */
+  if (firmwareUpdateState != FIRMWARE_UPDATE_STATE_IDLE)
+  {
+    return BLT_FALSE;
+  }
+  /* check if a firmware update is requested */
+  if (FileIsFirmwareUpdateRequestedHook() == BLT_TRUE)
+  {
+    /* transition from IDLE to STARTING state, which kicks off the update sequence */
+    firmwareUpdateState = FIRMWARE_UPDATE_STATE_STARTING;
+    return BLT_TRUE;
+  }
+  /* still here so no update request pending */
+  return BLT_FALSE;
+} /*** end of FileHandleFirmwareUpdateRequest ***/
+
+
+/****************************************************************************************
 ** NAME:           FileTask
 ** PARAMETER:      none
 ** RETURN VALUE:   none
@@ -179,50 +217,42 @@ void FileTask(void)
   /* ------------------------------- idle -------------------------------------------- */
   if (firmwareUpdateState == FIRMWARE_UPDATE_STATE_IDLE)
   {
-    #if (BOOT_COM_ENABLE > 0)
-    /* make sure that there is no connection with a remote host to prevent two firmware
-     * updates happening at the same time
-     */
-    if (ComIsConnected() == BLT_TRUE)
+    /* currently, nothings need to be done while idling */
+  }
+  /* ------------------------------- starting ---------------------------------------- */
+  else if (firmwareUpdateState == FIRMWARE_UPDATE_STATE_STARTING)
+  {
+    #if (BOOT_FILE_STARTED_HOOK_ENABLE > 0)
+    /* inform application about update started event via hook function */
+    FileFirmwareUpdateStartedHook();
+    #endif
+    #if (BOOT_FILE_LOGGING_ENABLE > 0)
+    FileFirmwareUpdateLogHook("Firmware update request detected\n\r");
+    FileFirmwareUpdateLogHook("Opening firmware file for reading...");
+    #endif
+    /* attempt to obtain a file object for the firmware file */
+    if (f_open(&fatFsObjects.file, FileGetFirmwareFilenameHook(), FA_OPEN_EXISTING | FA_READ) != FR_OK)
     {
+      /* can't open file */
+      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+      FileFirmwareUpdateLogHook("ERROR\n\r");
+      #endif
+      #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+      FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_OPEN_FIRMWARE_FILE);
+      #endif        
+      /* nothing left to do now */
       return;
     }
+    #if (BOOT_FILE_LOGGING_ENABLE > 0)
+    FileFirmwareUpdateLogHook("OK\n\r");
+    FileFirmwareUpdateLogHook("Starting the programming sequence\n\r");
+    FileFirmwareUpdateLogHook("Parsing firmware file to obtain erase size...");
     #endif
-    /* check if a firmware update is requested */
-    if (FileIsFirmwareUpdateRequestedHook() == BLT_TRUE)
-    {
-      #if (BOOT_FILE_STARTED_HOOK_ENABLE > 0)
-      /* inform application about update started event via hook function */
-      FileFirmwareUpdateStartedHook();
-      #endif
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("Firmware update request detected\n\r");
-      FileFirmwareUpdateLogHook("Opening firmware file for reading...");
-      #endif
-      /* attempt to obtain a file object for the firmware file */
-      if (f_open(&fatFsObjects.file, FileGetFirmwareFilenameHook(), FA_OPEN_EXISTING | FA_READ) != FR_OK)
-      {
-        /* can't open file */
-        #if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("ERROR\n\r");
-        #endif
-        #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
-        FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_OPEN_FIRMWARE_FILE);
-        #endif        
-        /* nothing left to do now */
-        return;
-      }
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("OK\n\r");
-      FileFirmwareUpdateLogHook("Starting the programming sequence\n\r");
-      FileFirmwareUpdateLogHook("Parsing firmware file to obtain erase size...");
-      #endif
-      /* prepare data objects for the erasing state */
-      eraseInfo.start_address = 0;
-      eraseInfo.total_size = 0;
-      /* transition from idle to erasing state */
-      firmwareUpdateState = FIRMWARE_UPDATE_STATE_ERASING;
-    }
+    /* prepare data objects for the erasing state */
+    eraseInfo.start_address = 0;
+    eraseInfo.total_size = 0;
+    /* transition from idle to erasing state */
+    firmwareUpdateState = FIRMWARE_UPDATE_STATE_ERASING;
   }
   /* ------------------------------- erasing ----------------------------------------- */
   else if (firmwareUpdateState == FIRMWARE_UPDATE_STATE_ERASING)

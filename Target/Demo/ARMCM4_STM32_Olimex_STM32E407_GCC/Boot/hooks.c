@@ -229,38 +229,30 @@ static struct
 ** NAME:           FileIsFirmwareUpdateRequestedHook
 ** PARAMETER:      none
 ** RETURN VALUE:   BLT_TRUE if a firmware update is requested, BLT_FALSE otherwise.
-** DESCRIPTION:    Callback that gets called continuously when the bootloader is idle to
-**                 check whether a firmware update from local file storage should be
-**                 started. This could for example be when a switch is pressed, when a 
-**                 certain file is found on the local file storage, etc.
+** DESCRIPTION:    Callback that gets called to check whether a firmware update from 
+**                 local file storage should be started. This could for example be when
+**                 a switch is pressed, when a certain file is found on the local file 
+**                 storage, etc.
 **
 ****************************************************************************************/
 blt_bool FileIsFirmwareUpdateRequestedHook(void)
 {
   FILINFO fileInfoObject = { 0 }; /* needs to be zeroed according to f_stat docs */;
-  static blt_int8u attemptCounter = 1;
 
   /* Current example implementation looks for a predetermined firmware file on the 
-   * SD-card upon startup. If the SD-card is accessible and the firmware file was found 
-   * the firmware update is started. When successfully completed, the firmware file is 
-   * deleted. During the firmware update, progress information is written to a file 
-   * called bootlog.txt and additionally outputted on UART @57600 bps for debugging 
-   * purposes.
+   * SD-card. If the SD-card is accessible and the firmware file was found the firmware
+   * update is started. When successfully completed, the firmware file is deleted.
+   * During the firmware update, progress information is written to a file called
+   * bootlog.txt and additionally outputted on UART @57600 bps for debugging purposes.
    */
-  /* only try to read a file once after startup */
-  if (attemptCounter > 0)
+  /* check if firmware file is present and SD-card is accessible */
+  if (f_stat(firmwareFilename, &fileInfoObject) == FR_OK) 
   {
-    /* decrement counter */
-    attemptCounter--;
-    /* check if firmware file is present and SD-card is accessible */
-    if (f_stat(firmwareFilename, &fileInfoObject) == FR_OK) 
+    /* check if the filesize is valid and that it is not a directory */
+    if ( (fileInfoObject.fsize > 0) && (!(fileInfoObject.fattrib & AM_DIR)) )
     {
-      /* check if the filesize is valid and that it is not a directory */
-      if ( (fileInfoObject.fsize > 0) && (!(fileInfoObject.fattrib & AM_DIR)) )
-      {
-        /* all conditions are met to start a firmware update from local file storage */
-        return BLT_TRUE;
-      }
+      /* all conditions are met to start a firmware update from local file storage */
+      return BLT_TRUE;
     }
   }
   /* still here so no firmware update request is pending */  

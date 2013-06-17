@@ -82,7 +82,19 @@ void BackDoorInit(void)
     /* this function does not return if a valid user program is present */
     CpuStartUserProgram();
   }
-  
+  #if (BOOT_FILE_SYS_ENABLE > 0)
+  else
+  {
+    /* either the backdoor is open and/or a remote update session is about to be started.
+     * only in the first case we should check if a update from locally  attached storage 
+     * is requested */
+    if (ComIsConnectEntryState() == BLT_FALSE)
+    {
+      /* check if a firmware update is requested and, if so, start it */
+      FileHandleFirmwareUpdateRequest();
+    }
+  }
+  #endif
 #else
   /* open the backdoor after a reset */
   backdoorOpen = BLT_TRUE;
@@ -134,8 +146,19 @@ void BackDoorCheck(void)
     {
       /* close the backdoor */
       backdoorOpen = BLT_FALSE;
-      /* this function does not return if a valid user program is present */
-      CpuStartUserProgram();
+      #if (BOOT_FILE_SYS_ENABLE > 0)
+      /* during the timed backdoor no remote update request was detected. now do one
+       * last check to see if a firmware update from locally attached storage is
+       * pending.
+       */
+      if (FileHandleFirmwareUpdateRequest() == BLT_FALSE)
+      #endif
+      {
+        /* no firmware update requests detected, so attempt to start the user program.
+         * this function does not return if a valid user program is present.
+         */
+        CpuStartUserProgram();
+      }
     }
   }
 #endif
