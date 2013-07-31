@@ -7,38 +7,38 @@ start address 0x08000000
 
 Program Header:
     LOAD off    0x00008000 vaddr 0x08000000 paddr 0x08000000 align 2**15
-         filesz 0x00004ec8 memsz 0x00004ec8 flags r-x
-    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08004ec8 align 2**15
-         filesz 0x00000008 memsz 0x00001154 flags rw-
+         filesz 0x00004ebc memsz 0x00004ebc flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08004ebc align 2**15
+         filesz 0x00000008 memsz 0x00001158 flags rw-
 private flags = 5000002: [Version5 EABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00004ec8  08000000  08000000  00008000  2**2
+  0 .text         00004ebc  08000000  08000000  00008000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000008  20000000  08004ec8  00010000  2**2
+  1 .data         00000008  20000000  08004ebc  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000114c  20000008  08004ed0  00010008  2**2
+  2 .bss          00001150  20000008  08004ec4  00010008  2**2
                   ALLOC
   3 .debug_info   0000afe1  00000000  00000000  00010008  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 000023a8  00000000  00000000  0001afe9  2**0
+  4 .debug_abbrev 0000234e  00000000  00000000  0001afe9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_loc    00009472  00000000  00000000  0001d391  2**0
+  5 .debug_loc    00009479  00000000  00000000  0001d337  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 00000988  00000000  00000000  00026803  2**0
+  6 .debug_aranges 00000988  00000000  00000000  000267b0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_ranges 00000aa0  00000000  00000000  0002718b  2**0
+  7 .debug_ranges 00000aa0  00000000  00000000  00027138  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00003624  00000000  00000000  00027c2b  2**0
+  8 .debug_line   00003621  00000000  00000000  00027bd8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000243d  00000000  00000000  0002b24f  2**0
+  9 .debug_str    0000243d  00000000  00000000  0002b1f9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  0002d68c  2**0
+ 10 .comment      00000030  00000000  00000000  0002d636  2**0
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  0002d6bc  2**0
+ 11 .ARM.attributes 00000033  00000000  00000000  0002d666  2**0
                   CONTENTS, READONLY
- 12 .debug_frame  00001828  00000000  00000000  0002d6f0  2**2
+ 12 .debug_frame  00001828  00000000  00000000  0002d69c  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08000000 l    d  .text	00000000 .text
@@ -57,9 +57,9 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 cstart.c
 08000192 l     F .text	00000000 zero_loop2
-08004548 l     F .text	00000000 zero_loop
+0800453c l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 hooks.c
-08004574 l     O .text	00000020 firmwareFilename
+08004568 l     O .text	00000020 firmwareFilename
 20000008 l     O .bss	00000228 logfile
 00000000 l    df *ABS*	00000000 main.c
 00000000 l    df *ABS*	00000000 mmc.c
@@ -102,13 +102,13 @@ SYMBOL TABLE:
 080024b0 l     F .text	00000258 dir_register
 20000234 l     O .bss	00000200 LfnBuf
 20000434 l     O .bss	00000002 Fsid
-080045c0 l     O .text	00000080 ExCvt
-08004640 l     O .text	0000000d LfnOfs
+080045b4 l     O .text	00000080 ExCvt
+08004634 l     O .text	0000000d LfnOfs
 20000438 l     O .bss	00000004 FatFs
 00000000 l    df *ABS*	00000000 unicode.c
-08004650 l     O .text	000001e0 tbl_lower.4261
-08004830 l     O .text	00000100 Tbl
-08004930 l     O .text	000001e0 tbl_upper.4262
+08004644 l     O .text	000001e0 tbl_lower.4261
+08004824 l     O .text	00000100 Tbl
+08004924 l     O .text	000001e0 tbl_upper.4262
 00000000 l    df *ABS*	00000000 boot.c
 00000000 l    df *ABS*	00000000 com.c
 2000043c l     O .bss	00000001 comEntryStateConnect
@@ -116,7 +116,7 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 xcp.c
 08003234 l     F .text	00000010 XcpProtectResources
 08003244 l     F .text	00000018 XcpSetCtoError
-08004b10 l     O .text	00000008 xcpStationId
+08004b04 l     O .text	00000008 xcpStationId
 20000480 l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 backdoor.c
 200004cc l     O .bss	00000001 backdoorOpen
@@ -145,7 +145,7 @@ SYMBOL TABLE:
 20000b49 l     O .bss	00000001 xcpCtoRxLength.4389
 00000000 l    df *ABS*	00000000 nvm.c
 00000000 l    df *ABS*	00000000 timer.c
-20000b4a l     O .bss	00000002 millisecond_counter
+20000b4c l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 flash.c
 0800401c l     F .text	0000001c FlashUnlock
 08004038 l     F .text	00000010 FlashLock
@@ -154,19 +154,19 @@ SYMBOL TABLE:
 0800413c l     F .text	00000038 FlashGetSectorBaseAddr
 08004174 l     F .text	00000030 FlashInitBlock
 080041a4 l     F .text	00000044 FlashSwitchBlock
-080041e8 l     F .text	000000a0 FlashAddToBlock
-08004cfc l     O .text	0000009c flashLayout
-20000b4c l     O .bss	00000204 bootBlockInfo
-20000d50 l     O .bss	00000204 blockInfo
+080041e8 l     F .text	00000092 FlashAddToBlock
+08004cf0 l     O .text	0000009c flashLayout
+20000b50 l     O .bss	00000204 bootBlockInfo
+20000d54 l     O .bss	00000204 blockInfo
 00000000 l    df *ABS*	00000000 ctype_.c
 00000000 l    df *ABS*	00000000 
 00000200 l       *ABS*	00000000 __STACKSIZE__
 080031bc g     F .text	00000034 ComInit
-080042a0 g     F .text	00000054 FlashWrite
+08004294 g     F .text	00000054 FlashWrite
 0800303c g     F .text	0000005e f_gets
 08003d98 g     F .text	00000018 AssertFailure
 08001808 g     F .text	0000010a get_fat
-08004510 g     F .text	0000005c reset_handler
+08004504 g     F .text	0000005c reset_handler
 08003fec g     F .text	00000020 TimerUpdate
 08003288 g     F .text	00000010 XcpPacketTransmitted
 08000f58 g     F .text	00000004 SPI_I2S_SendData
@@ -177,13 +177,13 @@ SYMBOL TABLE:
 08003628 g     F .text	00000020 BackDoorInit
 08000f9c g     F .text	0000000c USART_GetFlagStatus
 0800364c g     F .text	00000002 CopService
-08004ec8 g       .text	00000000 _etext
+08004ebc g       .text	00000000 _etext
 08003158 g     F .text	00000030 ff_wtoupper
 080039cc g     F .text	000003cc FileTask
 08003fb0 g     F .text	00000010 TimerReset
 08000650 g     F .text	00000326 disk_initialize
 080031a4 g     F .text	00000018 BootTask
-08004414 g     F .text	00000050 FlashWriteChecksum
+08004408 g     F .text	00000050 FlashWriteChecksum
 08000f64 g     F .text	00000020 SPI_CalculateCRC
 08000ebc g     F .text	0000001c RCC_APB2PeriphClockCmd
 0800320c g     F .text	0000000e ComTransmitPacket
@@ -198,11 +198,11 @@ SYMBOL TABLE:
 08003278 g     F .text	00000010 XcpIsConnected
 08002f6c g     F .text	000000d0 f_unlink
 08003f7c g     F .text	00000008 NvmInit
-08004288 g     F .text	00000018 FlashInit
-20000f54 g       .bss	00000000 _ebss
+0800427c g     F .text	00000018 FlashInit
+20000f58 g       .bss	00000000 _ebss
 0800309c g     F .text	00000038 f_putc
 080030d4 g     F .text	00000036 f_puts
-080044fc g     F .text	00000014 UnusedISR
+080044f0 g     F .text	00000014 UnusedISR
 08003208 g     F .text	00000002 ComFree
 08000eb4 g     F .text	00000004 GPIO_SetBits
 08003e6c g     F .text	0000002c UartInit
@@ -211,13 +211,13 @@ SYMBOL TABLE:
 08002d4c g     F .text	00000016 f_close
 08003298 g     F .text	0000034c XcpPacketReceived
 080028d4 g     F .text	000001c4 f_read
-080044bc g     F .text	00000040 FlashDone
+080044b0 g     F .text	00000040 FlashDone
 08000150 g     F .text	00000068 EntryFromProg
 08000eb8 g     F .text	00000004 GPIO_ResetBits
 08000df8 g     F .text	00000008 get_fattime
 0800325c g     F .text	0000001c XcpInit
 08003958 g     F .text	0000002c FileInit
-080042f4 g     F .text	00000120 FlashErase
+080042e8 g     F .text	00000120 FlashErase
 08000280 g     F .text	00000018 FileFirmwareUpdateErrorHook
 080002ec g     F .text	0000013c main
 08002c98 g     F .text	000000b4 f_sync
@@ -238,9 +238,9 @@ SYMBOL TABLE:
 08003f84 g     F .text	00000008 NvmWrite
 08003db0 g     F .text	00000028 CpuStartUserProgram
 080017e8 g     F .text	0000001e clust2sect
-20001154 g       .bss	00000000 _estack
+20001158 g       .bss	00000000 _estack
 08000f90 g     F .text	0000000c USART_SendData
-08004464 g     F .text	00000058 FlashVerifyChecksum
+08004458 g     F .text	00000058 FlashVerifyChecksum
 20000008 g       .data	00000000 _edata
 08003984 g     F .text	00000014 FileIsIdle
 08002a98 g     F .text	00000200 f_write
@@ -250,11 +250,11 @@ SYMBOL TABLE:
 08000298 g     F .text	00000054 FileFirmwareUpdateLogHook
 20000004 g     O .data	00000004 __ctype_ptr__
 0800322c g     F .text	00000008 ComIsConnected
-08004dc4 g     O .text	00000101 _ctype_
+08004db8 g     O .text	00000101 _ctype_
 080001cc g     F .text	00000048 FileIsFirmwareUpdateRequestedHook
 0800098c g     F .text	000000a4 disk_read
 080035e4 g     F .text	00000044 BackDoorCheck
-20000f54 g       .bss	00000000 _stack
+20000f58 g       .bss	00000000 _stack
 08000ef4 g     F .text	00000044 SPI_Init
 0800310c g     F .text	0000004c ff_convert
 0800400c g     F .text	00000010 TimerGet

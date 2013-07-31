@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: IRQ driver source file
-|    File Name: irq.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_GCC\Prog\irq.c
+* \brief        IRQ driver source file.
+* \ingroup      Prog_ARM7_LPC2000_Olimex_LPC_L2294_GCC
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -38,17 +40,17 @@
 /****************************************************************************************
 * Local data definitions
 ****************************************************************************************/
-static unsigned long oldInterruptStatus;       /* used for global interrupt en/disable */
-static unsigned char interruptNesting = 0;     /* used for global interrupt en/disable */
+/** \brief Interrupt status before disabling. Used for global interrupt en/disable. */
+static unsigned long oldInterruptStatus;
+/** \brief Interrupt nesting counter. Used for global interrupt en/disable. */
+static unsigned char interruptNesting = 0;
 
 
-/****************************************************************************************
-** NAME:           IrqGetCPSR
-** PARAMETER:      none
-** RETURN VALUE:   CPSR value
-** DESCRIPTION:    Obtains current value of CPSR CPU register.
-** NOTE:           Derived from a sample by R O Software that is Copyright 2004,
-**                 R O SoftWare, and can be used for hobby or commercial purposes.
+/************************************************************************************//**
+** \brief     Obtains current value of CPSR CPU register. Derived from a sample by R O 
+**            Software that is Copyright 2004, R O SoftWare, and can be used for hobby 
+**            or commercial purposes.
+** \return    CPSR value.
 **
 ****************************************************************************************/
 static unsigned long IrqGetCPSR(void)
@@ -59,13 +61,12 @@ static unsigned long IrqGetCPSR(void)
 } /*** end of IrqGetCPSR ***/
 
 
-/****************************************************************************************
-** NAME:           IrqSetCPSR
-** PARAMETER:      CPSR value
-** RETURN VALUE:   none
-** DESCRIPTION:    Update value of CPSR CPU register.
-** NOTE:           Derived from a sample by R O Software that is Copyright 2004,
-**                 R O SoftWare, and can be used for hobby or commercial purposes.
+/************************************************************************************//**
+** \brief     Update value of CPSR CPU register. Derived from a sample by R O 
+**            Software that is Copyright 2004, R O SoftWare, and can be used for hobby 
+**            or commercial purposes.
+** \param     val CPSR value.
+** \return    none.
 **
 ****************************************************************************************/
 static void IrqSetCPSR(unsigned long val)
@@ -74,12 +75,10 @@ static void IrqSetCPSR(unsigned long val)
 } /*** end of IrqSetCPSR ***/
 
 
-/****************************************************************************************
-** NAME:           IrqInterruptEnable
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Enables the generation IRQ interrupts. Typically called once during
-**                 software startup after completion of the initialization.
+/************************************************************************************//**
+** \brief     Enables the generation IRQ interrupts. Typically called once during
+**            software startup after completion of the initialization.
+** \return    none.
 **
 ****************************************************************************************/
 void IrqInterruptEnable(void)
@@ -91,14 +90,12 @@ void IrqInterruptEnable(void)
 } /*** end of IrqInterruptEnable ***/
 
 
-/****************************************************************************************
-** NAME:           HwInterruptDisable
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Disables the generation IRQ interrupts and stores information on
-**                 whether or not the interrupts were already disabled before explicitly
-**                 disabling them with this function. Normally used as a pair together
-**                 with IrqInterruptRestore during a critical section.
+/************************************************************************************//**
+** \brief     Disables the generation IRQ interrupts and stores information on
+**            whether or not the interrupts were already disabled before explicitly
+**            disabling them with this function. Normally used as a pair together
+**            with IrqInterruptRestore during a critical section.
+** \return    none.
 **
 ****************************************************************************************/
 void IrqInterruptDisable(void)
@@ -115,13 +112,11 @@ void IrqInterruptDisable(void)
 } /*** end of IrqInterruptDisable ***/
 
 
-/****************************************************************************************
-** NAME:           IrqInterruptRestore
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Restore the generation IRQ interrupts to the setting it had prior to
-**                 calling IrqInterruptDisable. Normally used as a pair together with
-**                 IrqInterruptDisable during a critical section.
+/************************************************************************************//**
+** \brief     Restore the generation IRQ interrupts to the setting it had prior to
+**            calling IrqInterruptDisable. Normally used as a pair together with
+**            IrqInterruptDisable during a critical section.
+** \return    none.
 **
 ****************************************************************************************/
 void IrqInterruptRestore(void)

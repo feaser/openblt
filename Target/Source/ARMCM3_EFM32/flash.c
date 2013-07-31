@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader flash driver source file
-|    File Name: flash.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Source\ARMCM3_EFM32\flash.c
+* \brief        Bootloader flash driver source file.
+* \ingroup      Target_ARMCM3_EFM32
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -39,29 +41,35 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Value for an invalid flash sector. */
 #define FLASH_INVALID_SECTOR            (0xff)
+/** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
+/** \brief Standard size of a flash block for writing. */
 #define FLASH_WRITE_BLOCK_SIZE          (512)
+/** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
+/** \brief Offset into the user program's vector table where the checksum is located. */
 #define FLASH_VECTOR_TABLE_CS_OFFSET    (0x0B8)
 
 
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/* flash sector descriptor type */
+/** \brief Flash sector descriptor type. */
 typedef struct 
 {
-  blt_addr   sector_start;                       /* sector start address               */
-  blt_int32u sector_size;                        /* sector size in bytes               */
-  blt_int8u  sector_num;                         /* sector number                      */
-} tFlashSector;                                  /* flash sector description           */
+  blt_addr   sector_start;                       /**< sector start address             */
+  blt_int32u sector_size;                        /**< sector size in bytes             */
+  blt_int8u  sector_num;                         /**< sector number                    */
+} tFlashSector;
 
-/* programming is done per block of max FLASH_WRITE_BLOCK_SIZE. for this a flash block
- * manager is implemented in this driver. this flash block manager depends on this
- * flash block info structure. It holds the base address of the flash block and the
- * data that should be programmed into the flash block. The .base_addr must be a multiple 
- * of FLASH_WRITE_BLOCK_SIZE.
+/** \brief    Structure type for grouping flash block information.
+ *  \details  Programming is done per block of max FLASH_WRITE_BLOCK_SIZE. for this a 
+ *            flash block manager is implemented in this driver. this flash block manager
+ *            depends on this flash block info structure. It holds the base address of 
+ *            the flash block and the data that should be programmed into the flash 
+ *            block. The .base_addr must be a multiple of FLASH_WRITE_BLOCK_SIZE.
  */
 typedef struct
 {
@@ -76,7 +84,7 @@ typedef struct
 static blt_bool   FlashInitBlock(tFlashBlockInfo *block, blt_addr address);
 static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_addr);
 static blt_bool   FlashAddToBlock(tFlashBlockInfo *block, blt_addr address, 
-                                  blt_int8u *data, blt_int16u len);
+                                  blt_int8u *data, blt_int32u len);
 static blt_bool   FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool   FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
 static blt_int8u  FlashGetSector(blt_addr address);
@@ -88,10 +96,15 @@ static blt_int32u FlashCalcPageSize(void);
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
-/* The current flash layout does not reflect the minimum sector size of the physical
- * flash (1 - 2kb), because this would make the table quit long and a waste of ROM. The
- * minimum sector size is only really needed when erasing the flash. This can still be
- * done in combination with macro FLASH_ERASE_BLOCK_SIZE.
+/** \brief   Array wit the layout of the flash memory.
+ *  \details Also controls what part of the flash memory is reserved for the bootloader. 
+ *           If the bootloader size changes, the reserved sectors for the bootloader 
+ *           might need adjustment to make sure the bootloader doesn't get overwritten.
+ *           The current flash layout does not reflect the minimum sector size of the
+ *           physical flash (1 - 2kb), because this would make the table quit long and
+ *           a waste of ROM. The minimum sector size is only really needed when erasing
+ *           the flash. This can still be done in combination with macro 
+ *           FLASH_ERASE_BLOCK_SIZE.
  */
 static const tFlashSector flashLayout[] =
 {
@@ -140,38 +153,41 @@ static const tFlashSector flashLayout[] =
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
-/* The smallest amount of flash that can be programmed is FLASH_WRITE_BLOCK_SIZE. A flash
- * block manager is implemented in this driver and stores info in this variable. Whenever
- * new data should be flashed, it is first added to a RAM buffer, which is part of this
- * variable. Whenever the RAM buffer, which has the size of a flash block, is full or 
- * data needs to be written to a different block, the contents of the RAM buffer are 
- * programmed to flash. The flash block manager requires some software overhead, yet
- * results is faster flash programming because data is first harvested, ideally until
- * there is enough to program an entire flash block, before the flash device is actually
- * operated on.
+/** \brief   Local variable with information about the flash block that is currently
+ *           being operated on.
+ *  \details The smallest amount of flash that can be programmed is 
+ *           FLASH_WRITE_BLOCK_SIZE. A flash block manager is implemented in this driver
+ *           and stores info in this variable. Whenever new data should be flashed, it
+ *           is first added to a RAM buffer, which is part of this variable. Whenever
+ *           the RAM buffer, which has the size of a flash block, is full or  data needs
+ *           to be written to a different block, the contents of the RAM buffer are 
+ *           programmed to flash. The flash block manager requires some software 
+ *           overhead, yet results is faster flash programming because data is first 
+ *           harvested, ideally until there is enough to program an entire flash block, 
+ *           before the flash device is actually operated on.
  */
 static tFlashBlockInfo blockInfo;
 
-/* The first block of the user program holds the vector table, which on the STM32 is
- * also the where the checksum is written to. Is it likely that the vector table is
- * first flashed and then, at the end of the programming sequence, the checksum. This
- * means that this flash block need to be written to twice. Normally this is not a 
- * problem with flash memory, as long as you write the same values to those bytes that
- * are not supposed to be changed and the locations where you do write to are still in
- * the erased 0xFF state. Unfortunately, writing twice to flash this way, does not work
- * reliably on all micros. This is why we need to have an extra block, the bootblock,
- * placed under the management of the block manager. This way is it possible to implement
- * functionality so that the bootblock is only written to once at the end of the 
- * programming sequency.
+/** \brief   Local variable with information about the flash boot block.
+ *  \details The first block of the user program holds the vector table, which on the 
+ *           STM32 is also the where the checksum is written to. Is it likely that 
+ *           the vector table is first flashed and then, at the end of the programming
+ *           sequence, the checksum. This means that this flash block need to be written
+ *           to twice. Normally this is not a problem with flash memory, as long as you
+ *           write the same values to those bytes that are not supposed to be changed 
+ *           and the locations where you do write to are still in the erased 0xFF state.
+ *           Unfortunately, writing twice to flash this way, does not work reliably on 
+ *           all micros. This is why we need to have an extra block, the bootblock,
+ *           placed under the management of the block manager. This way is it possible 
+ *           to implement functionality so that the bootblock is only written to once
+ *           at the end of the programming sequence.
  */
 static tFlashBlockInfo bootBlockInfo;
 
 
-/****************************************************************************************
-** NAME:           FlashInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the flash driver. 
+/************************************************************************************//**
+** \brief     Initializes the flash driver. 
+** \return    none.
 **
 ****************************************************************************************/
 void FlashInit(void)
@@ -184,15 +200,14 @@ void FlashInit(void)
 } /*** end of FlashInit ***/
 
 
-/****************************************************************************************
-** NAME:           FlashWrite
-** PARAMETER:      addr start address
-**                 len  length in bytes
-**                 data pointer to the data buffer.
-** RETURN VALUE:   BLT_TRUE if successful, BLT_FALSE otherwise. 
-** DESCRIPTION:    Writes the data to flash through a flash block manager. Note that this
-**                 function also checks that no data is programmed outside the flash 
-**                 memory region, so the bootloader can never be overwritten.
+/************************************************************************************//**
+** \brief     Writes the data to flash through a flash block manager. Note that this
+**            function also checks that no data is programmed outside the flash 
+**            memory region, so the bootloader can never be overwritten.
+** \param     addr Start address.
+** \param     len  Length in bytes.
+** \param     data Pointer to the data buffer.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
 **
 ****************************************************************************************/
 blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
@@ -218,14 +233,13 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 } /*** end of FlashWrite ***/
 
 
-/****************************************************************************************
-** NAME:           FlashErase
-** PARAMETER:      addr start address
-**                 len  length in bytes
-** RETURN VALUE:   BLT_TRUE if successful, BLT_FALSE otherwise.
-** DESCRIPTION:    Erases the flash memory. Note that this function also checks that no 
-**                 data is erased outside the flash memory region, so the bootloader can 
-**                 never be erased.
+/************************************************************************************//**
+** \brief     Erases the flash memory. Note that this function also checks that no 
+**            data is erased outside the flash memory region, so the bootloader can 
+**            never be erased.
+** \param     addr Start address.
+** \param     len  Length in bytes.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
 **
 ****************************************************************************************/
 blt_bool FlashErase(blt_addr addr, blt_int32u len)
@@ -246,15 +260,13 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
 } /*** end of FlashErase ***/
 
 
-/****************************************************************************************
-** NAME:           FlashWriteChecksum
-** PARAMETER:      none
-** RETURN VALUE:   BLT_TRUE is successful, BTL_FALSE otherwise.
-** DESCRIPTION:    Writes a checksum of the user program to non-volatile memory. This is
-**                 performed once the entire user program has been programmed. Through
-**                 the checksum, the bootloader can check if the programming session
-**                 was completed, which indicates that a valid user programming is
-**                 present and can be started.
+/************************************************************************************//**
+** \brief     Writes a checksum of the user program to non-volatile memory. This is
+**            performed once the entire user program has been programmed. Through
+**            the checksum, the bootloader can check if the programming session
+**            was completed, which indicates that a valid user programming is
+**            present and can be started.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
 **
 ****************************************************************************************/
 blt_bool FlashWriteChecksum(void)
@@ -309,12 +321,10 @@ blt_bool FlashWriteChecksum(void)
 } /*** end of FlashWriteChecksum ***/
 
 
-/****************************************************************************************
-** NAME:           FlashVerifyChecksum
-** PARAMETER:      none
-** RETURN VALUE:   BLT_TRUE is successful, BTL_FALSE otherwise.
-** DESCRIPTION:    Verifies the checksum, which indicates that a valid user program is
-**                 present and can be started.
+/************************************************************************************//**
+** \brief     Verifies the checksum, which indicates that a valid user program is
+**            present and can be started.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
 **
 ****************************************************************************************/
 blt_bool FlashVerifyChecksum(void)
@@ -341,12 +351,10 @@ blt_bool FlashVerifyChecksum(void)
 } /*** end of FlashVerifyChecksum ***/
 
 
-/****************************************************************************************
-** NAME:           FlashDone
-** PARAMETER:      none
-** RETURN VALUE:   BLT_TRUE is succesful, BLT_FALSE otherwise.
-** DESCRIPTION:    Finilizes the flash driver operations. There could still be data in
-**                 the currently active block that needs to be flashed.
+/************************************************************************************//**
+** \brief     Finalizes the flash driver operations. There could still be data in
+**            the currently active block that needs to be flashed.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
 **
 ****************************************************************************************/
 blt_bool FlashDone(void)
@@ -375,13 +383,12 @@ blt_bool FlashDone(void)
 } /*** end of FlashDone ***/
 
 
-/****************************************************************************************
-** NAME:           FlashInitBlock
-** PARAMETER:      block   pointer to flash block info structure to operate on.
-**                 address base address of the block data.
-** RETURN VALUE:   BLT_TRUE is succesful, BLT_FALSE otherwise.
-** DESCRIPTION:    Copies data currently in flash to the block->data and sets the 
-**                 base address.
+/************************************************************************************//**
+** \brief     Copies data currently in flash to the block->data and sets the 
+**            base address.
+** \param     block   Pointer to flash block info structure to operate on.
+** \param     address Base address of the block data.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
 **
 ****************************************************************************************/
 static blt_bool FlashInitBlock(tFlashBlockInfo *block, blt_addr address)
@@ -404,14 +411,13 @@ static blt_bool FlashInitBlock(tFlashBlockInfo *block, blt_addr address)
 } /*** end of FlashInitBlock ***/
 
 
-/****************************************************************************************
-** NAME:           FlashSwitchBlock
-** PARAMETER:      block     pointer to flash block info structure to operate on.
-**                 base_addr base address for the next block
-** RETURN VALUE:   the pointer of the block info struct that is no being used, or a NULL
-**                 pointer in case of error.
-** DESCRIPTION:    Switches blocks by programming the current one and initializing the
-**                 next.
+/************************************************************************************//**
+** \brief     Switches blocks by programming the current one and initializing the
+**            next.
+** \param     block   Pointer to flash block info structure to operate on.
+** \param     base_addr Base address of the next block.
+** \return    The pointer of the block info struct that is no being used, or a NULL
+**            pointer in case of error.
 **
 ****************************************************************************************/
 static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_addr)
@@ -454,21 +460,20 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
 } /*** end of FlashSwitchBlock ***/
 
 
-/****************************************************************************************
-** NAME:           FlashAddToBlock
-** PARAMETER:      block   pointer to flash block info structure to operate on.
-**                 address flash destination address
-**                 data    pointer to the byte array with data
-**                 len     number of bytes to add to the block
-** RETURN VALUE:   BLT_TRUE if successful, BLT_FALSE otherwise.
-** DESCRIPTION:    Programming is done per block. This function adds data to the block
-**                 that is currently collecting data to be written to flash. If the
-**                 address is outside of the current block, the current block is written
-**                 to flash an a new block is initialized.
+/************************************************************************************//**
+** \brief     Programming is done per block. This function adds data to the block
+**            that is currently collecting data to be written to flash. If the
+**            address is outside of the current block, the current block is written
+**            to flash an a new block is initialized.
+** \param     block   Pointer to flash block info structure to operate on.
+** \param     address Flash destination address.
+** \param     data    Pointer to the byte array with data.
+** \param     len     Number of bytes to add to the block.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address, 
-                                blt_int8u *data, blt_int16u len)
+                                blt_int8u *data, blt_int32u len)
 {
   blt_addr   current_base_addr;
   blt_int8u  *dst;
@@ -531,12 +536,11 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 } /*** end of FlashAddToBlock ***/
 
 
-/****************************************************************************************
-** NAME:           FlashWriteBlock
-** PARAMETER:      block pointer to flash block info structure to operate on.
-** RETURN VALUE:   BLT_TRUE if successful, BLT_FALSE otherwise.
-** DESCRIPTION:    Programs FLASH_WRITE_BLOCK_SIZE bytes to flash from the block->data
-**                 array. 
+/************************************************************************************//**
+** \brief     Programs FLASH_WRITE_BLOCK_SIZE bytes to flash from the block->data
+**            array.
+** \param     block   Pointer to flash block info structure to operate on.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
@@ -580,12 +584,10 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 } /*** end of FlashWriteBlock ***/
 
 
-/****************************************************************************************
-** NAME:           FlashCalcPageSize
-** PARAMETER:      none
-** RETURN VALUE:   The flash page size
-** DESCRIPTION:    Determines the flash page size for the specific EFM32 derivative. This
-**                 is the minimum erase size.
+/************************************************************************************//**
+** \brief     Determines the flash page size for the specific EFM32 derivative. This
+**            is the minimum erase size.
+** \return    The flash page size.
 **
 ****************************************************************************************/
 static blt_int32u FlashCalcPageSize(void)
@@ -610,12 +612,11 @@ static blt_int32u FlashCalcPageSize(void)
 } /*** end of FlashCalcPageSize ***/
 
 
-/****************************************************************************************
-** NAME:           FlashEraseSectors
-** PARAMETER:      first_sector first flash sector number
-**                 last_sector  last flash sector number
-** RETURN VALUE:   BLT_TRUE if successful, BLT_FALSE otherwise.
-** DESCRIPTION:    Erases the flash sectors from first_sector up until last_sector
+/************************************************************************************//**
+** \brief     Erases the flash sectors from first_sector up until last_sector.
+** \param     first_sector First flash sector number.
+** \param     last_sector  Last flash sector number.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
@@ -660,11 +661,10 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 } /*** end of FlashEraseSectors ***/
 
 
-/****************************************************************************************
-** NAME:           FlashGetSector
-** PARAMETER:      address address in the flash sector
-** RETURN VALUE:   flash sector number or FLASH_INVALID_SECTOR
-** DESCRIPTION:    Determines the flash sector the address is in.
+/************************************************************************************//**
+** \brief     Determines the flash sector the address is in.
+** \param     address Address in the flash sector.
+** \return    Flash sector number or FLASH_INVALID_SECTOR.
 **
 ****************************************************************************************/
 static blt_int8u FlashGetSector(blt_addr address)
@@ -690,11 +690,10 @@ static blt_int8u FlashGetSector(blt_addr address)
 } /*** end of FlashGetSector ***/
 
 
-/****************************************************************************************
-** NAME:           FlashGetSectorBaseAddr
-** PARAMETER:      sector sector to get the base address of.
-** RETURN VALUE:   flash sector base address or FLASH_INVALID_ADDRESS
-** DESCRIPTION:    Determines the flash sector base address.
+/************************************************************************************//**
+** \brief     Determines the flash sector base address.
+** \param     sector Sector to get the base address of.
+** \return    Flash sector base address or FLASH_INVALID_ADDRESS.
 **
 ****************************************************************************************/
 static blt_addr FlashGetSectorBaseAddr(blt_int8u sector)
@@ -716,11 +715,10 @@ static blt_addr FlashGetSectorBaseAddr(blt_int8u sector)
 } /*** end of FlashGetSectorBaseAddr ***/
 
 
-/****************************************************************************************
-** NAME:           FlashGetSectorSize
-** PARAMETER:      sector sector to get the size of.
-** RETURN VALUE:   flash sector size or 0
-** DESCRIPTION:    Determines the flash sector size.
+/************************************************************************************//**
+** \brief     Determines the flash sector size.
+** \param     sector Sector to get the size of.
+** \return    Flash sector size or 0.
 **
 ****************************************************************************************/
 static blt_addr FlashGetSectorSize(blt_int8u sector)

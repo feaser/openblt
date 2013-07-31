@@ -1,33 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader USB device descriptor source file
-|    File Name: usb_desc.c
-|        Notes: based on an example from STMicroelectronics
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARMCM3_STM32_Olimex_STM32H103_IAR\Boot\usb_desc.c
+* \brief        Bootloader USB device descriptor source file.
+* \ingroup      Boot_ARMCM3_STM32_Olimex_STM32H103_IAR
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -40,7 +41,7 @@
 /****************************************************************************************
 * Constant data declarations
 ****************************************************************************************/
-/* USB Device Descriptor */
+/** \brief USB device descriptor. */
 const uint8_t Bulk_DeviceDescriptor[] =
   {
     0x12,   /* bLength */
@@ -63,7 +64,7 @@ const uint8_t Bulk_DeviceDescriptor[] =
     0x01    /* bNumConfigurations */
   };
 
-/* USB Configuration Descriptor */
+/** \brief USB configuration descriptor. */
 const uint8_t Bulk_ConfigDescriptor[] =
   {
     /*Configuration Descriptor*/
@@ -104,7 +105,7 @@ const uint8_t Bulk_ConfigDescriptor[] =
     0x00   /* bInterval: ignore for Bulk transfer */
   };
 
-/* USB String Descriptors */
+/** \brief USB string descriptors. */
 const uint8_t Bulk_StringLangID[BULK_SIZ_STRING_LANGID] =
   {
     BULK_SIZ_STRING_LANGID,
@@ -113,6 +114,7 @@ const uint8_t Bulk_StringLangID[BULK_SIZ_STRING_LANGID] =
     0x04 /* LangID = 0x0409: U.S. English */
   };
 
+/** \brief Vendor string. */
 const uint8_t Bulk_StringVendor[BULK_SIZ_STRING_VENDOR] =
   {
     BULK_SIZ_STRING_VENDOR,     /* Size of Vendor string */
@@ -122,6 +124,7 @@ const uint8_t Bulk_StringVendor[BULK_SIZ_STRING_VENDOR] =
     ' ', 0, 'U', 0, 's', 0, 'e', 0, 'r', 0
   };
 
+/** \brief Product string. */
 const uint8_t Bulk_StringProduct[BULK_SIZ_STRING_PRODUCT] =
   {
     BULK_SIZ_STRING_PRODUCT,          /* bLength */
@@ -132,6 +135,7 @@ const uint8_t Bulk_StringProduct[BULK_SIZ_STRING_PRODUCT] =
     'D', 0, 'e', 0, 'v', 0, 'i', 0, 'c', 0, 'e', 0
   };
 
+/** \brief Serial number string. */
 uint8_t Bulk_StringSerial[BULK_SIZ_STRING_SERIAL] =
   {
     BULK_SIZ_STRING_SERIAL,           /* bLength */
@@ -141,6 +145,7 @@ uint8_t Bulk_StringSerial[BULK_SIZ_STRING_SERIAL] =
      '8', 0, '9', 0, '0', 0
   };
 
+/** \brief Interface string. */
 const uint8_t Bulk_StringInterface[BULK_SIZ_STRING_INTERFACE] =
   {
     BULK_SIZ_STRING_INTERFACE,

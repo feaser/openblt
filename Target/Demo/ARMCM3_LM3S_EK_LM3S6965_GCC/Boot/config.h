@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader configuration header file
-|    File Name: config.h
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_GCC\Boot\config.h
+* \brief        Bootloader configuration header file.
+* \ingroup      Boot_ARMCM3_LM3S_EK_LM3S6965_GCC
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -46,9 +48,13 @@
  * called the moment the user program is about to be started. This could be used to
  * de-initialize application specific parts, for example to stop blinking an LED, etc.
  */ 
+/** \brief Frequency of the external crystal oscillator. */
 #define BOOT_CPU_XTAL_SPEED_KHZ         (8000)
+/** \brief Desired system speed. */
 #define BOOT_CPU_SYSTEM_SPEED_KHZ       (50000)
+/** \brief Motorola or Intel style byte ordering. */
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
+/** \brief Enable/disable hook function call right before user program start. */
 #define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
 
 
@@ -63,10 +69,15 @@
  * on board. The zero-based BOOT_COM_UART_CHANNEL_INDEX selects the UART interface.
  * 
  */
+/** \brief Enable/disable UART transport layer. */
 #define BOOT_COM_UART_ENABLE            (1)
+/** \brief Configure the desired communication speed. */
 #define BOOT_COM_UART_BAUDRATE          (57600)
+/** \brief Configure number of bytes in the target->host data packet. */
 #define BOOT_COM_UART_TX_MAX_DATA       (64)
+/** \brief Configure number of bytes in the host->target data packet. */
 #define BOOT_COM_UART_RX_MAX_DATA       (64)
+/** \brief Select the desired UART peripheral as a zero based index. */
 #define BOOT_COM_UART_CHANNEL_INDEX     (0)
 
 
@@ -94,10 +105,15 @@
  * Set BOOT_FILE_COMPLETED_HOOK_ENABLE to 1 if you would like to be informed when a
  * firmware update is completed by the bootloader. 
  */
+/** \brief Enable/disable support for firmware updates from a locally attached storage.*/
 #define BOOT_FILE_SYS_ENABLE            (1)
+/** \brief Enable/disable logging messages during firmware updates. */
 #define BOOT_FILE_LOGGING_ENABLE        (1)
+/** \brief Enable/disable a hook function that is called upon detection of an error. */
 #define BOOT_FILE_ERROR_HOOK_ENABLE     (1)   
+/** \brief Enable/disable a hook function that is called at the start of the update. */
 #define BOOT_FILE_STARTED_HOOK_ENABLE   (1)   
+/** \brief Enable/disable a hook function that is called at the end of the update. */
 #define BOOT_FILE_COMPLETED_HOOK_ENABLE (1)   
 
    
@@ -112,6 +128,7 @@
  * into the bootloader. When desired for security purposes, these hook functions can
  * also be implemented in a way that disables the backdoor entry altogether.
  */
+/** \brief Enable/disable the backdoor override hook functions. */
 #define BOOT_BACKDOOR_HOOKS_ENABLE      (0)
 
 
@@ -124,7 +141,9 @@
  * eeproms. The size of the internal memory in kilobytes is specified with configurable
  * BOOT_NVM_SIZE_KB.
  */
+/** \brief Enable/disable the NVM hook function for supporting additional memory devices. */
 #define BOOT_NVM_HOOKS_ENABLE           (0)
+/** \brief Configure the size of the default memory device (typically flash EEPROM). */
 #define BOOT_NVM_SIZE_KB                (256)
 
 
@@ -137,6 +156,7 @@
  * set BOOT_COP_HOOKS_ENABLE to be able to initialize and service the watchdog through
  * hook functions.
  */
+/** \brief Enable/disable the hook functions for controlling the watchdog. */
 #define BOOT_COP_HOOKS_ENABLE           (0)
 
 

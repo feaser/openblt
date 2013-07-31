@@ -1,33 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader USB device interrupt/event handler source file
-|    File Name: usb_istr.c
-|        Notes: based on an example from STMicroelectronics
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARMCM3_STM32_Olimex_STM32H103_IAR\Boot\usb_istr.c
+* \brief        Bootloader USB device interrupt/event handler source file.
+* \ingroup      Boot_ARMCM3_STM32_Olimex_STM32H103_IAR
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 
@@ -43,11 +44,11 @@
 /****************************************************************************************
 * Global data declarations
 ****************************************************************************************/
-/* ISTR register last read value */
+/** \brief ISTR register last read value. */
 volatile uint16_t wIstr;  
-/* SOFs received between 2 consecutive packets */
+/** \brief SOFs received between 2 consecutive packets. */
 volatile uint8_t bIntPackSOF = 0; 
-/* function pointers to non-control endpoints service routines */
+/** \brief Function pointers to non-control IN endpoints service routines. */
 void (*pEpInt_IN[7])(void) =
   {
     EP1_IN_Callback,
@@ -59,6 +60,7 @@ void (*pEpInt_IN[7])(void) =
     EP7_IN_Callback,
   };
 
+/** \brief Function pointers to non-control OUT endpoints service routines. */
 void (*pEpInt_OUT[7])(void) =
   {
     EP1_OUT_Callback,
@@ -71,13 +73,11 @@ void (*pEpInt_OUT[7])(void) =
   };
 
 
-/****************************************************************************************
-** NAME:           USB_Istr
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    USB interrupt service routine to process USB related event. Note that
-**                 this function can also be called by the software program to operate
-**                 the USB functionality in a polling way.
+/************************************************************************************//**
+** \brief     USB interrupt service routine to process USB related event. Note that
+**            this function can also be called by the software program to operate
+**            the USB functionality in a polling way.
+** \return    none.
 **
 ****************************************************************************************/
 void USB_Istr(void)

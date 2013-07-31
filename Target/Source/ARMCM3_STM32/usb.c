@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader USB communication interface source file
-|    File Name: usb.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Source\ARMCM3_STM32\usb.c
+* \brief        Bootloader USB communication interface source file.
+* \ingroup      Target_ARMCM3_STM32
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -43,31 +45,36 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Total number of fifo buffers. */
 #define FIFO_MAX_BUFFERS         (2)
+/** \brief Invalid value for a fifo buffer handle. */
 #define FIFO_ERR_INVALID_HANDLE  (255)
+/** \brief Number of bytes that fit in the fifo pipe. */
 #define FIFO_PIPE_SIZE           (64)
 
 
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
+/** \brief Structure type for fifo control. */
 typedef struct t_fifo_ctrl
 {
-  blt_int8u          *startptr;                      /* pointer to start of buffer     */
-  blt_int8u          *endptr;                        /* pointer to end of buffer       */
-  blt_int8u          *readptr;                       /* pointer to next read location  */
-  blt_int8u          *writeptr;                      /* pointer to next free location  */
-  blt_int8u           length;                        /* number of buffer elements      */
-  blt_int8u           entries;                       /* # of full buffer elements      */
-  blt_int8u           handle;                        /* handle of the buffer           */ 
-  struct t_fifo_ctrl *fifoctrlptr;                   /* pointer to free buffer control */
+  blt_int8u          *startptr;                    /**< pointer to start of buffer     */
+  blt_int8u          *endptr;                      /**< pointer to end of buffer       */
+  blt_int8u          *readptr;                     /**< pointer to next read location  */
+  blt_int8u          *writeptr;                    /**< pointer to next free location  */
+  blt_int8u           length;                      /**< number of buffer elements      */
+  blt_int8u           entries;                     /**< # of full buffer elements      */
+  blt_int8u           handle;                      /**< handle of the buffer           */ 
+  struct t_fifo_ctrl *fifoctrlptr;                 /**< pointer to free buffer control */
 } tFifoCtrl;
 
+/** \brief Structure type for a fifo pipe. */
 typedef struct
 {
-  blt_int8u handle;                                  /* fifo handle                    */
-  blt_int8u data[FIFO_PIPE_SIZE];                    /* fifo data buffer               */
-} tFifoPipe;                                         /* USB pipe fifo type             */
+  blt_int8u handle;                                /**< fifo handle                    */
+  blt_int8u data[FIFO_PIPE_SIZE];                  /**< fifo data buffer               */
+} tFifoPipe;                                       /**< USB pipe fifo type             */
 
 
 /****************************************************************************************
@@ -93,17 +100,19 @@ static blt_int8u UsbFifoMgrScan(blt_int8u handle);
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
+/** \brief Local variable that holds the fifo control structures. */
 static tFifoCtrl  fifoCtrl[FIFO_MAX_BUFFERS];
+/** \brief Local pointer that points to the next free fifo control structure. */
 static tFifoCtrl *fifoCtrlFree;
+/** \brief Fifo pipe used for the bulk in endpoint. */
 static tFifoPipe  fifoPipeBulkIN;
+/** \brief Fifo pipe used for the bulk out endpoint. */
 static tFifoPipe  fifoPipeBulkOUT;
 
 
-/****************************************************************************************
-** NAME:           UsbInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the USB communication interface
+/************************************************************************************//**
+** \brief     Initializes the USB communication interface.
+** \return    none.
 **
 ****************************************************************************************/
 void UsbInit(void)
@@ -121,11 +130,9 @@ void UsbInit(void)
 } /*** end of UsbInit ***/
 
 
-/****************************************************************************************
-** NAME:           UsbFree
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Releases the USB communication interface. 
+/************************************************************************************//**
+** \brief     Releases the USB communication interface. 
+** \return    none.
 **
 ****************************************************************************************/
 void UsbFree(void)
@@ -135,12 +142,11 @@ void UsbFree(void)
 } /*** end of UsbFree ***/
 
 
-/****************************************************************************************
-** NAME:           UsbTransmitPacket
-** PARAMETER:      data pointer to byte array with data that it to be transmitted.
-**                 len  number of bytes that are to be transmitted.
-** RETURN VALUE:   none
-** DESCRIPTION:    Transmits a packet formatted for the communication interface.
+/************************************************************************************//**
+** \brief     Transmits a packet formatted for the communication interface.
+** \param     data Pointer to byte array with data that it to be transmitted.
+** \param     len  Number of bytes that are to be transmitted.
+** \return    none.
 **
 ****************************************************************************************/
 void UsbTransmitPacket(blt_int8u *data, blt_int8u len)
@@ -164,11 +170,10 @@ void UsbTransmitPacket(blt_int8u *data, blt_int8u len)
 } /*** end of UsbTransmitPacket ***/
 
 
-/****************************************************************************************
-** NAME:           UsbReceivePacket
-** PARAMETER:      data pointer to byte array where the data is to be stored.
-** RETURN VALUE:   BLT_TRUE if a packet was received, BLT_FALSE otherwise.
-** DESCRIPTION:    Receives a communication interface packet if one is present.
+/************************************************************************************//**
+** \brief     Receives a communication interface packet if one is present.
+** \param     data Pointer to byte array where the data is to be stored.
+** \return    BLT_TRUE if a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool UsbReceivePacket(blt_int8u *data)
@@ -219,11 +224,10 @@ blt_bool UsbReceivePacket(blt_int8u *data)
 } /*** end of UsbReceivePacket ***/
 
 
-/****************************************************************************************
-** NAME:           UsbReceiveByte
-** PARAMETER:      data pointer to byte where the data is to be stored.
-** RETURN VALUE:   BLT_TRUE if a byte was received, BLT_FALSE otherwise.
-** DESCRIPTION:    Receives a communication interface byte if one is present.
+/************************************************************************************//**
+** \brief     Receives a communication interface byte if one is present.
+** \param     data Pointer to byte where the data is to be stored.
+** \return    BLT_TRUE if a byte was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool UsbReceiveByte(blt_int8u *data)
@@ -236,11 +240,10 @@ static blt_bool UsbReceiveByte(blt_int8u *data)
 } /*** end of UsbReceiveByte ***/
 
 
-/****************************************************************************************
-** NAME:           UsbTransmitByte
-** PARAMETER:      data value of byte that is to be transmitted.
-** RETURN VALUE:   BLT_TRUE if the byte was transmitted, BLT_FALSE otherwise.
-** DESCRIPTION:    Transmits a communication interface byte.
+/************************************************************************************//**
+** \brief     Transmits a communication interface byte.
+** \param     data Value of byte that is to be transmitted.
+** \return    BLT_TRUE if the byte was transmitted, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool UsbTransmitByte(blt_int8u data)
@@ -253,11 +256,9 @@ static blt_bool UsbTransmitByte(blt_int8u data)
 } /*** end of UsbTransmitByte ***/
 
 
-/****************************************************************************************
-** NAME:           UsbEnterLowPowerMode
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Power-off system clocks and power while entering suspend mode.
+/************************************************************************************//**
+** \brief     Power-off system clocks and power while entering suspend mode.
+** \return    none.
 **
 ****************************************************************************************/
 void UsbEnterLowPowerMode(void)
@@ -269,11 +270,9 @@ void UsbEnterLowPowerMode(void)
 } /*** end of UsbEnterLowPowerMode ***/
 
 
-/****************************************************************************************
-** NAME:           UsbLeaveLowPowerMode
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Restores system clocks and power while exiting suspend mode.
+/************************************************************************************//**
+** \brief     Restores system clocks and power while exiting suspend mode.
+** \return    none.
 **
 ****************************************************************************************/
 void UsbLeaveLowPowerMode(void)
@@ -295,12 +294,10 @@ void UsbLeaveLowPowerMode(void)
 } /*** end of UsbLeaveLowPowerMode ***/
 
 
-/****************************************************************************************
-** NAME:           UsbTransmitPipeBulkIN
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Checks if there is still data left to transmit and if so submits it
-**                 for transmission with the USB endpoint.
+/************************************************************************************//**
+** \brief     Checks if there is still data left to transmit and if so submits it
+**            for transmission with the USB endpoint.
+** \return    none.
 **
 ****************************************************************************************/
 void UsbTransmitPipeBulkIN(void)
@@ -342,11 +339,9 @@ void UsbTransmitPipeBulkIN(void)
 } /*** end of UsbTransmitPipeBulkIN ***/
 
 
-/****************************************************************************************
-** NAME:           UsbReceivePipeBulkOUT
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Stores data that was received on the Bulk OUT pipe in the fifo.
+/************************************************************************************//**
+** \brief     Stores data that was received on the Bulk OUT pipe in the fifo.
+** \return    none.
 **
 ****************************************************************************************/
 void UsbReceivePipeBulkOUT(void)
@@ -375,13 +370,12 @@ void UsbReceivePipeBulkOUT(void)
 } /*** end of UsbReceivePipeBulkOUT ***/
 
 
-/****************************************************************************************
-** NAME:           IntToUnicode
-** PARAMETER:      value the hexadecimal value to convert
-**                 pbuf  pointer to where the resulting string should be stored
-**                 len   number of characters to convert
-** RETURN VALUE:   none
-** DESCRIPTION:    Converts Hex 32Bits value into char.
+/************************************************************************************//**
+** \brief     Converts Hex 32Bits value into char.
+** \param     value The hexadecimal value to convert.
+** \param     pbuf  Pointer to where the resulting string should be stored.
+** \param     len   Number of characters to convert.
+** \return    none.
 **
 ****************************************************************************************/
 static void IntToUnicode (blt_int32u value , blt_int8u *pbuf , blt_int8u len)
@@ -406,11 +400,9 @@ static void IntToUnicode (blt_int32u value , blt_int8u *pbuf , blt_int8u len)
 } /*** end of IntToUnicode ***/
 
 
-/****************************************************************************************
-** NAME:           UsbGetSerialNum
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Creates the serial number string descriptor.
+/************************************************************************************//**
+** \brief     Creates the serial number string descriptor.
+** \return    none.
 **
 ****************************************************************************************/
 void UsbGetSerialNum(void)
@@ -431,16 +423,14 @@ void UsbGetSerialNum(void)
 } /*** end of UsbGetSerialNum ***/
 
 
-/****************************************************************************************
-** NAME:           UsbFifoMgrInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the fifo manager. Each controlled fifo is assigned a
-**                 unique handle, which is the same as its index into fifoCtrl[]. Each
-**                 controlled fifo holds a pointer to the next free fifo control.
-**                 For the last fifo in fifoCtrl[] this one is set to a null-pointer as
-**                 an out of fifo control indicator. Function should be called once
-**                 before any of the other fifo management functions are called.
+/************************************************************************************//**
+** \brief     Initializes the fifo manager. Each controlled fifo is assigned a
+**            unique handle, which is the same as its index into fifoCtrl[]. Each
+**            controlled fifo holds a pointer to the next free fifo control.
+**            For the last fifo in fifoCtrl[] this one is set to a null-pointer as
+**            an out of fifo control indicator. Function should be called once
+**            before any of the other fifo management functions are called.
+** \return    none.
 **
 ****************************************************************************************/
 static void UsbFifoMgrInit(void)
@@ -465,14 +455,13 @@ static void UsbFifoMgrInit(void)
 } /*** end of UsbFifoMgrInit ***/
 
 
-/****************************************************************************************
-** NAME:           UsbFifoMgrCreate
-** PARAMETER:      buffer pointer to the first element in the data storage fifo.
-**                 length maximum number of data elements that can be stored in the fifo.
-** RETURN VALUE:   Fifo handle if successfull, or FIFO_ERR_INVALID_HANDLE.
-** DESCRIPTION:    Places a data storage array under fifo management control. A handle
-**                 for identifying the fifo in subsequent fifo management function
-**                 calls is returned, if successful.
+/************************************************************************************//**
+** \brief     Places a data storage array under fifo management control. A handle
+**            for identifying the fifo in subsequent fifo management function
+**            calls is returned, if successful.
+** \param     buffer Pointer to the first element in the data storage fifo.
+** \param     length Maximum number of data elements that can be stored in the fifo.
+** \return    Fifo handle if successfull, or FIFO_ERR_INVALID_HANDLE.
 **
 ****************************************************************************************/
 static blt_int8u UsbFifoMgrCreate(blt_int8u *buffer, blt_int8u length)
@@ -501,13 +490,12 @@ static blt_int8u UsbFifoMgrCreate(blt_int8u *buffer, blt_int8u length)
 } /*** end of UsbFifoMgrCreate ***/
 
 
-/****************************************************************************************
-** NAME:           UsbFifoMgrWrite
-** PARAMETER:      handle identifies the fifo to write data to.
-**                 data   pointer to the data that is to be written to the fifo.
-** RETURN VALUE:   BLT_TRUE if the data was successfully stored in the fifo, BLT_FALSE
-**                 otherwise.
-** DESCRIPTION:    Stores data in the fifo.
+/************************************************************************************//**
+** \brief     Stores data in the fifo.
+** \param     handle Identifies the fifo to write data to.
+** \param     data   Pointer to the data that is to be written to the fifo.
+** \return    BLT_TRUE if the data was successfully stored in the fifo, BLT_FALSE
+**            otherwise.
 **
 ****************************************************************************************/
 static blt_bool UsbFifoMgrWrite(blt_int8u handle, blt_int8u data)
@@ -536,13 +524,12 @@ static blt_bool UsbFifoMgrWrite(blt_int8u handle, blt_int8u data)
 } /*** end of UsbFifoMgrWrite ***/
 
 
-/****************************************************************************************
-** NAME:           UsbFifoMgrRead
-** PARAMETER:      handle identifies the fifo to read data from.
-**                 data   pointer to where the read data is to be stored.
-** RETURN VALUE:   BLT_TRUE if the data was successfully read from the fifo, BLT_FALSE
-**                 otherwise.
-** DESCRIPTION:    Retrieves data from the fifo.
+/************************************************************************************//**
+** \brief     Retrieves data from the fifo.
+** \param     handle Identifies the fifo to read data from.
+** \param     data   Pointer to where the read data is to be stored.
+** \return    BLT_TRUE if the data was successfully read from the fifo, BLT_FALSE
+**            otherwise.
 **
 ****************************************************************************************/
 static blt_bool UsbFifoMgrRead(blt_int8u handle, blt_int8u *data)
@@ -571,11 +558,10 @@ static blt_bool UsbFifoMgrRead(blt_int8u handle, blt_int8u *data)
 } /*** end of UsbFifoMgrRead ***/
 
 
-/****************************************************************************************
-** NAME:           UsbFifoMgrScan
-** PARAMETER:      handle identifies the fifo that is to be scanned.
-** RETURN VALUE:   Number of data entries in the fifo if successful, otherwise 0.
-** DESCRIPTION:    Returns the number of data entries currently present in the fifo.
+/************************************************************************************//**
+** \brief     Returns the number of data entries currently present in the fifo.
+** \param     handle Identifies the fifo that is to be scanned.
+** \return    Number of data entries in the fifo if successful, otherwise 0.
 **
 ****************************************************************************************/
 static blt_int8u UsbFifoMgrScan(blt_int8u handle)

@@ -22,25 +22,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, CODE
   2 .bss          000005f8  20000150  00001680  00010150  2**2
                   ALLOC
-  3 .debug_info   000068b0  00000000  00000000  00010150  2**0
+  3 .debug_info   0000687b  00000000  00000000  00010150  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 000021f7  00000000  00000000  00016a00  2**0
+  4 .debug_abbrev 000021c6  00000000  00000000  000169cb  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_loc    000030be  00000000  00000000  00018bf7  2**0
+  5 .debug_loc    000030f6  00000000  00000000  00018b91  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 000005b8  00000000  00000000  0001bcb5  2**0
+  6 .debug_aranges 000005b8  00000000  00000000  0001bc87  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_ranges 00000980  00000000  00000000  0001c26d  2**0
+  7 .debug_ranges 00000980  00000000  00000000  0001c23f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000023f2  00000000  00000000  0001cbed  2**0
+  8 .debug_line   000023fa  00000000  00000000  0001cbbf  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00001c9b  00000000  00000000  0001efdf  2**0
+  9 .debug_str    00001c9b  00000000  00000000  0001efb9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  00020c7a  2**0
+ 10 .comment      00000030  00000000  00000000  00020c54  2**0
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  00020caa  2**0
+ 11 .ARM.attributes 00000033  00000000  00000000  00020c84  2**0
                   CONTENTS, READONLY
- 12 .debug_frame  00000bdc  00000000  00000000  00020ce0  2**2
+ 12 .debug_frame  00000bdc  00000000  00000000  00020cb8  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00000000 l    d  .text	00000000 .text
@@ -59,7 +59,7 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 cstart.c
 000000e4 l     F .text	00000000 zero_loop2
-000013c6 l     F .text	00000000 zero_loop
+000013c2 l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 main.c
 00000000 l    df *ABS*	00000000 system_efm32.c
 20000000 l     O .data	00000004 SystemLFXOClock
@@ -99,12 +99,12 @@ SYMBOL TABLE:
 20000232 l     O .bss	00000001 xcpCtoRxInProgress.5471
 00000000 l    df *ABS*	00000000 nvm.c
 00000000 l    df *ABS*	00000000 timer.c
-20000234 l     O .bss	00000002 millisecond_counter
+20000234 l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 flash.c
 00001024 l     F .text	0000003c FlashGetSector
 00001060 l     F .text	00000044 FlashWriteBlock
 000010a4 l     F .text	0000004c FlashSwitchBlock
-000010f0 l     F .text	00000084 FlashAddToBlock
+000010f0 l     F .text	00000080 FlashAddToBlock
 00001450 l     O .text	000000b4 flashLayout
 20000238 l     O .bss	00000204 bootBlockInfo
 2000043c l     O .bss	00000204 blockInfo
@@ -113,11 +113,11 @@ SYMBOL TABLE:
 000013f0 l     F .text	00000010 __MSC_ErasePage_veneer
 00001400 l     F .text	00000010 __MSC_WriteWord_veneer
 00000ac4 g     F .text	0000002c ComInit
-00001190 g     F .text	00000048 FlashWrite
+0000118c g     F .text	00000048 FlashWrite
 000008c0 g     F .text	00000018 GPIO_DriveModeSet
 00000dc4 g     F .text	00000018 AssertFailure
 000008ac g     F .text	00000014 EMU_UpdateOscConfig
-000013a4 g     F .text	00000044 reset_handler
+000013a0 g     F .text	00000044 reset_handler
 00000684 g     F .text	00000120 CMU_ClockFreqGet
 00000ff8 g     F .text	0000001c TimerUpdate
 00000b70 g     F .text	00000010 XcpPacketTransmitted
@@ -133,16 +133,16 @@ SYMBOL TABLE:
 00000fec g     F .text	0000000c TimerReset
 20000640 g     O .bss	00000004 SystemCoreClock
 00000aae g     F .text	00000016 BootTask
-000012d4 g     F .text	00000040 FlashWriteChecksum
+000012d0 g     F .text	00000040 FlashWriteChecksum
 00000b0e g     F .text	00000010 ComTransmitPacket
 000003b4 g     F .text	0000000c SystemLFXOClockGet
 000005b0 g     F .text	0000006c CMU_ClockEnable
 00000a14 g     F .text	0000000c LEUART_Rx
 00000b60 g     F .text	00000010 XcpIsConnected
 00000fa8 g     F .text	00000004 NvmInit
-00001174 g     F .text	0000001c FlashInit
+00001170 g     F .text	0000001c FlashInit
 20000648 g       .bss	00000000 _ebss
-00001398 g     F .text	0000000c UnusedISR
+00001394 g     F .text	0000000c UnusedISR
 00000b0c g     F .text	00000002 ComFree
 000009d4 g     F .text	00000040 LEUART_Init
 2000007c g     F .data	000000d0 MSC_WriteWord
@@ -154,10 +154,10 @@ SYMBOL TABLE:
 000002f4 g     F .text	00000098 SystemHFClockGet
 00000b80 g     F .text	000001e8 XcpPacketReceived
 20000008 g     F .data	00000074 MSC_ErasePage
-0000135c g     F .text	0000003c FlashDone
+00001358 g     F .text	0000003c FlashDone
 000000b8 g     F .text	00000050 EntryFromProg
 00000b44 g     F .text	0000001c XcpInit
-000011d8 g     F .text	000000fc FlashErase
+000011d4 g     F .text	000000fc FlashErase
 0000011c g     F .text	000001d8 main
 00000fb8 g     F .text	00000012 NvmDone
 00000ebc g     F .text	00000080 UartTransmitPacket
@@ -178,7 +178,7 @@ SYMBOL TABLE:
 00000fac g     F .text	00000004 NvmWrite
 00000ddc g     F .text	00000028 CpuStartUserProgram
 20000748 g       .bss	00000000 _estack
-00001314 g     F .text	00000048 FlashVerifyChecksum
+00001310 g     F .text	00000048 FlashVerifyChecksum
 20000150 g       .data	00000000 _edata
 00000000 g     O .text	000000b8 _vectab
 00000b2c g     F .text	00000004 ComIsConnected

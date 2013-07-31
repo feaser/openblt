@@ -1,0 +1,23 @@
+/**
+\defgroup   Core Bootloader Core
+\brief      Target independent code.
+\details    The bootloader core contains the main functionality of the bootloader,
+            independent of the microcontroller/compiler and independent of your
+			specific application. There in generally no need for you to make changes
+			here, unless you are adding new functionality such as the support for a
+			new communication interface or a different communication protocol. 
+			
+			By default the XCP version 1.0 is used as the communication transport layer
+			for remote firmware updates, for example via UART or CAN. Its official name
+			is ASAM MCD-1 XCP V1.0.0 and it is a universal measurement and calibration 
+			protocol that defines a bus-independent, master-slave communication protocol
+			to connect ECU's with calibration systems. More information can be found at 
+			http://www.asam.net/.
+			
+			For local firmware updates, for example from a locally attached SD-card,
+			the FATFS file system is used as a target independent interface to access
+			files. More information can be found at
+			http://elm-chan.org/fsw/ff/00index_e.html
+*/
+
+

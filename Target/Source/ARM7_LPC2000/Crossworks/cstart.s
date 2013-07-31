@@ -83,15 +83,12 @@ fiq_handler_address:
 .set  MEMMAP, 0xE01FC040           /* MEMMAP register                                  */
 
 .global EntryFromProg
-/****************************************************************************************
-** NAME:           EntryFromProg
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Called by the user program to activate the bootloader. Do not place
-**                 any assembly code between this function and the end of the vector
-**                 table. This guarantees that this function is located at address
-**                 0x00000040. The user program can call this function from C in the 
-**                 following way:
+/************************************************************************************//**
+** \brief     Called by the user program to activate the bootloader. Do not place
+**            any assembly code between this function and the end of the vector
+**            table. This guarantees that this function is located at address
+**            0x00000040. The user program can call this function from C in the 
+**            following way:
 **                         void ActivateBootloader(void)
 **                         {
 **                           void (*pEntryFromProgFnc)(void);
@@ -99,6 +96,7 @@ fiq_handler_address:
 **                           pEntryFromProgFnc = (void*)0x00000040;
 **                           pEntryFromProgFnc();
 **                         }
+** \return    none.
 **
 ****************************************************************************************/
 EntryFromProg:  
@@ -132,13 +130,11 @@ EntryFromProg:
   .extern APP_ENTRY_POINT
   .global exit
 
-/****************************************************************************************
-** NAME:           Reset_Handler
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Reset interrupt service routine. Configures the stack for each mode,
-**                 disables the IRQ and FIQ interrupts, initializes RAM and jumps to
-**                 function main.
+/************************************************************************************//**
+** \brief     Reset interrupt service routine. Configures the stack for each mode,
+**            disables the IRQ and FIQ interrupts, initializes RAM and jumps to
+**            function main.
+** \return    none.
 **
 ****************************************************************************************/
 Reset_Handler:
@@ -377,22 +373,20 @@ exit_loop:
 
 
 .extern ComSetConnectEntryState
-/****************************************************************************************
-** NAME:           Reset_Handler_SWI
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Reset handler for a software reset after the user program activated
-**                 the bootloader. Configures the stack for each mode, disables the IRQ 
-**                 and FIQ interrupts, initializes RAM. Most importantly, before jumping
-**                 to function main to start the bootloader program, the COM interface
-**                 is configured to start in a connected state. Here is why:
-**                 At the start of a new programming session, the host sends the XCP 
-**                 CONNECT command. Upon reception, the user program activates the 
-**                 bootloader by jumping to function EntryFromProg(), which triggers the 
-**                 SWI instruction that gets the program to this point. When the 
-**                 bootloader is started, it now needs to send the response to the XCP
-**                 CONNECT command, because the host is waiting for this before it can
-**                 continue.
+/************************************************************************************//**
+** \brief     Reset handler for a software reset after the user program activated
+**            the bootloader. Configures the stack for each mode, disables the IRQ 
+**            and FIQ interrupts, initializes RAM. Most importantly, before jumping
+**            to function main to start the bootloader program, the COM interface
+**            is configured to start in a connected state. Here is why:
+**            At the start of a new programming session, the host sends the XCP 
+**            CONNECT command. Upon reception, the user program activates the 
+**            bootloader by jumping to function EntryFromProg(), which triggers the 
+**            SWI instruction that gets the program to this point. When the 
+**            bootloader is started, it now needs to send the response to the XCP
+**            CONNECT command, because the host is waiting for this before it can
+**            continue.
+** \return    none.
 **
 ****************************************************************************************/
 Reset_Handler_SWI:

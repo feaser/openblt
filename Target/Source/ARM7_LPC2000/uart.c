@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader UART communication interface source file
-|    File Name: uart.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Source\ARM7_LPC2000\uart.c
+* \brief        Bootloader UART communication interface source file.
+* \ingroup      Target_ARM7_LPC2000
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 
@@ -40,25 +42,40 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-#define UART_DLAB      (0x80)                    /* divisor latch access bit           */
-#define UART_MODE_8N1  (0x03)                    /* 8 data and 1 stop bit, no parity   */
-#define UART_FIFO_RX1  (0x07)                    /* FIFO reset and RX FIFO 1 deep      */
-#define UART_RDR       (0x01)                    /* receiver data ready                */
-#define UART_THRE      (0x20)                    /* transmitter holding register empty */
+/** \brief Divisor latch access bit. */
+#define UART_DLAB      (0x80)
+/** \brief 8 data and 1 stop bit, no parity. */
+#define UART_MODE_8N1  (0x03)
+/** \brief FIFO reset and RX FIFO 1 deep. */
+#define UART_FIFO_RX1  (0x07)
+/** \brief Receiver data ready. */
+#define UART_RDR       (0x01)
+/** \brief Transmitter holding register empty. */
+#define UART_THRE      (0x20)
 
 
 /****************************************************************************************
 * Register definitions
 ****************************************************************************************/
+/** \brief U0RBR UART register. */
 #define U0RBR          (*((volatile blt_int8u *) 0xE000C000))
+/** \brief U0THR UART register. */
 #define U0THR          (*((volatile blt_int8u *) 0xE000C000))
+/** \brief U0IER UART register. */
 #define U0IER          (*((volatile blt_int8u *) 0xE000C004))
+/** \brief U0IIR UART register. */
 #define U0IIR          (*((volatile blt_int8u *) 0xE000C008))
+/** \brief U0FCR UART register. */
 #define U0FCR          (*((volatile blt_int8u *) 0xE000C008))
+/** \brief U0LCR UART register. */
 #define U0LCR          (*((volatile blt_int8u *) 0xE000C00C))
+/** \brief U0LSR UART register. */
 #define U0LSR          (*((volatile blt_int8u *) 0xE000C014))
+/** \brief U0SCR UART register. */
 #define U0SCR          (*((volatile blt_int8u *) 0xE000C01C))
+/** \brief U0DLL UART register. */
 #define U0DLL          (*((volatile blt_int8u *) 0xE000C000))
+/** \brief U0DLM UART register. */
 #define U0DLM          (*((volatile blt_int8u *) 0xE000C004))
 
 
@@ -69,11 +86,9 @@ static blt_bool UartReceiveByte(blt_int8u *data);
 static blt_bool UartTransmitByte(blt_int8u data);
 
 
-/****************************************************************************************
-** NAME:           UartInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the UART communication interface
+/************************************************************************************//**
+** \brief     Initializes the UART communication interface.
+** \return    none.
 **
 ****************************************************************************************/
 void UartInit(void)
@@ -115,12 +130,11 @@ void UartInit(void)
 } /*** end of UartInit ***/
 
 
-/****************************************************************************************
-** NAME:           UartTransmitPacket
-** PARAMETER:      data pointer to byte array with data that it to be transmitted.
-**                 len  number of bytes that are to be transmitted.
-** RETURN VALUE:   none
-** DESCRIPTION:    Transmits a packet formatted for the communication interface.
+/************************************************************************************//**
+** \brief     Transmits a packet formatted for the communication interface.
+** \param     data Pointer to byte array with data that it to be transmitted.
+** \param     len  Number of bytes that are to be transmitted.
+** \return    none.
 **
 ****************************************************************************************/
 void UartTransmitPacket(blt_int8u *data, blt_int8u len)
@@ -144,11 +158,10 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
 } /*** end of UartTransmitPacket ***/
 
 
-/****************************************************************************************
-** NAME:           UartReceivePacket
-** PARAMETER:      data pointer to byte array where the data is to be stored.
-** RETURN VALUE:   BLT_TRUE if a packet was received, BLT_FALSE otherwise.
-** DESCRIPTION:    Receives a communication interface packet if one is present.
+/************************************************************************************//**
+** \brief     Receives a communication interface packet if one is present.
+** \param     data Pointer to byte array where the data is to be stored.
+** \return    BLT_TRUE if a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool UartReceivePacket(blt_int8u *data)
@@ -197,11 +210,10 @@ blt_bool UartReceivePacket(blt_int8u *data)
 } /*** end of UartReceivePacket ***/
 
 
-/****************************************************************************************
-** NAME:           UartReceiveByte
-** PARAMETER:      data pointer to byte where the data is to be stored.
-** RETURN VALUE:   BLT_TRUE if a byte was received, BLT_FALSE otherwise.
-** DESCRIPTION:    Receives a communication interface byte if one is present.
+/************************************************************************************//**
+** \brief     Receives a communication interface byte if one is present.
+** \param     data Pointer to byte where the data is to be stored.
+** \return    BLT_TRUE if a byte was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
@@ -219,11 +231,10 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 } /*** end of UartReceiveByte ***/
 
 
-/****************************************************************************************
-** NAME:           UartTransmitByte
-** PARAMETER:      data value of byte that is to be transmitted.
-** RETURN VALUE:   BLT_TRUE if the byte was transmitted, BLT_FALSE otherwise.
-** DESCRIPTION:    Transmits a communication interface byte.
+/************************************************************************************//**
+** \brief     Transmits a communication interface byte.
+** \param     data Value of byte that is to be transmitted.
+** \return    BLT_TRUE if the byte was transmitted, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool UartTransmitByte(blt_int8u data)

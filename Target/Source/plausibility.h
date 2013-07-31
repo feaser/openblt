@@ -1,32 +1,35 @@
-/****************************************************************************************
-|  Description: bootloader plausibility check header file
-|    File Name: plausibility.h
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Source\plausibility.h
+* \brief        Bootloader plausibility check header file, for checking the configuration
+*               at compile time.
+* \ingroup      Core
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 #ifndef PLAUSIBILITY_H
 #define PLAUSIBILITY_H
@@ -99,6 +102,10 @@
   #error "BOOT_COM_CAN_TX_MAX_DATA must be > 0"
   #endif
   
+  #if (BOOT_COM_CAN_TX_MAX_DATA > 8)
+  #error "BOOT_COM_CAN_TX_MAX_DATA must be <= 8"
+  #endif
+  
   #ifndef BOOT_COM_CAN_RX_MSG_ID
   #error "BOOT_COM_CAN_RX_MSG_ID is missing in config.h"
   #endif
@@ -113,6 +120,10 @@
 
   #if (BOOT_COM_CAN_RX_MAX_DATA <= 0)
   #error "BOOT_COM_CAN_RX_MAX_DATA must be > 0"
+  #endif
+
+  #if (BOOT_COM_CAN_RX_MAX_DATA > 8)
+  #error "BOOT_COM_CAN_RX_MAX_DATA must be <= 8"
   #endif
 
   #ifndef BOOT_COM_CAN_CHANNEL_INDEX
@@ -145,12 +156,20 @@
   #error "BOOT_COM_UART_TX_MAX_DATA must be > 0"
   #endif
   
+  #if (BOOT_COM_UART_TX_MAX_DATA > 255)
+  #error "BOOT_COM_UART_TX_MAX_DATA must be <= 255"
+  #endif
+  
   #ifndef BOOT_COM_UART_RX_MAX_DATA
   #error "BOOT_COM_UART_RX_MAX_DATA is missing in config.h"
   #endif
 
   #if (BOOT_COM_UART_RX_MAX_DATA <= 0)
   #error "BOOT_COM_UART_RX_MAX_DATA must be > 0"
+  #endif
+
+  #if (BOOT_COM_UART_RX_MAX_DATA > 255)
+  #error "BOOT_COM_UART_RX_MAX_DATA must be <= 255"
   #endif
 
   #ifndef BOOT_COM_UART_CHANNEL_INDEX

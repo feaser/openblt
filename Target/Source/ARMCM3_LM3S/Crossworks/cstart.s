@@ -68,7 +68,7 @@
 ** DESCRIPTION:    Called by the user program to activate the bootloader. Do not place
 **                 any assembly code before this function and the end of the vector
 **                 table. This guarantees that this function is located at address
-**                 0x08000150. The user program can call this function from C in the 
+**                 0x000000F0. The user program can call this function from C in the 
 **                 following way:
 **                         void ActivateBootloader(void)
 **                         {

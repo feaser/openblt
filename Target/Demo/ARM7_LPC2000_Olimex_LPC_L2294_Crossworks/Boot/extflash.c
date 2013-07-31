@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader external flash driver source file
-|    File Name: extflash.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_Crossworks\Boot\extflash.c
+* \brief        Bootloader external flash driver source file.
+* \ingroup      Boot_ARM7_LPC2000_Olimex_LPC_L2294_Crossworks
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -39,45 +41,69 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Value for an invalid flash sector. */
 #define FLASH_INVALID_SECTOR          (0xff)
+/** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS         (0xffffffff)
+/** \brief Standard size of a flash block for writing. */
 #define FLASH_WRITE_BLOCK_SIZE        (512)
+/** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS           (sizeof(flashLayout)/sizeof(flashLayout[0]))
-/* C3 Intel flash commands */
+/** \brief C3 Intel flash read array command. */
 #define FLASH_CMD_READ_ARRAY_MODE     (0xFF)
+/** \brief C3 Intel flash read id command. */
 #define FLASH_CMD_READ_ID_MODE        (0x90)
+/** \brief C3 Intel flash erase command. */
 #define FLASH_CMD_ERASE_MODE          (0x20)
+/** \brief C3 Intel flash read status command. */
 #define FLASH_CMD_READ_STATUS_MODE    (0x70)
+/** \brief C3 Intel flash change lock command. */
 #define FLASH_CMD_CHANGE_LOCK_MODE    (0x60)
+/** \brief C3 Intel flash unlock sector command. */
 #define FLASH_CMD_UNLOCK_SECTOR       (0xD0)
+/** \brief C3 Intel flash lock sector command. */
 #define FLASH_CMD_LOCK_SECTOR         (0x01)
+/** \brief C3 Intel flash program command. */
 #define FLASH_CMD_PROGRAM_MODE        (0x40)
+/** \brief C3 Intel flash erase confirm command. */
 #define FLASH_CMD_ERASE_CONFIRM       (0xD0)
+/** \brief C3 Intel flash clear status command. */
 #define FLASH_CMD_CLEAR_STATUS        (0x50)
-/* C3 Intel flash info bits */
+/** \brief C3 Intel flash lock bit. */
 #define FLASH_LOCK_BIT                (0x01)
+/** \brief C3 Intel flash status ready bit. */
 #define FLASH_STATUS_READY_BIT        (0x80)
-/* C3 Intel flash error codes */
+/** \brief C3 Intel flash locked error code. */
 #define FLASH_ERR_LOCKED              (0x02)
+/** \brief C3 Intel flash Vpp range error code. */
 #define FLASH_ERR_VPP_RANGE           (0x08)
+/** \brief C3 Intel flash program error code. */
 #define FLASH_ERR_PROGRAM             (0x10)
+/** \brief C3 Intel flash command sequence error code. */
 #define FLASH_ERR_CMD_SEQ             (0x10)
+/** \brief C3 Intel flash erase error code. */
 #define FLASH_ERR_ERASE               (0x20)
-/* flash operation timeout values */
+/** \brief Flash erase timeout value. */
 #define FLASH_ERASE_TIMEOUT           ((blt_int32u)5000000)
+/** \brief Flash program timeout value. */
 #define FLASH_PROGRAM_TIMEOUT         ((blt_int32u)1000000)
-/* supported Intel C3 flash device */
+/** \brief Supported Intel C3 flash manufacturer ID. */
 #define FLASH_DEV_MAN_ID              ((blt_int16u)0x0089)
+/** \brief Supported Intel C3 flash device ID. */
 #define FLASH_DEV_ID                  ((blt_int16u)0x88c3)
-/* address offsets for reading device information */
+/** \brief Offset for reading manufacturer ID. */
 #define FLASH_DEVINFO_MAN_ID          ((blt_int16u)0x0000)
+/** \brief Offset for reading device ID. */
 #define FLASH_DEVINFO_DEV_ID          ((blt_int16u)0x0001)
+/** \brief Offset for reading lock status. */
 #define FLASH_DEVINFO_LOCK_STATUS     ((blt_int16u)0x0002)
-/* functions implemented in a macro for run-time and codesize optimization */
+/** \brief Runtime efficient macro for obtaining the manufacturer ID. */
 #define ExtFlashGetManID()          (ExtFlashGetDeviceInfo(flashLayout[0].sector_start, \
                                      FLASH_DEVINFO_MAN_ID))
+/** \brief Runtime efficient macro for obtaining the device ID. */
 #define ExtFlashGetDevID()          (ExtFlashGetDeviceInfo(flashLayout[0].sector_start, \
                                      FLASH_DEVINFO_DEV_ID))
+/** \brief Runtime efficient macro for obtaining the lock status. */
 #define ExtFlashGetLockStatus(base) (ExtFlashGetDeviceInfo(base, \
                                      FLASH_DEVINFO_LOCK_STATUS))
 
@@ -85,23 +111,25 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/* flash sector descriptor type */
+/** \brief Flash sector descriptor type. */
 typedef struct 
 {
-  blt_addr   sector_start;                       /* sector start address               */
-  blt_int32u sector_size;                        /* sector size in bytes               */
-  blt_int8u  sector_num;                         /* sector number                      */
-} tFlashSector;                                  /* flash sector description           */
+  blt_addr   sector_start;                       /**< sector start address             */
+  blt_int32u sector_size;                        /**< sector size in bytes             */
+  blt_int8u  sector_num;                         /**< sector number                    */
+} tFlashSector;
 
-/* programming is done per block of max FLASH_WRITE_BLOCK_SIZE. for this a flash block
- * manager is implemented in this driver. this flash block manager depends on this
- * flash block info structure. It holds the base address of the flash block and the
- * data that should be programmed into the flash block. 
+/** \brief    Structure type for grouping flash block information.
+ *  \details  Programming is done per block of max FLASH_WRITE_BLOCK_SIZE. for this a 
+ *            flash block manager is implemented in this driver. this flash block manager
+ *            depends on this flash block info structure. It holds the base address of 
+ *            the flash block and the data that should be programmed into the flash 
+ *            block. 
  */
 typedef struct
 {
-  blt_addr  base_addr;
-  blt_int8u data[FLASH_WRITE_BLOCK_SIZE];
+  blt_addr  base_addr; /**< Base address for the flash operation.*/
+  blt_int8u data[FLASH_WRITE_BLOCK_SIZE]; /**< Data array. */
 } tFlashBlockInfo;
 
 
@@ -111,7 +139,7 @@ typedef struct
 static blt_bool   ExtFlashInitBlock(tFlashBlockInfo *block, blt_addr address);
 static tFlashBlockInfo *ExtFlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_addr);
 static blt_bool   ExtFlashAddToBlock(tFlashBlockInfo *block, blt_addr address, 
-                                     blt_int8u *data, blt_int16u len);
+                                     blt_int8u *data, blt_int32u len);
 static blt_bool   ExtFlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool   ExtFlashEraseSector(blt_addr sector_base);
 static blt_int16u ExtFlashGetDeviceInfo(blt_addr block_base, blt_int16u info);
@@ -123,11 +151,12 @@ static blt_int8u  ExtFlashGetSector(blt_addr address);
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
-/* The current layout supports the 2MB external C3 Intel flash:
- *   - manufacturer id = 0x0089
- *   - device id = 0x88c3 (16 Mbit bottom boot device)
- * Note that what Intel calls a block in the user manual, is called a sector in this
- * driver.
+/** \brief   Array wit the layout of the flash memory.
+ *  \details The current layout supports the 2MB external C3 Intel flash:
+ *             - manufacturer id = 0x0089
+ *             - device id = 0x88c3 (16 Mbit bottom boot device)
+ *           Note that what Intel calls a block in the user manual, is called a sector in this
+ *           driver.
  */
 static const tFlashSector flashLayout[] =
 {
@@ -176,24 +205,25 @@ static const tFlashSector flashLayout[] =
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
-/* The smallest amount of flash that can be programmed is FLASH_WRITE_BLOCK_SIZE. A flash
- * block manager is implemented in this driver and stores info in this variable. Whenever
- * new data should be flashed, it is first added to a RAM buffer, which is part of this
- * variable. Whenever the RAM buffer, which has the size of a flash block, is full or 
- * data needs to be written to a different block, the contents of the RAM buffer are 
- * programmed to flash. The flash block manager requires some software overhead, yet
- * results is faster flash programming because data is first harvested, ideally until
- * there is enough to program an entire flash block, before the flash device is actually
- * operated on.
+/** \brief   Local variable with information about the flash block that is currently
+ *           being operated on.
+ *  \details The smallest amount of flash that can be programmed is 
+ *           FLASH_WRITE_BLOCK_SIZE. A flash block manager is implemented in this driver
+ *           and stores info in this variable. Whenever new data should be flashed, it
+ *           is first added to a RAM buffer, which is part of this variable. Whenever
+ *           the RAM buffer, which has the size of a flash block, is full or  data needs
+ *           to be written to a different block, the contents of the RAM buffer are 
+ *           programmed to flash. The flash block manager requires some software 
+ *           overhead, yet results is faster flash programming because data is first 
+ *           harvested, ideally until there is enough to program an entire flash block, 
+ *           before the flash device is actually operated on.
  */
 static tFlashBlockInfo blockInfo;
 
 
-/****************************************************************************************
-** NAME:           ExtFlashInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the flash driver. 
+/************************************************************************************//**
+** \brief     Initializes the flash driver. 
+** \return    none.
 **
 ****************************************************************************************/
 void ExtFlashInit(void)
@@ -208,15 +238,14 @@ void ExtFlashInit(void)
 } /*** end of ExtFlashInit ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashWrite
-** PARAMETER:      addr start address
-**                 len  length in bytes
-**                 data pointer to the data buffer.
-** RETURN VALUE:   BLT_NVM_OKAY if successful, BLT_NVM_NOT_IN_RANGE if the address is
-**                 not within the supported memory range, or BLT_NVM_ERROR is the write
-**                 operation failed.
-** DESCRIPTION:    Writes the data to flash.
+/************************************************************************************//**
+** \brief     Writes the data to flash.
+** \param     addr Start address.
+** \param     len  Length in bytes.
+** \param     data Pointer to the data buffer.
+** \return    BLT_NVM_OKAY if successful, BLT_NVM_NOT_IN_RANGE if the address is
+**            not within the supported memory range, or BLT_NVM_ERROR is the write
+**            operation failed.
 **
 ****************************************************************************************/
 blt_int8u ExtFlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
@@ -237,15 +266,14 @@ blt_int8u ExtFlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 } /*** end of FlashWrite ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashErase
-** PARAMETER:      addr start address
-**                 len  length in bytes
-** RETURN VALUE:   BLT_NVM_OKAY if successful, BLT_NVM_NOT_IN_RANGE if the address is
-**                 not within the supported memory range, or BLT_NVM_ERROR is the erase
-**                 operation failed.
-** DESCRIPTION:    Erases the flash memory. Note that this function also checks that no 
-**                 data is erased outside the flash memory region.
+/************************************************************************************//**
+** \brief     Erases the flash memory. Note that this function also checks that no 
+**            data is erased outside the flash memory region.
+** \param     addr Start address.
+** \param     len  Length in bytes.
+** \return    BLT_NVM_OKAY if successful, BLT_NVM_NOT_IN_RANGE if the address is
+**            not within the supported memory range, or BLT_NVM_ERROR is the erase
+**            operation failed.
 **
 ****************************************************************************************/
 blt_int8u ExtFlashErase(blt_addr addr, blt_int32u len)
@@ -278,11 +306,9 @@ blt_int8u ExtFlashErase(blt_addr addr, blt_int32u len)
 } /*** end of ExtFlashErase ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashDone
-** PARAMETER:      none
-** RETURN VALUE:   BLT_TRUE is succesful, BLT_FALSE otherwise.
-** DESCRIPTION:    Finilizes the flash driver operations.
+/************************************************************************************//**
+** \brief     Finalizes the flash driver operations.
+** \return    BLT_TRUE is succesful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool ExtFlashDone(void)
@@ -300,13 +326,12 @@ blt_bool ExtFlashDone(void)
 } /*** end of ExtFlashDone ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashInitBlock
-** PARAMETER:      block   pointer to flash block info structure to operate on.
-**                 address base address of the block data.
-** RETURN VALUE:   BLT_TRUE is succesful, BLT_FALSE otherwise.
-** DESCRIPTION:    Copies data currently in flash to the block->data and sets the 
-**                 base address.
+/************************************************************************************//**
+** \brief     Copies data currently in flash to the block->data and sets the 
+**            base address.
+** \param     block   Pointer to flash block info structure to operate on.
+** \param     address Base address of the block data.
+** \return    BLT_TRUE is succesful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool ExtFlashInitBlock(tFlashBlockInfo *block, blt_addr address)
@@ -329,14 +354,12 @@ static blt_bool ExtFlashInitBlock(tFlashBlockInfo *block, blt_addr address)
 } /*** end of ExtFlashInitBlock ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashSwitchBlock
-** PARAMETER:      block     pointer to flash block info structure to operate on.
-**                 base_addr base address for the next block
-** RETURN VALUE:   the pointer of the block info struct that is no being used, or a NULL
-**                 pointer in case of error.
-** DESCRIPTION:    Switches blocks by programming the current one and initializing the
-**                 next.
+/************************************************************************************//**
+** \brief     Switches blocks by programming the current one and initializing the next.
+** \param     block   Pointer to flash block info structure to operate on.
+** \param     base_addr Base address for the next block.
+** \return    The pointer of the block info struct that is no being used, or a NULL
+**            pointer in case of error.
 **
 ****************************************************************************************/
 static tFlashBlockInfo *ExtFlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_addr)
@@ -356,21 +379,20 @@ static tFlashBlockInfo *ExtFlashSwitchBlock(tFlashBlockInfo *block, blt_addr bas
 } /*** end of ExtFlashSwitchBlock ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashAddToBlock
-** PARAMETER:      block   pointer to flash block info structure to operate on.
-**                 address flash destination address
-**                 data    pointer to the byte array with data
-**                 len     number of bytes to add to the block
-** RETURN VALUE:   BLT_TRUE if successful, BLT_FALSE otherwise.
-** DESCRIPTION:    Programming is done per block. This function adds data to the block
-**                 that is currently collecting data to be written to flash. If the
-**                 address is outside of the current block, the current block is written
-**                 to flash an a new block is initialized.
+/************************************************************************************//**
+** \brief     Programming is done per block. This function adds data to the block
+**            that is currently collecting data to be written to flash. If the
+**            address is outside of the current block, the current block is written
+**            to flash an a new block is initialized.
+** \param     block   Pointer to flash block info structure to operate on.
+** \param     address Flash destination address.
+** \param     data    Pointer to the byte array with data.
+** \param     len     Number of bytes to add to the block.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool ExtFlashAddToBlock(tFlashBlockInfo *block, blt_addr address, 
-                                   blt_int8u *data, blt_int16u len)
+                                   blt_int8u *data, blt_int32u len)
 {
   blt_addr   current_base_addr;
   blt_int8u  *dst;
@@ -431,12 +453,10 @@ static blt_bool ExtFlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 } /*** end of ExtFlashAddToBlock ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashWriteBlock
-** PARAMETER:      block pointer to flash block info structure to operate on.
-** RETURN VALUE:   BLT_TRUE if successful, BLT_FALSE otherwise.
-** DESCRIPTION:    Programs FLASH_WRITE_BLOCK_SIZE bytes to flash from the block->data
-**                 array. 
+/************************************************************************************//**
+** \brief     Programs FLASH_WRITE_BLOCK_SIZE bytes to flash from the block->data array. 
+** \param     block   Pointer to flash block info structure to operate on.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool ExtFlashWriteBlock(tFlashBlockInfo *block)
@@ -487,11 +507,10 @@ static blt_bool ExtFlashWriteBlock(tFlashBlockInfo *block)
 } /*** end of ExtFlashWriteBlock ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashEraseSector
-** PARAMETER:      sector_base base address of the sector to erase.
-** RETURN VALUE:   BLT_TRUE is erasure was successful, BLT_FALSE otherwise.
-** DESCRIPTION:    Erases the flash sector.
+/************************************************************************************//**
+** \brief     Erases the flash sector.
+** \param     sector_base Base address of the sector to erase.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool ExtFlashEraseSector(blt_addr sector_base)
@@ -530,11 +549,10 @@ static blt_bool ExtFlashEraseSector(blt_addr sector_base)
 } /*** end of ExtFlashEraseSector ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashLockSector
-** PARAMETER:      sector_base base address of the sector to lock.
-** RETURN VALUE:   none
-** DESCRIPTION:    Locks the flash sector.
+/************************************************************************************//**
+** \brief     Locks the flash sector.
+** \param     sector_base Base address of the sector to lock.
+** \return    none.
 **
 ****************************************************************************************/
 static void ExtFlashLockSector(blt_addr sector_base)
@@ -557,11 +575,10 @@ static void ExtFlashLockSector(blt_addr sector_base)
 } /*** end of ExtFlashLockSector ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashUnlockSector
-** PARAMETER:      sector_base base address of the sector to unlock.
-** RETURN VALUE:   none
-** DESCRIPTION:    Unlocks the flash sector.
+/************************************************************************************//**
+** \brief     Unlocks the flash sector.
+** \param     sector_base Base address of the sector to unlock.
+** \return    none.
 **
 ****************************************************************************************/
 static void ExtFlashUnlockSector(blt_addr sector_base)
@@ -584,12 +601,11 @@ static void ExtFlashUnlockSector(blt_addr sector_base)
 } /*** end of ExtFlashUnlockSector ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashGetDeviceInfo
-** PARAMETER:      sector_base base address of the sector to get the info from.
-**                 info identifier to the type of info to obtain.
-** RETURN VALUE:   device info.
-** DESCRIPTION:    Obtains device information from the flash device.
+/************************************************************************************//**
+** \brief     Obtains device information from the flash device.
+** \param     sector_base Base address of the sector to get the info from.
+** \param     info Identifier to the type of info to obtain.
+** \return    Device info.
 **
 ****************************************************************************************/
 static blt_int16u ExtFlashGetDeviceInfo(blt_addr sector_base, blt_int16u info)
@@ -610,11 +626,10 @@ static blt_int16u ExtFlashGetDeviceInfo(blt_addr sector_base, blt_int16u info)
 } /*** end of ExtFlashGetDeviceInfo ***/
 
 
-/****************************************************************************************
-** NAME:           ExtFlashGetSector
-** PARAMETER:      address address in the flash sector
-** RETURN VALUE:   flash sector number or FLASH_INVALID_SECTOR
-** DESCRIPTION:    Determines the flash sector the address is in.
+/************************************************************************************//**
+** \brief     Determines the flash sector the address is in.
+** \param     address Address in the flash sector.
+** \return    Flash sector number or FLASH_INVALID_SECTOR
 **
 ****************************************************************************************/
 static blt_int8u ExtFlashGetSector(blt_addr address)

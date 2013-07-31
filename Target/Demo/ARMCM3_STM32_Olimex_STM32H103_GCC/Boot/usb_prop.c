@@ -1,33 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader USB device properties source file
-|    File Name: usb_prop.c
-|        Notes: based on an example from STMicroelectronics
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARMCM3_STM32_Olimex_STM32H103_GCC\Boot\usb_prop.c
+* \brief        Bootloader USB device properties source file.
+* \ingroup      Boot_ARMCM3_STM32_Olimex_STM32H103_GCC
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 
@@ -50,12 +51,14 @@ extern void UsbGetSerialNum(void);
 /****************************************************************************************
 * Global data declarations
 ****************************************************************************************/
+/** \brief Device table. */
 DEVICE Device_Table =
 {
   EP_NUM,
   1
 };
 
+/** \brief Device property table. */
 DEVICE_PROP Device_Property =
 {
   Bulk_Init,
@@ -72,6 +75,7 @@ DEVICE_PROP Device_Property =
   0x40 /*MAX PACKET SIZE*/
 };
 
+/** \brief Supported standard requests. */
 USER_STANDARD_REQUESTS User_Standard_Requests =
 {
   Bulk_GetConfiguration,
@@ -85,24 +89,28 @@ USER_STANDARD_REQUESTS User_Standard_Requests =
   Bulk_SetDeviceAddress
 };
 
+/** \brief Device descriptor wrapper. */
 ONE_DESCRIPTOR Device_Descriptor =
 {
   (uint8_t*)Bulk_DeviceDescriptor,
   BULK_SIZ_DEVICE_DESC
 };
 
+/** \brief Device configuration wrapper. */
 ONE_DESCRIPTOR Config_Descriptor =
 {
   (uint8_t*)Bulk_ConfigDescriptor,
   BULK_SIZ_CONFIG_DESC
 };
 
+/** \brief USB bulk descriptor wrapper. */
 ONE_DESCRIPTOR Bulk_Descriptor =
 {
   (uint8_t*)Bulk_ConfigDescriptor + BULK_OFF_DESC,
   BULK_SIZ_DESC
 };
 
+/** \brief USB string table wrapper. */
 ONE_DESCRIPTOR String_Descriptor[5] =
 {
   {(uint8_t*)Bulk_StringLangID, BULK_SIZ_STRING_LANGID},
@@ -113,11 +121,9 @@ ONE_DESCRIPTOR String_Descriptor[5] =
 };
 
 
-/****************************************************************************************
-** NAME:           Bulk_Init
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    USB device initialization function.
+/************************************************************************************//**
+** \brief     USB device initialization function.
+** \return    none.
 **
 ****************************************************************************************/
 void Bulk_Init(void)
@@ -135,11 +141,9 @@ void Bulk_Init(void)
 } /*** end of Bulk_Init ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_Reset
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    USB device reset routine.
+/************************************************************************************//**
+** \brief     USB device reset routine.
+** \return    none.
 **
 ****************************************************************************************/
 void Bulk_Reset(void)
@@ -175,11 +179,9 @@ void Bulk_Reset(void)
 } /*** end of Bulk_Reset ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_SetConfiguration
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Update the device state to configured.
+/************************************************************************************//**
+** \brief     Update the device state to configured.
+** \return    none.
 **
 ****************************************************************************************/
 void Bulk_SetConfiguration(void)
@@ -194,11 +196,9 @@ void Bulk_SetConfiguration(void)
 } /*** end of Bulk_SetConfiguration ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_SetDeviceAddress
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Update the device state to addressed.
+/************************************************************************************//**
+** \brief     Update the device state to addressed.
+** \return    none.
 **
 ****************************************************************************************/
 void Bulk_SetDeviceAddress (void)
@@ -207,11 +207,9 @@ void Bulk_SetDeviceAddress (void)
 } /*** end of Bulk_SetDeviceAddress ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_Status_In
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    USB device status in routine.
+/************************************************************************************//**
+** \brief     USB device status in routine.
+** \return    none.
 **
 ****************************************************************************************/
 void Bulk_Status_In(void)
@@ -220,11 +218,9 @@ void Bulk_Status_In(void)
 } /*** end of Bulk_Status_In ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_Status_Out
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    USB device status out routine.
+/************************************************************************************//**
+** \brief     USB device status out routine.
+** \return    none.
 **
 ****************************************************************************************/
 void Bulk_Status_Out(void)
@@ -233,11 +229,10 @@ void Bulk_Status_Out(void)
 } /*** end of Bulk_Status_Out ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_Data_Setup
-** PARAMETER:      RequestNo request number.
-** RETURN VALUE:   USB_UNSUPPORT or USB_SUCCESS.
-** DESCRIPTION:    Handles the data class specific requests.
+/************************************************************************************//**
+** \brief     Handles the data class specific requests.
+** \param     RequestNo Request number.
+** \return    USB_UNSUPPORT or USB_SUCCESS.
 **
 ****************************************************************************************/
 RESULT Bulk_Data_Setup(uint8_t RequestNo)
@@ -269,11 +264,10 @@ RESULT Bulk_Data_Setup(uint8_t RequestNo)
 } /*** end of Bulk_Data_Setup ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_NoData_Setup
-** PARAMETER:      RequestNo request number.
-** RETURN VALUE:   USB_UNSUPPORT or USB_SUCCESS.
-** DESCRIPTION:    Handles the no data class specific requests.
+/************************************************************************************//**
+** \brief     Handles the no data class specific requests.
+** \param     RequestNo Request number.
+** \return    USB_UNSUPPORT or USB_SUCCESS.
 **
 ****************************************************************************************/
 RESULT Bulk_NoData_Setup(uint8_t RequestNo)
@@ -282,11 +276,10 @@ RESULT Bulk_NoData_Setup(uint8_t RequestNo)
 } /*** end of Bulk_NoData_Setup ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_GetDeviceDescriptor
-** PARAMETER:      Length length of the descriptor in bytes.
-** RETURN VALUE:   The address of the device descriptor.
-** DESCRIPTION:    Gets the device descriptor.
+/************************************************************************************//**
+** \brief     Gets the device descriptor.
+** \param     Length Length of the descriptor in bytes.
+** \return    The address of the device descriptor.
 **
 ****************************************************************************************/
 uint8_t *Bulk_GetDeviceDescriptor(uint16_t Length)
@@ -295,11 +288,10 @@ uint8_t *Bulk_GetDeviceDescriptor(uint16_t Length)
 } /*** end of Bulk_GetDeviceDescriptor ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_GetConfigDescriptor
-** PARAMETER:      Length length of the descriptor in bytes.
-** RETURN VALUE:   The address of the configuration descriptor.
-** DESCRIPTION:    Gets the configuration descriptor.
+/************************************************************************************//**
+** \brief     Gets the configuration descriptor.
+** \param     Length Length of the descriptor in bytes.
+** \return    The address of the configuration descriptor.
 **
 ****************************************************************************************/
 uint8_t *Bulk_GetConfigDescriptor(uint16_t Length)
@@ -308,11 +300,10 @@ uint8_t *Bulk_GetConfigDescriptor(uint16_t Length)
 } /*** end of Bulk_GetConfigDescriptor ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_GetStringDescriptor
-** PARAMETER:      Length length of the descriptor in bytes.
-** RETURN VALUE:   The address of the string descriptor.
-** DESCRIPTION:    Gets the string descriptor.
+/************************************************************************************//**
+** \brief     Gets the string descriptor.
+** \param     Length Length of the descriptor in bytes.
+** \return    The address of the string descriptor.
 **
 ****************************************************************************************/
 uint8_t *Bulk_GetStringDescriptor(uint16_t Length)
@@ -329,11 +320,10 @@ uint8_t *Bulk_GetStringDescriptor(uint16_t Length)
 } /*** end of Bulk_GetStringDescriptor ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_GetBulkDescriptor
-** PARAMETER:      Length length of the descriptor in bytes.
-** RETURN VALUE:   The address of the bulk descriptor.
-** DESCRIPTION:    Gets the bulk descriptor.
+/************************************************************************************//**
+** \brief     Gets the bulk descriptor.
+** \param     Length Length of the descriptor in bytes.
+** \return    The address of the bulk descriptor.
 **
 ****************************************************************************************/
 uint8_t *Bulk_GetBulkDescriptor(uint16_t Length)
@@ -342,13 +332,12 @@ uint8_t *Bulk_GetBulkDescriptor(uint16_t Length)
 } /*** end of Bulk_GetBulkDescriptor ***/
 
 
-/****************************************************************************************
-** NAME:           Bulk_Get_Interface_Setting
-** PARAMETER:      Interface        interface number.
-**                 AlternateSetting alternate setting number.
-** RETURN VALUE:   USB_UNSUPPORT or USB_SUCCESS.
-** DESCRIPTION:    Test the interface and the alternate setting according to the
-**                 supported one.
+/************************************************************************************//**
+** \brief     Test the interface and the alternate setting according to the
+**            supported one.
+** \param     Interface        interface number.
+** \param     AlternateSetting alternate setting number.
+** \return    USB_UNSUPPORT or USB_SUCCESS.
 **
 ****************************************************************************************/
 RESULT Bulk_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)

@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader file system interface source file
-|    File Name: file.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Source\file.c
+* \brief        Bootloader file system interface source file.
+* \ingroup      Core
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -41,49 +43,57 @@
 /****************************************************************************************
 * Defines
 ****************************************************************************************/
-/* array size configurators */
+/** \brief Maximum number of characters that can be on a line in the firmware file. */
 #define MAX_CHARS_PER_LINE                  (256)
+/** \brief Maximum number of data bytes that can be on a line in the firmware file
+ *         (S-record).
+ */
 #define MAX_DATA_BYTES_PER_LINE             (MAX_CHARS_PER_LINE/2)
-/* error codes */
+/** \brief Return code in case an invalid checksum was detected on an S-record line. */
 #define ERROR_SREC_INVALID_CHECKSUM         (-1)
 
 
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
+/** \brief Enumeration for the different internal module states. */
 typedef enum 
 { 
-  FIRMWARE_UPDATE_STATE_IDLE,                    /* idle state                         */
-  FIRMWARE_UPDATE_STATE_STARTING,                /* starting state                     */
-  FIRMWARE_UPDATE_STATE_ERASING,                 /* erasing state                      */
-  FIRMWARE_UPDATE_STATE_PROGRAMMING              /* programming state                  */
-} tFirmwareUpdateState;                          /* state identifier type              */
+  FIRMWARE_UPDATE_STATE_IDLE,                    /**< idle state                       */
+  FIRMWARE_UPDATE_STATE_STARTING,                /**< starting state                   */
+  FIRMWARE_UPDATE_STATE_ERASING,                 /**< erasing state                    */
+  FIRMWARE_UPDATE_STATE_PROGRAMMING              /**< programming state                */
+} tFirmwareUpdateState;
 
+/** \brief Enumeration for the different S-record line types. */
 typedef enum
 {
-  LINE_TYPE_S1,                                  /* 16-bit address line                */
-  LINE_TYPE_S2,                                  /* 24-bit address line                */
-  LINE_TYPE_S3,                                  /* 32-bit address line                */
-  LINE_TYPE_UNSUPPORTED                          /* unsupported line                   */
-} tSrecLineType;                                 /* S-Record line type                 */
+  LINE_TYPE_S1,                                  /**< 16-bit address line              */
+  LINE_TYPE_S2,                                  /**< 24-bit address line              */
+  LINE_TYPE_S3,                                  /**< 32-bit address line              */
+  LINE_TYPE_UNSUPPORTED                          /**< unsupported line                 */
+} tSrecLineType;
 
+/** \brief Structure type with information for the memory erase opeartion. */
 typedef struct 
 {
-  blt_addr   start_address;                      /* erase start address                */
-  blt_int32u total_size;                         /* total number of bytes to erase     */
-} tFileEraseInfo;                                /* erase info structure               */
+  blt_addr   start_address;                      /**< erase start address              */
+  blt_int32u total_size;                         /**< total number of bytes to erase   */
+} tFileEraseInfo;
 
+/** \brief Structure type for grouping FATFS related objects used by this module. */
 typedef struct 
 {
-  FATFS fs;                                      /* file system object for mouting     */
-  FIL   file;                                    /* file object for firmware file      */
-} tFatFsObjects;                                 /* grouped FATFS objects              */
+  FATFS fs;                                      /**< file system object for mouting   */
+  FIL   file;                                    /**< file object for firmware file    */
+} tFatFsObjects;
 
+/** \brief Structure type for grouping the parsing results of an S-record line. */
 typedef struct
 {
-  blt_char  line[MAX_CHARS_PER_LINE];            /* string buffer for the line chars   */
-  blt_int8u data[MAX_DATA_BYTES_PER_LINE];       /* array for S1, S2 or S3 data bytes  */
-  blt_addr  address;                             /* address found on S1, S2 or S3 line */
+  blt_char  line[MAX_CHARS_PER_LINE];            /**< string buffer for the line chars */
+  blt_int8u data[MAX_DATA_BYTES_PER_LINE];       /**< array for S1, S2 or S3 data bytes*/
+  blt_addr  address;                             /**< address on S1, S2 or S3 line     */
 } tSrecLineParseObject;
 
 
@@ -115,22 +125,25 @@ extern void            FileFirmwareUpdateLogHook(blt_char *info_string);
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
+/** \brief Local variable that holds the internal module state. */
 static tFirmwareUpdateState firmwareUpdateState;
+/** \brief Local variable for the used FATFS objects in this module. */
 static tFatFsObjects        fatFsObjects;
+/** \brief Local variable for storing S-record line parsing results. */
 static tSrecLineParseObject lineParseObject;
+/** \brief Local variable for storing information regarding the memory erase operation.*/
 static tFileEraseInfo       eraseInfo;
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
+/** \brief Local character buffer for storing the string with log information. */
 static blt_char             loggingStr[64];
 #endif
 
 
-/****************************************************************************************
-** NAME:           FileInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the file system interface module. The initial firmware
-**                 update state is set to idle and the file system is mounted as 
-**                 logical disk 0.
+/***********************************************************************************//**
+** \brief     Initializes the file system interface module. The initial firmware
+**            update state is set to idle and the file system is mounted as 
+**            logical disk 0.
+** \return    none
 **
 ****************************************************************************************/
 void FileInit(void)
@@ -146,12 +159,10 @@ void FileInit(void)
 } /*** end of FileInit ***/
 
 
-/****************************************************************************************
-** NAME:           FileIsIdle
-** PARAMETER:      none
-** RETURN VALUE:   BLT_TRUE when in idle state, BLT_FALSE otherwise. 
-** DESCRIPTION:    This function checks if a firmware update through the locally attached
-**                 storage is in progress or not (idle).
+/***********************************************************************************//**
+** \brief     This function checks if a firmware update through the locally attached
+**            storage is in progress or not (idle).
+** \return    BLT_TRUE when in idle state, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool FileIsIdle(void)
@@ -164,13 +175,11 @@ blt_bool FileIsIdle(void)
 } /*** end of FileIsIdle ***/
 
 
-/****************************************************************************************
-** NAME:           FileHandleFirmwareUpdateRequest
-** PARAMETER:      none
-** RETURN VALUE:   BLT_TRUE when a firmware update is requested, BLT_FALSE otherwise. 
-** DESCRIPTION:    This function checks if a firmware update through the locally attached
-**                 storage is requested to be started and if so processes this request
-**                 by transitioning from the IDLE to the STARTING state.
+/***********************************************************************************//**
+** \brief     This function checks if a firmware update through the locally attached
+**            storage is requested to be started and if so processes this request
+**            by transitioning from the IDLE to the STARTING state.
+** \return    BLT_TRUE when a firmware update is requested, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool FileHandleFirmwareUpdateRequest(void)
@@ -201,12 +210,10 @@ blt_bool FileHandleFirmwareUpdateRequest(void)
 } /*** end of FileHandleFirmwareUpdateRequest ***/
 
 
-/****************************************************************************************
-** NAME:           FileTask
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    File system task function for managing the firmware updates from
+/***********************************************************************************//**
+** \brief     File system task function for managing the firmware updates from
 **                 locally attached storage.
+** \return    none.
 **
 ****************************************************************************************/
 void FileTask(void)
@@ -492,11 +499,10 @@ void FileTask(void)
 } /*** end of FileTask ***/
 
 
-/****************************************************************************************
-** NAME:           SrecGetLineType
-** PARAMETER:      line    a line from the S-Record
-** RETURN VALUE:   the S-Record line type.
-** DESCRIPTION:    Inspects a line from a Motorola S-Record file to determine its type.
+/************************************************************************************//**
+** \brief     Inspects a line from a Motorola S-Record file to determine its type.
+** \param     line A line from the S-Record.
+** \return    the S-Record line type.
 **
 ****************************************************************************************/
 static tSrecLineType SrecGetLineType(const blt_char *line)
@@ -525,12 +531,11 @@ static tSrecLineType SrecGetLineType(const blt_char *line)
 } /*** end of SrecGetLineType ***/
 
 
-/****************************************************************************************
-** NAME:           SrecVerifyChecksum
-** PARAMETER:      line    an S1, S2 or S3 line from the S-Record
-** RETURN VALUE:   BLT_TRUE if the checksum is correct, BLT_FALSE otherwise.
-** DESCRIPTION:    Inspects an S1, S2 or S3 line from a Motorola S-Record file to
-**                 determine if the checksum at the end is corrrect.
+/************************************************************************************//**
+** \brief     Inspects an S1, S2 or S3 line from a Motorola S-Record file to
+**            determine if the checksum at the end is corrrect.
+** \param     line An S1, S2 or S3 line from the S-Record.
+** \return    BLT_TRUE if the checksum is correct, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool SrecVerifyChecksum(const blt_char *line)
@@ -571,18 +576,17 @@ static blt_bool SrecVerifyChecksum(const blt_char *line)
 } /*** end of SrecVerifyChecksum ***/
 
 
-/****************************************************************************************
-** NAME:           SrecParseLine
-** PARAMETER:      line    a line from the S-Record
-**                 address address found in the S-Record data line
-**                 data    byte array where the data bytes from the S-Record data line
-**                         are stored.
-** RETURN VALUE:   the number of data bytes found on the S-record data line, 0 in case 
-**                 the line is not an S1, S2 or S3 line or ERROR_SREC_INVALID_CHECKSUM
-**                 in case the checksum validation failed.
-** DESCRIPTION:    Parses a line from a Motorola S-Record file and looks for S1, S2 or S3 
-**                 lines with data. Note that if a null pointer is passed as the data
-**                 parameter, then no data is extracted from the line.
+/************************************************************************************//**
+** \brief     Parses a line from a Motorola S-Record file and looks for S1, S2 or S3 
+**            lines with data. Note that if a null pointer is passed as the data
+**            parameter, then no data is extracted from the line.
+** \param     line    A line from the S-Record.
+** \param     address Address found in the S-Record data line.
+** \param     data    Byte array where the data bytes from the S-Record data line
+**                    are stored.
+** \return    The number of data bytes found on the S-record data line, 0 in case 
+**            the line is not an S1, S2 or S3 line or ERROR_SREC_INVALID_CHECKSUM
+**            in case the checksum validation failed.
 **
 ****************************************************************************************/
 static blt_int16s SrecParseLine(const blt_char *line, blt_addr *address, blt_int8u *data)
@@ -704,13 +708,12 @@ static blt_int16s SrecParseLine(const blt_char *line, blt_addr *address, blt_int
 
 
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
-/****************************************************************************************
-** NAME:           FileLibByteNibbleToChar
-** PARAMETER:      nibble 4-bit value to convert
-** RETURN VALUE:   The resulting byte value
-** DESCRIPTION:    Helper function to convert a 4-bit value to a character that repre-
-**                 sents its value in hexadecimal format.
-**                 Example: FileLibByteNibbleToChar(11)  --> returns 'B'.
+/************************************************************************************//**
+** \brief     Helper function to convert a 4-bit value to a character that represents its
+**            value in hexadecimal format.
+**              Example: FileLibByteNibbleToChar(11)  --> returns 'B'.
+** \param     nibble 4-bit value to convert.
+** \return    The resulting byte value.
 **
 ****************************************************************************************/
 static blt_char FileLibByteNibbleToChar(blt_int8u nibble)
@@ -732,14 +735,13 @@ static blt_char FileLibByteNibbleToChar(blt_int8u nibble)
 } /*** end of FileLibByteNibbleToChar ***/
 
 
-/****************************************************************************************
-** NAME:           FileLibByteToHexString
-** PARAMETER:      byte_val    8-bit value to convert
-**                 destination pointer to character buffer for storing the results.
-** RETURN VALUE:   The resulting string
-** DESCRIPTION:    Helper function to convert a byte value to a string representing the
-**                 value in hexadecimal format.
-**                 Example: FileLibByteToHexString(28, strBuffer)  --> returns "1C".
+/************************************************************************************//**
+** \brief     Helper function to convert a byte value to a string representing the
+**            value in hexadecimal format.
+**              Example: FileLibByteToHexString(28, strBuffer)  --> returns "1C".
+** \param     byte_val    8-bit value to convert.
+** \param     destination Pointer to character buffer for storing the results.
+** \return    The resulting string.
 **
 ****************************************************************************************/
 static blt_char *FileLibByteToHexString(blt_int8u byte_val, blt_char *destination)
@@ -755,14 +757,13 @@ static blt_char *FileLibByteToHexString(blt_int8u byte_val, blt_char *destinatio
 } /*** end of FileLibByteToHexString ***/
 
 
-/****************************************************************************************
-** NAME:           FileLibLongToIntString
-** PARAMETER:      hexstring string beginning with 2 characters that represent a hexa-
-**                           decimal value
-** RETURN VALUE:   The resulting string
-** DESCRIPTION:    Helper function to convert a 32-bit unsigned number to a string that
-**                 represents its decimal value.
-**                 Example: FileLibLongToIntString(1234, strBuffer)  --> returns "1234".
+/************************************************************************************//**
+** \brief     Helper function to convert a 32-bit unsigned number to a string that
+**            represents its decimal value.
+**              Example: FileLibLongToIntString(1234, strBuffer)  --> returns "1234".
+** \param     long_val    32-bit value to convert.
+** \param     destination Pointer to character buffer for storing the results.
+** \return    The resulting string.
 **
 ****************************************************************************************/
 static blt_char *FileLibLongToIntString(blt_int32u long_val, blt_char *destination)
@@ -796,14 +797,13 @@ static blt_char *FileLibLongToIntString(blt_int32u long_val, blt_char *destinati
 #endif /* (BOOT_FILE_LOGGING_ENABLE > 0) */
 
 
-/****************************************************************************************
-** NAME:           FileLibHexStringToByte
-** PARAMETER:      hexstring string beginning with 2 characters that represent a hexa-
-**                           decimal value
-** RETURN VALUE:   The resulting byte value
-** DESCRIPTION:    Helper function to convert a sequence of 2 characters that represent
-**                 a hexadecimal value to the actual byte value.
-**                 Example: FileLibHexStringToByte("2f")  --> returns 47.
+/************************************************************************************//**
+** \brief     Helper function to convert a sequence of 2 characters that represent
+**            a hexadecimal value to the actual byte value.
+**              Example: FileLibHexStringToByte("2f")  --> returns 47.
+** \param     hexstring String beginning with 2 characters that represent a hexa-
+**                      decimal value.
+** \return    The resulting byte value.
 **
 ****************************************************************************************/
 static blt_int8u FileLibHexStringToByte(const blt_char *hexstring)

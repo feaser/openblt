@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader application source file
-|    File Name: main.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_Crossworks\Boot\main.c
+* \brief        Bootloader application source file.
+* \ingroup      Boot_ARM7_LPC2000_Olimex_LPC_L2294_Crossworks
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -42,12 +44,10 @@
 static void Init(void);
 
 
-/****************************************************************************************
-** NAME:           main
-** PARAMETER:      none
-** RETURN VALUE:   program return code
-** DESCRIPTION:    This is the entry point for the bootloader application and is called 
-**                 by the reset interrupt vector after the C-startup routines executed.
+/************************************************************************************//**
+** \brief     This is the entry point for the bootloader application and is called 
+**            by the reset interrupt vector after the C-startup routines executed.
+** \return    Program return code.
 **
 ****************************************************************************************/
 int main(void)
@@ -68,13 +68,11 @@ int main(void)
 } /*** end of main ***/
 
 
-/****************************************************************************************
-** NAME:           Init
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the microcontroller. The Fpll is set to 60MHz and Fvpb is
-**                 configured equal to Fpll. The GPIO pin of the status LED is configured
-**                 as digital output.
+/************************************************************************************//**
+** \brief     Initializes the microcontroller. The Fpll is set to 60MHz and Fvpb is
+**            configured equal to Fpll. The GPIO pin of the status LED is configured
+**            as digital output.
+** \return    none.
 **
 ****************************************************************************************/
 static void Init(void)

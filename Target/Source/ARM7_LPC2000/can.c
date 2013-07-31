@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader CAN communication interface source file
-|    File Name: can.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Source\ARM7_LPC2000\can.c
+* \brief        Bootloader CAN communication interface source file.
+* \ingroup      Target_ARM7_LPC2000
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 
@@ -40,50 +42,73 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-#define CAN_TBS1        (0x00000004)             /* transmit buffer 1 idle             */
-#define CAN_TCS1        (0x00000008)             /* transmit buffer 1 complete         */
-#define CAN_RRB         (0x04)                   /* receive buffer release             */
-#define CAN_RBS         (0x01)                   /* receive buffer status              */
-#define CAN_TR          (0x01)                   /* transmission request               */
-#define CAN_STB1        (0x20)                   /* select tx buffer 1 for transmit    */
+/** \brief Transmit buffer 1 idle bit. */
+#define CAN_TBS1        (0x00000004)             
+/** \brief Transmit buffer 1 complete bit. */
+#define CAN_TCS1        (0x00000008)
+/** \brief Receive buffer release bit. */
+#define CAN_RRB         (0x04)
+/** \brief Receive buffer status bit. */
+#define CAN_RBS         (0x01)
+/** \brief Transmission request bit. */
+#define CAN_TR          (0x01)
+/** \brief Select tx buffer 1 for transmit bit. */
+#define CAN_STB1        (0x20)
 
 
 /****************************************************************************************
 * Register definitions
 ****************************************************************************************/
+/** \brief CANAFMR CAN controller register. */
 #define CANAFMR         (*((volatile blt_int8u  *) 0xE003C000))
+/** \brief CAN1MOD CAN controller register. */
 #define CAN1MOD         (*((volatile blt_int32u *) 0xE0044000))
+/** \brief CAN1IER CAN controller register. */
 #define CAN1IER         (*((volatile blt_int32u *) 0xE0044010))
+/** \brief CAN1GSR CAN controller register. */
 #define CAN1GSR         (*((volatile blt_int32u *) 0xE0044008))
+/** \brief CAN1BTR CAN controller register. */
 #define CAN1BTR         (*((volatile blt_int32u *) 0xE0044014))
+/** \brief CAN1TFI1 CAN controller register. */
 #define CAN1TFI1        (*((volatile blt_int32u *) 0xE0044030))
+/** \brief CAN1TID1 CAN controller register. */
 #define CAN1TID1        (*((volatile blt_int32u *) 0xE0044034))
+/** \brief CAN1TDA1 CAN controller register. */
 #define CAN1TDA1        (*((volatile blt_int32u *) 0xE0044038))
+/** \brief CAN1TDB1 CAN controller register. */
 #define CAN1TDB1        (*((volatile blt_int32u *) 0xE004403C))
+/** \brief CAN1CMR CAN controller register. */
 #define CAN1CMR         (*((volatile blt_int32u *) 0xE0044004))
+/** \brief CAN1SR CAN controller register. */
 #define CAN1SR          (*((volatile blt_int32u *) 0xE004401C))
+/** \brief CAN1RID CAN controller register. */
 #define CAN1RID         (*((volatile blt_int32u *) 0xE0044024))
+/** \brief CAN1RDA CAN controller register. */
 #define CAN1RDA         (*((volatile blt_int32u *) 0xE0044028))
+/** \brief CAN1RDB CAN controller register. */
 #define CAN1RDB         (*((volatile blt_int32u *) 0xE004402C))
 
 
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
+/** \brief Structure type for grouping CAN bus timing related information. */
 typedef struct t_can_bus_timing
 {
-  blt_int8u tseg1;                                    /* CAN time segment 1            */
-  blt_int8u tseg2;                                    /* CAN time segment 2            */
-} tCanBusTiming;                                      /* bus timing structure type     */
+  blt_int8u tseg1;                                    /**< CAN time segment 1          */
+  blt_int8u tseg2;                                    /**< CAN time segment 2          */
+} tCanBusTiming;
 
 
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
-/* According to the CAN protocol 1 bit-time can be made up of between 8..25 time quanta 
- * (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC always being 1. 
- * The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) * 100%. This array contains
- * possible and valid time quanta configurations with a sample point between 68..78%.
+/** \brief CAN bittiming table for dynamically calculating the bittiming settings.
+ *  \details According to the CAN protocol 1 bit-time can be made up of between 8..25 
+ *           time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC 
+ *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) * 
+ *           100%. This array contains possible and valid time quanta configurations with
+ *           a sample point between 68..78%.
  */
 static const tCanBusTiming canTiming[] =
 {                       /*  TQ | TSEG1 | TSEG2 | SP  */
@@ -109,14 +134,13 @@ static const tCanBusTiming canTiming[] =
 };
 
 
-/****************************************************************************************
-** NAME:           CanGetSpeedConfig
-** PARAMETER:      baud The desired baudrate in kbps. Valid values are 10..1000.
-**                 btr  Pointer to where the value for register CANxBTR will be stored.
-** RETURN VALUE:   BLT_TRUE if the CAN bustiming register values were found, BLT_FALSE 
-**                 otherwise.
-** DESCRIPTION:    Search algorithm to match the desired baudrate to a possible bus 
-**                 timing configuration.
+/************************************************************************************//**
+** \brief     Search algorithm to match the desired baudrate to a possible bus 
+**            timing configuration.
+** \param     baud The desired baudrate in kbps. Valid values are 10..1000.
+** \param     btr  Pointer to where the value for register CANxBTR will be stored.
+** \return    BLT_TRUE if the CAN bustiming register values were found, BLT_FALSE 
+**            otherwise.
 **
 ****************************************************************************************/
 static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int32u *btr)
@@ -148,11 +172,9 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int32u *btr)
 } /*** end of CanGetSpeedConfig ***/
 
 
-/****************************************************************************************
-** NAME:           CanInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the CAN controller and synchronizes it to the CAN bus.
+/************************************************************************************//**
+** \brief     Initializes the CAN controller and synchronizes it to the CAN bus.
+** \return    none.
 **
 ****************************************************************************************/
 void CanInit(void)
@@ -183,12 +205,11 @@ void CanInit(void)
 } /*** end of CanInit ***/
 
 
-/****************************************************************************************
-** NAME:           CanTransmitPacket
-** PARAMETER:      data pointer to byte array with data that it to be transmitted.
-**                 len  number of bytes that are to be transmitted.
-** RETURN VALUE:   none
-** DESCRIPTION:    Transmits a packet formatted for the communication interface.
+/************************************************************************************//**
+** \brief     Transmits a packet formatted for the communication interface.
+** \param     data Pointer to byte array with data that it to be transmitted.
+** \param     len  Number of bytes that are to be transmitted.
+** \return    none.
 **
 ****************************************************************************************/
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
@@ -214,11 +235,10 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 } /*** end of CanTransmitPacket ***/
 
 
-/****************************************************************************************
-** NAME:           CanReceivePacket
-** PARAMETER:      data pointer to byte array where the data is to be stored.
-** RETURN VALUE:   BLT_TRUE is a packet was received, BLT_FALSE otherwise.
-** DESCRIPTION:    Receives a communication interface packet if one is present.
+/************************************************************************************//**
+** \brief     Receives a communication interface packet if one is present.
+** \param     data Pointer to byte array where the data is to be stored.
+** \return    BLT_TRUE is a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool CanReceivePacket(blt_int8u *data)

@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader backdoor entry source file
-|    File Name: backdoor.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Source\backdoor.c
+* \brief        Bootloader backdoor entry source file.
+* \ingroup      Core
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -39,8 +41,12 @@
 * Macro definitions
 ****************************************************************************************/
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
-  /* set the time in milliseconds that the backdoor is open */
+  #ifndef BACKDOOR_ENTRY_TIMEOUT_MS
+  /** \brief Sets the time in milliseconds that the backdoor is open, but allow an 
+   *         override for this time.
+   */
   #define BACKDOOR_ENTRY_TIMEOUT_MS  (50)
+  #endif
 #endif
 
 /****************************************************************************************
@@ -56,16 +62,16 @@ extern blt_bool BackDoorEntryHook(void);
 * Local data declarations
 ****************************************************************************************/
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+/** \brief To determine if the backdoor is open or closed. */
 static blt_bool backdoorOpen;
+/** \brief To determine how long the backdoor has been open in milliseconds. */
 static blt_int32u backdoorOpenTime;
 #endif
 
 
-/****************************************************************************************
-** NAME:           BackDoorInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the backdoor entry option.
+/************************************************************************************//**
+** \brief     Initializes the backdoor entry option.
+** \return    none
 **
 ****************************************************************************************/
 void BackDoorInit(void)
@@ -105,14 +111,12 @@ void BackDoorInit(void)
 } /*** end of BackDoorInit ***/
 
 
-/****************************************************************************************
-** NAME:           BackDoorCheck
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    The default backdoor entry feature keeps the bootloader active for a
-**                 predetermined time after reset, allowing the host application to
-**                 establish a connection and start a programming sequence. This function
-**                 controls the opening/closing of the backdoor.
+/************************************************************************************//**
+** \brief     The default backdoor entry feature keeps the bootloader active for a
+**            predetermined time after reset, allowing the host application to
+**            establish a connection and start a programming sequence. This function
+**            controls the opening/closing of the backdoor.
+** \return    none
 **
 ****************************************************************************************/
 void BackDoorCheck(void)

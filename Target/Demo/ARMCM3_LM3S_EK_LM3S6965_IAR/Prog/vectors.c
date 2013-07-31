@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader interrupt vector table source file
-|    File Name: vectors.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_IAR\Prog\vectors.c
+* \brief        Demo program interrupt vectors source file.
+* \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_IAR
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -44,18 +46,17 @@ extern void __iar_program_start( void );
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
+/** \brief Structure type for vector table entries. */
 typedef union
 {
-  void (*func)(void);                                 /* for ISR function pointers     */
-  void *ptr;                                          /* for stack pointer entry       */
-}tIsrFunc;                                            /* type for vector table entries */
+  void (*func)(void);                                 /**< for ISR function pointers   */
+  void *ptr;                                          /**< for stack pointer entry     */
+}tIsrFunc;
 
 
-/****************************************************************************************
-** NAME:           UnusedISR
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Catch-all for unused interrrupt service routines.
+/************************************************************************************//**
+** \brief     Catch-all for unused interrrupt service routines.
+** \return    none.
 **
 ****************************************************************************************/
 void UnusedISR(void)
@@ -71,6 +72,7 @@ void UnusedISR(void)
 #pragma language=extended                             /* enable IAR extensions         */
 #pragma segment="CSTACK"
 
+/** \brief Interrupt vector table. */
 __root const tIsrFunc __vector_table[] @ ".intvec" =
 {
   { .ptr = __sfe( "CSTACK" )       },                 /* the initial stack pointer     */

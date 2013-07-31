@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: bootloader C startup source file
-|    File Name: cstart.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Source\ARMCM3_STM32\GCC\cstart.c
+* \brief        Bootloader C startup source file.
+* \ingroup      Target_ARMCM3_STM32
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -54,15 +56,9 @@ extern blt_int32u _ebss;
 extern blt_int32u _estack;
 
 
-/****************************************************************************************
-** NAME:           EntryFromProg
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Called by the user program to activate the bootloader. Do not place
-**                 any assembly code before this function and the end of the vector
-**                 table. This guarantees that this function is located at address
-**                 0x08000150. The user program can call this function from C in the 
-**                 following way:
+/************************************************************************************//**
+** \brief     Called by the user program to activate the bootloader. The user program 
+**            can call this function from C in the following way:
 **                         void ActivateBootloader(void)
 **                         {
 **                           void (*pEntryFromProgFnc)(void);
@@ -70,6 +66,7 @@ extern blt_int32u _estack;
 **                           pEntryFromProgFnc = (void*)0x08000150;
 **                           pEntryFromProgFnc();
 **                         }
+** \return    none.
 **
 ****************************************************************************************/
 __attribute__ ((section (".entry"))) 
@@ -111,12 +108,10 @@ void EntryFromProg(void)
 } /*** end of EntryFromProg ***/
 
 
-/****************************************************************************************
-** NAME:           reset_handler
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Reset interrupt service routine. Configures the stack, initializes 
-**                 RAM and jumps to function main.
+/************************************************************************************//**
+** \brief     Reset interrupt service routine. Configures the stack, initializes 
+**            RAM and jumps to function main.
+** \return    none.
 **
 ****************************************************************************************/
 void reset_handler(void)

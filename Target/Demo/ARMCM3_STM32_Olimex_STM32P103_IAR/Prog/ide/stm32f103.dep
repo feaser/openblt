@@ -73,13 +73,13 @@
       <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
       <file>$PROJ_DIR$\..\obj\stm32f10x_rtc.pbi</file>
       <file>$PROJ_DIR$\..\obj\stm32f10x_rcc.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f103.pbd</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_usart.pbi</file>
       <file>$PROJ_DIR$\..\obj\stm32f10x_wwdg.pbi</file>
-      <file>$PROJ_DIR$\..\bin\stm32f103.srec</file>
       <file>$PROJ_DIR$\..\obj\app.pbi</file>
+      <file>$PROJ_DIR$\..\bin\stm32f103.srec</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_usart.pbi</file>
       <file>$PROJ_DIR$\..\obj\stm32f10x_tim.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f103.pbd</file>
       <file>$PROJ_DIR$\..\obj\stm32f10x_spi.pbi</file>
       <file>$PROJ_DIR$\..\obj\stm32f10x_iwdg.pbi</file>
       <file>$PROJ_DIR$\..\obj\stm32f10x_i2c.pbi</file>
@@ -344,10 +344,6 @@
       </outputs>
       <inputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 8 2 1 158 160 145 84 162 142 112 116 182 51 13 6 10 12 15 17 19 21 23 25 27 29 31 33 35 37 39 41 43 45 47 49 4</file>
-        </tool>
-        <tool>
           <name>ICCARM</name>
           <file> 8 2 1 158 160 145 84 162 142 112 116 182 51 13 6 10 12 15 17 19 21 23 25 27 29 31 33 35 37 39 41 43 45 47 49 4</file>
         </tool>
@@ -551,7 +547,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 68</file>
+          <file> 72</file>
         </tool>
         <tool>
           <name>ICCARM</name>
@@ -758,7 +754,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 73</file>
+          <file> 71</file>
         </tool>
         <tool>
           <name>ICCARM</name>
@@ -781,7 +777,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 69</file>
+          <file> 70</file>
         </tool>
         <tool>
           <name>ICCARM</name>
@@ -804,7 +800,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 70</file>
+          <file> 67</file>
         </tool>
         <tool>
           <name>ICCARM</name>
@@ -890,6 +886,10 @@
         </tool>
       </outputs>
       <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 55 243 2 1 158 160 145 84 162 142 112 116 182 51 13 6 8 10 12 15 17 19 21 23 25 27 29 31 33 35 37 39 41 43 45 47 49 4 53 57 59 62</file>
+        </tool>
         <tool>
           <name>ICCARM</name>
           <file> 55 243 2 1 158 160 145 84 162 142 112 116 182 51 13 6 8 10 12 15 17 19 21 23 25 27 29 31 33 35 37 39 41 43 45 47 49 4 53 57 59 62</file>
@@ -993,7 +993,7 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 72</file>
+          <file> 68</file>
         </tool>
         <tool>
           <name>ICCARM</name>
@@ -1077,7 +1077,7 @@
       <outputs>
         <tool>
           <name>OBJCOPY</name>
-          <file> 71</file>
+          <file> 69</file>
         </tool>
       </outputs>
       <inputs>

@@ -72,13 +72,13 @@
       <file>$PROJ_DIR$\..\obj\file.lst</file>
       <file>$PROJ_DIR$\..\obj\ssi.lst</file>
       <file>$PROJ_DIR$\..\obj\filesys.o</file>
-      <file>$PROJ_DIR$\..\obj\filesys.lst</file>
-      <file>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\option\ccsbcs.c</file>
-      <file>$PROJ_DIR$\..\obj\led.pbi</file>
       <file>$PROJ_DIR$\..\obj\unicode.lst</file>
-      <file>$PROJ_DIR$\..\obj\led.lst</file>
       <file>$PROJ_DIR$\..\..\..\..\Source\filesys.c</file>
+      <file>$PROJ_DIR$\..\obj\led.lst</file>
+      <file>$PROJ_DIR$\..\obj\led.pbi</file>
       <file>$PROJ_DIR$\..\..\..\..\Source\filesys.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\option\ccsbcs.c</file>
+      <file>$PROJ_DIR$\..\obj\filesys.lst</file>
       <file>$PROJ_DIR$\..\obj\unicode.pbi</file>
       <file>$PROJ_DIR$\..\obj\unicode.o</file>
       <file>$TOOLKIT_DIR$\inc\c\ctype.h</file>
@@ -119,8 +119,8 @@
       <file>$PROJ_DIR$\..\obj\assert.o</file>
       <file>$PROJ_DIR$\..\obj\hooks.o</file>
       <file>$PROJ_DIR$\..\obj\com.o</file>
-      <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR\memory.x</file>
       <file>$PROJ_DIR$\..\obj\flash.lst</file>
+      <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR\memory.x</file>
       <file>$PROJ_DIR$\..\obj\backdoor.lst</file>
       <file>$PROJ_DIR$\..\obj\cpu.lst</file>
       <file>$PROJ_DIR$\..\obj\hooks.pbi</file>
@@ -200,6 +200,10 @@
         </tool>
       </outputs>
       <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 0</file>
+        </tool>
         <tool>
           <name>ICCARM</name>
           <file> 0</file>
@@ -334,10 +338,6 @@
         </tool>
       </outputs>
       <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 20 21 24 25 26 3 53 41 49 27 60 34 57 38 36 40 51 59 45 47 16 55 62 8 15 13</file>
-        </tool>
         <tool>
           <name>ICCARM</name>
           <file> 20 21 24 25 26 3 53 41 49 27 60 34 57 38 36 40 51 59 45 47 16 55 62 8 15 13</file>
@@ -509,7 +509,7 @@
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 114 137</file>
+          <file> 113 137</file>
         </tool>
       </outputs>
       <inputs>
@@ -601,17 +601,17 @@
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 69 74</file>
+          <file> 66 74</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 45 47 16 67</file>
+          <file> 45 47 16 71</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 45 47 16 67</file>
+          <file> 45 47 16 71</file>
         </tool>
       </inputs>
     </file>
@@ -785,17 +785,17 @@
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 66 65</file>
+          <file> 72 65</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 53 41 49 27 60 34 57 38 36 40 51 72 45 47 132 55 62</file>
+          <file> 53 41 49 27 60 34 57 38 36 40 51 70 45 47 132 55 62</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 53 41 49 27 60 34 57 38 36 40 51 72 45 47 132 55 62</file>
+          <file> 53 41 49 27 60 34 57 38 36 40 51 70 45 47 132 55 62</file>
         </tool>
       </inputs>
     </file>
@@ -804,11 +804,11 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 68</file>
+          <file> 69</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 70 108</file>
+          <file> 68 108</file>
         </tool>
       </outputs>
       <inputs>
@@ -837,7 +837,7 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 113 110 163 160 112 164 94 102 131 151 146 137 171 172 111 173 159 105 93 149 174 136 82 175 74 139 162 158 122 144 121</file>
+          <file> 114 110 163 160 112 164 94 102 131 151 146 137 171 172 111 173 159 105 93 149 174 136 82 175 74 139 162 158 122 144 121</file>
         </tool>
       </inputs>
     </file>

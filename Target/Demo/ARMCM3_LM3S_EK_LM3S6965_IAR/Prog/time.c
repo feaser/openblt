@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: Timer driver source file
-|    File Name: time.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_IAR\Prog\time.c
+* \brief        Timer driver source file.
+* \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_IAR
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -38,14 +40,15 @@
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
+/** \brief Local variable for storing the number of milliseconds that have elapsed since
+ *         startup.
+ */
 static unsigned long millisecond_counter;
 
 
-/****************************************************************************************
-** NAME:           TimeInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the timer.
+/************************************************************************************//**
+** \brief     Initializes the timer.
+** \return    none.
 **
 ****************************************************************************************/
 void TimeInit(void)
@@ -59,11 +62,9 @@ void TimeInit(void)
 } /*** end of TimeInit ***/
 
 
-/****************************************************************************************
-** NAME:           TimeDeinit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Stops and disables the timer.
+/************************************************************************************//**
+** \brief     Stops and disables the timer.
+** \return    none.
 **
 ****************************************************************************************/
 void TimeDeinit(void)
@@ -73,11 +74,10 @@ void TimeDeinit(void)
 } /*** end of TimeDeinit ***/
 
 
-/****************************************************************************************
-** NAME:           TimeSet
-** PARAMETER:      timer_value initialize value of the millisecond timer.
-** RETURN VALUE:   none
-** DESCRIPTION:    Sets the initial counter value of the millisecond timer.
+/************************************************************************************//**
+** \brief     Sets the initial counter value of the millisecond timer.
+** \param     timer_value initialize value of the millisecond timer.
+** \return    none.
 **
 ****************************************************************************************/
 void TimeSet(unsigned long timer_value)
@@ -87,11 +87,9 @@ void TimeSet(unsigned long timer_value)
 } /*** end of TimeSet ***/
 
 
-/****************************************************************************************
-** NAME:           TimeGet
-** PARAMETER:      none
-** RETURN VALUE:   current value of the millisecond timer
-** DESCRIPTION:    Obtains the counter value of the millisecond timer.
+/************************************************************************************//**
+** \brief     Obtains the counter value of the millisecond timer.
+** \return    Current value of the millisecond timer.
 **
 ****************************************************************************************/
 unsigned long TimeGet(void)
@@ -101,11 +99,9 @@ unsigned long TimeGet(void)
 } /*** end of TimeGet ***/
 
 
-/****************************************************************************************
-** NAME:           TimeISRHandler
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Interrupt service routine of the timer.
+/************************************************************************************//**
+** \brief     Interrupt service routine of the timer.
+** \return    none.
 **
 ****************************************************************************************/
 void TimeISRHandler(void)

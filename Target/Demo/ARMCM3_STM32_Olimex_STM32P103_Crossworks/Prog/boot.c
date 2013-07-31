@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: demo program bootloader interface source file
-|    File Name: boot.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_Crossworks\Prog\boot.c
+* \brief        Demo program bootloader interface source file.
+* \ingroup      Prog_ARMCM3_STM32_Olimex_STM32P103_Crossworks
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -35,11 +37,9 @@
 #include "header.h"                                    /* generic header               */
 
 
-/****************************************************************************************
-** NAME:           BootActivate
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Bootloader activation function.
+/************************************************************************************//**
+** \brief     Bootloader activation function.
+** \return    none.
 **
 ****************************************************************************************/
 static void BootActivate(void)
@@ -63,21 +63,14 @@ static void BootActivate(void)
 ****************************************************************************************/
 
 /****************************************************************************************
-* Macro definitions
-****************************************************************************************/
-
-
-/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static unsigned char UartReceiveByte(unsigned char *data);
 
 
-/****************************************************************************************
-** NAME:           BootComInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the UART communication interface
+/************************************************************************************//**
+** \brief     Initializes the UART communication interface.
+** \return    none.
 **
 ****************************************************************************************/
 void BootComInit(void)
@@ -111,12 +104,10 @@ void BootComInit(void)
 } /*** end of BootComInit ***/
 
 
-/****************************************************************************************
-** NAME:           BootComCheckActivationRequest
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Receives the CONNECT request from the host, which indicates that the
-**                 bootloader should be activated and, if so, activates it.
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
 **
 ****************************************************************************************/
 void BootComCheckActivationRequest(void)
@@ -164,11 +155,10 @@ void BootComCheckActivationRequest(void)
 } /*** end of BootComCheckActivationRequest ***/
 
 
-/****************************************************************************************
-** NAME:           UartReceiveByte
-** PARAMETER:      data pointer to byte where the data is to be stored.
-** RETURN VALUE:   1 if a byte was received, 0 otherwise.
-** DESCRIPTION:    Receives a communication interface byte if one is present.
+/************************************************************************************//**
+** \brief     Receives a communication interface byte if one is present.
+** \param     data Pointer to byte where the data is to be stored.
+** \return    1 if a byte was received, 0 otherwise.
 **
 ****************************************************************************************/
 static unsigned char UartReceiveByte(unsigned char *data)
@@ -193,27 +183,25 @@ static unsigned char UartReceiveByte(unsigned char *data)
 ****************************************************************************************/
 
 /****************************************************************************************
-* Macro definitions
-****************************************************************************************/
-
-
-/****************************************************************************************
 * Type definitions
 ****************************************************************************************/
+/** \brief Structure type for grouping CAN bus timing related information. */
 typedef struct t_can_bus_timing
 {
-  unsigned char tseg1;                                /* CAN time segment 1            */
-  unsigned char tseg2;                                /* CAN time segment 2            */
-} tCanBusTiming;                                      /* bus timing structure type     */
+  unsigned char tseg1;                                /**< CAN time segment 1          */
+  unsigned char tseg2;                                /**< CAN time segment 2          */
+} tCanBusTiming;
 
 
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
-/* According to the CAN protocol 1 bit-time can be made up of between 8..25 time quanta 
- * (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC always being 1. 
- * The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) * 100%. This array contains
- * possible and valid time quanta configurations with a sample point between 68..78%.
+/** \brief CAN bittiming table for dynamically calculating the bittiming settings.
+ *  \details According to the CAN protocol 1 bit-time can be made up of between 8..25 
+ *           time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC 
+ *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) * 
+ *           100%. This array contains possible and valid time quanta configurations with
+ *           a sample point between 68..78%.
  */
 static const tCanBusTiming canTiming[] =
 {                       /*  TQ | TSEG1 | TSEG2 | SP  */
@@ -239,15 +227,14 @@ static const tCanBusTiming canTiming[] =
 };
 
 
-/****************************************************************************************
-** NAME:           CanGetSpeedConfig
-** PARAMETER:      baud The desired baudrate in kbps. Valid values are 10..1000.
-**                 prescaler Pointer to where the value for the prescaler will be stored.
-**                 tseg1 Pointer to where the value for TSEG2 will be stored.
-**                 tseg2 Pointer to where the value for TSEG2 will be stored.
-** RETURN VALUE:   1 if the CAN bustiming register values were found, 0 otherwise.
-** DESCRIPTION:    Search algorithm to match the desired baudrate to a possible bus 
-**                 timing configuration.
+/************************************************************************************//**
+** \brief     Search algorithm to match the desired baudrate to a possible bus 
+**            timing configuration.
+** \param     baud The desired baudrate in kbps. Valid values are 10..1000.
+** \param     prescaler Pointer to where the value for the prescaler will be stored.
+** \param     tseg1 Pointer to where the value for TSEG2 will be stored.
+** \param     tseg2 Pointer to where the value for TSEG2 will be stored.
+** \return    1 if the CAN bustiming register values were found, 0 otherwise.
 **
 ****************************************************************************************/
 static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *prescaler, 
@@ -279,11 +266,9 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
 } /*** end of CanGetSpeedConfig ***/
 
 
-/****************************************************************************************
-** NAME:           BootComInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the CAN communication interface
+/************************************************************************************//**
+** \brief     Initializes the CAN communication interface.
+** \return    none.
 **
 ****************************************************************************************/
 void BootComInit(void)
@@ -343,12 +328,10 @@ void BootComInit(void)
 } /*** end of BootComInit ***/
 
 
-/****************************************************************************************
-** NAME:           BootComCheckActivationRequest
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Receives the CONNECT request from the host, which indicates that the
-**                 bootloader should be activated and, if so, activates it.
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
 **
 ****************************************************************************************/
 void BootComCheckActivationRequest(void)

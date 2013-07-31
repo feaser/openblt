@@ -1,35 +1,35 @@
-/****************************************************************************************
-|  Description: bootloader USB device power management source file
-|    File Name: usb_pwr.c
-|        Notes: based on an example from STMicroelectronics
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARMCM3_STM32_Olimex_STM32H103_Crossworks\Boot\usb_pwr.c
+* \brief        Bootloader USB device power management source file.
+* \ingroup      Boot_ARMCM3_STM32_Olimex_STM32H103_Crossworks
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
-
 
 /****************************************************************************************
 * Include files
@@ -52,11 +52,12 @@ extern void UsbLeaveLowPowerMode(void);
 /****************************************************************************************
 * Global data declarations
 ****************************************************************************************/
-/* USB device status */
+/** \brief USB device status. */
 volatile uint32_t bDeviceState = UNCONNECTED; 
-/* true when suspend is possible */
+/** \brief True when suspend is possible. */
 volatile bool fSuspendEnabled = TRUE;  
 
+/** \brief Data structure to group together resume state related information. */
 struct
 {
   volatile RESUME_STATE eState;
@@ -64,11 +65,9 @@ struct
 }ResumeS;
 
 
-/****************************************************************************************
-** NAME:           PowerOn
-** PARAMETER:      none
-** RETURN VALUE:   USB_SUCCESS
-** DESCRIPTION:    Power on routine for the USB device
+/************************************************************************************//**
+** \brief     Power on routine for the USB device 
+** \return    USB_SUCCESS.
 **
 ****************************************************************************************/
 RESULT PowerOn(void)
@@ -92,11 +91,9 @@ RESULT PowerOn(void)
 } /*** end of PowerOn ***/
 
 
-/****************************************************************************************
-** NAME:           PowerOff
-** PARAMETER:      none
-** RETURN VALUE:   USB_SUCCESS
-** DESCRIPTION:    Power of routine for the USB device to handle a switch of event.
+/************************************************************************************//**
+** \brief     Power of routine for the USB device to handle a switch of event.
+** \return    USB_SUCCESS.
 **
 ****************************************************************************************/
 RESULT PowerOff()
@@ -113,11 +110,9 @@ RESULT PowerOff()
 } /*** end of PowerOff ***/
 
 
-/****************************************************************************************
-** NAME:           Suspend
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Sets suspend mode operating conditions.
+/************************************************************************************//**
+** \brief     Sets suspend mode operating conditions.
+** \return    none.
 **
 ****************************************************************************************/
 void Suspend(void)
@@ -139,11 +134,9 @@ void Suspend(void)
 } /*** end of Suspend ***/
 
 
-/****************************************************************************************
-** NAME:           Resume_Init
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Handles wake-up restoring normal operations.
+/************************************************************************************//**
+** \brief     Handles wake-up restoring normal operations.
+** \return    none.
 **
 ****************************************************************************************/
 void Resume_Init(void)
@@ -164,14 +157,13 @@ void Resume_Init(void)
 } /*** end of Resume_Init ***/
 
 
-/****************************************************************************************
-** NAME:           Resume
-** PARAMETER:      eResumeSetVal a state machine value (RESUME_STATE)
-** RETURN VALUE:   none
-** DESCRIPTION:    This is the state machine handling resume operations and timing 
-**                 sequence. The control is based on the Resume structure variables and 
-**                 on the ESOF interrupt calling this subroutine  without changing 
-**                 machine state.
+/************************************************************************************//**
+** \brief     This is the state machine handling resume operations and timing 
+**            sequence. The control is based on the Resume structure variables and 
+**            on the ESOF interrupt calling this subroutine  without changing 
+**            machine state.
+** \param     eResumeSetVal a state machine value (RESUME_STATE)
+** \return    none.
 **
 ****************************************************************************************/
 void Resume(RESUME_STATE eResumeSetVal)

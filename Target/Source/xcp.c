@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: XCP 1.0 protocol core source file
-|    File Name: xcp.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Source\xcp.c
+* \brief        XCP 1.0 protocol core source file.
+* \ingroup      Core
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -39,63 +41,94 @@
 /****************************************************************************************
 * Defines
 ****************************************************************************************/
-/* XCP protocol layer version number (16-bit) */
+/** \brief XCP protocol layer version number (16-bit). */
 #define XCP_VERSION_PROTOCOL_LAYER  (0x0100)
 
-/* XCP transport layer version number (16-bit) */
+/** \brief XCP transport layer version number (16-bit). */
 #define XCP_VERSION_TRANSPORT_LAYER (0x0100)
 
 /* XCP packet identifiers */
-#define XCP_PID_RES                 (0xff)            /* command response packet       */
-#define XCP_PID_ERR                 (0xfe)            /* error packet                  */
+/** \brief Command response packet identifier. */
+#define XCP_PID_RES                 (0xff)
+/** \brief Error packet identifier. */            
+#define XCP_PID_ERR                 (0xfe)
 
 /* XCP error codes */
-#define XCP_ERR_CMD_SYNCH           (0x00)            /* cmd processor synchronization */
-#define XCP_ERR_CMD_BUSY            (0x10)            /* command was not executed      */
-#define XCP_ERR_CMD_UNKNOWN         (0x20)            /* unknown or unsupported command*/
-#define XCP_ERR_OUT_OF_RANGE        (0x22)            /* parameter out of range        */
-#define XCP_ERR_ACCESS_LOCKED       (0x25)            /* protected. seed/key required  */
-#define XCP_ERR_PAGE_NOT_VALID      (0x26)            /* cal page not valid            */
-#define XCP_ERR_SEQUENCE            (0x29)            /* sequence error                */
-#define XCP_ERR_GENERIC             (0x31)            /* generic error                 */
+/** \brief Cmd processor synchronization error code. */
+#define XCP_ERR_CMD_SYNCH           (0x00)
+/** \brief Command was not executed error code. */
+#define XCP_ERR_CMD_BUSY            (0x10)
+/** \brief Unknown or unsupported command error code. */
+#define XCP_ERR_CMD_UNKNOWN         (0x20)
+/** \brief Parameter out of range error code. */
+#define XCP_ERR_OUT_OF_RANGE        (0x22)
+/** \brief Protected error code. Seed/key required. */
+#define XCP_ERR_ACCESS_LOCKED       (0x25)
+/** \brief Cal page not valid error code. */
+#define XCP_ERR_PAGE_NOT_VALID      (0x26)
+/** \brief Sequence error code. */
+#define XCP_ERR_SEQUENCE            (0x29)
+/** \brief Generic error code. */
+#define XCP_ERR_GENERIC             (0x31)
 
 /* XCP command codes */
-#define XCP_CMD_CONNECT             (0xff)            /* CONNECT command code          */
-#define XCP_CMD_DISCONNECT          (0xfe)            /* DISCONNECT command code       */
-#define XCP_CMD_GET_STATUS          (0xfd)            /* GET_STATUS command code       */
-#define XCP_CMD_SYNCH               (0xfc)            /* SYNCH command code            */
-#define XCP_CMD_GET_ID              (0xfa)            /* GET_ID command code           */
-#define XCP_CMD_GET_SEED            (0xf8)            /* GET_SEED command code         */
-#define XCP_CMD_UNLOCK              (0xf7)            /* UNLOCK command code           */
-#define XCP_CMD_SET_MTA             (0xf6)            /* SET_MTA command code          */
-#define XCP_CMD_UPLOAD              (0xf5)            /* UPLOAD command code           */
-#define XCP_CMD_SHORT_UPLOAD        (0xf4)            /* SHORT_UPLOAD command code     */
-#define XCP_CMD_BUILD_CHECKSUM      (0xf3)            /* BUILD_CHECKSUM command code   */
-#define XCP_CMD_DOWNLOAD            (0xf0)            /* DOWNLOAD command code         */
-#define XCP_CMD_DOWLOAD_MAX         (0xee)            /* DOWNLOAD_MAX command code     */
-#define XCP_CMD_SET_CAL_PAGE        (0xeb)            /* SET_CALPAGE command code      */
-#define XCP_CMD_GET_CAL_PAGE        (0xea)            /* GET_CALPAGE command code      */
-#define XCP_CMD_PROGRAM_START       (0xd2)            /* PROGRAM_START command code    */
-#define XCP_CMD_PROGRAM_CLEAR       (0xd1)            /* PROGRAM_CLEAR command code    */
-#define XCP_CMD_PROGRAM             (0xd0)            /* PROGRAM command code          */
-#define XCP_CMD_PROGRAM_RESET       (0xcf)            /* PROGRAM_RESET command code    */
-#define XCP_CMD_PROGRAM_PREPARE     (0xcc)            /* PROGRAM_PREPARE command code  */
-#define XCP_CMD_PROGRAM_MAX         (0xc9)            /* PROGRAM_MAX command code      */
+/** \brief CONNECT command code. */
+#define XCP_CMD_CONNECT             (0xff)
+/** \brief DISCONNECT command code. */
+#define XCP_CMD_DISCONNECT          (0xfe)
+/** \brief GET_STATUS command code. */
+#define XCP_CMD_GET_STATUS          (0xfd)
+/** \brief SYNCH command code. */
+#define XCP_CMD_SYNCH               (0xfc)
+/** \brief GET_ID command code. */
+#define XCP_CMD_GET_ID              (0xfa)
+/** \brief GET_SEED command code. */
+#define XCP_CMD_GET_SEED            (0xf8)
+/** \brief UNLOCK command code. */
+#define XCP_CMD_UNLOCK              (0xf7)
+/** \brief SET_MTA command code. */
+#define XCP_CMD_SET_MTA             (0xf6)
+/** \brief UPLOAD command code. */
+#define XCP_CMD_UPLOAD              (0xf5)
+/** \brief SHORT_UPLOAD command code. */
+#define XCP_CMD_SHORT_UPLOAD        (0xf4)
+/** \brief BUILD_CHECKSUM command code. */
+#define XCP_CMD_BUILD_CHECKSUM      (0xf3)
+/** \brief DOWNLOAD command code. */
+#define XCP_CMD_DOWNLOAD            (0xf0)
+/** \brief DOWNLOAD_MAX command code. */
+#define XCP_CMD_DOWLOAD_MAX         (0xee)
+/** \brief SET_CALPAGE command code. */
+#define XCP_CMD_SET_CAL_PAGE        (0xeb)
+/** \brief GET_CALPAGE command code. */
+#define XCP_CMD_GET_CAL_PAGE        (0xea)
+/** \brief PROGRAM_START command code. */
+#define XCP_CMD_PROGRAM_START       (0xd2)
+/** \brief PROGRAM_CLEAR command code. */
+#define XCP_CMD_PROGRAM_CLEAR       (0xd1)
+/** \brief PROGRAM command code. */
+#define XCP_CMD_PROGRAM             (0xd0)
+/** \brief PROGRAM_RESET command code. */
+#define XCP_CMD_PROGRAM_RESET       (0xcf)
+/** \brief PROGRAM_PREPARE command code. */
+#define XCP_CMD_PROGRAM_PREPARE     (0xcc)
+/** \brief PROGRAM_MAX command code. */
+#define XCP_CMD_PROGRAM_MAX         (0xc9)
 
 
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/* XCP internal module information type */
+/** \brief Struture type for grouping XCP internal module information. */
 typedef struct
 {
-  blt_int8u  connected;                               /* connection established        */
-  blt_int8u  protection;                              /* protection state              */
-  blt_int8u  s_n_k_resource;                          /* for seed/key sequence         */
-  blt_int8u  ctoData[XCP_CTO_PACKET_LEN];             /* cto packet data buffer        */
-  blt_int8u  ctoPending;                              /* cto transmission pending flag */
-  blt_int16s ctoLen;                                  /* cto current packet length     */
-  blt_int32u mta;                                     /* memory transfer address       */
+  blt_int8u  connected;                             /**< connection established        */
+  blt_int8u  protection;                            /**< protection state              */
+  blt_int8u  s_n_k_resource;                        /**< for seed/key sequence         */
+  blt_int8u  ctoData[XCP_CTO_PACKET_LEN];           /**< cto packet data buffer        */
+  blt_int8u  ctoPending;                            /**< cto transmission pending flag */
+  blt_int16s ctoLen;                                /**< cto current packet length     */
+  blt_int32u mta;                                   /**< memory transfer address       */
 } tXcpInfo;
 
 
@@ -162,21 +195,20 @@ blt_int8u AppCalGetPage(blt_int8u segment);
 /****************************************************************************************
 * Local constants
 ****************************************************************************************/
-/* string buffer with station id */
+/** \brief String buffer with station id. */
 static const blt_int8s xcpStationId[] = XCP_STATION_ID_STRING;
 
 
 /****************************************************************************************
 * Local data definitions
 ****************************************************************************************/
-static tXcpInfo xcpInfo;                               /* XCP internal module info     */
+/** \brief Local variable for storing XCP internal module info. */
+static tXcpInfo xcpInfo;
 
 
-/****************************************************************************************
-** NAME:           XcpInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the XCP driver. Should be called once upon system startup.
+/************************************************************************************//**
+** \brief     Initializes the XCP driver. Should be called once upon system startup.
+** \return    none
 **
 ****************************************************************************************/
 void XcpInit(void)
@@ -191,11 +223,9 @@ void XcpInit(void)
 } /*** end of XcpInit ***/
 
 
-/****************************************************************************************
-** NAME:           XcpIsConnected
-** PARAMETER:      none
-** RETURN VALUE:   BLT_TRUE is an XCP connection is established, BLT_FALSE otherwise.
-** DESCRIPTION:    Obtains information about the XCP connection state.
+/************************************************************************************//**
+** \brief     Obtains information about the XCP connection state.
+** \return    BLT_TRUE is an XCP connection is established, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool XcpIsConnected(void)
@@ -208,12 +238,10 @@ blt_bool XcpIsConnected(void)
 } /*** end of XcpIsConnected ***/
 
 
-/****************************************************************************************
-** NAME:           XcpPacketTransmitted
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Informs the core that a pending packet transmission was completed by 
-**                 the transport layer.
+/************************************************************************************//**
+** \brief     Informs the core that a pending packet transmission was completed by 
+**            the transport layer.
+** \return    none
 **
 ****************************************************************************************/
 void XcpPacketTransmitted(void)
@@ -223,12 +251,10 @@ void XcpPacketTransmitted(void)
 } /*** end of XcpPacketTransmitted ***/
 
 
-/****************************************************************************************
-** NAME:           XcpPacketReceived
-** PARAMETER:      data pointer to byte buffer with packet data
-** RETURN VALUE:   none
-** DESCRIPTION:    Informs the core that a new packet was received by the transport 
-**                 layer.
+/************************************************************************************//**
+** \brief     Informs the core that a new packet was received by the transport layer.
+** \param     data Pointer to byte buffer with packet data.
+** \return    none
 **
 ****************************************************************************************/
 void XcpPacketReceived(blt_int8u *data)
@@ -338,12 +364,11 @@ void XcpPacketReceived(blt_int8u *data)
 } /*** end of XcpPacketReceived ***/
 
 
-/****************************************************************************************
-** NAME:           XcpTransmitPacket
-** PARAMETER:      data pointer to the byte buffer with packet data.
-**                 len  number of data bytes that need to be transmitted.
-** RETURN VALUE:   none
-** DESCRIPTION:    Transmits the packet using the xcp transport layer.
+/************************************************************************************//**
+** \brief     Transmits the packet using the xcp transport layer.
+** \param     data Pointer to the byte buffer with packet data.
+** \param     len  Number of data bytes that need to be transmitted.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpTransmitPacket(blt_int8u *data, blt_int16s len)
@@ -353,14 +378,13 @@ static void XcpTransmitPacket(blt_int8u *data, blt_int16s len)
 } /*** end of XcpTransmitPacket ***/
 
 
-/****************************************************************************************
-** NAME:           XcpComputeChecksum
-** PARAMETER:      address   the start address of the memory region.
-**                 length    length of the memory region in bytes.
-**                 checksum  pointer to where the calculated checksum is to be stored.
-** RETURN VALUE:   none
-** DESCRIPTION:    Called by the BUILD_CHECKSUM command to perform a checksum calculation
-**                 over the specified memory region.
+/************************************************************************************//**
+** \brief     Called by the BUILD_CHECKSUM command to perform a checksum calculation
+**            over the specified memory region.
+** \param     address   The start address of the memory region.
+** \param     length    Length of the memory region in bytes.
+** \param     checksum  Pointer to where the calculated checksum is to be stored.
+** \return    Checksum type that was used during the checksum calculation.
 **
 ****************************************************************************************/
 static blt_int8u XcpComputeChecksum(blt_int32u address, blt_int32u length,
@@ -382,14 +406,13 @@ static blt_int8u XcpComputeChecksum(blt_int32u address, blt_int32u length,
 
 
 #if (XCP_SEED_KEY_PROTECTION_EN == 1)
-/****************************************************************************************
-** NAME:           XcpGetSeed
-** PARAMETER:      resource  resource that the seed if requested for (XCP_RES_XXX).
-**                 seed      pointer to byte buffer wher the seed will be stored.
-** RETURN VALUE:   none
-** DESCRIPTION:    Provides a seed to the XCP master that will be used for the key 
-**                 generation when the master attempts to unlock the specified resource. 
-**                 Called by the GET_SEED command.
+/************************************************************************************//**
+** \brief     Provides a seed to the XCP master that will be used for the key 
+**            generation when the master attempts to unlock the specified resource. 
+**            Called by the GET_SEED command.
+** \param     resource  Resource that the seed if requested for (XCP_RES_XXX).
+** \param     seed      Pointer to byte buffer wher the seed will be stored.
+** \return    Length of the seed in bytes.
 **
 ****************************************************************************************/
 static blt_int8u XcpGetSeed(blt_int8u resource, blt_int8u *seed)
@@ -411,15 +434,14 @@ static blt_int8u XcpGetSeed(blt_int8u resource, blt_int8u *seed)
 } /*** end of XcpGetSeed ***/
 
 
-/****************************************************************************************
-** NAME:           XcpVerifyKey
-** PARAMETER:      resource  resource to unlock (XCP_RES_XXX).
-**                 key       pointer to the byte buffer holding the key.
-**                 len       length of the key in bytes.
-** RETURN VALUE:   none
-** DESCRIPTION:    Called by the UNLOCK command and checks if the key to unlock the 
-**                 specified resource was correct. If so, then the resource protection 
-**                 will be removed.
+/************************************************************************************//**
+** \brief     Called by the UNLOCK command and checks if the key to unlock the 
+**            specified resource was correct. If so, then the resource protection 
+**            will be removed.
+** \param     resource  resource to unlock (XCP_RES_XXX).
+** \param     key       pointer to the byte buffer holding the key.
+** \param     len       length of the key in bytes.
+** \return    1 if the key was correct, 0 otherwise.
 **
 ****************************************************************************************/
 static blt_int8u XcpVerifyKey(blt_int8u resource, blt_int8u *key, blt_int8u len)
@@ -452,11 +474,9 @@ static blt_int8u XcpVerifyKey(blt_int8u resource, blt_int8u *key, blt_int8u len)
 #endif /* XCP_SEED_KEY_PROTECTION_EN == 1 */
 
 
-/****************************************************************************************
-** NAME:           XcpProtectResources
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Utility function to protects all the available resources.
+/************************************************************************************//**
+** \brief     Utility function to protects all the available resources.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpProtectResources(void)
@@ -487,11 +507,10 @@ static void XcpProtectResources(void)
 } /*** end of XcpProtectResources ***/
 
 
-/****************************************************************************************
-** NAME:           XcpSetCtoError
-** PARAMETER:      error xcp error code (XCP_ERR_XXX)
-** RETURN VALUE:   none
-** DESCRIPTION:    Prepares the cto packet data for the specified error.
+/************************************************************************************//**
+** \brief     Prepares the cto packet data for the specified error.
+** \param     error XCP error code (XCP_ERR_XXX).
+** \return    none
 **
 ****************************************************************************************/
 static void XcpSetCtoError(blt_int8u error)
@@ -503,12 +522,11 @@ static void XcpSetCtoError(blt_int8u error)
 } /*** end of XcpSetCtoError ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdConnect
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the CONNECT command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the CONNECT command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdConnect(blt_int8u *data)
@@ -588,12 +606,11 @@ static void XcpCmdConnect(blt_int8u *data)
 } /*** end of XcpCmdConnect ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdDisconnect
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the DISCONNECT command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the DISCONNECT command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdDisconnect(blt_int8u *data)
@@ -615,12 +632,11 @@ static void XcpCmdDisconnect(blt_int8u *data)
 } /*** end of XcpCmdDisconnect ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdGetStatus
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the GET_STATUS command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the GET_STATUS command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdGetStatus(blt_int8u *data)
@@ -647,12 +663,11 @@ static void XcpCmdGetStatus(blt_int8u *data)
 } /*** end of XcpCmdGetStatus ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdSynch
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the SYNCH command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the SYNCH command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdSynch(blt_int8u *data)
@@ -665,12 +680,11 @@ static void XcpCmdSynch(blt_int8u *data)
 } /*** end of XcpCmdSynch ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdGetId
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the GET_ID command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the GET_ID command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdGetId(blt_int8u *data)
@@ -699,12 +713,11 @@ static void XcpCmdGetId(blt_int8u *data)
 } /*** end of XcpCmdGetId ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdSetMta
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the SET_MTA command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the SET_MTA command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdSetMta(blt_int8u *data)
@@ -720,12 +733,11 @@ static void XcpCmdSetMta(blt_int8u *data)
 } /*** end of XcpCmdSetMta ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdUpload
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the UPLOAD command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the UPLOAD command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdUpload(blt_int8u *data)
@@ -752,12 +764,11 @@ static void XcpCmdUpload(blt_int8u *data)
 } /*** end of XcpCmdUpload ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdShortUpload
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the SHORT_UPLOAD command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the SHORT_UPLOAD command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdShortUpload(blt_int8u *data)
@@ -787,12 +798,11 @@ static void XcpCmdShortUpload(blt_int8u *data)
 
 
 #if (XCP_RES_CALIBRATION_EN == 1)
-/****************************************************************************************
-** NAME:           XcpCmdDownload
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the DOWNLOAD command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the DOWNLOAD command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdDownload(blt_int8u *data)
@@ -828,12 +838,11 @@ static void XcpCmdDownload(blt_int8u *data)
 } /*** end of XcpCmdDownload ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdDownloadMax
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the DOWNLOAD_MAX command 
-**                 as defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the DOWNLOAD_MAX command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdDownloadMax(blt_int8u *data)
@@ -864,12 +873,11 @@ static void XcpCmdDownloadMax(blt_int8u *data)
 #endif /* XCP_RES_CALIBRATION_EN == 1 */
 
 
-/****************************************************************************************
-** NAME:           XcpCmdBuildCheckSum
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the BUILD_CHECKSUM 
-**                 command as defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the BUILD_CHECKSUM command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdBuildCheckSum(blt_int8u *data)
@@ -891,12 +899,11 @@ static void XcpCmdBuildCheckSum(blt_int8u *data)
 
 
 #if (XCP_SEED_KEY_PROTECTION_EN == 1)
-/****************************************************************************************
-** NAME:           XcpCmdGetSeed
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the GET_SEED command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the GET_SEED command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdGetSeed(blt_int8u *data)
@@ -967,12 +974,11 @@ static void XcpCmdGetSeed(blt_int8u *data)
 } /*** end of XcpCmdGetSeed ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdUnlock
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the UNLOCK command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the UNLOCK command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdUnlock(blt_int8u *data)
@@ -1019,12 +1025,11 @@ static void XcpCmdUnlock(blt_int8u *data)
 
 
 #if (XCP_RES_PAGING_EN == 1)
-/****************************************************************************************
-** NAME:           XcpCmdSetCalPage
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the SET_CAL_PAGE command
-**                 as defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the SET_CAL_PAGE command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdSetCalPage(blt_int8u *data)
@@ -1055,12 +1060,11 @@ static void XcpCmdSetCalPage(blt_int8u *data)
 } /*** end of XcpCmdSetCalPage ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdGetCalPage
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the GET_CAL_PAGE command
-**                 as defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the GET_CAL_PAGE command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdGetCalPage(blt_int8u *data)
@@ -1092,12 +1096,11 @@ static void XcpCmdGetCalPage(blt_int8u *data)
 
 
 #if (XCP_RES_PROGRAMMING_EN == 1)
-/****************************************************************************************
-** NAME:           XcpCmdProgramStart
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the PROGRAM_START command
-**                 as defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the PROGRAM_START command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdProgramStart(blt_int8u *data)
@@ -1137,12 +1140,11 @@ static void XcpCmdProgramStart(blt_int8u *data)
 } /*** end of XcpCmdProgramStart ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdProgramMax
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the PROGRAM_MAX command 
-**                 as defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the PROGRAM_MAX command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdProgramMax(blt_int8u *data)
@@ -1176,12 +1178,11 @@ static void XcpCmdProgramMax(blt_int8u *data)
 } /*** end of XcpCmdProgramMax ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdProgram
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the PROGRAM command as
-**                 defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the PROGRAM command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdProgram(blt_int8u *data)
@@ -1234,12 +1235,11 @@ static void XcpCmdProgram(blt_int8u *data)
 } /*** end of XcpCmdProgram ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdProgramClear
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the PROGRAM_CLEAR command 
-**                 as defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the PROGRAM_CLEAR command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdProgramClear(blt_int8u *data)
@@ -1270,12 +1270,11 @@ static void XcpCmdProgramClear(blt_int8u *data)
 } /*** end of XcpCmdProgramClear ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdProgramReset
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the PROGRAM_RESET command 
-**                 as defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the PROGRAM_RESET command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdProgramReset(blt_int8u *data)
@@ -1304,12 +1303,11 @@ static void XcpCmdProgramReset(blt_int8u *data)
 } /*** end of XcpCmdProgramReset ***/
 
 
-/****************************************************************************************
-** NAME:           XcpCmdProgramPrepare
-** PARAMETER:      data pointer to a byte buffer with the packet data.
-** RETURN VALUE:   none
-** DESCRIPTION:    XCP command processor function which handles the PROGRAM_PREPARE 
-**                 command as defined by the protocol.
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the PROGRAM_PREPARE command as
+**            defined by the protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
 **
 ****************************************************************************************/
 static void XcpCmdProgramPrepare(blt_int8u *data)

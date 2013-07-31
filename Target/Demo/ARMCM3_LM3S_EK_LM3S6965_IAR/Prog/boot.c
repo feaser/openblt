@@ -1,32 +1,34 @@
-/****************************************************************************************
-|  Description: demo program bootloader interface source file
-|    File Name: boot.c
-|
-|----------------------------------------------------------------------------------------
-|                          C O P Y R I G H T
-|----------------------------------------------------------------------------------------
-|   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
-|
-|----------------------------------------------------------------------------------------
-|                            L I C E N S E
-|----------------------------------------------------------------------------------------
-| This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
-| modify it under the terms of the GNU General Public License as published by the Free
-| Software Foundation, either version 3 of the License, or (at your option) any later
-| version.
-|
-| OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-| without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-| PURPOSE. See the GNU General Public License for more details.
-|
-| You should have received a copy of the GNU General Public License along with OpenBLT.
-| If not, see <http://www.gnu.org/licenses/>.
-|
-| A special exception to the GPL is included to allow you to distribute a combined work 
-| that includes OpenBLT without being obliged to provide the source code for any 
-| proprietary components. The exception text is included at the bottom of the license
-| file <license.html>.
-| 
+/************************************************************************************//**
+* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_IAR\Prog\boot.c
+* \brief        Demo program bootloader interface source file.
+* \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_IAR
+* \internal
+*----------------------------------------------------------------------------------------
+*                          C O P Y R I G H T
+*----------------------------------------------------------------------------------------
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*
+*----------------------------------------------------------------------------------------
+*                            L I C E N S E
+*----------------------------------------------------------------------------------------
+* This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 3 of the License, or (at your option) any later
+* version.
+*
+* OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE. See the GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with OpenBLT.
+* If not, see <http://www.gnu.org/licenses/>.
+*
+* A special exception to the GPL is included to allow you to distribute a combined work 
+* that includes OpenBLT without being obliged to provide the source code for any 
+* proprietary components. The exception text is included at the bottom of the license
+* file <license.html>.
+* 
+* \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
@@ -35,11 +37,9 @@
 #include "header.h"                                    /* generic header               */
 
 
-/****************************************************************************************
-** NAME:           BootActivate
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Bootloader activation function.
+/************************************************************************************//**
+** \brief     Bootloader activation function.
+** \return    none.
 **
 ****************************************************************************************/
 static void BootActivate(void)
@@ -68,11 +68,9 @@ static void BootActivate(void)
 static unsigned char UartReceiveByte(unsigned char *data);
 
 
-/****************************************************************************************
-** NAME:           BootComInit
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Initializes the UART communication interface
+/************************************************************************************//**
+** \brief     Initializes the UART communication interface.
+** \return    none.
 **
 ****************************************************************************************/
 void BootComInit(void)
@@ -89,12 +87,10 @@ void BootComInit(void)
 } /*** end of BootComInit ***/
 
 
-/****************************************************************************************
-** NAME:           BootComCheckActivationRequest
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Receives the CONNECT request from the host, which indicates that the
-**                 bootloader should be activated and, if so, activates it.
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
 **
 ****************************************************************************************/
 void BootComCheckActivationRequest(void)
@@ -142,11 +138,10 @@ void BootComCheckActivationRequest(void)
 } /*** end of BootComCheckActivationRequest ***/
 
 
-/****************************************************************************************
-** NAME:           UartReceiveByte
-** PARAMETER:      data pointer to byte where the data is to be stored.
-** RETURN VALUE:   1 if a byte was received, 0 otherwise.
-** DESCRIPTION:    Receives a communication interface byte if one is present.
+/************************************************************************************//**
+** \brief     Receives a communication interface byte if one is present.
+** \param     data Pointer to byte where the data is to be stored.
+** \return    1 if a byte was received, 0 otherwise.
 **
 ****************************************************************************************/
 static unsigned char UartReceiveByte(unsigned char *data)
