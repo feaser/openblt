@@ -38,7 +38,7 @@
 *   C P U   D R I V E R   C O N F I G U R A T I O N   C H E C K
 ****************************************************************************************/
 #ifndef BOOT_CPU_XTAL_SPEED_KHZ
-#error "BOOT_CPU_XTAL_SPEED_KHZ is missing in config.h"
+#error "BOOT_CPU_XTAL_SPEED_KHZ is missing in blt_conf.h"
 #endif
 
 #if (BOOT_CPU_XTAL_SPEED_KHZ <= 0)
@@ -46,7 +46,7 @@
 #endif
 
 #ifndef BOOT_CPU_SYSTEM_SPEED_KHZ
-#error "BOOT_CPU_SYSTEM_SPEED_KHZ is missing in config.h"
+#error "BOOT_CPU_SYSTEM_SPEED_KHZ is missing in blt_conf.h"
 #endif
 
 #if (BOOT_CPU_SYSTEM_SPEED_KHZ <= 0)
@@ -54,7 +54,7 @@
 #endif
 
 #ifndef BOOT_CPU_BYTE_ORDER_MOTOROLA
-#error "BOOT_CPU_BYTE_ORDER_MOTOROLA is missing in config.h"
+#error "BOOT_CPU_BYTE_ORDER_MOTOROLA is missing in blt_conf.h"
 #endif
 
 #if (BOOT_CPU_BYTE_ORDER_MOTOROLA < 0) || (BOOT_CPU_BYTE_ORDER_MOTOROLA > 1)
@@ -79,7 +79,7 @@
 
 #if (BOOT_COM_CAN_ENABLE > 0)
   #ifndef BOOT_COM_CAN_BAUDRATE
-  #error "BOOT_COM_CAN_BAUDRATE is missing in config.h"
+  #error "BOOT_COM_CAN_BAUDRATE is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_CAN_BAUDRATE <= 0)
@@ -87,7 +87,7 @@
   #endif
 
   #ifndef BOOT_COM_CAN_TX_MSG_ID
-  #error "BOOT_COM_CAN_TX_MSG_ID is missing in config.h"
+  #error "BOOT_COM_CAN_TX_MSG_ID is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_CAN_TX_MSG_ID <= 0)
@@ -95,7 +95,7 @@
   #endif
 
   #ifndef BOOT_COM_CAN_TX_MAX_DATA
-  #error "BOOT_COM_CAN_TX_MAX_DATA is missing in config.h"
+  #error "BOOT_COM_CAN_TX_MAX_DATA is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_CAN_TX_MAX_DATA <= 0)
@@ -107,7 +107,7 @@
   #endif
   
   #ifndef BOOT_COM_CAN_RX_MSG_ID
-  #error "BOOT_COM_CAN_RX_MSG_ID is missing in config.h"
+  #error "BOOT_COM_CAN_RX_MSG_ID is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_CAN_RX_MSG_ID <= 0)
@@ -115,7 +115,7 @@
   #endif
 
   #ifndef BOOT_COM_CAN_RX_MAX_DATA
-  #error "BOOT_COM_CAN_RX_MAX_DATA is missing in config.h"
+  #error "BOOT_COM_CAN_RX_MAX_DATA is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_CAN_RX_MAX_DATA <= 0)
@@ -127,7 +127,7 @@
   #endif
 
   #ifndef BOOT_COM_CAN_CHANNEL_INDEX
-  #error "BOOT_COM_CAN_CHANNEL_INDEX is missing in config.h"
+  #error "BOOT_COM_CAN_CHANNEL_INDEX is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_CAN_CHANNEL_INDEX < 0)
@@ -141,7 +141,7 @@
 
 #if (BOOT_COM_UART_ENABLE > 0)
   #ifndef BOOT_COM_UART_BAUDRATE
-  #error "BOOT_COM_UART_BAUDRATE is missing in config.h"
+  #error "BOOT_COM_UART_BAUDRATE is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_UART_BAUDRATE <= 0)
@@ -149,7 +149,7 @@
   #endif
 
   #ifndef BOOT_COM_UART_TX_MAX_DATA
-  #error "BOOT_COM_UART_TX_MAX_DATA is missing in config.h"
+  #error "BOOT_COM_UART_TX_MAX_DATA is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_UART_TX_MAX_DATA <= 0)
@@ -161,7 +161,7 @@
   #endif
   
   #ifndef BOOT_COM_UART_RX_MAX_DATA
-  #error "BOOT_COM_UART_RX_MAX_DATA is missing in config.h"
+  #error "BOOT_COM_UART_RX_MAX_DATA is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_UART_RX_MAX_DATA <= 0)
@@ -173,7 +173,7 @@
   #endif
 
   #ifndef BOOT_COM_UART_CHANNEL_INDEX
-  #error "BOOT_COM_UART_CHANNEL_INDEX is missing in config.h"
+  #error "BOOT_COM_UART_CHANNEL_INDEX is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_UART_CHANNEL_INDEX < 0)
@@ -183,7 +183,7 @@
 
 #if (BOOT_COM_USB_ENABLE > 0)
   #ifndef BOOT_COM_USB_TX_MAX_DATA
-  #error "BOOT_COM_USB_TX_MAX_DATA is missing in config.h"
+  #error "BOOT_COM_USB_TX_MAX_DATA is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_USB_TX_MAX_DATA <= 0)
@@ -191,7 +191,7 @@
   #endif
   
   #ifndef BOOT_COM_USB_RX_MAX_DATA
-  #error "BOOT_COM_USB_RX_MAX_DATA is missing in config.h"
+  #error "BOOT_COM_USB_RX_MAX_DATA is missing in blt_conf.h"
   #endif
 
   #if (BOOT_COM_USB_RX_MAX_DATA <= 0)
@@ -246,12 +246,12 @@
   #if (BOOT_COM_CAN_ENABLE == 0)  && \
       (BOOT_COM_UART_ENABLE == 0) && \
       (BOOT_COM_USB_ENABLE == 0)
-  #error "If not booting from file system (BOOT_FILE_SYS_ENABLE) then a communication interface must be enabled (BOOT_COM_XXX_ENABLE) in config.h"
+  #error "If not booting from file system (BOOT_FILE_SYS_ENABLE) then a communication interface must be enabled (BOOT_COM_XXX_ENABLE) in blt_conf.h"
   #endif
 #endif /* BOOT_FILE_SYS_ENABLE == 0 */
             
 #if ((BOOT_COM_CAN_ENABLE + BOOT_COM_UART_ENABLE + BOOT_COM_USB_ENABLE) > 1)
-#error "Too many communication interfaces enabled (BOOT_COM_XXX_ENABLE) in config.h"
+#error "Too many communication interfaces enabled (BOOT_COM_XXX_ENABLE) in blt_conf.h"
 #endif
         
 #if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
@@ -285,7 +285,7 @@
 #endif
 
 #ifndef BOOT_NVM_SIZE_KB
-#error "BOOT_NVM_SIZE_KB is missing in config.h"
+#error "BOOT_NVM_SIZE_KB is missing in blt_conf.h"
 #endif
 
 #if (BOOT_NVM_SIZE_KB <= 0)

@@ -35,7 +35,7 @@ PROJ_NAME=openbtl_olimex_stm32e407
 #| Speficy project source files                                                          |
 #|---------------------------------------------------------------------------------------|
 PROJ_FILES= \
-config.h \
+blt_conf.h \
 hooks.c \
 main.c \
 ./lib/fatfs/ffconf.h \

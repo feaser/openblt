@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_Crossworks\Boot\config.h
+* \file         Demo\ARMCM3_STM32_Olimex_STM32H103_IAR\Boot\blt_conf.h
 * \brief        Bootloader configuration header file.
-* \ingroup      Boot_ARMCM3_STM32_Olimex_STM32P103_Crossworks
+* \ingroup      Boot_ARMCM3_STM32_Olimex_STM32H103_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -30,8 +30,8 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef BLT_CONF_H
+#define BLT_CONF_H
 
 /****************************************************************************************
 *   C P U   D R I V E R   C O N F I G U R A T I O N
@@ -56,6 +56,8 @@
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
 /** \brief Enable/disable hook function call right before user program start. */
 #define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
+/** \brief Compiler specific variable prefix to prevent its initialization during startup. */
+#define BOOT_CPU_CONNECT_STATE_PREFIX   __no_init
 
 
 /****************************************************************************************
@@ -97,7 +99,7 @@
  * 
  */
 /** \brief Enable/disable UART transport layer. */
-#define BOOT_COM_UART_ENABLE            (1)
+#define BOOT_COM_UART_ENABLE            (0)
 /** \brief Configure the desired communication speed. */
 #define BOOT_COM_UART_BAUDRATE          (57600)
 /** \brief Configure number of bytes in the target->host data packet. */
@@ -107,43 +109,20 @@
 /** \brief Select the desired UART peripheral as a zero based index. */
 #define BOOT_COM_UART_CHANNEL_INDEX     (1)
 
-
-/****************************************************************************************
-*   F I L E   S Y S T E M   I N T E R F A C E   C O N F I G U R A T I O N
-****************************************************************************************/
-/* The file system interface is selected by setting the BOOT_FILE_SYS_ENABLE configurable
- * to 1. This enables support for firmware updates from a file stored on a locally 
- * attached file system such as an SD-card. Note that this interface can be enabled 
- * together with one of the remote communication interfaces such as UART, CAN or USB.
- *
- * Set BOOT_FILE_LOGGING_ENABLE to 1 if you would like log messages to be created during
- * a firmware update. The hook function FileFirmwareUpdateLogHook() will be called each
- * time a new string formatted log entry is available. This could be used during testing
- * by outputting the string on UART or to create a log file on the file system itself.
- *
- * Set BOOT_FILE_ERROR_HOOK_ENABLE to 1 if you would like to be informed in case an error
- * occurs during the firmware update. This could for example be used to turn on an error
- * LED to inform the user that something went wrong. Inspecting the log messages provides
- * additional information on the error cause.
- *
- * Set BOOT_FILE_STARTED_HOOK_ENABLE to 1 if you would like to be informed when a new
- * firmware update is started by the bootloader. 
- *
- * Set BOOT_FILE_COMPLETED_HOOK_ENABLE to 1 if you would like to be informed when a
- * firmware update is completed by the bootloader. 
+/* The USB communication interface is selected by setting the BOOT_COM_USB_ENABLE 
+ * configurable to 1. The maximum amount of data bytes in a message for data transmission 
+ * and reception is set through BOOT_COM_USB_TX_MAX_DATA and BOOT_COM_USB_RX_MAX_DATA, 
+ * respectively. 
+ * 
  */
-/** \brief Enable/disable support for firmware updates from a locally attached storage.*/
-#define BOOT_FILE_SYS_ENABLE            (1)
-/** \brief Enable/disable logging messages during firmware updates. */
-#define BOOT_FILE_LOGGING_ENABLE        (1)
-/** \brief Enable/disable a hook function that is called upon detection of an error. */
-#define BOOT_FILE_ERROR_HOOK_ENABLE     (1)   
-/** \brief Enable/disable a hook function that is called at the start of the update. */
-#define BOOT_FILE_STARTED_HOOK_ENABLE   (1)   
-/** \brief Enable/disable a hook function that is called at the end of the update. */
-#define BOOT_FILE_COMPLETED_HOOK_ENABLE (1)   
+/** \brief Enable/disable USB transport layer. */
+#define BOOT_COM_USB_ENABLE             (1)
+/** \brief Configure number of bytes in the target->host data packet. */
+#define BOOT_COM_USB_TX_MAX_DATA        (63)
+/** \brief Configure number of bytes in the host->target data packet. */
+#define BOOT_COM_USB_RX_MAX_DATA        (63)
 
-   
+
 /****************************************************************************************
 *   B A C K D O O R   E N T R Y   C O N F I G U R A T I O N
 ****************************************************************************************/
@@ -156,7 +135,7 @@
  * also be implemented in a way that disables the backdoor entry altogether.
  */
 /** \brief Enable/disable the backdoor override hook functions. */
-#define BOOT_BACKDOOR_HOOKS_ENABLE      (0)
+#define BOOT_BACKDOOR_HOOKS_ENABLE      (1)
 
 
 /****************************************************************************************
@@ -191,5 +170,5 @@
 #define BOOT_COP_HOOKS_ENABLE           (0)
 
 
-#endif /* CONFIG_H */
-/*********************************** end of config.h ***********************************/
+#endif /* BLT_CONF_H */
+/*********************************** end of blt_conf.h *********************************/

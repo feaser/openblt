@@ -36,7 +36,7 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "../Boot/config.h"                            /* bootloader configuration     */
+#include "../Boot/blt_conf.h"                          /* bootloader configuration     */
 #include "stm32f4xx.h"                                 /* STM32 registers              */
 #include "stm32f4xx_conf.h"                            /* STM32 peripheral drivers     */
 #include "boot.h"                                      /* bootloader interface driver  */

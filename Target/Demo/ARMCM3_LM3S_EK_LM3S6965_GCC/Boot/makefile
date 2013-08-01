@@ -35,7 +35,7 @@ PROJ_NAME=openbtl_ek_lm3s6965
 #| Speficy project source files                                                          |
 #|---------------------------------------------------------------------------------------|
 PROJ_FILES= \
-config.h \
+blt_conf.h \
 hooks.c \
 main.c \
 ./lib/inc/hw_flash.h \

@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S8962_Crossworks\Boot\config.h
+* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC\Boot\blt_conf.h
 * \brief        Bootloader configuration header file.
-* \ingroup      Boot_ARMCM3_LM3S_EK_LM3S8962_Crossworks
+* \ingroup      Boot_ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -30,8 +30,8 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef BLT_CONF_H
+#define BLT_CONF_H
 
 /****************************************************************************************
 *   C P U   D R I V E R   C O N F I G U R A T I O N
@@ -49,9 +49,9 @@
  * de-initialize application specific parts, for example to stop blinking an LED, etc.
  */ 
 /** \brief Frequency of the external crystal oscillator. */
-#define BOOT_CPU_XTAL_SPEED_KHZ         (8000)
+#define BOOT_CPU_XTAL_SPEED_KHZ         (32000)
 /** \brief Desired system speed. */
-#define BOOT_CPU_SYSTEM_SPEED_KHZ       (50000)
+#define BOOT_CPU_SYSTEM_SPEED_KHZ       (14000)
 /** \brief Motorola or Intel style byte ordering. */
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
 /** \brief Enable/disable hook function call right before user program start. */
@@ -61,33 +61,6 @@
 /****************************************************************************************
 *   C O M M U N I C A T I O N   I N T E R F A C E   C O N F I G U R A T I O N
 ****************************************************************************************/
-/* The CAN communication interface is selected by setting the BOOT_COM_CAN_ENABLE 
- * configurable to 1. Configurable BOOT_COM_CAN_BAUDRATE selects the communication speed
- * in bits/second. Two CAN messages are reserved for communication with the host. The 
- * message identifier for sending data from the target to the host is configured with
- * BOOT_COM_CAN_TXMSG_ID. The one for receiving data from the host is configured with
- * BOOT_COM_CAN_RXMSG_ID. The maximum amount of data bytes in a message for data 
- * transmission and reception is set through BOOT_COM_CAN_TX_MAX_DATA and 
- * BOOT_COM_CAN_RX_MAX_DATA, respectively. It is common for a microcontroller to have more
- * than 1 CAN controller on board. The zero-based BOOT_COM_CAN_CHANNEL_INDEX selects the
- * CAN controller channel.
- * 
- */
-/** \brief Enable/disable CAN transport layer. */
-#define BOOT_COM_CAN_ENABLE             (0)
-/** \brief Configure the desired CAN baudrate. */
-#define BOOT_COM_CAN_BAUDRATE           (500000)
-/** \brief Configure CAN message ID target->host. */
-#define BOOT_COM_CAN_TX_MSG_ID          (0x7E1)
-/** \brief Configure number of bytes in the target->host CAN message. */
-#define BOOT_COM_CAN_TX_MAX_DATA        (8)
-/** \brief Configure CAN message ID host->target. */
-#define BOOT_COM_CAN_RX_MSG_ID          (0x667)
-/** \brief Configure number of bytes in the host->target CAN message. */
-#define BOOT_COM_CAN_RX_MAX_DATA        (8)
-/** \brief Select the desired CAN peripheral as a zero based index. */
-#define BOOT_COM_CAN_CHANNEL_INDEX      (0)
-
 /* The UART communication interface is selected by setting the BOOT_COM_UART_ENABLE 
  * configurable to 1. Configurable BOOT_COM_UART_BAUDRATE selects the communication speed
  * in bits/second. The maximum amount of data bytes in a message for data transmission 
@@ -99,13 +72,13 @@
 /** \brief Enable/disable UART transport layer. */
 #define BOOT_COM_UART_ENABLE            (1)
 /** \brief Configure the desired communication speed. */
-#define BOOT_COM_UART_BAUDRATE          (57600)
+#define BOOT_COM_UART_BAUDRATE          (9600)
 /** \brief Configure number of bytes in the target->host data packet. */
 #define BOOT_COM_UART_TX_MAX_DATA       (64)
 /** \brief Configure number of bytes in the host->target data packet. */
 #define BOOT_COM_UART_RX_MAX_DATA       (64)
 /** \brief Select the desired UART peripheral as a zero based index. */
-#define BOOT_COM_UART_CHANNEL_INDEX     (0)
+#define BOOT_COM_UART_CHANNEL_INDEX     (1)
 
 
 /****************************************************************************************
@@ -137,7 +110,7 @@
 /** \brief Enable/disable the NVM hook function for supporting additional memory devices. */
 #define BOOT_NVM_HOOKS_ENABLE           (0)
 /** \brief Configure the size of the default memory device (typically flash EEPROM). */
-#define BOOT_NVM_SIZE_KB                (256)
+#define BOOT_NVM_SIZE_KB                (128)
 /** \brief Enable/disable hooks functions to override the user program checksum handling. */
 #define BOOT_NVM_CHECKSUM_HOOKS_ENABLE  (0)
 
@@ -155,5 +128,5 @@
 #define BOOT_COP_HOOKS_ENABLE           (0)
 
 
-#endif /* CONFIG_H */
-/*********************************** end of config.h ***********************************/
+#endif /* BLT_CONF_H */
+/*********************************** end of blt_conf.h *********************************/

@@ -35,7 +35,7 @@ PROJ_NAME=openbtl_olimex_lpc_l2294_20mhz
 #| Speficy project source files                                                          |
 #|---------------------------------------------------------------------------------------|
 PROJ_FILES= \
-config.h \
+blt_conf.h \
 hooks.c \
 main.c \
 extflash.c \

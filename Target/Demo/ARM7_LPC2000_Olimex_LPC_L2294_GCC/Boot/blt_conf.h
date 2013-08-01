@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S8962_GCC\Boot\config.h
+* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_GCC\Boot\blt_conf.h
 * \brief        Bootloader configuration header file.
-* \ingroup      Boot_ARMCM3_LM3S_EK_LM3S8962_GCC
+* \ingroup      Boot_ARM7_LPC2000_Olimex_LPC_L2294_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,8 +30,8 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef BLT_CONF_H
+#define BLT_CONF_H
 
 /****************************************************************************************
 *   C P U   D R I V E R   C O N F I G U R A T I O N
@@ -49,9 +49,9 @@
  * de-initialize application specific parts, for example to stop blinking an LED, etc.
  */ 
 /** \brief Frequency of the external crystal oscillator. */
-#define BOOT_CPU_XTAL_SPEED_KHZ         (8000)
+#define BOOT_CPU_XTAL_SPEED_KHZ         (20000)
 /** \brief Desired system speed. */
-#define BOOT_CPU_SYSTEM_SPEED_KHZ       (50000)
+#define BOOT_CPU_SYSTEM_SPEED_KHZ       (60000)
 /** \brief Motorola or Intel style byte ordering. */
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
 /** \brief Enable/disable hook function call right before user program start. */
@@ -155,5 +155,5 @@
 #define BOOT_COP_HOOKS_ENABLE           (0)
 
 
-#endif /* CONFIG_H */
-/*********************************** end of config.h ***********************************/
+#endif /* BLT_CONF_H */
+/*********************************** end of blt_conf.h *********************************/

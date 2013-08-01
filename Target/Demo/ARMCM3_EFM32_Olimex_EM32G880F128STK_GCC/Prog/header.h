@@ -36,7 +36,7 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "../Boot/config.h"                            /* bootloader configuration     */
+#include "../Boot/blt_conf.h"                          /* bootloader configuration     */
 #include "efm32.h"                                     /* EFM32 registers              */
 #include "efm32_chip.h"                                /* EFM32 chip initialization    */
 #include "efm32_cmu.h"                                 /* EFM32 clock management       */

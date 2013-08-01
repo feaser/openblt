@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_IAR\Boot\config.h
+* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_GCC\Boot\blt_conf.h
 * \brief        Bootloader configuration header file.
-* \ingroup      Boot_ARMCM3_STM32_Olimex_STM32P103_IAR
+* \ingroup      Boot_ARMCM3_STM32_Olimex_STM32P103_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -30,8 +30,8 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef BLT_CONF_H
+#define BLT_CONF_H
 
 /****************************************************************************************
 *   C P U   D R I V E R   C O N F I G U R A T I O N
@@ -56,8 +56,6 @@
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
 /** \brief Enable/disable hook function call right before user program start. */
 #define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
-/** \brief Compiler specific variable prefix to prevent its initialization during startup. */
-#define BOOT_CPU_CONNECT_STATE_PREFIX   __no_init
 
 
 /****************************************************************************************
@@ -193,5 +191,5 @@
 #define BOOT_COP_HOOKS_ENABLE           (0)
 
 
-#endif /* CONFIG_H */
-/*********************************** end of config.h ***********************************/
+#endif /* BLT_CONF_H */
+/*********************************** end of blt_conf.h *********************************/

@@ -6,7 +6,7 @@
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc"/>
       <folder Name="Demo">
-        <folder Name="Boot">
+        <folder Name="Boot" file_name="">
           <folder Name="lib">
             <folder Name="inc">
               <file file_name="../lib/inc/hw_ints.h"/>
@@ -37,9 +37,9 @@
               <file file_name="../lib/driverlib/canlib.h"/>
             </folder>
           </folder>
-          <file file_name="../config.h"/>
           <file file_name="../hooks.c"/>
           <file file_name="../main.c"/>
+          <file file_name="../blt_conf.h"/>
         </folder>
       </folder>
       <folder Name="Source">

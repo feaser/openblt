@@ -36,7 +36,7 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "../Boot/config.h"                            /* bootloader configuration     */
+#include "../Boot/blt_conf.h"                          /* bootloader configuration     */
 #include "lpc2294.h"                                   /* CPU register definitions     */
 #include "boot.h"                                      /* bootloader interface driver  */
 #include "irq.h"                                       /* IRQ driver                   */

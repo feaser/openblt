@@ -35,7 +35,7 @@ PROJ_NAME=openbtl_olimex_efm32g880
 #| Speficy project source files                                                          |
 #|---------------------------------------------------------------------------------------|
 PROJ_FILES= \
-config.h \
+blt_conf.h \
 hooks.c \
 main.c \
 ./lib/CMSIS/CM3/CoreSupport/core_cm3.c \

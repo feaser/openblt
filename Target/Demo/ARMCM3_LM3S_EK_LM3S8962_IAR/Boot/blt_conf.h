@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32_Olimex_STM32E407_GCC\Boot\config.h
+* \file         Demo\ARMCM3_LM3S_EK_LM3S8962_IAR\Boot\blt_conf.h
 * \brief        Bootloader configuration header file.
-* \ingroup      Boot_ARMCM4_STM32_Olimex_STM32E407_GCC
+* \ingroup      Boot_ARMCM3_LM3S_EK_LM3S8962_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,8 +30,8 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef BLT_CONF_H
+#define BLT_CONF_H
 
 /****************************************************************************************
 *   C P U   D R I V E R   C O N F I G U R A T I O N
@@ -49,18 +49,47 @@
  * de-initialize application specific parts, for example to stop blinking an LED, etc.
  */ 
 /** \brief Frequency of the external crystal oscillator. */
-#define BOOT_CPU_XTAL_SPEED_KHZ          (12000)
+#define BOOT_CPU_XTAL_SPEED_KHZ         (8000)
 /** \brief Desired system speed. */
-#define BOOT_CPU_SYSTEM_SPEED_KHZ        (168000)
+#define BOOT_CPU_SYSTEM_SPEED_KHZ       (50000)
 /** \brief Motorola or Intel style byte ordering. */
-#define BOOT_CPU_BYTE_ORDER_MOTOROLA     (0)
+#define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
 /** \brief Enable/disable hook function call right before user program start. */
 #define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
+/** \brief Compiler specific variable prefix to prevent its initialization during startup. */
+#define BOOT_CPU_CONNECT_STATE_PREFIX   __no_init
 
 
 /****************************************************************************************
 *   C O M M U N I C A T I O N   I N T E R F A C E   C O N F I G U R A T I O N
 ****************************************************************************************/
+/* The CAN communication interface is selected by setting the BOOT_COM_CAN_ENABLE 
+ * configurable to 1. Configurable BOOT_COM_CAN_BAUDRATE selects the communication speed
+ * in bits/second. Two CAN messages are reserved for communication with the host. The 
+ * message identifier for sending data from the target to the host is configured with
+ * BOOT_COM_CAN_TXMSG_ID. The one for receiving data from the host is configured with
+ * BOOT_COM_CAN_RXMSG_ID. The maximum amount of data bytes in a message for data 
+ * transmission and reception is set through BOOT_COM_CAN_TX_MAX_DATA and 
+ * BOOT_COM_CAN_RX_MAX_DATA, respectively. It is common for a microcontroller to have more
+ * than 1 CAN controller on board. The zero-based BOOT_COM_CAN_CHANNEL_INDEX selects the
+ * CAN controller channel.
+ * 
+ */
+/** \brief Enable/disable CAN transport layer. */
+#define BOOT_COM_CAN_ENABLE             (0)
+/** \brief Configure the desired CAN baudrate. */
+#define BOOT_COM_CAN_BAUDRATE           (500000)
+/** \brief Configure CAN message ID target->host. */
+#define BOOT_COM_CAN_TX_MSG_ID          (0x7E1)
+/** \brief Configure number of bytes in the target->host CAN message. */
+#define BOOT_COM_CAN_TX_MAX_DATA        (8)
+/** \brief Configure CAN message ID host->target. */
+#define BOOT_COM_CAN_RX_MSG_ID          (0x667)
+/** \brief Configure number of bytes in the host->target CAN message. */
+#define BOOT_COM_CAN_RX_MAX_DATA        (8)
+/** \brief Select the desired CAN peripheral as a zero based index. */
+#define BOOT_COM_CAN_CHANNEL_INDEX      (0)
+
 /* The UART communication interface is selected by setting the BOOT_COM_UART_ENABLE 
  * configurable to 1. Configurable BOOT_COM_UART_BAUDRATE selects the communication speed
  * in bits/second. The maximum amount of data bytes in a message for data transmission 
@@ -78,45 +107,9 @@
 /** \brief Configure number of bytes in the host->target data packet. */
 #define BOOT_COM_UART_RX_MAX_DATA       (64)
 /** \brief Select the desired UART peripheral as a zero based index. */
-#define BOOT_COM_UART_CHANNEL_INDEX     (5)
+#define BOOT_COM_UART_CHANNEL_INDEX     (0)
 
 
-/****************************************************************************************
-*   F I L E   S Y S T E M   I N T E R F A C E   C O N F I G U R A T I O N
-****************************************************************************************/
-/* The file system interface is selected by setting the BOOT_FILE_SYS_ENABLE configurable
- * to 1. This enables support for firmware updates from a file stored on a locally 
- * attached file system such as an SD-card. Note that this interface can be enabled 
- * together with one of the remote communication interfaces such as UART, CAN or USB.
- *
- * Set BOOT_FILE_LOGGING_ENABLE to 1 if you would like log messages to be created during
- * a firmware update. The hook function FileFirmwareUpdateLogHook() will be called each
- * time a new string formatted log entry is available. This could be used during testing
- * by outputting the string on UART or to create a log file on the file system itself.
- *
- * Set BOOT_FILE_ERROR_HOOK_ENABLE to 1 if you would like to be informed in case an error
- * occurs during the firmware update. This could for example be used to turn on an error
- * LED to inform the user that something went wrong. Inspecting the log messages provides
- * additional information on the error cause.
- *
- * Set BOOT_FILE_STARTED_HOOK_ENABLE to 1 if you would like to be informed when a new
- * firmware update is started by the bootloader. 
- *
- * Set BOOT_FILE_COMPLETED_HOOK_ENABLE to 1 if you would like to be informed when a
- * firmware update is completed by the bootloader. 
- */
-/** \brief Enable/disable support for firmware updates from a locally attached storage.*/
-#define BOOT_FILE_SYS_ENABLE            (1)
-/** \brief Enable/disable logging messages during firmware updates. */
-#define BOOT_FILE_LOGGING_ENABLE        (1)
-/** \brief Enable/disable a hook function that is called upon detection of an error. */
-#define BOOT_FILE_ERROR_HOOK_ENABLE     (1)   
-/** \brief Enable/disable a hook function that is called at the start of the update. */
-#define BOOT_FILE_STARTED_HOOK_ENABLE   (1)   
-/** \brief Enable/disable a hook function that is called at the end of the update. */
-#define BOOT_FILE_COMPLETED_HOOK_ENABLE (1)   
-
-   
 /****************************************************************************************
 *   B A C K D O O R   E N T R Y   C O N F I G U R A T I O N
 ****************************************************************************************/
@@ -146,7 +139,7 @@
 /** \brief Enable/disable the NVM hook function for supporting additional memory devices. */
 #define BOOT_NVM_HOOKS_ENABLE           (0)
 /** \brief Configure the size of the default memory device (typically flash EEPROM). */
-#define BOOT_NVM_SIZE_KB                (1024)
+#define BOOT_NVM_SIZE_KB                (256)
 /** \brief Enable/disable hooks functions to override the user program checksum handling. */
 #define BOOT_NVM_CHECKSUM_HOOKS_ENABLE  (0)
 
@@ -164,5 +157,5 @@
 #define BOOT_COP_HOOKS_ENABLE           (0)
 
 
-#endif /* CONFIG_H */
-/*********************************** end of config.h ***********************************/
+#endif /* BLT_CONF_H */
+/*********************************** end of blt_conf.h *********************************/

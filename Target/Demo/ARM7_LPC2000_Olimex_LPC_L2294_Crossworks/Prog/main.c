@@ -51,7 +51,7 @@ static void Init(void);
  *  \details ROM data allocated to the external flash on the Olimex LPC-L2294 board to 
  *           test the programming of data in external flash. To test programming with 
  *           the additional external flash driver, build the bootloader and this program
- *           with configurable BOOT_NVM_HOOKS_ENABLE set to 1 in config.h
+ *           with configurable BOOT_NVM_HOOKS_ENABLE set to 1 in blt_conf.h
  */
 __attribute__((section (".rodata2"))) const unsigned long ExtFlashTestData[] =
 { 

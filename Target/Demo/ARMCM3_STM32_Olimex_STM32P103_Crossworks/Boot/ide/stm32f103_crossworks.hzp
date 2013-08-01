@@ -6,8 +6,7 @@
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc"/>
       <folder Name="Demo">
-        <folder Name="Boot">
-          <file file_name="../config.h"/>
+        <folder Name="Boot" file_name="">
           <file file_name="../hooks.c"/>
           <file file_name="../main.c"/>
           <file file_name="../stm32f10x.h"/>
@@ -35,6 +34,7 @@
               <file file_name="../lib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_usart.h"/>
             </folder>
           </folder>
+          <file file_name="../blt_conf.h"/>
         </folder>
       </folder>
       <folder Name="Source" file_name="">
