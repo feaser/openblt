@@ -105,12 +105,16 @@
  * present on the microcontroller. Through these hook functions the NVM driver can be
  * extended to support additional memory types such as external flash memory and serial
  * eeproms. The size of the internal memory in kilobytes is specified with configurable
- * BOOT_NVM_SIZE_KB.
+ * BOOT_NVM_SIZE_KB. If desired the internal checksum writing and verification method can
+ * be overridden with a application specific method by enabling configuration switch
+ * BOOT_NVM_CHECKSUM_HOOKS_ENABLE.
  */
 /** \brief Enable/disable the NVM hook function for supporting additional memory devices. */
 #define BOOT_NVM_HOOKS_ENABLE           (0)
 /** \brief Configure the size of the default memory device (typically flash EEPROM). */
 #define BOOT_NVM_SIZE_KB                (128)
+/** \brief Enable/disable hooks functions to override the user program checksum handling. */
+#define BOOT_NVM_CHECKSUM_HOOKS_ENABLE  (0)
 
 
 /****************************************************************************************

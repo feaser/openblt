@@ -47,6 +47,12 @@ extern blt_int8u NvmEraseHook(blt_addr addr, blt_int32u len);
 extern blt_bool  NvmDoneHook(void);
 #endif
 
+#if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0)
+extern blt_bool  NvmWriteChecksumHook(void);
+extern blt_bool  NvmVerifyChecksumHook(void);
+#endif
+
+
 
 /************************************************************************************//**
 ** \brief     Initializes the NVM driver.
@@ -158,8 +164,13 @@ blt_bool NvmErase(blt_addr addr, blt_int32u len)
 ****************************************************************************************/
 blt_bool NvmVerifyChecksum(void)
 {
-  /* check checksum */
+#if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0)
+  /* check checksum using the application specific method. */
+  return NvmVerifyChecksumHook();
+#else
+  /* check checksum using the interally supported method. */
   return FlashVerifyChecksum();
+#endif
 } /*** end of NvmVerifyChecksum ***/
 
 
@@ -182,11 +193,21 @@ blt_bool NvmDone(void)
     return BLT_FALSE;
   }
 #endif
-  /* compute and write checksum, which is programmed by the internal driver */
+
+#if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0)
+  /* compute and write checksum, using the application specific method. */
+  if (NvmWriteChecksumHook() == BLT_FALSE)
+  {
+    return BLT_FALSE;
+  }
+#else
+  /* compute and write checksum, which is programmed by the internal driver. */
   if (FlashWriteChecksum() == BLT_FALSE)
   {
     return BLT_FALSE;
   }
+#endif
+
   /* finish up internal driver operations */
   return FlashDone();
 } /*** end of NvmDone ***/

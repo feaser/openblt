@@ -31,6 +31,9 @@
 * \endinternal
 ****************************************************************************************/
 
+/****************************************************************************************
+* Include files
+****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
 #include "stm32f4xx.h"                           /* STM32 registers                    */
@@ -153,6 +156,34 @@ blt_bool NvmDoneHook(void)
   return BLT_TRUE;
 } /*** end of NvmDoneHook ***/
 #endif /* BOOT_NVM_HOOKS_ENABLE > 0 */
+
+
+#if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Verifies the checksum, which indicates that a valid user program is
+**            present and can be started.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+blt_bool NvmVerifyChecksumHook(void)
+{
+  return BLT_TRUE;
+} /*** end of NvmVerifyChecksum ***/
+
+
+/************************************************************************************//**
+** \brief     Writes a checksum of the user program to non-volatile memory. This is
+**            performed once the entire user program has been programmed. Through
+**            the checksum, the bootloader can check if a valid user programming is
+**            present and can be started.
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
+**
+****************************************************************************************/
+blt_bool NvmWriteChecksumHook(void)
+{
+  return BLT_TRUE;
+}
+#endif /* BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0 */
 
 
 /****************************************************************************************

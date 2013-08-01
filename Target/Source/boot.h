@@ -51,6 +51,17 @@
 
 
 /****************************************************************************************
+* Defines
+****************************************************************************************/
+/** \brief Main version of the bootloader core. */
+#define BOOT_VERSION_CORE_MAIN     (0u)
+/** \brief Minor version of the bootloader core. */
+#define BOOT_VERSION_CORE_MINOR    (96u)
+/** \brief Bufgix version of the bootloader core. */
+#define BOOT_VERSION_CORE_BUGFIX   (0u)
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 void BootInit(void);

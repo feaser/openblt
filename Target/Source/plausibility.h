@@ -292,6 +292,14 @@
 #error "BOOT_NVM_SIZE_KB must be > 0"
 #endif
 
+#ifndef BOOT_NVM_CHECKSUM_HOOKS_ENABLE
+#define BOOT_NVM_CHECKSUM_HOOKS_ENABLE  (0)
+#endif
+
+#if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE < 0) || (BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 1)
+#error "BOOT_NVM_CHECKSUM_HOOKS_ENABLE must be 0 or 1"
+#endif
+
 
 /****************************************************************************************
 *   W A T C H D O G   D R I V E R   C O N F I G U R A T I O N   C H E C K
