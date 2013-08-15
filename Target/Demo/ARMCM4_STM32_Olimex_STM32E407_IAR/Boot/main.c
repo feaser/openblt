@@ -79,6 +79,8 @@ static void Init(void)
 #elif (BOOT_FILE_SYS_ENABLE > 0)
   GPIO_InitTypeDef  GPIO_InitStructure;
   USART_InitTypeDef USART_InitStructure;
+#elif (BOOT_COM_CAN_ENABLE > 0)
+  GPIO_InitTypeDef  GPIO_InitStructure;
 #endif  
 
   /* disable all interrupts to prevent possible jump back to the user program */
@@ -134,6 +136,24 @@ static void Init(void)
   /* enable UART */
   USART_Cmd(USART6, ENABLE);
 #endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* enable clocks for CAN2 transmitter and receiver pins */
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  /* select alternate function for the CAN2 pins */
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_CAN2);
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_CAN2); 
+  /* configure CAN2 RX and TX pins */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  /* enable CAN clock. Note that CAN2 shares reception filters with CAN1 so for CAN2
+   * the CAN1 peripheral also needs to be enabled.
+   */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN2 | RCC_APB1Periph_CAN1, ENABLE);
+#endif  
 } /*** end of Init ***/
 
 

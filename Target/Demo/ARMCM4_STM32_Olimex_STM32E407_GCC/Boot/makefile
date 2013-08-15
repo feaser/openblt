@@ -126,6 +126,8 @@ main.c \
 ../../../Source/assert.h \
 ../../../Source/plausibility.h \
 ../../../Source/ARMCM4_STM32/types.h \
+../../../Source/ARMCM4_STM32/can.c \
+../../../Source/ARMCM4_STM32/can.h \
 ../../../Source/ARMCM4_STM32/cpu.c \
 ../../../Source/ARMCM4_STM32/cpu.h \
 ../../../Source/ARMCM4_STM32/flash.c \

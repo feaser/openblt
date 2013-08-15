@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_STM32\can.c
+* \file         Source\ARMCM4_STM32\can.c
 * \brief        Bootloader CAN communication interface source file.
-* \ingroup      Target_ARMCM3_STM32
+* \ingroup      Target_ARMCM4_STM32
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -91,7 +91,7 @@ typedef struct
   blt_int32u          RESERVED4;
   volatile blt_int32u FA1R;
   blt_int32u          RESERVED5[8];
-  tCanFilter          sFilterRegister[14];
+  tCanFilter          sFilterRegister[28];
 } tCanRegs;                                           
 
 
@@ -108,6 +108,8 @@ typedef struct
 #define CAN_BIT_SLEEP    ((blt_int32u)0x00000002)
 /** \brief Filter 0 selection bit. */
 #define CAN_BIT_FILTER0  ((blt_int32u)0x00000001)
+/** \brief Filter 14 selection bit. */
+#define CAN_BIT_FILTER14 ((blt_int32u)0x00004000)
 /** \brief Filter init mode bit. */
 #define CAN_BIT_FINIT    ((blt_int32u)0x00000001)
 /** \brief Transmit mailbox 0 empty bit. */
@@ -121,8 +123,15 @@ typedef struct
 /****************************************************************************************
 * Register definitions
 ****************************************************************************************/
-/** \brief Macro for accessing CAN controller registers. */
+#if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
+/** \brief Macro for accessing CAN1 controller registers. */
 #define CANx             ((tCanRegs *) (blt_int32u)0x40006400)
+#else
+/** \brief Macro for accessing CAN2 controller registers. */
+#define CANx             ((tCanRegs *) (blt_int32u)0x40006800)
+#endif
+/** \brief Macro for accessing CAN1 controller registers. */
+#define CAN1             ((tCanRegs *) (blt_int32u)0x40006400)
 
 
 /****************************************************************************************
@@ -189,10 +198,10 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
   /* loop through all possible time quanta configurations to find a match */
   for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
   {
-    if (((BOOT_CPU_SYSTEM_SPEED_KHZ/2) % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
+    if (((BOOT_CPU_SYSTEM_SPEED_KHZ/4) % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
     {
       /* compute the prescaler that goes with this TQ configuration */
-      *prescaler = (BOOT_CPU_SYSTEM_SPEED_KHZ/2)/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
+      *prescaler = (BOOT_CPU_SYSTEM_SPEED_KHZ/4)/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
 
       /* make sure the prescaler is valid */
       if ( (*prescaler > 0) && (*prescaler <= 1024) )
@@ -221,10 +230,11 @@ void CanInit(void)
   blt_int8u  tseg1, tseg2;
   blt_bool   result;
 
-  /* the current implementation supports CAN1. throw an assertion error in case a 
+  /* the current implementation supports CAN1 and 2. throw an assertion error in case a 
    * different CAN channel is configured.  
    */
-  ASSERT_CT(BOOT_COM_CAN_CHANNEL_INDEX == 0); 
+  ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX == 0 || BOOT_COM_CAN_CHANNEL_INDEX == 1)); 
+
   /* obtain bittiming configuration information */
   result = CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &tseg1, &tseg2);
   ASSERT_RT(result == BLT_TRUE);
@@ -260,23 +270,44 @@ void CanInit(void)
     /* keep the watchdog happy */
     CopService();
   }
+
+#if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
   /* enter initialisation mode for the acceptance filter */
-  CANx->FMR |= CAN_BIT_FINIT;
+  CAN1->FMR |= CAN_BIT_FINIT;
   /* deactivate filter 0 */
-  CANx->FA1R &= ~CAN_BIT_FILTER0;
+  CAN1->FA1R &= ~CAN_BIT_FILTER0;
   /* 32-bit scale for the filter */
-  CANx->FS1R |= CAN_BIT_FILTER0;
+  CAN1->FS1R |= CAN_BIT_FILTER0;
   /* open up the acceptance filter to receive all messages */
-  CANx->sFilterRegister[0].FR1 = 0; 
-  CANx->sFilterRegister[0].FR2 = 0; 
+  CAN1->sFilterRegister[0].FR1 = 0; 
+  CAN1->sFilterRegister[0].FR2 = 0; 
   /* select id/mask mode for the filter */
-  CANx->FM1R &= ~CAN_BIT_FILTER0;
+  CAN1->FM1R &= ~CAN_BIT_FILTER0;
   /* FIFO 0 assignation for the filter */
-  CANx->FFA1R &= ~CAN_BIT_FILTER0;
+  CAN1->FFA1R &= ~CAN_BIT_FILTER0;
   /* filter activation */
-  CANx->FA1R |= CAN_BIT_FILTER0;
+  CAN1->FA1R |= CAN_BIT_FILTER0;
   /* leave initialisation mode for the acceptance filter */
-  CANx->FMR &= ~CAN_BIT_FINIT;
+  CAN1->FMR &= ~CAN_BIT_FINIT;
+#else
+  /* enter initialisation mode for the acceptance filter */
+  CAN1->FMR |= CAN_BIT_FINIT;
+  /* deactivate filter 14 */
+  CAN1->FA1R &= ~CAN_BIT_FILTER14;
+  /* 32-bit scale for the filter */
+  CAN1->FS1R |= CAN_BIT_FILTER14;
+  /* open up the acceptance filter to receive all messages */
+  CAN1->sFilterRegister[14].FR1 = 0; 
+  CAN1->sFilterRegister[14].FR2 = 0; 
+  /* select id/mask mode for the filter */
+  CAN1->FM1R &= ~CAN_BIT_FILTER14;
+  /* FIFO 0 assignation for the filter */
+  CAN1->FFA1R &= ~CAN_BIT_FILTER14;
+  /* filter activation */
+  CAN1->FA1R |= CAN_BIT_FILTER14;
+  /* leave initialisation mode for the acceptance filter */
+  CAN1->FMR &= ~CAN_BIT_FINIT;
+#endif  
 } /*** end of CanInit ***/
 
 

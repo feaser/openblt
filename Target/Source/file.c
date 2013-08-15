@@ -41,19 +41,6 @@
 
 #if (BOOT_FILE_SYS_ENABLE > 0)
 /****************************************************************************************
-* Defines
-****************************************************************************************/
-/** \brief Maximum number of characters that can be on a line in the firmware file. */
-#define MAX_CHARS_PER_LINE                  (256)
-/** \brief Maximum number of data bytes that can be on a line in the firmware file
- *         (S-record).
- */
-#define MAX_DATA_BYTES_PER_LINE             (MAX_CHARS_PER_LINE/2)
-/** \brief Return code in case an invalid checksum was detected on an S-record line. */
-#define ERROR_SREC_INVALID_CHECKSUM         (-1)
-
-
-/****************************************************************************************
 * Type definitions
 ****************************************************************************************/
 /** \brief Enumeration for the different internal module states. */
@@ -64,15 +51,6 @@ typedef enum
   FIRMWARE_UPDATE_STATE_ERASING,                 /**< erasing state                    */
   FIRMWARE_UPDATE_STATE_PROGRAMMING              /**< programming state                */
 } tFirmwareUpdateState;
-
-/** \brief Enumeration for the different S-record line types. */
-typedef enum
-{
-  LINE_TYPE_S1,                                  /**< 16-bit address line              */
-  LINE_TYPE_S2,                                  /**< 24-bit address line              */
-  LINE_TYPE_S3,                                  /**< 32-bit address line              */
-  LINE_TYPE_UNSUPPORTED                          /**< unsupported line                 */
-} tSrecLineType;
 
 /** \brief Structure type with information for the memory erase opeartion. */
 typedef struct 
@@ -88,21 +66,9 @@ typedef struct
   FIL   file;                                    /**< file object for firmware file    */
 } tFatFsObjects;
 
-/** \brief Structure type for grouping the parsing results of an S-record line. */
-typedef struct
-{
-  blt_char  line[MAX_CHARS_PER_LINE];            /**< string buffer for the line chars */
-  blt_int8u data[MAX_DATA_BYTES_PER_LINE];       /**< array for S1, S2 or S3 data bytes*/
-  blt_addr  address;                             /**< address on S1, S2 or S3 line     */
-} tSrecLineParseObject;
-
-
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static tSrecLineType SrecGetLineType(const blt_char *line);
-static blt_bool      SrecVerifyChecksum(const blt_char *line);
-static blt_int16s    SrecParseLine(const blt_char *line, blt_addr *address, blt_int8u *data);
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
 static blt_char      FileLibByteNibbleToChar(blt_int8u nibble);
 static blt_char     *FileLibByteToHexString(blt_int8u byte_val, blt_char *destination);
@@ -284,7 +250,7 @@ void FileTask(void)
     /* parse the S-Record line without copying the data values if the line is not empty */
     if (read_line_ptr != BLT_NULL)
     {
-      parse_result = SrecParseLine(lineParseObject.line, &lineParseObject.address, BLT_NULL);
+      parse_result = FileSrecParseLine(lineParseObject.line, &lineParseObject.address, BLT_NULL);
       /* check parsing result */
       if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
       {
@@ -399,7 +365,7 @@ void FileTask(void)
     /* parse the S-Record line if the line is not empty */
     if (read_line_ptr != BLT_NULL)
     {
-      parse_result = SrecParseLine(lineParseObject.line, &lineParseObject.address, lineParseObject.data);
+      parse_result = FileSrecParseLine(lineParseObject.line, &lineParseObject.address, lineParseObject.data);
       /* check parsing result */
       if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
       {
@@ -505,7 +471,7 @@ void FileTask(void)
 ** \return    the S-Record line type.
 **
 ****************************************************************************************/
-static tSrecLineType SrecGetLineType(const blt_char *line)
+tSrecLineType FileSrecGetLineType(const blt_char *line)
 {
   /* check if the line starts with the 'S' character, followed by a digit */
   if ( (toupper(line[0]) != 'S') || (isdigit(line[1]) == 0) )
@@ -528,7 +494,7 @@ static tSrecLineType SrecGetLineType(const blt_char *line)
   }
   /* still here so not a supported line type found */
   return LINE_TYPE_UNSUPPORTED;
-} /*** end of SrecGetLineType ***/
+} /*** end of FileSrecGetLineType ***/
 
 
 /************************************************************************************//**
@@ -538,7 +504,7 @@ static tSrecLineType SrecGetLineType(const blt_char *line)
 ** \return    BLT_TRUE if the checksum is correct, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-static blt_bool SrecVerifyChecksum(const blt_char *line)
+blt_bool FileSrecVerifyChecksum(const blt_char *line)
 {
   blt_int16u bytes_on_line;
   blt_int8u  checksum = 0;
@@ -573,7 +539,7 @@ static blt_bool SrecVerifyChecksum(const blt_char *line)
   }
   /* still here so the checksum was correct */
   return BLT_TRUE;
-} /*** end of SrecVerifyChecksum ***/
+} /*** end of FileSrecVerifyChecksum ***/
 
 
 /************************************************************************************//**
@@ -589,7 +555,7 @@ static blt_bool SrecVerifyChecksum(const blt_char *line)
 **            in case the checksum validation failed.
 **
 ****************************************************************************************/
-static blt_int16s SrecParseLine(const blt_char *line, blt_addr *address, blt_int8u *data)
+blt_int16s FileSrecParseLine(const blt_char *line, blt_addr *address, blt_int8u *data)
 {
   tSrecLineType lineType;
   blt_int16s    data_byte_count = 0;
@@ -599,7 +565,7 @@ static blt_int16s SrecParseLine(const blt_char *line, blt_addr *address, blt_int
   /* check pointers and not that data can be a null pointer */
   ASSERT_RT((address != BLT_NULL) && (line != BLT_NULL));
   /* figure out what type of line we are dealing with */
-  lineType = SrecGetLineType(line);
+  lineType = FileSrecGetLineType(line);
   /* make sure it is one that we can parse */
   if (lineType == LINE_TYPE_UNSUPPORTED)
   {
@@ -607,7 +573,7 @@ static blt_int16s SrecParseLine(const blt_char *line, blt_addr *address, blt_int
     return 0;
   }
   /* verify the checksum */
-  if (SrecVerifyChecksum(line) == BLT_FALSE)
+  if (FileSrecVerifyChecksum(line) == BLT_FALSE)
   {
     /* error on data line encountered */
     return ERROR_SREC_INVALID_CHECKSUM;
@@ -704,7 +670,7 @@ static blt_int16s SrecParseLine(const blt_char *line, blt_addr *address, blt_int
   }
   
   return data_byte_count;
-} /*** end of SrecParseLine ***/
+} /*** end of FileSrecParseLine ***/
 
 
 #if (BOOT_FILE_LOGGING_ENABLE > 0)

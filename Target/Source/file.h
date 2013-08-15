@@ -58,14 +58,48 @@
 /** \brief Error code because the program's checksum could not be written to memory. */
 #define FILE_ERROR_CANNOT_WRITE_CHECKSUM           (7)
 
+/** \brief Maximum number of characters that can be on a line in the firmware file. */
+#define MAX_CHARS_PER_LINE                  (256)
+/** \brief Maximum number of data bytes that can be on a line in the firmware file
+ *         (S-record).
+ */
+#define MAX_DATA_BYTES_PER_LINE             (MAX_CHARS_PER_LINE/2)
+/** \brief Return code in case an invalid checksum was detected on an S-record line. */
+#define ERROR_SREC_INVALID_CHECKSUM         (-1)
+
+
+/****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Enumeration for the different S-record line types. */
+typedef enum
+{
+  LINE_TYPE_S1,                                  /**< 16-bit address line              */
+  LINE_TYPE_S2,                                  /**< 24-bit address line              */
+  LINE_TYPE_S3,                                  /**< 32-bit address line              */
+  LINE_TYPE_UNSUPPORTED                          /**< unsupported line                 */
+} tSrecLineType;
+
+/** \brief Structure type for grouping the parsing results of an S-record line. */
+typedef struct
+{
+  blt_char  line[MAX_CHARS_PER_LINE];            /**< string buffer for the line chars */
+  blt_int8u data[MAX_DATA_BYTES_PER_LINE];       /**< array for S1, S2 or S3 data bytes*/
+  blt_addr  address;                             /**< address on S1, S2 or S3 line     */
+} tSrecLineParseObject;
+
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void     FileInit(void);
-void     FileTask(void);
-blt_bool FileIsIdle(void);
-blt_bool FileHandleFirmwareUpdateRequest(void);
+void          FileInit(void);
+void          FileTask(void);
+blt_bool      FileIsIdle(void);
+blt_bool      FileHandleFirmwareUpdateRequest(void);
+/* functions for reading data from a Motorola S-record file. */
+tSrecLineType FileSrecGetLineType(const blt_char *line);
+blt_bool      FileSrecVerifyChecksum(const blt_char *line);
+blt_int16s    FileSrecParseLine(const blt_char *line, blt_addr *address, blt_int8u *data);
 
 #endif /* BOOT_FILE_SYS_ENABLE > 0 */
 
