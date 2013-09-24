@@ -52,11 +52,6 @@ static void Init(void);
 ****************************************************************************************/
 void main(void)
 {
-  /* ##Vg TODO basic bootloader works, including the timed backdoor. next steps:
-   *             - bootloader activation from user program
-   *             - support for CAN
-   */
-
   /* initialize the microcontroller */
   Init();
   

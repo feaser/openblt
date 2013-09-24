@@ -166,4 +166,225 @@ static unsigned char UartReceiveByte(unsigned char *data)
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 
+#if (BOOT_COM_CAN_ENABLE > 0)
+/****************************************************************************************
+*        C O N T R O L L E R   A R E A   N E T W O R K   I N T E R F A C E
+****************************************************************************************/
+
+/****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Structure type with the layout of the CAN bus timing registers. */
+typedef struct
+{
+  unsigned char tseg1;                     /**< CAN time segment 1                     */
+  unsigned char tseg2;                     /**< CAN time segment 2                     */
+} tCanBusTiming;
+
+
+/****************************************************************************************
+* Macro definitions
+****************************************************************************************/
+#define CONVERT_STD_ID_TO_REG0(id) ((unsigned char)(((unsigned short)id & 0x07f8) >> 3))
+#define CONVERT_STD_ID_TO_REG1(id) ((unsigned char)(id & 0x07) << 5)
+#define CONVERT_STD_ID_TO_REG2(id) (0)
+#define CONVERT_STD_ID_TO_REG3(id) (0)
+#define CONVERT_EXT_ID_TO_REG0(id) ((unsigned char)(id >> 21))
+#define CONVERT_EXT_ID_TO_REG1(id) ((((unsigned char)(id >> 15)) & 0x07) |  \
+                                   (((unsigned char)(id >> 13)) & 0xe0) | CAN0RXIDR1_IDE_MASK)
+#define CONVERT_EXT_ID_TO_REG2(id) ((unsigned char)(((unsigned short)id & 0x7f80) >> 7))
+#define CONVERT_EXT_ID_TO_REG3(id) ((unsigned char)(id & 0x7f) << 1)
+
+
+/****************************************************************************************
+* Local constant declarations
+****************************************************************************************/
+/**
+* \brief     Array with possible time quanta configurations.
+* \details   According to the CAN protocol 1 bit-time can be made up of between 8..25
+*            time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC
+*            always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2)
+*            * 100%. This array contains possible and valid time quanta configurations
+*            with a sample point between 68..78%.
+*/
+static const tCanBusTiming canTiming[] =
+{                       /*  TQ | TSEG1 | TSEG2 | SP  */
+                        /* ------------------------- */
+    {  5, 2 },          /*   8 |   5   |   2   | 75% */
+    {  6, 2 },          /*   9 |   6   |   2   | 78% */
+    {  6, 3 },          /*  10 |   6   |   3   | 70% */
+    {  7, 3 },          /*  11 |   7   |   3   | 73% */
+    {  8, 3 },          /*  12 |   8   |   3   | 75% */
+    {  9, 3 },          /*  13 |   9   |   3   | 77% */
+    {  9, 4 },          /*  14 |   9   |   4   | 71% */
+    { 10, 4 },          /*  15 |  10   |   4   | 73% */
+    { 11, 4 },          /*  16 |  11   |   4   | 75% */
+    { 12, 4 },          /*  17 |  12   |   4   | 76% */
+    { 12, 5 },          /*  18 |  12   |   5   | 72% */
+    { 13, 5 },          /*  19 |  13   |   5   | 74% */
+    { 14, 5 },          /*  20 |  14   |   5   | 75% */
+    { 15, 5 },          /*  21 |  15   |   5   | 76% */
+    { 15, 6 },          /*  22 |  15   |   6   | 73% */
+    { 16, 6 },          /*  23 |  16   |   6   | 74% */
+    { 16, 7 },          /*  24 |  16   |   7   | 71% */
+    { 16, 8 }           /*  25 |  16   |   8   | 68% */
+};
+
+
+/************************************************************************************//**
+** \brief     Search algorithm to match the desired baudrate to a possible bus timing
+**            configuration.
+** \param     baud The desired baudrate in kbps. Valid values are 10..1000.
+** \param     btr0 Pointer to where the value for register CANxBTR0 will be stored.
+** \param     btr1 Pointer to where the value for register CANxBTR1 will be stored.
+** \return    1 if the CAN bustiming register values were found, 0 otherwise.
+**
+****************************************************************************************/
+static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned char *btr0, unsigned char *btr1)
+{
+  unsigned char prescaler;
+  unsigned char cnt;
+
+  /* loop through all possible time quanta configurations to find a match */
+  for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
+  {
+    if ((BOOT_CPU_XTAL_SPEED_KHZ % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
+    {
+      /* compute the prescaler that goes with this TQ configuration */
+      prescaler = (unsigned char)(BOOT_CPU_XTAL_SPEED_KHZ/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1)));
+
+      /* make sure the prescaler is valid */
+      if ( (prescaler > 0) && (prescaler <= 64) )
+      {
+        /* store the MSCAN bustiming register values */
+        *btr0 = prescaler - 1;
+        *btr1 = ((canTiming[cnt].tseg2 - 1) << 4) | (canTiming[cnt].tseg1 - 1);
+        /* found a good bus timing configuration */
+        return 1;
+      }
+    }
+  }
+  /* could not find a good bus timing configuration */
+  return 0;
+} /*** end of CanGetSpeedConfig ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the CAN communication interface.
+** \return    none.
+**
+****************************************************************************************/
+void BootComInit(void)
+{
+  unsigned char btrRegValues[2];
+  unsigned long accept_code;
+  unsigned long accept_mask;
+
+  /* enter initialization mode. note that this automatically disables CAN interrupts */
+  CAN0CTL0 = CAN0CTL0_INITRQ_MASK;
+  /* wait for initialization mode entry handshake from the hardware */
+  while ((CAN0CTL1 & CAN0CTL1_INITAK_MASK) == 0)
+  {
+    ;
+  }
+
+  /* enable the CAN controller, disable wake up and listen modes and set the
+   * crystal oscillator as the clock source.
+   */
+  CAN0CTL1 = CAN0CTL1_CANE_MASK;
+
+  /* configure baudrate */
+  if (CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &btrRegValues[0], &btrRegValues[1]) == 1)
+  {
+    /* configure the baudrate */
+    CAN0BTR0 = btrRegValues[0];
+    CAN0BTR1 = btrRegValues[1];
+  }
+
+  /* enable 2 32-bit acceptance filters. both will be configured for the same code and
+   * mask. the only difference is that filter 0 will be setup to receive extended 29-bit
+   * identifiers and filter 0 to receive standard 11-bit identifiers.
+   */
+  CAN0IDAC_IDAM0 = 0;
+  CAN0IDAC_IDAM1 = 0;
+  
+  /* set the acceptance filter code and mask to receive all messages */
+  accept_code = 0x00000000;
+  accept_mask = 0x1fffffff;
+
+  /* configure acceptance filter 0 for 29-bit extended identifiers */
+  CAN0IDAR0 = CONVERT_EXT_ID_TO_REG0(accept_code);
+  CAN0IDAR1 = CONVERT_EXT_ID_TO_REG1(accept_code);
+  CAN0IDAR2 = CONVERT_EXT_ID_TO_REG2(accept_code);
+  CAN0IDAR3 = CONVERT_EXT_ID_TO_REG3(accept_code);
+  CAN0IDMR0 = CONVERT_EXT_ID_TO_REG0(accept_mask);
+  CAN0IDMR1 = (CONVERT_EXT_ID_TO_REG1(accept_mask) | 0x10) & (unsigned char)(~0x08);
+  CAN0IDMR2 = CONVERT_EXT_ID_TO_REG2(accept_mask);
+  CAN0IDMR3 = CONVERT_EXT_ID_TO_REG3(accept_mask);
+
+  /* configure acceptance filter 1 for 11-bit standard identifiers */
+  CAN0IDAR4 = CONVERT_STD_ID_TO_REG0(accept_code);
+  CAN0IDAR5 = CONVERT_STD_ID_TO_REG1(accept_code);
+  CAN0IDAR6 = CONVERT_STD_ID_TO_REG2(accept_code);
+  CAN0IDAR7 = CONVERT_STD_ID_TO_REG3(accept_code);
+  CAN0IDMR4 = CONVERT_STD_ID_TO_REG0(accept_mask);
+  CAN0IDMR5 = CONVERT_STD_ID_TO_REG1(accept_mask) | (0x04 | 0x02 | 0x01);
+  CAN0IDMR6 = CONVERT_STD_ID_TO_REG2(accept_mask);
+  CAN0IDMR7 = CONVERT_STD_ID_TO_REG3(accept_mask);
+
+  /* leave initialization mode and synchronize to the CAN bus */
+  CAN0CTL0_INITRQ = 0;
+  /* wait for CAN bus synchronization handshake from the hardware */
+  while ((CAN0CTL1 & CAN0CTL1_INITAK_MASK) != 0)
+  {
+    ;
+  }
+} /*** end of BootComInit ***/
+
+
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
+**
+****************************************************************************************/
+void BootComCheckActivationRequest(void)
+{
+  unsigned long rxMsgId;
+
+  /* check if a new message was received */
+  if ((CAN0RFLG & CAN0RFLG_RXF_MASK) == CAN0RFLG_RXF_MASK)
+  {
+    /* check IDE-bit to determine if it is a 11-bit or 29-bit identifier */
+    if ((CAN0RXIDR1 & CAN0RXIDR1_IDE_MASK) == 0)             
+    {
+      /* 11-bit id */
+      rxMsgId = (*(unsigned short*)(&CAN0RXIDR0)) >> 5;
+    }
+    else
+    {
+      /* 29-bit id */
+      rxMsgId = (unsigned long)(((*(unsigned long*)(&CAN0RXIDR0)) & 0x0007ffff) >> 1) |
+                (unsigned long)(((*(unsigned long*)(&CAN0RXIDR0)) & 0xffe00000) >> 3);
+    }
+    /* is this the packet identifier? */    
+    if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)
+    {
+      /* check if this was an XCP CONNECT command */ 
+      if ( (CAN0RXDSR0 == 0xff) && (CAN0RXDSR1 == 0x00) )
+      {
+        /* release the receive object by clearing the rx flag */
+        CAN0RFLG &= CAN0RFLG_RXF_MASK;
+        /* connection request received so start the bootloader */
+        BootActivate();
+      }
+      
+    }
+    /* release the receive object by clearing the rx flag */
+    CAN0RFLG &= CAN0RFLG_RXF_MASK;
+  }
+} /*** end of BootComCheckActivationRequest ***/
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
+
+
 /*********************************** end of boot.c *************************************/

@@ -41,7 +41,7 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Structure type with the layout of the UART related controler registers. */
+/** \brief Structure type with the layout of the UART related control registers. */
 typedef volatile struct
 { 
   volatile blt_int8u  scibdh;            /**< baudrate control register [SBR 12..8]    */
