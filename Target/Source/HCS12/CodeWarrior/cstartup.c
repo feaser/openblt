@@ -115,10 +115,6 @@ __EXTERN_C void _SET_PAGE(void);  /* the inline assembler needs a prototype */
 #endif
 #endif  /* HC812A4 */
 
-#define ___INITRM      (*(volatile unsigned char *) 0x0010)
-#define ___INITRG      (*(volatile unsigned char *) 0x0011)
-#define ___INITEE      (*(volatile unsigned char *) 0x0012)
-
 #if defined(_DO_FEED_COP_)
 #define __FEED_COP_IN_HLI()  } asm movb #0x55, _COP_RST_ADR; asm movb #0xAA, _COP_RST_ADR; asm {
 #else
@@ -414,10 +410,6 @@ __EXTERN_C void _Startup(void) {
     */
    /*INIT_SP_FROM_STARTUP_DESC();*/ /* HLI macro definition in hidef.h */
 
-   ___INITRG = 0x00;  /* lock registers block to 0x0000 */
-   ___INITRM = 0x39;  /* lock Ram to end at 0x3FFF */
-   ___INITEE = 0x09;  /* lock EEPROM block to end at 0x0fff */
-
    /* Here user defined code could be inserted, the stack could be used */
 #if defined(_DO_DISABLE_COP_)
    _DISABLE_COP();
@@ -473,7 +465,6 @@ __EXTERN_C void _Startup(void) {
    /* OpenBLT modifcation: do not call main. instead do this in the reset handler found in 
     * vectors.c
     */
-    main();
    /* main(); */
 }
 

@@ -76,9 +76,21 @@ __interrupt void UnusedISR(void)
  *           size of the bootloader changes, as defined in the flashLayout[] table in 
  *           flash.c of the bootloader.
  */
+#if (BDM_DEBUGGING_ENABLED == 1)
+/* for programming and debugging with a BDM device, the vector table should be at
+ * its default location.
+ */
+const tIsrFunc _vectab[] @0xff80 =
+#else
 const tIsrFunc _vectab[] @0xe77e =
+#endif 
 {
+#if (BDM_DEBUGGING_ENABLED != 1)
+  /* for programming and debugging with a BDM device, the checksum should not be
+   * programmed because it would be in a reserved flash memory space.
+   */
   (tIsrFunc)0xaa55,                                   /* Reserved for OpenBLT checksum */
+#endif  
   (tIsrFunc)UnusedISR,                                /* Reserved 0xFF80               */
   (tIsrFunc)UnusedISR,                                /* Reserved 0xFF82               */
   (tIsrFunc)UnusedISR,                                /* Reserved 0xFF84               */

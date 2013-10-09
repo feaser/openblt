@@ -49,7 +49,7 @@ static void BootActivate(void)
   /* stop the timer from generating interrupts */
   TimeDeinit();
   /* set pointer to the address of function reset_connected_handler in the bootloader. */
-  pEntryFromProgFnc = (void(*)(void))(0xfef0);
+  pEntryFromProgFnc = (void(*)(void))(0xfee0);
   /* call EntryFromProg to activate the bootloader. */
   pEntryFromProgFnc();
 } /*** end of BootActivate ***/

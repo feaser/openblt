@@ -47,6 +47,12 @@
  *             changes.
  */
 #define VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR  (0xE780)
+/** \brief INITRM register definition. */
+#define REG_INITRM      (*(volatile blt_int8u *) 0x0010)
+/** \brief INITRG register definition. */
+#define REG_INITRG      (*(volatile blt_int8u *) 0x0011)
+/** \brief INITEE register definition. */
+#define REG_INITEE      (*(volatile blt_int8u *) 0x0012)
 
 
 /****************************************************************************************
@@ -70,6 +76,13 @@ typedef void (*near tIsrFunc)(void);
 ****************************************************************************************/
 void reset_handler(void)
 {
+  /* for compatibility with other HCS12 derivates, set the register start address to
+   * 0x0000, remap the RAM to always end at 0x3FFF and remap EEPROM (if applicable)
+   * to end at 0xfff.
+   */
+  REG_INITRG = 0x00;
+  REG_INITRM = 0x39;
+  REG_INITEE = 0x09;
   /* initialize the stack pointer */
   INIT_SP_FROM_STARTUP_DESC();
   /* perform standard C startup initialiation */
@@ -86,7 +99,7 @@ void reset_handler(void)
 ** \attention This section must be added to the linker command file to force this 
 **            function to always be at the same fixed address. 
 **              SECTIONS
-**                ENTRY_SEG     = READ_ONLY  0xFEF0 TO 0xFEFF;
+**                ENTRY_SEG     = READ_ONLY  0xFEE0 TO 0xFEFF;
 **              END
 **              PLACEMENT
 **                ENTRY               INTO  ENTRY_SEG;
@@ -103,6 +116,13 @@ void reset_handler(void)
 #pragma CODE_SEG ENTRY
 void reset_connected_handler(void)
 {
+  /* for compatibility with other HCS12 derivates, set the register start address to
+   * 0x0000, remap the RAM to always end at 0x3FFF and remap EEPROM (if applicable)
+   * to end at 0xfff.
+   */
+  REG_INITRG = 0x00;
+  REG_INITRM = 0x39;
+  REG_INITEE = 0x09;
   /* initialize the stack pointer */
   INIT_SP_FROM_STARTUP_DESC();
   /* perform standard C startup initialiation */

@@ -4,9 +4,9 @@ SEGMENTS  /* Here all RAM/ROM areas of the device are listed. Used in PLACEMENT 
       /* RAM */
       RAM           = READ_WRITE    0x3800 TO   0x3FFF;
       /* non-paged FLASHs */
-      ROM_C000      = READ_ONLY     0xe800 TO   0xFEEF;
+      ROM_C000      = READ_ONLY     0xe800 TO   0xFEDF;
       /* for fixed address reset_connected_handler OpenBLT function */
-      ENTRY_SEG     = READ_ONLY  0xFEF0 TO 0xFEFF;
+      ENTRY_SEG     = READ_ONLY  0xFEE0 TO 0xFEFF;
 END
 
 PLACEMENT /* here all predefined and user segments are placed into the SEGMENTS defined above. */

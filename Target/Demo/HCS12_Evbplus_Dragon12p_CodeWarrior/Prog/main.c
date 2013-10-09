@@ -41,6 +41,7 @@
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+static void SysClockInit(void);
 
 
 /************************************************************************************//**
@@ -74,6 +75,8 @@ void main(void)
 ****************************************************************************************/
 static void Init(void)
 {
+  /* initialize the system clock */
+  SysClockInit();
   /* init the led driver */
   LedInit();
   /* init the timer driver */
@@ -81,6 +84,74 @@ static void Init(void)
   /* enable IRQ's, because they were initially disabled by the bootloader */
   IrqInterruptEnable();
 } /*** end of Init ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the microcontroller.
+** \return    none.
+**
+****************************************************************************************/
+static void SysClockInit(void)
+{
+#if (BDM_DEBUGGING_ENABLED == 1)
+  /* normally, OpenBLT configures the system clock speed before starting the user 
+   * program. when BDM programming/debugging is used instead of OpenBLT, the
+   * system clock speed configuration still needs to be done here.
+   */
+  unsigned char synrCnt;
+  unsigned char refdvCnt;
+  unsigned long systemSpeed;
+  unsigned char found = 0;
+
+  /* initialize the system clock to BOOT_CPU_SYSTEM_SPEED_KHZ by configuring the PLL 
+   * subsystem. first default to oscillator clock source.
+   */
+  CLKSEL &= ~0x80;
+  /* search for the synthesizer and reference divider values. the equation to use is:
+   * PLLCLK = EXTCLK * ( (synrCnt + 1) / (refdvCnt + 1) ), with synrCnt can be from
+   * 0..63 and refdvCnt can be from 0..15
+   */
+  for (refdvCnt = 0; refdvCnt <= 15; refdvCnt++)
+  {
+    for (synrCnt = 0; synrCnt <= 63; synrCnt++)
+    {
+      /* calculate the system speed with these SYNR and REFDV settings */
+      systemSpeed = ((unsigned long)BOOT_CPU_XTAL_SPEED_KHZ * (synrCnt+1)) / (refdvCnt+1);
+      /* was a match found? */
+      if (systemSpeed == BOOT_CPU_SYSTEM_SPEED_KHZ)
+      {
+        /* flag success */
+        found = 1;
+        /* break loop */
+        break;
+      }
+    }
+    if (found == 1)
+    {
+      /* break this loop as well if a match was already found */
+      break;
+    }
+  }
+  /* flag error if no match was found */
+  if (found == 0)
+  {
+    while (1==1)
+    {
+      ; 
+    }
+  }
+  /* set the synthesizer and reference divider values */
+  SYNR = synrCnt;
+  REFDV = refdvCnt;
+  /* wait for PLL to lock */
+  while((CRGFLG & 0x08) == 0)
+  {
+    ;
+  }
+  /* select PLL as clock source */
+  CLKSEL |= 0x80;
+#endif /* (BDM_DEBUGGING_ENABLED == 1) */
+} /*** end of SysClockInit ***/
 
 
 /*********************************** end of main.c *************************************/

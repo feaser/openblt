@@ -34,6 +34,19 @@
 #define HEADER_H
 
 /****************************************************************************************
+* Defines
+****************************************************************************************/
+/** \brief   Configuration switch to enable programming and debugging with a BDM 
+ *           interface.
+ *  \details To configure the program for downloading with the OpenBLT bootloader, set 
+ *           this value to 0. This is typically done for release versions. If support
+ *           for programming and debugging with a BDM debugger interface is desired 
+ *           during development, then set this value to 1.
+ */
+#define BDM_DEBUGGING_ENABLED  (0)
+
+
+/****************************************************************************************
 * Include files
 ****************************************************************************************/
 #include "../Boot/blt_conf.h"                          /* bootloader configuration     */
@@ -42,7 +55,6 @@
 #include "led.h"                                       /* LED driver                   */
 #include "time.h"                                      /* Timer driver                 */
 #include "derivative.h"                                /* MCU registers                */
-
 
 
 #endif /* HEADER_H */
