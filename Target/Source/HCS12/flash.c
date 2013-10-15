@@ -610,7 +610,7 @@ blt_bool FlashDone(void)
   /* flash operations complete, so clear the RAM buffer with operation execution code */
   for (cnt=0; cnt<(sizeof(flashExecCmd)/sizeof(flashExecCmd[0])); cnt++)
   {
-    // ##Vg TODO enable again.. flashExecCmdRam[cnt] = 0;
+    flashExecCmdRam[cnt] = 0;
   }
   
   /* still here so all is okay */  
