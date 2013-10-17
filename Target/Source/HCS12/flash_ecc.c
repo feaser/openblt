@@ -1,6 +1,8 @@
 /************************************************************************************//**
-* \file         Source\HCS12\flash.c
-* \brief        Bootloader flash driver source file.
+* \file         Source\HCS12\flash_ecc.c
+* \brief        Bootloader flash driver source file for HCS12 derivatives with error
+*               correction code in flash memory, such as the HCS12Pxx. This flash memory
+*               uses a different addressing scheme than other HCS12 derivatives.
 * \ingroup      Target_HCS12
 * \internal
 *----------------------------------------------------------------------------------------
@@ -49,7 +51,7 @@
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 #define FLASH_LAST_SECTOR_IDX           (FLASH_TOTAL_SECTORS-1)
-#define FLASH_ERASE_BLOCK_SIZE          (512)
+#define FLASH_ERASE_BLOCK_SIZE          (256)
 /** \brief Offset into the user program's vector table where the checksum is located. */
 #define FLASH_VECTOR_TABLE_CS_OFFSET    (0x82)
 /** \brief Total size of the vector table, excluding the bootloader specific checksum. */
@@ -64,43 +66,36 @@
 /** \brief Physical start address of the HCS12 page window. */
 #define FLASH_PAGE_OFFSET               (0x8000)      /* physical start addr. of pages */
 /** \brief PPAGE register to select a specific flash page. */
-#define FLASH_PPAGE_REG                 (*(volatile blt_int8u *)(0x0030))
+#define FLASH_PPAGE_REG                 (*(volatile blt_int8u *)(0x0015))
 /** \brief Base address of the flash related control registers. */
 #define FLASH_REGS_BASE_ADDRESS         (0x0100)
 /** \brief Macro for accessing the flash related control registers. */
 #define FLASH                           ((volatile tFlashRegs *)FLASH_REGS_BASE_ADDRESS)
-/** \brief Program word flash command. */
-#define FLASH_PROGRAM_WORD_CMD          (0x20)
+/** \brief Bitmask for flash clock divider bits. */
+#define FLASH_FDIV_MASK                 (0x3f)
+/** \brief Invalid value for the flash clock divider bits. */
+#define FLASH_FDIV_INVALID              (0xff)
+/** \brief Maximum number of flash command parameters. */
+#define FLASH_CMD_MAX_PARAMS            (4)
+/** \brief A phrase is an aligned group of 4 16-bit words, so 8 bytes. */
+#define FLASH_PHRASE_SIZE               (8)
 /** \brief Erase sector flash command. */
-#define FLASH_ERASE_SECTOR_CMD          (0x40)
-#if (BOOT_NVM_SIZE_KB > 256)
-/** \brief Number of flash pages in a block. */
-#define FLASH_PAGES_PER_BLOCK           (8)
-#else
-/** \brief Number of flash pages in a block. */
-#define FLASH_PAGES_PER_BLOCK           (4)
-#endif
-/** \brief Bitmask for selecting a block with flash pages. */
-#define FLASH_BLOCK_SEL_MASK            (0x03)
-                                         
+#define FLASH_ERASE_SECTOR_CMD          (0x0A)
+/** \brief Program phrase flash command. */
+#define FLASH_PROGRAM_PHRASE_CMD        (0x06)
+                                                          
 
 /****************************************************************************************
 * Register definitions
 ****************************************************************************************/
-/** \brief FCLKDIV - enable prescaler by 8 bit. */
-#define PRDIV8_BIT     (0x40)
-/** \brief FSTAT - flash access error bit. */
-#define ACCERR_BIT     (0x10)
-/** \brief FSTAT - protection violation bit. */
-#define PVIOL_BIT      (0x20)
-/** \brief FSTAT - command buffer empty flag bit. */
-#define CBEIF_BIT      (0x80)
-/** \brief FCNFG - command buf. empty irq enable bit. */
-#define CBEIE_BIT      (0x80)
-/** \brief FCNFG - command complete irg enable bit. */
-#define CCIE_BIT       (0x40)
-/** \brief FCNFG - enable security key writing bit. */
-#define KEYACC_BIT     (0x20)
+/** \brief FSTAT - command complete irg flag bit. */
+#define CCIF_BIT       (0x80)
+/** \brief FCLKDIV - clock divider loaded bit. */
+#define FDIVLD_BIT     (0x80)
+/** \brief FSTAT - flash access error flag bit. */
+#define ACCERR_BIT     (0x20)
+/** \brief FSTAT - flash protection violation flag bit. */
+#define FPVIOL_BIT     (0x10)
 
 
 /****************************************************************************************
@@ -129,17 +124,37 @@ typedef struct
 /** \brief Structure type for the flash control registers. */
 typedef volatile struct
 { 
-  volatile blt_int8u fclkdiv;                    /**< flash clock devider register     */
-  volatile blt_int8u fsec;                       /**< flash security register          */
-  volatile blt_int8u ftstmod;                    /**< flash test mode register         */
-  volatile blt_int8u fcnfg;                      /**< flash configuration register     */
-  volatile blt_int8u fprot;                      /**< flash protection register        */
-  volatile blt_int8u fstat;                      /**< flash status register            */
-  volatile blt_int8u fcmd;                       /**< flash command register           */
+  volatile blt_int8u  fclkdiv;                   /**< flash clock devider register     */
+  volatile blt_int8u  fsec;                      /**< flash security register          */
+  volatile blt_int8u  fccobix;                   /**< flash CCOB index register        */
+  volatile blt_int8u  frsv0;                     /**< flash reserver register          */
+  volatile blt_int8u  fcnfg;                     /**< flash configuration register     */
+  volatile blt_int8u  fercnfg;                   /**< flash error configuration reg.   */
+  volatile blt_int8u  fstat;                     /**< flash status register            */
+  volatile blt_int8u  ferstat;                   /**< flash error status register      */
+  volatile blt_int8u  fprot;                     /**< program flash protection register*/
+  volatile blt_int8u  dfprot;                    /**< data flash protection register   */
+  volatile blt_int16u fccob;                     /**< flash command common object reg. */
+  volatile blt_int8u  frsv1;                     /**< flash reserver register          */
+  volatile blt_int8u  frsv2;                     /**< flash reserver register          */
+  volatile blt_int8u  frsv3;                     /**< flash reserver register          */
+  volatile blt_int8u  frsv4;                     /**< flash reserver register          */
+  volatile blt_int8u  fopt;                      /**< flash option register            */
+  volatile blt_int8u  frsv5;                     /**< flash reserver register          */
+  volatile blt_int8u  frsv6;                     /**< flash reserver register          */
+  volatile blt_int8u  frsv7;                     /**< flash reserver register          */
 } tFlashRegs;                                    
 
 /** \brief Pointer type to flash command execution function. */
 typedef void (*pFlashExeCmdFct) (void);       
+
+/** \brief Mapping table for finding the corect flash clock divider prescaler. */
+typedef struct
+{
+  blt_int16u sysclock_min;                       /**< min busclock for this prescaler  */ 
+  blt_int16u sysclock_max;                       /**< max busclock for this prescaler  */
+  blt_int8u  prescaler;                          /**< prescaler for this busclock range*/
+} tFlashPrescalerSysclockMapping;
 
 
 /****************************************************************************************
@@ -150,11 +165,12 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
 static blt_bool   FlashAddToBlock(tFlashBlockInfo *block, blt_addr address, 
                                   blt_int8u *data, blt_int32u len);
 static blt_bool   FlashWriteBlock(tFlashBlockInfo *block);
-static blt_int8u  FlashGetLinearAddrByte(blt_addr addr);
+static blt_int8u  FlashGetGlobalAddrByte(blt_addr addr);
 static blt_int8u  FlashGetPhysPage(blt_addr addr);
 static blt_int16u FlashGetPhysAddr(blt_addr addr);
 static void       FlashExecuteCommand(void);
-static blt_bool   FlashOperate(blt_int8u cmd, blt_addr addr, blt_int16u data);
+static blt_bool   FlashOperate(blt_int8u cmd, blt_addr addr, blt_int16u params[], 
+                               blt_int8u param_count);
 
 
 /****************************************************************************************
@@ -164,67 +180,103 @@ static blt_bool   FlashOperate(blt_int8u cmd, blt_addr addr, blt_int16u data);
  *  \details Also controls what part of the flash memory is reserved for the bootloader. 
  *           If the bootloader size changes, the reserved sectors for the bootloader 
  *           might need adjustment to make sure the bootloader doesn't get overwritten.
- *           This layout uses linear addresses only. For example, the first address on
- *           page 0x3F is: 0x3F * 0x4000 (page size) = 0xFC000. Note that page 0x3F is
- *           where the bootloader also resides and it has been entered as 8 chunks of 2kb. 
+ *           This layout uses global addresses only. Note that the last part is where the
+ *           bootloader also resides and it has been entered as 8 chunks of 2kb. 
  *           This allows flexibility for reserving more/less space for the bootloader in
  *           case its size changes in the future.
  */
 static const tFlashSector flashLayout[] =
 {
-#if (BOOT_NVM_SIZE_KB > 512)
-#error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
-#endif
-#if (BOOT_NVM_SIZE_KB >= 512)
-  { 0x80000, 0x4000 },                  /* flash page 0x20 - 16kb                      */
-  { 0x84000, 0x4000 },                  /* flash page 0x21 - 16kb                      */
-  { 0x88000, 0x4000 },                  /* flash page 0x22 - 16kb                      */
-  { 0x8C000, 0x4000 },                  /* flash page 0x23 - 16kb                      */
-  { 0x90000, 0x4000 },                  /* flash page 0x24 - 16kb                      */
-  { 0x94000, 0x4000 },                  /* flash page 0x25 - 16kb                      */
-  { 0x98000, 0x4000 },                  /* flash page 0x26 - 16kb                      */
-  { 0x9C000, 0x4000 },                  /* flash page 0x27 - 16kb                      */
-  { 0xA0000, 0x4000 },                  /* flash page 0x28 - 16kb                      */
-  { 0xA4000, 0x4000 },                  /* flash page 0x29 - 16kb                      */
-  { 0xA8000, 0x4000 },                  /* flash page 0x2A - 16kb                      */
-  { 0xAC000, 0x4000 },                  /* flash page 0x2B - 16kb                      */
-  { 0xB0000, 0x4000 },                  /* flash page 0x2C - 16kb                      */
-  { 0xB4000, 0x4000 },                  /* flash page 0x2D - 16kb                      */
-  { 0xB8000, 0x4000 },                  /* flash page 0x2E - 16kb                      */
-  { 0xBC000, 0x4000 },                  /* flash page 0x2F - 16kb                      */
-#endif
-#if (BOOT_NVM_SIZE_KB >= 256)
-  { 0xC0000, 0x4000 },                  /* flash page 0x30 - 16kb                      */
-  { 0xC4000, 0x4000 },                  /* flash page 0x31 - 16kb                      */
-  { 0xC8000, 0x4000 },                  /* flash page 0x32 - 16kb                      */
-  { 0xCC000, 0x4000 },                  /* flash page 0x33 - 16kb                      */
-  { 0xD0000, 0x4000 },                  /* flash page 0x34 - 16kb                      */
-  { 0xD4000, 0x4000 },                  /* flash page 0x35 - 16kb                      */
-  { 0xD8000, 0x4000 },                  /* flash page 0x36 - 16kb                      */
-  { 0xDC000, 0x4000 },                  /* flash page 0x37 - 16kb                      */
+#if (BOOT_NVM_SIZE_KB > 128)
+#error "BOOT_NVM_SIZE_KB > 128 is currently not supported."
 #endif
 #if (BOOT_NVM_SIZE_KB >= 128)
-  { 0xE0000, 0x4000 },                  /* flash page 0x38 - 16kb                      */
-  { 0xE4000, 0x4000 },                  /* flash page 0x39 - 16kb                      */
+  { 0x20000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x21000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x22000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x23000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x24000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x25000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x26000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x27000, 0x1000 },                  /* flash sector - 4kb                          */
 #endif
 #if (BOOT_NVM_SIZE_KB >= 96)
-  { 0xE8000, 0x4000 },                  /* flash page 0x3A - 16kb                      */
-  { 0xEC000, 0x4000 },                  /* flash page 0x3B - 16kb                      */
+  { 0x28000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x29000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x2A000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x2B000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x2C000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x2D000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x2E000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x2F000, 0x1000 },                  /* flash sector - 4kb                          */
 #endif
 #if (BOOT_NVM_SIZE_KB >= 64)
-  { 0xF0000, 0x4000 },                  /* flash page 0x3C - 16kb                      */
-  { 0xF4000, 0x4000 },                  /* flash page 0x3D - 16kb                      */
+  { 0x30000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x31000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x32000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x33000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x34000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x35000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x36000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x37000, 0x1000 },                  /* flash sector - 4kb                          */
 #endif
-  { 0xF8000, 0x4000 },                  /* flash page 0x3E - 16kb                      */
-  { 0xFC000, 0x0800 },                  /* flash page 0x3F - 2kb                       */
-  { 0xFC800, 0x0800 },                  /* flash page 0x3F - 2kb                       */
-  { 0xFD000, 0x0800 },                  /* flash page 0x3F - 2kb                       */
-  { 0xFD800, 0x0800 },                  /* flash page 0x3F - 2kb                       */
-  { 0xFE000, 0x0800 },                  /* flash page 0x3F - 2kb                       */
-  /* { 0xFE800, 0x0800 },                  flash page 0x3F - reserved for bootloader   */
-  /* { 0xFF000, 0x0800 },                  flash page 0x3F - reserved for bootloader   */
-  /* { 0xFF800, 0x0800 },                  flash page 0x3F - reserved for bootloader   */
+  { 0x38000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x39000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x3A000, 0x1000 },                  /* flash sector - 4kb                          */
+  { 0x3B000, 0x1000 },                  /* flash sector - 4kb                          */
+
+  { 0x3C000, 0x0800 },                  /* flash sector - 2kb                          */
+  { 0x3C800, 0x0800 },                  /* flash sector - 2kb                          */
+  { 0x3D000, 0x0800 },                  /* flash sector - 2kb                          */
+  { 0x3D800, 0x0800 },                  /* flash sector - 2kb                          */
+  { 0x3E000, 0x0800 },                  /* flash sector - 2kb                          */
+  /* { 0x3E800, 0x0800 },                  flash sector - 2kb (reserved for bootloader)*/
+  /* { 0x3F000, 0x0800 },                  flash sector - 2kb (reserved for bootloader)*/
+  /* { 0x3F800, 0x0800 },                  flash sector - 2kb (reserved for bootloader)*/
 };
+
+
+/** \brief   Lookup table for determining the flash clock divider setting based on the
+ *           system clock speed. The flash clock must be around 1MHz and is scaled down
+ *           from the system clock using a prescaler value. Note that clock speeds in 
+ *           the table are in kHz.
+ */
+static const tFlashPrescalerSysclockMapping flashFDIVlookup[] =
+{
+  {  1000,  1600, 0x00 },                 /* FDIV[5:0] = prescaler = 0x00                */
+  {  1600,  2600, 0x01 },                 /* FDIV[5:0] = prescaler = 0x01                */
+  {  2600,  3600, 0x02 },                 /* FDIV[5:0] = prescaler = 0x02                */
+  {  3600,  4600, 0x03 },                 /* FDIV[5:0] = prescaler = 0x03                */
+  {  4600,  5600, 0x04 },                 /* FDIV[5:0] = prescaler = 0x04                */
+  {  5600,  6600, 0x05 },                 /* FDIV[5:0] = prescaler = 0x05                */
+  {  6600,  7600, 0x06 },                 /* FDIV[5:0] = prescaler = 0x06                */
+  {  7600,  8600, 0x07 },                 /* FDIV[5:0] = prescaler = 0x07                */
+  {  8600,  9600, 0x08 },                 /* FDIV[5:0] = prescaler = 0x08                */
+  {  9600, 10600, 0x09 },                 /* FDIV[5:0] = prescaler = 0x09                */
+  { 10600, 11600, 0x0A },                 /* FDIV[5:0] = prescaler = 0x0A                */
+  { 11600, 12600, 0x0B },                 /* FDIV[5:0] = prescaler = 0x0B                */
+  { 12600, 13600, 0x0C },                 /* FDIV[5:0] = prescaler = 0x0C                */
+  { 13600, 14600, 0x0D },                 /* FDIV[5:0] = prescaler = 0x0D                */
+  { 14600, 15600, 0x0E },                 /* FDIV[5:0] = prescaler = 0x0E                */
+  { 15600, 16600, 0x0F },                 /* FDIV[5:0] = prescaler = 0x0F                */
+  { 16600, 17600, 0x10 },                 /* FDIV[5:0] = prescaler = 0x10                */
+  { 17600, 18600, 0x11 },                 /* FDIV[5:0] = prescaler = 0x11                */
+  { 18600, 19600, 0x12 },                 /* FDIV[5:0] = prescaler = 0x12                */
+  { 19600, 20600, 0x13 },                 /* FDIV[5:0] = prescaler = 0x13                */
+  { 20600, 21600, 0x14 },                 /* FDIV[5:0] = prescaler = 0x14                */
+  { 21600, 22600, 0x15 },                 /* FDIV[5:0] = prescaler = 0x15                */
+  { 22600, 23600, 0x16 },                 /* FDIV[5:0] = prescaler = 0x16                */
+  { 23600, 24600, 0x17 },                 /* FDIV[5:0] = prescaler = 0x17                */
+  { 24600, 25600, 0x18 },                 /* FDIV[5:0] = prescaler = 0x18                */
+  { 25600, 26600, 0x19 },                 /* FDIV[5:0] = prescaler = 0x19                */
+  { 26600, 27600, 0x1A },                 /* FDIV[5:0] = prescaler = 0x1A                */
+  { 27600, 28600, 0x1B },                 /* FDIV[5:0] = prescaler = 0x1B                */
+  { 28600, 29600, 0x1C },                 /* FDIV[5:0] = prescaler = 0x1C                */
+  { 29600, 30600, 0x1D },                 /* FDIV[5:0] = prescaler = 0x1D                */
+  { 30600, 31600, 0x1E },                 /* FDIV[5:0] = prescaler = 0x1E                */
+  { 31600, 32600, 0x1F }                  /* FDIV[5:0] = prescaler = 0x1F                */
+};
+
 
 /** \brief  Array with executable code for performing flash operations.
  *  \details This array contains the machine code to perform the actual command on the
@@ -235,7 +287,7 @@ static const tFlashSector flashLayout[] =
  *           contains the flash driver. the source code for the machine code is as 
  *           follows:
  *             // launch the command
- *             FLASH->fstat = CBEIF_BIT;
+ *             FLASH->fstat = CCIF_BIT;
  *             // wait at least 4 cycles (per AN2720)
  *             asm("nop");
  *             asm("nop");
@@ -252,16 +304,16 @@ static const blt_int8u flashExecCmd[] =
   0x34,
   /* asm("ldx #0x100");        load flash register base in X */
   0xce, 0x01, 0x00,
-  /* asm("leax 5,x");          point X to FSTAT register */
-  0x1a, 0x05,
-  /* asm("ldaa #0x80");        load CBEIF mask in A */
+  /* asm("leax 6,x");          point X to FSTAT register */
+  0x1a, 0x06,
+  /* asm("ldaa #0x80");        load CCIF mask in A */
   0x86, 0x80,
-  /* asm("staa 0,x");          set CBEIF bit in FSTAT to launch the command */
+  /* asm("staa 0,x");          set CCIF bit in FSTAT to launch the command */
   0x6a, 0x00,
   /* asm("nop"); [4 times]     wait at least 4 cycles */
   0xa7,0xa7, 0xa7, 0xa7,
-  /* asm("brclr 0,x,#0x40,*"); wait for command completion: CCIF in FSTAT equals 1 */
-  0x0f, 0x00, 0x40, 0xfc,
+  /* asm("brclr 0,x,#0x80,*"); wait for command completion: CCIF in FSTAT equals 1 */
+  0x0f, 0x00, 0x80, 0xfc,
   /* asm("pulx");              restore X */
   0x30,
   /* asm("pula");              restore A */
@@ -308,11 +360,6 @@ static tFlashBlockInfo bootBlockInfo;
 /** \brief RAM buffer where the executable flash operation code is copied to. */
 static blt_int8u flashExecCmdRam[(sizeof(flashExecCmd)/sizeof(flashExecCmd[0]))]; 
 
-/** \brief Maximum number of supported blocks, which is determined dynamically to have
- *         code that is independent of the used HCS12 derivative.
- */
-static blt_int8u flashMaxNrBlocks;         
-
 
 /************************************************************************************//**
 ** \brief     Initializes the flash driver. 
@@ -321,63 +368,48 @@ static blt_int8u flashMaxNrBlocks;
 ****************************************************************************************/
 void FlashInit(void)
 {
-  blt_bool   result = BLT_FALSE;
-  blt_int8u  cnt;
-  blt_int8u  prescaler = 1;
-  blt_int16u clockFreq;
-
-  /* flash EEPROM programming requires a minimal system speed of 1 MHz */
-  ASSERT_CT(BOOT_CPU_SYSTEM_SPEED_KHZ >= 1000);
-
+  blt_int8u fdiv_bits = FLASH_FDIV_INVALID;
+  blt_int8u cnt;
+  
   /* init the flash block info structs by setting the address to an invalid address */
   blockInfo.base_addr = FLASH_INVALID_ADDRESS;
   bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
   
-  /* determine how many flash blocks this device supports by first trying to set all
-   * all block selection bits. on devices where a specific block is not supported,
-   * the bit is reserved and will read back 0 afterwards
-   */
-  FLASH->fcnfg |= FLASH_BLOCK_SEL_MASK;
-  /* read back which ones got set */
-  flashMaxNrBlocks = (FLASH->fcnfg & FLASH_BLOCK_SEL_MASK) + 1;
-  /* set back to default reset value */ 
-  FLASH->fcnfg &= ~(CBEIE_BIT | CCIE_BIT | KEYACC_BIT | FLASH_BLOCK_SEL_MASK);
-
-  /* enable extra prescale factor of 8 when the external crystal is > 12.8 MHz */
-  if (BOOT_CPU_XTAL_SPEED_KHZ > 12800)
+  /* try to find correct flash clock divider setting using the lookup table */
+  for (cnt=0; cnt<(sizeof(flashFDIVlookup)/sizeof(flashFDIVlookup[0])); cnt++)
   {
-    prescaler = 8;
-  }
-
-  /* FDIV[5..0] can only be between 0 and 63 so do a linear search to find the correct
-   * setting.
-   */
-  for (cnt = 0; cnt <= 63; cnt++)
-  {
-    /* calculate current clock: FCLK = Fexternal_clock / (1 + FDIV[5..0]) */
-    clockFreq = BOOT_CPU_XTAL_SPEED_KHZ / (prescaler * (1 + cnt));
-
-    /* is this a valid setting? */
-    if ( (clockFreq > 150) && (clockFreq < 200) )
+    if ( (BOOT_CPU_SYSTEM_SPEED_KHZ > flashFDIVlookup[cnt].sysclock_min) &&
+         (BOOT_CPU_SYSTEM_SPEED_KHZ <= flashFDIVlookup[cnt].sysclock_max) )
     {
-      /* configure the setting while taking into account the prescaler */
-      if (prescaler == 8)
-      {
-        FLASH->fclkdiv = (PRDIV8_BIT | cnt);
-      }
-      else
-      {
-        FLASH->fclkdiv = cnt;
-      }
-
-      /* all done */
-      result = BLT_TRUE;
+      /* matching configuration found in the lookup table so store it */
+      fdiv_bits = flashFDIVlookup[cnt].prescaler;
+      /* lookup completed so no need to continue searching */
       break;
     }
   }
   
-  /* make sure that a valid clock divider was found */
-  ASSERT_RT(result == BLT_TRUE);
+  /* make sure that a valid configuration was found */
+  ASSERT_RT(fdiv_bits != FLASH_FDIV_INVALID);
+
+  /* wait until all flash commands are finished */
+  while((FLASH->fstat & CCIF_BIT) == 0) 
+  {
+    ;
+  }
+
+  /* reset the clock divider bits and then write the new configuration */
+  FLASH->fclkdiv &= ~FLASH_FDIV_MASK;
+  FLASH->fclkdiv |= fdiv_bits;
+
+  /* double check that the configuration was correctly stored because access to these
+   * clock divider bits can be locked.
+   */  
+  ASSERT_RT((FLASH->fclkdiv & FLASH_FDIV_MASK) == fdiv_bits);
+
+  /* double check that the flash module registered the clock configuration otherwise
+   * subsequent flash commands will fail.
+   */
+  ASSERT_RT((FLASH->fclkdiv & FDIVLD_BIT) != 0);
 } /*** end of FlashInit ***/
 
 
@@ -463,11 +495,12 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
     CopService();
   
     /* erase the block */
-    if (FlashOperate(FLASH_ERASE_SECTOR_CMD, erase_base_addr, 0x55aa) == BLT_FALSE)
+    if (FlashOperate(FLASH_ERASE_SECTOR_CMD, erase_base_addr, BLT_NULL, 0) == BLT_FALSE)
     {
       /* error occurred */
       return BLT_FALSE; 
     }
+
     /* point to the next block's base address */
     erase_base_addr += FLASH_ERASE_BLOCK_SIZE;
   }
@@ -549,25 +582,25 @@ blt_bool FlashVerifyChecksum(void)
 {
   blt_int16u signature_checksum = 0;
   blt_int8u  byte_counter;
-  blt_addr   checksum_addr_lin;
-  blt_addr   vector_table_addr_lin;
+  blt_addr   checksum_addr_glob;
+  blt_addr   vector_table_addr_glob;
 
-  /* get linear address of the checksum */
-  checksum_addr_lin = (flashLayout[FLASH_LAST_SECTOR_IDX].sector_start + \
-                       flashLayout[FLASH_LAST_SECTOR_IDX].sector_size -  \
-                       FLASH_VECTOR_TABLE_CS_OFFSET);
-  /* get linear address of the vector table start */
-  vector_table_addr_lin = (flashLayout[FLASH_LAST_SECTOR_IDX].sector_start + \
-                           flashLayout[FLASH_LAST_SECTOR_IDX].sector_size -  \
-                           FLASH_VECTOR_TABLE_SIZE);
+  /* get global address of the checksum */
+  checksum_addr_glob = (flashLayout[FLASH_LAST_SECTOR_IDX].sector_start + \
+                        flashLayout[FLASH_LAST_SECTOR_IDX].sector_size -  \
+                        FLASH_VECTOR_TABLE_CS_OFFSET);
+  /* get global address of the vector table start */
+  vector_table_addr_glob = (flashLayout[FLASH_LAST_SECTOR_IDX].sector_start + \
+                            flashLayout[FLASH_LAST_SECTOR_IDX].sector_size -  \
+                            FLASH_VECTOR_TABLE_SIZE);
   /* compute the checksum based on how it was written by FlashWriteChecksum() */
   for (byte_counter=0; byte_counter<FLASH_VECTOR_TABLE_SIZE; byte_counter++)
   {
-    signature_checksum += FlashGetLinearAddrByte(vector_table_addr_lin + byte_counter);  
+    signature_checksum += FlashGetGlobalAddrByte(vector_table_addr_glob + byte_counter);  
   }
   /* add the 16-bit checksum value */
-  signature_checksum += (((blt_int16u)FlashGetLinearAddrByte(checksum_addr_lin) << 8) +
-                        FlashGetLinearAddrByte(checksum_addr_lin + 1));
+  signature_checksum += (((blt_int16u)FlashGetGlobalAddrByte(checksum_addr_glob) << 8) +
+                        FlashGetGlobalAddrByte(checksum_addr_glob + 1));
   /* sum should add up to an unsigned 16-bit value of 0 */
   if (signature_checksum == 0)
   {
@@ -643,6 +676,7 @@ static blt_bool FlashInitBlock(tFlashBlockInfo *block, blt_addr address)
   }
   /* set the base address */  
   block->base_addr = address;
+  
   /* backup originally selected page */
   oldPage = FLASH_PPAGE_REG;
   /* select correct page */
@@ -791,44 +825,54 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {          
   blt_bool   result = BLT_TRUE;
-  blt_addr   prog_addr;
-  blt_int16u prog_data;
-  blt_int16u word_cnt;
-
+  blt_bool   cmd_result;
+  blt_int16u phrase_cnt;
+  blt_addr   phrase_addr;
+  blt_int8u  phrase_data[FLASH_PHRASE_SIZE];
+  blt_int8u  byte_cnt;
 
   /* make sure the blockInfo is not uninitialized */
   if (block->base_addr == FLASH_INVALID_ADDRESS)
   {
     return BLT_FALSE;
   }
-  /* program all words in the block one by one */
-  for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int16u)); word_cnt++)
+
+  /* program all phrases in the block one by one */
+  for (phrase_cnt=0; phrase_cnt<(FLASH_WRITE_BLOCK_SIZE/FLASH_PHRASE_SIZE); phrase_cnt++)
   {
-    prog_addr = block->base_addr + (word_cnt * sizeof(blt_int16u));
-    prog_data = *(volatile blt_int16u*)(&block->data[word_cnt * sizeof(blt_int16u)]);
+    /* determine the starting address of the phrase */
+    phrase_addr = block->base_addr + (phrase_cnt * FLASH_PHRASE_SIZE);
+    /* copy the phrase data to a buffer */
+    for (byte_cnt=0; byte_cnt<FLASH_PHRASE_SIZE; byte_cnt++)
+    {
+      phrase_data[byte_cnt] = block->data[(phrase_cnt * FLASH_PHRASE_SIZE) + byte_cnt];
+    }
+  
     /* keep the watchdog happy */
     CopService();
-    /* program the word to flash */
-    if (FlashOperate(FLASH_PROGRAM_WORD_CMD, prog_addr, prog_data) == BLT_FALSE)
+    
+    /* program the phrase to flash */
+    cmd_result = FlashOperate(FLASH_PROGRAM_PHRASE_CMD, phrase_addr, 
+                              (unsigned short *)phrase_data, 4);
+    if (cmd_result == BLT_FALSE)
     {
       /* error occurred */
       result = BLT_FALSE; 
       break;
     }
+
     /* verify that the written data is actually there */
-    if (FlashGetLinearAddrByte(prog_addr) != (blt_int8u)(prog_data >> 8))
+    for (byte_cnt=0; byte_cnt<FLASH_PHRASE_SIZE; byte_cnt++)
     {
-      /* msb not correctly written */
-      result = BLT_FALSE; 
-      break;
-    }
-    if (FlashGetLinearAddrByte(prog_addr+1) != (blt_int8u)(prog_data))
-    {
-      /* lsb not correctly written */
-      result = BLT_FALSE; 
-      break;
+      if (FlashGetGlobalAddrByte(phrase_addr+byte_cnt) != phrase_data[byte_cnt])
+      {
+        /* write verification occurred */
+        result = BLT_FALSE; 
+        break;
+      }
     }
   }
+
   /* still here so all is okay */
   return result;
 } /*** end of FlashWriteBlock ***/
@@ -840,7 +884,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 ** \return    The byte value located at the linear address.
 **
 ****************************************************************************************/
-static blt_int8u FlashGetLinearAddrByte(blt_addr addr)
+static blt_int8u FlashGetGlobalAddrByte(blt_addr addr)
 {
   blt_int8u oldPage;
   blt_int8u result;
@@ -859,7 +903,7 @@ static blt_int8u FlashGetLinearAddrByte(blt_addr addr)
 
   /* return the read byte value */
   return result;
-} /*** end of FlashGetLinearAddrByte ***/
+} /*** end of FlashGetGlobalAddrByte ***/
 
 
 /************************************************************************************//**
@@ -892,7 +936,7 @@ static blt_int16u FlashGetPhysAddr(blt_addr addr)
 **            stored as location independant machine code in array flashExecCmd[].
 **            The contents of this array are temporarily copied to RAM. This way the
 **            function can be executed from RAM avoiding problem when try to perform
-**            a flash operation on the same flash block that this driver is located. 
+**            a flash operation on the same flash block that this driver is located on. 
 ** \return    none.
 **
 ****************************************************************************************/
@@ -918,56 +962,59 @@ static void FlashExecuteCommand(void)
 /************************************************************************************//**
 ** \brief     Prepares the flash command and executes it.
 ** \param     cmd  Command to be launched.
-** \param     addr Physical address for operation.
-** \param     data Data to write to addr for operation.
+** \param     addr Global address to operate on (18-bit).
+** \param     params Array with additional command parameters.
+** \param     param_count Number of parameters in the array.
 ** \return    BLT_TRUE if operation was successful, otherwise BLT_FALSE.
 **
 ****************************************************************************************/
-static blt_bool FlashOperate(blt_int8u cmd, blt_addr addr, blt_int16u data)
+static blt_bool FlashOperate(blt_int8u cmd, blt_addr addr, blt_int16u params[], blt_int8u param_count)
 {
   blt_bool  result;
-  blt_int8u oldPage;
-  blt_int8u selPage;
+  blt_int8u idx;
   
   /* set default result to error */
   result = BLT_FALSE;
-  /* backup originally selected page */
-  oldPage = FLASH_PPAGE_REG;
-  /* calculate page number */
-  selPage = FlashGetPhysPage(addr); 
-  /* select correct page */
-  FLASH_PPAGE_REG = selPage;
   
-  /* there are always a fixed number of pages per block. to get the block index number
-   * we simply divide by this number of pages per block. to one tricky thing is that
-   * the block number goes from high to low with increasing page numbers so we need to
-   * invert it. After the inversion we apply a bitmask to obtain the block selection bits
+  /* make sure the number of flash parameters is within bounds */
+  ASSERT_RT(param_count <= FLASH_CMD_MAX_PARAMS);
+  
+  /* it is not expected that flash commands are being executed now, just make sure this
+   * is really the case.
    */
-  FLASH->fcnfg &= ~FLASH_BLOCK_SEL_MASK;
-  FLASH->fcnfg |= (~(selPage / FLASH_PAGES_PER_BLOCK)) & FLASH_BLOCK_SEL_MASK;
-
-  /* clear error flags */
-  FLASH->fstat = (ACCERR_BIT | PVIOL_BIT); 
-  /* command buffer empty? */
-  if ((FLASH->fstat & CBEIF_BIT) == CBEIF_BIT) 
+  if ((FLASH->fstat & CCIF_BIT) == 0) 
   {
-    /* write data value to the physical address to operate on */
-    *((blt_int16u*)FlashGetPhysAddr(addr)) = data;
-    /* write the command */
-    FLASH->fcmd = cmd; 
-    /* launch the actual command */
-    FlashExecuteCommand(); 
-    /* check error flags */
-    if ((FLASH->fstat & (ACCERR_BIT | PVIOL_BIT)) == 0) 
-    {
-      /* operation was successful */
-      result = BLT_TRUE; 
-    }
+    return result; 
   }
 
-  /* restore originally selected page */
-  FLASH_PPAGE_REG = oldPage;
+  /* clear possibly pending error flags from the previous command */  
+	FLASH->fstat = (FPVIOL_BIT | ACCERR_BIT); 
 
+  /* write the command and the address to operate on */
+  FLASH->fccobix = 0;
+  FLASH->fccob = (cmd << 8) | (((blt_int8u)(addr >> 16)) & 0x03);
+  FLASH->fccobix = 1;
+  FLASH->fccob = (blt_int16u)addr;
+
+  /* write command paramaters one by one */  
+  for (idx=0; idx<param_count; idx++)
+  {
+    /* select the correct command parameter index */
+    FLASH->fccobix = idx + 2;  
+    /* write the command parameter for this index */
+    FLASH->fccob = params[idx];
+  }
+  
+  /* execute the command */
+  FlashExecuteCommand();
+  
+  /* check the results */
+  if ((FLASH->fstat & (ACCERR_BIT | FPVIOL_BIT)) == 0) 
+  {
+    /* operation was successful */
+    result = BLT_TRUE; 
+  }
+  
   return result;
 } /*** end of FlashOperate ***/
 
