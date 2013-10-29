@@ -80,11 +80,11 @@ main.c \
 ../../../Source/assert.c \
 ../../../Source/assert.h \
 ../../../Source/plausibility.h \
-../../../Source/fatfs/src/diskio.h \
-../../../Source/fatfs/src/ff.c \
-../../../Source/fatfs/src/ff.h \
-../../../Source/fatfs/src/integer.h \
-../../../Source/fatfs/src/option/unicode.c \
+../../../Source/third_party/fatfs/src/diskio.h \
+../../../Source/third_party/fatfs/src/ff.c \
+../../../Source/third_party/fatfs/src/ff.h \
+../../../Source/third_party/fatfs/src/integer.h \
+../../../Source/third_party/fatfs/src/option/unicode.c \
 ../../../Source/ARMCM3_LM3S/types.h \
 ../../../Source/ARMCM3_LM3S/cpu.c \
 ../../../Source/ARMCM3_LM3S/cpu.h \

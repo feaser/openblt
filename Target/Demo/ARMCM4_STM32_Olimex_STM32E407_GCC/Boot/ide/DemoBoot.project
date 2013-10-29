@@ -181,20 +181,22 @@ continue
     </Configuration>
   </Settings>
   <VirtualDirectory Name="Source">
-    <VirtualDirectory Name="fatfs">
-      <VirtualDirectory Name="src">
-        <File Name="../../../../Source/fatfs/src/diskio.h"/>
-        <File Name="../../../../Source/fatfs/src/ff.c"/>
-        <File Name="../../../../Source/fatfs/src/ff.h"/>
-        <File Name="../../../../Source/fatfs/src/integer.h"/>
-        <VirtualDirectory Name="option">
-          <File Name="../../../../Source/fatfs/src/option/cc932.c"/>
-          <File Name="../../../../Source/fatfs/src/option/cc936.c"/>
-          <File Name="../../../../Source/fatfs/src/option/cc949.c"/>
-          <File Name="../../../../Source/fatfs/src/option/cc950.c"/>
-          <File Name="../../../../Source/fatfs/src/option/ccsbcs.c"/>
-          <File Name="../../../../Source/fatfs/src/option/syscall.c"/>
-          <File Name="../../../../Source/fatfs/src/option/unicode.c"/>
+    <VirtualDirectory Name="third_party">
+      <VirtualDirectory Name="fatfs">
+        <VirtualDirectory Name="src">
+          <VirtualDirectory Name="option">
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc932.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc936.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc949.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc950.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/ccsbcs.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/syscall.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/unicode.c"/>
+          </VirtualDirectory>
+          <File Name="../../../../Source/third_party/fatfs/src/diskio.h"/>
+          <File Name="../../../../Source/third_party/fatfs/src/ff.c"/>
+          <File Name="../../../../Source/third_party/fatfs/src/ff.h"/>
+          <File Name="../../../../Source/third_party/fatfs/src/integer.h"/>
         </VirtualDirectory>
       </VirtualDirectory>
     </VirtualDirectory>

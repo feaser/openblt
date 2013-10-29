@@ -6,6 +6,25 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Source">
+    <VirtualDirectory Name="third_party">
+      <VirtualDirectory Name="fatfs">
+        <VirtualDirectory Name="src">
+          <File Name="../../../../Source/third_party/fatfs/src/diskio.h"/>
+          <File Name="../../../../Source/third_party/fatfs/src/ff.c"/>
+          <File Name="../../../../Source/third_party/fatfs/src/ff.h"/>
+          <File Name="../../../../Source/third_party/fatfs/src/integer.h"/>
+          <VirtualDirectory Name="option">
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc932.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc936.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc949.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc950.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/ccsbcs.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/syscall.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/unicode.c"/>
+          </VirtualDirectory>
+        </VirtualDirectory>
+      </VirtualDirectory>
+    </VirtualDirectory>
     <VirtualDirectory Name="ARMCM3_LM3S">
       <VirtualDirectory Name="GCC">
         <File Name="../../../../Source/ARMCM3_LM3S/GCC/cstart.c"/>

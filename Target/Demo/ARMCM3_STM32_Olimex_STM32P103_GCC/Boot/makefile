@@ -54,11 +54,11 @@ main.c \
 ./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c \
 ./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c \
 ./lib/STM32F10x_StdPeriph_Driver/stm32f10x_conf.h \
-../../../Source/fatfs/src/diskio.h \
-../../../Source/fatfs/src/ff.c \
-../../../Source/fatfs/src/ff.h \
-../../../Source/fatfs/src/integer.h \
-../../../Source/fatfs/src/option/unicode.c \
+../../../Source/third_party/fatfs/src/diskio.h \
+../../../Source/third_party/fatfs/src/ff.c \
+../../../Source/third_party/fatfs/src/ff.h \
+../../../Source/third_party/fatfs/src/integer.h \
+../../../Source/third_party/fatfs/src/option/unicode.c \
 ../../../Source/boot.c \
 ../../../Source/boot.h \
 ../../../Source/com.c \

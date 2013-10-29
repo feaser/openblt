@@ -303,7 +303,7 @@
           <state>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc</state>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32</state>
-          <state>$PROJ_DIR$\..\..\..\..\Source\fatfs\src</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2120,22 +2120,25 @@
       </file>
     </group>
     <group>
-      <name>fatfs</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\diskio.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\ff.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\ff.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\integer.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\fatfs\src\option\unicode.c</name>
-      </file>
+      <name>third_party</name>
+      <group>
+        <name>fatfs</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\diskio.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\integer.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</name>
+        </file>
+      </group>
     </group>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\assert.c</name>

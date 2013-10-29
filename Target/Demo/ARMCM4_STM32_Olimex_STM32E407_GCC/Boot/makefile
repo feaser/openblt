@@ -105,11 +105,11 @@ main.c \
 ./lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Source/system_stm32f4xx.c \
 ./lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
 ./lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h \
-../../../Source/fatfs/src/diskio.h \
-../../../Source/fatfs/src/ff.c \
-../../../Source/fatfs/src/ff.h \
-../../../Source/fatfs/src/integer.h \
-../../../Source/fatfs/src/option/unicode.c \
+../../../Source/third_party/fatfs/src/diskio.h \
+../../../Source/third_party/fatfs/src/ff.c \
+../../../Source/third_party/fatfs/src/ff.h \
+../../../Source/third_party/fatfs/src/integer.h \
+../../../Source/third_party/fatfs/src/option/unicode.c \
 ../../../Source/boot.c \
 ../../../Source/boot.h \
 ../../../Source/com.c \

@@ -140,7 +140,7 @@ void ComTask(void)
   static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA];
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
-  static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA];
+  static unsigned char xcpCtoReqPacket[BOOT_COM_USB_RX_MAX_DATA];
 #endif
  
 #if (BOOT_COM_CAN_ENABLE > 0)
