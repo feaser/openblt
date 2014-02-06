@@ -1,2 +1,2 @@
 @echo off
-make --directory=../ clean
+cs-make --directory=../ clean

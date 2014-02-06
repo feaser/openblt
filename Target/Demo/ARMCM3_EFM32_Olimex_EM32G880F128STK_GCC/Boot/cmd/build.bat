@@ -1,2 +1,2 @@
 @echo off
-make --directory=../ all
+cs-make --directory=../ all
