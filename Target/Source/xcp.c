@@ -37,7 +37,6 @@
 #include "boot.h"                                /* bootloader generic header          */
 
 
-#if (BOOT_COM_ENABLE > 0)
 /****************************************************************************************
 * Defines
 ****************************************************************************************/
@@ -186,9 +185,26 @@ static void XcpCmdProgramPrepare(blt_int8u *data);
 /****************************************************************************************
 * Hook functions
 ****************************************************************************************/
-#if F_CAL_RES_PAGING_EN == 1
-blt_int8u AppCalSetPage(blt_int8u segment, blt_int8u page);
-blt_int8u AppCalGetPage(blt_int8u segment);
+#if (XCP_RES_PAGING_EN == 1)
+extern blt_int8u XcpCalSetPageHook(blt_int8u segment, blt_int8u page);
+extern blt_int8u XcpCalGetPageHook(blt_int8u segment);
+#endif
+
+#if (XCP_CONNECT_MODE_HOOK_EN == 1)
+extern blt_bool XcpConnectModeHook(blt_int8u mode);
+#endif
+
+
+/****************************************************************************************
+* External functions
+****************************************************************************************/
+#if (BOOT_COM_ENABLE == 0)
+/* in case no internally supported communication interface is used, a custom 
+ * communication module can be added. In order to use the XCP protocol in the custom
+ * communication module, this hook function needs to be implemented. In the XCP protocol
+ * is not needed, then simply remove the xcp.c source from the project.
+ */
+extern void XcpTransmitPacketHook(blt_int8u *data, blt_int16u len);
 #endif
 
 
@@ -356,11 +372,15 @@ void XcpPacketReceived(blt_int8u *data)
     XcpSetCtoError(XCP_ERR_CMD_BUSY);
   }
 
-  /* set cto packet transmission pending flag */
-  xcpInfo.ctoPending = 1;
+  /* send the response if it contains something */
+  if (xcpInfo.ctoLen > 0)
+  {
+    /* set cto packet transmission pending flag */
+    xcpInfo.ctoPending = 1;
 
-  /* transmit the cto response packet */
-  XcpTransmitPacket(xcpInfo.ctoData, xcpInfo.ctoLen);
+    /* transmit the cto response packet */
+    XcpTransmitPacket(xcpInfo.ctoData, xcpInfo.ctoLen);
+  }
 } /*** end of XcpPacketReceived ***/
 
 
@@ -374,7 +394,12 @@ void XcpPacketReceived(blt_int8u *data)
 static void XcpTransmitPacket(blt_int8u *data, blt_int16s len)
 {
   /* submit packet to the communication interface for transmission */
+#if (BOOT_COM_ENABLE == 0)
+  XcpTransmitPacketHook(data, len);
+#else
   ComTransmitPacket(data, len);
+#endif
+  
 } /*** end of XcpTransmitPacket ***/
 
 
@@ -545,7 +570,20 @@ static void XcpCmdConnect(blt_int8u *data)
     return;
   }
   #endif  
-
+  
+  #if (XCP_CONNECT_MODE_HOOK_EN == 1)
+  /* pass on the mode to a application specific hook function. This function can determine
+   * is the mode is supported or not. A return value of BLT_FALSE causes the CONNECT command
+   * to be ignored. Note that this mode could potentially be used to specify a node ID in a
+   * multi XCP slave system.
+   */
+  if (XcpConnectModeHook(data[1]) == BLT_FALSE)
+  {
+    /* set the response length to 0 to suppress it */
+    xcpInfo.ctoLen = 0;
+    return;
+  }
+  #endif
 
   /* enable resource protection */
   XcpProtectResources();
@@ -603,6 +641,7 @@ static void XcpCmdConnect(blt_int8u *data)
 
   /* set packet length */
   xcpInfo.ctoLen = 8;
+  
 } /*** end of XcpCmdConnect ***/
 
 
@@ -1045,7 +1084,7 @@ static void XcpCmdSetCalPage(blt_int8u *data)
 #endif
 
   /* select the page. note that the mode parameter is ignored */
-  if (AppCalSetPage(data[2], data[3]) == 0)
+  if (XcpCalSetPageHook(data[2], data[3]) == 0)
   {
     /* calibration page could not be selected */
     XcpSetCtoError(XCP_ERR_PAGE_NOT_VALID);
@@ -1087,7 +1126,7 @@ static void XcpCmdGetCalPage(blt_int8u *data)
   xcpInfo.ctoData[2] = 0;
 
   /* store the calibration page */
-  xcpInfo.ctoData[3] = AppCalGetPage(data[2]);
+  xcpInfo.ctoData[3] = XcpCalGetPageHook(data[2]);
 
   /* set packet length */
   xcpInfo.ctoLen = 4;
@@ -1328,7 +1367,6 @@ static void XcpCmdProgramPrepare(blt_int8u *data)
 } /*** end of XcpCmdProgramPrepare ***/
 #endif /* XCP_RES_PROGRAMMING_EN == 1 */
 
-#endif /* BOOT_COM_ENABLE > 0 */
 
 
 /******************************** end of xcp.c *****************************************/

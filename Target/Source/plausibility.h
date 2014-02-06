@@ -181,6 +181,10 @@
   #endif
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
+#ifndef BOOT_COM_USB_ENABLE
+#define BOOT_COM_USB_ENABLE             (0)
+#endif
+
 #if (BOOT_COM_USB_ENABLE > 0)
   #ifndef BOOT_COM_USB_TX_MAX_DATA
   #error "BOOT_COM_USB_TX_MAX_DATA is missing in blt_conf.h"
@@ -196,6 +200,142 @@
 
   #if (BOOT_COM_USB_RX_MAX_DATA <= 0)
   #error "BOOT_COM_USB_RX_MAX_DATA must be > 0"
+  #endif
+#endif /* BOOT_COM_USB_ENABLE > 0 */
+
+
+
+#ifndef BOOT_COM_NET_ENABLE
+#define BOOT_COM_NET_ENABLE             (0)
+#endif
+
+#if (BOOT_COM_NET_ENABLE > 0)
+  #ifndef BOOT_COM_NET_TX_MAX_DATA
+  #error "BOOT_COM_NET_TX_MAX_DATA is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_TX_MAX_DATA <= 0)
+  #error "BOOT_COM_NET_TX_MAX_DATA must be > 0"
+  #endif
+  
+  #ifndef BOOT_COM_NET_RX_MAX_DATA
+  #error "BOOT_COM_NET_RX_MAX_DATA is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_RX_MAX_DATA <= 0)
+  #error "BOOT_COM_NET_RX_MAX_DATA must be > 0"
+  #endif
+
+  #ifndef BOOT_COM_NET_IPADDR0
+  #error "BOOT_COM_NET_IPADDR0 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_IPADDR0 < 0)
+  #error "BOOT_COM_NET_IPADDR0 must be >= 0"
+  #endif
+
+  #ifndef BOOT_COM_NET_IPADDR1
+  #error "BOOT_COM_NET_IPADDR1 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_IPADDR1 < 0)
+  #error "BOOT_COM_NET_IPADDR1 must be >= 0"
+  #endif
+  
+  #ifndef BOOT_COM_NET_IPADDR2
+  #error "BOOT_COM_NET_IPADDR2 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_IPADDR2 < 0)
+  #error "BOOT_COM_NET_IPADDR2 must be >= 0"
+  #endif
+  
+  #ifndef BOOT_COM_NET_IPADDR3
+  #error "BOOT_COM_NET_IPADDR3 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_IPADDR3 < 0)
+  #error "BOOT_COM_NET_IPADDR3 must be >= 0"
+  #endif
+  
+  #ifndef BOOT_COM_NET_NETMASK0
+  #error "BOOT_COM_NET_NETMASK0 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_NETMASK0 < 0)
+  #error "BOOT_COM_NET_NETMASK0 must be >= 0"
+  #endif
+  
+  #ifndef BOOT_COM_NET_NETMASK1
+  #error "BOOT_COM_NET_NETMASK1 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_NETMASK1 < 0)
+  #error "BOOT_COM_NET_NETMASK1 must be >= 0"
+  #endif
+
+  #ifndef BOOT_COM_NET_NETMASK2
+  #error "BOOT_COM_NET_NETMASK2 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_NETMASK2 < 0)
+  #error "BOOT_COM_NET_NETMASK2 must be >= 0"
+  #endif
+  
+  #ifndef BOOT_COM_NET_NETMASK3
+  #error "BOOT_COM_NET_NETMASK3 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_NETMASK3 < 0)
+  #error "BOOT_COM_NET_NETMASK3 must be >= 0"
+  #endif
+
+  #ifndef BOOT_COM_NET_MACADDR0
+  #error "BOOT_COM_NET_MACADDR0 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_MACADDR0 < 0)
+  #error "BOOT_COM_NET_MACADDR0 must be >= 0"
+  #endif
+
+  #ifndef BOOT_COM_NET_MACADDR1
+  #error "BOOT_COM_NET_MACADDR1 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_MACADDR1 < 0)
+  #error "BOOT_COM_NET_MACADDR1 must be >= 0"
+  #endif
+
+  #ifndef BOOT_COM_NET_MACADDR2
+  #error "BOOT_COM_NET_MACADDR2 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_MACADDR2 < 0)
+  #error "BOOT_COM_NET_MACADDR2 must be >= 0"
+  #endif
+
+  #ifndef BOOT_COM_NET_MACADDR3
+  #error "BOOT_COM_NET_MACADDR3 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_MACADDR3 < 0)
+  #error "BOOT_COM_NET_MACADDR3 must be >= 0"
+  #endif
+
+  #ifndef BOOT_COM_NET_MACADDR4
+  #error "BOOT_COM_NET_MACADDR4 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_MACADDR4 < 0)
+  #error "BOOT_COM_NET_MACADDR4 must be >= 0"
+  #endif
+  
+  #ifndef BOOT_COM_NET_MACADDR5
+  #error "BOOT_COM_NET_MACADDR5 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_MACADDR5 < 0)
+  #error "BOOT_COM_NET_MACADDR5 must be >= 0"
   #endif
 #endif /* BOOT_COM_USB_ENABLE > 0 */
 
@@ -241,20 +381,11 @@
   #endif
 #endif /* BOOT_FILE_SYS_ENABLE > 0 */
 
-      
-#if (BOOT_FILE_SYS_ENABLE == 0)
-  #if (BOOT_COM_CAN_ENABLE == 0)  && \
-      (BOOT_COM_UART_ENABLE == 0) && \
-      (BOOT_COM_USB_ENABLE == 0)
-  #error "If not booting from file system (BOOT_FILE_SYS_ENABLE) then a communication interface must be enabled (BOOT_COM_XXX_ENABLE) in blt_conf.h"
-  #endif
-#endif /* BOOT_FILE_SYS_ENABLE == 0 */
-            
-#if ((BOOT_COM_CAN_ENABLE + BOOT_COM_UART_ENABLE + BOOT_COM_USB_ENABLE) > 1)
+#if ((BOOT_COM_CAN_ENABLE + BOOT_COM_UART_ENABLE + BOOT_COM_USB_ENABLE + BOOT_COM_NET_ENABLE) > 1)
 #error "Too many communication interfaces enabled (BOOT_COM_XXX_ENABLE) in blt_conf.h"
 #endif
         
-#if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
+#if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_NET_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
 #define BOOT_COM_ENABLE   (1)
 #else
 #define BOOT_COM_ENABLE   (0)

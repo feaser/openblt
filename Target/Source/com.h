@@ -56,6 +56,12 @@
   /** \brief Defines the maximum number of bytes for transport reception on USB. */
   #define BOOT_COM_RX_MAX_DATA          (BOOT_COM_USB_RX_MAX_DATA)
 #endif
+#if (BOOT_COM_NET_ENABLE > 0)
+  /** \brief Defines the maximum number of bytes for transport transmission on TCP/IP. */
+  #define BOOT_COM_TX_MAX_DATA          (BOOT_COM_NET_TX_MAX_DATA)
+  /** \brief Defines the maximum number of bytes for transport reception on TCP/IP. */
+  #define BOOT_COM_RX_MAX_DATA          (BOOT_COM_NET_RX_MAX_DATA)
+#endif
 
 
 /****************************************************************************************

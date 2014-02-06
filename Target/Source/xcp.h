@@ -33,7 +33,6 @@
 #ifndef XCP_H
 #define XCP_H
 
-#if (BOOT_COM_ENABLE > 0)
 /****************************************************************************************
 * Configuration
 ****************************************************************************************/
@@ -157,7 +156,8 @@ void     XcpPacketReceived(blt_int8u *data);
 #endif
 
 #if (XCP_CTO_PACKET_LEN < 1)
-#error  "XCP.H, XCP_CTO_PACKET_LEN must be at least 1."
+#undef XCP_CTO_PACKET_LEN
+#define XCP_CTO_PACKET_LEN   (8)
 #endif
 
 #if (XCP_CTO_PACKET_LEN > 256)
@@ -170,7 +170,8 @@ void     XcpPacketReceived(blt_int8u *data);
 #endif
 
 #if (XCP_DTO_PACKET_LEN < 1)
-#error  "XCP.H, XCP_DTO_PACKET_LEN must be at least 1."
+#undef XCP_DTO_PACKET_LEN
+#define XCP_DTO_PACKET_LEN   (8)
 #endif
 
 #if (XCP_DTO_PACKET_LEN > 65536)
@@ -236,7 +237,6 @@ void     XcpPacketReceived(blt_int8u *data);
 #error  "XCP.H, XCP_SEED_KEY_PROTECTION_EN must be 0 or 1."
 #endif
 
-#endif /* BOOT_COM_ENABLE > 0 */
 
 #endif /* XCP_H */
 /******************************** end of xcp.h *~~~~~***********************************/

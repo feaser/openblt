@@ -44,6 +44,9 @@
 #if (BOOT_COM_USB_ENABLE > 0)
   #include "usb.h"                                    /* usb driver module             */
 #endif
+#if (BOOT_COM_NET_ENABLE > 0)
+  #include "net.h"                                    /* tcp/ip driver module          */
+#endif
 
 
 #if (BOOT_COM_ENABLE > 0)
@@ -116,6 +119,10 @@ void ComInit(void)
   /* initialize the USB interface */
   UsbInit();
 #endif
+#if (BOOT_COM_NET_ENABLE > 0)
+  /* initialize the TCP/IP interface */
+  NetInit();
+#endif
   /* simulate the reception of a CONNECT command if requested */
   if (comEntryStateConnect == BLT_TRUE)
   {
@@ -142,6 +149,9 @@ void ComTask(void)
 #if (BOOT_COM_USB_ENABLE > 0)
   static unsigned char xcpCtoReqPacket[BOOT_COM_USB_RX_MAX_DATA];
 #endif
+#if (BOOT_COM_NET_ENABLE > 0)
+  static unsigned char xcpCtoReqPacket[BOOT_COM_NET_RX_MAX_DATA];
+#endif
  
 #if (BOOT_COM_CAN_ENABLE > 0)
   if (CanReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
@@ -159,6 +169,13 @@ void ComTask(void)
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
   if (UsbReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+  {
+    /* process packet */
+    XcpPacketReceived(&xcpCtoReqPacket[0]);
+  }
+#endif
+#if (BOOT_COM_NET_ENABLE > 0)
+  if (NetReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
   {
     /* process packet */
     XcpPacketReceived(&xcpCtoReqPacket[0]);
@@ -205,6 +222,10 @@ void ComTransmitPacket(blt_int8u *data, blt_int16u len)
 #if (BOOT_COM_USB_ENABLE > 0)
   /* transmit the packet */
   UsbTransmitPacket(data, len);
+#endif
+#if (BOOT_COM_NET_ENABLE > 0)
+  /* transmit the packet */
+  NetTransmitPacket(data, len);
 #endif
 
   /* send signal that the packet was transmitted */
