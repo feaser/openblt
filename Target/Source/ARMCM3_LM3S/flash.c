@@ -284,17 +284,17 @@ blt_bool FlashWriteChecksum(void)
 {
   blt_int32u signature_checksum = 0;
   
-  /* for the STM32 target we defined the checksum as the Two's complement value of the
+  /* for the LM3S target we defined the checksum as the Two's complement value of the
    * sum of the first 7 exception addresses.
    *
    * Layout of the vector table:
-   *    0x08000000 Initial stack pointer 
-   *    0x08000004 Reset Handler
-   *    0x08000008 NMI Handler
-   *    0x0800000C Hard Fault Handler
-   *    0x08000010 MPU Fault Handler 
-   *    0x08000014 Bus Fault Handler
-   *    0x08000018 Usage Fault Handler
+   *    0x00000000 Initial stack pointer 
+   *    0x00000004 Reset Handler
+   *    0x00000008 NMI Handler
+   *    0x0000000C Hard Fault Handler
+   *    0x00000010 MPU Fault Handler 
+   *    0x00000014 Bus Fault Handler
+   *    0x00000018 Usage Fault Handler
    *
    *    signature_checksum = Two's complement of (SUM(exception address values))
    *   

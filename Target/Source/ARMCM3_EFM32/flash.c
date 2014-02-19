@@ -273,7 +273,7 @@ blt_bool FlashWriteChecksum(void)
 {
   blt_int32u signature_checksum = 0;
   
-  /* for the STM32 target we defined the checksum as the Two's complement value of the
+  /* for the EFM32 target we defined the checksum as the Two's complement value of the
    * sum of the first 7 exception addresses.
    *
    * Layout of the vector table:

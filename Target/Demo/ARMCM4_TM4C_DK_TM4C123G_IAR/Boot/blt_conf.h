@@ -108,15 +108,15 @@
  * firmware update is completed by the bootloader. 
  */
 /** \brief Enable/disable support for firmware updates from a locally attached storage.*/
-#define BOOT_FILE_SYS_ENABLE            (0)
+#define BOOT_FILE_SYS_ENABLE            (1)
 /** \brief Enable/disable logging messages during firmware updates. */
-#define BOOT_FILE_LOGGING_ENABLE        (0)
+#define BOOT_FILE_LOGGING_ENABLE        (1)
 /** \brief Enable/disable a hook function that is called upon detection of an error. */
-#define BOOT_FILE_ERROR_HOOK_ENABLE     (0)   
+#define BOOT_FILE_ERROR_HOOK_ENABLE     (1)   
 /** \brief Enable/disable a hook function that is called at the start of the update. */
-#define BOOT_FILE_STARTED_HOOK_ENABLE   (0)   
+#define BOOT_FILE_STARTED_HOOK_ENABLE   (1)   
 /** \brief Enable/disable a hook function that is called at the end of the update. */
-#define BOOT_FILE_COMPLETED_HOOK_ENABLE (0)   
+#define BOOT_FILE_COMPLETED_HOOK_ENABLE (1)   
 
    
 /****************************************************************************************

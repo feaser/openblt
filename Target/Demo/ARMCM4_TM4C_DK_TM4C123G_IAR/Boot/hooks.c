@@ -230,7 +230,7 @@ void CopServiceHook(void)
 * Constant data declarations
 ****************************************************************************************/
 /** \brief Firmware filename. */
-static const blt_char firmwareFilename[] = "/demoprog_ek_lm3s6965.srec";
+static const blt_char firmwareFilename[] = "/demoprog_dk_tm4c123g.srec";
 
 
 /****************************************************************************************

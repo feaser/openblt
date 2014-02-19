@@ -323,7 +323,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -332,7 +332,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -1097,6 +1097,15 @@
         </file>
       </group>
       <group>
+        <name>fatfs</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\fatfs\ffconf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\fatfs\mmc.c</name>
+        </file>
+      </group>
+      <group>
         <name>inc</name>
         <file>
           <name>$PROJ_DIR$\..\lib\inc\asmdefs.h</name>
@@ -1237,6 +1246,27 @@
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\uart.h</name>
       </file>
+    </group>
+    <group>
+      <name>third_party</name>
+      <group>
+        <name>fatfs</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\diskio.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\integer.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</name>
+        </file>
+      </group>
     </group>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\assert.c</name>
