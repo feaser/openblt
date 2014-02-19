@@ -167,7 +167,6 @@
           <state>ewarm</state>
           <state>PART_TM4C123GH6PGE</state>
           <state>TARGET_IS_BLIZZARD_RA1</state>
-          <state>DEBUG</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -296,10 +295,15 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
+          <state>$PROJ_DIR$\..\..\..\..\Source</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR</state>
           <state>$PROJ_DIR$\..</state>
           <state>$PROJ_DIR$\..\lib</state>
           <state>$PROJ_DIR$\..\lib\inc</state>
           <state>$PROJ_DIR$\..\lib\driverlib</state>
+          <state>$PROJ_DIR$\..\lib\fatfs</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -572,7 +576,7 @@
         <option>
           <name>OOCOutputFormat</name>
           <version>2</version>
-          <state>0</state>
+          <state>2</state>
         </option>
         <option>
           <name>OCOutputOverride</name>
@@ -580,7 +584,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>demoprog_dk_tm4c123g.srec</state>
+          <state>openblt_dk_tm4c123g.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -634,7 +638,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>demoprog_dk_tm4c123g.out</state>
+          <state>openblt_dk_tm4c123g.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -698,7 +702,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\memory.x</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\memory.x</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -927,7 +931,7 @@
     </settings>
   </configuration>
   <group>
-    <name>Prog</name>
+    <name>Boot</name>
     <group>
       <name>lib</name>
       <group>
@@ -951,10 +955,10 @@
           <name>$PROJ_DIR$\..\lib\driverlib\comp.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\cpu.c</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\cpulib.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\cpu.h</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\cpulib.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\lib\driverlib\debug.h</name>
@@ -966,10 +970,10 @@
           <name>$PROJ_DIR$\..\lib\driverlib\eeprom.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\flash.c</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\flashlib.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\flash.h</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\flashlib.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\lib\driverlib\fpu.c</name>
@@ -1062,16 +1066,16 @@
           <name>$PROJ_DIR$\..\lib\driverlib\systick.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\timer.c</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\timerlib.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\timer.h</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\timerlib.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\uart.c</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\uartlib.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\uart.h</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\uartlib.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\lib\driverlib\udma.c</name>
@@ -1178,40 +1182,106 @@
       </group>
     </group>
     <file>
-      <name>$PROJ_DIR$\..\boot.c</name>
+      <name>$PROJ_DIR$\..\blt_conf.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\boot.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\cstart.s</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\header.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\irq.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\irq.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\led.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\led.h</name>
+      <name>$PROJ_DIR$\..\hooks.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
     </file>
+  </group>
+  <group>
+    <name>Source</name>
+    <group>
+      <name>ARMCM4_TM4C</name>
+      <group>
+        <name>IAR</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\cstart.s</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\vectors.c</name>
+        </file>
+      </group>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\cpu.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\cpu.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\flash.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\flash.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\nvm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\nvm.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\timer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\timer.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\types.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\uart.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\uart.h</name>
+      </file>
+    </group>
     <file>
-      <name>$PROJ_DIR$\..\time.c</name>
+      <name>$PROJ_DIR$\..\..\..\..\Source\assert.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\time.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\Source\assert.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\vectors.c</name>
+      <name>$PROJ_DIR$\..\..\..\..\Source\backdoor.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\backdoor.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\boot.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\boot.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\com.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\com.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\cop.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\cop.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\file.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\file.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\plausibility.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\xcp.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\xcp.h</name>
     </file>
   </group>
 </project>
