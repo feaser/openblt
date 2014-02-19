@@ -50,7 +50,7 @@
 /** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
 /** \brief Standard size of a flash block for writing. */
-#define FLASH_WRITE_BLOCK_SIZE          (512)
+#define FLASH_WRITE_BLOCK_SIZE          (1024)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 /** \brief Number of bytes to erase per erase operation. */
@@ -569,9 +569,6 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
     return BLT_FALSE;
   }
   
-  /* ##Vg Test code */
-  return BLT_TRUE;
-  
   /* program all words in the block one by one */
   for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
   {
@@ -621,14 +618,12 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
   {
     return BLT_FALSE;
   }
+  
   /* determine how many blocks need to be erased */
   start_addr = FlashGetSectorBaseAddr(first_sector);
   end_addr = FlashGetSectorBaseAddr(last_sector) + FlashGetSectorSize(last_sector) - 1;
   nr_of_blocks = (end_addr - start_addr + 1) / FLASH_ERASE_BLOCK_SIZE;
 
-  /* ##Vg Test code */
-  return BLT_TRUE;
-  
   /* erase all blocks one by one */
   for (block_cnt=0; block_cnt<nr_of_blocks; block_cnt++)
   {
