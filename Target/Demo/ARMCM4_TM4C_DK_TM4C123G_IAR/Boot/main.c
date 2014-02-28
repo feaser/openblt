@@ -103,6 +103,18 @@ static void Init(void)
                       (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | 
                       UART_CONFIG_PAR_NONE));
 #endif
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* enable the GPIO peripheral used for USB, and configure the USB pins */
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOL);
+  GPIOPinTypeUSBAnalog(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+  GPIOPinTypeUSBAnalog(GPIO_PORTL_BASE, GPIO_PIN_6 | GPIO_PIN_7);
+#endif  
+  /* enable the GPIO port to which the SELECT button is connected */
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOM);
+  /* configure the SELECT button pin as an input with pull-up */
+  GPIODirModeSet(GPIO_PORTM_BASE, GPIO_PIN_4, GPIO_DIR_MODE_IN);
+  GPIOPadConfigSet(GPIO_PORTM_BASE, GPIO_PIN_4, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
 } /*** end of Init ***/
 
 

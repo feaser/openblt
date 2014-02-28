@@ -49,7 +49,6 @@ static void BootActivate(void)
 } /*** end of BootActivate ***/
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
 /****************************************************************************************
 *     U N I V E R S A L   A S Y N C H R O N O U S   R X   T X   I N T E R F A C E
 ****************************************************************************************/
@@ -153,7 +152,6 @@ static unsigned char UartReceiveByte(unsigned char *data)
   /* inform caller that no new data was received */
   return 0;
 } /*** end of UartReceiveByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
 
 
 /*********************************** end of boot.c *************************************/

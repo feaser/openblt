@@ -42,6 +42,66 @@
 #include "inc/hw_types.h"
 #include "driverlib/uartlib.h"
 #endif
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/gpio.h"
+
+
+/****************************************************************************************
+*   U S B   C O M M U N I C A T I O N   I N T E R F A C E   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_COM_USB_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB device should be connected
+**            to the USB bus. 
+** \param     connect BLT_TRUE to connect and BLT_FALSE to disconnect.
+** \return    none.
+**
+****************************************************************************************/
+void UsbConnectHook(blt_bool connect)
+{
+  /* the connection to the USB bus is typically controlled by software through a digital
+   * output. the GPIO pin for this must be configured as such. the DK-TM4C123G does not
+   * have a digital output for this feature, so nothing to do here.
+   */
+
+  /* determine if the USB should be connected or disconnected */
+  if (connect == BLT_TRUE)
+  {
+    /* enable connection to the USB bus */
+  }
+  else
+  {
+    /* disable connection to the USB bus */
+  }
+} /*** end of UsbConnect ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device
+**            to enter a low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbEnterLowPowerModeHook(void)
+{
+  /* support to enter a low power mode can be implemented here */
+} /*** end of UsbEnterLowPowerMode ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device to
+**            exit low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbLeaveLowPowerModeHook(void)
+{
+  /* support to leave a low power mode can be implemented here */
+} /*** end of UsbLeaveLowPowerMode ***/
+#endif /* BOOT_COM_USB_ENABLE > 0 */
 
 
 /****************************************************************************************
@@ -66,8 +126,8 @@ void BackDoorInitHook(void)
 ****************************************************************************************/
 blt_bool BackDoorEntryHook(void)
 {
-  /* default implementation always activates the bootloader after a reset */
-  return BLT_TRUE;
+  /* no backdoor entry requested */
+  return BLT_FALSE;
 } /*** end of BackDoorEntryHook ***/
 #endif /* BOOT_BACKDOOR_HOOKS_ENABLE > 0 */
 
@@ -88,6 +148,12 @@ blt_bool BackDoorEntryHook(void)
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
+  /* bootloader should remain active when SELECT button is pressed */
+  if (GPIOPinRead(GPIO_PORTM_BASE, GPIO_PIN_4) == 0)
+  {
+    /* keep bootloader active */
+    return BLT_FALSE;
+  }
   /* okay to start the user program */
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/

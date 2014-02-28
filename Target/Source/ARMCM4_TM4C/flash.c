@@ -113,20 +113,18 @@ static blt_addr  FlashGetSectorSize(blt_int8u sector);
  */
 static const tFlashSector flashLayout[] =
 {
-#if (BOOT_FILE_SYS_ENABLE > 0)
-  /* the size of the bootloader with support for firmware update from a locally attached
-   * storage disk is larger so the start address of the user program is at a different 
-   * location.
+  /* with just UART supported, the bootloader needs 0x2000 in size. enabling support for
+   * for firmware update from a locally attached storage disk and USB instead of UART,
+   * the required size can be close to 0x8000 (32kb). this is the default configuration,
+   * but can be changed by the user if less space is required. If changed, then also 
+   * change the start address of the user program in its linker script file.
+   * additionally, the macros CPU_USER_PROGRAM_STARTADDR_PTR and 
+   * CPU_USER_PROGRAM_VECTABLE_OFFSET should be updated in file cpu.c.
    */
   /* { 0x00000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
   /* { 0x00002000, 0x02000,  1},           flash sector  1 - reserved for bootloader   */
   /* { 0x00004000, 0x02000,  2},           flash sector  2 - reserved for bootloader   */
-#else
-  /* { 0x00000000, 0x02000,  0},           flash sector  0 - 8kb                       */
-  { 0x00002000, 0x02000,  1},           /* flash sector  1 - 8kb                       */
-  { 0x00004000, 0x02000,  2},           /* flash sector  2 - 8kb                       */
-#endif
-  { 0x00006000, 0x02000,  3},           /* flash sector  3 - 8kb                       */
+  /* { 0x00006000, 0x02000,  3},           flash sector  3 - reserved for bootloader   */
 #if (BOOT_NVM_SIZE_KB > 32)
   { 0x00008000, 0x02000,  4},           /* flash sector  4 - 8kb                       */
   { 0x0000A000, 0x02000,  5},           /* flash sector  5 - 8kb                       */

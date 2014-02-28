@@ -297,13 +297,17 @@
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S</state>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR</state>
           <state>$PROJ_DIR$\..</state>
           <state>$PROJ_DIR$\..\lib</state>
           <state>$PROJ_DIR$\..\lib\inc</state>
           <state>$PROJ_DIR$\..\lib\driverlib</state>
           <state>$PROJ_DIR$\..\lib\fatfs</state>
+          <state>$PROJ_DIR$\..\lib\usblib</state>
+          <state>$PROJ_DIR$\..\lib\usblib\config</state>
+          <state>$PROJ_DIR$\..\lib\usblib\device</state>
+          <state>$PROJ_DIR$\..\lib\usblib\host</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1084,10 +1088,10 @@
           <name>$PROJ_DIR$\..\lib\driverlib\udma.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\usb.c</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\usbdrv.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\driverlib\usb.h</name>
+          <name>$PROJ_DIR$\..\lib\driverlib\usbdrv.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\lib\driverlib\watchdog.c</name>
@@ -1189,6 +1193,192 @@
           <name>$PROJ_DIR$\..\lib\inc\tm4c123gh6pge.h</name>
         </file>
       </group>
+      <group>
+        <name>usblib</name>
+        <group>
+          <name>config</name>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\config\usb_bulk_structs.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\config\usb_bulk_structs.h</name>
+          </file>
+        </group>
+        <group>
+          <name>device</name>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdaudio.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdaudio.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdbulk.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdbulk.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdcdc.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdcdc.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdcdesc.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdcomp.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdcomp.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdconfig.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbddfu-rt.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbddfu-rt.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdenum.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdevice.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdevicepriv.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdhandler.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdhid.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdhid.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdhidkeyb.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdhidkeyb.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdhidmouse.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdhidmouse.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdmsc.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\device\usbdmsc.h</name>
+          </file>
+        </group>
+        <group>
+          <name>host</name>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhaudio.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhaudio.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhhid.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhhid.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhhidkeyboard.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhhidkeyboard.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhhidmouse.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhhidmouse.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhhub.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhhub.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhmsc.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhmsc.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhost.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhostenum.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhostpriv.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhscsi.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\lib\usblib\host\usbhscsi.h</name>
+          </file>
+        </group>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usb-ids.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbaudio.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbbuffer.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbcdc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbdesc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbdfu.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbdma.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbhid.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbkeyboardmap.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usblib.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usblibpriv.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbmode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbmsc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbringbuf.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usblib\usbtick.c</name>
+        </file>
+      </group>
     </group>
     <file>
       <name>$PROJ_DIR$\..\blt_conf.h</name>
@@ -1245,6 +1435,12 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\uart.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\usb.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\usb.h</name>
       </file>
     </group>
     <group>

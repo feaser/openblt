@@ -55,7 +55,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/udma.h"
-#include "driverlib/usb.h"
+#include "driverlib/usbdrv.h"
 
 //*****************************************************************************
 //
