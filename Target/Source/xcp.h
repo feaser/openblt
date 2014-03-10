@@ -37,10 +37,18 @@
 * Configuration
 ****************************************************************************************/
 /** \brief Maximum length of the transport layer's command transmit object packet. */
+#if !defined(BOOT_COM_RX_MAX_DATA) && defined(BOOT_XCP_CUSTOM_RX_MAX_DATA)
+#define XCP_CTO_PACKET_LEN             (BOOT_XCP_CUSTOM_RX_MAX_DATA)
+#else
 #define XCP_CTO_PACKET_LEN             (BOOT_COM_RX_MAX_DATA)
+#endif
 
 /** \brief Maximum length of the transport layer's data transmit object packet. */
+#if !defined(BOOT_COM_TX_MAX_DATA) && defined(BOOT_XCP_CUSTOM_TX_MAX_DATA)
+#define XCP_DTO_PACKET_LEN             (BOOT_XCP_CUSTOM_TX_MAX_DATA)
+#else
 #define XCP_DTO_PACKET_LEN             (BOOT_COM_TX_MAX_DATA)
+#endif
 
 /** \brief Name in string format that is used to identify the ECU to the XCP master
  *         using the GET_ID command.
