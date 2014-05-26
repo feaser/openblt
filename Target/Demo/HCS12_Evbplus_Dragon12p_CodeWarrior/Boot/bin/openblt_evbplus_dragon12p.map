@@ -27,6 +27,7 @@ timer.c.o                               Model: SMALL,         Lang: ANSI-C
 uart.c.o                                Model: SMALL,         Lang: ANSI-C
 vectors.c.o                             Model: SMALL,         Lang: ANSI-C
 assert.c.o                              Model: SMALL,         Lang: ANSI-C
+can.c.o                                 Model: SMALL,         Lang: ANSI-C
 cstartup.c.o                            Model: SMALL,         Lang: ANSI-C
 
 *********************************************************************************************
@@ -36,8 +37,8 @@ Entry point: 0xE829 (_Startup)
 _startupData is allocated at 0xE82C and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x3900     1276
-  _Copy    *toCopyDownBeg 0xF8C8
+  _Range   pZeroOut       0x3900     1278
+  _Copy    *toCopyDownBeg 0xFBB5
 } _startupData;
 
 *********************************************************************************************
@@ -46,12 +47,13 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             44     R     0xE800     0xE82B   ROM_C000
 .startData                        10     R     0xE82C     0xE835   ROM_C000
-.rodata                          190     R     0xE836     0xE8F3   ROM_C000
-.rodata1                         190     R     0xE8F4     0xE9B1   ROM_C000
-.text                           3574     R     0xE9B2     0xF7A7   ROM_C000
-.copy                              2     R     0xF8C8     0xF8C9   ROM_C000
+.rodata                          226     R     0xE836     0xE917   ROM_C000
+.rodata1                         241     R     0xE918     0xEA08   ROM_C000
+.text                           4216     R     0xEA09     0xFA80   ROM_C000
+.copy                              7     R     0xFBB5     0xFBBB   ROM_C000
 ENTRY                             22     R     0xFEE0     0xFEF5   ENTRY_SEG
 .stack                           256   R/W     0x3800     0x38FF   RAM
+.data                              2   R/W     0x3900     0x3901   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -394,12 +396,12 @@ ENTRY                             22     R     0xFEE0     0xFEF5   ENTRY_SEG
 .abs_section_2ae                   2   N/I      0x2AE      0x2AF   .absSeg339
 .abs_section_2be                   2   N/I      0x2BE      0x2BF   .absSeg340
 .abs_section_ff80                128     R     0xFF80     0xFFFF   .absSeg341
-.bss                            1276   R/W     0x3900     0x3DFB   RAM
-RUNTIME                          288     R     0xF7A8     0xF8C7   ROM_C000
+.bss                            1276   R/W     0x3902     0x3DFD   RAM
+RUNTIME                          308     R     0xFA81     0xFBB4   ROM_C000
 
 Summary of section sizes per section type:
-READ_ONLY (R):        1160 (dec:     4448)
-READ_WRITE (R/W):      5FC (dec:     1532)
+READ_ONLY (R):        1452 (dec:     5202)
+READ_WRITE (R/W):      5FE (dec:     1534)
 NO_INIT (N/I):         190 (dec:      400)
 
 *********************************************************************************************
@@ -413,15 +415,16 @@ OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 MODULE:                 -- rtshc12.c.o (ansisi.lib) --
 - PROCEDURES:
-     _LSHL                                     F7A8      11      17       3   RUNTIME     
-     _LSHRU                                    F7B9      11      17       5   RUNTIME     
-     _LCMP                                     F7CA      19      25       4   RUNTIME     
-     _LINC                                     F7E3       5       5       4   RUNTIME     
-     _LDEC                                     F7E8       8       8       6   RUNTIME     
-     _lDivMod                                  F7F0      BE     190       1   RUNTIME     
-     _LDIVU                                    F8AE       E      14       1   RUNTIME     
-     _ILSEXT                                   F8BC       7       7       1   RUNTIME     
-     _CASE_DIRECT_BYTE                         F8C3       5       5       3   RUNTIME     
+     _LSHL                                     FA81      11      17       3   RUNTIME     
+     _LSHRU                                    FA92      11      17       6   RUNTIME     
+     _LCMP                                     FAA3      19      25       4   RUNTIME     
+     _LINC                                     FABC       5       5       4   RUNTIME     
+     _LDEC                                     FAC1       8       8       6   RUNTIME     
+     _lDivMod                                  FAC9      BE     190       1   RUNTIME     
+     _LDIVU                                    FB87       E      14       1   RUNTIME     
+     _ILSEXT                                   FB95       7       7       1   RUNTIME     
+     _CASE_DIRECT_BYTE                         FB9C       5       5       3   RUNTIME     
+     _CASE_CHECKED_BYTE                        FBA1      14      20       2   RUNTIME     
 - VARIABLES:
 MODULE:                 -- mc9s12dg256.c.o --
 - PROCEDURES:
@@ -769,191 +772,194 @@ MODULE:                 -- mc9s12dg256.c.o --
      _CAN4TXTSR                                 2BE       2       2       0   .abs_section_2be
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      E9B2       B      11       2   .text       
-     Init                                      E9BD      79     121       1   .text       
+     main                                      EA09       B      11       2   .text       
+     Init                                      EA14      79     121       1   .text       
 - VARIABLES:
-     STRING.C..Work.software.Ope.1             E8F4      55      85       1   .rodata1    
+     STRING.C..Work.software.Ope.1             E918      55      85       1   .rodata1    
 MODULE:                 -- backdoor.c.o --
 - PROCEDURES:
-     BackDoorInit                              EA36      11      17       1   .text       
-     BackDoorCheck                             EA47      31      49       2   .text       
+     BackDoorInit                              EA8D      11      17       1   .text       
+     BackDoorCheck                             EA9E      31      49       2   .text       
 - VARIABLES:
-     backdoorOpen                              3900       1       1       3   .bss        
-     backdoorOpenTime                          3901       4       4       4   .bss        
+     backdoorOpen                              3902       1       1       3   .bss        
+     backdoorOpenTime                          3903       4       4       4   .bss        
 MODULE:                 -- boot.c.o --
 - PROCEDURES:
-     BootInit                                  EA78       F      15       1   .text       
-     BootTask                                  EA87       C      12       1   .text       
+     BootInit                                  EACF       F      15       1   .text       
+     BootTask                                  EADE       C      12       1   .text       
 - VARIABLES:
 MODULE:                 -- com.c.o --
 - PROCEDURES:
-     ComInit                                   EA93      19      25       1   .text       
-     ComTask                                   EAAC      10      16       1   .text       
-     ComFree                                   EABC       1       1       1   .text       
-     ComTransmitPacket                         EABD       F      15       1   .text       
-     ComSetConnectEntryState                   EACC       6       6       1   .text       
-     ComIsConnected                            EAD2       4       4       1   .text       
+     ComInit                                   EAEA      27      39       1   .text       
+     ComTask                                   EB11      24      36       1   .text       
+     ComFree                                   EB35       1       1       1   .text       
+     ComTransmitPacket                         EB36      25      37       1   .text       
+     ComGetActiveInterfaceMaxRxLen             EB5B      19      25       7   .text       
+     ComGetActiveInterfaceMaxTxLen             EB74      19      25       2   .text       
+     ComSetConnectEntryState                   EB8D       6       6       1   .text       
+     ComIsConnected                            EB93       4       4       1   .text       
 - VARIABLES:
-     comEntryStateConnect                      3905       1       1       2   .bss        
-     xcpCtoReqPacket.1                         3906      40      64       2   .bss        
+     comActiveInterface                        3900       2       2       7   .data       
+     comEntryStateConnect                      3907       1       1       2   .bss        
+     xcpCtoReqPacket.1                         3908      40      64       3   .bss        
 MODULE:                 -- cop.c.o --
 - PROCEDURES:
-     CopInit                                   EAD6       1       1       1   .text       
-     CopService                                EAD7       1       1       8   .text       
+     CopInit                                   EB97       1       1       1   .text       
+     CopService                                EB98       1       1      10   .text       
 - VARIABLES:
 MODULE:                 -- xcp.c.o --
 - PROCEDURES:
-     XcpInit                                   EAD8      15      21       1   .text       
-     XcpIsConnected                            EAED       9       9       1   .text       
-     XcpPacketTransmitted                      EAF6       4       4       1   .text       
-     XcpPacketReceived                         EAFA      E7     231       2   .text       
-     XcpTransmitPacket                         EBE1       C      12       1   .text       
-     XcpComputeChecksum                        EBED      43      67       1   .text       
-     XcpProtectResources                       EC30       4       4       2   .text       
-     XcpSetCtoError                            EC34      10      16       9   .text       
-     XcpCmdConnect                             EC44      2A      42       1   .text       
-     XcpCmdDisconnect                          EC6E      10      16       1   .text       
-     XcpCmdGetStatus                           EC7E      1A      26       1   .text       
-     XcpCmdSynch                               EC98       4       4       1   .text       
-     XcpCmdGetId                               EC9C      22      34       1   .text       
-     XcpCmdSetMta                              ECBE      1A      26       1   .text       
-     XcpCmdUpload                              ECD8      4E      78       1   .text       
-     XcpCmdShortUpload                         ED26      55      85       1   .text       
-     XcpCmdBuildCheckSum                       ED7B      2C      44       1   .text       
-     XcpCmdProgramStart                        EDA7      19      25       1   .text       
-     XcpCmdProgramMax                          EDC0      43      67       1   .text       
-     XcpCmdProgram                             EE03      5B      91       1   .text       
-     XcpCmdProgramClear                        EE5E      2A      42       1   .text       
-     XcpCmdProgramReset                        EE88       E      14       1   .text       
-     XcpCmdProgramPrepare                      EE96       5       5       1   .text       
+     XcpInit                                   EB99      15      21       1   .text       
+     XcpIsConnected                            EBAE       9       9       1   .text       
+     XcpPacketTransmitted                      EBB7       4       4       1   .text       
+     XcpPacketReceived                         EBBB      E9     233       2   .text       
+     XcpTransmitPacket                         ECA4       C      12       1   .text       
+     XcpComputeChecksum                        ECB0      43      67       1   .text       
+     XcpProtectResources                       ECF3       4       4       2   .text       
+     XcpSetCtoError                            ECF7      10      16       9   .text       
+     XcpCmdConnect                             ED07      36      54       1   .text       
+     XcpCmdDisconnect                          ED3D      10      16       1   .text       
+     XcpCmdGetStatus                           ED4D      1A      26       1   .text       
+     XcpCmdSynch                               ED67       4       4       1   .text       
+     XcpCmdGetId                               ED6B      22      34       1   .text       
+     XcpCmdSetMta                              ED8D      1A      26       1   .text       
+     XcpCmdUpload                              EDA7      55      85       1   .text       
+     XcpCmdShortUpload                         EDFC      5E      94       1   .text       
+     XcpCmdBuildCheckSum                       EE5A      2C      44       1   .text       
+     XcpCmdProgramStart                        EE86      1D      29       1   .text       
+     XcpCmdProgramMax                          EEA3      4C      76       1   .text       
+     XcpCmdProgram                             EEEF      67     103       1   .text       
+     XcpCmdProgramClear                        EF56      2A      42       1   .text       
+     XcpCmdProgramReset                        EF80       E      14       1   .text       
+     XcpCmdProgramPrepare                      EF8E       5       5       1   .text       
 - VARIABLES:
      xcpStationId                              E836       8       8       1   .rodata     
-     xcpInfo                                   3946      4A      74     102   .bss        
+     xcpInfo                                   3948      4A      74     105   .bss        
 MODULE:                 -- cpu.c.o --
 - PROCEDURES:
-     CpuStartUserProgram                       EE9B      18      24       1   .text       
-     CpuMemCopy                                EEB3      27      39       4   .text       
-     CpuReset                                  EEDA       3       3       1   .text       
+     CpuStartUserProgram                       EF93      18      24       1   .text       
+     CpuMemCopy                                EFAB      27      39       4   .text       
+     CpuReset                                  EFD2       3       3       1   .text       
 - VARIABLES:
 MODULE:                 -- flash.c.o --
 - PROCEDURES:
-     FlashInit                                 EEDD      74     116       1   .text       
-     FlashWrite                                EF51      B6     182       2   .text       
-     FlashErase                                F007      DD     221       1   .text       
-     FlashWriteChecksum                        F0E4      67     103       1   .text       
-     FlashVerifyChecksum                       F14B      8A     138       1   .text       
-     FlashDone                                 F1D5      35      53       1   .text       
-     FlashInitBlock                            F20A      51      81       2   .text       
-     FlashSwitchBlock                          F25B      4E      78       2   .text       
-     FlashAddToBlock                           F2A9      BD     189       1   .text       
-     FlashWriteBlock                           F366      78     120       3   .text       
-     FlashGetLinearAddrByte                    F3DE      1D      29       5   .text       
-     FlashGetPhysPage                          F3FB       C      12       3   .text       
-     FlashGetPhysAddr                          F407       6       6       3   .text       
-     FlashExecuteCommand                       F40D      1F      31       1   .text       
-     FlashOperate                              F42C      54      84       2   .text       
+     FlashInit                                 EFD5      74     116       1   .text       
+     FlashWrite                                F049      B6     182       2   .text       
+     FlashErase                                F0FF      DD     221       1   .text       
+     FlashWriteChecksum                        F1DC      67     103       1   .text       
+     FlashVerifyChecksum                       F243      8A     138       1   .text       
+     FlashDone                                 F2CD      3C      60       1   .text       
+     FlashInitBlock                            F309      51      81       2   .text       
+     FlashSwitchBlock                          F35A      4E      78       2   .text       
+     FlashAddToBlock                           F3A8      BD     189       1   .text       
+     FlashWriteBlock                           F465      78     120       3   .text       
+     FlashGetLinearAddrByte                    F4DD      1D      29       5   .text       
+     FlashGetPhysPage                          F4FA       C      12       3   .text       
+     FlashGetPhysAddr                          F506       6       6       3   .text       
+     FlashExecuteCommand                       F50C      1F      31       1   .text       
+     FlashOperate                              F52B      54      84       2   .text       
 - VARIABLES:
      flashLayout                               E83E      A0     160      39   .rodata     
      flashExecCmd                              E8DE      16      22       1   .rodata     
-     STRING.C..Work.software.Ope.1             E949      35      53       1   .rodata1    
-     blockInfo                                 3990     204     516       7   .bss        
-     bootBlockInfo                             3B94     204     516      11   .bss        
-     flashExecCmdRam                           3D98      16      22       2   .bss        
-     flashMaxNrBlocks                          3DAE       1       1       1   .bss        
+     STRING.C..Work.software.Ope.1             E96D      35      53       1   .rodata1    
+     blockInfo                                 3992     204     516       7   .bss        
+     bootBlockInfo                             3B96     204     516      11   .bss        
+     flashExecCmdRam                           3D9A      16      22       3   .bss        
+     flashMaxNrBlocks                          3DB0       1       1       1   .bss        
 MODULE:                 -- nvm.c.o --
 - PROCEDURES:
-     NvmInit                                   F480       3       3       1   .text       
-     NvmWrite                                  F483      16      22       2   .text       
-     NvmErase                                  F499      12      18       1   .text       
-     NvmVerifyChecksum                         F4AB       4       4       1   .text       
-     NvmDone                                   F4AF       B      11       1   .text       
+     NvmInit                                   F57F       3       3       1   .text       
+     NvmWrite                                  F582      16      22       2   .text       
+     NvmErase                                  F598      12      18       1   .text       
+     NvmVerifyChecksum                         F5AA       4       4       1   .text       
+     NvmDone                                   F5AE       B      11       1   .text       
 - VARIABLES:
 MODULE:                 -- timer.c.o --
 - PROCEDURES:
-     TimerInit                                 F4BA      1D      29       1   .text       
-     TimerReset                                F4D7      1C      28       2   .text       
-     TimerUpdate                               F4F3      1F      31       2   .text       
-     TimerGet                                  F512       9       9       2   .text       
+     TimerInit                                 F5B9      1D      29       1   .text       
+     TimerReset                                F5D6      1C      28       2   .text       
+     TimerUpdate                               F5F2      1F      31       2   .text       
+     TimerGet                                  F611       9       9       2   .text       
 - VARIABLES:
-     millisecond_counter                       3DAF       4       4       8   .bss        
+     millisecond_counter                       3DB1       4       4       8   .bss        
 MODULE:                 -- uart.c.o --
 - PROCEDURES:
-     UartInit                                  F51B      19      25       1   .text       
-     UartTransmitPacket                        F534      5E      94       1   .text       
-     UartReceivePacket                         F592      50      80       1   .text       
-     UartReceiveByte                           F5E2      11      17       2   .text       
-     UartTransmitByte                          F5F3      14      20       2   .text       
+     UartInit                                  F61A      19      25       1   .text       
+     UartTransmitPacket                        F633      5E      94       1   .text       
+     UartReceivePacket                         F691      50      80       1   .text       
+     UartReceiveByte                           F6E1      11      17       2   .text       
+     UartTransmitByte                          F6F2      14      20       2   .text       
 - VARIABLES:
-     STRING.C..Work.software.Ope.1             E97E      34      52       3   .rodata1    
-     xcpCtoRxInProgress.4                      3DB3       1       1       3   .bss        
-     xcpCtoReqPacket.2                         3DB4      41      65       4   .bss        
-     xcpCtoRxLength.3                          3DF5       1       1       5   .bss        
+     STRING.C..Work.software.Ope.1             E9A2      34      52       3   .rodata1    
+     xcpCtoRxInProgress.4                      3DB5       1       1       3   .bss        
+     xcpCtoReqPacket.2                         3DB6      41      65       4   .bss        
+     xcpCtoRxLength.3                          3DF7       1       1       5   .bss        
 MODULE:                 -- vectors.c.o --
 - PROCEDURES:
-     reset_handler                             F607      13      19       2   .text       
-     Vector0_handler                           F61A       6       6       1   .text       
-     Vector1_handler                           F620       6       6       1   .text       
-     Vector2_handler                           F626       6       6       1   .text       
-     Vector3_handler                           F62C       6       6       1   .text       
-     Vector4_handler                           F632       6       6       1   .text       
-     Vector5_handler                           F638       6       6       1   .text       
-     Vector6_handler                           F63E       6       6       1   .text       
-     Vector7_handler                           F644       6       6       1   .text       
-     Vector8_handler                           F64A       6       6       1   .text       
-     Vector9_handler                           F650       6       6       1   .text       
-     Vector10_handler                          F656       6       6       1   .text       
-     Vector11_handler                          F65C       6       6       1   .text       
-     Vector12_handler                          F662       6       6       1   .text       
-     Vector13_handler                          F668       6       6       1   .text       
-     Vector14_handler                          F66E       6       6       1   .text       
-     Vector15_handler                          F674       6       6       1   .text       
-     Vector16_handler                          F67A       6       6       1   .text       
-     Vector17_handler                          F680       6       6       1   .text       
-     Vector18_handler                          F686       6       6       1   .text       
-     Vector19_handler                          F68C       6       6       1   .text       
-     Vector20_handler                          F692       6       6       1   .text       
-     Vector21_handler                          F698       6       6       1   .text       
-     Vector22_handler                          F69E       6       6       1   .text       
-     Vector23_handler                          F6A4       6       6       1   .text       
-     Vector24_handler                          F6AA       6       6       1   .text       
-     Vector25_handler                          F6B0       6       6       1   .text       
-     Vector26_handler                          F6B6       6       6       1   .text       
-     Vector27_handler                          F6BC       6       6       1   .text       
-     Vector28_handler                          F6C2       6       6       1   .text       
-     Vector29_handler                          F6C8       6       6       1   .text       
-     Vector30_handler                          F6CE       6       6       1   .text       
-     Vector31_handler                          F6D4       6       6       1   .text       
-     Vector32_handler                          F6DA       6       6       1   .text       
-     Vector33_handler                          F6E0       6       6       1   .text       
-     Vector34_handler                          F6E6       6       6       1   .text       
-     Vector35_handler                          F6EC       6       6       1   .text       
-     Vector36_handler                          F6F2       6       6       1   .text       
-     Vector37_handler                          F6F8       6       6       1   .text       
-     Vector38_handler                          F6FE       6       6       1   .text       
-     Vector39_handler                          F704       6       6       1   .text       
-     Vector40_handler                          F70A       6       6       1   .text       
-     Vector41_handler                          F710       6       6       1   .text       
-     Vector42_handler                          F716       6       6       1   .text       
-     Vector43_handler                          F71C       6       6       1   .text       
-     Vector44_handler                          F722       6       6       1   .text       
-     Vector45_handler                          F728       6       6       1   .text       
-     Vector46_handler                          F72E       6       6       1   .text       
-     Vector47_handler                          F734       6       6       1   .text       
-     Vector48_handler                          F73A       6       6       1   .text       
-     Vector49_handler                          F740       6       6       1   .text       
-     Vector50_handler                          F746       6       6       1   .text       
-     Vector51_handler                          F74C       6       6       1   .text       
-     Vector52_handler                          F752       6       6       1   .text       
-     Vector53_handler                          F758       6       6       1   .text       
-     Vector54_handler                          F75E       6       6       1   .text       
-     Vector55_handler                          F764       6       6       1   .text       
-     Vector56_handler                          F76A       6       6       1   .text       
-     Vector57_handler                          F770       6       6       1   .text       
-     Vector58_handler                          F776       6       6       1   .text       
-     Vector59_handler                          F77C       6       6       1   .text       
-     Vector60_handler                          F782       6       6       1   .text       
-     Vector61_handler                          F788       6       6       1   .text       
-     Vector62_handler                          F78E       6       6       1   .text       
+     reset_handler                             F706      13      19       2   .text       
+     Vector0_handler                           F719       6       6       1   .text       
+     Vector1_handler                           F71F       6       6       1   .text       
+     Vector2_handler                           F725       6       6       1   .text       
+     Vector3_handler                           F72B       6       6       1   .text       
+     Vector4_handler                           F731       6       6       1   .text       
+     Vector5_handler                           F737       6       6       1   .text       
+     Vector6_handler                           F73D       6       6       1   .text       
+     Vector7_handler                           F743       6       6       1   .text       
+     Vector8_handler                           F749       6       6       1   .text       
+     Vector9_handler                           F74F       6       6       1   .text       
+     Vector10_handler                          F755       6       6       1   .text       
+     Vector11_handler                          F75B       6       6       1   .text       
+     Vector12_handler                          F761       6       6       1   .text       
+     Vector13_handler                          F767       6       6       1   .text       
+     Vector14_handler                          F76D       6       6       1   .text       
+     Vector15_handler                          F773       6       6       1   .text       
+     Vector16_handler                          F779       6       6       1   .text       
+     Vector17_handler                          F77F       6       6       1   .text       
+     Vector18_handler                          F785       6       6       1   .text       
+     Vector19_handler                          F78B       6       6       1   .text       
+     Vector20_handler                          F791       6       6       1   .text       
+     Vector21_handler                          F797       6       6       1   .text       
+     Vector22_handler                          F79D       6       6       1   .text       
+     Vector23_handler                          F7A3       6       6       1   .text       
+     Vector24_handler                          F7A9       6       6       1   .text       
+     Vector25_handler                          F7AF       6       6       1   .text       
+     Vector26_handler                          F7B5       6       6       1   .text       
+     Vector27_handler                          F7BB       6       6       1   .text       
+     Vector28_handler                          F7C1       6       6       1   .text       
+     Vector29_handler                          F7C7       6       6       1   .text       
+     Vector30_handler                          F7CD       6       6       1   .text       
+     Vector31_handler                          F7D3       6       6       1   .text       
+     Vector32_handler                          F7D9       6       6       1   .text       
+     Vector33_handler                          F7DF       6       6       1   .text       
+     Vector34_handler                          F7E5       6       6       1   .text       
+     Vector35_handler                          F7EB       6       6       1   .text       
+     Vector36_handler                          F7F1       6       6       1   .text       
+     Vector37_handler                          F7F7       6       6       1   .text       
+     Vector38_handler                          F7FD       6       6       1   .text       
+     Vector39_handler                          F803       6       6       1   .text       
+     Vector40_handler                          F809       6       6       1   .text       
+     Vector41_handler                          F80F       6       6       1   .text       
+     Vector42_handler                          F815       6       6       1   .text       
+     Vector43_handler                          F81B       6       6       1   .text       
+     Vector44_handler                          F821       6       6       1   .text       
+     Vector45_handler                          F827       6       6       1   .text       
+     Vector46_handler                          F82D       6       6       1   .text       
+     Vector47_handler                          F833       6       6       1   .text       
+     Vector48_handler                          F839       6       6       1   .text       
+     Vector49_handler                          F83F       6       6       1   .text       
+     Vector50_handler                          F845       6       6       1   .text       
+     Vector51_handler                          F84B       6       6       1   .text       
+     Vector52_handler                          F851       6       6       1   .text       
+     Vector53_handler                          F857       6       6       1   .text       
+     Vector54_handler                          F85D       6       6       1   .text       
+     Vector55_handler                          F863       6       6       1   .text       
+     Vector56_handler                          F869       6       6       1   .text       
+     Vector57_handler                          F86F       6       6       1   .text       
+     Vector58_handler                          F875       6       6       1   .text       
+     Vector59_handler                          F87B       6       6       1   .text       
+     Vector60_handler                          F881       6       6       1   .text       
+     Vector61_handler                          F887       6       6       1   .text       
+     Vector62_handler                          F88D       6       6       1   .text       
      reset_connected_handler                   FEE0      16      22       0   ENTRY       
 - VARIABLES:
      _vectab                                   FF80      80     128       0   .abs_section_ff80
@@ -961,10 +967,19 @@ MODULE:                 -- vectors.c.o --
      __SEG_END_SSTACK                          3900       0       0       2               
 MODULE:                 -- assert.c.o --
 - PROCEDURES:
-     AssertFailure                             F794      14      20       5   .text       
+     AssertFailure                             F893      14      20       7   .text       
 - VARIABLES:
-     assert_failure_file                       3DF6       2       2       1   .bss        
-     assert_failure_line                       3DF8       4       4       2   .bss        
+     assert_failure_file                       3DF8       2       2       1   .bss        
+     assert_failure_line                       3DFA       4       4       2   .bss        
+MODULE:                 -- can.c.o --
+- PROCEDURES:
+     CanInit                                   F8A7      9C     156       1   .text       
+     CanTransmitPacket                         F943      51      81       1   .text       
+     CanReceivePacket                          F994      84     132       1   .text       
+     CanGetSpeedConfig                         FA18      69     105       1   .text       
+- VARIABLES:
+     canTiming                                 E8F4      24      36       4   .rodata     
+     STRING.C..Work.software.Ope.1             E9D6      33      51       2   .rodata1    
 MODULE:                 -- cstartup.c.o --
 - PROCEDURES:
      Init                                      E800      29      41       1   .init       
@@ -976,30 +991,32 @@ MODULE:                 -- cstartup.c.o --
 MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
-  rtshc12.c.o (ansisi.lib)                     0    288      0
+  rtshc12.c.o (ansisi.lib)                     0    308      0
   mc9s12dg256.c.o                            400      0      0
   main.c.o                                     0    132     85
   backdoor.c.o                                 5     66      0
   boot.c.o                                     0     27      0
-  com.c.o                                     65     67      0
+  com.c.o                                     67    173      0
   cop.c.o                                      0      2      0
-  xcp.c.o                                     74    963      8
+  xcp.c.o                                     74   1018      8
   cpu.c.o                                      0     66      0
-  flash.c.o                                 1055   1443    235
+  flash.c.o                                 1055   1450    235
   nvm.c.o                                      0     58      0
   timer.c.o                                    4     97      0
   uart.c.o                                    67    236     52
   vectors.c.o                                  0    419    128
   assert.c.o                                   6     20      0
+  can.c.o                                      0    474     87
   cstartup.c.o                                 0     44      0
-  other                                      256     10      2
+  other                                      256     10      7
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
   main Init BackDoorInit BackDoorCheck BootInit BootTask ComInit ComTask 
-  ComFree ComTransmitPacket ComSetConnectEntryState ComIsConnected CopInit 
+  ComFree ComTransmitPacket ComGetActiveInterfaceMaxRxLen 
+  ComGetActiveInterfaceMaxTxLen ComSetConnectEntryState ComIsConnected CopInit 
   CopService XcpInit XcpIsConnected XcpPacketTransmitted XcpPacketReceived 
   XcpTransmitPacket XcpComputeChecksum XcpProtectResources XcpSetCtoError 
   XcpCmdConnect XcpCmdDisconnect XcpCmdGetStatus XcpCmdSynch XcpCmdGetId 
@@ -1027,7 +1044,10 @@ SECTION: ".text"
   Vector48_handler Vector49_handler Vector50_handler Vector51_handler 
   Vector52_handler Vector53_handler Vector54_handler Vector55_handler 
   Vector56_handler Vector57_handler Vector58_handler Vector59_handler 
-  Vector60_handler Vector61_handler Vector62_handler AssertFailure 
+  Vector60_handler Vector61_handler Vector62_handler AssertFailure CanInit 
+  CanTransmitPacket CanReceivePacket CanGetSpeedConfig 
+SECTION: ".data"
+  comActiveInterface 
 SECTION: ".bss"
   backdoorOpen backdoorOpenTime comEntryStateConnect xcpCtoReqPacket.1 xcpInfo 
   blockInfo bootBlockInfo flashExecCmdRam flashMaxNrBlocks millisecond_counter 
@@ -1036,14 +1056,15 @@ SECTION: ".bss"
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata"
-  xcpStationId flashLayout flashExecCmd 
+  xcpStationId flashLayout flashExecCmd canTiming 
 SECTION: ".rodata1"
   STRING.C..Work.software.Ope.1 STRING.C..Work.software.Ope.1 
-  STRING.C..Work.software.Ope.1 
+  STRING.C..Work.software.Ope.1 STRING.C..Work.software.Ope.1 
 SECTION: "ENTRY"
   reset_connected_handler 
 SECTION: "RUNTIME"
   _LSHL _LSHRU _LCMP _LINC _LDEC _lDivMod _LDIVU _ILSEXT _CASE_DIRECT_BYTE 
+  _CASE_CHECKED_BYTE 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -2074,172 +2095,182 @@ OBJECT LIST SORTED BY ADDRESS
      _CAN4TXDLR                                 2BC       1       1       0   .abs_section_2bc
      _CAN4TXTBPR                                2BD       1       1       0   .abs_section_2bd
      _CAN4TXTSR                                 2BE       2       2       0   .abs_section_2be
-     backdoorOpen                              3900       1       1       3   .bss        
-     backdoorOpenTime                          3901       4       4       4   .bss        
-     comEntryStateConnect                      3905       1       1       2   .bss        
-     xcpCtoReqPacket.1                         3906      40      64       2   .bss        
-     xcpInfo                                   3946      4A      74     102   .bss        
-     blockInfo                                 3990     204     516       7   .bss        
-     bootBlockInfo                             3B94     204     516      11   .bss        
-     flashExecCmdRam                           3D98      16      22       2   .bss        
-     flashMaxNrBlocks                          3DAE       1       1       1   .bss        
-     millisecond_counter                       3DAF       4       4       8   .bss        
-     xcpCtoRxInProgress.4                      3DB3       1       1       3   .bss        
-     xcpCtoReqPacket.2                         3DB4      41      65       4   .bss        
-     xcpCtoRxLength.3                          3DF5       1       1       5   .bss        
-     assert_failure_file                       3DF6       2       2       1   .bss        
-     assert_failure_line                       3DF8       4       4       2   .bss        
+     comActiveInterface                        3900       2       2       7   .data       
+     backdoorOpen                              3902       1       1       3   .bss        
+     backdoorOpenTime                          3903       4       4       4   .bss        
+     comEntryStateConnect                      3907       1       1       2   .bss        
+     xcpCtoReqPacket.1                         3908      40      64       3   .bss        
+     xcpInfo                                   3948      4A      74     105   .bss        
+     blockInfo                                 3992     204     516       7   .bss        
+     bootBlockInfo                             3B96     204     516      11   .bss        
+     flashExecCmdRam                           3D9A      16      22       3   .bss        
+     flashMaxNrBlocks                          3DB0       1       1       1   .bss        
+     millisecond_counter                       3DB1       4       4       8   .bss        
+     xcpCtoRxInProgress.4                      3DB5       1       1       3   .bss        
+     xcpCtoReqPacket.2                         3DB6      41      65       4   .bss        
+     xcpCtoRxLength.3                          3DF7       1       1       5   .bss        
+     assert_failure_file                       3DF8       2       2       1   .bss        
+     assert_failure_line                       3DFA       4       4       2   .bss        
      Init                                      E800      29      41       1   .init       
      _Startup                                  E829       3       3       2   .init       
      xcpStationId                              E836       8       8       1   .rodata     
      flashLayout                               E83E      A0     160      39   .rodata     
      flashExecCmd                              E8DE      16      22       1   .rodata     
-     STRING.C..Work.software.Ope.1             E8F4      55      85       1   .rodata1    
-     STRING.C..Work.software.Ope.1             E949      35      53       1   .rodata1    
-     STRING.C..Work.software.Ope.1             E97E      34      52       3   .rodata1    
-     main                                      E9B2       B      11       2   .text       
-     Init                                      E9BD      79     121       1   .text       
-     BackDoorInit                              EA36      11      17       1   .text       
-     BackDoorCheck                             EA47      31      49       2   .text       
-     BootInit                                  EA78       F      15       1   .text       
-     BootTask                                  EA87       C      12       1   .text       
-     ComInit                                   EA93      19      25       1   .text       
-     ComTask                                   EAAC      10      16       1   .text       
-     ComFree                                   EABC       1       1       1   .text       
-     ComTransmitPacket                         EABD       F      15       1   .text       
-     ComSetConnectEntryState                   EACC       6       6       1   .text       
-     ComIsConnected                            EAD2       4       4       1   .text       
-     CopInit                                   EAD6       1       1       1   .text       
-     CopService                                EAD7       1       1       8   .text       
-     XcpInit                                   EAD8      15      21       1   .text       
-     XcpIsConnected                            EAED       9       9       1   .text       
-     XcpPacketTransmitted                      EAF6       4       4       1   .text       
-     XcpPacketReceived                         EAFA      E7     231       2   .text       
-     XcpTransmitPacket                         EBE1       C      12       1   .text       
-     XcpComputeChecksum                        EBED      43      67       1   .text       
-     XcpProtectResources                       EC30       4       4       2   .text       
-     XcpSetCtoError                            EC34      10      16       9   .text       
-     XcpCmdConnect                             EC44      2A      42       1   .text       
-     XcpCmdDisconnect                          EC6E      10      16       1   .text       
-     XcpCmdGetStatus                           EC7E      1A      26       1   .text       
-     XcpCmdSynch                               EC98       4       4       1   .text       
-     XcpCmdGetId                               EC9C      22      34       1   .text       
-     XcpCmdSetMta                              ECBE      1A      26       1   .text       
-     XcpCmdUpload                              ECD8      4E      78       1   .text       
-     XcpCmdShortUpload                         ED26      55      85       1   .text       
-     XcpCmdBuildCheckSum                       ED7B      2C      44       1   .text       
-     XcpCmdProgramStart                        EDA7      19      25       1   .text       
-     XcpCmdProgramMax                          EDC0      43      67       1   .text       
-     XcpCmdProgram                             EE03      5B      91       1   .text       
-     XcpCmdProgramClear                        EE5E      2A      42       1   .text       
-     XcpCmdProgramReset                        EE88       E      14       1   .text       
-     XcpCmdProgramPrepare                      EE96       5       5       1   .text       
-     CpuStartUserProgram                       EE9B      18      24       1   .text       
-     CpuMemCopy                                EEB3      27      39       4   .text       
-     CpuReset                                  EEDA       3       3       1   .text       
-     FlashInit                                 EEDD      74     116       1   .text       
-     FlashWrite                                EF51      B6     182       2   .text       
-     FlashErase                                F007      DD     221       1   .text       
-     FlashWriteChecksum                        F0E4      67     103       1   .text       
-     FlashVerifyChecksum                       F14B      8A     138       1   .text       
-     FlashDone                                 F1D5      35      53       1   .text       
-     FlashInitBlock                            F20A      51      81       2   .text       
-     FlashSwitchBlock                          F25B      4E      78       2   .text       
-     FlashAddToBlock                           F2A9      BD     189       1   .text       
-     FlashWriteBlock                           F366      78     120       3   .text       
-     FlashGetLinearAddrByte                    F3DE      1D      29       5   .text       
-     FlashGetPhysPage                          F3FB       C      12       3   .text       
-     FlashGetPhysAddr                          F407       6       6       3   .text       
-     FlashExecuteCommand                       F40D      1F      31       1   .text       
-     FlashOperate                              F42C      54      84       2   .text       
-     NvmInit                                   F480       3       3       1   .text       
-     NvmWrite                                  F483      16      22       2   .text       
-     NvmErase                                  F499      12      18       1   .text       
-     NvmVerifyChecksum                         F4AB       4       4       1   .text       
-     NvmDone                                   F4AF       B      11       1   .text       
-     TimerInit                                 F4BA      1D      29       1   .text       
-     TimerReset                                F4D7      1C      28       2   .text       
-     TimerUpdate                               F4F3      1F      31       2   .text       
-     TimerGet                                  F512       9       9       2   .text       
-     UartInit                                  F51B      19      25       1   .text       
-     UartTransmitPacket                        F534      5E      94       1   .text       
-     UartReceivePacket                         F592      50      80       1   .text       
-     UartReceiveByte                           F5E2      11      17       2   .text       
-     UartTransmitByte                          F5F3      14      20       2   .text       
-     reset_handler                             F607      13      19       2   .text       
-     Vector0_handler                           F61A       6       6       1   .text       
-     Vector1_handler                           F620       6       6       1   .text       
-     Vector2_handler                           F626       6       6       1   .text       
-     Vector3_handler                           F62C       6       6       1   .text       
-     Vector4_handler                           F632       6       6       1   .text       
-     Vector5_handler                           F638       6       6       1   .text       
-     Vector6_handler                           F63E       6       6       1   .text       
-     Vector7_handler                           F644       6       6       1   .text       
-     Vector8_handler                           F64A       6       6       1   .text       
-     Vector9_handler                           F650       6       6       1   .text       
-     Vector10_handler                          F656       6       6       1   .text       
-     Vector11_handler                          F65C       6       6       1   .text       
-     Vector12_handler                          F662       6       6       1   .text       
-     Vector13_handler                          F668       6       6       1   .text       
-     Vector14_handler                          F66E       6       6       1   .text       
-     Vector15_handler                          F674       6       6       1   .text       
-     Vector16_handler                          F67A       6       6       1   .text       
-     Vector17_handler                          F680       6       6       1   .text       
-     Vector18_handler                          F686       6       6       1   .text       
-     Vector19_handler                          F68C       6       6       1   .text       
-     Vector20_handler                          F692       6       6       1   .text       
-     Vector21_handler                          F698       6       6       1   .text       
-     Vector22_handler                          F69E       6       6       1   .text       
-     Vector23_handler                          F6A4       6       6       1   .text       
-     Vector24_handler                          F6AA       6       6       1   .text       
-     Vector25_handler                          F6B0       6       6       1   .text       
-     Vector26_handler                          F6B6       6       6       1   .text       
-     Vector27_handler                          F6BC       6       6       1   .text       
-     Vector28_handler                          F6C2       6       6       1   .text       
-     Vector29_handler                          F6C8       6       6       1   .text       
-     Vector30_handler                          F6CE       6       6       1   .text       
-     Vector31_handler                          F6D4       6       6       1   .text       
-     Vector32_handler                          F6DA       6       6       1   .text       
-     Vector33_handler                          F6E0       6       6       1   .text       
-     Vector34_handler                          F6E6       6       6       1   .text       
-     Vector35_handler                          F6EC       6       6       1   .text       
-     Vector36_handler                          F6F2       6       6       1   .text       
-     Vector37_handler                          F6F8       6       6       1   .text       
-     Vector38_handler                          F6FE       6       6       1   .text       
-     Vector39_handler                          F704       6       6       1   .text       
-     Vector40_handler                          F70A       6       6       1   .text       
-     Vector41_handler                          F710       6       6       1   .text       
-     Vector42_handler                          F716       6       6       1   .text       
-     Vector43_handler                          F71C       6       6       1   .text       
-     Vector44_handler                          F722       6       6       1   .text       
-     Vector45_handler                          F728       6       6       1   .text       
-     Vector46_handler                          F72E       6       6       1   .text       
-     Vector47_handler                          F734       6       6       1   .text       
-     Vector48_handler                          F73A       6       6       1   .text       
-     Vector49_handler                          F740       6       6       1   .text       
-     Vector50_handler                          F746       6       6       1   .text       
-     Vector51_handler                          F74C       6       6       1   .text       
-     Vector52_handler                          F752       6       6       1   .text       
-     Vector53_handler                          F758       6       6       1   .text       
-     Vector54_handler                          F75E       6       6       1   .text       
-     Vector55_handler                          F764       6       6       1   .text       
-     Vector56_handler                          F76A       6       6       1   .text       
-     Vector57_handler                          F770       6       6       1   .text       
-     Vector58_handler                          F776       6       6       1   .text       
-     Vector59_handler                          F77C       6       6       1   .text       
-     Vector60_handler                          F782       6       6       1   .text       
-     Vector61_handler                          F788       6       6       1   .text       
-     Vector62_handler                          F78E       6       6       1   .text       
-     AssertFailure                             F794      14      20       5   .text       
-     _LSHL                                     F7A8      11      17       3   RUNTIME     
-     _LSHRU                                    F7B9      11      17       5   RUNTIME     
-     _LCMP                                     F7CA      19      25       4   RUNTIME     
-     _LINC                                     F7E3       5       5       4   RUNTIME     
-     _LDEC                                     F7E8       8       8       6   RUNTIME     
-     _lDivMod                                  F7F0      BE     190       1   RUNTIME     
-     _LDIVU                                    F8AE       E      14       1   RUNTIME     
-     _ILSEXT                                   F8BC       7       7       1   RUNTIME     
-     _CASE_DIRECT_BYTE                         F8C3       5       5       3   RUNTIME     
+     canTiming                                 E8F4      24      36       4   .rodata     
+     STRING.C..Work.software.Ope.1             E918      55      85       1   .rodata1    
+     STRING.C..Work.software.Ope.1             E96D      35      53       1   .rodata1    
+     STRING.C..Work.software.Ope.1             E9A2      34      52       3   .rodata1    
+     STRING.C..Work.software.Ope.1             E9D6      33      51       2   .rodata1    
+     main                                      EA09       B      11       2   .text       
+     Init                                      EA14      79     121       1   .text       
+     BackDoorInit                              EA8D      11      17       1   .text       
+     BackDoorCheck                             EA9E      31      49       2   .text       
+     BootInit                                  EACF       F      15       1   .text       
+     BootTask                                  EADE       C      12       1   .text       
+     ComInit                                   EAEA      27      39       1   .text       
+     ComTask                                   EB11      24      36       1   .text       
+     ComFree                                   EB35       1       1       1   .text       
+     ComTransmitPacket                         EB36      25      37       1   .text       
+     ComGetActiveInterfaceMaxRxLen             EB5B      19      25       7   .text       
+     ComGetActiveInterfaceMaxTxLen             EB74      19      25       2   .text       
+     ComSetConnectEntryState                   EB8D       6       6       1   .text       
+     ComIsConnected                            EB93       4       4       1   .text       
+     CopInit                                   EB97       1       1       1   .text       
+     CopService                                EB98       1       1      10   .text       
+     XcpInit                                   EB99      15      21       1   .text       
+     XcpIsConnected                            EBAE       9       9       1   .text       
+     XcpPacketTransmitted                      EBB7       4       4       1   .text       
+     XcpPacketReceived                         EBBB      E9     233       2   .text       
+     XcpTransmitPacket                         ECA4       C      12       1   .text       
+     XcpComputeChecksum                        ECB0      43      67       1   .text       
+     XcpProtectResources                       ECF3       4       4       2   .text       
+     XcpSetCtoError                            ECF7      10      16       9   .text       
+     XcpCmdConnect                             ED07      36      54       1   .text       
+     XcpCmdDisconnect                          ED3D      10      16       1   .text       
+     XcpCmdGetStatus                           ED4D      1A      26       1   .text       
+     XcpCmdSynch                               ED67       4       4       1   .text       
+     XcpCmdGetId                               ED6B      22      34       1   .text       
+     XcpCmdSetMta                              ED8D      1A      26       1   .text       
+     XcpCmdUpload                              EDA7      55      85       1   .text       
+     XcpCmdShortUpload                         EDFC      5E      94       1   .text       
+     XcpCmdBuildCheckSum                       EE5A      2C      44       1   .text       
+     XcpCmdProgramStart                        EE86      1D      29       1   .text       
+     XcpCmdProgramMax                          EEA3      4C      76       1   .text       
+     XcpCmdProgram                             EEEF      67     103       1   .text       
+     XcpCmdProgramClear                        EF56      2A      42       1   .text       
+     XcpCmdProgramReset                        EF80       E      14       1   .text       
+     XcpCmdProgramPrepare                      EF8E       5       5       1   .text       
+     CpuStartUserProgram                       EF93      18      24       1   .text       
+     CpuMemCopy                                EFAB      27      39       4   .text       
+     CpuReset                                  EFD2       3       3       1   .text       
+     FlashInit                                 EFD5      74     116       1   .text       
+     FlashWrite                                F049      B6     182       2   .text       
+     FlashErase                                F0FF      DD     221       1   .text       
+     FlashWriteChecksum                        F1DC      67     103       1   .text       
+     FlashVerifyChecksum                       F243      8A     138       1   .text       
+     FlashDone                                 F2CD      3C      60       1   .text       
+     FlashInitBlock                            F309      51      81       2   .text       
+     FlashSwitchBlock                          F35A      4E      78       2   .text       
+     FlashAddToBlock                           F3A8      BD     189       1   .text       
+     FlashWriteBlock                           F465      78     120       3   .text       
+     FlashGetLinearAddrByte                    F4DD      1D      29       5   .text       
+     FlashGetPhysPage                          F4FA       C      12       3   .text       
+     FlashGetPhysAddr                          F506       6       6       3   .text       
+     FlashExecuteCommand                       F50C      1F      31       1   .text       
+     FlashOperate                              F52B      54      84       2   .text       
+     NvmInit                                   F57F       3       3       1   .text       
+     NvmWrite                                  F582      16      22       2   .text       
+     NvmErase                                  F598      12      18       1   .text       
+     NvmVerifyChecksum                         F5AA       4       4       1   .text       
+     NvmDone                                   F5AE       B      11       1   .text       
+     TimerInit                                 F5B9      1D      29       1   .text       
+     TimerReset                                F5D6      1C      28       2   .text       
+     TimerUpdate                               F5F2      1F      31       2   .text       
+     TimerGet                                  F611       9       9       2   .text       
+     UartInit                                  F61A      19      25       1   .text       
+     UartTransmitPacket                        F633      5E      94       1   .text       
+     UartReceivePacket                         F691      50      80       1   .text       
+     UartReceiveByte                           F6E1      11      17       2   .text       
+     UartTransmitByte                          F6F2      14      20       2   .text       
+     reset_handler                             F706      13      19       2   .text       
+     Vector0_handler                           F719       6       6       1   .text       
+     Vector1_handler                           F71F       6       6       1   .text       
+     Vector2_handler                           F725       6       6       1   .text       
+     Vector3_handler                           F72B       6       6       1   .text       
+     Vector4_handler                           F731       6       6       1   .text       
+     Vector5_handler                           F737       6       6       1   .text       
+     Vector6_handler                           F73D       6       6       1   .text       
+     Vector7_handler                           F743       6       6       1   .text       
+     Vector8_handler                           F749       6       6       1   .text       
+     Vector9_handler                           F74F       6       6       1   .text       
+     Vector10_handler                          F755       6       6       1   .text       
+     Vector11_handler                          F75B       6       6       1   .text       
+     Vector12_handler                          F761       6       6       1   .text       
+     Vector13_handler                          F767       6       6       1   .text       
+     Vector14_handler                          F76D       6       6       1   .text       
+     Vector15_handler                          F773       6       6       1   .text       
+     Vector16_handler                          F779       6       6       1   .text       
+     Vector17_handler                          F77F       6       6       1   .text       
+     Vector18_handler                          F785       6       6       1   .text       
+     Vector19_handler                          F78B       6       6       1   .text       
+     Vector20_handler                          F791       6       6       1   .text       
+     Vector21_handler                          F797       6       6       1   .text       
+     Vector22_handler                          F79D       6       6       1   .text       
+     Vector23_handler                          F7A3       6       6       1   .text       
+     Vector24_handler                          F7A9       6       6       1   .text       
+     Vector25_handler                          F7AF       6       6       1   .text       
+     Vector26_handler                          F7B5       6       6       1   .text       
+     Vector27_handler                          F7BB       6       6       1   .text       
+     Vector28_handler                          F7C1       6       6       1   .text       
+     Vector29_handler                          F7C7       6       6       1   .text       
+     Vector30_handler                          F7CD       6       6       1   .text       
+     Vector31_handler                          F7D3       6       6       1   .text       
+     Vector32_handler                          F7D9       6       6       1   .text       
+     Vector33_handler                          F7DF       6       6       1   .text       
+     Vector34_handler                          F7E5       6       6       1   .text       
+     Vector35_handler                          F7EB       6       6       1   .text       
+     Vector36_handler                          F7F1       6       6       1   .text       
+     Vector37_handler                          F7F7       6       6       1   .text       
+     Vector38_handler                          F7FD       6       6       1   .text       
+     Vector39_handler                          F803       6       6       1   .text       
+     Vector40_handler                          F809       6       6       1   .text       
+     Vector41_handler                          F80F       6       6       1   .text       
+     Vector42_handler                          F815       6       6       1   .text       
+     Vector43_handler                          F81B       6       6       1   .text       
+     Vector44_handler                          F821       6       6       1   .text       
+     Vector45_handler                          F827       6       6       1   .text       
+     Vector46_handler                          F82D       6       6       1   .text       
+     Vector47_handler                          F833       6       6       1   .text       
+     Vector48_handler                          F839       6       6       1   .text       
+     Vector49_handler                          F83F       6       6       1   .text       
+     Vector50_handler                          F845       6       6       1   .text       
+     Vector51_handler                          F84B       6       6       1   .text       
+     Vector52_handler                          F851       6       6       1   .text       
+     Vector53_handler                          F857       6       6       1   .text       
+     Vector54_handler                          F85D       6       6       1   .text       
+     Vector55_handler                          F863       6       6       1   .text       
+     Vector56_handler                          F869       6       6       1   .text       
+     Vector57_handler                          F86F       6       6       1   .text       
+     Vector58_handler                          F875       6       6       1   .text       
+     Vector59_handler                          F87B       6       6       1   .text       
+     Vector60_handler                          F881       6       6       1   .text       
+     Vector61_handler                          F887       6       6       1   .text       
+     Vector62_handler                          F88D       6       6       1   .text       
+     AssertFailure                             F893      14      20       7   .text       
+     CanInit                                   F8A7      9C     156       1   .text       
+     CanTransmitPacket                         F943      51      81       1   .text       
+     CanReceivePacket                          F994      84     132       1   .text       
+     CanGetSpeedConfig                         FA18      69     105       1   .text       
+     _LSHL                                     FA81      11      17       3   RUNTIME     
+     _LSHRU                                    FA92      11      17       6   RUNTIME     
+     _LCMP                                     FAA3      19      25       4   RUNTIME     
+     _LINC                                     FABC       5       5       4   RUNTIME     
+     _LDEC                                     FAC1       8       8       6   RUNTIME     
+     _lDivMod                                  FAC9      BE     190       1   RUNTIME     
+     _LDIVU                                    FB87       E      14       1   RUNTIME     
+     _ILSEXT                                   FB95       7       7       1   RUNTIME     
+     _CASE_DIRECT_BYTE                         FB9C       5       5       3   RUNTIME     
+     _CASE_CHECKED_BYTE                        FBA1      14      20       2   RUNTIME     
      reset_connected_handler                   FEE0      16      22       0   ENTRY       
      _vectab                                   FF80      80     128       0   .abs_section_ff80
 
@@ -2251,8 +2282,8 @@ rtshc12.c.o (ansisi.lib):
   _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHRS _LADD 
   _LSUB _LAND _LOR _LXOR _LCMP_P _LCMP_PP _LNEG _LCOM _LMUL _LMULU16x32 
   _LMULS16x32 _NEG_P _LDIVS _LMODU _LMODS _COPY _CASE_DIRECT _CASE_CHECKED 
-  _CASE_CHECKED_BYTE _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 
-  _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
+  _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL 
+  _FPCMP 
 com.c.o:
   ComSetDisconnectEntryState ComIsConnectEntryState 
 NOT USED VARIABLES
@@ -2262,7 +2293,13 @@ rtshc12.c.o (ansisi.lib):
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xF8C8 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xFBB5 ---- SIZE       4 ---
+Filling bytes inserted
+ 00013901
+------- ROM-ADDRESS: 0xFBB9 ---- RAM-ADDRESS: 0x3901 ---- SIZE       1 ---
+Name of initialized Object : comActiveInterface:1
+ 04
+------- ROM-ADDRESS: 0xFBBA ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -2280,11 +2317,14 @@ BackDoorCheck             USES ComIsConnected backdoorOpen TimerGet
                                 backdoorOpenTime _LCMP CpuStartUserProgram 
 BootInit                  USES CopInit TimerInit NvmInit ComInit BackDoorInit 
 BootTask                  USES CopService TimerUpdate ComTask BackDoorCheck 
-ComInit                   USES XcpInit UartInit comEntryStateConnect 
-                                XcpPacketReceived 
-ComTask                   USES xcpCtoReqPacket.1 UartReceivePacket 
-                                XcpPacketReceived 
-ComTransmitPacket         USES UartTransmitPacket XcpPacketTransmitted 
+ComInit                   USES XcpInit CanInit comActiveInterface UartInit 
+                                comEntryStateConnect XcpPacketReceived 
+ComTask                   USES xcpCtoReqPacket.1 CanReceivePacket 
+                                UartReceivePacket comActiveInterface XcpPacketReceived 
+ComTransmitPacket         USES comActiveInterface CanTransmitPacket 
+                                UartTransmitPacket XcpPacketTransmitted 
+ComGetActiveInterfaceMaxRxLen USES comActiveInterface _CASE_CHECKED_BYTE 
+ComGetActiveInterfaceMaxTxLen USES comActiveInterface _CASE_CHECKED_BYTE 
 ComSetConnectEntryState   USES comEntryStateConnect 
 ComIsConnected            USES XcpIsConnected 
 XcpInit                   USES xcpInfo 
@@ -2301,17 +2341,22 @@ XcpComputeChecksum        USES _LINC _LDEC _LCMP
 XcpProtectResources       USES xcpInfo 
 XcpSetCtoError            USES xcpInfo 
 XcpCmdConnect             USES XcpProtectResources xcpInfo 
+                                ComGetActiveInterfaceMaxRxLen ComGetActiveInterfaceMaxTxLen 
 XcpCmdDisconnect          USES xcpInfo XcpProtectResources 
 XcpCmdGetStatus           USES xcpInfo 
 XcpCmdSynch               USES XcpSetCtoError 
 XcpCmdGetId               USES xcpStationId xcpInfo 
 XcpCmdSetMta              USES xcpInfo 
-XcpCmdUpload              USES XcpSetCtoError xcpInfo CpuMemCopy 
-XcpCmdShortUpload         USES XcpSetCtoError xcpInfo CpuMemCopy 
+XcpCmdUpload              USES ComGetActiveInterfaceMaxRxLen XcpSetCtoError 
+                                xcpInfo CpuMemCopy 
+XcpCmdShortUpload         USES ComGetActiveInterfaceMaxRxLen XcpSetCtoError 
+                                xcpInfo CpuMemCopy 
 XcpCmdBuildCheckSum       USES xcpInfo XcpComputeChecksum 
-XcpCmdProgramStart        USES xcpInfo 
-XcpCmdProgramMax          USES xcpInfo NvmWrite XcpSetCtoError 
-XcpCmdProgram             USES xcpInfo NvmDone NvmWrite XcpSetCtoError 
+XcpCmdProgramStart        USES xcpInfo ComGetActiveInterfaceMaxRxLen 
+XcpCmdProgramMax          USES xcpInfo ComGetActiveInterfaceMaxRxLen NvmWrite 
+                                XcpSetCtoError 
+XcpCmdProgram             USES ComGetActiveInterfaceMaxRxLen xcpInfo NvmDone 
+                                NvmWrite XcpSetCtoError 
 XcpCmdProgramClear        USES xcpInfo NvmErase XcpSetCtoError 
 XcpCmdProgramReset        USES CpuReset xcpInfo 
 XcpCmdProgramPrepare      USES XcpSetCtoError 
@@ -2327,6 +2372,7 @@ FlashErase                USES _LSHRU _LSHL flashLayout _LDEC _LCMP CopService
 FlashWriteChecksum        USES bootBlockInfo flashLayout FlashWrite 
 FlashVerifyChecksum       USES flashLayout FlashGetLinearAddrByte _LINC 
 FlashDone                 USES bootBlockInfo FlashWriteBlock blockInfo 
+                                flashExecCmdRam 
 FlashInitBlock            USES FlashGetPhysPage FlashGetPhysAddr CpuMemCopy 
 FlashSwitchBlock          USES bootBlockInfo blockInfo flashLayout 
                                 FlashWriteBlock FlashInitBlock 
@@ -2355,6 +2401,12 @@ UartTransmitByte          USES CopService
 reset_handler             USES __SEG_END_SSTACK _Startup main 
 AssertFailure             USES assert_failure_file assert_failure_line 
                                 CopService 
+CanInit                   USES CanGetSpeedConfig STRING.C..Work.software.Ope.1 
+                                AssertFailure 
+CanTransmitPacket         USES STRING.C..Work.software.Ope.1 AssertFailure 
+                                CopService 
+CanReceivePacket          USES _LSHRU 
+CanGetSpeedConfig         USES canTiming CopService 
 _LDIVU                    USES _lDivMod 
 reset_connected_handler   USES __SEG_END_SSTACK _Startup 
                                 ComSetConnectEntryState main 
@@ -2418,6 +2470,14 @@ DEPENDENCY TREE
  |  |  |  | 
  |  |  |  +- XcpInit             
  |  |  |  |    
+ |  |  |  +- CanInit             
+ |  |  |  |  | 
+ |  |  |  |  +- CanGetSpeedConfig   
+ |  |  |  |  |  | 
+ |  |  |  |  |  +- CopService           (see above)
+ |  |  |  |  |     
+ |  |  |  |  +- AssertFailure        (see above)
+ |  |  |  |     
  |  |  |  +- UartInit            
  |  |  |  |    
  |  |  |  +- XcpPacketReceived    (recursive dependency)
@@ -2425,11 +2485,21 @@ DEPENDENCY TREE
  |  |  |     +- XcpCmdConnect       
  |  |  |     |  | 
  |  |  |     |  +- XcpProtectResources 
- |  |  |     |       
+ |  |  |     |  |    
+ |  |  |     |  +- ComGetActiveInterfaceMaxRxLen
+ |  |  |     |  |  | 
+ |  |  |     |  |  +- _CASE_CHECKED_BYTE  
+ |  |  |     |  |       
+ |  |  |     |  +- ComGetActiveInterfaceMaxTxLen
+ |  |  |     |     | 
+ |  |  |     |     +- _CASE_CHECKED_BYTE   (see above)
+ |  |  |     |        
  |  |  |     +- _CASE_DIRECT_BYTE   
  |  |  |     |    
  |  |  |     +- XcpCmdUpload        
  |  |  |     |  | 
+ |  |  |     |  +- ComGetActiveInterfaceMaxRxLen (see above)
+ |  |  |     |  |  
  |  |  |     |  +- XcpSetCtoError      
  |  |  |     |  |    
  |  |  |     |  +- CpuMemCopy          
@@ -2438,6 +2508,8 @@ DEPENDENCY TREE
  |  |  |     |        
  |  |  |     +- XcpCmdShortUpload   
  |  |  |     |  | 
+ |  |  |     |  +- ComGetActiveInterfaceMaxRxLen (see above)
+ |  |  |     |  |  
  |  |  |     |  +- XcpSetCtoError       (see above)
  |  |  |     |  |  
  |  |  |     |  +- CpuMemCopy           (see above)
@@ -2468,6 +2540,8 @@ DEPENDENCY TREE
  |  |  |     |     
  |  |  |     +- XcpCmdProgramMax    
  |  |  |     |  | 
+ |  |  |     |  +- ComGetActiveInterfaceMaxRxLen (see above)
+ |  |  |     |  |  
  |  |  |     |  +- NvmWrite            
  |  |  |     |  |  | 
  |  |  |     |  |  +- FlashWrite          
@@ -2528,6 +2602,8 @@ DEPENDENCY TREE
  |  |  |     |     
  |  |  |     +- XcpCmdProgram       
  |  |  |     |  | 
+ |  |  |     |  +- ComGetActiveInterfaceMaxRxLen (see above)
+ |  |  |     |  |  
  |  |  |     |  +- NvmDone             
  |  |  |     |  |  | 
  |  |  |     |  |  +- FlashWriteChecksum  
@@ -2543,7 +2619,9 @@ DEPENDENCY TREE
  |  |  |     |  +- XcpSetCtoError       (see above)
  |  |  |     |     
  |  |  |     +- XcpCmdProgramStart  
- |  |  |     |    
+ |  |  |     |  | 
+ |  |  |     |  +- ComGetActiveInterfaceMaxRxLen (see above)
+ |  |  |     |     
  |  |  |     +- XcpCmdProgramClear  
  |  |  |     |  | 
  |  |  |     |  +- NvmErase            
@@ -2586,6 +2664,12 @@ DEPENDENCY TREE
  |  |  |        | 
  |  |  |        +- ComTransmitPacket   
  |  |  |           | 
+ |  |  |           +- CanTransmitPacket   
+ |  |  |           |  | 
+ |  |  |           |  +- AssertFailure        (see above)
+ |  |  |           |  |  
+ |  |  |           |  +- CopService           (see above)
+ |  |  |           |     
  |  |  |           +- UartTransmitPacket  
  |  |  |           |  | 
  |  |  |           |  +- AssertFailure        (see above)
@@ -2638,6 +2722,10 @@ DEPENDENCY TREE
  |     |  
  |     +- ComTask             
  |     |  | 
+ |     |  +- CanReceivePacket    
+ |     |  |  | 
+ |     |  |  +- _LSHRU               (see above)
+ |     |  |     
  |     |  +- UartReceivePacket   
  |     |  |  | 
  |     |  |  +- UartReceiveByte     
@@ -2794,6 +2882,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 7
-Total size of all blocks to be downloaded: 4448
+Number of blocks to be downloaded: 6
+Total size of all blocks to be downloaded: 5202
 

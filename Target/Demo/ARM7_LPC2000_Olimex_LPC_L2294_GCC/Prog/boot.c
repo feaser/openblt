@@ -37,6 +37,51 @@
 #include "header.h"                                    /* generic header               */
 
 
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+#if (BOOT_COM_UART_ENABLE > 0)
+static void BootComUartInit(void);
+static void BootComUartCheckActivationRequest(void);
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+static void BootComCanInit(void);
+static void BootComCanCheckActivationRequest(void);
+#endif
+
+/************************************************************************************//**
+** \brief     Initializes the communication interface.
+** \return    none.
+**
+****************************************************************************************/
+void BootComInit(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartInit();
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  BootComCanInit();
+#endif
+} /*** end of BootComInit ***/
+
+
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
+**
+****************************************************************************************/
+void BootComCheckActivationRequest(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartCheckActivationRequest();
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  BootComCanCheckActivationRequest();
+#endif
+} /*** end of BootComCheckActivationRequest ***/
+
+
 /************************************************************************************//**
 ** \brief     Bootloader activation function.
 ** \return    none.
@@ -82,7 +127,7 @@ static unsigned char UartReceiveByte(unsigned char *data);
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComInit(void)
+static void BootComUartInit(void)
 {
   unsigned long baud_reg_value;                           /* baudrate register value      */
   
@@ -110,7 +155,7 @@ void BootComInit(void)
   U0LCR = UART_MODE_8N1;
   /* enable and reset transmit and receive FIFO. necessary for UART operation */
   U0FCR = UART_FIFO_RX1;
-} /*** end of BootComInit ***/
+} /*** end of BootComUartInit ***/
 
 
 /************************************************************************************//**
@@ -119,7 +164,7 @@ void BootComInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComCheckActivationRequest(void)
+static void BootComUartCheckActivationRequest(void)
 {
   static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
@@ -161,7 +206,7 @@ void BootComCheckActivationRequest(void)
       }
     }
   }
-} /*** end of BootComCheckActivationRequest ***/
+} /*** end of BootComUartCheckActivationRequest ***/
 
 
 /************************************************************************************//**
@@ -295,7 +340,7 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned long *btr)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComInit(void)
+static void BootComCanInit(void)
 {
   unsigned long btr_reg_value;
   
@@ -315,7 +360,7 @@ void BootComInit(void)
   }  
   /* enter normal operating mode and synchronize to the CAN bus */
   CAN1MOD = 0;
-} /*** end of BootComInit ***/
+} /*** end of BootComCanInit ***/
 
 
 /************************************************************************************//**
@@ -324,7 +369,7 @@ void BootComInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComCheckActivationRequest(void)
+static void BootComCanCheckActivationRequest(void)
 {
   unsigned char data[2];
   
@@ -349,7 +394,7 @@ void BootComCheckActivationRequest(void)
     /* connection request received so start the bootloader */
     BootActivate();
    }
-} /*** end of BootComCheckActivationRequest ***/
+} /*** end of BootComCanCheckActivationRequest ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 

@@ -94,6 +94,9 @@ static volatile blt_bool comEntryStateConnect BOOT_CPU_CONNECT_STATE_POSTFIX;
 static volatile blt_bool comEntryStateConnect = BLT_FALSE;
 #endif
 
+/** \brief Holds the communication interface of the currently active interface. */
+static tComInterfaceId comActiveInterface = COM_IF_OTHER;
+
 
 /************************************************************************************//**
 ** \brief     Initializes the communication module including the hardware needed for 
@@ -110,18 +113,26 @@ void ComInit(void)
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* initialize the CAN controller */
   CanInit();
+  /* set it as active */
+  comActiveInterface = COM_IF_CAN;
 #endif
 #if (BOOT_COM_UART_ENABLE > 0)
   /* initialize the UART interface */
   UartInit();
+  /* set it as active */
+  comActiveInterface = COM_IF_UART;
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
   /* initialize the USB interface */
   UsbInit();
+  /* set it as active */
+  comActiveInterface = COM_IF_USB;
 #endif
 #if (BOOT_COM_NET_ENABLE > 0)
   /* initialize the TCP/IP interface */
   NetInit();
+  /* set it as active */
+  comActiveInterface = COM_IF_NET;
 #endif
   /* simulate the reception of a CONNECT command if requested */
   if (comEntryStateConnect == BLT_TRUE)
@@ -140,22 +151,13 @@ void ComInit(void)
 void ComTask(void)
 {
   /* make xcpCtoReqPacket static for runtime efficiency */
-#if (BOOT_COM_CAN_ENABLE > 0)
-  static unsigned char xcpCtoReqPacket[BOOT_COM_CAN_RX_MAX_DATA];
-#endif
-#if (BOOT_COM_UART_ENABLE > 0)
-  static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA];
-#endif
-#if (BOOT_COM_USB_ENABLE > 0)
-  static unsigned char xcpCtoReqPacket[BOOT_COM_USB_RX_MAX_DATA];
-#endif
-#if (BOOT_COM_NET_ENABLE > 0)
-  static unsigned char xcpCtoReqPacket[BOOT_COM_NET_RX_MAX_DATA];
-#endif
+  static unsigned char xcpCtoReqPacket[BOOT_COM_RX_MAX_DATA];
  
 #if (BOOT_COM_CAN_ENABLE > 0)
   if (CanReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
   {
+    /* make this the active interface */
+    comActiveInterface = COM_IF_CAN;
     /* process packet */
     XcpPacketReceived(&xcpCtoReqPacket[0]);
   }
@@ -163,6 +165,8 @@ void ComTask(void)
 #if (BOOT_COM_UART_ENABLE > 0)
   if (UartReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
   {
+    /* make this the active interface */
+    comActiveInterface = COM_IF_UART;
     /* process packet */
     XcpPacketReceived(&xcpCtoReqPacket[0]);
   }
@@ -170,6 +174,8 @@ void ComTask(void)
 #if (BOOT_COM_USB_ENABLE > 0)
   if (UsbReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
   {
+    /* make this the active interface */
+    comActiveInterface = COM_IF_USB;
     /* process packet */
     XcpPacketReceived(&xcpCtoReqPacket[0]);
   }
@@ -177,6 +183,8 @@ void ComTask(void)
 #if (BOOT_COM_NET_ENABLE > 0)
   if (NetReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
   {
+    /* make this the active interface */
+    comActiveInterface = COM_IF_NET;
     /* process packet */
     XcpPacketReceived(&xcpCtoReqPacket[0]);
   }
@@ -211,26 +219,114 @@ void ComTransmitPacket(blt_int8u *data, blt_int16u len)
   /* transmit the packet. note that len is limited to 8 in the plausibility check,
    * so cast is okay.
    */
-  CanTransmitPacket(data, (blt_int8u)len);
+  if (comActiveInterface == COM_IF_CAN)
+  {
+    CanTransmitPacket(data, (blt_int8u)len);
+  }
 #endif
 #if (BOOT_COM_UART_ENABLE > 0)
   /* transmit the packet. note that len is limited to 255 in the plausibility check,
    * so cast is okay.
    */
-  UartTransmitPacket(data, (blt_int8u)len);
+  if (comActiveInterface == COM_IF_UART)
+  {
+    UartTransmitPacket(data, (blt_int8u)len);
+  }
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
   /* transmit the packet */
-  UsbTransmitPacket(data, len);
+  if (comActiveInterface == COM_IF_USB)
+  {
+    UsbTransmitPacket(data, len);
+  }
 #endif
 #if (BOOT_COM_NET_ENABLE > 0)
-  /* transmit the packet */
-  NetTransmitPacket(data, len);
+  if (comActiveInterface == COM_IF_NET)
+  {
+    /* transmit the packet */
+    NetTransmitPacket(data, len);
+  }
 #endif
 
   /* send signal that the packet was transmitted */
   XcpPacketTransmitted();
 } /*** end of ComTransmitPacket ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the maximum number of bytes that can be received on the specified
+**            communication interface.
+** \return    Maximum number of bytes that can be received.
+**
+****************************************************************************************/
+blt_int16u ComGetActiveInterfaceMaxRxLen(void)
+{
+  blt_int16u result;
+  
+  /* filter on communication interface identifier */
+  switch (comActiveInterface)
+  {
+    case COM_IF_UART:
+      result = BOOT_COM_UART_RX_MAX_DATA;
+      break;
+
+    case COM_IF_CAN:
+      result = BOOT_COM_CAN_RX_MAX_DATA;
+      break;
+
+    case COM_IF_USB:
+      result = BOOT_COM_USB_RX_MAX_DATA;
+      break;
+
+    case COM_IF_NET:
+      result = BOOT_COM_NET_RX_MAX_DATA;
+      break;
+      
+    default:
+      result = BOOT_COM_RX_MAX_DATA;
+      break;
+  }
+  
+  return result;
+} /*** end of ComGetActiveInterfaceMaxRxLen ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the maximum number of bytes that can be transmitted on the 
+**            specified communication interface.
+** \return    Maximum number of bytes that can be received.
+**
+****************************************************************************************/
+blt_int16u ComGetActiveInterfaceMaxTxLen(void)
+{
+  blt_int16u result;
+  
+  /* filter on communication interface identifier */
+  switch (comActiveInterface)
+  {
+    case COM_IF_UART:
+      result = BOOT_COM_UART_TX_MAX_DATA;
+      break;
+
+    case COM_IF_CAN:
+      result = BOOT_COM_CAN_TX_MAX_DATA;
+      break;
+
+    case COM_IF_USB:
+      result = BOOT_COM_USB_TX_MAX_DATA;
+      break;
+
+    case COM_IF_NET:
+      result = BOOT_COM_NET_TX_MAX_DATA;
+      break;
+      
+    default:
+      result = BOOT_COM_TX_MAX_DATA;
+      break;
+  }
+  
+  return result;
+} /*** end of ComGetActiveInterfaceMaxTxLen ***/
 
 
 /************************************************************************************//**

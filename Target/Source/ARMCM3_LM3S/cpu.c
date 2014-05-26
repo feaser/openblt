@@ -53,11 +53,11 @@
   /** \brief Pointer to the user program's reset vector. Note that this needs to be
    *         changed in case the reserved memory for the bootloader is more than 0x2000.
    */
-  #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x00002004)
+  #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x00004004)
   /** \brief Pointer to the user program's vector table. Note that this needs to be
    *         changed in case the reserved memory for the bootloader is more than 0x2000.
    */
-  #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00002000)
+  #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00004000)
 #endif
 
   

@@ -37,17 +37,17 @@
 * Configuration
 ****************************************************************************************/
 /** \brief Maximum length of the transport layer's command transmit object packet. */
-#if !defined(BOOT_COM_RX_MAX_DATA) && defined(BOOT_XCP_CUSTOM_RX_MAX_DATA)
+#if defined(BOOT_XCP_CUSTOM_RX_MAX_DATA)
 #define XCP_CTO_PACKET_LEN             (BOOT_XCP_CUSTOM_RX_MAX_DATA)
 #else
-#define XCP_CTO_PACKET_LEN             (BOOT_COM_RX_MAX_DATA)
+#define XCP_CTO_PACKET_LEN             (ComGetActiveInterfaceMaxRxLen())
 #endif
 
 /** \brief Maximum length of the transport layer's data transmit object packet. */
-#if !defined(BOOT_COM_TX_MAX_DATA) && defined(BOOT_XCP_CUSTOM_TX_MAX_DATA)
+#if defined(BOOT_XCP_CUSTOM_TX_MAX_DATA)
 #define XCP_DTO_PACKET_LEN             (BOOT_XCP_CUSTOM_TX_MAX_DATA)
 #else
-#define XCP_DTO_PACKET_LEN             (BOOT_COM_TX_MAX_DATA)
+#define XCP_DTO_PACKET_LEN             (ComGetActiveInterfaceMaxTxLen())
 #endif
 
 /** \brief Name in string format that is used to identify the ECU to the XCP master
@@ -163,27 +163,9 @@ void     XcpPacketReceived(blt_int8u *data);
 #error  "XCP.H, Configuration macro XCP_CTO_PACKET_LEN is missing."
 #endif
 
-#if (XCP_CTO_PACKET_LEN < 1)
-#undef XCP_CTO_PACKET_LEN
-#define XCP_CTO_PACKET_LEN   (8)
-#endif
-
-#if (XCP_CTO_PACKET_LEN > 256)
-#error  "XCP.H, XCP_CTO_PACKET_LEN cannot be larger than 256."
-#endif
-
 
 #ifndef XCP_DTO_PACKET_LEN
 #error  "XCP.H, Configuration macro XCP_DTO_PACKET_LEN is missing."
-#endif
-
-#if (XCP_DTO_PACKET_LEN < 1)
-#undef XCP_DTO_PACKET_LEN
-#define XCP_DTO_PACKET_LEN   (8)
-#endif
-
-#if (XCP_DTO_PACKET_LEN > 65536)
-#error  "XCP.H, XCP_DTO_PACKET_LEN cannot be larger than 65536."
 #endif
 
 

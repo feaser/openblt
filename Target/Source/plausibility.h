@@ -73,6 +73,39 @@
 /****************************************************************************************
 *   C O M M U N I C A T I O N   I N T E R F A C E   C O N F I G U R A T I O N   C H E C K
 ****************************************************************************************/
+#ifndef BOOT_COM_CAN_TX_MAX_DATA
+#define BOOT_COM_CAN_TX_MAX_DATA       (0)
+#endif
+
+#ifndef BOOT_COM_CAN_RX_MAX_DATA
+#define BOOT_COM_CAN_RX_MAX_DATA       (0)
+#endif
+
+#ifndef BOOT_COM_UART_TX_MAX_DATA
+#define BOOT_COM_UART_TX_MAX_DATA      (0)
+#endif
+
+#ifndef BOOT_COM_UART_RX_MAX_DATA
+#define BOOT_COM_UART_RX_MAX_DATA      (0)
+#endif
+
+#ifndef BOOT_COM_USB_TX_MAX_DATA
+#define BOOT_COM_USB_TX_MAX_DATA       (0)
+#endif
+
+#ifndef BOOT_COM_USB_RX_MAX_DATA
+#define BOOT_COM_USB_RX_MAX_DATA       (0)
+#endif
+
+#ifndef BOOT_COM_NET_TX_MAX_DATA
+#define BOOT_COM_NET_TX_MAX_DATA       (0)
+#endif
+
+#ifndef BOOT_COM_NET_RX_MAX_DATA
+#define BOOT_COM_NET_RX_MAX_DATA       (0)
+#endif
+
+
 #ifndef BOOT_COM_CAN_ENABLE
 #define BOOT_COM_CAN_ENABLE             (0)
 #endif
@@ -381,10 +414,6 @@
   #endif
 #endif /* BOOT_FILE_SYS_ENABLE > 0 */
 
-#if ((BOOT_COM_CAN_ENABLE + BOOT_COM_UART_ENABLE + BOOT_COM_USB_ENABLE + BOOT_COM_NET_ENABLE) > 1)
-#error "Too many communication interfaces enabled (BOOT_COM_XXX_ENABLE) in blt_conf.h"
-#endif
-        
 #if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_NET_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
 #define BOOT_COM_ENABLE   (1)
 #else

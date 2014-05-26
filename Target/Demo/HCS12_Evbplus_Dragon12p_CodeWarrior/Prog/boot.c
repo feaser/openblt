@@ -37,6 +37,51 @@
 #include "header.h"                                    /* generic header               */
 
 
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+#if (BOOT_COM_UART_ENABLE > 0)
+static void BootComUartInit(void);
+static void BootComUartCheckActivationRequest(void);
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+static void BootComCanInit(void);
+static void BootComCanCheckActivationRequest(void);
+#endif
+
+/************************************************************************************//**
+** \brief     Initializes the communication interface.
+** \return    none.
+**
+****************************************************************************************/
+void BootComInit(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartInit();
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  BootComCanInit();
+#endif
+} /*** end of BootComInit ***/
+
+
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
+**
+****************************************************************************************/
+void BootComCheckActivationRequest(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartCheckActivationRequest();
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  BootComCanCheckActivationRequest();
+#endif
+} /*** end of BootComCheckActivationRequest ***/
+
+
 /************************************************************************************//**
 ** \brief     Bootloader activation function.
 ** \return    none.
@@ -71,7 +116,7 @@ static unsigned char UartReceiveByte(unsigned char *data);
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComInit(void)
+static void BootComUartInit(void)
 {
   unsigned short baudrate_sbr0_12;
 
@@ -90,7 +135,7 @@ void BootComInit(void)
   SCI0BDL = (unsigned char)baudrate_sbr0_12;
   /* enable the receiver */
   SCI0CR2 |= (SCI0CR2_RE_MASK);
-} /*** end of BootComInit ***/
+} /*** end of BootComUartInit ***/
 
 
 /************************************************************************************//**
@@ -99,7 +144,7 @@ void BootComInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComCheckActivationRequest(void)
+static void BootComUartCheckActivationRequest(void)
 {
   static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
@@ -141,7 +186,7 @@ void BootComCheckActivationRequest(void)
       }
     }
   }
-} /*** end of BootComCheckActivationRequest ***/
+} /*** end of BootComUartCheckActivationRequest ***/
 
 
 /************************************************************************************//**
@@ -274,7 +319,7 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned char *btr0,
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComInit(void)
+static void BootComCanInit(void)
 {
   unsigned char btrRegValues[2];
   unsigned long accept_code;
@@ -339,7 +384,7 @@ void BootComInit(void)
   {
     ;
   }
-} /*** end of BootComInit ***/
+} /*** end of BootComCanInit ***/
 
 
 /************************************************************************************//**
@@ -348,7 +393,7 @@ void BootComInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComCheckActivationRequest(void)
+static void BootComCanCheckActivationRequest(void)
 {
   unsigned long rxMsgId;
 
@@ -383,7 +428,7 @@ void BootComCheckActivationRequest(void)
     /* release the receive object by clearing the rx flag */
     CAN0RFLG &= CAN0RFLG_RXF_MASK;
   }
-} /*** end of BootComCheckActivationRequest ***/
+} /*** end of BootComCanCheckActivationRequest ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 

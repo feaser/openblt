@@ -37,6 +37,51 @@
 #include "header.h"                                    /* generic header               */
 
 
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+#if (BOOT_COM_UART_ENABLE > 0)
+static void BootComUartInit(void);
+static void BootComUartCheckActivationRequest(void);
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+static void BootComCanInit(void);
+static void BootComCanCheckActivationRequest(void);
+#endif
+
+/************************************************************************************//**
+** \brief     Initializes the communication interface.
+** \return    none.
+**
+****************************************************************************************/
+void BootComInit(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartInit();
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  BootComCanInit();
+#endif
+} /*** end of BootComInit ***/
+
+
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
+**
+****************************************************************************************/
+void BootComCheckActivationRequest(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartCheckActivationRequest();
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  BootComCanCheckActivationRequest();
+#endif
+} /*** end of BootComCheckActivationRequest ***/
+
+
 /************************************************************************************//**
 ** \brief     Bootloader activation function.
 ** \return    none.
@@ -65,7 +110,7 @@ static unsigned char UartReceiveByte(unsigned char *data);
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComInit(void)
+static void BootComUartInit(void)
 {
   /* enable the UART0 peripheral */
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
@@ -76,7 +121,7 @@ void BootComInit(void)
   UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_UART_BAUDRATE,
                       (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | 
                       UART_CONFIG_PAR_NONE));
-} /*** end of BootComInit ***/
+} /*** end of BootUartComInit ***/
 
 
 /************************************************************************************//**
@@ -85,7 +130,7 @@ void BootComInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComCheckActivationRequest(void)
+static void BootComUartCheckActivationRequest(void)
 {
   static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
@@ -127,7 +172,7 @@ void BootComCheckActivationRequest(void)
       }
     }
   }
-} /*** end of BootComCheckActivationRequest ***/
+} /*** end of BootComUartCheckActivationRequest ***/
 
 
 /************************************************************************************//**
@@ -238,7 +283,7 @@ static unsigned char CanSetBittiming(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComInit(void)
+static void BootComCanInit(void)
 {
   tCANMsgObject rxMsgObject;
 
@@ -259,7 +304,7 @@ void BootComInit(void)
   rxMsgObject.ulFlags = MSG_OBJ_USE_ID_FILTER;
   rxMsgObject.ulMsgLen = 8;
   CANMessageSet(CAN0_BASE, CAN_RX_MSGOBJECT_IDX+1, &rxMsgObject, MSG_OBJ_TYPE_RX);
-} /*** end of BootComInit ***/
+} /*** end of BootCanComInit ***/
 
 
 /************************************************************************************//**
@@ -268,7 +313,7 @@ void BootComInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComCheckActivationRequest(void)
+static void BootComCanCheckActivationRequest(void)
 {
   unsigned long status;
   tCANMsgObject msgObject;
@@ -289,7 +334,7 @@ void BootComCheckActivationRequest(void)
       BootActivate();
     }
   }
-} /*** end of BootComCheckActivationRequest ***/
+} /*** end of BootComCanCheckActivationRequest ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 

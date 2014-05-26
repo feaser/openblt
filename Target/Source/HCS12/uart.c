@@ -131,12 +131,14 @@ void UartInit(void)
 void UartTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int16u data_index;
+  blt_bool result;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_TX_MAX_DATA);  
+  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);  
 
   /* first transmit the length of the packet */  
-  ASSERT_RT(UartTransmitByte(len) == BLT_TRUE);  
+  result = UartTransmitByte(len);
+  ASSERT_RT(result == BLT_TRUE);  
   
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
@@ -144,7 +146,8 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     /* keep the watchdog happy */
     CopService();
     /* write byte */
-    ASSERT_RT(UartTransmitByte(data[data_index]) == BLT_TRUE);  
+    result = UartTransmitByte(data[data_index]);
+    ASSERT_RT(result == BLT_TRUE);  
   }
 } /*** end of UartTransmitPacket ***/
 
@@ -157,7 +160,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool UartReceivePacket(blt_int8u *data)
 {
-  static blt_int8u xcpCtoReqPacket[XCP_CTO_PACKET_LEN+1];  /* one extra for length */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
 

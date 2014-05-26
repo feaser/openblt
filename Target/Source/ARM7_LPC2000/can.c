@@ -180,7 +180,7 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int32u *btr)
 void CanInit(void)
 {
   blt_bool   result;
-  blt_int32u btr_reg_value;
+  blt_int32u btr_reg_value=0;
   
   /* the current implementation supports CAN1, which has channel index 0. throw an 
    * assertion error in case a different CAN channel is configured.  

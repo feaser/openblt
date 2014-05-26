@@ -124,7 +124,7 @@ typedef struct
   blt_int8u  connected;                             /**< connection established        */
   blt_int8u  protection;                            /**< protection state              */
   blt_int8u  s_n_k_resource;                        /**< for seed/key sequence         */
-  blt_int8u  ctoData[XCP_CTO_PACKET_LEN];           /**< cto packet data buffer        */
+  blt_int8u  ctoData[BOOT_COM_RX_MAX_DATA];         /**< cto packet data buffer        */
   blt_int8u  ctoPending;                            /**< cto transmission pending flag */
   blt_int16s ctoLen;                                /**< cto current packet length     */
   blt_int32u mta;                                   /**< memory transfer address       */
@@ -622,7 +622,7 @@ static void XcpCmdConnect(blt_int8u *data)
   xcpInfo.ctoData[2] |= XCP_MOTOROLA_FORMAT;
 
   /* report max cto data length */
-  xcpInfo.ctoData[3] = XCP_CTO_PACKET_LEN;
+  xcpInfo.ctoData[3] = (blt_int8u)XCP_CTO_PACKET_LEN;
 
   /* report max dto data length */
 #if (XCP_MOTOROLA_FORMAT == 0)
@@ -1167,7 +1167,7 @@ static void XcpCmdProgramStart(blt_int8u *data)
   xcpInfo.ctoData[2] = 0;
 
   /* cto packet length stays the same during programming */
-  xcpInfo.ctoData[3] = XCP_CTO_PACKET_LEN;
+  xcpInfo.ctoData[3] = (blt_int8u)XCP_CTO_PACKET_LEN;
 
   /* no block size, st-min time, or queue size supported */
   xcpInfo.ctoData[4] = 0;

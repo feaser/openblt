@@ -30,7 +30,7 @@ _startupData is allocated at 0xC03B and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
   _Range   pZeroOut       0x1100     76
-  _Copy    *toCopyDownBeg 0xC1BA
+  _Copy    *toCopyDownBeg 0xC35B
 } _startupData;
 
 *********************************************************************************************
@@ -39,8 +39,9 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             59     R     0xC000     0xC03A   ROM_C000
 .startData                        10     R     0xC03B     0xC044   ROM_C000
-.text                            343     R     0xC045     0xC19B   ROM_C000
-.copy                              2     R     0xC1BA     0xC1BB   ROM_C000
+.rodata                           36     R     0xC045     0xC068   ROM_C000
+.text                            707     R     0xC069     0xC32B   ROM_C000
+.copy                              2     R     0xC35B     0xC35C   ROM_C000
 .stack                           256   R/W     0x1000     0x10FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -385,10 +386,10 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_2be                   2   N/I      0x2BE      0x2BF   .absSeg340
 .abs_section_e77e                130     R     0xE77E     0xE7FF   .absSeg341
 .bss                              76   R/W     0x1100     0x114B   RAM
-RUNTIME                           30     R     0xC19C     0xC1B9   ROM_C000
+RUNTIME                           47     R     0xC32C     0xC35A   ROM_C000
 
 Summary of section sizes per section type:
-READ_ONLY (R):         23E (dec:      574)
+READ_ONLY (R):         3DF (dec:      991)
 READ_WRITE (R/W):      14C (dec:      332)
 NO_INIT (N/I):         190 (dec:      400)
 
@@ -403,8 +404,9 @@ OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 MODULE:                 -- rtshc12.c.o (ansisi.lib) --
 - PROCEDURES:
-     _LCMP                                     C19C      19      25       1   RUNTIME     
-     _LINC                                     C1B5       5       5       1   RUNTIME     
+     _LSHRU                                    C32C      11      17       1   RUNTIME     
+     _LCMP                                     C33D      19      25       1   RUNTIME     
+     _LINC                                     C356       5       5       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- mc9s12dg256.c.o --
 - PROCEDURES:
@@ -532,42 +534,42 @@ MODULE:                 -- mc9s12dg256.c.o --
      _ATD1STAT1                                 12B       1       1       0   .abs_section_12b
      _ATD1DIEN                                  12D       1       1       0   .abs_section_12d
      _PORTAD1                                   12F       1       1       0   .abs_section_12f
-     _CAN0CTL0                                  140       1       1       0   .abs_section_140
-     _CAN0CTL1                                  141       1       1       0   .abs_section_141
-     _CAN0BTR0                                  142       1       1       0   .abs_section_142
-     _CAN0BTR1                                  143       1       1       0   .abs_section_143
-     _CAN0RFLG                                  144       1       1       0   .abs_section_144
+     _CAN0CTL0                                  140       1       1       2   .abs_section_140
+     _CAN0CTL1                                  141       1       1       3   .abs_section_141
+     _CAN0BTR0                                  142       1       1       1   .abs_section_142
+     _CAN0BTR1                                  143       1       1       1   .abs_section_143
+     _CAN0RFLG                                  144       1       1       3   .abs_section_144
      _CAN0RIER                                  145       1       1       0   .abs_section_145
      _CAN0TFLG                                  146       1       1       0   .abs_section_146
      _CAN0TIER                                  147       1       1       0   .abs_section_147
      _CAN0TARQ                                  148       1       1       0   .abs_section_148
      _CAN0TAAK                                  149       1       1       0   .abs_section_149
      _CAN0TBSEL                                 14A       1       1       0   .abs_section_14a
-     _CAN0IDAC                                  14B       1       1       0   .abs_section_14b
+     _CAN0IDAC                                  14B       1       1       2   .abs_section_14b
      _CAN0RXERR                                 14E       1       1       0   .abs_section_14e
      _CAN0TXERR                                 14F       1       1       0   .abs_section_14f
-     _CAN0IDAR0                                 150       1       1       0   .abs_section_150
-     _CAN0IDAR1                                 151       1       1       0   .abs_section_151
-     _CAN0IDAR2                                 152       1       1       0   .abs_section_152
-     _CAN0IDAR3                                 153       1       1       0   .abs_section_153
-     _CAN0IDMR0                                 154       1       1       0   .abs_section_154
-     _CAN0IDMR1                                 155       1       1       0   .abs_section_155
-     _CAN0IDMR2                                 156       1       1       0   .abs_section_156
-     _CAN0IDMR3                                 157       1       1       0   .abs_section_157
-     _CAN0IDAR4                                 158       1       1       0   .abs_section_158
-     _CAN0IDAR5                                 159       1       1       0   .abs_section_159
-     _CAN0IDAR6                                 15A       1       1       0   .abs_section_15a
-     _CAN0IDAR7                                 15B       1       1       0   .abs_section_15b
-     _CAN0IDMR4                                 15C       1       1       0   .abs_section_15c
-     _CAN0IDMR5                                 15D       1       1       0   .abs_section_15d
-     _CAN0IDMR6                                 15E       1       1       0   .abs_section_15e
-     _CAN0IDMR7                                 15F       1       1       0   .abs_section_15f
-     _CAN0RXIDR0                                160       1       1       0   .abs_section_160
-     _CAN0RXIDR1                                161       1       1       0   .abs_section_161
+     _CAN0IDAR0                                 150       1       1       1   .abs_section_150
+     _CAN0IDAR1                                 151       1       1       1   .abs_section_151
+     _CAN0IDAR2                                 152       1       1       1   .abs_section_152
+     _CAN0IDAR3                                 153       1       1       1   .abs_section_153
+     _CAN0IDMR0                                 154       1       1       1   .abs_section_154
+     _CAN0IDMR1                                 155       1       1       1   .abs_section_155
+     _CAN0IDMR2                                 156       1       1       1   .abs_section_156
+     _CAN0IDMR3                                 157       1       1       1   .abs_section_157
+     _CAN0IDAR4                                 158       1       1       1   .abs_section_158
+     _CAN0IDAR5                                 159       1       1       1   .abs_section_159
+     _CAN0IDAR6                                 15A       1       1       1   .abs_section_15a
+     _CAN0IDAR7                                 15B       1       1       1   .abs_section_15b
+     _CAN0IDMR4                                 15C       1       1       1   .abs_section_15c
+     _CAN0IDMR5                                 15D       1       1       1   .abs_section_15d
+     _CAN0IDMR6                                 15E       1       1       1   .abs_section_15e
+     _CAN0IDMR7                                 15F       1       1       1   .abs_section_15f
+     _CAN0RXIDR0                                160       1       1       4   .abs_section_160
+     _CAN0RXIDR1                                161       1       1       1   .abs_section_161
      _CAN0RXIDR2                                162       1       1       0   .abs_section_162
      _CAN0RXIDR3                                163       1       1       0   .abs_section_163
-     _CAN0RXDSR0                                164       1       1       0   .abs_section_164
-     _CAN0RXDSR1                                165       1       1       0   .abs_section_165
+     _CAN0RXDSR0                                164       1       1       1   .abs_section_164
+     _CAN0RXDSR1                                165       1       1       1   .abs_section_165
      _CAN0RXDSR2                                166       1       1       0   .abs_section_166
      _CAN0RXDSR3                                167       1       1       0   .abs_section_167
      _CAN0RXDSR4                                168       1       1       0   .abs_section_168
@@ -752,43 +754,49 @@ MODULE:                 -- mc9s12dg256.c.o --
      _CAN4TXTSR                                 2BE       2       2       0   .abs_section_2be
 MODULE:                 -- boot.c.o --
 - PROCEDURES:
-     BootActivate                              C045       F      15       1   .text       
-     BootComInit                               C054      19      25       1   .text       
-     BootComCheckActivationRequest             C06D      44      68       1   .text       
-     UartReceiveByte                           C0B1      11      17       2   .text       
+     BootComInit                               C069       6       6       1   .text       
+     BootComCheckActivationRequest             C06F       6       6       1   .text       
+     BootActivate                              C075       F      15       2   .text       
+     BootComUartInit                           C084      19      25       1   .text       
+     BootComUartCheckActivationRequest         C09D      44      68       1   .text       
+     UartReceiveByte                           C0E1      11      17       2   .text       
+     CanGetSpeedConfig                         C0F2      66     102       1   .text       
+     BootComCanInit                            C158      8C     140       1   .text       
+     BootComCanCheckActivationRequest          C1E4      6E     110       1   .text       
 - VARIABLES:
+     canTiming                                 C045      24      36       4   .rodata     
      xcpCtoRxInProgress.3                      1100       1       1       3   .bss        
      xcpCtoReqPacket.1                         1101      41      65       5   .bss        
      xcpCtoRxLength.2                          1142       1       1       4   .bss        
 MODULE:                 -- irq.c.o --
 - PROCEDURES:
-     IrqInterruptEnable                        C0C2       3       3       1   .text       
+     IrqInterruptEnable                        C252       3       3       1   .text       
 - VARIABLES:
 MODULE:                 -- led.c.o --
 - PROCEDURES:
-     LedInit                                   C0C5       F      15       1   .text       
-     LedToggle                                 C0D4      48      72       1   .text       
+     LedInit                                   C255       F      15       1   .text       
+     LedToggle                                 C264      48      72       1   .text       
 - VARIABLES:
      led_toggle_state.1                        1143       1       1       3   .bss        
      timer_counter_last.2                      1144       4       4       5   .bss        
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C11C       E      14       1   .text       
-     Init                                      C12A       C      12       1   .text       
-     SysClockInit                              C136       1       1       1   .text       
+     main                                      C2AC       E      14       1   .text       
+     Init                                      C2BA       C      12       1   .text       
+     SysClockInit                              C2C6       1       1       1   .text       
 - VARIABLES:
 MODULE:                 -- time.c.o --
 - PROCEDURES:
-     TimeInit                                  C137      1E      30       1   .text       
-     TimeDeinit                                C155      1C      28       2   .text       
-     TimeSet                                   C171       7       7       1   .text       
-     TimeGet                                   C178       7       7       1   .text       
-     TimeISRHandler                            C17F      1B      27       1   .text       
+     TimeInit                                  C2C7      1E      30       1   .text       
+     TimeDeinit                                C2E5      1C      28       2   .text       
+     TimeSet                                   C301       7       7       1   .text       
+     TimeGet                                   C308       7       7       1   .text       
+     TimeISRHandler                            C30F      1B      27       1   .text       
 - VARIABLES:
      millisecond_counter                       1148       4       4       8   .bss        
 MODULE:                 -- vectors.c.o --
 - PROCEDURES:
-     UnusedISR                                 C19A       2       2      62   .text       
+     UnusedISR                                 C32A       2       2      62   .text       
 - VARIABLES:
      _vectab                                   E77E      82     130       0   .abs_section_e77e
 MODULE:                 -- cstartup.c.o --
@@ -804,9 +812,9 @@ MODULE:                 -- cstartup.c.o --
 MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
-  rtshc12.c.o (ansisi.lib)                     0     30      0
+  rtshc12.c.o (ansisi.lib)                     0     47      0
   mc9s12dg256.c.o                            400      0      0
-  boot.c.o                                    67    125      0
+  boot.c.o                                    67    489     36
   irq.c.o                                      0      3      0
   led.c.o                                      5     87      0
   main.c.o                                     0     27      0
@@ -819,16 +827,20 @@ MODULE STATISTIC
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  BootActivate BootComInit BootComCheckActivationRequest UartReceiveByte 
-  IrqInterruptEnable LedInit LedToggle main Init SysClockInit TimeInit 
-  TimeDeinit TimeSet TimeGet TimeISRHandler UnusedISR 
+  BootComInit BootComCheckActivationRequest BootActivate BootComUartInit 
+  BootComUartCheckActivationRequest UartReceiveByte CanGetSpeedConfig 
+  BootComCanInit BootComCanCheckActivationRequest IrqInterruptEnable LedInit 
+  LedToggle main Init SysClockInit TimeInit TimeDeinit TimeSet TimeGet 
+  TimeISRHandler UnusedISR 
 SECTION: ".bss"
   xcpCtoRxInProgress.3 xcpCtoReqPacket.1 xcpCtoRxLength.2 led_toggle_state.1 
   timer_counter_last.2 millisecond_counter 
 SECTION: ".init"
   Init _Startup 
+SECTION: ".rodata"
+  canTiming 
 SECTION: "RUNTIME"
-  _LCMP _LINC 
+  _LSHRU _LCMP _LINC 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1696,42 +1708,42 @@ OBJECT LIST SORTED BY ADDRESS
      _ATD1DR5                                   13A       2       2       0   .abs_section_13a
      _ATD1DR6                                   13C       2       2       0   .abs_section_13c
      _ATD1DR7                                   13E       2       2       0   .abs_section_13e
-     _CAN0CTL0                                  140       1       1       0   .abs_section_140
-     _CAN0CTL1                                  141       1       1       0   .abs_section_141
-     _CAN0BTR0                                  142       1       1       0   .abs_section_142
-     _CAN0BTR1                                  143       1       1       0   .abs_section_143
-     _CAN0RFLG                                  144       1       1       0   .abs_section_144
+     _CAN0CTL0                                  140       1       1       2   .abs_section_140
+     _CAN0CTL1                                  141       1       1       3   .abs_section_141
+     _CAN0BTR0                                  142       1       1       1   .abs_section_142
+     _CAN0BTR1                                  143       1       1       1   .abs_section_143
+     _CAN0RFLG                                  144       1       1       3   .abs_section_144
      _CAN0RIER                                  145       1       1       0   .abs_section_145
      _CAN0TFLG                                  146       1       1       0   .abs_section_146
      _CAN0TIER                                  147       1       1       0   .abs_section_147
      _CAN0TARQ                                  148       1       1       0   .abs_section_148
      _CAN0TAAK                                  149       1       1       0   .abs_section_149
      _CAN0TBSEL                                 14A       1       1       0   .abs_section_14a
-     _CAN0IDAC                                  14B       1       1       0   .abs_section_14b
+     _CAN0IDAC                                  14B       1       1       2   .abs_section_14b
      _CAN0RXERR                                 14E       1       1       0   .abs_section_14e
      _CAN0TXERR                                 14F       1       1       0   .abs_section_14f
-     _CAN0IDAR0                                 150       1       1       0   .abs_section_150
-     _CAN0IDAR1                                 151       1       1       0   .abs_section_151
-     _CAN0IDAR2                                 152       1       1       0   .abs_section_152
-     _CAN0IDAR3                                 153       1       1       0   .abs_section_153
-     _CAN0IDMR0                                 154       1       1       0   .abs_section_154
-     _CAN0IDMR1                                 155       1       1       0   .abs_section_155
-     _CAN0IDMR2                                 156       1       1       0   .abs_section_156
-     _CAN0IDMR3                                 157       1       1       0   .abs_section_157
-     _CAN0IDAR4                                 158       1       1       0   .abs_section_158
-     _CAN0IDAR5                                 159       1       1       0   .abs_section_159
-     _CAN0IDAR6                                 15A       1       1       0   .abs_section_15a
-     _CAN0IDAR7                                 15B       1       1       0   .abs_section_15b
-     _CAN0IDMR4                                 15C       1       1       0   .abs_section_15c
-     _CAN0IDMR5                                 15D       1       1       0   .abs_section_15d
-     _CAN0IDMR6                                 15E       1       1       0   .abs_section_15e
-     _CAN0IDMR7                                 15F       1       1       0   .abs_section_15f
-     _CAN0RXIDR0                                160       1       1       0   .abs_section_160
-     _CAN0RXIDR1                                161       1       1       0   .abs_section_161
+     _CAN0IDAR0                                 150       1       1       1   .abs_section_150
+     _CAN0IDAR1                                 151       1       1       1   .abs_section_151
+     _CAN0IDAR2                                 152       1       1       1   .abs_section_152
+     _CAN0IDAR3                                 153       1       1       1   .abs_section_153
+     _CAN0IDMR0                                 154       1       1       1   .abs_section_154
+     _CAN0IDMR1                                 155       1       1       1   .abs_section_155
+     _CAN0IDMR2                                 156       1       1       1   .abs_section_156
+     _CAN0IDMR3                                 157       1       1       1   .abs_section_157
+     _CAN0IDAR4                                 158       1       1       1   .abs_section_158
+     _CAN0IDAR5                                 159       1       1       1   .abs_section_159
+     _CAN0IDAR6                                 15A       1       1       1   .abs_section_15a
+     _CAN0IDAR7                                 15B       1       1       1   .abs_section_15b
+     _CAN0IDMR4                                 15C       1       1       1   .abs_section_15c
+     _CAN0IDMR5                                 15D       1       1       1   .abs_section_15d
+     _CAN0IDMR6                                 15E       1       1       1   .abs_section_15e
+     _CAN0IDMR7                                 15F       1       1       1   .abs_section_15f
+     _CAN0RXIDR0                                160       1       1       4   .abs_section_160
+     _CAN0RXIDR1                                161       1       1       1   .abs_section_161
      _CAN0RXIDR2                                162       1       1       0   .abs_section_162
      _CAN0RXIDR3                                163       1       1       0   .abs_section_163
-     _CAN0RXDSR0                                164       1       1       0   .abs_section_164
-     _CAN0RXDSR1                                165       1       1       0   .abs_section_165
+     _CAN0RXDSR0                                164       1       1       1   .abs_section_164
+     _CAN0RXDSR1                                165       1       1       1   .abs_section_165
      _CAN0RXDSR2                                166       1       1       0   .abs_section_166
      _CAN0RXDSR3                                167       1       1       0   .abs_section_167
      _CAN0RXDSR4                                168       1       1       0   .abs_section_168
@@ -1867,24 +1879,31 @@ OBJECT LIST SORTED BY ADDRESS
      millisecond_counter                       1148       4       4       8   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029      12      18       1   .init       
-     BootActivate                              C045       F      15       1   .text       
-     BootComInit                               C054      19      25       1   .text       
-     BootComCheckActivationRequest             C06D      44      68       1   .text       
-     UartReceiveByte                           C0B1      11      17       2   .text       
-     IrqInterruptEnable                        C0C2       3       3       1   .text       
-     LedInit                                   C0C5       F      15       1   .text       
-     LedToggle                                 C0D4      48      72       1   .text       
-     main                                      C11C       E      14       1   .text       
-     Init                                      C12A       C      12       1   .text       
-     SysClockInit                              C136       1       1       1   .text       
-     TimeInit                                  C137      1E      30       1   .text       
-     TimeDeinit                                C155      1C      28       2   .text       
-     TimeSet                                   C171       7       7       1   .text       
-     TimeGet                                   C178       7       7       1   .text       
-     TimeISRHandler                            C17F      1B      27       1   .text       
-     UnusedISR                                 C19A       2       2      62   .text       
-     _LCMP                                     C19C      19      25       1   RUNTIME     
-     _LINC                                     C1B5       5       5       1   RUNTIME     
+     canTiming                                 C045      24      36       4   .rodata     
+     BootComInit                               C069       6       6       1   .text       
+     BootComCheckActivationRequest             C06F       6       6       1   .text       
+     BootActivate                              C075       F      15       2   .text       
+     BootComUartInit                           C084      19      25       1   .text       
+     BootComUartCheckActivationRequest         C09D      44      68       1   .text       
+     UartReceiveByte                           C0E1      11      17       2   .text       
+     CanGetSpeedConfig                         C0F2      66     102       1   .text       
+     BootComCanInit                            C158      8C     140       1   .text       
+     BootComCanCheckActivationRequest          C1E4      6E     110       1   .text       
+     IrqInterruptEnable                        C252       3       3       1   .text       
+     LedInit                                   C255       F      15       1   .text       
+     LedToggle                                 C264      48      72       1   .text       
+     main                                      C2AC       E      14       1   .text       
+     Init                                      C2BA       C      12       1   .text       
+     SysClockInit                              C2C6       1       1       1   .text       
+     TimeInit                                  C2C7      1E      30       1   .text       
+     TimeDeinit                                C2E5      1C      28       2   .text       
+     TimeSet                                   C301       7       7       1   .text       
+     TimeGet                                   C308       7       7       1   .text       
+     TimeISRHandler                            C30F      1B      27       1   .text       
+     UnusedISR                                 C32A       2       2      62   .text       
+     _LSHRU                                    C32C      11      17       1   RUNTIME     
+     _LCMP                                     C33D      19      25       1   RUNTIME     
+     _LINC                                     C356       5       5       1   RUNTIME     
      _vectab                                   E77E      82     130       0   .abs_section_e77e
 
 *********************************************************************************************
@@ -1892,8 +1911,8 @@ UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
 NOT USED PROCEDURES
 rtshc12.c.o (ansisi.lib):
-  _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
-  _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP_P _LCMP_PP _LNEG _LCOM _LDEC _LMUL 
+  _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRS 
+  _LADD _LSUB _LAND _LOR _LXOR _LCMP_P _LCMP_PP _LNEG _LCOM _LDEC _LMUL 
   _LMULU16x32 _LMULS16x32 _lDivMod _LDIVU _NEG_P _LDIVS _LMODU _LMODS _ILSEXT 
   _COPY _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE 
   _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL 
@@ -1909,7 +1928,7 @@ irq.c.o:
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC1BA ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC35B ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1918,11 +1937,22 @@ OBJECT-DEPENDENCIES SECTION
 ---------------------------------------------------------------------------------------------
 Init                      USES _startupData 
 _Startup                  USES __SEG_END_SSTACK Init main 
+BootComInit               USES BootComUartInit BootComCanInit 
+BootComCheckActivationRequest USES BootComUartCheckActivationRequest 
+                                BootComCanCheckActivationRequest 
 BootActivate              USES TimeDeinit 
-BootComInit               USES _SCI0CR2 _SCI0CR1 _SCI0BD 
-BootComCheckActivationRequest USES xcpCtoRxInProgress.3 xcpCtoReqPacket.1 
+BootComUartInit           USES _SCI0CR2 _SCI0CR1 _SCI0BD 
+BootComUartCheckActivationRequest USES xcpCtoRxInProgress.3 xcpCtoReqPacket.1 
                                 UartReceiveByte xcpCtoRxLength.2 BootActivate 
 UartReceiveByte           USES _SCI0SR1 _SCI0DRL 
+CanGetSpeedConfig         USES canTiming 
+BootComCanInit            USES _CAN0CTL0 _CAN0CTL1 CanGetSpeedConfig _CAN0BTR0 
+                                _CAN0BTR1 _CAN0IDAC _CAN0IDAR0 _CAN0IDAR1 _CAN0IDAR2 
+                                _CAN0IDAR3 _CAN0IDMR0 _CAN0IDMR1 _CAN0IDMR2 _CAN0IDMR3 
+                                _CAN0IDAR4 _CAN0IDAR5 _CAN0IDAR6 _CAN0IDAR7 _CAN0IDMR4 
+                                _CAN0IDMR5 _CAN0IDMR6 _CAN0IDMR7 
+BootComCanCheckActivationRequest USES _CAN0RFLG _CAN0RXIDR1 _CAN0RXIDR0 _LSHRU 
+                                _CAN0RXDSR0 _CAN0RXDSR1 BootActivate 
 LedInit                   USES _DDRJ _PTJ _DDRAB _PORTAB 
 LedToggle                 USES TimeGet timer_counter_last.2 _LCMP 
                                 led_toggle_state.1 _PORTAB 
@@ -1961,7 +1991,13 @@ DEPENDENCY TREE
  |  |  +- IrqInterruptEnable  
  |  |       
  |  +- BootComInit         
- |  |    
+ |  |  | 
+ |  |  +- BootComUartInit     
+ |  |  |    
+ |  |  +- BootComCanInit      
+ |  |     | 
+ |  |     +- CanGetSpeedConfig   
+ |  |          
  |  +- LedToggle           
  |  |  | 
  |  |  +- TimeGet             
@@ -1970,11 +2006,19 @@ DEPENDENCY TREE
  |  |       
  |  +- BootComCheckActivationRequest
  |     | 
- |     +- UartReceiveByte     
- |     |    
- |     +- BootActivate        
+ |     +- BootComUartCheckActivationRequest
+ |     |  | 
+ |     |  +- UartReceiveByte     
+ |     |  |    
+ |     |  +- BootActivate        
+ |     |     | 
+ |     |     +- TimeDeinit           (see above)
+ |     |        
+ |     +- BootComCanCheckActivationRequest
  |        | 
- |        +- TimeDeinit           (see above)
+ |        +- _LSHRU              
+ |        |    
+ |        +- BootActivate         (see above)
  |           
  +- _Startup            
     | 
@@ -1999,5 +2043,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 6
-Total size of all blocks to be downloaded: 574
+Total size of all blocks to be downloaded: 991
 

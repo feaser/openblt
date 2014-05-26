@@ -5,7 +5,7 @@ MEMORY
   Peripherals (wx) : ORIGIN = 0x40020000, LENGTH = 0x00100000
   FiRM_Peripherals (wx) : ORIGIN = 0x40000000, LENGTH = 0x00010000
   SRAM (wx) : ORIGIN = 0x20000000, LENGTH = 0x00010000
-  FLASH (rx) : ORIGIN = 0x00002000, LENGTH = 0x00040000 - 0x2000
+  FLASH (rx) : ORIGIN = 0x00004000, LENGTH = 0x00040000 - 0x4000
 }
 
 
@@ -19,7 +19,7 @@ SECTIONS
   __FiRM_Peripherals_segment_end__ = 0x40010000;
   __SRAM_segment_start__ = 0x20000000;
   __SRAM_segment_end__ = 0x20010000;
-  __FLASH_segment_start__ = 0x00002000;
+  __FLASH_segment_start__ = 0x00004000;
   __FLASH_segment_end__ = 0x00040000;
 
   __STACKSIZE__ = 256;
