@@ -62,7 +62,7 @@ type
     sciDriver    : TCommPortDriver;
     constructor Create;
     procedure   Configure(iniFile : string);
-    procedure   Connect;
+    function    Connect : Boolean;
     function    SendPacket(timeOutms: LongWord): Boolean;
     procedure   Disconnect;
     destructor  Destroy; override;
@@ -174,15 +174,15 @@ end; //*** end of Configure ***
 //***************************************************************************************
 // NAME:           Connect
 // PARAMETER:      none
-// RETURN VALUE:   none
+// RETURN VALUE:   True is successful, False otherwise.
 // DESCRIPTION:    Connects the transport layer device.
 //
 //***************************************************************************************
-procedure TXcpTransport.Connect;
+function TXcpTransport.Connect : Boolean;
 begin
+  result := true;
   if not sciDriver.Connect then
-    Application.MessageBox( 'Could not connect to COM port.',
-                            'Error', MB_OK or MB_ICONERROR );
+    result := false;
 end; //*** end of Connect ***
 
 

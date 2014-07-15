@@ -300,6 +300,8 @@
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\hello-world</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR</state>
           <state>$PROJ_DIR$\..</state>
@@ -307,6 +309,7 @@
           <state>$PROJ_DIR$\..\lib\inc</state>
           <state>$PROJ_DIR$\..\lib\driverlib</state>
           <state>$PROJ_DIR$\..\lib\fatfs</state>
+          <state>$PROJ_DIR$\..\lib\uip</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1859,6 +1862,12 @@
           <name>$PROJ_DIR$\..\lib\driverlib\debug.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\lib\driverlib\ethernet.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\driverlib\ethernet.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\lib\driverlib\flashlib.c</name>
         </file>
         <file>
@@ -1910,6 +1919,9 @@
       <group>
         <name>inc</name>
         <file>
+          <name>$PROJ_DIR$\..\lib\inc\hw_ethernet.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\lib\inc\hw_flash.h</name>
         </file>
         <file>
@@ -1935,6 +1947,24 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\lib\inc\hw_uart.h</name>
+        </file>
+      </group>
+      <group>
+        <name>uip</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\clock-arch.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\clock-arch.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\netdev.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\netdev.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\uip-conf.h</name>
         </file>
       </group>
     </group>
@@ -2015,6 +2045,63 @@
           <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</name>
         </file>
       </group>
+      <group>
+        <name>uip</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\clock.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-addrlabels.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-switch.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\pt.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-fw.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-neighbor.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-split.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arch.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uipopt.h</name>
+        </file>
+      </group>
     </group>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\assert.c</name>
@@ -2051,6 +2138,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\file.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\net.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Source\net.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\plausibility.h</name>

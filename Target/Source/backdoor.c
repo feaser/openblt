@@ -43,9 +43,18 @@
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
   #ifndef BACKDOOR_ENTRY_TIMEOUT_MS
   /** \brief Sets the time in milliseconds that the backdoor is open, but allow an 
-   *         override for this time.
+   *         override for this time. note that this time should be at least 2.5 times
+   *         as long as the time that is configured in Microboot's XCP settings for the
+   *         connect command response. This is the last entry on XCP Timeouts tab. By 
+   *         default the connect command response is configured as 20ms by Microboot,
+   *         except for TCP/IP where it is 300ms due to accomodate for worldwide
+   *         network latency.
    */
-  #define BACKDOOR_ENTRY_TIMEOUT_MS  (50)
+    #if (BOOT_COM_NET_ENABLE == 1)
+      #define BACKDOOR_ENTRY_TIMEOUT_MS  (750)
+    #else
+      #define BACKDOOR_ENTRY_TIMEOUT_MS  (50)
+    #endif
   #endif
 #endif
 

@@ -113,6 +113,7 @@ type
   private
     FIsConnected     : Boolean;
     FTimerInterval   : array[1..7] of Word;
+    FConnectCmdTimer : Word;
     FIsIntel         : Boolean;
     FCtoPacketLen    : Byte;
     FCtoPGMPacketLen : Byte;
@@ -144,7 +145,7 @@ type
     destructor  Destroy; override;
     function    GetLastError(var info : string) : Byte;
     procedure   Configure(iniFile : string);
-    procedure   Connect;
+    function    Connect : Boolean;
     procedure   Disconnect;
     function    StartProgrammingSession : Boolean;
     function    StopProgrammingSession : Boolean;
@@ -196,6 +197,10 @@ begin
   FTimerInterval[5] :=  1000; // t5 =  1000ms - write and reset timeout
   FTimerInterval[6] :=  1000; // t6 =  1000ms - user specific connect
   FTimerInterval[7] :=  2000; // t7 =  2000ms - wait timer
+  // the connect command does not have a protocol specified timeout value. However, this
+  // timeout is important for the OpenBLT timed backdoor feature. The backdoor time should
+  // be at least 2.5 times the length of this timeout value.
+  FConnectCmdTimer  :=  20;   // 20 ms - connect command
 
   // create instance of XCP transport layer object
   comDriver := TXcpTransport.Create;
@@ -363,10 +368,11 @@ begin
       FSeedKeyDll := ExtractFilePath(ParamStr(0))+FSeedKeyDll;
 
     FTimerInterval[1] := settingsIni.ReadInteger('xcp', 't1', 1000);
-    FTimerInterval[3] := settingsIni.ReadInteger('xcp', 't3', 1000);
-    FTimerInterval[4] := settingsIni.ReadInteger('xcp', 't4', 1000);
+    FTimerInterval[3] := settingsIni.ReadInteger('xcp', 't3', 2000);
+    FTimerInterval[4] := settingsIni.ReadInteger('xcp', 't4', 10000);
     FTimerInterval[5] := settingsIni.ReadInteger('xcp', 't5', 1000);
-    FTimerInterval[7] := settingsIni.ReadInteger('xcp', 't7', 1000);
+    FTimerInterval[7] := settingsIni.ReadInteger('xcp', 't7', 2000);
+    FConnectCmdTimer := settingsIni.ReadInteger('xcp', 'tconnect', 20);
 
     // release ini file object
     settingsIni.Free;
@@ -380,15 +386,23 @@ end; //*** end of Configure ***
 //***************************************************************************************
 // NAME:           Connect
 // PARAMETER:      none
-// RETURN VALUE:   none
+// RETURN VALUE:   True if connected, False otherwise.
 // DESCRIPTION:    Connects the XCP transport layer
 //
 //***************************************************************************************
-procedure TXcpLoader.Connect;
+function TXcpLoader.Connect : Boolean;
 begin
   // connect the XCP transport layer
-  comDriver.Connect;
-  FIsConnected := true;
+  if comDriver.Connect = true then
+  begin
+    FIsConnected := true;
+    result := true;
+  end
+  else
+  begin
+    FIsConnected := false;
+    result := false;
+  end;
 end; //*** end of Connect ***
 
 
@@ -539,7 +553,7 @@ begin
   // send out the command with 20ms timeout. note that this timeout is not required at
   // all by the XCP protocol. here it is set quite short to accomodate the OpenBTL
   // bootloader default backdoor entry feature
-  if comDriver.SendPacket(20) then
+  if comDriver.SendPacket(FConnectCmdTimer) then
   begin
     // check to see if it was an error packet
     if comDriver.packetData[0] = kCmdPidERR then

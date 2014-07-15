@@ -262,27 +262,37 @@ begin
   timer.Enabled := False;
 
   // connect the transport layer
-  MbiCallbackOnLog('Connecting the transport layer. t='+TimeToStr(Time));
-  loader.Connect;
+  MbiCallbackOnInfo('Connecting to the CAN interface.');
+  MbiCallbackOnLog('Connecting to the CAN interface. t='+TimeToStr(Time));
+  Application.ProcessMessages;
+  if not loader.Connect then
+  begin
+    // update the user info
+    MbiCallbackOnError('Could not connect to CAN interface. Check your configuration.');
+    MbiCallbackOnLog('Could not connect to CAN interface. Check your configuration and try again. t='+TimeToStr(Time));
+    Exit;
+  end;
 
   //---------------- start the programming session --------------------------------------
   MbiCallbackOnLog('Starting the programming session. t='+TimeToStr(Time));
+
+  // try initial connect via XCP
   if not loader.StartProgrammingSession then
   begin
     // update the user info
     MbiCallbackOnInfo('Could not connect. Please reset your target...');
     MbiCallbackOnLog('Connect failed. Switching to backdoor entry mode. t='+TimeToStr(Time));
     Application.ProcessMessages;
-  end;
-
-  while not loader.StartProgrammingSession do
-  begin
-    Application.ProcessMessages;
-    Sleep(5);
-    if stopRequest then
+    // continuously try to connect via XCP true the backdoor
+    while not loader.StartProgrammingSession do
     begin
-      MbiCallbackOnError('Programming session cancelled by user.');
-      Exit;
+      Application.ProcessMessages;
+      Sleep(5);
+      if stopRequest then
+      begin
+        MbiCallbackOnError('Programming session cancelled by user.');
+        Exit;
+      end;
     end;
   end;
 

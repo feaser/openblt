@@ -323,52 +323,20 @@
   #error "BOOT_COM_NET_NETMASK3 must be >= 0"
   #endif
 
-  #ifndef BOOT_COM_NET_MACADDR0
-  #error "BOOT_COM_NET_MACADDR0 is missing in blt_conf.h"
+  #ifndef BOOT_COM_NET_PORT
+  #error "BOOT_COM_NET_PORT is missing in blt_conf.h"
   #endif
 
-  #if (BOOT_COM_NET_MACADDR0 < 0)
-  #error "BOOT_COM_NET_MACADDR0 must be >= 0"
+  #if (BOOT_COM_NET_PORT < 0)
+  #error "BOOT_COM_NET_PORT must be >= 0"
   #endif
 
-  #ifndef BOOT_COM_NET_MACADDR1
-  #error "BOOT_COM_NET_MACADDR1 is missing in blt_conf.h"
+  #ifndef BOOT_COM_NET_IPADDR_HOOK_ENABLE
+  #define BOOT_COM_NET_IPADDR_HOOK_ENABLE  (0)
   #endif
 
-  #if (BOOT_COM_NET_MACADDR1 < 0)
-  #error "BOOT_COM_NET_MACADDR1 must be >= 0"
-  #endif
-
-  #ifndef BOOT_COM_NET_MACADDR2
-  #error "BOOT_COM_NET_MACADDR2 is missing in blt_conf.h"
-  #endif
-
-  #if (BOOT_COM_NET_MACADDR2 < 0)
-  #error "BOOT_COM_NET_MACADDR2 must be >= 0"
-  #endif
-
-  #ifndef BOOT_COM_NET_MACADDR3
-  #error "BOOT_COM_NET_MACADDR3 is missing in blt_conf.h"
-  #endif
-
-  #if (BOOT_COM_NET_MACADDR3 < 0)
-  #error "BOOT_COM_NET_MACADDR3 must be >= 0"
-  #endif
-
-  #ifndef BOOT_COM_NET_MACADDR4
-  #error "BOOT_COM_NET_MACADDR4 is missing in blt_conf.h"
-  #endif
-
-  #if (BOOT_COM_NET_MACADDR4 < 0)
-  #error "BOOT_COM_NET_MACADDR4 must be >= 0"
-  #endif
-  
-  #ifndef BOOT_COM_NET_MACADDR5
-  #error "BOOT_COM_NET_MACADDR5 is missing in blt_conf.h"
-  #endif
-
-  #if (BOOT_COM_NET_MACADDR5 < 0)
-  #error "BOOT_COM_NET_MACADDR5 must be >= 0"
+  #ifndef BOOT_COM_NET_NETMASK_HOOK_ENABLE
+  #define BOOT_COM_NET_NETMASK_HOOK_ENABLE (0)
   #endif
 #endif /* BOOT_COM_USB_ENABLE > 0 */
 

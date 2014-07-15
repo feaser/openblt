@@ -261,28 +261,49 @@ begin
   timer.Enabled := False;
 
   // connect the transport layer
-  MbiCallbackOnLog('Connecting the transport layer. t='+TimeToStr(Time));
-  loader.Connect;
+  MbiCallbackOnInfo('Connecting to target via USB.');
+  MbiCallbackOnLog('Connecting to target via USB. t='+TimeToStr(Time));
+  Application.ProcessMessages;
+  if not loader.Connect then
+  begin
+    // update the user info
+    MbiCallbackOnInfo('Could not connect via USB. Retrying. Reset your target if this takes a long time.');
+    MbiCallbackOnLog('Transport layer connection failed. t='+TimeToStr(Time));
+    MbiCallbackOnLog('Retrying transport layer connection. Reset your target if this takes a long time. t='+TimeToStr(Time));
+    Application.ProcessMessages;
+    // continuously try to coonect the transport layer
+    while not loader.Connect do
+    begin
+      Application.ProcessMessages;
+      Sleep(5);
+      if stopRequest then
+      begin
+        MbiCallbackOnError('Transport layer connection cancelled by user.');
+        Exit;
+      end;
+    end;
+  end;
 
   //---------------- start the programming session --------------------------------------
   MbiCallbackOnLog('Starting the programming session. t='+TimeToStr(Time));
 
+  // try initial connect via XCP
   if not loader.StartProgrammingSession then
   begin
     // update the user info
     MbiCallbackOnInfo('Could not connect. Please reset your target...');
     MbiCallbackOnLog('Connect failed. Switching to backdoor entry mode. t='+TimeToStr(Time));
     Application.ProcessMessages;
-  end;
-
-  while not loader.StartProgrammingSession do
-  begin
-    Application.ProcessMessages;
-    Sleep(5);
-    if stopRequest then
+    // continuously try to connect via XCP true the backdoor
+    while not loader.StartProgrammingSession do
     begin
-      MbiCallbackOnError('Programming session cancelled by user.');
-      Exit;
+      Application.ProcessMessages;
+      Sleep(5);
+      if stopRequest then
+      begin
+        MbiCallbackOnError('Programming session cancelled by user.');
+        Exit;
+      end;
     end;
   end;
 
