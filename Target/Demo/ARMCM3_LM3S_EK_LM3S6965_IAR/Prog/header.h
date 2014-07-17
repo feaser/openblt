@@ -41,6 +41,7 @@
 #include "irq.h"                                       /* IRQ driver                   */
 #include "led.h"                                       /* LED driver                   */
 #include "time.h"                                      /* Timer driver                 */
+#include "net.h"                                       /* TCP/IP server application    */
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_nvic.h"

@@ -283,25 +283,60 @@ begin
     end;
   end;
 
-  //---------------- start the programming session --------------------------------------
+  // we now have a socket connected to the target. next attempt to connect to the target
+  // via XCP.
   MbiCallbackOnLog('Starting the programming session. t='+TimeToStr(Time));
-
-  // try initial connect via XCP
   if not loader.StartProgrammingSession then
   begin
-    // update the user info
-    MbiCallbackOnInfo('Could not connect. Please reset your target...');
-    MbiCallbackOnLog('Connect failed. Switching to backdoor entry mode. t='+TimeToStr(Time));
+    // note that a running user program might have received the connect command and
+    // performed a software reset to activate the bootloader. this causes a reconfigu-
+    // ration of the ethernet controller so we need to disconnect the socket here and
+    // wait for it to reconnect.
+    MbiCallbackOnInfo('No response from target. Disconnecting TCP/IP socket.');
+    MbiCallbackOnLog('No response from target. Disconnecting TCP/IP socket. t='+TimeToStr(Time));
+    loader.Disconnect;
+    // connect the transport layer
+    MbiCallbackOnInfo('Connecting to target via TCP/IP.');
+    MbiCallbackOnLog('Connecting to target via TCP/IP. t='+TimeToStr(Time));
     Application.ProcessMessages;
-    // continuously try to connect via XCP true the backdoor
-    while not loader.StartProgrammingSession do
+    if not loader.Connect then
     begin
+      // update the user info
+      MbiCallbackOnInfo('Could not connect via TCP/IP. Retrying. Reset your target if this takes a long time.');
+      MbiCallbackOnLog('Transport layer connection failed. Check the configured IP address and port. t='+TimeToStr(Time));
+      MbiCallbackOnLog('Retrying transport layer connection. Reset your target if this takes a long time. t='+TimeToStr(Time));
       Application.ProcessMessages;
-      Sleep(5);
-      if stopRequest then
+      // continuously try to connect the transport layer
+      while not loader.Connect do
       begin
-        MbiCallbackOnError('Programming session cancelled by user.');
-        Exit;
+        Application.ProcessMessages;
+        Sleep(5);
+        if stopRequest then
+        begin
+          MbiCallbackOnError('Transport layer connection cancelled by user.');
+          Exit;
+        end;
+      end;
+    end;
+    //---------------- start the programming session --------------------------------------
+    MbiCallbackOnLog('Starting the programming session. t='+TimeToStr(Time));
+    // try initial connect via XCP
+    if not loader.StartProgrammingSession then
+    begin
+      // update the user info
+      MbiCallbackOnInfo('Could not connect. Please reset your target...');
+      MbiCallbackOnLog('Connect failed. Switching to backdoor entry mode. t='+TimeToStr(Time));
+      Application.ProcessMessages;
+      // continuously try to connect via XCP true the backdoor
+      while not loader.StartProgrammingSession do
+      begin
+        Application.ProcessMessages;
+        Sleep(5);
+        if stopRequest then
+        begin
+          MbiCallbackOnError('Programming session cancelled by user.');
+          Exit;
+        end;
       end;
     end;
   end;

@@ -1,61 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="DemoBoot" InternalType="">
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00010001N0005Debug000000000000]]>
-    </Plugin>
-  </Plugins>
-  <VirtualDirectory Name="Source">
-    <VirtualDirectory Name="third_party">
-      <VirtualDirectory Name="fatfs">
-        <VirtualDirectory Name="src">
-          <File Name="../../../../Source/third_party/fatfs/src/diskio.h"/>
-          <File Name="../../../../Source/third_party/fatfs/src/ff.c"/>
-          <File Name="../../../../Source/third_party/fatfs/src/ff.h"/>
-          <File Name="../../../../Source/third_party/fatfs/src/integer.h"/>
-          <VirtualDirectory Name="option">
-            <File Name="../../../../Source/third_party/fatfs/src/option/cc932.c"/>
-            <File Name="../../../../Source/third_party/fatfs/src/option/cc936.c"/>
-            <File Name="../../../../Source/third_party/fatfs/src/option/cc949.c"/>
-            <File Name="../../../../Source/third_party/fatfs/src/option/cc950.c"/>
-            <File Name="../../../../Source/third_party/fatfs/src/option/ccsbcs.c"/>
-            <File Name="../../../../Source/third_party/fatfs/src/option/syscall.c"/>
-            <File Name="../../../../Source/third_party/fatfs/src/option/unicode.c"/>
-          </VirtualDirectory>
-        </VirtualDirectory>
-      </VirtualDirectory>
-    </VirtualDirectory>
-    <VirtualDirectory Name="ARMCM3_LM3S">
-      <VirtualDirectory Name="GCC">
-        <File Name="../../../../Source/ARMCM3_LM3S/GCC/cstart.c"/>
-        <File Name="../../../../Source/ARMCM3_LM3S/GCC/vectors.c"/>
-      </VirtualDirectory>
-      <File Name="../../../../Source/ARMCM3_LM3S/cpu.c"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/cpu.h"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/flash.c"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/flash.h"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/nvm.c"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/nvm.h"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/timer.c"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/timer.h"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/types.h"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/uart.c"/>
-      <File Name="../../../../Source/ARMCM3_LM3S/uart.h"/>
-    </VirtualDirectory>
-    <File Name="../../../../Source/assert.c"/>
-    <File Name="../../../../Source/assert.h"/>
-    <File Name="../../../../Source/backdoor.c"/>
-    <File Name="../../../../Source/backdoor.h"/>
-    <File Name="../../../../Source/boot.c"/>
-    <File Name="../../../../Source/boot.h"/>
-    <File Name="../../../../Source/com.c"/>
-    <File Name="../../../../Source/com.h"/>
-    <File Name="../../../../Source/cop.c"/>
-    <File Name="../../../../Source/cop.h"/>
-    <File Name="../../../../Source/plausibility.h"/>
-    <File Name="../../../../Source/xcp.c"/>
-    <File Name="../../../../Source/xcp.h"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="Demo">
     <VirtualDirectory Name="ARMCM3_LM3S_EK_LM3S6965_GCC">
       <VirtualDirectory Name="Boot">
@@ -64,34 +8,57 @@
             <File Name="../lib/driverlib/cpulib.c"/>
             <File Name="../lib/driverlib/cpulib.h"/>
             <File Name="../lib/driverlib/debug.h"/>
+            <File Name="../lib/driverlib/ethernet.c"/>
+            <File Name="../lib/driverlib/ethernet.h"/>
             <File Name="../lib/driverlib/flashlib.c"/>
             <File Name="../lib/driverlib/flashlib.h"/>
             <File Name="../lib/driverlib/gpio.c"/>
             <File Name="../lib/driverlib/gpio.h"/>
             <File Name="../lib/driverlib/interrupt.c"/>
             <File Name="../lib/driverlib/interrupt.h"/>
+            <File Name="../lib/driverlib/pin_map.h"/>
+            <File Name="../lib/driverlib/ssi.c"/>
+            <File Name="../lib/driverlib/ssi.h"/>
             <File Name="../lib/driverlib/sysctl.c"/>
             <File Name="../lib/driverlib/sysctl.h"/>
             <File Name="../lib/driverlib/uartlib.c"/>
             <File Name="../lib/driverlib/uartlib.h"/>
           </VirtualDirectory>
+          <VirtualDirectory Name="fatfs">
+            <File Name="../lib/fatfs/ffconf.h"/>
+            <File Name="../lib/fatfs/mmc.c"/>
+          </VirtualDirectory>
           <VirtualDirectory Name="inc">
+            <File Name="../lib/inc/hw_ethernet.h"/>
             <File Name="../lib/inc/hw_flash.h"/>
             <File Name="../lib/inc/hw_gpio.h"/>
             <File Name="../lib/inc/hw_ints.h"/>
             <File Name="../lib/inc/hw_memmap.h"/>
             <File Name="../lib/inc/hw_nvic.h"/>
+            <File Name="../lib/inc/hw_ssi.h"/>
             <File Name="../lib/inc/hw_sysctl.h"/>
             <File Name="../lib/inc/hw_types.h"/>
             <File Name="../lib/inc/hw_uart.h"/>
           </VirtualDirectory>
+          <VirtualDirectory Name="uip">
+            <File Name="../lib/uip/clock-arch.c"/>
+            <File Name="../lib/uip/clock-arch.h"/>
+            <File Name="../lib/uip/netdev.c"/>
+            <File Name="../lib/uip/netdev.h"/>
+            <File Name="../lib/uip/uip-conf.h"/>
+          </VirtualDirectory>
         </VirtualDirectory>
+        <File Name="../blt_conf.h"/>
         <File Name="../hooks.c"/>
         <File Name="../main.c"/>
-        <File Name="../blt_conf.h"/>
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
   <Description/>
   <Dependencies/>
   <Settings Type="Dynamic Library">
@@ -165,4 +132,95 @@ continue
       </AdditionalRules>
     </Configuration>
   </Settings>
+  <VirtualDirectory Name="Source">
+    <VirtualDirectory Name="third_party">
+      <VirtualDirectory Name="uip">
+        <VirtualDirectory Name="uip">
+          <File Name="../../../../Source/third_party/uip/uip/clock.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/lc-addrlabels.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/lc-switch.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/lc.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/psock.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/psock.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/pt.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-fw.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-fw.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-neighbor.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-neighbor.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-split.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-split.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uiplib.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uiplib.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uipopt.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_arch.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_arp.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_arp.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_timer.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_timer.h"/>
+        </VirtualDirectory>
+      </VirtualDirectory>
+      <VirtualDirectory Name="fatfs">
+        <VirtualDirectory Name="src">
+          <VirtualDirectory Name="option">
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc932.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc936.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc949.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/cc950.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/ccsbcs.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/syscall.c"/>
+            <File Name="../../../../Source/third_party/fatfs/src/option/unicode.c"/>
+          </VirtualDirectory>
+          <File Name="../../../../Source/third_party/fatfs/src/diskio.h"/>
+          <File Name="../../../../Source/third_party/fatfs/src/ff.c"/>
+          <File Name="../../../../Source/third_party/fatfs/src/ff.h"/>
+          <File Name="../../../../Source/third_party/fatfs/src/integer.h"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="doc">
+          <VirtualDirectory Name="img">
+            <File Name="../../../../Source/third_party/fatfs/doc/img/app1.c"/>
+            <File Name="../../../../Source/third_party/fatfs/doc/img/app2.c"/>
+            <File Name="../../../../Source/third_party/fatfs/doc/img/app3.c"/>
+          </VirtualDirectory>
+        </VirtualDirectory>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <File Name="../../../../Source/assert.c"/>
+    <File Name="../../../../Source/assert.h"/>
+    <File Name="../../../../Source/backdoor.c"/>
+    <File Name="../../../../Source/backdoor.h"/>
+    <File Name="../../../../Source/boot.c"/>
+    <File Name="../../../../Source/boot.h"/>
+    <File Name="../../../../Source/com.c"/>
+    <File Name="../../../../Source/com.h"/>
+    <File Name="../../../../Source/cop.c"/>
+    <File Name="../../../../Source/cop.h"/>
+    <File Name="../../../../Source/file.c"/>
+    <File Name="../../../../Source/file.h"/>
+    <File Name="../../../../Source/net.c"/>
+    <File Name="../../../../Source/net.h"/>
+    <File Name="../../../../Source/plausibility.h"/>
+    <File Name="../../../../Source/xcp.c"/>
+    <File Name="../../../../Source/xcp.h"/>
+    <VirtualDirectory Name="ARMCM3_LM3S">
+      <File Name="../../../../Source/ARMCM3_LM3S/can.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/can.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/cpu.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/cpu.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/flash.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/flash.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/nvm.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/nvm.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/timer.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/timer.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/types.h"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/uart.c"/>
+      <File Name="../../../../Source/ARMCM3_LM3S/uart.h"/>
+      <VirtualDirectory Name="GCC">
+        <File Name="../../../../Source/ARMCM3_LM3S/GCC/cstart.c"/>
+        <File Name="../../../../Source/ARMCM3_LM3S/GCC/vectors.c"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
 </CodeLite_Project>

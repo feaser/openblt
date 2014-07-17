@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_Crossworks\Prog\header.h
-* \brief        Generic header file.
+* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_Crossworks\Prog\net.h
+* \brief        Network application for the uIP TCP/IP stack.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_Crossworks
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2014  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,30 +30,37 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef NET_H
+#define NET_H
 
 /****************************************************************************************
-* Include files
+* Macro definitions
 ****************************************************************************************/
-#include "../Boot/blt_conf.h"                          /* bootloader configuration     */
-#include "boot.h"                                      /* bootloader interface driver  */
-#include "irq.h"                                       /* IRQ driver                   */
-#include "led.h"                                       /* LED driver                   */
-#include "time.h"                                      /* Timer driver                 */
-#include "net.h"                                       /* TCP/IP server application    */
-#include "inc/hw_ints.h"
-#include "inc/hw_memmap.h"
-#include "inc/hw_nvic.h"
-#include "inc/hw_sysctl.h"
-#include "inc/hw_types.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/gpio.h"
-#include "driverlib/uart.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/systick.h"
+#ifndef UIP_APPCALL
+#define UIP_APPCALL NetApp
+#endif /* UIP_APPCALL */
 
 
+/****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Define the uip_tcp_appstate_t datatype. This is the state of our tcp/ip
+ *         application, and the memory required for this state is allocated together
+ *         with each TCP connection. One application state for each TCP connection.
+ */
+typedef struct net_state 
+{
+  unsigned char unused;
+} uip_tcp_appstate_t;
 
-#endif /* HEADER_H */
-/*********************************** end of header.h ***********************************/
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+void     NetInit(void);
+void     NetApp(void);
+void     NetTask(void);
+
+
+#endif /* NET_H */
+/*********************************** end of net.h **************************************/

@@ -260,16 +260,17 @@ begin
   timer.Enabled := False;
 
   // connect the transport layer
-  MbiCallbackOnInfo('Connecting the transport layer.');
-  MbiCallbackOnLog('Connecting the transport layer. t='+TimeToStr(Time));
+  MbiCallbackOnInfo('Connecting to target via TCP/IP.');
+  MbiCallbackOnLog('Connecting to target via TCP/IP. t='+TimeToStr(Time));
   Application.ProcessMessages;
   if not loader.Connect then
   begin
     // update the user info
-    MbiCallbackOnInfo('Could not connect to transport layer. Automatically retrying...');
-    MbiCallbackOnLog('Transport layer connection failed. Automatically retrying. t='+TimeToStr(Time));
+    MbiCallbackOnInfo('Could not connect via TCP/IP. Retrying. Reset your target if this takes a long time.');
+    MbiCallbackOnLog('Transport layer connection failed. Check the configured IP address and port. t='+TimeToStr(Time));
+    MbiCallbackOnLog('Retrying transport layer connection. Reset your target if this takes a long time. t='+TimeToStr(Time));
     Application.ProcessMessages;
-    // continuously try to coonect the transport layer
+    // continuously try to connect the transport layer
     while not loader.Connect do
     begin
       Application.ProcessMessages;

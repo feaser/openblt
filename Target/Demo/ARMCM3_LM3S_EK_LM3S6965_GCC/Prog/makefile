@@ -43,10 +43,17 @@ irq.c \
 irq.h \
 led.c \
 led.h \
+net.c \
+net.h \
 main.c \
 time.c \
 time.h \
 vectors.c \
+lib/uip/clock-arch.c \
+lib/uip/clock-arch.h \
+lib/uip/netdev.c \
+lib/uip/netdev.h \
+lib/uip/uip-conf.h \
 lib/inc/asmdefs.h \
 lib/inc/hw_adc.h \
 lib/inc/hw_comp.h \
@@ -118,7 +125,26 @@ lib/driverlib/udma.h \
 lib/driverlib/usb.c \
 lib/driverlib/usb.h \
 lib/driverlib/watchdog.c \
-lib/driverlib/watchdog.h
+lib/driverlib/watchdog.h \
+../../../Source/third_party/uip/uip/clock.h \
+../../../Source/third_party/uip/uip/lc-addrlabels.h \
+../../../Source/third_party/uip/uip/lc-switch.h \
+../../../Source/third_party/uip/uip/lc.h \
+../../../Source/third_party/uip/uip/pt.h \
+../../../Source/third_party/uip/uip/uip-fw.c \
+../../../Source/third_party/uip/uip/uip-fw.h \
+../../../Source/third_party/uip/uip/uip-neighbor.h \
+../../../Source/third_party/uip/uip/uip-split.h \
+../../../Source/third_party/uip/uip/uip.c \
+../../../Source/third_party/uip/uip/uip.h \
+../../../Source/third_party/uip/uip/uiplib.c \
+../../../Source/third_party/uip/uip/uiplib.h \
+../../../Source/third_party/uip/uip/uipopt.h \
+../../../Source/third_party/uip/uip/uip_arch.h \
+../../../Source/third_party/uip/uip/uip_arp.c \
+../../../Source/third_party/uip/uip/uip_arp.h \
+../../../Source/third_party/uip/uip/uip_timer.c \
+../../../Source/third_party/uip/uip/uip_timer.h
 
 
 #|---------------------------------------------------------------------------------------|

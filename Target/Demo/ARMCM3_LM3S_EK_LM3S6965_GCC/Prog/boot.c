@@ -42,7 +42,7 @@
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootActivate(void)
+void BootActivate(void)
 {
   /* perform software reset to activate the bootoader again */
   SysCtlReset();
