@@ -39,6 +39,13 @@
 #include "netdev.h"
 #include "uip.h"
 #include "uip_arp.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_ethernet.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/gpio.h"
+#include "driverlib/ethernet.h"
+#include "driverlib/flashlib.h"
 #endif
 
 
@@ -97,6 +104,9 @@ void NetInit(void)
 
   /* initialize the network device */
   netdev_init();
+  /* initialize the timer variables */
+  periodicTimerTimeOut = TimerGet() + NET_UIP_PERIODIC_TIMER_MS;
+  ARPTimerTimeOut = TimerGet() + NET_UIP_ARP_TIMER_MS;
   /* initialize the uIP TCP/IP stack. */
   uip_init();
   /* set the IP address */
@@ -117,13 +127,10 @@ void NetInit(void)
              BOOT_COM_NET_NETMASK3);
   #endif
   uip_setnetmask(ipaddr);
-  /* set the MAC address */
-  netdev_setmacaddr();  
-  /* initialize the timer variables */
-  periodicTimerTimeOut = TimerGet() + NET_UIP_PERIODIC_TIMER_MS;
-  ARPTimerTimeOut = TimerGet() + NET_UIP_ARP_TIMER_MS;
   /* start listening on the configured port for XCP transfers on TCP/IP */
   uip_listen(HTONS(BOOT_COM_NET_PORT));
+  /* initialize the MAC and set the MAC address */
+  netdev_init_mac();  
 } /*** end of NetInit ***/
 
 

@@ -2201,9 +2201,9 @@ FLASH            0x00008000         0x00038000         xr
 
 Linker script and memory map
 
-                0x0000d7b4                __do_debug_operation = __do_debug_operation_mempoll
-                0x0000cb78                __vfprintf = __vfprintf_int_nwp
-                0x0000d1d0                __vfscanf = __vfscanf_int
+                0x0000d7ac                __do_debug_operation = __do_debug_operation_mempoll
+                0x0000cb70                __vfprintf = __vfprintf_int_nwp
+                0x0000d1c8                __vfscanf = __vfscanf_int
                 0xe000e000                __CM3_System_Control_Space_segment_start__ = 0xe000e000
                 0xe000f000                __CM3_System_Control_Space_segment_end__ = 0xe000f000
                 0x40020000                __Peripherals_segment_start__ = 0x40020000
@@ -2254,7 +2254,7 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .init is too large to fit in FLASH memory segment)
                 0x0000820c                __text_load_start__ = ALIGN (__init_end__, 0x4)
 
-.text           0x0000820c     0x55ec
+.text           0x0000820c     0x55e4
                 0x0000820c                __text_start__ = .
  *(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table .ARM.extab* .gnu.linkonce.armextab.*)
  .glue_7        0x00000000        0x0 linker stubs
@@ -2446,68 +2446,68 @@ Linker script and memory map
                 0x0000c79c       0x54 THUMB Debug/../../obj/uart.o
                 0x0000c79c                UARTCharGetNonBlocking
  .text.netdev_init
-                0x0000c7f0      0x14c THUMB Debug/../../obj/netdev.o
+                0x0000c7f0       0x2c THUMB Debug/../../obj/netdev.o
                 0x0000c7f0                netdev_init
- .text.netdev_setmacaddr
-                0x0000c93c       0xec THUMB Debug/../../obj/netdev.o
-                0x0000c93c                netdev_setmacaddr
+ .text.netdev_init_mac
+                0x0000c81c      0x204 THUMB Debug/../../obj/netdev.o
+                0x0000c81c                netdev_init_mac
  .text.netdev_read
-                0x0000ca28       0x6c THUMB Debug/../../obj/netdev.o
-                0x0000ca28                netdev_read
+                0x0000ca20       0x6c THUMB Debug/../../obj/netdev.o
+                0x0000ca20                netdev_read
  .text.netdev_send
-                0x0000ca94       0x2c THUMB Debug/../../obj/netdev.o
-                0x0000ca94                netdev_send
+                0x0000ca8c       0x2c THUMB Debug/../../obj/netdev.o
+                0x0000ca8c                netdev_send
  .text.libc.memcpy
-                0x0000cac0       0x48 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2_asm.o)
-                0x0000cac0                __aeabi_memcpy
-                0x0000cac0                __aeabi_memcpy4
-                0x0000cac0                __aeabi_memcpy8
-                0x0000cac0                memcpy
+                0x0000cab8       0x48 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2_asm.o)
+                0x0000cab8                __aeabi_memcpy
+                0x0000cab8                __aeabi_memcpy4
+                0x0000cab8                __aeabi_memcpy8
+                0x0000cab8                memcpy
  .text.libc.memset
-                0x0000cb08       0x70 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2_asm.o)
-                0x0000cb08                memset
+                0x0000cb00       0x70 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2_asm.o)
+                0x0000cb00                memset
  .text.libc.__vfprintf_int_nwp
-                0x0000cb78      0x460 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
-                0x0000cb78                __vfprintf_int_nwp
+                0x0000cb70      0x460 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
+                0x0000cb70                __vfprintf_int_nwp
  .text.libc.__ungetc
-                0x0000cfd8       0x20 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
+                0x0000cfd0       0x20 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
  .text.libc.rd_int
-                0x0000cff8      0x1d8 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
+                0x0000cff0      0x1d8 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
  .text.libc.__vfscanf_int
-                0x0000d1d0      0x504 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
-                0x0000d1d0                __vfscanf_int
+                0x0000d1c8      0x504 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
+                0x0000d1c8                __vfscanf_int
  .text.libc.__getc
-                0x0000d6d4       0x24 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
-                0x0000d6d4                __getc
+                0x0000d6cc       0x24 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+                0x0000d6cc                __getc
  .text.libc.__putc
-                0x0000d6f8       0x38 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
-                0x0000d6f8                __putc
+                0x0000d6f0       0x38 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+                0x0000d6f0                __putc
  .text.libc.isupper
-                0x0000d730       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
-                0x0000d730                isupper
+                0x0000d728       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+                0x0000d728                isupper
  .text.libc.islower
-                0x0000d740       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
-                0x0000d740                islower
+                0x0000d738       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+                0x0000d738                islower
  .text.libc.isdigit
-                0x0000d750       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
-                0x0000d750                isdigit
+                0x0000d748       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+                0x0000d748                isdigit
  .text.libc.__digit
-                0x0000d760       0x3c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
-                0x0000d760                __digit
+                0x0000d758       0x3c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+                0x0000d758                __digit
  .text.libc.isspace
-                0x0000d79c       0x18 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
-                0x0000d79c                isspace
+                0x0000d794       0x18 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+                0x0000d794                isspace
  .text.libdebugio.__do_debug_operation_mempoll
-                0x0000d7b4       0x3c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
-                0x0000d7b4                __do_debug_operation_mempoll
+                0x0000d7ac       0x3c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
+                0x0000d7ac                __do_debug_operation_mempoll
  .text.libc.__debug_io_lock
-                0x0000d7f0        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
-                0x0000d7f0                __debug_io_lock
+                0x0000d7e8        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
+                0x0000d7e8                __debug_io_lock
  .text.libc.__debug_io_unlock
-                0x0000d7f4        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
-                0x0000d7f4                __debug_io_unlock
-                0x0000d7f8                __text_end__ = (__text_start__ + SIZEOF (.text))
-                0x0000d7f8                __text_load_end__ = __text_end__
+                0x0000d7ec        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
+                0x0000d7ec                __debug_io_unlock
+                0x0000d7f0                __text_end__ = (__text_start__ + SIZEOF (.text))
+                0x0000d7f0                __text_load_end__ = __text_end__
 
 .vfp11_veneer   0x00000000        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
@@ -2518,80 +2518,80 @@ Linker script and memory map
 .iplt           0x00000000        0x0
  .iplt          0x00000000        0x0 THUMB Debug/../../obj/boot.o
                 0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .text is too large to fit in FLASH memory segment)
-                0x0000d7f8                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
+                0x0000d7f0                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
 
-.dtors          0x0000d7f8        0x0
-                0x0000d7f8                __dtors_start__ = .
+.dtors          0x0000d7f0        0x0
+                0x0000d7f0                __dtors_start__ = .
  *(SORT(.dtors.*))
  *(.dtors)
  *(.fini_array .fini_array.*)
-                0x0000d7f8                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
-                0x0000d7f8                __dtors_load_end__ = __dtors_end__
+                0x0000d7f0                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
+                0x0000d7f0                __dtors_load_end__ = __dtors_end__
                 0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .dtors is too large to fit in FLASH memory segment)
-                0x0000d7f8                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
+                0x0000d7f0                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
 
-.ctors          0x0000d7f8        0x0
-                0x0000d7f8                __ctors_start__ = .
+.ctors          0x0000d7f0        0x0
+                0x0000d7f0                __ctors_start__ = .
  *(SORT(.ctors.*))
  *(.ctors)
  *(.init_array .init_array.*)
-                0x0000d7f8                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
-                0x0000d7f8                __ctors_load_end__ = __ctors_end__
+                0x0000d7f0                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
+                0x0000d7f0                __ctors_load_end__ = __ctors_end__
                 0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .ctors is too large to fit in FLASH memory segment)
-                0x0000d7f8                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
+                0x0000d7f0                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
 
-.rodata         0x0000d7f8      0x338
-                0x0000d7f8                __rodata_start__ = .
+.rodata         0x0000d7f0      0x338
+                0x0000d7f0                __rodata_start__ = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
  .rodata.all_zeroes_addr
-                0x0000d7f8        0x4 THUMB Debug/../../obj/uip.o
+                0x0000d7f0        0x4 THUMB Debug/../../obj/uip.o
  .rodata.broadcast_ethaddr
-                0x0000d7fc        0x8 THUMB Debug/../../obj/uip_arp.o
+                0x0000d7f4        0x8 THUMB Debug/../../obj/uip_arp.o
  .rodata.broadcast_ipaddr
-                0x0000d804        0x4 THUMB Debug/../../obj/uip_arp.o
- .rodata        0x0000d808       0x70 THUMB Debug/../../obj/ethernet.o
- .rodata        0x0000d878       0x6c THUMB Debug/../../obj/flash.o
- .rodata        0x0000d8e4       0x6c THUMB Debug/../../obj/gpio.o
+                0x0000d7fc        0x4 THUMB Debug/../../obj/uip_arp.o
+ .rodata        0x0000d800       0x70 THUMB Debug/../../obj/ethernet.o
+ .rodata        0x0000d870       0x6c THUMB Debug/../../obj/flash.o
+ .rodata        0x0000d8dc       0x6c THUMB Debug/../../obj/gpio.o
  .rodata.g_pulSRCRRegs
-                0x0000d950        0xc THUMB Debug/../../obj/sysctl.o
+                0x0000d948        0xc THUMB Debug/../../obj/sysctl.o
  .rodata.g_pulRCGCRegs
-                0x0000d95c        0xc THUMB Debug/../../obj/sysctl.o
+                0x0000d954        0xc THUMB Debug/../../obj/sysctl.o
  .rodata.g_pulXtals
-                0x0000d968       0x5c THUMB Debug/../../obj/sysctl.o
- .rodata        0x0000d9c4       0x6c THUMB Debug/../../obj/sysctl.o
- .rodata        0x0000da30       0x6c THUMB Debug/../../obj/systick.o
- .rodata        0x0000da9c       0x6c THUMB Debug/../../obj/uart.o
+                0x0000d960       0x5c THUMB Debug/../../obj/sysctl.o
+ .rodata        0x0000d9bc       0x6c THUMB Debug/../../obj/sysctl.o
+ .rodata        0x0000da28       0x6c THUMB Debug/../../obj/systick.o
+ .rodata        0x0000da94       0x6c THUMB Debug/../../obj/uart.o
  .rodata.libc.str1.4
-                0x0000db08        0x8 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
+                0x0000db00        0x8 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
  .rodata.libc.__hex_lc
-                0x0000db10       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
-                0x0000db10                __hex_lc
+                0x0000db08       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+                0x0000db08                __hex_lc
  .rodata.libc.__hex_uc
-                0x0000db20       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
-                0x0000db20                __hex_uc
-                0x0000db30                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
-                0x0000db30                __rodata_load_end__ = __rodata_end__
+                0x0000db18       0x10 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+                0x0000db18                __hex_uc
+                0x0000db28                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
+                0x0000db28                __rodata_load_end__ = __rodata_end__
 
 .rel.dyn        0x00008000        0x0
  .rel.iplt      0x00000000        0x0 THUMB Debug/../../obj/boot.o
                 0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .rodata is too large to fit in FLASH memory segment)
-                0x0000db30                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
+                0x0000db28                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
 
-.ARM.exidx      0x0000db30        0x0
-                0x0000db30                __ARM.exidx_start__ = .
-                0x0000db30                __exidx_start = __ARM.exidx_start__
+.ARM.exidx      0x0000db28        0x0
+                0x0000db28                __ARM.exidx_start__ = .
+                0x0000db28                __exidx_start = __ARM.exidx_start__
  *(.ARM.exidx .ARM.exidx.*)
-                0x0000db30                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
-                0x0000db30                __exidx_end = __ARM.exidx_end__
-                0x0000db30                __ARM.exidx_load_end__ = __ARM.exidx_end__
+                0x0000db28                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
+                0x0000db28                __exidx_end = __ARM.exidx_end__
+                0x0000db28                __ARM.exidx_load_end__ = __ARM.exidx_end__
                 0x00000001                . = ASSERT (((__ARM.exidx_end__ >= __FLASH_segment_start__) && (__ARM.exidx_end__ <= (__FLASH_segment_start__ + 0x40000))), error: .ARM.exidx is too large to fit in FLASH memory segment)
-                0x0000db30                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
+                0x0000db28                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
 
-.fast           0x20000000        0x0 load address 0x0000db30
+.fast           0x20000000        0x0 load address 0x0000db28
                 0x20000000                __fast_start__ = .
  *(.fast .fast.*)
                 0x20000000                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
-                0x0000db30                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
+                0x0000db28                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
                 0x00000001                . = ASSERT ((((__fast_load_start__ + SIZEOF (.fast)) >= __FLASH_segment_start__) && ((__fast_load_start__ + SIZEOF (.fast)) <= (__FLASH_segment_start__ + 0x40000))), error: .fast is too large to fit in FLASH memory segment)
 
 .fast_run       0x20000000        0x0
@@ -2600,13 +2600,13 @@ Linker script and memory map
                 0x20000000                __fast_run_end__ = (__fast_run_start__ + SIZEOF (.fast_run))
                 0x20000000                __fast_run_load_end__ = __fast_run_end__
                 0x00000001                . = ASSERT (((__fast_run_end__ >= __SRAM_segment_start__) && (__fast_run_end__ <= (__SRAM_segment_start__ + 0x10000))), error: .fast_run is too large to fit in SRAM memory segment)
-                0x0000db30                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
+                0x0000db28                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
 
-.data           0x20000000        0x0 load address 0x0000db30
+.data           0x20000000        0x0 load address 0x0000db28
                 0x20000000                __data_start__ = .
  *(.data .data.* .gnu.linkonce.d.*)
                 0x20000000                __data_end__ = (__data_start__ + SIZEOF (.data))
-                0x0000db30                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
+                0x0000db28                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
 
 .igot.plt       0x00000000        0x0
  .igot.plt      0x00000000        0x0 THUMB Debug/../../obj/boot.o
@@ -2758,14 +2758,14 @@ Linker script and memory map
                 0x20000900                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
                 0x20000900                __tbss_load_end__ = __tbss_end__
                 0x00000001                . = ASSERT (((__tbss_end__ >= __SRAM_segment_start__) && (__tbss_end__ <= (__SRAM_segment_start__ + 0x10000))), error: .tbss is too large to fit in SRAM memory segment)
-                0x0000db30                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
+                0x0000db28                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
 
-.tdata          0x20000900        0x0 load address 0x0000db30
+.tdata          0x20000900        0x0 load address 0x0000db28
                 0x20000900                __tdata_start__ = .
  *(.tdata .tdata.*)
                 0x20000900                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
-                0x0000db30                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
-                0x0000db30                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
+                0x0000db28                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
+                0x0000db28                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
                 0x00000001                . = ASSERT ((((__tdata_load_start__ + SIZEOF (.tdata)) >= __FLASH_segment_start__) && ((__tdata_load_start__ + SIZEOF (.tdata)) <= (__FLASH_segment_start__ + 0x40000))), error: .tdata is too large to fit in FLASH memory segment)
 
 .tdata_run      0x20000900        0x0
@@ -2823,7 +2823,7 @@ LOAD C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib
 END GROUP
 OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/Prog/ide/../bin/demoprog_ek_lm3s6965.elf elf32-littlearm)
 
-.debug_frame    0x00000000     0x43a4
+.debug_frame    0x00000000     0x439c
  .debug_frame   0x00000000       0xac THUMB Debug/../../obj/boot.o
  .debug_frame   0x000000ac       0x7c THUMB Debug/../../obj/irq.o
  .debug_frame   0x00000128       0x60 THUMB Debug/../../obj/led.o
@@ -2841,15 +2841,15 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
  .debug_frame   0x000016bc      0x6d0 THUMB Debug/../../obj/sysctl.o
  .debug_frame   0x00001d8c      0x14c THUMB Debug/../../obj/systick.o
  .debug_frame   0x00001ed8      0x718 THUMB Debug/../../obj/uart.o
- .debug_frame   0x000025f0       0xb8 THUMB Debug/../../obj/netdev.o
- .debug_frame   0x000026a8      0x120 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2_asm.o)
- .debug_frame   0x000027c8       0x40 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
- .debug_frame   0x00002808       0x8c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
- .debug_frame   0x00002894     0x12e0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
- .debug_frame   0x00003b74      0x790 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
- .debug_frame   0x00004304       0xa0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
+ .debug_frame   0x000025f0       0xb0 THUMB Debug/../../obj/netdev.o
+ .debug_frame   0x000026a0      0x120 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2_asm.o)
+ .debug_frame   0x000027c0       0x40 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
+ .debug_frame   0x00002800       0x8c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
+ .debug_frame   0x0000288c     0x12e0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+ .debug_frame   0x00003b6c      0x790 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
+ .debug_frame   0x000042fc       0xa0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
 
-.debug_info     0x00000000     0x57ec
+.debug_info     0x00000000     0x57e7
  .debug_info    0x00000000      0x105 THUMB Debug/../../obj/boot.o
  .debug_info    0x00000105       0xd6 THUMB Debug/../../obj/cstart.o
  .debug_info    0x000001db       0x80 THUMB Debug/../../obj/irq.o
@@ -2868,12 +2868,12 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
  .debug_info    0x00002fb6      0x844 THUMB Debug/../../obj/sysctl.o
  .debug_info    0x000037fa      0x130 THUMB Debug/../../obj/systick.o
  .debug_info    0x0000392a      0x967 THUMB Debug/../../obj/uart.o
- .debug_info    0x00004291      0x185 THUMB Debug/../../obj/netdev.o
- .debug_info    0x00004416       0x37 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
- .debug_info    0x0000444d       0x68 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
- .debug_info    0x000044b5      0xd02 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
- .debug_info    0x000051b7      0x55f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
- .debug_info    0x00005716       0xd6 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
+ .debug_info    0x00004291      0x180 THUMB Debug/../../obj/netdev.o
+ .debug_info    0x00004411       0x37 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
+ .debug_info    0x00004448       0x68 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
+ .debug_info    0x000044b0      0xd02 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+ .debug_info    0x000051b2      0x55f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
+ .debug_info    0x00005711       0xd6 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
 
 .debug_abbrev   0x00000000     0x13c5
  .debug_abbrev  0x00000000       0xa4 THUMB Debug/../../obj/boot.o
@@ -2901,7 +2901,7 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
  .debug_abbrev  0x0000135f       0x3e C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
  .debug_abbrev  0x0000139d       0x28 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
 
-.debug_loc      0x00000000     0x4910
+.debug_loc      0x00000000     0x4904
  .debug_loc     0x00000000       0xbc THUMB Debug/../../obj/boot.o
  .debug_loc     0x000000bc       0x84 THUMB Debug/../../obj/irq.o
  .debug_loc     0x00000140       0x64 THUMB Debug/../../obj/led.o
@@ -2918,11 +2918,11 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
  .debug_loc     0x00001ba8      0x8cc THUMB Debug/../../obj/sysctl.o
  .debug_loc     0x00002474      0x1a4 THUMB Debug/../../obj/systick.o
  .debug_loc     0x00002618      0x8f8 THUMB Debug/../../obj/uart.o
- .debug_loc     0x00002f10       0xd4 THUMB Debug/../../obj/netdev.o
- .debug_loc     0x00002fe4       0x2d C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
- .debug_loc     0x00003011       0x79 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
- .debug_loc     0x0000308a     0x1092 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
- .debug_loc     0x0000411c      0x7f4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
+ .debug_loc     0x00002f10       0xc8 THUMB Debug/../../obj/netdev.o
+ .debug_loc     0x00002fd8       0x2d C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
+ .debug_loc     0x00003005       0x79 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
+ .debug_loc     0x0000307e     0x1092 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+ .debug_loc     0x00004110      0x7f4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
 
 .debug_aranges  0x00000000     0x1100
  .debug_aranges
@@ -2999,7 +2999,7 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
  .debug_ranges  0x00000d18      0x208 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
  .debug_ranges  0x00000f20       0x50 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
 
-.debug_line     0x00000000     0x4217
+.debug_line     0x00000000     0x4219
  .debug_line    0x00000000       0xdb THUMB Debug/../../obj/boot.o
  .debug_line    0x000000db      0x10f THUMB Debug/../../obj/cstart.o
  .debug_line    0x000001ea       0xb3 THUMB Debug/../../obj/irq.o
@@ -3018,14 +3018,14 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
  .debug_line    0x000023bb      0x7e1 THUMB Debug/../../obj/sysctl.o
  .debug_line    0x00002b9c      0x13c THUMB Debug/../../obj/systick.o
  .debug_line    0x00002cd8      0x743 THUMB Debug/../../obj/uart.o
- .debug_line    0x0000341b      0x19c THUMB Debug/../../obj/netdev.o
- .debug_line    0x000035b7       0x75 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
- .debug_line    0x0000362c       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
- .debug_line    0x000036a0      0x5b3 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
- .debug_line    0x00003c53      0x550 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
- .debug_line    0x000041a3       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
+ .debug_line    0x0000341b      0x19e THUMB Debug/../../obj/netdev.o
+ .debug_line    0x000035b9       0x75 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
+ .debug_line    0x0000362e       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
+ .debug_line    0x000036a2      0x5b3 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+ .debug_line    0x00003c55      0x550 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
+ .debug_line    0x000041a5       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
 
-.debug_str      0x00000000     0x2afb
+.debug_str      0x00000000     0x2af9
  .debug_str     0x00000000      0x144 THUMB Debug/../../obj/boot.o
                                 0x149 (size before relaxing)
  .debug_str     0x00000144       0xa6 THUMB Debug/../../obj/irq.o
@@ -3060,17 +3060,17 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
                                 0x183 (size before relaxing)
  .debug_str     0x00001bd3      0x38c THUMB Debug/../../obj/uart.o
                                 0x463 (size before relaxing)
- .debug_str     0x00001f5f       0xb4 THUMB Debug/../../obj/netdev.o
-                                0x196 (size before relaxing)
- .debug_str     0x00002013       0x68 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
+ .debug_str     0x00001f5f       0xb2 THUMB Debug/../../obj/netdev.o
+                                0x194 (size before relaxing)
+ .debug_str     0x00002011       0x68 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
                                  0xb1 (size before relaxing)
- .debug_str     0x0000207b       0x7c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
+ .debug_str     0x00002079       0x7c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
                                  0xc5 (size before relaxing)
- .debug_str     0x000020f7      0x57f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+ .debug_str     0x000020f5      0x57f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
                                 0x655 (size before relaxing)
- .debug_str     0x00002676      0x3b3 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
+ .debug_str     0x00002674      0x3b3 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
                                 0x3fc (size before relaxing)
- .debug_str     0x00002a29       0xd2 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
+ .debug_str     0x00002a27       0xd2 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
                                 0x11b (size before relaxing)
 
 .comment        0x00000000       0x4e

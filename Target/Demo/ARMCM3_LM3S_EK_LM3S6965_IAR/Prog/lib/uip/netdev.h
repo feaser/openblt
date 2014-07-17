@@ -39,8 +39,8 @@
 #define __NETDEV_H__
 
 void         netdev_init(void);
+void         netdev_init_mac(void);
 unsigned int netdev_read(void);
 void         netdev_send(void);
-void         netdev_setmacaddr(void);
 
 #endif /* __NETDEV_H__ */

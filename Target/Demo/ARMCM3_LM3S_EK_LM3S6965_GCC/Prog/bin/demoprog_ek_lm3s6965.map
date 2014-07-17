@@ -18,25 +18,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   1 .bss          0000086c  20000000  20000000  00010000  2**2
                   ALLOC
-  2 .debug_info   000063a5  00000000  00000000  0000b1dc  2**0
+  2 .debug_info   000063aa  00000000  00000000  0000b1dc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  3 .debug_abbrev 000015ac  00000000  00000000  00011581  2**0
+  3 .debug_abbrev 00001589  00000000  00000000  00011586  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_loc    000033f7  00000000  00000000  00012b2d  2**0
+  4 .debug_loc    000033f7  00000000  00000000  00012b0f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_aranges 00000920  00000000  00000000  00015f24  2**0
+  5 .debug_aranges 00000920  00000000  00000000  00015f06  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_ranges 000007f0  00000000  00000000  00016844  2**0
+  6 .debug_ranges 000007f0  00000000  00000000  00016826  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00002481  00000000  00000000  00017034  2**0
+  7 .debug_line   00002483  00000000  00000000  00017016  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    00001a76  00000000  00000000  000194b5  2**0
+  8 .debug_str    00001a74  00000000  00000000  00019499  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .comment      00000030  00000000  00000000  0001af2b  2**0
+  9 .comment      00000030  00000000  00000000  0001af0d  2**0
                   CONTENTS, READONLY
- 10 .ARM.attributes 00000033  00000000  00000000  0001af5b  2**0
+ 10 .ARM.attributes 00000033  00000000  00000000  0001af3d  2**0
                   CONTENTS, READONLY
- 11 .debug_frame  00001738  00000000  00000000  0001af90  2**2
+ 11 .debug_frame  00001738  00000000  00000000  0001af70  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00008000 l    d  .text	00000000 .text
@@ -121,7 +121,7 @@ SYMBOL TABLE:
 000087e4 g     F .text	00000052 netdev_read
 00009bd4 g     F .text	00000fc4 uip_process
 200000e4 g     O .bss	00000004 uip_sappdata
-00008638 g     F .text	00000100 netdev_init
+00008638 g     F .text	00000024 netdev_init
 200000e8 g     O .bss	00000004 uip_acc32
 00009b30 g     F .text	0000002c uip_ipchksum
 00008988 g     F .text	0000003a EthernetInitExpClk
@@ -139,7 +139,7 @@ SYMBOL TABLE:
 00008624 g     F .text	00000010 TimeISRHandler
 00009078 g     F .text	0000004c GPIOPinTypeEthernetLED
 00008400 g     F .text	0000015c NetTask
-00008738 g     F .text	000000ac netdev_setmacaddr
+0000865c g     F .text	00000188 netdev_init_mac
 000099ac g     F .text	00000036 UARTCharGetNonBlocking
 20000000 g       .bss	00000000 _bss
 00009b5c g     F .text	00000010 uip_tcpchksum

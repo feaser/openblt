@@ -62,12 +62,20 @@
 /*---------------------------------------------------------------------------*/
 void netdev_init(void)
 {
-  blt_int32u ulTemp;
-  blt_int32u ulLinkTimeOut;
-
   /* enable and reset the ethernet controller. */
   SysCtlPeripheralEnable(SYSCTL_PERIPH_ETH);
   SysCtlPeripheralReset(SYSCTL_PERIPH_ETH);
+}
+
+
+/*---------------------------------------------------------------------------*/
+void netdev_init_mac(void)
+{
+  struct uip_eth_addr macAddress;
+  unsigned long ulUser0, ulUser1;
+  blt_int32u ulTemp;
+  blt_int32u ulLinkTimeOut;
+
   /* enable port F for ethernet LEDs.
    *  LED0        Bit 3   Output
    *  LED1        Bit 2   Output
@@ -81,7 +89,6 @@ void netdev_init(void)
                      ETH_INT_RXOF | ETH_INT_TX | ETH_INT_TXER | ETH_INT_RX));
   ulTemp = EthernetIntStatus(ETH_BASE, false);
   EthernetIntClear(ETH_BASE, ulTemp);
-
   /* initialize the ethernet controller for operation. */
   EthernetInitExpClk(ETH_BASE, SysCtlClockGet());
   /* configure the ethernet controller for normal operation.
@@ -91,6 +98,9 @@ void netdev_init(void)
    */
   EthernetConfigSet(ETH_BASE, (ETH_CFG_TX_DPLXEN | ETH_CFG_TX_CRCEN |
                                ETH_CFG_TX_PADEN));
+  /* enable the ethernet controller. */
+  EthernetEnable(ETH_BASE);
+
   /* wait for the link to become active. */
   ulTemp = EthernetPHYRead(ETH_BASE, PHY_MR1);
   ulLinkTimeOut = TimerGet() + NETDEV_LINKUP_TIMEOUT_MS;
@@ -106,16 +116,6 @@ void netdev_init(void)
       break;
     }
   }
-  /* enable the ethernet controller. */
-  EthernetEnable(ETH_BASE);
-}
-
-
-/*---------------------------------------------------------------------------*/
-void netdev_setmacaddr(void)
-{
-  struct uip_eth_addr macAddress;
-  unsigned long ulUser0, ulUser1;
 
   /* set the default MAC address */
   macAddress.addr[0] = NETDEV_DEFAULT_MACADDR0;
