@@ -323,6 +323,38 @@
   #error "BOOT_COM_NET_NETMASK3 must be >= 0"
   #endif
 
+  #ifndef BOOT_COM_NET_GATEWAY0
+  #error "BOOT_COM_NET_GATEWAY0 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_GATEWAY0 < 0)
+  #error "BOOT_COM_NET_GATEWAY0 must be >= 0"
+  #endif
+  
+  #ifndef BOOT_COM_NET_GATEWAY1
+  #error "BOOT_COM_NET_GATEWAY1 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_GATEWAY1 < 0)
+  #error "BOOT_COM_NET_GATEWAY1 must be >= 0"
+  #endif
+
+  #ifndef BOOT_COM_NET_GATEWAY2
+  #error "BOOT_COM_NET_GATEWAY2 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_GATEWAY2 < 0)
+  #error "BOOT_COM_NET_GATEWAY2 must be >= 0"
+  #endif
+  
+  #ifndef BOOT_COM_NET_GATEWAY3
+  #error "BOOT_COM_NET_GATEWAY3 is missing in blt_conf.h"
+  #endif
+
+  #if (BOOT_COM_NET_GATEWAY3 < 0)
+  #error "BOOT_COM_NET_GATEWAY3 must be >= 0"
+  #endif
+
   #ifndef BOOT_COM_NET_PORT
   #error "BOOT_COM_NET_PORT is missing in blt_conf.h"
   #endif
@@ -338,6 +370,11 @@
   #ifndef BOOT_COM_NET_NETMASK_HOOK_ENABLE
   #define BOOT_COM_NET_NETMASK_HOOK_ENABLE (0)
   #endif
+
+  #ifndef BOOT_COM_NET_GATEWAY_HOOK_ENABLE
+  #define BOOT_COM_NET_GATEWAY_HOOK_ENABLE (0)
+  #endif
+
 #endif /* BOOT_COM_USB_ENABLE > 0 */
 
 #ifndef BOOT_FILE_SYS_ENABLE

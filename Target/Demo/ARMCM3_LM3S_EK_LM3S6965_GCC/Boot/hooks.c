@@ -236,6 +236,30 @@ void NetNetworkMaskHook(blt_int8u *netMaskArray)
 #endif /* BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0 */
 
 
+#if (BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called when the gateway address is about to be 
+**            configured.
+** \param     gatewayAddrArray 4-byte array where the gateway address should be stored.
+** \return    none.
+**
+****************************************************************************************/
+void NetGatewayAddressHook(blt_int8u *gatewayAddrArray)
+{
+  /* This hook function allows a dynamic configuration of the network mask. This could 
+   * for example be used if the bootloader is activated from a running user program and 
+   * should have the same network mask as the user program. This network mask could be 
+   * stored at a fixed location in RAM which can be read here. For now the example 
+   * implementation simply configures the bootloader's default network mask.
+   */
+  gatewayAddrArray[0] = BOOT_COM_NET_GATEWAY0;
+  gatewayAddrArray[1] = BOOT_COM_NET_GATEWAY1;
+  gatewayAddrArray[2] = BOOT_COM_NET_GATEWAY2;
+  gatewayAddrArray[3] = BOOT_COM_NET_GATEWAY3;
+} /*** end of NetGatewayAddressHook ***/
+#endif /* BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0 */
+
+
 /****************************************************************************************
 *   W A T C H D O G   D R I V E R   H O O K   F U N C T I O N S
 ****************************************************************************************/

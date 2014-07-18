@@ -86,7 +86,8 @@
  * message for data transmission and reception is set through BOOT_COM_NET_TX_MAX_DATA 
  * and BOOT_COM_NET_RX_MAX_DATA, respectively. The default IP address is configured 
  * with the macros BOOT_COM_NET_IPADDRx. The default netmask is configued with the macros
- * BOOT_COM_NET_NETMASKx. The bootloader acts and a TCP/IP server. The port the server
+ * BOOT_COM_NET_NETMASKx. The default gateway is configured with the macros
+ * BOOT_COM_NET_GATEWAYx. The bootloader acts and a TCP/IP server. The port the server
  * listen on for connections is configured with BOOT_COM_NET_PORT.
  */
 /** \brief Enable/disable the NET transport layer. */
@@ -113,6 +114,14 @@
 #define BOOT_COM_NET_NETMASK2            (0)
 /** \brief Configure the 4th byte of the network mask */
 #define BOOT_COM_NET_NETMASK3            (0)
+/** \brief Configure the 1st byte of the gateway address */
+#define BOOT_COM_NET_GATEWAY0            (169)
+/** \brief Configure the 2nd byte of the gateway address */
+#define BOOT_COM_NET_GATEWAY1            (254)
+/** \brief Configure the 3rd byte of the gateway address */
+#define BOOT_COM_NET_GATEWAY2            (19)
+/** \brief Configure the 4th byte of the gateway address */
+#define BOOT_COM_NET_GATEWAY3            (1)
 /** \brief Enable/disable a hook function that is called when the IP address is about
  *         to be set. This allows a dynamic override of the BOOT_COM_NET_IPADDRx values.
  */
@@ -121,6 +130,11 @@
  *         to be set. This allows a dynamic override of the BOOT_COM_NET_NETMASKx values.
  */
 #define BOOT_COM_NET_NETMASK_HOOK_ENABLE (0)
+/** \brief Enable/disable a hook function that is called when the gateway address is 
+ *         about to be set. This allows a dynamic override of the BOOT_COM_NET_GATEWAYx 
+ *         values.
+ */
+#define BOOT_COM_NET_GATEWAY_HOOK_ENABLE (0)
 
 
 /****************************************************************************************
@@ -137,7 +151,7 @@
  *
  * Also note that when the target is directly connected to the ethernet port of a PC, 
  * the checkbox "Automatically retry socket connection" should be checked in the 
- * Microboot settings. if connection via a router the uncheck this checkbox.
+ * Microboot settings. if connecting via a router the uncheck this checkbox.
  */
 #define BACKDOOR_ENTRY_TIMEOUT_MS  (10000)
 #endif

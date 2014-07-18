@@ -84,6 +84,10 @@ void NetInit(void)
   uip_ipaddr(ipaddr, BOOT_COM_NET_NETMASK0, BOOT_COM_NET_NETMASK1, BOOT_COM_NET_NETMASK2,
              BOOT_COM_NET_NETMASK3);
   uip_setnetmask(ipaddr);
+  /* set the gateway address */
+  uip_ipaddr(ipaddr, BOOT_COM_NET_GATEWAY0, BOOT_COM_NET_GATEWAY1, BOOT_COM_NET_GATEWAY2,
+             BOOT_COM_NET_GATEWAY3);
+  uip_setdraddr(ipaddr);
   /* start listening on the configured port for XCP transfers on TCP/IP */
   uip_listen(HTONS(BOOT_COM_NET_PORT));
   /* initialize the MAC and set the MAC address */
