@@ -81,6 +81,7 @@ type
     edtPort: TEdit;
     edtTconnect: TEdit;
     lblTconnect: TLabel;
+    chbSocketRetry: TCheckBox;
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
@@ -207,6 +208,7 @@ begin
     // NET related elements
     FSettingsForm.edtHostname.Text := settingsIni.ReadString('net', 'hostname', '169.254.19.63');
     FSettingsForm.edtPort.Text := settingsIni.ReadString('net', 'port', '1000');
+    FSettingsForm.chbSocketRetry.Checked := settingsIni.ReadBool('net', 'retry', false);
 
     // XCP related elements
     FSettingsForm.edtSeedKey.Text := settingsIni.ReadString('xcp', 'seedkey', ExtractFilePath(ParamStr(0))+'');
@@ -226,6 +228,7 @@ begin
     // NET related elements
     FSettingsForm.edtHostname.Text := '169.254.19.63';
     FSettingsForm.edtPort.Text := '1000';
+    FSettingsForm.chbSocketRetry.Checked := false;
 
     // XCP related elements
     FSettingsForm.edtSeedKey.Text := ExtractFilePath(ParamStr(0))+'';
@@ -248,6 +251,7 @@ begin
       // NET related elements
       settingsIni.WriteString('net', 'hostname', FSettingsForm.edtHostname.Text);
       settingsIni.WriteString('net', 'port', FSettingsForm.edtPort.Text);
+      settingsIni.WriteBool('net', 'retry', FSettingsForm.chbSocketRetry.Checked);
 
       // XCP related elements
       settingsIni.WriteString('xcp', 'seedkey', FSettingsForm.edtSeedKey.Text);

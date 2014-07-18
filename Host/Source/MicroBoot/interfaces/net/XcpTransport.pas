@@ -1,6 +1,6 @@
 unit XcpTransport;
 //***************************************************************************************
-//  Description: XCP transport layer for SCI.
+//  Description: XCP transport layer for NET.
 //    File Name: XcpTransport.pas
 //
 //---------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ interface
 // Includes
 //***************************************************************************************
 uses
-  Windows, Messages, SysUtils, Classes, Forms, IniFiles, Winsock, WSocket;
+  Windows, Messages, SysUtils, Classes, Forms, IniFiles, WinSock, WSockets;
 
 
 //***************************************************************************************
@@ -55,7 +55,7 @@ const kTcpConnectedTimeoutMs = 1000; // timeout for connecting the socket
 // Type Definitions
 //***************************************************************************************
 type
-  TXcpTransportInfo = (kNone, kConnected, kResponse, kError);
+  TXcpTransportInfo = (kNone, kResponse, kError);
 
 
 type
@@ -63,12 +63,12 @@ type
   private
     comEventInfo : TXcpTransportInfo;
     comEvent     : THandle;
-    socket       : TWSocket;
+    socket       : TTCPClient;
     hostname     : string;
     port         : string;
+    connectRetry : Boolean;
     croCounter   : LongWord;
-    procedure OnSocketSessionConnected(Sender: TObject; Error: Word);
-    procedure OnSocketDataAvailable(Sender: TObject; ErrCode: Word);
+    procedure OnSocketDataAvailable(Sender: TObject; WinSocket: TSocket);
     function  MsgWaitForSingleObject(hHandle: THandle; dwMilliseconds: DWORD): DWORD;
   public
     packetData   : array[0..kMaxPacketSize-1] of Byte;
@@ -107,11 +107,10 @@ begin
                             'Error', MB_OK or MB_ICONERROR );
 
   // create a socket instance
-  socket := TWSocket.Create(nil);
+  socket := TTCPClient.Create(nil);
 
   // set the socket event handlers
-  socket.OnSessionConnected := OnSocketSessionConnected;
-  socket.OnDataAvailable := OnSocketDataAvailable;
+  socket.OnData := OnSocketDataAvailable;
 
   // init CRO counter value
   croCounter := 1;
@@ -161,18 +160,23 @@ begin
     // configure port
     port := settingsIni.ReadString('net', 'port', '1000');
 
+    // configure the connection retry feature
+    connectRetry := settingsIni.ReadBool('net', 'retry', false);
+
     // release ini file object
     settingsIni.Free;
   end
   else
   begin
-    // configure defeault hostname
+    // configure default hostname
     hostname := '169.254.19.63';
 
     // configure default port
     port := '1000';
-  end;
 
+    // configure default connection retry feature setting
+    connectRetry := false;
+  end;
 end; //*** end of Configure ***
 
 
@@ -185,46 +189,44 @@ end; //*** end of Configure ***
 //***************************************************************************************
 function TXcpTransport.Connect: Boolean;
 var
-  waitResult: Integer;
+  connectTimeout : DWord;
 begin
-  // make sure the event is reset
-  ResetEvent(comEvent);
-  comEventInfo := kNone;
-
   // init CRO counter value
   croCounter := 1;
 
   // make sure the socket is closed
-  if socket.State <> wsClosed then
+  if socket.SocketState <> ssClosed then
   begin
-    socket.Close;
-    socket.WaitForClose;
+    Disconnect;
   end;
 
-  // set the hostname, port and protocol
-  socket.Addr := hostname;
+  // set the hostname and port
+  socket.Host := hostname;
   socket.Port := port;
-  socket.Proto := 'tcp';
 
-  // submit the connect request
-  socket.Connect;
+  // set timeout time
+  connectTimeout := GetTickCount + 1000;
 
-  // connection is being established. Now wait for the connected event
-  waitResult := MsgWaitForSingleObject(comEvent, kTcpConnectedTimeoutMs);
-
-  if waitResult <> WAIT_OBJECT_0 then
+  // submit request to open the socket
+  socket.Open;
+  // wait for the connection to be established
+  while socket.SocketState <> ssConnected do
   begin
-    // no com event triggered so either a timeout or internal error occurred
-    result := false;
-    Exit;
+    // check timeout if connection retry feature is enabled
+    if connectRetry then
+    begin
+      // check for timeout
+      if GetTickCount > connectTimeout then
+      begin
+        result := false;
+        Exit;
+      end;
+    end;
+
+    Application.ProcessMessages;
+    Sleep(1);
   end;
 
-  // com event was triggered. now check that it is actually not an error
-  if comEventInfo <> kConnected then
-  begin
-    result := false;
-    Exit;
-  end;
   // successfully connected
   result := true;
 end; //*** end of Connect ***
@@ -271,7 +273,7 @@ begin
   end;
 
   // submit the packet transmission request
-  if socket.Send(@msgData[0], packetLen+4) = -1 then
+  if socket.WriteBuffer(@msgData[0], packetLen+4) = -1 then
   begin
     // unable to submit tx request
     Exit;
@@ -310,46 +312,24 @@ procedure TXcpTransport.Disconnect;
 begin
   // close the socket
   socket.Close;
-  socket.WaitForClose;
 end; //*** end of Disconnect ***
-
-
-//***************************************************************************************
-// NAME:           OnSocketSessionConnected
-// PARAMETER:      Sender is the source that triggered the event.
-//                 Error contains possible connection error information.
-// RETURN VALUE:   none
-// DESCRIPTION:    Socket connected event handler
-//
-//***************************************************************************************
-procedure TXcpTransport.OnSocketSessionConnected(Sender: TObject; Error: Word);
-begin
-  // set event flag
-  if Error <> 0 then
-    comEventInfo := kError
-  else
-    comEventInfo := kConnected;
-
-  // trigger the event
-  SetEvent(comEvent);
-end; //*** end of OnSocketSessionConnected ***
 
 
 //***************************************************************************************
 // NAME:           OnSocketDataAvailable
 // PARAMETER:      Sender is the source that triggered the event.
-//                 Error contains possible data reception error information.
+//                 Socket is the socket on which the event occurred.
 // RETURN VALUE:   none
 // DESCRIPTION:    Socket data reception event handler
 //
 //***************************************************************************************
-procedure TXcpTransport.OnSocketDataAvailable(Sender: TObject; ErrCode: Word);
+procedure TXcpTransport.OnSocketDataAvailable(Sender: TObject; WinSocket: TSocket);
 var
   tempBuffer : array[0..kMaxPacketSize-1] of Byte;
   count      : Integer;
   idx        : Integer;
 begin
-  count := socket.Receive(@tempBuffer[0], kMaxPacketSize);
+  count := socket.ReadBuffer(@tempBuffer[0], kMaxPacketSize);
   // the first 4 bytes contains the dto counter in which we are not really interested
   packetLen := count - 4;
   // store the response data
@@ -394,7 +374,6 @@ begin
     begin
       // process these messages
       Application.ProcessMessages;
-      socket.MessagePump;
 
       // check for timeout manually because if a message in the queue occurred, the
       // MsgWaitForMultipleObjects will be called again and the timer will start from

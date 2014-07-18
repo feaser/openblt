@@ -55,7 +55,8 @@ uses
   XcpDataFile in '..\XcpDataFile.pas',
   XcpLoader in '..\XcpLoader.pas',
   XcpTransport in 'XcpTransport.pas',
-  XcpSettings in 'XcpSettings.pas' {XcpSettingsForm};
+  XcpSettings in 'XcpSettings.pas' {XcpSettingsForm},
+  WSockets in 'WSockets.pas';
 
 
 //***************************************************************************************
@@ -260,7 +261,7 @@ begin
   timer.Enabled := False;
 
   // connect the transport layer
-  MbiCallbackOnInfo('Connecting to target via TCP/IP.');
+  MbiCallbackOnInfo('Connecting to target via TCP/IP. Reset your target if this takes a long time.');
   MbiCallbackOnLog('Connecting to target via TCP/IP. t='+TimeToStr(Time));
   Application.ProcessMessages;
   if not loader.Connect then
@@ -296,7 +297,7 @@ begin
     MbiCallbackOnLog('No response from target. Disconnecting TCP/IP socket. t='+TimeToStr(Time));
     loader.Disconnect;
     // connect the transport layer
-    MbiCallbackOnInfo('Connecting to target via TCP/IP.');
+    MbiCallbackOnInfo('Connecting to target via TCP/IP. Reset your target if this takes a long time.');
     MbiCallbackOnLog('Connecting to target via TCP/IP. t='+TimeToStr(Time));
     Application.ProcessMessages;
     if not loader.Connect then

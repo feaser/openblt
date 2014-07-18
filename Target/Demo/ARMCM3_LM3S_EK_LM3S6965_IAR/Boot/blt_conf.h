@@ -126,6 +126,26 @@
 
 
 /****************************************************************************************
+*   B A C K D O O R    C O N F I G U R A T I O N
+****************************************************************************************/
+#if (BOOT_COM_NET_ENABLE > 0)
+/* Override the default time that the backdoor is open if firmware updates via TCP/IP
+ * are supported. in this case a reactivation of the bootloader results in a re-
+ * initialization of the ethernet MAC. when directly connected to the ethernet port of 
+ * a PC this will go relatively fast (depending on what MS Windows is being used), but 
+ * when connected to the network via a router this can take several seconds. feel free to
+ * shorten/lengthen this time for finetuning. the only downside of a long backdoor open 
+ * time is that the starting of the user program will also be delayed for this time.
+ *
+ * Also note that when the target is directly connected to the ethernet port of a PC, 
+ * the checkbox "Automatically retry socket connection" should be checked in the 
+ * Microboot settings. if connection via a router the uncheck this checkbox.
+ */
+#define BACKDOOR_ENTRY_TIMEOUT_MS  (10000)
+#endif
+
+
+/****************************************************************************************
 *   F I L E   S Y S T E M   I N T E R F A C E   C O N F I G U R A T I O N
 ****************************************************************************************/
 /* The file system interface is selected by setting the BOOT_FILE_SYS_ENABLE configurable
