@@ -280,7 +280,7 @@ begin
   if not loader.StartProgrammingSession then
   begin
     // update the user info
-    MbiCallbackOnInfo('Could not connect. Please reset your target...');
+    MbiCallbackOnInfo('Could not connect. Retrying. Reset your target if this takes a long time.');
     MbiCallbackOnLog('Connect failed. Switching to backdoor entry mode. t='+TimeToStr(Time));
     Application.ProcessMessages;
     // continuously try to connect via XCP true the backdoor

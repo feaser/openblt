@@ -18,25 +18,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   1 .bss          00000158  20000000  20000000  00010000  2**2
                   ALLOC
-  2 .debug_info   0000567c  00000000  00000000  00009c2c  2**0
+  2 .debug_info   00005695  00000000  00000000  00009c2c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  3 .debug_abbrev 00000e6f  00000000  00000000  0000f2a8  2**0
+  3 .debug_abbrev 00000e92  00000000  00000000  0000f2c1  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_loc    00002f0d  00000000  00000000  00010117  2**0
+  4 .debug_loc    00002f0d  00000000  00000000  00010153  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_aranges 00000730  00000000  00000000  00013024  2**0
+  5 .debug_aranges 00000738  00000000  00000000  00013060  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_ranges 00000668  00000000  00000000  00013754  2**0
+  6 .debug_ranges 00000670  00000000  00000000  00013798  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00001b96  00000000  00000000  00013dbc  2**0
+  7 .debug_line   00001ba7  00000000  00000000  00013e08  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    000015dd  00000000  00000000  00015952  2**0
+  8 .debug_str    000015dd  00000000  00000000  000159af  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .comment      00000030  00000000  00000000  00016f2f  2**0
+  9 .comment      00000030  00000000  00000000  00016f8c  2**0
                   CONTENTS, READONLY
- 10 .ARM.attributes 00000033  00000000  00000000  00016f5f  2**0
+ 10 .ARM.attributes 00000033  00000000  00000000  00016fbc  2**0
                   CONTENTS, READONLY
- 11 .debug_frame  000012ac  00000000  00000000  00016f94  2**2
+ 11 .debug_frame  000012c4  00000000  00000000  00016ff0  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00008000 l    d  .text	00000000 .text
@@ -53,17 +53,17 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 boot.c
-20000000 l     O .bss	00000041 xcpCtoReqPacket.4542
-20000044 l     O .bss	00000001 xcpCtoRxLength.4543
-20000045 l     O .bss	00000001 xcpCtoRxInProgress.4544
+20000000 l     O .bss	00000041 xcpCtoReqPacket.4544
+20000044 l     O .bss	00000001 xcpCtoRxLength.4545
+20000045 l     O .bss	00000001 xcpCtoRxInProgress.4546
 00000000 l    df *ABS*	00000000 cstart.c
 00008368 l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 irq.c
 00000000 l    df *ABS*	00000000 led.c
-20000048 l     O .bss	00000004 timer_counter_last.4524
-2000004c l     O .bss	00000001 led_toggle_state.4523
+20000048 l     O .bss	00000004 timer_counter_last.4526
+2000004c l     O .bss	00000001 led_toggle_state.4525
 00000000 l    df *ABS*	00000000 main.c
-20000050 l     O .bss	00000004 assert_failure_line.4531
+20000050 l     O .bss	00000004 assert_failure_line.4533
 00000000 l    df *ABS*	00000000 time.c
 20000054 l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 can.c

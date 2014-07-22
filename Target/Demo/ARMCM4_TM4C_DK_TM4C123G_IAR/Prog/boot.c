@@ -37,12 +37,47 @@
 #include "header.h"                                    /* generic header               */
 
 
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+#if (BOOT_COM_UART_ENABLE > 0)
+static void BootComUartInit(void);
+static void BootComUartCheckActivationRequest(void);
+#endif
+
+/************************************************************************************//**
+** \brief     Initializes the communication interface.
+** \return    none.
+**
+****************************************************************************************/
+void BootComInit(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartInit();
+#endif
+} /*** end of BootComInit ***/
+
+
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
+**
+****************************************************************************************/
+void BootComCheckActivationRequest(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartCheckActivationRequest();
+#endif
+} /*** end of BootComCheckActivationRequest ***/
+
+
 /************************************************************************************//**
 ** \brief     Bootloader activation function.
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootActivate(void)
+void BootActivate(void)
 {
   /* perform software reset to activate the bootoader again */
   SysCtlReset();
@@ -64,7 +99,7 @@ static unsigned char UartReceiveByte(unsigned char *data);
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComInit(void)
+static void BootComUartInit(void)
 {
   /* enable the UART0 peripheral */
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
@@ -75,7 +110,7 @@ void BootComInit(void)
   UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_UART_BAUDRATE,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                              UART_CONFIG_PAR_NONE));
-} /*** end of BootComInit ***/
+} /*** end of BootComUartInit ***/
 
 
 /************************************************************************************//**
@@ -84,7 +119,7 @@ void BootComInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComCheckActivationRequest(void)
+static void BootComUartCheckActivationRequest(void)
 {
   static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
@@ -126,7 +161,7 @@ void BootComCheckActivationRequest(void)
       }
     }
   }
-} /*** end of BootComCheckActivationRequest ***/
+} /*** end of BootComUartCheckActivationRequest ***/
 
 
 /************************************************************************************//**

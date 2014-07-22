@@ -87,16 +87,19 @@ void BootComCheckActivationRequest(void)
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootActivate(void)
+void BootActivate(void)
 {
-  void (*near pEntryFromProgFnc)(void);
-
-  /* stop the timer from generating interrupts */
-  TimeDeinit();
-  /* set pointer to the address of function reset_connected_handler in the bootloader. */
-  pEntryFromProgFnc = (void(*)(void))(0xfee0);
-  /* call EntryFromProg to activate the bootloader. */
-  pEntryFromProgFnc();
+  /* perform a software reset by letting the watchdog time out. make sure it is enbled */
+  if ( (COPCTL & 0x07) == 0)
+  {
+    /* enable the watchdog */
+    COPCTL = 0x71; 
+  }
+  /* wait for the watchdog to time out which triggers a reset */
+  while (1==1)
+  {
+    ; 
+  }
 } /*** end of BootActivate ***/
 
 

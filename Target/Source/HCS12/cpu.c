@@ -41,11 +41,11 @@
 * Macro definitions
 ****************************************************************************************/
 /** \brief Start address of the user program. This is the address of the reset vector
- *         in the user program's vector table. 
+ *         in the user program's vector table.  
  *  \attention This value must be updated if the memory reserved for the bootloader
  *             changes.
  */
-#define CPU_USER_PROGRAM_STARTADDR_PTR    (0xE7FE)
+#define CPU_USER_PROGRAM_STARTADDR_PTR    (FlashGetUserProgBaseAddress() - 2)
 
 
 /****************************************************************************************

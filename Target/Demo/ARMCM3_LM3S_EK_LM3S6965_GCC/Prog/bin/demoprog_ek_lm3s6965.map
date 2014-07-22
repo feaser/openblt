@@ -18,25 +18,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   1 .bss          0000086c  20000000  20000000  00010000  2**2
                   ALLOC
-  2 .debug_info   000063b6  00000000  00000000  0000b1ec  2**0
+  2 .debug_info   00006400  00000000  00000000  0000b1ec  2**0
                   CONTENTS, READONLY, DEBUGGING
-  3 .debug_abbrev 00001589  00000000  00000000  000115a2  2**0
+  3 .debug_abbrev 000015a1  00000000  00000000  000115ec  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_loc    0000340d  00000000  00000000  00012b2b  2**0
+  4 .debug_loc    0000340d  00000000  00000000  00012b8d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_aranges 00000920  00000000  00000000  00015f38  2**0
+  5 .debug_aranges 00000920  00000000  00000000  00015f9a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_ranges 000007f0  00000000  00000000  00016858  2**0
+  6 .debug_ranges 000007f0  00000000  00000000  000168ba  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00002484  00000000  00000000  00017048  2**0
+  7 .debug_line   00002481  00000000  00000000  000170aa  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    00001a74  00000000  00000000  000194cc  2**0
+  8 .debug_str    00001aa6  00000000  00000000  0001952b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .comment      00000030  00000000  00000000  0001af40  2**0
+  9 .comment      00000030  00000000  00000000  0001afd1  2**0
                   CONTENTS, READONLY
- 10 .ARM.attributes 00000033  00000000  00000000  0001af70  2**0
+ 10 .ARM.attributes 00000033  00000000  00000000  0001b001  2**0
                   CONTENTS, READONLY
- 11 .debug_frame  00001738  00000000  00000000  0001afa4  2**2
+ 11 .debug_frame  00001738  00000000  00000000  0001b034  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00008000 l    d  .text	00000000 .text
@@ -53,9 +53,9 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 boot.c
-20000000 l     O .bss	00000041 xcpCtoReqPacket.4450
-20000044 l     O .bss	00000001 xcpCtoRxLength.4451
-20000045 l     O .bss	00000001 xcpCtoRxInProgress.4452
+20000000 l     O .bss	00000041 xcpCtoReqPacket.4460
+20000044 l     O .bss	00000001 xcpCtoRxLength.4461
+20000045 l     O .bss	00000001 xcpCtoRxInProgress.4462
 00000000 l    df *ABS*	00000000 cstart.c
 00008258 l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 irq.c
@@ -130,7 +130,7 @@ SYMBOL TABLE:
 00008b80 g     F .text	00000076 EthernetPacketPut
 000092a0 g     F .text	00000046 SysCtlPeripheralEnable
 200000ec g     O .bss	00000001 uip_flags
-000080f4 g     F .text	0000000e BootActivate
+00008204 g     F .text	0000000e BootActivate
 000092e8 g     F .text	00000012 SysCtlReset
 2000076c g       .bss	00000000 _ebss
 00008644 g     F .text	00000002 UnusedISR
@@ -154,7 +154,7 @@ SYMBOL TABLE:
 000094c0 g     F .text	000002ba SysCtlClockGet
 00009834 g     F .text	00000044 UARTDisable
 00008abc g     F .text	00000048 EthernetEnable
-00008104 g     F .text	00000050 BootComInit
+000080f4 g     F .text	00000050 BootComInit
 0000ad24 g     F .text	00000140 uip_arp_arpin
 000090d4 g     F .text	00000010 IntMasterEnable
 000085e0 g     F .text	00000046 TimeInit
@@ -174,7 +174,7 @@ SYMBOL TABLE:
 0000903c g     F .text	0000004c GPIOPinTypeUART
 00008ff0 g     F .text	0000004c GPIOPinTypeGPIOOutput
 00008bf8 g     F .text	0000004e EthernetIntDisable
-00008154 g     F .text	000000c0 BootComCheckActivationRequest
+00008144 g     F .text	000000c0 BootComCheckActivationRequest
 00008c7c g     F .text	00000048 EthernetIntClear
 00008628 g     F .text	0000000c TimeGet
 00009b7c g     F .text	00000032 uip_init

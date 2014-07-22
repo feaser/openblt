@@ -56,8 +56,6 @@
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
 /** \brief Enable/disable hook function call right before user program start. */
 #define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
-/** \brief Compiler specific variable prefix to prevent its initialization during startup. */
-#define BOOT_CPU_CONNECT_STATE_PREFIX   __no_init
 
 
 /****************************************************************************************

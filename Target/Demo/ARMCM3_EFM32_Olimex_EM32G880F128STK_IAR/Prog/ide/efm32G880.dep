@@ -91,10 +91,10 @@
       <file>$PROJ_DIR$\..\obj\efm32_timer.o</file>
       <file>$PROJ_DIR$\..\obj\efm32_system.o</file>
       <file>$PROJ_DIR$\..\obj\efm32_usart.o</file>
-      <file>$PROJ_DIR$\..\obj\efm32_rtc.o</file>
       <file>$PROJ_DIR$\..\obj\efm32_opamp.lst</file>
-      <file>$PROJ_DIR$\..\obj\efm32_prs.o</file>
       <file>$PROJ_DIR$\..\obj\efm32_rmu.o</file>
+      <file>$PROJ_DIR$\..\obj\efm32_prs.o</file>
+      <file>$PROJ_DIR$\..\obj\efm32_rtc.o</file>
       <file>$PROJ_DIR$\..\obj\efm32_adc.lst</file>
       <file>$PROJ_DIR$\..\obj\efm32_dma.lst</file>
       <file>$PROJ_DIR$\..\obj\efm32_lesense.pbi</file>
@@ -340,6 +340,10 @@
           <name>ICCARM</name>
           <file> 13 99 0 5 3 138 135 145 166 131 159 148 146 4 114 113 1 7 15</file>
         </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 13 99 0 5 3 138 135 145 166 131 159 148 146 4 114 113 1 7 15</file>
+        </tool>
       </inputs>
     </file>
     <file>
@@ -380,10 +384,6 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 0 5 3 138 135 145 166 131 159 148 146 4 114 113 1 7 19 99 16 15 29</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
           <file> 0 5 3 138 135 145 166 131 159 148 146 4 114 113 1 7 19 99 16 15 29</file>
         </tool>
       </inputs>
@@ -504,6 +504,15 @@
       </inputs>
     </file>
     <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 121 108</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\lib\efm32lib\src\efm32_gpio.c</name>
       <outputs>
         <tool>
@@ -525,15 +534,6 @@
           <file> 31 99 0 5 3 138 135 145 166 131 159 148 146 4 114 113 1 7 16 15</file>
         </tool>
       </inputs>
-    </file>
-    <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 121 108</file>
-        </tool>
-      </outputs>
     </file>
     <file>
       <name>$PROJ_DIR$\..\lib\efm32lib\src\efm32_i2c.c</name>
@@ -720,7 +720,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 86 194</file>
+          <file> 85 194</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -789,7 +789,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 152 88</file>
+          <file> 152 86</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -812,7 +812,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 163 85</file>
+          <file> 163 88</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -1130,7 +1130,7 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 105 176 179 178 217 219 218 143 136 157 158 197 198 199 200 223 222 221 220 215 216 132 133 194 195 87 88 85 83 82 84 193 196 109 102 110 174 134 181 183 175 192 189 191</file>
+          <file> 105 176 179 178 217 219 218 143 136 157 158 197 198 199 200 223 222 221 220 215 216 132 133 194 195 87 86 88 83 82 84 193 196 109 102 110 174 134 181 183 175 192 189 191</file>
         </tool>
       </inputs>
     </file>

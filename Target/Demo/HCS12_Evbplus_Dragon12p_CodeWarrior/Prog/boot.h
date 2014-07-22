@@ -38,6 +38,7 @@
 ****************************************************************************************/
 void BootComInit(void);
 void BootComCheckActivationRequest(void);
+void BootActivate(void);
 
 
 #endif /* BOOT_H */

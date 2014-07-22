@@ -37,12 +37,47 @@
 #include "header.h"                                    /* generic header               */
 
 
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+#if (BOOT_COM_UART_ENABLE > 0)
+static void BootComUartInit(void);
+static void BootComUartCheckActivationRequest(void);
+#endif
+
+/************************************************************************************//**
+** \brief     Initializes the communication interface.
+** \return    none.
+**
+****************************************************************************************/
+void BootComInit(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartInit();
+#endif
+} /*** end of BootComInit ***/
+
+
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
+**
+****************************************************************************************/
+void BootComCheckActivationRequest(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  BootComUartCheckActivationRequest();
+#endif
+} /*** end of BootComCheckActivationRequest ***/
+
+
 /************************************************************************************//**
 ** \brief     Bootloader activation function.
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootActivate(void)
+void BootActivate(void)
 {
   /* perform software reset to activate the bootoader again */
   NVIC_SystemReset();
@@ -65,7 +100,7 @@ static unsigned char UartReceiveByte(unsigned char *data);
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComInit(void)
+static void BootComUartInit(void)
 {
   LEUART_Init_TypeDef init = LEUART_INIT_DEFAULT;
 
@@ -92,7 +127,7 @@ void BootComInit(void)
   LEUART_IntClear(LEUART1, LEUART_IF_RXDATAV);
   /* finally enable it */
   LEUART_Enable(LEUART1, leuartEnable);
-} /*** end of BootComInit ***/
+} /*** end of BootUartComInit ***/
 
 
 /************************************************************************************//**
@@ -101,7 +136,7 @@ void BootComInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void BootComCheckActivationRequest(void)
+static void BootComUartCheckActivationRequest(void)
 {
   static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
@@ -143,7 +178,7 @@ void BootComCheckActivationRequest(void)
       }
     }
   }
-} /*** end of BootComCheckActivationRequest ***/
+} /*** end of BootComUartCheckActivationRequest ***/
 
 
 /************************************************************************************//**

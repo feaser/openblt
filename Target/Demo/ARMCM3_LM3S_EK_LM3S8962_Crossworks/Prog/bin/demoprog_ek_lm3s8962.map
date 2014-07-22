@@ -2232,6 +2232,7 @@ Linker script and memory map
                 0x00008228                BootComCheckActivationRequest
  .text.BootActivate
                 0x00008244       0x10 THUMB Debug/../../obj/boot.o
+                0x00008244                BootActivate
  .text.BootComUartInit
                 0x00008254       0x64 THUMB Debug/../../obj/boot.o
  .text.BootComUartCheckActivationRequest
@@ -2523,22 +2524,22 @@ Linker script and memory map
 .bss            0x20000000       0x6c
                 0x20000000                __bss_start__ = .
  *(.bss .bss.* .gnu.linkonce.b.*)
- .bss.xcpCtoRxInProgress.4094
+ .bss.xcpCtoRxInProgress.4096
                 0x20000000        0x1 THUMB Debug/../../obj/boot.o
  *fill*         0x20000001        0x3 00
- .bss.xcpCtoReqPacket.4092
+ .bss.xcpCtoReqPacket.4094
                 0x20000004       0x44 THUMB Debug/../../obj/boot.o
- .bss.xcpCtoRxLength.4093
+ .bss.xcpCtoRxLength.4095
                 0x20000048        0x1 THUMB Debug/../../obj/boot.o
  *fill*         0x20000049        0x3 00
- .bss.timer_counter_last.4074
+ .bss.timer_counter_last.4076
                 0x2000004c        0x4 THUMB Debug/../../obj/led.o
- .bss.led_toggle_state.4073
+ .bss.led_toggle_state.4075
                 0x20000050        0x1 THUMB Debug/../../obj/led.o
  *fill*         0x20000051        0x3 00
- .bss.assert_failure_file.4080
+ .bss.assert_failure_file.4082
                 0x20000054        0x4 THUMB Debug/../../obj/main.o
- .bss.assert_failure_line.4081
+ .bss.assert_failure_line.4083
                 0x20000058        0x4 THUMB Debug/../../obj/main.o
  .bss.millisecond_counter
                 0x2000005c        0x4 THUMB Debug/../../obj/time.o
@@ -2678,26 +2679,26 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/P
  .debug_frame   0x000033c0      0x790 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
  .debug_frame   0x00003b50       0xa0 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
 
-.debug_info     0x00000000     0x45a6
- .debug_info    0x00000000      0x314 THUMB Debug/../../obj/boot.o
- .debug_info    0x00000314       0xd6 THUMB Debug/../../obj/cstart.o
- .debug_info    0x000003ea       0x8e THUMB Debug/../../obj/irq.o
- .debug_info    0x00000478       0x98 THUMB Debug/../../obj/led.o
- .debug_info    0x00000510       0xe7 THUMB Debug/../../obj/main.o
- .debug_info    0x000005f7       0xbe THUMB Debug/../../obj/vectors.o
- .debug_info    0x000006b5       0xd1 THUMB Debug/../../obj/time.o
- .debug_info    0x00000786      0x116 THUMB Debug/../../obj/cpu.o
- .debug_info    0x0000089c      0x92a THUMB Debug/../../obj/gpio.o
- .debug_info    0x000011c6      0x35a THUMB Debug/../../obj/interrupt.o
- .debug_info    0x00001520      0x844 THUMB Debug/../../obj/sysctl.o
- .debug_info    0x00001d64      0x130 THUMB Debug/../../obj/systick.o
- .debug_info    0x00001e94      0x967 THUMB Debug/../../obj/uart.o
- .debug_info    0x000027fb      0x9d5 THUMB Debug/../../obj/can.o
- .debug_info    0x000031d0       0x37 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
- .debug_info    0x00003207       0x68 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
- .debug_info    0x0000326f      0xd02 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
- .debug_info    0x00003f71      0x55f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
- .debug_info    0x000044d0       0xd6 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
+.debug_info     0x00000000     0x45a7
+ .debug_info    0x00000000      0x315 THUMB Debug/../../obj/boot.o
+ .debug_info    0x00000315       0xd6 THUMB Debug/../../obj/cstart.o
+ .debug_info    0x000003eb       0x8e THUMB Debug/../../obj/irq.o
+ .debug_info    0x00000479       0x98 THUMB Debug/../../obj/led.o
+ .debug_info    0x00000511       0xe7 THUMB Debug/../../obj/main.o
+ .debug_info    0x000005f8       0xbe THUMB Debug/../../obj/vectors.o
+ .debug_info    0x000006b6       0xd1 THUMB Debug/../../obj/time.o
+ .debug_info    0x00000787      0x116 THUMB Debug/../../obj/cpu.o
+ .debug_info    0x0000089d      0x92a THUMB Debug/../../obj/gpio.o
+ .debug_info    0x000011c7      0x35a THUMB Debug/../../obj/interrupt.o
+ .debug_info    0x00001521      0x844 THUMB Debug/../../obj/sysctl.o
+ .debug_info    0x00001d65      0x130 THUMB Debug/../../obj/systick.o
+ .debug_info    0x00001e95      0x967 THUMB Debug/../../obj/uart.o
+ .debug_info    0x000027fc      0x9d5 THUMB Debug/../../obj/can.o
+ .debug_info    0x000031d1       0x37 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfprintf_int_nwp.o)
+ .debug_info    0x00003208       0x68 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(__vfscanf_int.o)
+ .debug_info    0x00003270      0xd02 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_v7m_t_le_eabi.a(libc2.o)
+ .debug_info    0x00003f72      0x55f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le_eabi.a(libdebugio.o)
+ .debug_info    0x000044d1       0xd6 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le_eabi.a(user_libc.o)
 
 .debug_abbrev   0x00000000      0xd72
  .debug_abbrev  0x00000000      0x132 THUMB Debug/../../obj/boot.o

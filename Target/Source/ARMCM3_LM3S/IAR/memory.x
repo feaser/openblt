@@ -28,5 +28,3 @@ place in ROM_region   { readonly };
 place in RAM_region   { readwrite,
                         block CSTACK, block HEAP };
 
-define symbol __ENTRY_CODE__   = 0x000000F0;
-place at address mem:__ENTRY_CODE__ { readonly section .entry };

@@ -1332,6 +1332,7 @@ Linker script and memory map
                 0x080067a4                BootComCheckActivationRequest
  .text.BootActivate
                 0x080067c0       0x10 THUMB Debug/../../obj/boot.o
+                0x080067c0                BootActivate
  .text.BootComUartInit
                 0x080067d0       0xd0 THUMB Debug/../../obj/boot.o
  .text.BootComUartCheckActivationRequest
@@ -1496,19 +1497,19 @@ Linker script and memory map
 .bss            0x20000014       0x60
                 0x20000014                __bss_start__ = .
  *(.bss .bss.* .gnu.linkonce.b.*)
- .bss.timer_counter_last.3156
+ .bss.timer_counter_last.3158
                 0x20000014        0x4 THUMB Debug/../../obj/led.o
- .bss.led_toggle_state.3155
+ .bss.led_toggle_state.3157
                 0x20000018        0x1 THUMB Debug/../../obj/led.o
  *fill*         0x20000019        0x3 00
  .bss.millisecond_counter
                 0x2000001c        0x4 THUMB Debug/../../obj/timer.o
- .bss.xcpCtoRxInProgress.3177
+ .bss.xcpCtoRxInProgress.3179
                 0x20000020        0x1 THUMB Debug/../../obj/boot.o
  *fill*         0x20000021        0x3 00
- .bss.xcpCtoReqPacket.3175
+ .bss.xcpCtoReqPacket.3177
                 0x20000024       0x44 THUMB Debug/../../obj/boot.o
- .bss.xcpCtoRxLength.3176
+ .bss.xcpCtoRxLength.3178
                 0x20000068        0x1 THUMB Debug/../../obj/boot.o
  *fill*         0x20000069        0x3 00
  .bss.libdebugio.dbgCommWord
@@ -1769,77 +1770,77 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_STM32_Olimex_STM32P103_Crossw
  .debug_line    0x00007f50      0x550 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le.a(libdebugio.o)
  .debug_line    0x000084a0       0x74 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
 
-.debug_info     0x00000000     0xd819
+.debug_info     0x00000000     0xd81a
  .debug_info    0x00000000       0xe2 THUMB Debug/../../obj/cstart.o
  .debug_info    0x000000e2      0x251 THUMB Debug/../../obj/led.o
  .debug_info    0x00000333      0x25d THUMB Debug/../../obj/main.o
  .debug_info    0x00000590      0x5fe THUMB Debug/../../obj/timer.o
  .debug_info    0x00000b8e      0x10e THUMB Debug/../../obj/vectors.o
  .debug_info    0x00000c9c       0xfe THUMB Debug/../../obj/irq.o
- .debug_info    0x00000d9a      0xbe4 THUMB Debug/../../obj/boot.o
- .debug_info    0x0000197e      0x53f THUMB Debug/../../obj/misc.o
- .debug_info    0x00001ebd      0xc07 THUMB Debug/../../obj/stm32f10x_adc.o
- .debug_info    0x00002ac4      0x872 THUMB Debug/../../obj/stm32f10x_bkp.o
- .debug_info    0x00003336      0xc50 THUMB Debug/../../obj/stm32f10x_can.o
- .debug_info    0x00003f86      0x435 THUMB Debug/../../obj/stm32f10x_cec.o
- .debug_info    0x000043bb      0x1f9 THUMB Debug/../../obj/stm32f10x_crc.o
- .debug_info    0x000045b4      0x4d1 THUMB Debug/../../obj/stm32f10x_dac.o
- .debug_info    0x00004a85      0x153 THUMB Debug/../../obj/stm32f10x_dbgmcu.o
- .debug_info    0x00004bd8      0x49b THUMB Debug/../../obj/stm32f10x_dma.o
- .debug_info    0x00005073      0x35a THUMB Debug/../../obj/stm32f10x_exti.o
- .debug_info    0x000053cd      0x812 THUMB Debug/../../obj/stm32f10x_flash.o
- .debug_info    0x00005bdf      0x992 THUMB Debug/../../obj/stm32f10x_fsmc.o
- .debug_info    0x00006571      0x71c THUMB Debug/../../obj/stm32f10x_gpio.o
- .debug_info    0x00006c8d      0xb8d THUMB Debug/../../obj/stm32f10x_i2c.o
- .debug_info    0x0000781a      0x1f9 THUMB Debug/../../obj/stm32f10x_iwdg.o
- .debug_info    0x00007a13      0x454 THUMB Debug/../../obj/stm32f10x_pwr.o
- .debug_info    0x00007e67      0x8fa THUMB Debug/../../obj/stm32f10x_rcc.o
- .debug_info    0x00008761      0x463 THUMB Debug/../../obj/stm32f10x_rtc.o
- .debug_info    0x00008bc4      0x888 THUMB Debug/../../obj/stm32f10x_sdio.o
- .debug_info    0x0000944c      0x96a THUMB Debug/../../obj/stm32f10x_spi.o
- .debug_info    0x00009db6     0x1e11 THUMB Debug/../../obj/stm32f10x_tim.o
- .debug_info    0x0000bbc7      0xa65 THUMB Debug/../../obj/stm32f10x_usart.o
- .debug_info    0x0000c62c      0x22e THUMB Debug/../../obj/stm32f10x_wwdg.o
- .debug_info    0x0000c85a      0x53a THUMB Debug/../../obj/core_cm3.o
- .debug_info    0x0000cd94      0x499 THUMB Debug/../../obj/system_stm32f10x.o
- .debug_info    0x0000d22d      0x51f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le.a(libdebugio.o)
- .debug_info    0x0000d74c       0xcd C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+ .debug_info    0x00000d9a      0xbe5 THUMB Debug/../../obj/boot.o
+ .debug_info    0x0000197f      0x53f THUMB Debug/../../obj/misc.o
+ .debug_info    0x00001ebe      0xc07 THUMB Debug/../../obj/stm32f10x_adc.o
+ .debug_info    0x00002ac5      0x872 THUMB Debug/../../obj/stm32f10x_bkp.o
+ .debug_info    0x00003337      0xc50 THUMB Debug/../../obj/stm32f10x_can.o
+ .debug_info    0x00003f87      0x435 THUMB Debug/../../obj/stm32f10x_cec.o
+ .debug_info    0x000043bc      0x1f9 THUMB Debug/../../obj/stm32f10x_crc.o
+ .debug_info    0x000045b5      0x4d1 THUMB Debug/../../obj/stm32f10x_dac.o
+ .debug_info    0x00004a86      0x153 THUMB Debug/../../obj/stm32f10x_dbgmcu.o
+ .debug_info    0x00004bd9      0x49b THUMB Debug/../../obj/stm32f10x_dma.o
+ .debug_info    0x00005074      0x35a THUMB Debug/../../obj/stm32f10x_exti.o
+ .debug_info    0x000053ce      0x812 THUMB Debug/../../obj/stm32f10x_flash.o
+ .debug_info    0x00005be0      0x992 THUMB Debug/../../obj/stm32f10x_fsmc.o
+ .debug_info    0x00006572      0x71c THUMB Debug/../../obj/stm32f10x_gpio.o
+ .debug_info    0x00006c8e      0xb8d THUMB Debug/../../obj/stm32f10x_i2c.o
+ .debug_info    0x0000781b      0x1f9 THUMB Debug/../../obj/stm32f10x_iwdg.o
+ .debug_info    0x00007a14      0x454 THUMB Debug/../../obj/stm32f10x_pwr.o
+ .debug_info    0x00007e68      0x8fa THUMB Debug/../../obj/stm32f10x_rcc.o
+ .debug_info    0x00008762      0x463 THUMB Debug/../../obj/stm32f10x_rtc.o
+ .debug_info    0x00008bc5      0x888 THUMB Debug/../../obj/stm32f10x_sdio.o
+ .debug_info    0x0000944d      0x96a THUMB Debug/../../obj/stm32f10x_spi.o
+ .debug_info    0x00009db7     0x1e11 THUMB Debug/../../obj/stm32f10x_tim.o
+ .debug_info    0x0000bbc8      0xa65 THUMB Debug/../../obj/stm32f10x_usart.o
+ .debug_info    0x0000c62d      0x22e THUMB Debug/../../obj/stm32f10x_wwdg.o
+ .debug_info    0x0000c85b      0x53a THUMB Debug/../../obj/core_cm3.o
+ .debug_info    0x0000cd95      0x499 THUMB Debug/../../obj/system_stm32f10x.o
+ .debug_info    0x0000d22e      0x51f C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le.a(libdebugio.o)
+ .debug_info    0x0000d74d       0xcd C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
 
-.debug_abbrev   0x00000000     0x288e
+.debug_abbrev   0x00000000     0x287b
  .debug_abbrev  0x00000000       0x14 THUMB Debug/../../obj/cstart.o
  .debug_abbrev  0x00000014       0xec THUMB Debug/../../obj/led.o
  .debug_abbrev  0x00000100       0xe1 THUMB Debug/../../obj/main.o
  .debug_abbrev  0x000001e1      0x195 THUMB Debug/../../obj/timer.o
  .debug_abbrev  0x00000376       0xd6 THUMB Debug/../../obj/vectors.o
  .debug_abbrev  0x0000044c       0x77 THUMB Debug/../../obj/irq.o
- .debug_abbrev  0x000004c3      0x20b THUMB Debug/../../obj/boot.o
- .debug_abbrev  0x000006ce      0x135 THUMB Debug/../../obj/misc.o
- .debug_abbrev  0x00000803      0x174 THUMB Debug/../../obj/stm32f10x_adc.o
- .debug_abbrev  0x00000977      0x156 THUMB Debug/../../obj/stm32f10x_bkp.o
- .debug_abbrev  0x00000acd      0x1ac THUMB Debug/../../obj/stm32f10x_can.o
- .debug_abbrev  0x00000c79      0x189 THUMB Debug/../../obj/stm32f10x_cec.o
- .debug_abbrev  0x00000e02      0x10a THUMB Debug/../../obj/stm32f10x_crc.o
- .debug_abbrev  0x00000f0c      0x169 THUMB Debug/../../obj/stm32f10x_dac.o
- .debug_abbrev  0x00001075       0xda THUMB Debug/../../obj/stm32f10x_dbgmcu.o
- .debug_abbrev  0x0000114f      0x14e THUMB Debug/../../obj/stm32f10x_dma.o
- .debug_abbrev  0x0000129d      0x14a THUMB Debug/../../obj/stm32f10x_exti.o
- .debug_abbrev  0x000013e7      0x162 THUMB Debug/../../obj/stm32f10x_flash.o
- .debug_abbrev  0x00001549      0x166 THUMB Debug/../../obj/stm32f10x_fsmc.o
- .debug_abbrev  0x000016af      0x1a4 THUMB Debug/../../obj/stm32f10x_gpio.o
- .debug_abbrev  0x00001853      0x15d THUMB Debug/../../obj/stm32f10x_i2c.o
- .debug_abbrev  0x000019b0       0xfa THUMB Debug/../../obj/stm32f10x_iwdg.o
- .debug_abbrev  0x00001aaa      0x184 THUMB Debug/../../obj/stm32f10x_pwr.o
- .debug_abbrev  0x00001c2e      0x191 THUMB Debug/../../obj/stm32f10x_rcc.o
- .debug_abbrev  0x00001dbf      0x166 THUMB Debug/../../obj/stm32f10x_rtc.o
- .debug_abbrev  0x00001f25      0x1a2 THUMB Debug/../../obj/stm32f10x_sdio.o
- .debug_abbrev  0x000020c7      0x15d THUMB Debug/../../obj/stm32f10x_spi.o
- .debug_abbrev  0x00002224      0x172 THUMB Debug/../../obj/stm32f10x_tim.o
- .debug_abbrev  0x00002396      0x15b THUMB Debug/../../obj/stm32f10x_usart.o
- .debug_abbrev  0x000024f1       0xf8 THUMB Debug/../../obj/stm32f10x_wwdg.o
- .debug_abbrev  0x000025e9       0xca THUMB Debug/../../obj/core_cm3.o
- .debug_abbrev  0x000026b3      0x17e THUMB Debug/../../obj/system_stm32f10x.o
- .debug_abbrev  0x00002831       0x38 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le.a(libdebugio.o)
- .debug_abbrev  0x00002869       0x25 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+ .debug_abbrev  0x000004c3      0x1f8 THUMB Debug/../../obj/boot.o
+ .debug_abbrev  0x000006bb      0x135 THUMB Debug/../../obj/misc.o
+ .debug_abbrev  0x000007f0      0x174 THUMB Debug/../../obj/stm32f10x_adc.o
+ .debug_abbrev  0x00000964      0x156 THUMB Debug/../../obj/stm32f10x_bkp.o
+ .debug_abbrev  0x00000aba      0x1ac THUMB Debug/../../obj/stm32f10x_can.o
+ .debug_abbrev  0x00000c66      0x189 THUMB Debug/../../obj/stm32f10x_cec.o
+ .debug_abbrev  0x00000def      0x10a THUMB Debug/../../obj/stm32f10x_crc.o
+ .debug_abbrev  0x00000ef9      0x169 THUMB Debug/../../obj/stm32f10x_dac.o
+ .debug_abbrev  0x00001062       0xda THUMB Debug/../../obj/stm32f10x_dbgmcu.o
+ .debug_abbrev  0x0000113c      0x14e THUMB Debug/../../obj/stm32f10x_dma.o
+ .debug_abbrev  0x0000128a      0x14a THUMB Debug/../../obj/stm32f10x_exti.o
+ .debug_abbrev  0x000013d4      0x162 THUMB Debug/../../obj/stm32f10x_flash.o
+ .debug_abbrev  0x00001536      0x166 THUMB Debug/../../obj/stm32f10x_fsmc.o
+ .debug_abbrev  0x0000169c      0x1a4 THUMB Debug/../../obj/stm32f10x_gpio.o
+ .debug_abbrev  0x00001840      0x15d THUMB Debug/../../obj/stm32f10x_i2c.o
+ .debug_abbrev  0x0000199d       0xfa THUMB Debug/../../obj/stm32f10x_iwdg.o
+ .debug_abbrev  0x00001a97      0x184 THUMB Debug/../../obj/stm32f10x_pwr.o
+ .debug_abbrev  0x00001c1b      0x191 THUMB Debug/../../obj/stm32f10x_rcc.o
+ .debug_abbrev  0x00001dac      0x166 THUMB Debug/../../obj/stm32f10x_rtc.o
+ .debug_abbrev  0x00001f12      0x1a2 THUMB Debug/../../obj/stm32f10x_sdio.o
+ .debug_abbrev  0x000020b4      0x15d THUMB Debug/../../obj/stm32f10x_spi.o
+ .debug_abbrev  0x00002211      0x172 THUMB Debug/../../obj/stm32f10x_tim.o
+ .debug_abbrev  0x00002383      0x15b THUMB Debug/../../obj/stm32f10x_usart.o
+ .debug_abbrev  0x000024de       0xf8 THUMB Debug/../../obj/stm32f10x_wwdg.o
+ .debug_abbrev  0x000025d6       0xca THUMB Debug/../../obj/core_cm3.o
+ .debug_abbrev  0x000026a0      0x17e THUMB Debug/../../obj/system_stm32f10x.o
+ .debug_abbrev  0x0000281e       0x38 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le.a(libdebugio.o)
+ .debug_abbrev  0x00002856       0x25 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
 
 .debug_aranges  0x00000000     0x1600
  .debug_aranges

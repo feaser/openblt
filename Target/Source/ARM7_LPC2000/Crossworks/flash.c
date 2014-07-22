@@ -405,6 +405,18 @@ blt_bool FlashDone(void)
 
 
 /************************************************************************************//**
+** \brief     Obtains the base address of the flash memory available to the user program.
+**            This is basically the first address in the flashLayout table.
+** \return    Base address.
+**
+****************************************************************************************/
+blt_addr FlashGetUserProgBaseAddress(void)
+{
+  return flashLayout[0].sector_start;
+} /*** end of FlashGetUserProgBaseAddress ***/
+
+
+/************************************************************************************//**
 ** \brief     Copies data currently in flash to the block->data and sets the 
 **            base address.
 ** \param     block   Pointer to flash block info structure to operate on.

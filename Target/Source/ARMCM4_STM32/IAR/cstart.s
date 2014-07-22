@@ -34,45 +34,11 @@
   ; Forward declaration of section.
   SECTION CSTACK:DATA:NOROOT(3)
 
-  PUBLIC  EntryFromProg
   PUBLIC  reset_handler
   EXTERN  __cmain
   EXTERN  __vector_table
-  EXTERN  ComSetConnectEntryState
-  EXTERN  ComSetDisconnectEntryState
         EXTWEAK __iar_init_core
         EXTWEAK __iar_init_vfp
-
-
-/****************************************************************************************
-** NAME:           EntryFromProg
-** PARAMETER:      none
-** RETURN VALUE:   none
-** DESCRIPTION:    Called by the user program to activate the bootloader. The user 
-**                 program can call this function from C in the following way:
-**                         void ActivateBootloader(void)
-**                         {
-**                           void (*pEntryFromProgFnc)(void);
-**
-**                           pEntryFromProgFnc = (void*)0x08000188 + 1;
-**                           pEntryFromProgFnc();
-**                         }
-**                 Note that the + 1 added to the function address is neccassary to
-**                 enable a switch from Thumb2 to Thumb mode.
-**
-****************************************************************************************/
-        SECTION .entry:CODE:REORDER(2)
-        THUMB
-EntryFromProg:	
-  ; Initialize the stack pointer
-  LDR	R3, =sfe(CSTACK)
-  MOV	SP, R3
-
-  BL	__iar_init_core
-  BL	__iar_init_vfp
-  /* this part makes the difference with the normal reset_handler */
-  BL	ComSetConnectEntryState
-  BL	__cmain
 
 
 /****************************************************************************************
@@ -92,8 +58,6 @@ reset_handler:
 
   BL	__iar_init_core
   BL	__iar_init_vfp
-  /* this part makes the difference with function EntryFromProg */
-  BL	ComSetDisconnectEntryState
   BL	__cmain
 
   REQUIRE __vector_table

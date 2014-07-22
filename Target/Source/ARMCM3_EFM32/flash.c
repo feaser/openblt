@@ -108,6 +108,10 @@ static blt_int32u FlashCalcPageSize(void);
  */
 static const tFlashSector flashLayout[] =
 {
+  /* space is reserved for a bootloader configuration with all supported communication
+   * interfaces enabled. when for example only UART is needed, than the space required
+   * for the bootloader can be made a lot smaller here.
+   */
   /* { 0x00000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
   { 0x00002000, 0x02000,  1},           /* flash sector  1 - 8kb                       */
   { 0x00004000, 0x02000,  2},           /* flash sector  2 - 8kb                       */
@@ -381,6 +385,18 @@ blt_bool FlashDone(void)
   /* still here so all is okay */  
   return BLT_TRUE;
 } /*** end of FlashDone ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the base address of the flash memory available to the user program.
+**            This is basically the first address in the flashLayout table.
+** \return    Base address.
+**
+****************************************************************************************/
+blt_addr FlashGetUserProgBaseAddress(void)
+{
+  return flashLayout[0].sector_start;
+} /*** end of FlashGetUserProgBaseAddress ***/
 
 
 /************************************************************************************//**

@@ -7,38 +7,38 @@ start address 0x08000000
 
 Program Header:
     LOAD off    0x00008000 vaddr 0x08000000 paddr 0x08000000 align 2**15
-         filesz 0x000028f0 memsz 0x000028f0 flags r-x
-    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x080028f0 align 2**15
-         filesz 0x000000ed memsz 0x0000095c flags rw-
+         filesz 0x00002824 memsz 0x00002824 flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08002824 align 2**15
+         filesz 0x000000ed memsz 0x00000960 flags rw-
 private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000028f0  08000000  08000000  00008000  2**2
+  0 .text         00002824  08000000  08000000  00008000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         000000ed  20000000  080028f0  00010000  2**2
+  1 .data         000000ed  20000000  08002824  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000086c  200000f0  080029e0  000100ed  2**2
+  2 .bss          00000870  200000f0  08002914  000100ed  2**2
                   ALLOC
-  3 .debug_info   00006894  00000000  00000000  000100ed  2**0
+  3 .debug_info   000067db  00000000  00000000  000100ed  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 00002200  00000000  00000000  00016981  2**0
+  4 .debug_abbrev 00002226  00000000  00000000  000168c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_aranges 000007c8  00000000  00000000  00018b81  2**0
+  5 .debug_aranges 000007b0  00000000  00000000  00018aee  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_ranges 00000720  00000000  00000000  00019349  2**0
+  6 .debug_ranges 00000708  00000000  00000000  0001929e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000026c5  00000000  00000000  00019a69  2**0
+  7 .debug_line   00002677  00000000  00000000  000199a6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    00001e26  00000000  00000000  0001c12e  2**0
+  8 .debug_str    00001dbe  00000000  00000000  0001c01d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .comment      00000030  00000000  00000000  0001df54  2**0
+  9 .comment      00000030  00000000  00000000  0001dddb  2**0
                   CONTENTS, READONLY
- 10 .ARM.attributes 00000033  00000000  00000000  0001df84  2**0
+ 10 .ARM.attributes 00000033  00000000  00000000  0001de0b  2**0
                   CONTENTS, READONLY
- 11 .debug_frame  000010c8  00000000  00000000  0001dfb8  2**2
+ 11 .debug_frame  0000108c  00000000  00000000  0001de40  2**2
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00002e5f  00000000  00000000  0001f080  2**0
+ 12 .debug_loc    00002de2  00000000  00000000  0001eecc  2**0
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08000000 l    d  .text	00000000 .text
@@ -55,18 +55,15 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    df *ABS*	00000000 vectors.c
-00000000 l    df *ABS*	00000000 cstart.c
-0800019c l     F .text	00000000 zero_loop2
-08002722 l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 hooks.c
-200000f0 l     O .bss	00000001 initialized.5023
+200000f0 l     O .bss	00000001 initialized.5017
 00000000 l    df *ABS*	00000000 main.c
 00000000 l    df *ABS*	00000000 usb_endp.c
 00000000 l    df *ABS*	00000000 usb_prop.c
 00000000 l    df *ABS*	00000000 usb_istr.c
 00000000 l    df *ABS*	00000000 usb_pwr.c
 00000000 l    df *ABS*	00000000 usb_core.c
-080007b4 l     F .text	000000d0 DataStageIn
+0800073c l     F .text	000000d0 DataStageIn
 00000000 l    df *ABS*	00000000 usb_init.c
 00000000 l    df *ABS*	00000000 usb_int.c
 00000000 l    df *ABS*	00000000 usb_mem.c
@@ -74,12 +71,11 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 usb_sil.c
 00000000 l    df *ABS*	00000000 boot.c
 00000000 l    df *ABS*	00000000 com.c
-200000f9 l     O .bss	00000001 comEntryStateConnect
+200000fc l     O .bss	0000003f xcpCtoReqPacket.4171
 200000ec l     O .data	00000001 comActiveInterface
-200000fc l     O .bss	00000040 xcpCtoReqPacket.4179
 00000000 l    df *ABS*	00000000 xcp.c
-08001884 l     F .text	00000016 XcpSetCtoError
-080027f0 l     O .text	00000008 xcpStationId
+080017b8 l     F .text	00000016 XcpSetCtoError
+08002730 l     O .text	00000008 xcpStationId
 2000013c l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 backdoor.c
 00000000 l    df *ABS*	00000000 cop.c
@@ -88,175 +84,175 @@ SYMBOL TABLE:
 2000018c l     O .bss	00000004 assert_failure_line
 00000000 l    df *ABS*	00000000 cpu.c
 00000000 l    df *ABS*	00000000 usb.c
-08001cd4 l     F .text	0000002e IntToUnicode
-08001d04 l     F .text	0000007c UsbFifoMgrWrite
-08001d80 l     F .text	00000076 UsbFifoMgrRead
-20000190 l     O .bss	00000040 USB_Rx_Buffer.5535
-200001d0 l     O .bss	00000004 fifoCtrlFree
-200001d4 l     O .bss	00000030 fifoCtrl
-20000204 l     O .bss	00000041 fifoPipeBulkOUT
-20000248 l     O .bss	00000040 xcpCtoReqPacket.5503
-20000288 l     O .bss	00000040 USB_Tx_Buffer.5524
-200002c8 l     O .bss	00000001 xcpCtoRxLength.5504
-200002c9 l     O .bss	00000001 xcpCtoRxInProgress.5505
+08001c08 l     F .text	0000002e IntToUnicode
+08001c38 l     F .text	0000007c UsbFifoMgrWrite
+08001cb4 l     F .text	00000076 UsbFifoMgrRead
+20000190 l     O .bss	00000040 USB_Rx_Buffer.5529
+200001d0 l     O .bss	00000040 xcpCtoReqPacket.5497
+20000210 l     O .bss	00000004 fifoCtrlFree
+20000214 l     O .bss	00000030 fifoCtrl
+20000244 l     O .bss	00000041 fifoPipeBulkOUT
+20000288 l     O .bss	00000001 xcpCtoRxInProgress.5499
+2000028c l     O .bss	00000040 USB_Tx_Buffer.5518
 200002cc l     O .bss	00000041 fifoPipeBulkIN
+20000310 l     O .bss	00000001 xcpCtoRxLength.5498
 00000000 l    df *ABS*	00000000 nvm.c
 00000000 l    df *ABS*	00000000 timer.c
-20000310 l     O .bss	00000004 millisecond_counter
+20000314 l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 flash.c
-080021c4 l     F .text	00000012 FlashLock
-080021d8 l     F .text	00000044 FlashGetSector
-0800221c l     F .text	000000d0 FlashWriteBlock
-080022ec l     F .text	00000062 FlashSwitchBlock
-08002350 l     F .text	00000084 FlashAddToBlock
-0800281c l     O .text	000000a8 flashLayout
-20000314 l     O .bss	00000204 bootBlockInfo
-20000518 l     O .bss	00000204 blockInfo
+080020f8 l     F .text	00000012 FlashLock
+0800210c l     F .text	00000044 FlashGetSector
+08002150 l     F .text	000000d0 FlashWriteBlock
+08002220 l     F .text	00000062 FlashSwitchBlock
+08002284 l     F .text	00000084 FlashAddToBlock
+0800275c l     O .text	0000009c flashLayout
+20000318 l     O .bss	00000204 bootBlockInfo
+2000051c l     O .bss	00000204 blockInfo
+00000000 l    df *ABS*	00000000 cstart.c
+08002662 l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 usb_desc.c
 00000000 l    df *ABS*	00000000 
 00000200 l       *ABS*	00000000 __STACKSIZE__
-08001790 g     F .text	00000040 ComInit
-20000756 g     O .bss	00000002 SaveRState
-0800155c g     F .text	00000022 SetEPRxValid
-080023f0 g     F .text	00000050 FlashWrite
-080016e8 g     F .text	00000024 GetEPRxCount
-08001c64 g     F .text	0000001c AssertFailure
-080003b4 g     F .text	00000016 SOF_Callback
-080026e0 g     F .text	00000058 reset_handler
-080021a0 g     F .text	00000022 TimerUpdate
-080018b8 g     F .text	00000010 XcpPacketTransmitted
-08000a40 g     F .text	0000009e Standard_SetEndPointFeature
-08001128 g     F .text	00000042 USB_Init
-0800170c g     F .text	0000000a ByteSwap
-080017d0 g     F .text	0000002c ComTask
-08001868 g     F .text	0000000e ComSetConnectEntryState
-0800163c g     F .text	0000001e GetEPTxAddr
-08000460 g     F .text	00000028 Bulk_Init
-08001764 g     F .text	00000018 BootInit
-08001c40 g     F .text	00000018 BackDoorInit
-0800167c g     F .text	00000020 SetEPTxCount
-20000724 g     O .bss	00000002 SaveState
+08001718 g     F .text	00000018 ComInit
+2000075a g     O .bss	00000002 SaveRState
+080014e4 g     F .text	00000022 SetEPRxValid
+08002324 g     F .text	00000050 FlashWrite
+08001670 g     F .text	00000024 GetEPRxCount
+08001b94 g     F .text	0000001c AssertFailure
+0800033c g     F .text	00000016 SOF_Callback
+08002620 g     F .text	00000058 reset_handler
+080020d4 g     F .text	00000022 TimerUpdate
+080017ec g     F .text	00000010 XcpPacketTransmitted
+080009c8 g     F .text	0000009e Standard_SetEndPointFeature
+080010b0 g     F .text	00000042 USB_Init
+08001694 g     F .text	0000000a ByteSwap
+08001730 g     F .text	0000002c ComTask
+080015c4 g     F .text	0000001e GetEPTxAddr
+080003e8 g     F .text	00000028 Bulk_Init
+080016ec g     F .text	00000018 BootInit
+08001b74 g     F .text	00000012 BackDoorInit
+08001604 g     F .text	00000020 SetEPTxCount
+20000728 g     O .bss	00000002 SaveState
 20000064 g     O .data	00000008 Device_Descriptor
-08001c60 g     F .text	00000002 CopService
-080028f0 g       .text	00000000 _etext
-08000450 g     F .text	00000010 Bulk_Get_Interface_Setting
-080014c8 g     F .text	00000036 SetEPTxStatus
+08001b90 g     F .text	00000002 CopService
+08002824 g       .text	00000000 _etext
+080003d8 g     F .text	00000010 Bulk_Get_Interface_Setting
+08001450 g     F .text	00000036 SetEPTxStatus
 200000d0 g     O .data	0000001c pEpInt_OUT
-08000ae0 g     F .text	00000026 Standard_SetDeviceFeature
-080003ac g     F .text	00000008 EP1_OUT_Callback
-08002190 g     F .text	0000000e TimerReset
-08000924 g     F .text	0000011c Standard_ClearFeature
-08001740 g     F .text	00000024 USB_SIL_Read
-080003f8 g     F .text	00000002 Bulk_Status_In
-08000b6c g     F .text	000003d6 Setup0_Process
-0800177c g     F .text	00000014 BootTask
-080025c0 g     F .text	00000058 FlashWriteChecksum
-08001804 g     F .text	0000001c ComTransmitPacket
-080020f4 g     F .text	00000040 UsbGetSerialNum
-08002788 g     O .text	00000020 Bulk_ConfigDescriptor
-080003fc g     F .text	00000002 Bulk_Status_Out
-2000071c g     O .bss	00000002 wIstr
-20000728 g     O .bss	00000004 pProperty
-08000884 g     F .text	00000044 Standard_SetConfiguration
+08000a68 g     F .text	00000026 Standard_SetDeviceFeature
+08002600 g     F .text	0000000a FlashGetUserProgBaseAddress
+08000334 g     F .text	00000008 EP1_OUT_Callback
+080020c4 g     F .text	0000000e TimerReset
+080008ac g     F .text	0000011c Standard_ClearFeature
+080016c8 g     F .text	00000024 USB_SIL_Read
+08000380 g     F .text	00000002 Bulk_Status_In
+08000af4 g     F .text	000003d6 Setup0_Process
+08001704 g     F .text	00000014 BootTask
+080024f4 g     F .text	00000058 FlashWriteChecksum
+08001764 g     F .text	0000001c ComTransmitPacket
+08002028 g     F .text	00000040 UsbGetSerialNum
+080026c8 g     O .text	00000020 Bulk_ConfigDescriptor
+08000384 g     F .text	00000002 Bulk_Status_Out
+20000720 g     O .bss	00000002 wIstr
+2000072c g     O .bss	00000004 pProperty
+0800080c g     F .text	00000044 Standard_SetConfiguration
 200000b4 g     O .data	0000001c pEpInt_IN
-2000072c g     O .bss	00000001 EPindex
+20000730 g     O .bss	00000001 EPindex
 20000008 g     O .data	00000030 Device_Property
-080027a8 g     O .text	0000001a Bulk_StringVendor
-080006d4 g     F .text	000000e0 Standard_GetStatus
-08002134 g     F .text	00000008 NvmInit
-08002748 g     O .text	00000012 Bulk_DeviceDescriptor
-080023d4 g     F .text	0000001a FlashInit
+080026e8 g     O .text	0000001a Bulk_StringVendor
+0800065c g     F .text	000000e0 Standard_GetStatus
+08002068 g     F .text	00000008 NvmInit
+08002688 g     O .text	00000012 Bulk_DeviceDescriptor
+08002308 g     F .text	0000001a FlashInit
 2000006c g     O .data	00000028 String_Descriptor
-080015a0 g     F .text	00000026 ClearDTOG_RX
-2000075a g       .bss	00000000 _ebss
-08001124 g     F .text	00000002 NOP_Process
-080008c8 g     F .text	0000005a Standard_SetInterface
-0800169c g     F .text	0000004a SetEPRxCount
-080026cc g     F .text	00000012 UnusedISR
-0800024c g     F .text	00000014 BackDoorEntryHook
-08001718 g     F .text	00000026 USB_SIL_Init
-080017fc g     F .text	00000008 ComFree
-08000640 g     F .text	00000034 PowerOn
+08001528 g     F .text	00000026 ClearDTOG_RX
+2000075e g       .bss	00000000 _ebss
+080010ac g     F .text	00000002 NOP_Process
+08000850 g     F .text	0000005a Standard_SetInterface
+08001624 g     F .text	0000004a SetEPRxCount
+0800260c g     F .text	00000012 UnusedISR
+080001d4 g     F .text	00000014 BackDoorEntryHook
+080016a0 g     F .text	00000026 USB_SIL_Init
+0800175c g     F .text	00000008 ComFree
+080005c8 g     F .text	00000034 PowerOn
 20000098 g     O .data	0000001c Bulk_StringSerial
-0800116c g     F .text	000002da CTR_LP
-20000758 g     O .bss	00000002 SaveTState
-0800149c g     F .text	00000012 SetBTABLE
-08002094 g     F .text	0000005e UsbReceivePipeBulkOUT
-08002144 g     F .text	00000008 NvmErase
+080010f4 g     F .text	000002da CTR_LP
+2000075c g     O .bss	00000002 SaveTState
+08001424 g     F .text	00000012 SetBTABLE
+08001fc8 g     F .text	0000005e UsbReceivePipeBulkOUT
+08002078 g     F .text	00000008 NvmErase
 20000038 g     O .data	00000024 User_Standard_Requests
-08000488 g     F .text	000000b4 Bulk_Reset
-20000730 g     O .bss	0000001c Device_Info
+08000410 g     F .text	000000b4 Bulk_Reset
+20000734 g     O .bss	0000001c Device_Info
 200000f0 g       .bss	00000000 _bss
-080003e8 g     F .text	0000000e Bulk_SetDeviceAddress
-08000674 g     F .text	00000030 Standard_GetConfiguration
-080018c8 g     F .text	00000376 XcpPacketReceived
-2000074c g     O .bss	00000004 pUser_Standard_Requests
-08002680 g     F .text	0000004c FlashDone
-08000150 g     F .text	00000064 EntryFromProg
-08001064 g     F .text	00000048 SetDeviceAddress
-0800147c g     F .text	0000001e PMAToUserBufferCopy
-08001878 g     F .text	0000000c ComIsConnectEntryState
-08001614 g     F .text	00000026 SetEPRxAddr
+08000370 g     F .text	0000000e Bulk_SetDeviceAddress
+080005fc g     F .text	00000030 Standard_GetConfiguration
+080017fc g     F .text	00000376 XcpPacketReceived
+20000750 g     O .bss	00000004 pUser_Standard_Requests
+080025b4 g     F .text	0000004c FlashDone
+08000fec g     F .text	00000048 SetDeviceAddress
+08001404 g     F .text	0000001e PMAToUserBufferCopy
+0800159c g     F .text	00000026 SetEPRxAddr
 200000f1 g     O .bss	00000001 bIntPackSOF
-08001eb0 g     F .text	0000007a UsbTransmitPacket
-080010ac g     F .text	00000076 In0_Process
-080001c8 g     F .text	00000056 UsbConnectHook
-08000400 g     F .text	0000004c Bulk_Data_Setup
-20000720 g     O .bss	00000002 StatusInfo
-20000750 g     O .bss	00000004 pInformation
-080014b0 g     F .text	00000018 SetEPType
-0800189c g     F .text	0000001c XcpInit
-08001df8 g     F .text	000000ac UsbInit
-08001ea4 g     F .text	0000000a UsbFree
-08002440 g     F .text	0000017e FlashErase
-08000260 g     F .text	00000142 main
-080006a4 g     F .text	00000030 Standard_GetInterface
-08002154 g     F .text	00000012 NvmDone
-0800214c g     F .text	00000008 NvmVerifyChecksum
-08001cac g     F .text	0000001e CpuMemCopy
+08001de4 g     F .text	0000007a UsbTransmitPacket
+08001034 g     F .text	00000076 In0_Process
+08000150 g     F .text	00000056 UsbConnectHook
+08000388 g     F .text	0000004c Bulk_Data_Setup
+20000724 g     O .bss	00000002 StatusInfo
+20000754 g     O .bss	00000004 pInformation
+08001438 g     F .text	00000018 SetEPType
+080017d0 g     F .text	0000001c XcpInit
+08001d2c g     F .text	000000ac UsbInit
+08001dd8 g     F .text	0000000a UsbFree
+08002374 g     F .text	0000017e FlashErase
+080001e8 g     F .text	00000142 main
+0800062c g     F .text	00000030 Standard_GetInterface
+08002088 g     F .text	00000012 NvmDone
+08002080 g     F .text	00000008 NvmVerifyChecksum
+08001be0 g     F .text	0000001e CpuMemCopy
 2000005c g     O .data	00000008 Bulk_Descriptor
-0800044c g     F .text	00000004 Bulk_NoData_Setup
-08001844 g     F .text	00000024 ComGetActiveInterfaceMaxTxLen
-0800053c g     F .text	00000010 Bulk_GetDeviceDescriptor
-08000b08 g     F .text	0000001c Standard_GetDescriptorData
-08002760 g     O .text	00000026 Bulk_StringProduct
-08000f44 g     F .text	0000011e Out0_Process
+080003d4 g     F .text	00000004 Bulk_NoData_Setup
+0800179c g     F .text	0000001a ComGetActiveInterfaceMaxTxLen
+080004c4 g     F .text	00000010 Bulk_GetDeviceDescriptor
+08000a90 g     F .text	0000001c Standard_GetDescriptorData
+080026a0 g     O .text	00000026 Bulk_StringProduct
+08000ecc g     F .text	0000011e Out0_Process
 20000000 g       .data	00000000 _data
-0800275c g     O .text	00000004 Bulk_StringLangID
-08001c5c g     F .text	00000002 CopInit
-080003a4 g     F .text	00000008 EP1_IN_Callback
-08001ccc g     F .text	00000008 CpuReset
-08001538 g     F .text	00000022 SetEPTxValid
-0800055c g     F .text	00000028 Bulk_GetStringDescriptor
-0800213c g     F .text	00000008 NvmWrite
-08001c80 g     F .text	0000002c CpuStartUserProgram
-2000095c g       .bss	00000000 _estack
-08001f2c g     F .text	000000b0 UsbReceivePacket
-08002618 g     F .text	00000068 FlashVerifyChecksum
+0800269c g     O .text	00000004 Bulk_StringLangID
+08001b8c g     F .text	00000002 CopInit
+0800032c g     F .text	00000008 EP1_IN_Callback
+08001c00 g     F .text	00000008 CpuReset
+080014c0 g     F .text	00000022 SetEPTxValid
+080004e4 g     F .text	00000028 Bulk_GetStringDescriptor
+08002070 g     F .text	00000008 NvmWrite
+08001bb0 g     F .text	00000030 CpuStartUserProgram
+20000960 g       .bss	00000000 _estack
+08001e60 g     F .text	000000b0 UsbReceivePacket
+0800254c g     F .text	00000068 FlashVerifyChecksum
 200000f8 g     O .bss	00000001 Data_Mul_MaxPacketSize
 200000ed g       .data	00000000 _edata
-08000584 g     F .text	00000010 Bulk_GetBulkDescriptor
-08000b24 g     F .text	00000048 Post0_Process
+0800050c g     F .text	00000010 Bulk_GetBulkDescriptor
+08000aac g     F .text	00000048 Post0_Process
 08000000 g     O .text	00000150 _vectab
-08000594 g     F .text	000000ac USB_Istr
-08001500 g     F .text	00000036 SetEPRxStatus
-080015c8 g     F .text	00000026 ClearDTOG_TX
-080015f0 g     F .text	00000024 SetEPTxAddr
+0800051c g     F .text	000000ac USB_Istr
+08001488 g     F .text	00000036 SetEPRxStatus
+08001550 g     F .text	00000026 ClearDTOG_TX
+08001578 g     F .text	00000024 SetEPTxAddr
 20000000 g     O .data	00000008 Config_Descriptor
-08001580 g     F .text	0000001e Clear_Status_Out
-08001448 g     F .text	00000034 UserToPMABufferCopy
-08001820 g     F .text	00000024 ComGetActiveInterfaceMaxRxLen
-08001c58 g     F .text	00000002 BackDoorCheck
-2000075a g       .bss	00000000 _stack
-080003cc g     F .text	0000001a Bulk_SetConfiguration
+08001508 g     F .text	0000001e Clear_Status_Out
+080013d0 g     F .text	00000034 UserToPMABufferCopy
+08001780 g     F .text	0000001a ComGetActiveInterfaceMaxRxLen
+08001b88 g     F .text	00000002 BackDoorCheck
+2000075e g       .bss	00000000 _stack
+08000354 g     F .text	0000001a Bulk_SetConfiguration
 200000f4 g     O .bss	00000004 bDeviceState
 20000094 g     O .data	00000002 Device_Table
-08001fdc g     F .text	000000b8 UsbTransmitPipeBulkIN
-08000220 g     F .text	0000002a BackDoorInitHook
-0800054c g     F .text	00000010 Bulk_GetConfigDescriptor
-080027c4 g     O .text	0000002c Bulk_StringInterface
-08002168 g     F .text	00000028 TimerInit
-20000754 g     O .bss	00000002 wInterrupt_Mask
-0800165c g     F .text	00000020 GetEPRxAddr
+08001f10 g     F .text	000000b8 UsbTransmitPipeBulkIN
+080001a8 g     F .text	0000002a BackDoorInitHook
+080004d4 g     F .text	00000010 Bulk_GetConfigDescriptor
+08002704 g     O .text	0000002c Bulk_StringInterface
+0800209c g     F .text	00000028 TimerInit
+20000758 g     O .bss	00000002 wInterrupt_Mask
+080015e4 g     F .text	00000020 GetEPRxAddr
 
 

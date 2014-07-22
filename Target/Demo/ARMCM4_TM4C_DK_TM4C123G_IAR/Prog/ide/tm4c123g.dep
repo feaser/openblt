@@ -35,35 +35,6 @@
       <file>$PROJ_DIR$\..\lib\driverlib\pwm.h</file>
       <file>$PROJ_DIR$\..\lib\driverlib\qei.c</file>
       <file>$PROJ_DIR$\..\lib\driverlib\qei.h</file>
-      <file>$PROJ_DIR$\..\main.c</file>
-      <file>$PROJ_DIR$\..\time.c</file>
-      <file>$PROJ_DIR$\..\time.h</file>
-      <file>$PROJ_DIR$\..\vectors.c</file>
-      <file>$PROJ_DIR$\..\obj\usb_serial_structs.o</file>
-      <file>$PROJ_DIR$\..\obj\uartstdio.o</file>
-      <file>$PROJ_DIR$\..\obj\vectors.o</file>
-      <file>$PROJ_DIR$\..\obj\flash.o</file>
-      <file>$PROJ_DIR$\..\obj\usbstick.o</file>
-      <file>$PROJ_DIR$\..\obj\boot.pbi</file>
-      <file>$PROJ_DIR$\..\obj\fpu.o</file>
-      <file>$PROJ_DIR$\..\obj\sysexc.pbi</file>
-      <file>$PROJ_DIR$\..\obj\qs-logger.pbi</file>
-      <file>$PROJ_DIR$\..\obj\ustdlib.pbi</file>
-      <file>$PROJ_DIR$\..\obj\irq.pbi</file>
-      <file>$PROJ_DIR$\..\obj\usbserial.o</file>
-      <file>$PROJ_DIR$\..\obj\cfal96x64x16.pbi</file>
-      <file>$PROJ_DIR$\..\obj\systick.pbi</file>
-      <file>$PROJ_DIR$\..\bin\demoprog_dk_tm4c123g.out</file>
-      <file>$PROJ_DIR$\..\obj\clocksetwidget.pbi</file>
-      <file>$PROJ_DIR$\usbserial.c</file>
-      <file>$PROJ_DIR$\..\obj\usbserial.pbi</file>
-      <file>$PROJ_DIR$\usbstick.c</file>
-      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
-      <file>$PROJ_DIR$\..\obj\cfal96x64x16.o</file>
-      <file>$PROJ_DIR$\usb_serial_structs.c</file>
-      <file>$PROJ_DIR$\..\obj\usb_serial_structs.pbi</file>
-      <file>$PROJ_DIR$\..\obj\fat_usbmsc.o</file>
-      <file>$PROJ_DIR$\..\obj\acquire.o</file>
       <file>$PROJ_DIR$\..\lib\driverlib\ssi.c</file>
       <file>$PROJ_DIR$\..\lib\driverlib\ssi.h</file>
       <file>$PROJ_DIR$\..\lib\driverlib\sw_crc.c</file>
@@ -113,6 +84,35 @@
       <file>$PROJ_DIR$\..\irq.h</file>
       <file>$PROJ_DIR$\..\led.c</file>
       <file>$PROJ_DIR$\..\led.h</file>
+      <file>$PROJ_DIR$\..\main.c</file>
+      <file>$PROJ_DIR$\..\time.c</file>
+      <file>$PROJ_DIR$\..\time.h</file>
+      <file>$PROJ_DIR$\..\vectors.c</file>
+      <file>$PROJ_DIR$\..\obj\uartstdio.o</file>
+      <file>$PROJ_DIR$\..\obj\usb_serial_structs.o</file>
+      <file>$PROJ_DIR$\..\obj\vectors.o</file>
+      <file>$PROJ_DIR$\..\obj\fpu.o</file>
+      <file>$PROJ_DIR$\..\obj\qs-logger.pbi</file>
+      <file>$PROJ_DIR$\..\obj\sysexc.pbi</file>
+      <file>$PROJ_DIR$\..\obj\boot.pbi</file>
+      <file>$PROJ_DIR$\..\obj\ustdlib.pbi</file>
+      <file>$PROJ_DIR$\..\obj\usbstick.o</file>
+      <file>$PROJ_DIR$\..\obj\flash.o</file>
+      <file>$PROJ_DIR$\..\obj\irq.pbi</file>
+      <file>$PROJ_DIR$\..\obj\usbserial.o</file>
+      <file>$PROJ_DIR$\..\obj\cfal96x64x16.pbi</file>
+      <file>$PROJ_DIR$\..\obj\systick.pbi</file>
+      <file>$PROJ_DIR$\..\bin\demoprog_dk_tm4c123g.out</file>
+      <file>$PROJ_DIR$\..\obj\clocksetwidget.pbi</file>
+      <file>$PROJ_DIR$\usbserial.c</file>
+      <file>$PROJ_DIR$\..\obj\usbserial.pbi</file>
+      <file>$PROJ_DIR$\usbstick.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\..\obj\cfal96x64x16.o</file>
+      <file>$PROJ_DIR$\usb_serial_structs.c</file>
+      <file>$PROJ_DIR$\..\obj\usb_serial_structs.pbi</file>
+      <file>$PROJ_DIR$\..\obj\fat_usbmsc.o</file>
+      <file>$PROJ_DIR$\..\obj\acquire.o</file>
       <file>$PROJ_DIR$\..\obj\clocksetwidget.o</file>
       <file>$PROJ_DIR$\..\obj\buttons.o</file>
       <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
@@ -167,8 +167,8 @@
       <file>$PROJ_DIR$\clocksetwidget.c</file>
       <file>$PROJ_DIR$\menus.c</file>
       <file>$PROJ_DIR$\acquire.c</file>
-      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\port\fat_usbmsc.c</file>
       <file>$PROJ_DIR$\..\memory.x</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\port\fat_usbmsc.c</file>
       <file>$PROJ_DIR$\..\obj\eeprom.o</file>
       <file>$PROJ_DIR$\..\obj\images.pbi</file>
       <file>$PROJ_DIR$\..\obj\qei.pbi</file>
@@ -241,11 +241,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 77 85 86 94 91 1 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 48 56 57 65 62 1 8 22</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 77 85 86 94 91 1 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 48 56 57 65 62 1 8 22</file>
         </tool>
       </inputs>
     </file>
@@ -264,11 +264,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 78 85 87 86 91 94 2 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 49 56 58 57 62 65 2 8 22</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 78 85 87 86 91 94 2 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 49 56 58 57 62 65 2 8 22</file>
         </tool>
       </inputs>
     </file>
@@ -287,11 +287,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 79 85 86 94 5 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 50 56 57 65 5 8 22</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 79 85 86 94 5 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 50 56 57 65 5 8 22</file>
         </tool>
       </inputs>
     </file>
@@ -333,11 +333,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 80 81 85 91 94 8 12 22 63 10</file>
+          <file> 145 142 138 149 140 141 147 139 146 51 52 56 62 65 8 12 22 34 10</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 80 81 85 91 94 8 12 22 63 10</file>
+          <file> 145 142 138 149 140 141 147 139 146 51 52 56 62 65 8 12 22 34 10</file>
         </tool>
       </inputs>
     </file>
@@ -346,7 +346,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 36</file>
+          <file> 91</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -356,11 +356,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 81 85 91 94 8 12 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 52 56 62 65 8 12 22</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 81 85 91 94 8 12 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 52 56 62 65 8 12 22</file>
         </tool>
       </inputs>
     </file>
@@ -369,7 +369,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 39</file>
+          <file> 85</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -379,11 +379,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 142 138 149 140 141 147 139 146 87 94 14</file>
+          <file> 142 138 149 140 141 147 139 146 58 65 14</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 142 138 149 140 141 147 139 146 87 94 14</file>
+          <file> 142 138 149 140 141 147 139 146 58 65 14</file>
         </tool>
       </inputs>
     </file>
@@ -402,11 +402,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 82 85 86 91 94 8 16 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 53 56 57 62 65 8 16 22</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 82 85 86 91 94 8 16 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 53 56 57 62 65 8 16 22</file>
         </tool>
       </inputs>
     </file>
@@ -425,11 +425,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 31 83 85 91 94 8 18 22 63</file>
+          <file> 145 142 138 149 140 141 147 139 146 80 54 56 62 65 8 18 22 34</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 31 83 85 91 94 8 18 22 63</file>
+          <file> 145 142 138 149 140 141 147 139 146 80 54 56 62 65 8 18 22 34</file>
         </tool>
       </inputs>
     </file>
@@ -448,11 +448,7 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 84 85 86 91 94 8 20 22</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 84 85 86 91 94 8 20 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 55 56 57 62 65 8 20 22</file>
         </tool>
       </inputs>
     </file>
@@ -471,11 +467,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 87 94 7 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 58 65 7 8 22</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 87 94 7 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 58 65 7 8 22</file>
         </tool>
       </inputs>
     </file>
@@ -494,11 +490,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 87 94 8 22 24</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 58 65 8 22 24</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 87 94 8 22 24</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 58 65 8 22 24</file>
         </tool>
       </inputs>
     </file>
@@ -517,11 +513,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 88 91 94 8 22 26</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 59 62 65 8 22 26</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 88 91 94 8 22 26</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 59 62 65 8 22 26</file>
         </tool>
       </inputs>
     </file>
@@ -540,11 +536,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 89 94 91 8 22 28</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 60 65 62 8 22 28</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 89 94 91 8 22 28</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 60 65 62 8 22 28</file>
         </tool>
       </inputs>
     </file>
@@ -553,147 +549,7 @@
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 47 193</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\main.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 143</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 197</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\time.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 210</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 201</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\vectors.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 35</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 198</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\bin\demoprog_dk_tm4c123g.out</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 193</file>
-        </tool>
-        <tool>
-          <name>OBJCOPY</name>
-          <file> 151</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 162 200 144 168 196 173 137 163 36 39 206 135 205 204 148 150 143 181 207 136 216 178 175 183 179 210 191 118 123 116 35 119 192 112 113 109</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\usbserial.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 44</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 50</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\usbstick.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 202</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 34</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 215</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\usb_serial_structs.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 33</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 55</file>
+          <file> 96 193</file>
         </tool>
       </outputs>
     </file>
@@ -712,11 +568,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 90 91 94 8 22 59</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 61 62 65 8 22 30</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 90 91 94 8 22 59</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 61 62 65 8 22 30</file>
         </tool>
       </inputs>
     </file>
@@ -735,11 +591,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 142 138 149 140 141 147 139 146 61</file>
+          <file> 142 138 149 140 141 147 139 146 32</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 142 138 149 140 141 147 139 146 61</file>
+          <file> 142 138 149 140 141 147 139 146 32</file>
         </tool>
       </inputs>
     </file>
@@ -758,11 +614,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 87 91 94 81 7 8 22 63</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 58 62 65 52 7 8 22 34</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 87 91 94 81 7 8 22 63</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 58 62 65 52 7 8 22 34</file>
         </tool>
       </inputs>
     </file>
@@ -775,17 +631,17 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 40</file>
+          <file> 87</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 91 92 94 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 62 63 65 8 22</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 91 92 94 8 22</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 62 63 65 8 22</file>
         </tool>
       </inputs>
     </file>
@@ -798,17 +654,17 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 46</file>
+          <file> 95</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 87 94 8 22 66</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 58 65 8 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 87 94 8 22 66</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 58 65 8 22 37</file>
         </tool>
       </inputs>
     </file>
@@ -827,11 +683,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 93 94 8 22 68</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 64 65 8 22 39</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 93 94 8 22 68</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 64 65 8 22 39</file>
         </tool>
       </inputs>
     </file>
@@ -850,11 +706,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 91 94 95 8 22 70</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 62 65 66 8 22 41</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 91 94 95 8 22 70</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 62 65 66 8 22 41</file>
         </tool>
       </inputs>
     </file>
@@ -873,11 +729,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 91 94 96 8 22 72</file>
+          <file> 145 142 138 149 140 141 147 139 146 62 65 67 8 22 43</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 91 94 96 8 22 72</file>
+          <file> 145 142 138 149 140 141 147 139 146 62 65 67 8 22 43</file>
         </tool>
       </inputs>
     </file>
@@ -896,11 +752,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 94 91 97 8 22 63 72 74</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 65 62 68 8 22 34 43 45</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 94 91 97 8 22 63 72 74</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 65 62 68 8 22 34 43 45</file>
         </tool>
       </inputs>
     </file>
@@ -919,11 +775,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 94 98 8 22 76</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 65 69 8 22 47</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 85 86 94 98 8 22 76</file>
+          <file> 145 142 138 149 140 141 147 139 146 56 57 65 69 8 22 47</file>
         </tool>
       </inputs>
     </file>
@@ -936,17 +792,17 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 38</file>
+          <file> 88</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
       </inputs>
     </file>
@@ -968,17 +824,17 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 43</file>
+          <file> 92</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
       </inputs>
     </file>
@@ -997,13 +853,153 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 102 199 100 104 106 31 145 142 138 149 140 141 147 139 146 85 86 87 91 94 63 16 70 14 22 66</file>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
       </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\main.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 143</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 197</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\time.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 210</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 201</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\vectors.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 84</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 198</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\bin\demoprog_dk_tm4c123g.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 193</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 151</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 161 200 144 168 196 173 137 163 91 85 206 135 205 204 148 150 143 181 207 136 216 178 175 183 179 210 191 118 123 116 84 119 192 112 113 109</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\usbserial.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 93</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 99</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\usbstick.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 90</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 202</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 82</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 215</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\usb_serial_structs.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 104</file>
+        </tool>
+      </outputs>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\utils\ustdlib.c</name>
@@ -1014,7 +1010,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 42</file>
+          <file> 89</file>
         </tool>
       </outputs>
     </file>
@@ -1066,7 +1062,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 41</file>
+          <file> 86</file>
         </tool>
       </outputs>
     </file>
@@ -1088,11 +1084,11 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 53</file>
+          <file> 102</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 45</file>
+          <file> 94</file>
         </tool>
       </outputs>
     </file>
@@ -1131,7 +1127,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 48</file>
+          <file> 97</file>
         </tool>
       </outputs>
     </file>
@@ -1153,7 +1149,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 57</file>
+          <file> 106</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -1166,7 +1162,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 56</file>
+          <file> 105</file>
         </tool>
         <tool>
           <name>BICOMP</name>

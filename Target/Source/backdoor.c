@@ -89,10 +89,8 @@ void BackDoorInit(void)
   /* initialize application's backdoor functionality */
   BackDoorInitHook();
   
-  /* attempt to start the user program when no backdoor entry is requested or
-   * a pending COM module connection request.
-   */
-  if ( (BackDoorEntryHook() == BLT_FALSE) && (ComIsConnectEntryState() == BLT_FALSE) )
+  /* attempt to start the user program when no backdoor entry is requested */
+  if (BackDoorEntryHook() == BLT_FALSE)
   {
     /* this function does not return if a valid user program is present */
     CpuStartUserProgram();
@@ -100,14 +98,10 @@ void BackDoorInit(void)
   #if (BOOT_FILE_SYS_ENABLE > 0)
   else
   {
-    /* either the backdoor is open and/or a remote update session is about to be started.
-     * only in the first case we should check if a update from locally  attached storage 
-     * is requested */
-    if (ComIsConnectEntryState() == BLT_FALSE)
-    {
-      /* check if a firmware update is requested and, if so, start it */
-      FileHandleFirmwareUpdateRequest();
-    }
+    /* the backdoor is open so we should check if a update from locally  attached storage 
+     * is requested and, if so, start it.
+     */
+    FileHandleFirmwareUpdateRequest();
   }
   #endif
 #else

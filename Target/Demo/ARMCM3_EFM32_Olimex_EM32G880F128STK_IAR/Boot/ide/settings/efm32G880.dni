@@ -11,7 +11,7 @@ ByteLimit=50
 [Breakpoints]
 Count=0
 [DebugChecksum]
-Checksum=-1802937773
+Checksum=1282440790
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -38,14 +38,6 @@ ITMportsEnable=0
 ITMportsTermIO=0
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
-[CallStackLog]
-Enabled=0
-[DriverProfiling]
-Enabled=0
-Mode=3
-Graph=0
-Symbiont=0
-Exclusions=
 [RecentFlashDownload]
 Path=C:\Work\software\OpenBLT\Target\Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC\Boot\bin\openbtl_olimex_efm32g880.bin
 [DataLog]
@@ -76,6 +68,10 @@ GraphEnabled=0
 ShowTimeLog=1
 ShowTimeSum=1
 SumSortOrder=0
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -91,10 +87,14 @@ EventEXC=0
 EventFOLD=0
 EventLSU=0
 EventSLEEP=0
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=3
+Graph=0
+Symbiont=0
+Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]

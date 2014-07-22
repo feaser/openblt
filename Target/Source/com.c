@@ -53,47 +53,6 @@
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
-/**
- * \brief   This variable holds state information about the bootloader being started 
- *          by a reset event or by an activation from a running user program. 
- * \details In case the bootloader is started from a running user progam, the COM 
- *          interface should proceed after initialization as if it already received a 
- *          connection request, which the running user program did before it activated
- *          the bootloader. It's volatile because some targets might call functions that
- *          access this variable from assembly, which might cause the C compiler to 
- *          incorrectly remove this variable during an optimization step.
- *
- *          After a normal reset event, variable comEntryStateConnect must be set to 
- *          BLT_FALSE right before function main() is called. After an entry from the 
- *          user program, the variable must be set to BLT_TRUE right before function 
- *          main() is called. There are typically two methods to correctly implement 
- *          this functionality:
- * 
- *          -# Initialize comEntryStateConnect to BLT_FALSE upon declaration. After a
- *             regular reset, the C-startup will then set it when initializing the 
- *             .data and .bss sections. When the bootloader is re-entered from the user
- *             program, function ComSetConnectEntryState() must be called AFTER the
- *            .data and .bss sections are initialized, but BEFORE function main is 
- *            called.
- *          -# Don't give comEntryStateConnect an initialize value and add a compiler 
- *             specific keyword that results in this variable being skipped during the
- *             .data and .bss section initialization. In this case function 
- *             ComSetDisconnectEntryState() must be called before main() when starting
- *             from a regular reset. When re-entering from the user program, function 
- *             ComSetConnectEntryState() must be called before main().
- *    
- *          The compiler specific keyword for method 2 can be defined through 
- *          preprocessor macro BOOT_CPU_CONNECT_STATE_PREFIX or
- *          BOOT_CPU_CONNECT_STATE_POSTFIX.
- */
-#if defined (BOOT_CPU_CONNECT_STATE_PREFIX)
-BOOT_CPU_CONNECT_STATE_PREFIX static volatile blt_bool comEntryStateConnect;
-#elif defined (BOOT_CPU_CONNECT_STATE_POSTFIX)
-static volatile blt_bool comEntryStateConnect BOOT_CPU_CONNECT_STATE_POSTFIX;
-#else
-static volatile blt_bool comEntryStateConnect = BLT_FALSE;
-#endif
-
 /** \brief Holds the communication interface of the currently active interface. */
 static tComInterfaceId comActiveInterface = COM_IF_OTHER;
 
@@ -106,8 +65,6 @@ static tComInterfaceId comActiveInterface = COM_IF_OTHER;
 ****************************************************************************************/
 void ComInit(void)
 {
-  blt_int8u xcpCtoConnectCmdPacket[2] = { 0xff, 0x00 };
-
   /* initialize the XCP communication protocol */
   XcpInit();
 #if (BOOT_COM_CAN_ENABLE > 0)
@@ -134,11 +91,6 @@ void ComInit(void)
   /* set it as active */
   comActiveInterface = COM_IF_NET;
 #endif
-  /* simulate the reception of a CONNECT command if requested */
-  if (comEntryStateConnect == BLT_TRUE)
-  {
-    XcpPacketReceived(&xcpCtoConnectCmdPacket[0]);
-  }
 } /*** end of ComInit ***/
 
 
@@ -330,47 +282,6 @@ blt_int16u ComGetActiveInterfaceMaxTxLen(void)
 
 
 /************************************************************************************//**
-** \brief     This function should be called by the function that is called to 
-**            enter the bootloader from a running user program after the stack 
-**            pointer, data section and bss section are initialized, but before 
-**            function main is called. It stores state information that indicates 
-**            that the COM module must be initialized in a connected state.
-** \return    none
-**
-****************************************************************************************/
-void ComSetConnectEntryState(void)
-{
-  comEntryStateConnect = BLT_TRUE;
-} /*** end of ComSetConnectEntryState ***/
-
-
-/************************************************************************************//**
-** \brief     This function should be called by the reset handler after the stack 
-**            pointer, data section and bss section are initialized, but before 
-**            function main is called. It stores state information that indicates 
-**            that the COM module must be initialized in a disconnected state.
-** \return    none
-**
-****************************************************************************************/
-void ComSetDisconnectEntryState(void)
-{
-  comEntryStateConnect = BLT_FALSE;
-} /*** end of ComSetDisconnectEntryState ***/
-
-
-/************************************************************************************//**
-** \brief     This function checks if there is a pending request for a connection 
-**            upon COM module initialization.
-** \return    BLT_TRUE is there is a pending connection request, BLT_FALSE otherwise.
-**
-****************************************************************************************/
-blt_bool ComIsConnectEntryState(void)
-{
-  return comEntryStateConnect;
-} /*** end of ComIsConnectEntryState ***/
-
-
-/************************************************************************************//**
 ** \brief     This function obtains the XCP connection state.
 ** \return    BLT_TRUE when an XCP connection is established, BLT_FALSE otherwise.
 **
@@ -379,41 +290,6 @@ blt_bool ComIsConnected(void)
 {
   return XcpIsConnected();
 } /*** end of ComIsConnected ***/
-
-#else
-/************************************************************************************//**
-** \brief     This function should be called by the function that is called to 
-**            enter the bootloader from a running user program after the stack 
-**            pointer, data section and bss section are initialized, but before 
-**            function main is called. It stores state information that indicates 
-**            that the COM module must be initialized in a connected state.
-** \return    none
-**
-****************************************************************************************/
-void ComSetConnectEntryState(void)
-{
-  /* empty placeholder function because this one is called from the c-startup. on some
-   * targets, this one is written in assembly that doesn't support precompiler 
-   * statements
-   */
-} /*** end of ComSetConnectEntryState ***/
-
-
-/************************************************************************************//**
-** \brief     This function should be called by the reset handler after the stack 
-**            pointer, data section and bss section are initialized, but before 
-**            function main is called. It stores state information that indicates 
-**            that the COM module must be initialized in a disconnected state.
-** \return    none
-**
-****************************************************************************************/
-void ComSetDisconnectEntryState(void)
-{
-  /* empty placeholder function because this one is called from the c-startup. on some
-   * targets, this one is written in assembly that doesn't support precompiler 
-   * statements
-   */
-} /*** end of ComSetDisconnectEntryState ***/
 
 #endif /* BOOT_COM_ENABLE > 0 */
 

@@ -1260,7 +1260,7 @@ Memory Configuration
 
 Name             Origin             Length             Attributes
 UNPLACED_SECTIONS 0xffffffff         0x00000000         xw
-FLASH            0x08004000         0x0001c000         xr
+FLASH            0x08006000         0x0001a000         xr
 RAM              0x20000000         0x00005000         xw
 USB_CAN_RAM      0x40006000         0x00000200         xw
 CM3_System_Control_Space 0xe000e000         0x00001000         xw
@@ -1268,8 +1268,8 @@ CM3_System_Control_Space 0xe000e000         0x00001000         xw
 
 Linker script and memory map
 
-                0x08004914                __do_debug_operation = __do_debug_operation_mempoll
-                0x08004000                __FLASH_segment_start__ = 0x8004000
+                0x08006914                __do_debug_operation = __do_debug_operation_mempoll
+                0x08006000                __FLASH_segment_start__ = 0x8006000
                 0x08020000                __FLASH_segment_end__ = 0x8020000
                 0x20000000                __RAM_segment_start__ = 0x20000000
                 0x20005000                __RAM_segment_end__ = 0x20005000
@@ -1293,90 +1293,90 @@ Linker script and memory map
                 0x20000000                __vectors_ram_end__ = (__vectors_ram_start__ + SIZEOF (.vectors_ram))
                 0x20000000                __vectors_ram_load_end__ = __vectors_ram_end__
                 0x00000001                . = ASSERT (((__vectors_ram_end__ >= __RAM_segment_start__) && (__vectors_ram_end__ <= (__RAM_segment_start__ + 0x5000))), error: .vectors_ram is too large to fit in RAM memory segment)
-                0x08004000                __vectors_load_start__ = ALIGN (__FLASH_segment_start__, 0x100)
+                0x08006000                __vectors_load_start__ = ALIGN (__FLASH_segment_start__, 0x100)
 
-.vectors        0x08004000      0x154
-                0x08004000                __vectors_start__ = .
+.vectors        0x08006000      0x154
+                0x08006000                __vectors_start__ = .
  *(.vectors .vectors.*)
- .vectors       0x08004000      0x154 THUMB Debug/../../obj/vectors.o
-                0x08004000                _vectors
-                0x08004154                __vectors_end__ = (__vectors_start__ + SIZEOF (.vectors))
-                0x08004154                __vectors_load_end__ = __vectors_end__
+ .vectors       0x08006000      0x154 THUMB Debug/../../obj/vectors.o
+                0x08006000                _vectors
+                0x08006154                __vectors_end__ = (__vectors_start__ + SIZEOF (.vectors))
+                0x08006154                __vectors_load_end__ = __vectors_end__
                 0x00000001                . = ASSERT (((__vectors_end__ >= __FLASH_segment_start__) && (__vectors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .vectors is too large to fit in FLASH memory segment)
-                0x08004154                __init_load_start__ = ALIGN (__vectors_end__, 0x4)
+                0x08006154                __init_load_start__ = ALIGN (__vectors_end__, 0x4)
 
-.init           0x08004154      0x114
-                0x08004154                __init_start__ = .
+.init           0x08006154      0x114
+                0x08006154                __init_start__ = .
  *(.init .init.*)
- .init          0x08004154      0x114 THUMB Debug/../../obj/cstart.o
-                0x08004154                _start
-                0x080041d2                exit
-                0x080041f6                reset_handler
-                0x08004268                __init_end__ = (__init_start__ + SIZEOF (.init))
-                0x08004268                __init_load_end__ = __init_end__
+ .init          0x08006154      0x114 THUMB Debug/../../obj/cstart.o
+                0x08006154                _start
+                0x080061d2                exit
+                0x080061f6                reset_handler
+                0x08006268                __init_end__ = (__init_start__ + SIZEOF (.init))
+                0x08006268                __init_load_end__ = __init_end__
                 0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .init is too large to fit in FLASH memory segment)
-                0x08004268                __text_load_start__ = ALIGN (__init_end__, 0x4)
+                0x08006268                __text_load_start__ = ALIGN (__init_end__, 0x4)
 
-.text           0x08004268      0x6ec
-                0x08004268                __text_start__ = .
+.text           0x08006268      0x6ec
+                0x08006268                __text_start__ = .
  *(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table .ARM.extab* .gnu.linkonce.armextab.*)
  .glue_7        0x00000000        0x0 linker stubs
  .glue_7t       0x00000000        0x0 linker stubs
- .text.LedInit  0x08004268       0x3c THUMB Debug/../../obj/led.o
-                0x08004268                LedInit
+ .text.LedInit  0x08006268       0x3c THUMB Debug/../../obj/led.o
+                0x08006268                LedInit
  .text.LedToggle
-                0x080042a4       0x88 THUMB Debug/../../obj/led.o
-                0x080042a4                LedToggle
- .text.main     0x0800432c       0x10 THUMB Debug/../../obj/main.o
-                0x0800432c                main
- .text.Init     0x0800433c      0x24c THUMB Debug/../../obj/main.o
+                0x080062a4       0x88 THUMB Debug/../../obj/led.o
+                0x080062a4                LedToggle
+ .text.main     0x0800632c       0x10 THUMB Debug/../../obj/main.o
+                0x0800632c                main
+ .text.Init     0x0800633c      0x24c THUMB Debug/../../obj/main.o
  .text.NVIC_SetPriority
-                0x08004588       0x58 THUMB Debug/../../obj/timer.o
+                0x08006588       0x58 THUMB Debug/../../obj/timer.o
  .text.SysTick_Config
-                0x080045e0       0x64 THUMB Debug/../../obj/timer.o
+                0x080065e0       0x64 THUMB Debug/../../obj/timer.o
  .text.TimerInit
-                0x08004644       0x1c THUMB Debug/../../obj/timer.o
-                0x08004644                TimerInit
+                0x08006644       0x1c THUMB Debug/../../obj/timer.o
+                0x08006644                TimerInit
  .text.TimerSet
-                0x08004660       0x20 THUMB Debug/../../obj/timer.o
-                0x08004660                TimerSet
+                0x08006660       0x20 THUMB Debug/../../obj/timer.o
+                0x08006660                TimerSet
  .text.TimerGet
-                0x08004680       0x18 THUMB Debug/../../obj/timer.o
-                0x08004680                TimerGet
+                0x08006680       0x18 THUMB Debug/../../obj/timer.o
+                0x08006680                TimerGet
  .text.TimerISRHandler
-                0x08004698       0x24 THUMB Debug/../../obj/timer.o
-                0x08004698                TimerISRHandler
+                0x08006698       0x24 THUMB Debug/../../obj/timer.o
+                0x08006698                TimerISRHandler
  .text.UnusedISR
-                0x080046bc        0x8 THUMB Debug/../../obj/vectors.o
-                0x080046bc                UnusedISR
+                0x080066bc        0x8 THUMB Debug/../../obj/vectors.o
+                0x080066bc                UnusedISR
  .text.__enable_irq
-                0x080046c4        0xc THUMB Debug/../../obj/irq.o
+                0x080066c4        0xc THUMB Debug/../../obj/irq.o
  .text.IrqInterruptEnable
-                0x080046d0        0xc THUMB Debug/../../obj/irq.o
-                0x080046d0                IrqInterruptEnable
+                0x080066d0        0xc THUMB Debug/../../obj/irq.o
+                0x080066d0                IrqInterruptEnable
  .text.GPIO_Init
-                0x080046dc      0x1b0 THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x080046dc                GPIO_Init
+                0x080066dc      0x1b0 THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x080066dc                GPIO_Init
  .text.GPIO_SetBits
-                0x0800488c       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x0800488c                GPIO_SetBits
+                0x0800688c       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x0800688c                GPIO_SetBits
  .text.GPIO_ResetBits
-                0x080048a8       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x080048a8                GPIO_ResetBits
+                0x080068a8       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x080068a8                GPIO_ResetBits
  .text.RCC_APB2PeriphClockCmd
-                0x080048c4       0x50 THUMB Debug/../../obj/stm32f10x_rcc.o
-                0x080048c4                RCC_APB2PeriphClockCmd
+                0x080068c4       0x50 THUMB Debug/../../obj/stm32f10x_rcc.o
+                0x080068c4                RCC_APB2PeriphClockCmd
  .text.libdebugio.__do_debug_operation_mempoll
-                0x08004914       0x38 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le.a(libdebugio.o)
-                0x08004914                __do_debug_operation_mempoll
+                0x08006914       0x38 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libdebugio_v7m_t_le.a(libdebugio.o)
+                0x08006914                __do_debug_operation_mempoll
  .text.libc.__debug_io_lock
-                0x0800494c        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
-                0x0800494c                __debug_io_lock
+                0x0800694c        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+                0x0800694c                __debug_io_lock
  .text.libc.__debug_io_unlock
-                0x08004950        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
-                0x08004950                __debug_io_unlock
-                0x08004954                __text_end__ = (__text_start__ + SIZEOF (.text))
-                0x08004954                __text_load_end__ = __text_end__
+                0x08006950        0x4 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 2.3/lib/libc_user_libc_v7m_t_le.a(user_libc.o)
+                0x08006950                __debug_io_unlock
+                0x08006954                __text_end__ = (__text_start__ + SIZEOF (.text))
+                0x08006954                __text_load_end__ = __text_end__
 
 .vfp11_veneer   0x00000000        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
@@ -1384,51 +1384,51 @@ Linker script and memory map
 .v4_bx          0x00000000        0x0
  .v4_bx         0x00000000        0x0 linker stubs
                 0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .text is too large to fit in FLASH memory segment)
-                0x08004954                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
+                0x08006954                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
 
-.dtors          0x08004954        0x0
-                0x08004954                __dtors_start__ = .
+.dtors          0x08006954        0x0
+                0x08006954                __dtors_start__ = .
  *(SORT(.dtors.*))
  *(.dtors)
  *(.fini_array .fini_array.*)
-                0x08004954                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
-                0x08004954                __dtors_load_end__ = __dtors_end__
+                0x08006954                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
+                0x08006954                __dtors_load_end__ = __dtors_end__
                 0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .dtors is too large to fit in FLASH memory segment)
-                0x08004954                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
+                0x08006954                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
 
-.ctors          0x08004954        0x0
-                0x08004954                __ctors_start__ = .
+.ctors          0x08006954        0x0
+                0x08006954                __ctors_start__ = .
  *(SORT(.ctors.*))
  *(.ctors)
  *(.init_array .init_array.*)
-                0x08004954                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
-                0x08004954                __ctors_load_end__ = __ctors_end__
+                0x08006954                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
+                0x08006954                __ctors_load_end__ = __ctors_end__
                 0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .ctors is too large to fit in FLASH memory segment)
-                0x08004954                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
+                0x08006954                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
 
-.rodata         0x08004954        0x0
-                0x08004954                __rodata_start__ = .
+.rodata         0x08006954        0x0
+                0x08006954                __rodata_start__ = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
-                0x08004954                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
-                0x08004954                __rodata_load_end__ = __rodata_end__
+                0x08006954                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
+                0x08006954                __rodata_load_end__ = __rodata_end__
                 0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .rodata is too large to fit in FLASH memory segment)
-                0x08004954                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
+                0x08006954                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
 
-.ARM.exidx      0x08004954        0x0
-                0x08004954                __ARM.exidx_start__ = .
-                0x08004954                __exidx_start = __ARM.exidx_start__
+.ARM.exidx      0x08006954        0x0
+                0x08006954                __ARM.exidx_start__ = .
+                0x08006954                __exidx_start = __ARM.exidx_start__
  *(.ARM.exidx .ARM.exidx.*)
-                0x08004954                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
-                0x08004954                __exidx_end = __ARM.exidx_end__
-                0x08004954                __ARM.exidx_load_end__ = __ARM.exidx_end__
+                0x08006954                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
+                0x08006954                __exidx_end = __ARM.exidx_end__
+                0x08006954                __ARM.exidx_load_end__ = __ARM.exidx_end__
                 0x00000001                . = ASSERT (((__ARM.exidx_end__ >= __FLASH_segment_start__) && (__ARM.exidx_end__ <= (__FLASH_segment_start__ + 0x20000))), error: .ARM.exidx is too large to fit in FLASH memory segment)
-                0x08004954                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
+                0x08006954                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
 
-.fast           0x20000000        0x0 load address 0x08004954
+.fast           0x20000000        0x0 load address 0x08006954
                 0x20000000                __fast_start__ = .
  *(.fast .fast.*)
                 0x20000000                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
-                0x08004954                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
+                0x08006954                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
                 0x00000001                . = ASSERT ((((__fast_load_start__ + SIZEOF (.fast)) >= __FLASH_segment_start__) && ((__fast_load_start__ + SIZEOF (.fast)) <= (__FLASH_segment_start__ + 0x20000))), error: .fast is too large to fit in FLASH memory segment)
 
 .fast_run       0x20000000        0x0
@@ -1437,13 +1437,13 @@ Linker script and memory map
                 0x20000000                __fast_run_end__ = (__fast_run_start__ + SIZEOF (.fast_run))
                 0x20000000                __fast_run_load_end__ = __fast_run_end__
                 0x00000001                . = ASSERT (((__fast_run_end__ >= __RAM_segment_start__) && (__fast_run_end__ <= (__RAM_segment_start__ + 0x5000))), error: .fast_run is too large to fit in RAM memory segment)
-                0x08004954                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
+                0x08006954                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
 
-.data           0x20000000        0x0 load address 0x08004954
+.data           0x20000000        0x0 load address 0x08006954
                 0x20000000                __data_start__ = .
  *(.data .data.* .gnu.linkonce.d.*)
                 0x20000000                __data_end__ = (__data_start__ + SIZEOF (.data))
-                0x08004954                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
+                0x08006954                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
                 0x00000001                . = ASSERT ((((__data_load_start__ + SIZEOF (.data)) >= __FLASH_segment_start__) && ((__data_load_start__ + SIZEOF (.data)) <= (__FLASH_segment_start__ + 0x20000))), error: .data is too large to fit in FLASH memory segment)
 
 .data_run       0x20000000        0x0
@@ -1519,14 +1519,14 @@ Linker script and memory map
                 0x20000194                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
                 0x20000194                __tbss_load_end__ = __tbss_end__
                 0x00000001                . = ASSERT (((__tbss_end__ >= __RAM_segment_start__) && (__tbss_end__ <= (__RAM_segment_start__ + 0x5000))), error: .tbss is too large to fit in RAM memory segment)
-                0x08004954                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
+                0x08006954                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
 
-.tdata          0x20000194        0x0 load address 0x08004954
+.tdata          0x20000194        0x0 load address 0x08006954
                 0x20000194                __tdata_start__ = .
  *(.tdata .tdata.*)
                 0x20000194                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
-                0x08004954                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
-                0x08004954                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
+                0x08006954                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
+                0x08006954                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
                 0x00000001                . = ASSERT ((((__tdata_load_start__ + SIZEOF (.tdata)) >= __FLASH_segment_start__) && ((__tdata_load_start__ + SIZEOF (.tdata)) <= (__FLASH_segment_start__ + 0x20000))), error: .tdata is too large to fit in FLASH memory segment)
 
 .tdata_run      0x20000194        0x0

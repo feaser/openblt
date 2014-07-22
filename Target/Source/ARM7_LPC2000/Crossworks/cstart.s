@@ -55,7 +55,7 @@
 _vectors:
   ldr pc, [pc, #reset_handler_address - . - 8]  /* reset */
   ldr pc, [pc, #undef_handler_address - . - 8]  /* undefined instruction */
-  ldr pc, [pc, #swi_handler_address - . - 8]    /* swi handler */
+  ldr pc, [pc, #undef_handler_address - . - 8]  /* swi handler */
   ldr pc, [pc, #pabort_handler_address - . - 8] /* abort prefetch */
   ldr pc, [pc, #dabort_handler_address - . - 8] /* abort data */
   .word 0xB9205F88                              /* boot loader checksum */
@@ -66,50 +66,12 @@ reset_handler_address:
   .word Reset_Handler
 undef_handler_address:
   .word undef_handler
-swi_handler_address:
-  .word Reset_Handler_SWI
 pabort_handler_address:
   .word pabort_handler
 dabort_handler_address:
   .word dabort_handler
 fiq_handler_address:
   .word fiq_handler
-
-
-  .section .init, "ax"
-  .code 32
-  .align 4
-/* microcontroller registers */
-.set  MEMMAP, 0xE01FC040           /* MEMMAP register                                  */
-
-.global EntryFromProg
-/************************************************************************************//**
-** \brief     Called by the user program to activate the bootloader. Do not place
-**            any assembly code between this function and the end of the vector
-**            table. This guarantees that this function is located at address
-**            0x00000040. The user program can call this function from C in the 
-**            following way:
-**                         void ActivateBootloader(void)
-**                         {
-**                           void (*pEntryFromProgFnc)(void);
-**
-**                           pEntryFromProgFnc = (void*)0x00000040;
-**                           pEntryFromProgFnc();
-**                         }
-** \return    none.
-**
-****************************************************************************************/
-EntryFromProg:  
-          /* remap interrupt vector table back to ROM to make sure the bootloader
-           * vectors are used:
-           *   MEMMAP = 0x01;
-           */
-          ldr   r0, =MEMMAP
-          mov   r1, #1
-          str   r1, [r0, #0]
-          /* trigger SWI to entry supervisor mode and run Reset_Handler_SWI */
-          swi   0
- /*** end of EntryFromProg ***/
 
 
   .section .init, "ax"
@@ -371,212 +333,6 @@ dtor_end:
 exit_loop:
   b exit_loop
 
-
-.extern ComSetConnectEntryState
-/************************************************************************************//**
-** \brief     Reset handler for a software reset after the user program activated
-**            the bootloader. Configures the stack for each mode, disables the IRQ 
-**            and FIQ interrupts, initializes RAM. Most importantly, before jumping
-**            to function main to start the bootloader program, the COM interface
-**            is configured to start in a connected state. Here is why:
-**            At the start of a new programming session, the host sends the XCP 
-**            CONNECT command. Upon reception, the user program activates the 
-**            bootloader by jumping to function EntryFromProg(), which triggers the 
-**            SWI instruction that gets the program to this point. When the 
-**            bootloader is started, it now needs to send the response to the XCP
-**            CONNECT command, because the host is waiting for this before it can
-**            continue.
-** \return    none.
-**
-****************************************************************************************/
-Reset_Handler_SWI:
-__start2:                        
-  mrs r0, cpsr
-  bic r0, r0, #0x1F
-
-  /* Setup stacks */ 
-  orr r1, r0, #0x1B /* Undefined mode */
-  msr cpsr_cxsf, r1
-  ldr sp, =__stack_und_end__
-#ifdef __ARM_EABI__
-  bic sp, sp, #0x7
-#endif
-  
-  orr r1, r0, #0x17 /* Abort mode */
-  msr cpsr_cxsf, r1
-  ldr sp, =__stack_abt_end__
-#ifdef __ARM_EABI__
-  bic sp, sp, #0x7
-#endif
-
-  orr r1, r0, #0x12 /* IRQ mode */
-  msr cpsr_cxsf, r1
-  ldr sp, =__stack_irq_end__
-#ifdef __ARM_EABI__
-  bic sp, sp, #0x7
-#endif
-
-  orr r1, r0, #0x11 /* FIQ mode */
-  msr cpsr_cxsf, r1
-  ldr sp, =__stack_fiq_end__
-#ifdef __ARM_EABI__
-  bic sp, sp, #0x7
-#endif
-
-  orr r1, r0, #0x13 /* Supervisor mode */
-  msr cpsr_cxsf, r1
-  ldr sp, =__stack_svc_end__
-#ifdef __ARM_EABI__
-  bic sp, sp, #0x7
-#endif
-
-#ifdef SUPERVISOR_START
-  /* Start application in supervisor mode */
-  ldr r1, =__stack_end__ /* Setup user/system mode stack */ 
-#ifdef __ARM_EABI__
-  bic r1, r1, #0x7
-#endif
-  mov r2, sp
-  stmfd r2!, {r1}
-  ldmfd r2, {sp}^
-#else
-  /* Start application in system mode */
-  orr r1, r0, #0x1F /* System mode */
-  msr cpsr_cxsf, r1
-  ldr sp, =__stack_end__
-#ifdef __ARM_EABI__
-  bic sp, sp, #0x7
-#endif
-#endif
-
-#ifdef INITIALIZE_STACKS  
-  mov r2, #0xCC
-  ldr r0, =__stack_und_start__
-  ldr r1, =__stack_und_end__
-  bl memory_set
-  ldr r0, =__stack_abt_start__
-  ldr r1, =__stack_abt_end__
-  bl memory_set
-  ldr r0, =__stack_irq_start__
-  ldr r1, =__stack_irq_end__
-  bl memory_set
-  ldr r0, =__stack_fiq_start__
-  ldr r1, =__stack_fiq_end__
-  bl memory_set
-  ldr r0, =__stack_svc_start__
-  ldr r1, =__stack_svc_end__
-  bl memory_set  
-  ldr r0, =__stack_start__
-  ldr r1, =__stack_end__
-  bl memory_set  
-#endif
-
-  /* Copy initialised memory sections into RAM (if necessary). */
-  ldr r0, =__data_load_start__
-  ldr r1, =__data_start__
-  ldr r2, =__data_end__
-  bl memory_copy
-  ldr r0, =__text_load_start__
-  ldr r1, =__text_start__
-  ldr r2, =__text_end__
-  bl memory_copy
-  ldr r0, =__fast_load_start__
-  ldr r1, =__fast_start__
-  ldr r2, =__fast_end__
-  bl memory_copy
-  ldr r0, =__ctors_load_start__
-  ldr r1, =__ctors_start__
-  ldr r2, =__ctors_end__
-  bl memory_copy
-  ldr r0, =__dtors_load_start__
-  ldr r1, =__dtors_start__
-  ldr r2, =__dtors_end__
-  bl memory_copy
-  ldr r0, =__rodata_load_start__
-  ldr r1, =__rodata_start__
-  ldr r2, =__rodata_end__
-  bl memory_copy
-#ifdef INITIALIZE_SECONDARY_SECTIONS
-  ldr r0, =__data2_load_start__
-  ldr r1, =__data2_start__
-  ldr r2, =__data2_end__
-  bl memory_copy
-  ldr r0, =__text2_load_start__
-  ldr r1, =__text2_start__
-  ldr r2, =__text2_end__
-  bl memory_copy
-  ldr r0, =__rodata2_load_start__
-  ldr r1, =__rodata2_start__
-  ldr r2, =__rodata2_end__
-  bl memory_copy
-#endif /* #ifdef INITIALIZE_SECONDARY_SECTIONS */
-  
-  /* Zero the bss. */
-  ldr r0, =__bss_start__
-  ldr r1, =__bss_end__
-  mov r2, #0
-  bl memory_set
-#ifdef INITIALIZE_SECONDARY_SECTIONS
-  ldr r0, =__bss2_start__
-  ldr r1, =__bss2_end__
-  mov r2, #0
-  bl memory_set
-#endif /* #ifdef INITIALIZE_SECONDARY_SECTIONS */
-
-  /* Initialise the heap */
-  ldr r0, = __heap_start__
-  ldr r1, = __heap_end__
-  sub r1, r1, r0
-  cmp r1, #8
-  movge r2, #0
-  strge r2, [r0], #+4
-  strge r1, [r0]
-
-  /* Call constructors */
-  ldr r0, =__ctors_start__
-  ldr r1, =__ctors_end__
-ctor_loop2:
-  cmp r0, r1
-  beq ctor_end
-  ldr r2, [r0], #+4
-  stmfd sp!, {r0-r1}
-  mov lr, pc
-#ifdef __ARM_ARCH_3__
-  mov pc, r2
-#else    
-  bx r2
-#endif
-  ldmfd sp!, {r0-r1}
-  b ctor_loop
-ctor_end2:
-
-  .type start, function
-start2:
-  /* this part makes the difference with the normal Reset_Handler */
-  bl    ComSetConnectEntryState
-  /* Jump to application entry point */
-#ifdef FULL_LIBRARY
-  mov r0, #ARGSSPACE
-  ldr r1, =args
-  ldr r2, =debug_getargs
-  mov lr, pc
-#ifdef __ARM_ARCH_3__
-  mov pc, r2
-#else    
-  bx r2
-#endif 
-  ldr r1, =args
-#else
-  mov r0, #0
-  mov r1, #0
-#endif
-  ldr r2, =APP_ENTRY_POINT
-  mov lr, pc
-#ifdef __ARM_ARCH_3__
-  mov pc, r2
-#else    
-  bx r2
-#endif
 
 
 

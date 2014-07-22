@@ -96,14 +96,29 @@
             </VirtualDirectory>
             <File Name="../lib/stdperiphlib/stm32f4xx_conf.h"/>
           </VirtualDirectory>
+          <VirtualDirectory Name="ethernetlib">
+            <VirtualDirectory Name="inc">
+              <File Name="../lib/ethernetlib/inc/stm32_eth.h"/>
+            </VirtualDirectory>
+            <VirtualDirectory Name="src">
+              <File Name="../lib/ethernetlib/src/stm32_eth.c"/>
+            </VirtualDirectory>
+          </VirtualDirectory>
           <VirtualDirectory Name="fatfs">
             <File Name="../lib/fatfs/ffconf.h"/>
             <File Name="../lib/fatfs/mmc.c"/>
           </VirtualDirectory>
+          <VirtualDirectory Name="uip">
+            <File Name="../lib/uip/clock-arch.c"/>
+            <File Name="../lib/uip/clock-arch.h"/>
+            <File Name="../lib/uip/netdev.c"/>
+            <File Name="../lib/uip/netdev.h"/>
+            <File Name="../lib/uip/uip-conf.h"/>
+          </VirtualDirectory>
         </VirtualDirectory>
+        <File Name="../blt_conf.h"/>
         <File Name="../hooks.c"/>
         <File Name="../main.c"/>
-        <File Name="../blt_conf.h"/>
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>
@@ -182,6 +197,99 @@ continue
   </Settings>
   <VirtualDirectory Name="Source">
     <VirtualDirectory Name="third_party">
+      <VirtualDirectory Name="uip">
+        <VirtualDirectory Name="apps">
+          <VirtualDirectory Name="dhcpc">
+            <File Name="../../../../Source/third_party/uip/apps/dhcpc/dhcpc.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/dhcpc/dhcpc.h"/>
+          </VirtualDirectory>
+          <VirtualDirectory Name="hello-world">
+            <File Name="../../../../Source/third_party/uip/apps/hello-world/hello-world.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/hello-world/hello-world.h"/>
+          </VirtualDirectory>
+          <VirtualDirectory Name="httpd">
+            <File Name="../../../../Source/third_party/uip/apps/httpd/httpd.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/httpd/httpd.h"/>
+          </VirtualDirectory>
+          <VirtualDirectory Name="resolv">
+            <File Name="../../../../Source/third_party/uip/apps/resolv/resolv.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/resolv/resolv.h"/>
+          </VirtualDirectory>
+          <VirtualDirectory Name="smtp">
+            <File Name="../../../../Source/third_party/uip/apps/smtp/smtp-strings.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/smtp/smtp-strings.h"/>
+            <File Name="../../../../Source/third_party/uip/apps/smtp/smtp.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/smtp/smtp.h"/>
+          </VirtualDirectory>
+          <VirtualDirectory Name="telnetd">
+            <File Name="../../../../Source/third_party/uip/apps/telnetd/shell.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/telnetd/shell.h"/>
+            <File Name="../../../../Source/third_party/uip/apps/telnetd/telnetd.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/telnetd/telnetd.h"/>
+          </VirtualDirectory>
+          <VirtualDirectory Name="webclient">
+            <File Name="../../../../Source/third_party/uip/apps/webclient/webclient-strings.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/webclient/webclient-strings.h"/>
+            <File Name="../../../../Source/third_party/uip/apps/webclient/webclient.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/webclient/webclient.h"/>
+          </VirtualDirectory>
+          <VirtualDirectory Name="webserver">
+            <File Name="../../../../Source/third_party/uip/apps/webserver/http-strings.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/http-strings.h"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/httpd-cgi.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/httpd-cgi.h"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/httpd-fs.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/httpd-fs.h"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/httpd-fsdata.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/httpd-fsdata.h"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/httpd.c"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/httpd.h"/>
+            <File Name="../../../../Source/third_party/uip/apps/webserver/webserver.h"/>
+          </VirtualDirectory>
+        </VirtualDirectory>
+        <VirtualDirectory Name="doc">
+          <File Name="../../../../Source/third_party/uip/doc/example-mainloop-with-arp.c"/>
+          <File Name="../../../../Source/third_party/uip/doc/example-mainloop-without-arp.c"/>
+          <File Name="../../../../Source/third_party/uip/doc/uip-code-style.c"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="lib">
+          <File Name="../../../../Source/third_party/uip/lib/memb.c"/>
+          <File Name="../../../../Source/third_party/uip/lib/memb.h"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="uip">
+          <File Name="../../../../Source/third_party/uip/uip/clock.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/lc-addrlabels.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/lc-switch.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/lc.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/psock.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/psock.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/pt.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-fw.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-fw.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-neighbor.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-neighbor.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-split.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip-split.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uiplib.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uiplib.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uipopt.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_arch.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_arp.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_arp.h"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_timer.c"/>
+          <File Name="../../../../Source/third_party/uip/uip/uip_timer.h"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="unix">
+          <File Name="../../../../Source/third_party/uip/unix/clock-arch.c"/>
+          <File Name="../../../../Source/third_party/uip/unix/clock-arch.h"/>
+          <File Name="../../../../Source/third_party/uip/unix/main.c"/>
+          <File Name="../../../../Source/third_party/uip/unix/tapdev.c"/>
+          <File Name="../../../../Source/third_party/uip/unix/tapdev.h"/>
+          <File Name="../../../../Source/third_party/uip/unix/uip-conf.h"/>
+        </VirtualDirectory>
+      </VirtualDirectory>
       <VirtualDirectory Name="fatfs">
         <VirtualDirectory Name="src">
           <VirtualDirectory Name="option">
@@ -198,7 +306,33 @@ continue
           <File Name="../../../../Source/third_party/fatfs/src/ff.h"/>
           <File Name="../../../../Source/third_party/fatfs/src/integer.h"/>
         </VirtualDirectory>
+        <VirtualDirectory Name="doc">
+          <VirtualDirectory Name="img">
+            <File Name="../../../../Source/third_party/fatfs/doc/img/app1.c"/>
+            <File Name="../../../../Source/third_party/fatfs/doc/img/app2.c"/>
+            <File Name="../../../../Source/third_party/fatfs/doc/img/app3.c"/>
+          </VirtualDirectory>
+        </VirtualDirectory>
       </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="ARMCM4_STM32">
+      <VirtualDirectory Name="GCC">
+        <File Name="../../../../Source/ARMCM4_STM32/GCC/cstart.c"/>
+        <File Name="../../../../Source/ARMCM4_STM32/GCC/vectors.c"/>
+      </VirtualDirectory>
+      <File Name="../../../../Source/ARMCM4_STM32/can.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/can.h"/>
+      <File Name="../../../../Source/ARMCM4_STM32/cpu.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/cpu.h"/>
+      <File Name="../../../../Source/ARMCM4_STM32/flash.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/flash.h"/>
+      <File Name="../../../../Source/ARMCM4_STM32/nvm.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/nvm.h"/>
+      <File Name="../../../../Source/ARMCM4_STM32/timer.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/timer.h"/>
+      <File Name="../../../../Source/ARMCM4_STM32/types.h"/>
+      <File Name="../../../../Source/ARMCM4_STM32/uart.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/uart.h"/>
     </VirtualDirectory>
     <File Name="../../../../Source/assert.c"/>
     <File Name="../../../../Source/assert.h"/>
@@ -212,35 +346,10 @@ continue
     <File Name="../../../../Source/cop.h"/>
     <File Name="../../../../Source/file.c"/>
     <File Name="../../../../Source/file.h"/>
+    <File Name="../../../../Source/net.c"/>
+    <File Name="../../../../Source/net.h"/>
     <File Name="../../../../Source/plausibility.h"/>
     <File Name="../../../../Source/xcp.c"/>
     <File Name="../../../../Source/xcp.h"/>
-    <VirtualDirectory Name="ARMCM4_STM32">
-      <File Name="../../../../Source/ARMCM4_STM32/cpu.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/cpu.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/flash.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/flash.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/nvm.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/nvm.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/timer.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/timer.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/types.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/uart.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/uart.h"/>
-      <VirtualDirectory Name="GCC">
-        <File Name="../../../../Source/ARMCM4_STM32/GCC/cstart.c"/>
-        <File Name="../../../../Source/ARMCM4_STM32/GCC/vectors.c"/>
-      </VirtualDirectory>
-      <VirtualDirectory Name="Crossworks">
-        <File Name="../../../../Source/ARMCM4_STM32/Crossworks/cstart.s"/>
-        <File Name="../../../../Source/ARMCM4_STM32/Crossworks/vectors.c"/>
-      </VirtualDirectory>
-      <VirtualDirectory Name="IAR">
-        <File Name="../../../../Source/ARMCM4_STM32/IAR/cstart.s"/>
-        <File Name="../../../../Source/ARMCM4_STM32/IAR/vectors.c"/>
-      </VirtualDirectory>
-      <File Name="../../../../Source/ARMCM4_STM32/can.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/can.h"/>
-    </VirtualDirectory>
   </VirtualDirectory>
 </CodeLite_Project>

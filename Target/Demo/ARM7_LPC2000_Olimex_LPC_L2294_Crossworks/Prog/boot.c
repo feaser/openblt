@@ -83,18 +83,26 @@ void BootComCheckActivationRequest(void)
 
 
 /************************************************************************************//**
-** \brief     Bootloader activation function.
+** \brief     Bootloader activation function. Performs a software reset by configuring
+**            and triggering the watchdog.
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootActivate(void)
+void BootActivate(void)
 {
-  void (*pEntryFromProgFnc)(void);
+  #define WDEN_BIT     (0x01) /* watchdog enable bit (set only) */
+  #define WDRESET_BIT  (0x02) /* watchdog reset enable bit      */
 
-  /* set pointer to the address of function EntryFromProg in the bootloader */
-  pEntryFromProgFnc = (void*)0x00000040;
-  /* call EntryFromProg to activate the bootloader. */
-  pEntryFromProgFnc();
+  /* configure a short timeout. not really interesting as we won't be using it */  
+  WDTC = 1024;  
+  /* enable the watchdog and configure it such that a watchdog timeout causes a reset */
+  WDMOD = WDEN_BIT | WDRESET_BIT; 
+  /* start the watchdog */
+  WDFEED = 0xAA;
+  WDFEED = 0x55;
+  /* write invalid feed sequence to cause an instant reset */
+  WDFEED = 0xAA;
+  WDFEED = 0x00;
 } /*** end of BootActivate ***/
 
 

@@ -141,27 +141,13 @@ static blt_addr  FlashGetSectorSize(blt_int8u sector);
  */
 static const tFlashSector flashLayout[] =
 {
-#if (BOOT_COM_USB_ENABLE > 0)
-  /* the size of the bootloader with support for USB is larger so the start address of the
-   * user program is at a different location.
+  /* space is reserved for a bootloader configuration with all supported communication
+   * interfaces enabled. when for example only UART is needed, than the space required
+   * for the bootloader can be made a lot smaller here.
    */
   /* { 0x08000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
   /* { 0x08002000, 0x02000,  1},           flash sector  1 - reserved for bootloader   */
-  { 0x08004000, 0x02000,  2},           /* flash sector  2 - 8kb                       */
-#elif (BOOT_FILE_SYS_ENABLE > 0)
-  /* the size of the bootloader with support for firmware update from a locally attached
-   * storage disk is larger so the start address of the user program is at a different 
-   * location.
-   */
-  /* { 0x08000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
-  /* { 0x08002000, 0x02000,  1},           flash sector  1 - reserved for bootloader   */
-  /* { 0x08004000, 0x02000,  2},           flash sector  2 - 8kb                       */
-#else
-  /* { 0x08000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */
-  { 0x08002000, 0x02000,  1},           /* flash sector  1 - 8kb                       */
-  { 0x08004000, 0x02000,  2},           /* flash sector  2 - 8kb                       */
-#endif
-
+  /* { 0x08004000, 0x02000,  2},           flash sector  2 - reserved for bootloader   */
   { 0x08006000, 0x02000,  3},           /* flash sector  3 - 8kb                       */
 #if (BOOT_NVM_SIZE_KB > 32)
   { 0x08008000, 0x02000,  4},           /* flash sector  4 - 8kb                       */
@@ -428,6 +414,18 @@ blt_bool FlashDone(void)
   /* still here so all is okay */  
   return BLT_TRUE;
 } /*** end of FlashDone ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the base address of the flash memory available to the user program.
+**            This is basically the first address in the flashLayout table.
+** \return    Base address.
+**
+****************************************************************************************/
+blt_addr FlashGetUserProgBaseAddress(void)
+{
+  return flashLayout[0].sector_start;
+} /*** end of FlashGetUserProgBaseAddress ***/
 
 
 /************************************************************************************//**

@@ -93,49 +93,6 @@ void reset_handler(void)
 
 
 /************************************************************************************//**
-** \brief     Wrapper for calling the reset handler which puts the communication
-**            module in a connected state. Typically only called from a running user
-**            program to reactivate the bootloader to perform a remote firmware update.
-** \attention This section must be added to the linker command file to force this 
-**            function to always be at the same fixed address. 
-**              SECTIONS
-**                ENTRY_SEG     = READ_ONLY  0xFEE0 TO 0xFEFF;
-**              END
-**              PLACEMENT
-**                ENTRY               INTO  ENTRY_SEG;
-**              END
-**
-**            Make sure that the linker does not remove this function because it believes
-**            it is unused. This can be done in the linker command file:
-**              ENTRIES
-**                reset_connected_handler
-**              END
-** \return    none.
-**
-****************************************************************************************/
-#pragma CODE_SEG ENTRY
-void reset_connected_handler(void)
-{
-  /* for compatibility with other HCS12 derivates, set the register start address to
-   * 0x0000, remap the RAM to always end at 0x3FFF and remap EEPROM (if applicable)
-   * to end at 0xfff.
-   */
-  REG_INITRG = 0x00;
-  REG_INITRM = 0x39;
-  REG_INITEE = 0x09;
-  /* initialize the stack pointer */
-  INIT_SP_FROM_STARTUP_DESC();
-  /* perform standard C startup initialiation */
-  _Startup();
-  /* this part makes the difference with the normal reset_handler */
-  ComSetConnectEntryState();
-  /* start the program */
-  main();
-} /*** end of reset_connected_handler ***/
-#pragma CODE_SEG DEFAULT
-
-
-/************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
 **            linking the actual interrupts vectors to the one in the user program's 
 **            vector table.
@@ -1780,7 +1737,7 @@ const tIsrFunc _vectab[] @0xff80 =
   (tIsrFunc)Vector58_handler,                         /* XIRQ 0xFFF4                   */
   (tIsrFunc)Vector59_handler,                         /* SWI 0xFFF6                    */
   (tIsrFunc)Vector60_handler,                         /* Unimpl Instr Trap 0xFFF8      */
-  (tIsrFunc)Vector61_handler,                         /* COP Failure Reset 0xFFFA      */
+  (tIsrFunc)reset_handler,                            /* COP Failure Reset 0xFFFA      */
   (tIsrFunc)Vector62_handler,                         /* COP Clk Mon Fail 0xFFFC       */
   (tIsrFunc)reset_handler                             /* Reset(N/A) 0xFFFE             */
 };

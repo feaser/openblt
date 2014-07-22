@@ -619,6 +619,27 @@ blt_bool FlashDone(void)
 
 
 /************************************************************************************//**
+** \brief     Obtains the base address of the flash memory available to the user program.
+**            This is basically the last address in the flashLayout table converted to 
+**            the physical address on the last page (0x3f), because this is where the
+**            address will be in.
+** \return    Base address.
+**
+****************************************************************************************/
+blt_addr FlashGetUserProgBaseAddress(void)
+{
+  blt_addr end_address_linear;
+  blt_addr end_address_physical_page_window;
+  blt_addr end_address_physical_page_3f;
+  
+  end_address_linear = FLASH_END_ADDRESS + 1;
+  end_address_physical_page_window = FlashGetPhysAddr(end_address_linear);
+  end_address_physical_page_3f = end_address_physical_page_window + FLASH_PAGE_SIZE;
+  return end_address_physical_page_3f;
+} /*** end of FlashGetUserProgBaseAddress ***/
+
+
+/************************************************************************************//**
 ** \brief     Copies data currently in flash to the block->data and sets the 
 **            base address.
 ** \param     block   Pointer to flash block info structure to operate on.
