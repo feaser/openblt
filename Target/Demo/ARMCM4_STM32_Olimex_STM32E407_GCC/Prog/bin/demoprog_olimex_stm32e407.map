@@ -3,47 +3,49 @@ bin/demoprog_olimex_stm32e407.elf:     file format elf32-littlearm
 bin/demoprog_olimex_stm32e407.elf
 architecture: arm, flags 0x00000112:
 EXEC_P, HAS_SYMS, D_PAGED
-start address 0x08008000
+start address 0x0800c000
 
 Program Header:
-    LOAD off    0x00008000 vaddr 0x08008000 paddr 0x08008000 align 2**15
-         filesz 0x00000e70 memsz 0x00000e70 flags r-x
-    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08008e70 align 2**15
-         filesz 0x00000014 memsz 0x00000868 flags rw-
+    LOAD off    0x00000000 vaddr 0x08008000 paddr 0x08008000 align 2**15
+         filesz 0x00007128 memsz 0x00007128 flags r-x
+    LOAD off    0x00008000 vaddr 0x20000000 paddr 0x0800f128 align 2**15
+         filesz 0x00000014 memsz 0x00000014 flags rw-
+    LOAD off    0x00008080 vaddr 0x20000080 paddr 0x0800f200 align 2**15
+         filesz 0x00000000 memsz 0x00001c9c flags rw-
 private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000e70  08008000  08008000  00008000  2**2
+  0 .text         00003128  0800c000  0800c000  00004000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000014  20000000  08008e70  00010000  2**2
+  1 .data         00000014  20000000  0800f128  00008000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000854  20000014  08008e84  00010014  2**2
+  2 .bss          00001c9c  20000080  0800f200  00008080  2**7
                   ALLOC
-  3 .debug_info   00004f05  00000000  00000000  00010014  2**0
+  3 .debug_info   00009528  00000000  00000000  00008014  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 00001212  00000000  00000000  00014f19  2**0
+  4 .debug_abbrev 00001e7d  00000000  00000000  0001153c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_loc    000023a4  00000000  00000000  0001612b  2**0
+  5 .debug_loc    00003ba9  00000000  00000000  000133b9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 00000538  00000000  00000000  000184cf  2**0
+  6 .debug_aranges 000009f8  00000000  00000000  00016f62  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_ranges 00000478  00000000  00000000  00018a07  2**0
+  7 .debug_ranges 000008d8  00000000  00000000  0001795a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00001b4c  00000000  00000000  00018e7f  2**0
+  8 .debug_line   0000321a  00000000  00000000  00018232  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00001e2c  00000000  00000000  0001a9cb  2**0
+  9 .debug_str    000038bb  00000000  00000000  0001b44c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  0001c7f7  2**0
+ 10 .comment      00000030  00000000  00000000  0001ed07  2**0
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  0001c827  2**0
+ 11 .ARM.attributes 00000033  00000000  00000000  0001ed37  2**0
                   CONTENTS, READONLY
- 12 .debug_frame  000009d0  00000000  00000000  0001c85c  2**2
+ 12 .debug_frame  000014a4  00000000  00000000  0001ed6c  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
-08008000 l    d  .text	00000000 .text
+0800c000 l    d  .text	00000000 .text
 20000000 l    d  .data	00000000 .data
-20000014 l    d  .bss	00000000 .bss
+20000080 l    d  .bss	00000000 .bss
 00000000 l    d  .debug_info	00000000 .debug_info
 00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
 00000000 l    d  .debug_loc	00000000 .debug_loc
@@ -56,68 +58,148 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 boot.c
-0800818c l     F .text	00000022 NVIC_SystemReset
-080081b0 l     F .text	00000038 UartReceiveByte
-20000014 l     O .bss	00000041 xcpCtoReqPacket.7486
-20000058 l     O .bss	00000001 xcpCtoRxLength.7487
-20000059 l     O .bss	00000001 xcpCtoRxInProgress.7488
-08008e4c l     O .text	00000024 canTiming
+0800c18c l     F .text	00000022 NVIC_SystemReset
+0800c1b0 l     F .text	00000038 UartReceiveByte
+20000080 l     O .bss	00000041 xcpCtoReqPacket.7497
+200000c4 l     O .bss	00000001 xcpCtoRxLength.7498
+200000c5 l     O .bss	00000001 xcpCtoRxInProgress.7499
+0800f0fc l     O .text	00000024 canTiming
 00000000 l    df *ABS*	00000000 cstart.c
-08008518 l     F .text	00000000 zero_loop
+0800c524 l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 irq.c
 00000000 l    df *ABS*	00000000 led.c
-2000005c l     O .bss	00000004 timer_counter_last.7467
-20000060 l     O .bss	00000001 led_toggle_state.7466
+200000c8 l     O .bss	00000004 timer_counter_last.7478
+200000cc l     O .bss	00000001 led_toggle_state.7477
+00000000 l    df *ABS*	00000000 net.c
+200000d0 l     O .bss	00000004 ARPTimerTimeOut
+200000d4 l     O .bss	00000004 periodicTimerTimeOut
 00000000 l    df *ABS*	00000000 main.c
 00000000 l    df *ABS*	00000000 timer.c
-20000064 l     O .bss	00000004 millisecond_counter
+200000d8 l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 stm32_eth.c
+00000000 l    df *ABS*	00000000 netdev.c
 00000000 l    df *ABS*	00000000 stm32f4xx_can.c
 00000000 l    df *ABS*	00000000 stm32f4xx_gpio.c
 00000000 l    df *ABS*	00000000 stm32f4xx_rcc.c
 20000000 l     O .data	00000010 APBAHBPrescTable
+00000000 l    df *ABS*	00000000 stm32f4xx_syscfg.c
 00000000 l    df *ABS*	00000000 stm32f4xx_usart.c
 00000000 l    df *ABS*	00000000 system_stm32f4xx.c
+00000000 l    df *ABS*	00000000 uip.c
+0800d96c l     F .text	0000004c chksum
+0800d9b8 l     F .text	00000046 upper_layer_chksum
+0800da80 l     F .text	00000036 uip_add_rcv_nxt
+200000dc l     O .bss	00000002 tmp16
+200000de l     O .bss	00000002 ipid
+200000e0 l     O .bss	00000004 iss
+200000e4 l     O .bss	00000002 lastport
+200000f0 l     O .bss	00000001 c
+200000f1 l     O .bss	00000001 opt
+00000000 l    df *ABS*	00000000 uip_arp.c
+0800eb2c l     F .text	00000116 uip_arp_update
+200000f2 l     O .bss	00000001 i
+200000f3 l     O .bss	00000001 tmpage
+200000f4 l     O .bss	00000060 arp_table
+0800f120 l     O .text	00000006 broadcast_ethaddr
+20000154 l     O .bss	00000001 c
+20000155 l     O .bss	00000001 arptime
+20000158 l     O .bss	00000004 ipaddr
+00000000 l    df *ABS*	00000000 memcpy-stub.c
+00000000 l    df *ABS*	00000000 memset.c
 00000000 l    df *ABS*	00000000 
 00000800 l       *ABS*	00000000 __STACKSIZE__
-080084d4 g     F .text	00000060 reset_handler
-08008a90 g     F .text	00000028 GPIO_PinAFConfig
-08008800 g     F .text	00000126 CAN_FilterInit
-08008540 g     F .text	00000004 IrqInterruptEnable
-08008d2c g     F .text	0000000c USART_GetFlagStatus
-08008e70 g       .text	00000000 _etext
-080086bc g     F .text	00000010 TimerISRHandler
+0800ce0c g     F .text	00000012 ETH_FlushTransmitFIFO
+0800c4e0 g     F .text	00000060 reset_handler
+0800d580 g     F .text	00000028 GPIO_PinAFConfig
+0800c930 g     F .text	0000009e ETH_StructInit
+0800d2f0 g     F .text	00000126 CAN_FilterInit
+0800c54c g     F .text	00000004 IrqInterruptEnable
+0800caa8 g     F .text	000002f0 ETH_Init
+20000e90 g     O .bss	00000002 uip_len
+200000e8 g     O .bss	00000006 uip_ethaddr
+0800da00 g     F .text	0000007e uip_add32
+0800d6f0 g     F .text	00000024 RCC_AHB1PeriphResetCmd
+0800d84c g     F .text	0000000c USART_GetFlagStatus
+0800f128 g       .text	00000000 _etext
+0800d100 g     F .text	00000056 netdev_read
+0800db5c g     F .text	00000fc4 uip_process
+0800c900 g     F .text	00000010 TimerISRHandler
+0800c914 g     F .text	0000001c ETH_DeInit
+0800efb4 g     F .text	000000a6 memcpy
+20000e94 g     O .bss	00000004 uip_sappdata
+0800ceb0 g     F .text	0000022a netdev_init
+20000e98 g     O .bss	00000004 uip_acc32
+0800dab8 g     F .text	0000002c uip_ipchksum
 20000010 g     O .data	00000004 SystemCoreClock
-08008d24 g     F .text	00000008 USART_ReceiveData
-08008bdc g     F .text	00000024 RCC_APB2PeriphClockCmd
-080089f8 g     F .text	00000090 GPIO_Init
-08008d08 g     F .text	0000001c USART_Cmd
-08008bb8 g     F .text	00000024 RCC_APB1PeriphClockCmd
-080086d0 g     F .text	00000042 CAN_DeInit
-20000068 g       .bss	00000000 _ebss
-080086cc g     F .text	00000002 UnusedISR
-08008544 g     F .text	00000056 LedInit
-08008a88 g     F .text	00000004 GPIO_SetBits
-08008ab8 g     F .text	000000da RCC_GetClocksFreq
-08008c24 g     F .text	000000e4 USART_Init
-08008948 g     F .text	00000096 CAN_Receive
-08008714 g     F .text	000000ea CAN_Init
-20000014 g       .bss	00000000 _bss
-08008928 g     F .text	00000020 CAN_StructInit
-08008a8c g     F .text	00000004 GPIO_ResetBits
-0800861c g     F .text	0000004a main
-080089e0 g     F .text	00000018 CAN_MessagePending
-080081e8 g     F .text	000001e8 BootComInit
-08008d38 g     F .text	00000112 SystemInit
-08008c00 g     F .text	00000024 RCC_APB1PeriphResetCmd
+0800d844 g     F .text	00000008 USART_ReceiveData
+0800d6cc g     F .text	00000024 RCC_APB2PeriphClockCmd
+0800d4e8 g     F .text	00000090 GPIO_Init
+0800db28 g     F .text	00000032 uip_listen
+0800d828 g     F .text	0000001c USART_Cmd
+0800d158 g     F .text	00000066 netdev_send
+0800d6a8 g     F .text	00000024 RCC_APB1PeriphClockCmd
+20000e9c g     O .bss	00000001 uip_flags
+20000180 g     O .bss	00000010 EnetDmaRx
+0800d1c0 g     F .text	00000042 CAN_DeInit
+0800cd98 g     F .text	00000026 ETH_MACTransmissionCmd
+0800c4d4 g     F .text	0000000c BootActivate
+2000151c g       .bss	00000000 _ebss
+0800c910 g     F .text	00000002 UnusedISR
+0800c550 g     F .text	00000056 LedInit
+0800d578 g     F .text	00000004 GPIO_SetBits
+0800c6f0 g     F .text	0000015c NetTask
+0800cde8 g     F .text	00000012 ETH_SoftwareReset
+0800ca40 g     F .text	00000068 ETH_WritePHYRegister
+0800d5a8 g     F .text	000000da RCC_GetClocksFreq
+0800d0dc g     F .text	00000022 netdev_init_mac
+0800d744 g     F .text	000000e4 USART_Init
+0800d438 g     F .text	00000096 CAN_Receive
+0800d204 g     F .text	000000ea CAN_Init
+20000080 g       .bss	00000000 _bss
+0800d418 g     F .text	00000020 CAN_StructInit
+0800dae4 g     F .text	00000010 uip_tcpchksum
+0800ce48 g     F .text	00000026 ETH_DMAReceptionCmd
+20000ea0 g     O .bss	00000004 uip_appdata
+0800d57c g     F .text	00000004 GPIO_ResetBits
+20000ea4 g     O .bss	00000004 uip_conn
+0800cdfc g     F .text	00000010 ETH_GetSoftwareResetStatus
+0800c9d0 g     F .text	0000006e ETH_ReadPHYRegister
+20000ea8 g     O .bss	0000001e uip_conns
+0800eddc g     F .text	000001d6 uip_arp_out
+0800f05c g     F .text	0000009e memset
+0800c84c g     F .text	0000005e main
+0800d4d0 g     F .text	00000018 CAN_MessagePending
+0800c1e8 g     F .text	000001e8 BootComInit
+0800d858 g     F .text	00000112 SystemInit
+0800d738 g     F .text	0000000a SYSCFG_ETH_MediaInterfaceConfig
+0800ec9c g     F .text	00000140 uip_arp_arpin
+0800ec44 g     F .text	00000058 uip_arp_timer
+20000ec8 g     O .bss	00000002 uip_listenports
+20000ecc g     O .bss	00000004 uip_draddr
+0800d714 g     F .text	00000024 RCC_APB1PeriphResetCmd
 20000000 g       .data	00000000 _data
-0800859c g     F .text	0000007e LedToggle
-20000868 g       .bss	00000000 _estack
+0800c5a8 g     F .text	0000007e LedToggle
+0800ce70 g     F .text	0000003e ETH_Start
+20000190 g     O .bss	00000640 RxBuff
+20001d1c g       .bss	00000000 _estack
 20000014 g       .data	00000000 _edata
-08008000 g     O .text	0000018c _vectab
-080083d0 g     F .text	00000104 BootComCheckActivationRequest
-08008b94 g     F .text	00000024 RCC_AHB1PeriphClockCmd
-20000068 g       .bss	00000000 _stack
-080086b0 g     F .text	0000000c TimerGet
-08008668 g     F .text	00000046 TimerInit
+0800eb20 g     F .text	0000000a htons
+0800c000 g     O .text	0000018c _vectab
+0800cdc0 g     F .text	00000026 ETH_MACReceptionCmd
+200007d0 g     O .bss	00000640 TxBuff
+0800c3d0 g     F .text	00000104 BootComCheckActivationRequest
+0800ce20 g     F .text	00000026 ETH_DMATransmissionCmd
+0800daf4 g     F .text	00000032 uip_init
+0800d684 g     F .text	00000024 RCC_AHB1PeriphClockCmd
+2000151c g       .bss	00000000 _stack
+20000ed0 g     O .bss	00000004 uip_netmask
+20000ed4 g     O .bss	00000004 uip_hostaddr
+0800c8f4 g     F .text	0000000c TimerGet
+20000e80 g     O .bss	00000010 EnetDmaTx
+0800c6b8 g     F .text	00000038 NetApp
+0800c628 g     F .text	00000090 NetInit
+0800c8ac g     F .text	00000046 TimerInit
+20000ed8 g     O .bss	00000642 uip_buf
+2000151a g     O .bss	00000002 uip_slen
 
 

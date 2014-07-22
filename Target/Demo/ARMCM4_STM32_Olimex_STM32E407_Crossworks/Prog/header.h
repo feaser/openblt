@@ -43,6 +43,7 @@
 #include "irq.h"                                       /* IRQ driver                   */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
+#include "net.h"                                       /* TCP/IP server application    */
 
 
 #endif /* HEADER_H */

@@ -40,25 +40,10 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-#if (BOOT_FILE_SYS_ENABLE > 0)
-  /** \brief Pointer to the user program's reset vector. Note that this needs to be
-   *         changed in case the reserved memory for the bootloader is more than 0x8000.
-   */
-  #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x08008004)
-  /** \brief Pointer to the user program's vector table. Note that this needs to be
-   *         changed in case the reserved memory for the bootloader is more than 0x8000.
-   */
-  #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00008000)
-#else
-  /** \brief Pointer to the user program's reset vector. Note that this needs to be
-   *         changed in case the reserved memory for the bootloader is more than 0x4000.
-   */
-  #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)  0x08004004)
-  /** \brief Pointer to the user program's vector table. Note that this needs to be
-   *         changed in case the reserved memory for the bootloader is more than 0x4000.
-   */
-  #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)0x00004000)
-#endif
+/** \brief Pointer to the user program's reset vector. */
+#define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)(FlashGetUserProgBaseAddress() + 0x00000004))
+/** \brief Pointer to the user program's vector table. */
+#define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)FlashGetUserProgBaseAddress())
 
 
 /****************************************************************************************

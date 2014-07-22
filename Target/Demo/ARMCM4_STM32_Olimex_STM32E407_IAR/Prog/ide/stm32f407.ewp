@@ -296,10 +296,14 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..</state>
+          <state>$PROJ_DIR$\..\lib\uip</state>
+          <state>$PROJ_DIR$\..\lib\ethernetlib\inc</state>
+          <state>$PROJ_DIR$\..\lib\ethernetlib\src</state>
           <state>$PROJ_DIR$\..\lib\stdperiphlib</state>
           <state>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Device\ST\STM32F4xx\Include</state>
           <state>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Include</state>
           <state>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1845,6 +1849,15 @@
     <group>
       <name>lib</name>
       <group>
+        <name>ethernetlib</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\ethernetlib\src\stm32_eth.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\ethernetlib\inc\stm32_eth.h</name>
+        </file>
+      </group>
+      <group>
         <name>stdperiphlib</name>
         <file>
           <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Include\core_cm4.h</name>
@@ -2042,6 +2055,84 @@
           <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h</name>
         </file>
       </group>
+      <group>
+        <name>uip</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\clock-arch.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\clock-arch.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\netdev.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\netdev.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\uip-conf.h</name>
+        </file>
+      </group>
+    </group>
+    <group>
+      <name>third_party</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\clock.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-addrlabels.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-switch.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\pt.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-fw.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-fw.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-neighbor.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-split.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arch.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uipopt.h</name>
+      </file>
     </group>
     <file>
       <name>$PROJ_DIR$\..\boot.c</name>
@@ -2069,6 +2160,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\net.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\net.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\timer.c</name>

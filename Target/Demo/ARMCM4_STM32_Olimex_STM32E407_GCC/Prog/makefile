@@ -43,10 +43,19 @@ irq.c \
 irq.h \
 led.c \
 led.h \
+net.c \
+net.h \
 main.c \
 timer.c \
 timer.h \
 vectors.c \
+./lib/ethernetlib/inc/stm32_eth.h \
+./lib/ethernetlib/src/stm32_eth.c \
+./lib/uip/clock-arch.c \
+./lib/uip/clock-arch.h \
+./lib/uip/netdev.c \
+./lib/uip/netdev.h \
+./lib/uip/uip-conf.h \
 ./lib/stdperiphlib/stm32f4xx_conf.h \
 ./lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/misc.h \
 ./lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h \
@@ -111,7 +120,27 @@ vectors.c \
 ./lib/stdperiphlib/CMSIS/Include/core_cmInstr.h \
 ./lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Source/system_stm32f4xx.c \
 ./lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
-./lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
+./lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h \
+../../../Source/third_party/uip/uip/clock.h \
+../../../Source/third_party/uip/uip/lc-addrlabels.h \
+../../../Source/third_party/uip/uip/lc-switch.h \
+../../../Source/third_party/uip/uip/lc.h \
+../../../Source/third_party/uip/uip/pt.h \
+../../../Source/third_party/uip/uip/uip-fw.c \
+../../../Source/third_party/uip/uip/uip-fw.h \
+../../../Source/third_party/uip/uip/uip-neighbor.h \
+../../../Source/third_party/uip/uip/uip-split.h \
+../../../Source/third_party/uip/uip/uip.c \
+../../../Source/third_party/uip/uip/uip.h \
+../../../Source/third_party/uip/uip/uiplib.c \
+../../../Source/third_party/uip/uip/uiplib.h \
+../../../Source/third_party/uip/uip/uipopt.h \
+../../../Source/third_party/uip/uip/uip_arch.h \
+../../../Source/third_party/uip/uip/uip_arp.c \
+../../../Source/third_party/uip/uip/uip_arp.h \
+../../../Source/third_party/uip/uip/uip_timer.c \
+../../../Source/third_party/uip/uip/uip_timer.h
+
 
 
 #|---------------------------------------------------------------------------------------|

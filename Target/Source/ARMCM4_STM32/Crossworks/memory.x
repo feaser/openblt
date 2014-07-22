@@ -1,11 +1,11 @@
 MEMORY
 {
   UNPLACED_SECTIONS (wx) : ORIGIN = 0x100000000, LENGTH = 0
-  FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 0x00008000
+  FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 0x0000C000
   DATA_SRAM (wx) : ORIGIN = 0x10000000, LENGTH = 0x00010000
   SYSTEM (wx) : ORIGIN = 0x1fff0000, LENGTH = 0x00007a10
   OPTION (wx) : ORIGIN = 0x1fffc000, LENGTH = 0x00000008
-  RAM (wx) : ORIGIN = 0x20000000, LENGTH = 0x00004000
+  RAM (wx) : ORIGIN = 0x20000000, LENGTH = 0x00006000
   SRAM1 (wx) : ORIGIN = 0x20000000, LENGTH = 0x0001c000
   SRAM2 (wx) : ORIGIN = 0x2001c000, LENGTH = 0x00004000
   APB1 (wx) : ORIGIN = 0x40000000, LENGTH = 0x00008000
@@ -29,7 +29,7 @@ MEMORY
 SECTIONS
 {
   __FLASH_segment_start__ = 0x08000000;
-  __FLASH_segment_end__ = 0x08008000;
+  __FLASH_segment_end__ = 0x0800C000;
   __DATA_SRAM_segment_start__ = 0x10000000;
   __DATA_SRAM_segment_end__ = 0x10010000;
   __SYSTEM_segment_start__ = 0x1fff0000;
@@ -37,7 +37,7 @@ SECTIONS
   __OPTION_segment_start__ = 0x1fffc000;
   __OPTION_segment_end__ = 0x1fffc008;
   __RAM_segment_start__ = 0x20000000;
-  __RAM_segment_end__ = 0x20004000;
+  __RAM_segment_end__ = 0x20006000;
   __SRAM1_segment_start__ = 0x20000000;
   __SRAM1_segment_end__ = 0x2001c000;
   __SRAM2_segment_start__ = 0x2001c000;

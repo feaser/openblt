@@ -39,13 +39,6 @@
 #include "netdev.h"
 #include "uip.h"
 #include "uip_arp.h"
-#include "inc/hw_memmap.h"
-#include "inc/hw_types.h"
-#include "inc/hw_ethernet.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/gpio.h"
-#include "driverlib/ethernet.h"
-#include "driverlib/flashlib.h"
 #endif
 
 

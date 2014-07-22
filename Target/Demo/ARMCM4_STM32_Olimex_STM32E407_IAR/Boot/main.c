@@ -87,6 +87,7 @@ static void Init(void)
   __disable_irq();
   /* initialize the system and its clocks */
   SystemInit();
+  
 #if (BOOT_COM_UART_ENABLE > 0)
   /* enable UART peripheral clock */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);

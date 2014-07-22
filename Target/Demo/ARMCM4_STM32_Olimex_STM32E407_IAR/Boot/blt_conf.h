@@ -110,6 +110,82 @@
 #define BOOT_COM_UART_CHANNEL_INDEX     (5)
 
 
+/* The NET communication interface for firmware updates via TCP/IP is selected by setting
+ * the BOOT_COM_NET_ENABLE configurable to 1. The maximum amount of data bytes in a 
+ * message for data transmission and reception is set through BOOT_COM_NET_TX_MAX_DATA 
+ * and BOOT_COM_NET_RX_MAX_DATA, respectively. The default IP address is configured 
+ * with the macros BOOT_COM_NET_IPADDRx. The default netmask is configued with the macros
+ * BOOT_COM_NET_NETMASKx. The default gateway is configured with the macros
+ * BOOT_COM_NET_GATEWAYx. The bootloader acts and a TCP/IP server. The port the server
+ * listen on for connections is configured with BOOT_COM_NET_PORT.
+ */
+/** \brief Enable/disable the NET transport layer. */
+#define BOOT_COM_NET_ENABLE              (1)
+/** \brief Configure number of bytes in the target->host data packet. */
+#define BOOT_COM_NET_TX_MAX_DATA         (64)
+/** \brief Configure number of bytes in the host->target data packet. */
+#define BOOT_COM_NET_RX_MAX_DATA         (64)
+/** \brief Configure the port that the TCP/IP server listens on */
+#define BOOT_COM_NET_PORT                (1000)
+/** \brief Configure the 1st byte of the IP address */
+#define BOOT_COM_NET_IPADDR0             (169)
+/** \brief Configure the 2nd byte of the IP address */
+#define BOOT_COM_NET_IPADDR1             (254)
+/** \brief Configure the 3rd byte of the IP address */
+#define BOOT_COM_NET_IPADDR2             (19)
+/** \brief Configure the 4th byte of the IP address */
+#define BOOT_COM_NET_IPADDR3             (63)
+/** \brief Configure the 1st byte of the network mask */
+#define BOOT_COM_NET_NETMASK0            (255)
+/** \brief Configure the 2nd byte of the network mask */
+#define BOOT_COM_NET_NETMASK1            (255)
+/** \brief Configure the 3rd byte of the network mask */
+#define BOOT_COM_NET_NETMASK2            (0)
+/** \brief Configure the 4th byte of the network mask */
+#define BOOT_COM_NET_NETMASK3            (0)
+/** \brief Configure the 1st byte of the gateway address */
+#define BOOT_COM_NET_GATEWAY0            (169)
+/** \brief Configure the 2nd byte of the gateway address */
+#define BOOT_COM_NET_GATEWAY1            (254)
+/** \brief Configure the 3rd byte of the gateway address */
+#define BOOT_COM_NET_GATEWAY2            (19)
+/** \brief Configure the 4th byte of the gateway address */
+#define BOOT_COM_NET_GATEWAY3            (1)
+/** \brief Enable/disable a hook function that is called when the IP address is about
+ *         to be set. This allows a dynamic override of the BOOT_COM_NET_IPADDRx values.
+ */
+#define BOOT_COM_NET_IPADDR_HOOK_ENABLE  (0)
+/** \brief Enable/disable a hook function that is called when the netmask is about
+ *         to be set. This allows a dynamic override of the BOOT_COM_NET_NETMASKx values.
+ */
+#define BOOT_COM_NET_NETMASK_HOOK_ENABLE (0)
+/** \brief Enable/disable a hook function that is called when the gateway address is 
+ *         about to be set. This allows a dynamic override of the BOOT_COM_NET_GATEWAYx 
+ *         values.
+ */
+#define BOOT_COM_NET_GATEWAY_HOOK_ENABLE (0)
+
+
+/****************************************************************************************
+*   B A C K D O O R    C O N F I G U R A T I O N
+****************************************************************************************/
+#if (BOOT_COM_NET_ENABLE > 0)
+/* Override the default time that the backdoor is open if firmware updates via TCP/IP
+ * are supported. in this case a reactivation of the bootloader results in a re-
+ * initialization of the ethernet MAC. when directly connected to the ethernet port of 
+ * a PC this will go relatively fast (depending on what MS Windows is being used), but 
+ * when connected to the network via a router this can take several seconds. feel free to
+ * shorten/lengthen this time for finetuning. the only downside of a long backdoor open 
+ * time is that the starting of the user program will also be delayed for this time.
+ *
+ * Also note that when the target is directly connected to the ethernet port of a PC, 
+ * the checkbox "Automatically retry socket connection" should be checked in the 
+ * Microboot settings. if connecting via a router the uncheck this checkbox.
+ */
+#define BACKDOOR_ENTRY_TIMEOUT_MS  (10000)
+#endif
+
+
 /****************************************************************************************
 *   F I L E   S Y S T E M   I N T E R F A C E   C O N F I G U R A T I O N
 ****************************************************************************************/
