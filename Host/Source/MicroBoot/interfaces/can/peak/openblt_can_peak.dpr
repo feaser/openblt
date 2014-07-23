@@ -313,6 +313,7 @@ begin
   MbiCallbackOnProgress(progress);
 
   //---------------- next clear the memory regions --------------------------------------
+
   // update the user info
   MbiCallbackOnInfo('Erasing memory...');
 
