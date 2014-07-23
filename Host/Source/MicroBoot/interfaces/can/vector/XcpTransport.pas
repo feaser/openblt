@@ -76,6 +76,7 @@ type
     procedure   Configure(iniFile : string);
     function    Connect: Boolean;
     function    SendPacket(timeOutms: LongWord): Boolean;
+    function    IsComError: Boolean;
     procedure   Disconnect;
     destructor  Destroy; override;
   end;
@@ -218,6 +219,19 @@ end; //*** end of Connect ***
 
 
 //***************************************************************************************
+// NAME:           IsComError
+// PARAMETER:      none
+// RETURN VALUE:   True if in error state, False otherwise.
+// DESCRIPTION:    Determines if the communication interface is in an error state.
+//
+//***************************************************************************************
+function TXcpTransport.IsComError: Boolean;
+begin
+  result := canDriver.IsComError;
+end; //*** end of IsComError ***
+
+
+//***************************************************************************************
 // NAME:           SendPacket
 // PARAMETER:      the time[ms] allowed for the reponse from the slave to come in.
 // RETURN VALUE:   True if response received from slave, False otherwise
@@ -231,6 +245,13 @@ var
   cnt : byte;
   waitResult: Integer;
 begin
+  // do not send any more data on the network when we are in bus off state.
+  if IsComError then
+  begin
+    result := false;
+    Exit;
+  end;
+
   // prepare the packet
   msg.id      := LongInt(PacketTxId);
   msg.dlc     := packetLen;

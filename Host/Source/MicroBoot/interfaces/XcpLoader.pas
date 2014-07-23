@@ -146,6 +146,7 @@ type
     function    GetLastError(var info : string) : Byte;
     procedure   Configure(iniFile : string);
     function    Connect : Boolean;
+    function    IsComError : Boolean;
     procedure   Disconnect;
     function    StartProgrammingSession : Boolean;
     function    StopProgrammingSession : Boolean;
@@ -419,6 +420,19 @@ begin
   FIsConnected := false;
   comDriver.Disconnect;
 end; //*** end of Disconnect ***
+
+
+//***************************************************************************************
+// NAME:           IsComError
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Determines if a communication error is present in the transport layer.
+//
+//***************************************************************************************
+function TXcpLoader.IsComError : Boolean;
+begin
+  result := comDriver.IsComError;
+end;
 
 
 //***************************************************************************************
@@ -699,8 +713,13 @@ begin
     Exit;
   end;
 
-  // no error so it must have been a positive response
-  result := true;
+  // no error so it must have been a positive response. this response comes right after
+  // the one from the connect command, which might be send out multiple time so make sure
+  // that this is really a response to get_status by verifying its length.
+  if comDriver.packetLen = 6 then
+  begin
+    result := true;
+  end;
 
   // store protection info
   FProtection := comDriver.packetData[2];

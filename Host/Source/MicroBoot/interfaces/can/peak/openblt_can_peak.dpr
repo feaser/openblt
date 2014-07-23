@@ -276,18 +276,41 @@ begin
   //---------------- start the programming session --------------------------------------
   MbiCallbackOnLog('Starting the programming session. t='+TimeToStr(Time));
 
-  // try initial connect via XCP
+  // try initial connect via XCP. if the user program is able to reactivate the bootloader
+  // it will do so now
   if not loader.StartProgrammingSession then
   begin
     // update the user info
     MbiCallbackOnInfo('Could not connect. Retrying. Reset your target if this takes a long time.');
     MbiCallbackOnLog('Connect failed. Switching to backdoor entry mode. t='+TimeToStr(Time));
     Application.ProcessMessages;
+    // possible that the bootloader is being activated, which means that the target's
+    // CAN controller is being reinitialized. We should not send any data on the CAN
+    // network for this to finish. 200ms should do it. not that the backdoor entry time
+    // should be at least 2.5x this.
+    Sleep(200);
     // continuously try to connect via XCP true the backdoor
     while not loader.StartProgrammingSession do
     begin
       Application.ProcessMessages;
       Sleep(5);
+      // if the is in reset of otherwise does not have the CAN controller synchronized to
+      // the CAN bus, we will be generating error frames, possibly leading to a bus off.
+      // check for this
+      if loader.IsComError then
+      begin
+        // bus off state, so try to recover.
+        MbiCallbackOnLog('Communication error detected. Trying automatic recovery. t='+TimeToStr(Time));
+        loader.Disconnect;
+        if not loader.Connect then
+        begin
+          MbiCallbackOnLog('Could not connect to CAN interface. Check your configuration and try again. t='+TimeToStr(Time));
+          MbiCallbackOnError('Could not connect to CAN interface. Check your configuration.');
+          Exit;
+        end;
+        Sleep(200);
+      end;
+
       if stopRequest then
       begin
         MbiCallbackOnError('Programming session cancelled by user.');

@@ -90,6 +90,7 @@ type
     FCanEventThread: TCanEventThread;
     FThreadRunning : boolean;
     FEventHandle   : LongInt;
+    FBusOffPending : Boolean;
     function IsThreadRunning: boolean;
     procedure ProcessEvents;
     procedure CopyMessage(event: Vevent; var msg: TCanMsg);
@@ -120,6 +121,7 @@ type
     procedure   Disconnect; virtual;
     function    Transmit( Message: TCanMsg): boolean; virtual;
     function    IsConnected: boolean; virtual;
+    function    IsComError: boolean; virtual;
   published
     { Published declarations }
     property BaudRate    : LongInt          read FBaudRate     write SetBaudRate   default 500000;
@@ -196,7 +198,8 @@ begin
   FChannelMask   := 0;
   FPermissionMask:= 0;
   FThreadRunning := False;
-  FEventHandle   := 0; 
+  FEventHandle   := 0;
+  FBusOffPending := False;
 
   // set defaults for properties
   FBaudRate := 500000;
@@ -239,6 +242,20 @@ begin
   else
     Result := False;
 end; //*** end of IsConnected ***
+
+
+//***************************************************************************************
+// NAME:           IsComError
+// PRECONDITIONS:  none
+// PARAMETER:      none
+// RETURN VALUE:   True if the communication interface is in error state, False otherwise
+// DESCRIPTION:    Determines whether or not the CAN controller is in error state.
+//
+//***************************************************************************************
+function TCanDriver.IsComError: boolean;
+begin
+  result := FBusOffPending;
+end; //*** end of IsComError ***
 
 
 //***************************************************************************************
@@ -475,6 +492,7 @@ begin
   FPermissionMask:= 0;
   FThreadRunning := False;
   FEventHandle   := 0;
+  FBusOffPending := False;
 
   //-------------------------- open the driver ------------------------------------------
   vErr := ncdOpenDriver;
@@ -709,6 +727,7 @@ begin
         if (pEvent^.chipState.busStatus and CHIPSTAT_BUSOFF) = CHIPSTAT_BUSOFF then
         begin
           //---------------- process bus off event --------------------------------------
+          FBusOffPending := True;
           if Assigned( FOnBusOff ) then
           begin
             FOnBusOff( Self, pEvent^.timeStamp );  // call application's event handler

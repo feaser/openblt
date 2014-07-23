@@ -105,6 +105,7 @@ type
     procedure   Disconnect; virtual;
     function    Transmit( Message: TPCanMessage): boolean; virtual;
     function    IsConnected: boolean; virtual;
+    function    IsComError: boolean; virtual;
   published
     { Published declarations }
     property BaudRate    : LongInt           read FBaudRate     write SetBaudRate   default 500000;
@@ -195,6 +196,21 @@ function TPCanDriver.IsConnected: boolean;
 begin
   Result := FCanConnected;
 end; //*** end of IsConnected ***
+
+
+//***************************************************************************************
+// NAME:           IsComError
+// PRECONDITIONS:  none
+// PARAMETER:      none
+// RETURN VALUE:   True if the communication interface is in error state, False otherwise
+// DESCRIPTION:    Determines whether or not the CAN controller is in error state.
+//
+//***************************************************************************************
+function TPCanDriver.IsComError: boolean;
+begin
+  // check for bus off 
+  result := ((CAN_Status and CAN_ERR_BUSOFF) <> 0);
+end; //*** end of IsComError ***
 
 
 //***************************************************************************************

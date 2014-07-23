@@ -48,10 +48,14 @@
    *         connect command response. This is the last entry on XCP Timeouts tab. By 
    *         default the connect command response is configured as 20ms by Microboot,
    *         except for TCP/IP where it is 300ms due to accomodate for worldwide
-   *         network latency.
+   *         network latency. For CAN this was also adjusted to 500ms so that Microboot
+   *         can wait for the bootloader to initialize. Otherwise errorframes can be
+   *         generated on the CAN bus.
    */
     #if (BOOT_COM_NET_ENABLE == 1)
       #define BACKDOOR_ENTRY_TIMEOUT_MS  (750)
+    #elif (BOOT_COM_CAN_ENABLE == 1)
+      #define BACKDOOR_ENTRY_TIMEOUT_MS  (500)
     #else
       #define BACKDOOR_ENTRY_TIMEOUT_MS  (50)
     #endif

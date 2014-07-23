@@ -63,6 +63,7 @@ type
     procedure   Configure(iniFile : string);
     function    Connect: Boolean;
     function    SendPacket(timeOutms: LongWord): Boolean;
+    function    IsComError: Boolean;
     procedure   Disconnect;
     destructor  Destroy; override;
   end;
@@ -138,6 +139,19 @@ begin
   if UblOpen(Addr(deviceGuid)) <> UBL_OKAY then
     result := false;
 end; //*** end of Connect ***
+
+
+//***************************************************************************************
+// NAME:           IsComError
+// PARAMETER:      none
+// RETURN VALUE:   True if in error state, False otherwise.
+// DESCRIPTION:    Determines if the communication interface is in an error state.
+//
+//***************************************************************************************
+function TXcpTransport.IsComError: Boolean;
+begin
+  result := false;
+end; //*** end of IsComError ***
 
 
 //***************************************************************************************
