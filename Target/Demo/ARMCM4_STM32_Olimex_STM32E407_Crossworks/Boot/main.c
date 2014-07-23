@@ -83,8 +83,6 @@ static void Init(void)
   GPIO_InitTypeDef  GPIO_InitStructure;
 #endif  
 
-  /* disable all interrupts to prevent possible jump back to the user program */
-  __disable_irq();
   /* initialize the system and its clocks */
   SystemInit();
 #if (BOOT_COM_UART_ENABLE > 0)

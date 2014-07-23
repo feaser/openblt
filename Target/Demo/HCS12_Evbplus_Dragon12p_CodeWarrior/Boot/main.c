@@ -79,11 +79,6 @@ static void Init(void)
   blt_int32u systemSpeed;
   blt_bool   found = BLT_FALSE;
 
-  /* disable the global interrupts. the bootloader does not use interrupts and this
-   * automatically prevents a jump back into the user program in case it was not
-   * properly uninitialized.
-   */
-  asm("sei");
   /* initialize the system clock to BOOT_CPU_SYSTEM_SPEED_KHZ by configuring the PLL 
    * subsystem. first default to oscillator clock source.
    */

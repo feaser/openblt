@@ -22,25 +22,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   2 .bss          00002ce4  20000080  08007f80  00010080  2**7
                   ALLOC
-  3 .debug_info   00012c9d  00000000  00000000  00010020  2**0
+  3 .debug_info   00012c85  00000000  00000000  00010020  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 000036d4  00000000  00000000  00022cbd  2**0
+  4 .debug_abbrev 000036b6  00000000  00000000  00022ca5  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_loc    0000b713  00000000  00000000  00026391  2**0
+  5 .debug_loc    0000b713  00000000  00000000  0002635b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 000010b8  00000000  00000000  00031aa4  2**0
+  6 .debug_aranges 000010b8  00000000  00000000  00031a6e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_ranges 00000fe8  00000000  00000000  00032b5c  2**0
+  7 .debug_ranges 00000fe8  00000000  00000000  00032b26  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00005d00  00000000  00000000  00033b44  2**0
+  8 .debug_line   00005ce6  00000000  00000000  00033b0e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000054b8  00000000  00000000  00039844  2**0
+  9 .debug_str    000054aa  00000000  00000000  000397f4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  0003ecfc  2**0
+ 10 .comment      00000030  00000000  00000000  0003ec9e  2**0
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  0003ed2c  2**0
+ 11 .ARM.attributes 00000033  00000000  00000000  0003ecce  2**0
                   CONTENTS, READONLY
- 12 .debug_frame  00002a64  00000000  00000000  0003ed60  2**2
+ 12 .debug_frame  00002a64  00000000  00000000  0003ed04  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08000000 l    d  .text	00000000 .text
@@ -305,7 +305,7 @@ SYMBOL TABLE:
 08006f88 g     F .text	0000008a FlashErase
 0800749c g     F .text	0000009e memset
 0800024c g     F .text	00000020 FileFirmwareUpdateErrorHook
-080002cc g     F .text	000000bc main
+080002cc g     F .text	000000ba main
 08001f1c g     F .text	0000006e FLASH_EraseSector
 0800404c g     F .text	000000ac f_sync
 080013c8 g     F .text	0000004c SD_SendStatus
