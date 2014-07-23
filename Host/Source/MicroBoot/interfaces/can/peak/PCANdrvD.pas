@@ -471,19 +471,8 @@ begin
   // submit the transmit request
   if CAN_Write(msg) <> CAN_ERR_OK then
   begin
-    // the Peak CAN interface has a bug because if it is the only node on the bus
-    // transmitting a message, it will actually go in bus off, which is not allowed
-    // according to the CAN protocol. this scenario can be resolved by re-initializing
-    // the CAN interface.
-    if (CAN_Status and CAN_ERR_BUSOFF) = CAN_ERR_BUSOFF then
-    begin
-      Disconnect;
-      if not Connect then
-      begin
-        Result := False;
-        exit;
-      end;
-    end;
+    Result := False;
+    exit;
   end;
 
   //---------------- process transmission confirmation --------------------------
