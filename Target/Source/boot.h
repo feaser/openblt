@@ -37,11 +37,11 @@
 * Defines
 ****************************************************************************************/
 /** \brief Main version of the bootloader core. */
-#define BOOT_VERSION_CORE_MAIN     (0u)
+#define BOOT_VERSION_CORE_MAIN     (1u)
 /** \brief Minor version of the bootloader core. */
-#define BOOT_VERSION_CORE_MINOR    (97u)
+#define BOOT_VERSION_CORE_MINOR    (0u)
 /** \brief Bufgix version of the bootloader core. */
-#define BOOT_VERSION_CORE_BUGFIX   (2u)
+#define BOOT_VERSION_CORE_BUGFIX   (0u)
 
 
 /****************************************************************************************
