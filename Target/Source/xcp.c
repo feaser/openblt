@@ -194,6 +194,12 @@ extern blt_int8u XcpCalGetPageHook(blt_int8u segment);
 extern blt_bool XcpConnectModeHook(blt_int8u mode);
 #endif
 
+#if (XCP_SEED_KEY_PROTECTION_EN == 1)
+extern blt_int8u XcpGetSeedHook(blt_int8u resource, blt_int8u *seed);
+extern blt_int8u XcpVerifyKeyHook(blt_int8u resource, blt_int8u *key, blt_int8u len);
+#endif
+
+
 
 /****************************************************************************************
 * External functions
@@ -442,20 +448,8 @@ static blt_int8u XcpComputeChecksum(blt_int32u address, blt_int32u length,
 ****************************************************************************************/
 static blt_int8u XcpGetSeed(blt_int8u resource, blt_int8u *seed)
 {
-  /* request seed for unlocking ProGraMming resource */
-  if ((resource & XCP_RES_PGM) != 0)
-  {
-    seed[0] = 0x55;
-  }
-
-  /* request seed for unlocking CALibration and PAGing resource */
-  if ((resource & XCP_RES_CALPAG) != 0)
-  {
-    seed[0] = 0xaa;
-  }
-
-  /* return seed length */
-  return 1;
+  /* pass request on to the application through a hook function */
+  return XcpGetSeedHook(resource, seed);
 } /*** end of XcpGetSeed ***/
 
 
@@ -471,30 +465,8 @@ static blt_int8u XcpGetSeed(blt_int8u resource, blt_int8u *seed)
 ****************************************************************************************/
 static blt_int8u XcpVerifyKey(blt_int8u resource, blt_int8u *key, blt_int8u len)
 {
-  /* suppress compiler warning for unused parameter */
-  len = len;
-
-  /* the example key algorithm in "FeaserKey.dll" works as follows:
-   *  - PGM will be unlocked if key = seed - 1
-   *  - CAL_PAG will be unlocked if key = seed + 1
-   */
-
-  /* check key for unlocking ProGraMming resource */
-  if ((resource == XCP_RES_PGM) && (key[0] == (0x55-1)))
-  {
-    /* correct key received for unlocking PGM resource */
-    return 1;
-  }
-
-  /* check key for unlocking CALibration and PAGing resource */
-  if ((resource == XCP_RES_CALPAG) && (key[0] == (0xaa+1)))
-  {
-    /* correct key received for unlocking CAL_PAG resource */
-    return 1;
-  }
-
-  /* still here so key incorrect */
-  return 0;
+  /* pass request on to the application through a hook function */
+  return XcpVerifyKeyHook(resource, key, len);
 } /*** end of XcpVerifyKey ***/
 #endif /* XCP_SEED_KEY_PROTECTION_EN == 1 */
 

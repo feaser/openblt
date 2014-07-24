@@ -253,6 +253,7 @@ var
   progress        : longword;
   regionCnt       : longword;
   currentWriteCnt : word;
+  sessionStartResult : byte;
   bufferOffset    : longword;
   addr            : longword;
   len             : longword;
@@ -287,7 +288,16 @@ begin
   // we now have a socket connected to the target. next attempt to connect to the target
   // via XCP.
   MbiCallbackOnLog('Starting the programming session. t='+TimeToStr(Time));
-  if not loader.StartProgrammingSession then
+  sessionStartResult := loader.StartProgrammingSession;
+  if sessionStartResult = kProgSessionUnlockError then
+  begin
+    MbiCallbackOnLog('Security issue. Could not unprotect the programming resource. Check your configured XCP protection DLL. t='+TimeToStr(Time));
+    MbiCallbackOnError('Security issue. Could not unprotect the programming resource.');
+    loader.Disconnect;
+    Exit;
+  end;
+
+  if sessionStartResult <> kProgSessionStarted then
   begin
     // note that a running user program might have received the connect command and
     // performed a software reset to activate the bootloader. this causes a reconfigu-
@@ -322,17 +332,38 @@ begin
     //---------------- start the programming session --------------------------------------
     MbiCallbackOnLog('Starting the programming session. t='+TimeToStr(Time));
     // try initial connect via XCP
-    if not loader.StartProgrammingSession then
+    sessionStartResult := loader.StartProgrammingSession;
+    if sessionStartResult = kProgSessionUnlockError then
+    begin
+      MbiCallbackOnLog('Security issue. Could not unprotect the programming resource. Check your configured XCP protection DLL. t='+TimeToStr(Time));
+      MbiCallbackOnError('Security issue. Could not unprotect the programming resource.');
+      loader.Disconnect;
+      Exit;
+    end;
+
+
+    if sessionStartResult <> kProgSessionStarted then
     begin
       // update the user info
       MbiCallbackOnInfo('Could not connect. Please reset your target...');
       MbiCallbackOnLog('Connect failed. Switching to backdoor entry mode. t='+TimeToStr(Time));
       Application.ProcessMessages;
       // continuously try to connect via XCP true the backdoor
-      while not loader.StartProgrammingSession do
+      sessionStartResult := kProgSessionGenericError;
+      while sessionStartResult <> kProgSessionStarted do
       begin
+        sessionStartResult := loader.StartProgrammingSession;
         Application.ProcessMessages;
         Sleep(5);
+        // don't retry if the error was caused by not being able to unprotect the programming resource
+        if sessionStartResult = kProgSessionUnlockError then
+        begin
+          MbiCallbackOnLog('Security issue. Could not unprotect the programming resource. Check your configured XCP protection DLL. t='+TimeToStr(Time));
+          MbiCallbackOnError('Security issue. Could not unprotect the programming resource.');
+          Exit;
+        end;
+
+        // check if the user cancelled
         if stopRequest then
         begin
           MbiCallbackOnError('Programming session cancelled by user.');

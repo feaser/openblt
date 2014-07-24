@@ -254,6 +254,7 @@ var
   progress        : longword;
   regionCnt       : longword;
   currentWriteCnt : word;
+  sessionStartResult : byte;
   bufferOffset    : longword;
   addr            : longword;
   len             : longword;
@@ -278,7 +279,16 @@ begin
 
   // try initial connect via XCP. if the user program is able to reactivate the bootloader
   // it will do so now
-  if not loader.StartProgrammingSession then
+  sessionStartResult := loader.StartProgrammingSession;
+  if sessionStartResult = kProgSessionUnlockError then
+  begin
+    MbiCallbackOnLog('Security issue. Could not unprotect the programming resource. Check your configured XCP protection DLL. t='+TimeToStr(Time));
+    MbiCallbackOnError('Security issue. Could not unprotect the programming resource.');
+    loader.Disconnect;
+    Exit;
+  end;
+  // try initial connect via XCP
+  if sessionStartResult <> kProgSessionStarted then
   begin
     // update the user info
     MbiCallbackOnInfo('Could not connect. Retrying. Reset your target if this takes a long time.');
@@ -290,8 +300,10 @@ begin
     // should be at least 2.5x this.
     Sleep(200);
     // continuously try to connect via XCP true the backdoor
-    while not loader.StartProgrammingSession do
+    sessionStartResult := kProgSessionGenericError;
+    while sessionStartResult <> kProgSessionStarted do
     begin
+      sessionStartResult := loader.StartProgrammingSession;
       Application.ProcessMessages;
       Sleep(5);
       // if the is in reset of otherwise does not have the CAN controller synchronized to
@@ -310,7 +322,15 @@ begin
         end;
         Sleep(200);
       end;
+      // don't retry if the error was caused by not being able to unprotect the programming resource
+      if sessionStartResult = kProgSessionUnlockError then
+      begin
+        MbiCallbackOnLog('Security issue. Could not unprotect the programming resource. Check your configured XCP protection DLL. t='+TimeToStr(Time));
+        MbiCallbackOnError('Security issue. Could not unprotect the programming resource.');
+        Exit;
+      end;
 
+      // check if the user cancelled
       if stopRequest then
       begin
         MbiCallbackOnError('Programming session cancelled by user.');

@@ -104,6 +104,11 @@ const kErrFsrResourceUnavailable = $81; // Resource needed but not available
 const kErrFsrSeedKeyDllInvalid   = $82; // Seed/Key DLL is invalid
 const kErrFsrKeyAlgoMissing      = $83; // Key computation algorithm is missing
 
+// Start programming session return codes
+const kProgSessionStarted        = 0;
+const kProgSessionUnlockError    = 1;
+const kProgSessionGenericError   = 2;
+
 
 //***************************************************************************************
 // Type Definitions
@@ -148,7 +153,7 @@ type
     function    Connect : Boolean;
     function    IsComError : Boolean;
     procedure   Disconnect;
-    function    StartProgrammingSession : Boolean;
+    function    StartProgrammingSession : Byte;
     function    StopProgrammingSession : Boolean;
     function    ClearMemory(addr : LongWord; len : LongWord) : Boolean;
     function    WriteData(addr : LongWord; len : LongWord; data : PByteArray) : Boolean;
@@ -1073,7 +1078,8 @@ end; //*** end of CmdProgramClear ***
 //***************************************************************************************
 // NAME:           StartProgrammingSession
 // PARAMETER:      none
-// RETURN VALUE:   True is successful, False otherwise
+// RETURN VALUE:   kProgSessionStarted if successful, kProgSessionUnlockError in case
+//                 the PGM resource could not be unlocked or kProgSessionGenericError.
 // DESCRIPTION:    Starts the programming session using the following XCP command
 //                 sequence:
 //                   * CONNECT
@@ -1083,7 +1089,7 @@ end; //*** end of CmdProgramClear ***
 //                   * PROGRAM_START
 //
 //***************************************************************************************
-function TXcpLoader.StartProgrammingSession : Boolean;
+function TXcpLoader.StartProgrammingSession : Byte;
 var
   xcpProtection : TXcpProtection;
   supportedRes  : Byte;
@@ -1092,21 +1098,27 @@ var
   keyData       : array[0..5] of Byte;
   keyLen        : byte;
 begin
-  // init return value
-  result := false;
-
   // send the CONNECT command
-  if not CmdConnect then Exit;
+  if not CmdConnect then
+  begin
+    result := kProgSessionGenericError;
+    Exit;
+  end;
 
   // make sure the programming resource is supported
   if (FResources and kResPGM) <> kResPGM then
   begin
     FLastError := kErrFsrResourceUnavailable;
+    result := kProgSessionGenericError;
     Exit;
   end;
 
   // send the GET_STATUS command
-  if not CmdGetStatus then Exit;
+  if not CmdGetStatus then
+  begin
+    result := kProgSessionGenericError;
+    Exit;
+  end;
 
   // check if we need to unlock the programming resource
   if (FProtection and kResPGM) = kResPGM then
@@ -1118,12 +1130,14 @@ begin
     if xcpProtection.GetPrivileges(@supportedRes) <> 0 then
     begin
       FLastError := kErrFsrSeedKeyDllInvalid; // error calling DLL function
+      result := kProgSessionUnlockError;
       xcpProtection.Free; // release the object
       Exit;
     end;
     if (supportedRes and kResPGM) <> kResPGM then
     begin
       FLastError := kErrFsrKeyAlgoMissing; // key algorithm not present
+      result := kProgSessionUnlockError;
       xcpProtection.Free; // release the object
       Exit;
     end;
@@ -1131,6 +1145,7 @@ begin
     // obtain the seed for the programming resource
     if not CmdGetSeed(@seedData, kResPGM, seedLen) then
     begin
+      result := kProgSessionUnlockError;
       xcpProtection.Free; // release the object
       Exit;
     end;
@@ -1140,6 +1155,7 @@ begin
     if xcpProtection.ComputKeyFromSeed(kResPGM, seedLen, @seedData, @keyLen, @keyData) <> 0 then
     begin
       FLastError := kErrFsrSeedKeyDllInvalid; // error calling DLL function
+      result := kProgSessionUnlockError;
       xcpProtection.Free; // release the object
       Exit;
     end;
@@ -1148,21 +1164,30 @@ begin
     xcpProtection.Free;
 
     // we have the key so now unlock the resource
-    if not CmdUnlock(@keyData, keyLen) then Exit;
+    if not CmdUnlock(@keyData, keyLen) then
+    begin
+      result := kProgSessionUnlockError;
+      Exit;
+    end;
 
     // make sure the PGM resource is really unprotected now
     if (FProtection and kResPGM) = kResPGM then
     begin
       FLastError := kErrACCESS_LOCKED;
+      result := kProgSessionUnlockError;
       Exit;
     end;
   end;
 
   // send the PROGRAM_START command
-  if not CmdProgramStart then Exit;
+  if not CmdProgramStart then
+  begin
+    result := kProgSessionGenericError;
+    Exit;
+  end;
 
   // successfully started the programming session
-  result := true;
+  result := kProgSessionStarted;
 end; //*** end of StartProgrammingSession ***
 
 

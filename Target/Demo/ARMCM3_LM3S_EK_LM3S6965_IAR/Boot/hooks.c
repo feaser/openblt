@@ -465,4 +465,63 @@ void FileFirmwareUpdateLogHook(blt_char *info_string)
 #endif /* BOOT_FILE_SYS_ENABLE > 0 */
 
 
+/****************************************************************************************
+*   S E E D / K E Y   S E C U R I T Y   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_XCP_SEED_KEY_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Provides a seed to the XCP master that will be used for the key 
+**            generation when the master attempts to unlock the specified resource. 
+**            Called by the GET_SEED command.
+** \param     resource  Resource that the seed if requested for (XCP_RES_XXX).
+** \param     seed      Pointer to byte buffer wher the seed will be stored.
+** \return    Length of the seed in bytes.
+**
+****************************************************************************************/
+blt_int8u XcpGetSeedHook(blt_int8u resource, blt_int8u *seed)
+{
+  /* request seed for unlocking ProGraMming resource */
+  if ((resource & XCP_RES_PGM) != 0)
+  {
+    seed[0] = 0x55;
+  }
+
+  /* return seed length */
+  return 1;
+} /*** end of XcpGetSeedHook ***/
+
+
+/************************************************************************************//**
+** \brief     Called by the UNLOCK command and checks if the key to unlock the 
+**            specified resource was correct. If so, then the resource protection 
+**            will be removed.
+** \param     resource  resource to unlock (XCP_RES_XXX).
+** \param     key       pointer to the byte buffer holding the key.
+** \param     len       length of the key in bytes.
+** \return    1 if the key was correct, 0 otherwise.
+**
+****************************************************************************************/
+blt_int8u XcpVerifyKeyHook(blt_int8u resource, blt_int8u *key, blt_int8u len)
+{
+  /* suppress compiler warning for unused parameter */
+  len = len;
+
+  /* the example key algorithm in "FeaserKey.dll" works as follows:
+   *  - PGM will be unlocked if key = seed - 1
+   */
+
+  /* check key for unlocking ProGraMming resource */
+  if ((resource == XCP_RES_PGM) && (key[0] == (0x55-1)))
+  {
+    /* correct key received for unlocking PGM resource */
+    return 1;
+  }
+
+  /* still here so key incorrect */
+  return 0;
+} /*** end of XcpVerifyKeyHook ***/
+#endif /* BOOT_XCP_SEED_KEY_ENABLE > 0 */
+
+
 /*********************************** end of hooks.c ************************************/

@@ -155,5 +155,26 @@
 #define BOOT_COP_HOOKS_ENABLE           (0)
 
 
+/****************************************************************************************
+*   S E E D / K E Y   S E C U R I T Y   C O N F I G U R A T I O N
+****************************************************************************************/
+/* A security mechanism can be enabled in the bootloader's XCP module by setting configu-
+ * rable BOOT_XCP_SEED_KEY_ENABLE to 1. Before any memory erase or programming 
+ * operations can be performed, access to this resource need to be unlocked. 
+ * In the Microboot settings on tab "XCP Protection" you need to specify a DLL that 
+ * implements the unlocking algorithm. The demo programs are configured for the (simple) 
+ * algorithm in "FeaserKey.dll". The source code for this DLL is available so it can be 
+ * customized to your needs. 
+ * During the unlock sequence, Microboot requests a seed from the bootloader, which is in
+ * the format of a byte array. Using this seed the unlock algorithm in the DLL computes 
+ * a key, which is also a byte array, and sends this back to the bootloader. The 
+ * bootloader then verifies this key to determine if programming and erase operations are
+ * permitted.
+ * After enabling this feature the hook functions XcpGetSeedHook() and XcpVerifyKeyHook()
+ * are called by the bootloader to obtain the seed and to verify the key, respectively.
+ */
+#define BOOT_XCP_SEED_KEY_ENABLE        (0)
+
+
 #endif /* BLT_CONF_H */
 /*********************************** end of blt_conf.h *********************************/

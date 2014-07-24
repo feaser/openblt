@@ -478,5 +478,17 @@
 #endif
 
 
+/****************************************************************************************
+*   S E E D / K E Y   S E C U R I T Y   C O N F I G U R A T I O N
+****************************************************************************************/
+#ifndef BOOT_XCP_SEED_KEY_ENABLE
+#define BOOT_XCP_SEED_KEY_ENABLE        (0)
+#endif
+
+#if (BOOT_XCP_SEED_KEY_ENABLE < 0) || (BOOT_XCP_SEED_KEY_ENABLE > 1)
+#error "BOOT_XCP_SEED_KEY_ENABLE must be 0 or 1"
+#endif
+
+
 #endif /* PLAUSIBILITY_H */
 /*********************************** end of plausibility.h *****************************/

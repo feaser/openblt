@@ -98,7 +98,11 @@
  *         obtain access to a resource. The protection algorithm is implemented in
  *         XcpGetSeed and XcpVerifyKey.
  */
+#if (BOOT_XCP_SEED_KEY_ENABLE > 0)
+#define XCP_SEED_KEY_PROTECTION_EN     (1)
+#else
 #define XCP_SEED_KEY_PROTECTION_EN     (0)
+#endif
 
 
 /****************************************************************************************
