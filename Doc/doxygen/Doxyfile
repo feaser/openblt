@@ -261,7 +261,29 @@ PREDEFINED             = "BOOT_CPU_XTAL_SPEED_KHZ=12000" \
                          "BOOT_BACKDOOR_HOOKS_ENABLE=1" \
                          "BOOT_NVM_HOOKS_ENABLE=1" \
                          "BOOT_NVM_SIZE_KB=1024" \
-                         "BOOT_COP_HOOKS_ENABLE=1"
+                         "BOOT_COP_HOOKS_ENABLE=1" \
+                         "BOOT_COM_NET_ENABLE=1" \
+                         "BOOT_COM_NET_TX_MAX_DATA=64" \
+                         "BOOT_COM_NET_RX_MAX_DATA=64" \
+                         "BOOT_COM_NET_PORT=1000" \
+                         "BOOT_COM_NET_IPADDR0=169" \
+                         "BOOT_COM_NET_IPADDR1=254" \
+                         "BOOT_COM_NET_IPADDR2=19" \
+                         "BOOT_COM_NET_IPADDR3=63" \
+                         "BOOT_COM_NET_NETMASK0=255" \
+                         "BOOT_COM_NET_NETMASK1=255" \
+                         "BOOT_COM_NET_NETMASK2=0" \
+                         "BOOT_COM_NET_NETMASK3=0" \
+                         "BOOT_COM_NET_GATEWAY0=169" \
+                         "BOOT_COM_NET_GATEWAY1=254" \
+                         "BOOT_COM_NET_GATEWAY2=19" \
+                         "BOOT_COM_NET_GATEWAY3=1" \
+                         "BOOT_COM_NET_IPADDR_HOOK_ENABLE=1" \
+                         "BOOT_COM_NET_NETMASK_HOOK_ENABLE=1" \
+                         "BOOT_COM_NET_GATEWAY_HOOK_ENABLE=1" \
+                         "BOOT_XCP_SEED_KEY_ENABLE=1"
+
+                         
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
