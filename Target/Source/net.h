@@ -64,6 +64,15 @@ void     NetInit(void);
 void     NetApp(void);
 void     NetTransmitPacket(blt_int8u *data, blt_int8u len);
 blt_bool NetReceivePacket(blt_int8u *data);
+#else /* BOOT_COM_NET_ENABLE > 0 */
+
+typedef struct net_state 
+{
+  blt_int8u  unused;
+} uip_tcp_appstate_t;
+
+#define UIP_APPCALL();
+
 #endif /* BOOT_COM_NET_ENABLE > 0 */
 
 
