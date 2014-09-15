@@ -7,8 +7,8 @@ start address 0x08000000
 
 Program Header:
     LOAD off    0x00008000 vaddr 0x08000000 paddr 0x08000000 align 2**15
-         filesz 0x00007ee4 memsz 0x00007ee4 flags r-x
-    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08007ee4 align 2**15
+         filesz 0x00007ef4 memsz 0x00007ef4 flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08007ef4 align 2**15
          filesz 0x00000020 memsz 0x00000020 flags rw-
     LOAD off    0x00010080 vaddr 0x20000080 paddr 0x08007f80 align 2**15
          filesz 0x00000000 memsz 0x00002ce4 flags rw-
@@ -16,9 +16,9 @@ private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00007ee4  08000000  08000000  00008000  2**2
+  0 .text         00007ef4  08000000  08000000  00008000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000020  20000000  08007ee4  00010000  2**2
+  1 .data         00000020  20000000  08007ef4  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
   2 .bss          00002ce4  20000080  08007f80  00010080  2**7
                   ALLOC
@@ -32,13 +32,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_ranges 00000fe8  00000000  00000000  00032b26  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00005ce6  00000000  00000000  00033b0e  2**0
+  8 .debug_line   00005ce7  00000000  00000000  00033b0e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000054aa  00000000  00000000  000397f4  2**0
+  9 .debug_str    000054aa  00000000  00000000  000397f5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  0003ec9e  2**0
+ 10 .comment      00000030  00000000  00000000  0003ec9f  2**0
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  0003ecce  2**0
+ 11 .ARM.attributes 00000033  00000000  00000000  0003eccf  2**0
                   CONTENTS, READONLY
  12 .debug_frame  00002a64  00000000  00000000  0003ed04  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -58,7 +58,7 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 hooks.c
-08007534 l     O .text	00000020 firmwareFilename
+08007544 l     O .text	00000020 firmwareFilename
 20000080 l     O .bss	00000228 logfile
 00000000 l    df *ABS*	00000000 main.c
 00000000 l    df *ABS*	00000000 mmc.c
@@ -110,13 +110,13 @@ SYMBOL TABLE:
 080038fc l     F .text	00000236 dir_register
 20000378 l     O .bss	00000200 LfnBuf
 20000578 l     O .bss	00000002 Fsid
-0800758c l     O .text	00000080 ExCvt
-0800760c l     O .text	0000000d LfnOfs
+0800759c l     O .text	00000080 ExCvt
+0800761c l     O .text	0000000d LfnOfs
 2000057c l     O .bss	00000004 FatFs
 00000000 l    df *ABS*	00000000 unicode.c
-0800761c l     O .text	000001e0 tbl_lower.4259
-080077fc l     O .text	00000100 Tbl
-080078fc l     O .text	000001e0 tbl_upper.4260
+0800762c l     O .text	000001e0 tbl_lower.4259
+0800780c l     O .text	00000100 Tbl
+0800790c l     O .text	000001e0 tbl_upper.4260
 00000000 l    df *ABS*	00000000 uip.c
 080044d8 l     F .text	0000004c chksum
 08004524 l     F .text	00000042 upper_layer_chksum
@@ -132,7 +132,7 @@ SYMBOL TABLE:
 20000596 l     O .bss	00000001 i
 20000597 l     O .bss	00000001 tmpage
 20000598 l     O .bss	00000060 arp_table
-08007adc l     O .text	00000006 broadcast_ethaddr
+08007aec l     O .text	00000006 broadcast_ethaddr
 200005f8 l     O .bss	00000001 c
 200005f9 l     O .bss	00000001 arptime
 200005fc l     O .bss	00000004 ipaddr
@@ -145,7 +145,7 @@ SYMBOL TABLE:
 20000644 l     O .bss	00000004 periodicTimerTimeOut
 00000000 l    df *ABS*	00000000 xcp.c
 08005e18 l     F .text	00000016 XcpSetCtoError
-08007ae4 l     O .text	00000008 xcpStationId
+08007af4 l     O .text	00000008 xcpStationId
 20000648 l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 backdoor.c
 20000694 l     O .bss	00000001 backdoorOpen
@@ -165,15 +165,15 @@ SYMBOL TABLE:
 20000cc4 l     O .bss	00000004 assert_failure_file
 20000cc8 l     O .bss	00000004 assert_failure_line
 00000000 l    df *ABS*	00000000 can.c
-08007cd0 l     O .text	00000024 canTiming
+08007ce0 l     O .text	00000024 canTiming
 00000000 l    df *ABS*	00000000 cpu.c
 00000000 l    df *ABS*	00000000 flash.c
 08006d70 l     F .text	00000044 FlashGetSector
 08006db4 l     F .text	00000078 FlashWriteBlock
 08006e2c l     F .text	00000062 FlashSwitchBlock
 08006e90 l     F .text	00000084 FlashAddToBlock
-08007cf4 l     O .text	00000030 flashSectorNumToMask
-08007d24 l     O .text	0000006c flashLayout
+08007d04 l     O .text	00000030 flashSectorNumToMask
+08007d34 l     O .text	0000006c flashLayout
 20000ccc l     O .bss	00000204 bootBlockInfo
 20000ed0 l     O .bss	00000204 blockInfo
 00000000 l    df *ABS*	00000000 uart.c
@@ -186,7 +186,7 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 timer.c
 2000111c l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 cstart.c
-080073ce l     F .text	00000000 zero_loop
+080073de l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 memcpy-stub.c
 00000000 l    df *ABS*	00000000 memset.c
 00000000 l    df *ABS*	00000000 ctype_.c
@@ -200,9 +200,9 @@ SYMBOL TABLE:
 08006a6c g     F .text	0000001c AssertFailure
 08002d08 g     F .text	000000ea get_fat
 08006c98 g     F .text	00000088 CanReceivePacket
-0800738c g     F .text	00000058 reset_handler
+0800739c g     F .text	00000058 reset_handler
 08002068 g     F .text	00000028 GPIO_PinAFConfig
-08007340 g     F .text	00000022 TimerUpdate
+08007350 g     F .text	00000022 TimerUpdate
 08005e60 g     F .text	00000010 XcpPacketTransmitted
 08001618 g     F .text	0000009e ETH_StructInit
 08005ad8 g     F .text	0000007c ComTask
@@ -220,16 +220,16 @@ SYMBOL TABLE:
 080021d8 g     F .text	00000024 RCC_AHB1PeriphResetCmd
 08002478 g     F .text	0000000c USART_GetFlagStatus
 0800626c g     F .text	00000002 CopService
-08007ee4 g       .text	00000000 _etext
+08007ef4 g       .text	00000000 _etext
 0800122c g     F .text	0000019a SD_WriteBlock
 080044a8 g     F .text	0000002e ff_wtoupper
 08001d94 g     F .text	00000050 netdev_read
 080046b0 g     F .text	00000f1e uip_process
 08007118 g     F .text	0000000a FlashGetUserProgBaseAddress
 08001600 g     F .text	00000018 ETH_DeInit
-080073ec g     F .text	000000a6 memcpy
+080073fc g     F .text	000000a6 memcpy
 080065ec g     F .text	00000480 FileTask
-08007330 g     F .text	0000000e TimerReset
+08007340 g     F .text	0000000e TimerReset
 08001458 g     F .text	00000038 disk_initialize
 20001e94 g     O .bss	00000004 uip_sappdata
 08001b48 g     F .text	00000226 netdev_init
@@ -261,13 +261,13 @@ SYMBOL TABLE:
 08005e4c g     F .text	00000012 XcpIsConnected
 080042f0 g     F .text	000000bc f_unlink
 08001a50 g     F .text	00000026 ETH_MACTransmissionCmd
-080072d4 g     F .text	00000008 NvmInit
+080072e4 g     F .text	00000008 NvmInit
 08006f14 g     F .text	0000001a FlashInit
 08001e70 g     F .text	00000012 FLASH_Lock
 20002564 g       .bss	00000000 _ebss
 080043fc g     F .text	00000034 f_putc
 08004430 g     F .text	0000002c f_puts
-08007378 g     F .text	00000012 UnusedISR
+08007388 g     F .text	00000012 UnusedISR
 0800226c g     F .text	0000000c SDIO_ClockCmd
 08005b54 g     F .text	00000002 ComFree
 080022f0 g     F .text	00000030 SDIO_DataConfig
@@ -275,7 +275,7 @@ SYMBOL TABLE:
 08001728 g     F .text	00000068 ETH_WritePHYRegister
 08007194 g     F .text	0000003e UartInit
 08002090 g     F .text	000000da RCC_GetClocksFreq
-080072e4 g     F .text	00000008 NvmErase
+080072f4 g     F .text	00000008 NvmErase
 08001d70 g     F .text	00000022 netdev_init_mac
 0800236c g     F .text	000000de USART_Init
 20000080 g       .bss	00000000 _bss
@@ -303,17 +303,17 @@ SYMBOL TABLE:
 08002320 g     F .text	0000000e SDIO_ReadData
 080058ac g     F .text	000001d0 uip_arp_out
 08006f80 g     F .text	0000008a FlashErase
-08007494 g     F .text	0000009e memset
+080074a4 g     F .text	0000009e memset
 0800024c g     F .text	00000020 FileFirmwareUpdateErrorHook
 080002cc g     F .text	000000ba main
 08001f1c g     F .text	0000006e FLASH_EraseSector
 0800404c g     F .text	000000ac f_sync
 080013c8 g     F .text	0000004c SD_SendStatus
 080063e8 g     F .text	0000004c FileSrecGetLineType
-080072f4 g     F .text	00000012 NvmDone
+08007304 g     F .text	00000012 NvmDone
 08003b34 g     F .text	0000002a f_mount
 080071d4 g     F .text	00000066 UartTransmitPacket
-080072ec g     F .text	00000008 NvmVerifyChecksum
+080072fc g     F .text	00000008 NvmVerifyChecksum
 08006d50 g     F .text	0000001e CpuMemCopy
 080022d4 g     F .text	0000001a SDIO_GetResponse
 08002484 g     F .text	00000120 SystemInit
@@ -322,7 +322,7 @@ SYMBOL TABLE:
 08002360 g     F .text	0000000a SYSCFG_ETH_MediaInterfaceConfig
 08005778 g     F .text	00000134 uip_arp_arpin
 08005bc0 g     F .text	0000001c ComGetActiveInterfaceMaxTxLen
-0800723c g     F .text	00000098 UartReceivePacket
+0800723c g     F .text	000000a8 UartReceivePacket
 080001cc g     F .text	0000000a FileGetFirmwareFilenameHook
 08001084 g     F .text	000001a6 SD_ReadBlock
 08005720 g     F .text	00000058 uip_arp_timer
@@ -335,7 +335,7 @@ SYMBOL TABLE:
 08006268 g     F .text	00000002 CopInit
 08000758 g     F .text	0000002c SD_Detect
 08006a88 g     F .text	00000168 CanInit
-080072dc g     F .text	00000008 NvmWrite
+080072ec g     F .text	00000008 NvmWrite
 08006d20 g     F .text	00000030 CpuStartUserProgram
 08002cf0 g     F .text	00000016 clust2sect
 20002d64 g       .bss	00000000 _estack
@@ -354,7 +354,7 @@ SYMBOL TABLE:
 200017d0 g     O .bss	00000640 TxBuff
 2000001c g     O .data	00000004 __ctype_ptr__
 08005bdc g     F .text	00000008 ComIsConnected
-08007de0 g     O .text	00000101 _ctype_
+08007df0 g     O .text	00000101 _ctype_
 08001ad8 g     F .text	00000026 ETH_DMATransmissionCmd
 08002238 g     F .text	00000034 SDIO_Init
 08000188 g     F .text	00000044 FileIsFirmwareUpdateRequestedHook
@@ -370,14 +370,14 @@ SYMBOL TABLE:
 20001f18 g     O .bss	00000004 uip_netmask
 20001f1c g     O .bss	00000004 uip_hostaddr
 0800445c g     F .text	0000004a ff_convert
-08007364 g     F .text	00000012 TimerGet
+08007374 g     F .text	00000012 TimerGet
 08002284 g     F .text	00000010 SDIO_GetPowerState
 20001e80 g     O .bss	00000010 EnetDmaTx
 08005da8 g     F .text	00000070 NetApp
 08005be4 g     F .text	00000074 NetInit
 08000a04 g     F .text	000001a4 SD_InitializeCards
 0800205c g     F .text	0000000c GPIO_ReadInputDataBit
-08007308 g     F .text	00000028 TimerInit
+08007318 g     F .text	00000028 TimerInit
 08002330 g     F .text	0000000e SDIO_WriteData
 20001f20 g     O .bss	00000642 uip_buf
 080055dc g     F .text	0000002a uip_send

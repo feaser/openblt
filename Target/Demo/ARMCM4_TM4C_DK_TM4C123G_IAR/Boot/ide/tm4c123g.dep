@@ -146,7 +146,6 @@
       <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\cstart.s</file>
       <file>$PROJ_DIR$\..\..\..\..\Source\xcp.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\cpu.c</file>
-      <file>$PROJ_DIR$\qs-logger.c</file>
       <file>$PROJ_DIR$\..\drivers\slidemenuwidget.c</file>
       <file>$PROJ_DIR$\startup_ewarm.c</file>
       <file>$PROJ_DIR$\stripchartmanager.c</file>
@@ -163,8 +162,8 @@
       <file>$PROJ_DIR$\..\obj\cfal96x64x16.o</file>
       <file>$PROJ_DIR$\..\obj\i2c.pbi</file>
       <file>$PROJ_DIR$\..\obj\interrupt.pbi</file>
-      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\port\fat_usbmsc.c</file>
       <file>$PROJ_DIR$\..\obj\mpu.pbi</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\port\fat_usbmsc.c</file>
       <file>$PROJ_DIR$\..\obj\pwm.pbi</file>
       <file>$PROJ_DIR$\..\obj\qei.pbi</file>
       <file>$PROJ_DIR$\..\obj\usbdbulk.o</file>
@@ -175,8 +174,9 @@
       <file>$PROJ_DIR$\..\obj\sw_crc.pbi</file>
       <file>$PROJ_DIR$\..\obj\usbdconfig.o</file>
       <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
-      <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\cpu.h</file>
       <file>$PROJ_DIR$\flashstore.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\cpu.h</file>
+      <file>$PROJ_DIR$\qs-logger.c</file>
       <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\flash.c</file>
       <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\flash.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\nvm.c</file>
@@ -279,8 +279,8 @@
       <file>$PROJ_DIR$\..\lib\driverlib\uart.c</file>
       <file>$PROJ_DIR$\..\lib\driverlib\uart.h</file>
       <file>$PROJ_DIR$\..\lib\driverlib\cpu.c</file>
-      <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\memory.x</file>
       <file>$PROJ_DIR$\..\lib\driverlib\flash.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\memory.x</file>
       <file>$PROJ_DIR$\..\obj\led.pbi</file>
       <file>$PROJ_DIR$\..\obj\time.pbi</file>
       <file>$PROJ_DIR$\..\obj\main.pbi</file>
@@ -666,7 +666,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 155</file>
+          <file> 154</file>
         </tool>
       </outputs>
       <inputs>
@@ -689,7 +689,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 156</file>
+          <file> 155</file>
         </tool>
       </outputs>
       <inputs>
@@ -712,7 +712,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 158</file>
+          <file> 156</file>
         </tool>
       </outputs>
       <inputs>
@@ -735,7 +735,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 159</file>
+          <file> 158</file>
         </tool>
       </outputs>
       <inputs>
@@ -754,7 +754,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 160</file>
+          <file> 159</file>
         </tool>
       </outputs>
       <inputs>
@@ -777,7 +777,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 165</file>
+          <file> 164</file>
         </tool>
       </outputs>
       <inputs>
@@ -800,7 +800,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 166</file>
+          <file> 165</file>
         </tool>
       </outputs>
       <inputs>
@@ -1072,7 +1072,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 161</file>
+          <file> 160</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -1164,7 +1164,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 167</file>
+          <file> 166</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -1532,7 +1532,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 164</file>
+          <file> 163</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -1790,19 +1790,6 @@
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\qs-logger.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 290</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 390</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\drivers\slidemenuwidget.c</name>
       <outputs>
         <tool>
@@ -1947,11 +1934,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 399 398 331 330 332 333 334 335 336 61 62 70 67 73 8 22 37 46 163</file>
+          <file> 399 398 331 330 332 333 334 335 336 61 62 70 67 73 8 22 37 46 162</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 399 398 331 330 332 333 334 335 336 61 62 70 67 73 8 22 37 46 163</file>
+          <file> 399 398 331 330 332 333 334 335 336 61 62 70 67 73 8 22 37 46 162</file>
         </tool>
       </inputs>
     </file>
@@ -1965,6 +1952,19 @@
         <tool>
           <name>BICOMP</name>
           <file> 387</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\qs-logger.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 290</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 390</file>
         </tool>
       </outputs>
     </file>
@@ -2486,7 +2486,7 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 273 268 360 361 352 400 362 401 363 402 251 265 403 341 364 404 255 202 405 406 358 407 408 355 264 409 250 410 411 412 413 414 415 416 417 253 418 257 419 261 420 305 164 307 161 308 208 206 167 205 204 309 207 210 211 212 310 213 292 227 228 349 348 350 295 294 296 311 312 313 314 269 421 365 168 203 209 351</file>
+          <file> 274 268 360 361 352 400 362 401 363 402 251 265 403 341 364 404 255 202 405 406 358 407 408 355 264 409 250 410 411 412 413 414 415 416 417 253 418 257 419 261 420 305 163 307 160 308 208 206 166 205 204 309 207 210 211 212 310 213 292 227 228 349 348 350 295 294 296 311 312 313 314 269 421 365 167 203 209 351</file>
         </tool>
       </inputs>
     </file>
@@ -2533,7 +2533,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 153</file>
+          <file> 152</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -2546,7 +2546,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 151</file>
+          <file> 150</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -2559,7 +2559,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 154</file>
+          <file> 153</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -2572,7 +2572,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 152</file>
+          <file> 151</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -2585,7 +2585,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 150</file>
+          <file> 149</file>
         </tool>
         <tool>
           <name>BICOMP</name>

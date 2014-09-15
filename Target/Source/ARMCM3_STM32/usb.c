@@ -194,11 +194,13 @@ blt_bool UsbReceivePacket(blt_int8u *data)
     /* store the message length when received */
     if (UsbReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
-      /* indicate that a cto packet is being received */
-      xcpCtoRxInProgress = BLT_TRUE;
-
-      /* reset packet data count */
-      xcpCtoRxLength = 0;
+      if (xcpCtoReqPacket[0] > 0)
+      {
+        /* indicate that a cto packet is being received */
+        xcpCtoRxInProgress = BLT_TRUE;
+        /* reset packet data count */
+        xcpCtoRxLength = 0;
+      }
     }
   }
   else
