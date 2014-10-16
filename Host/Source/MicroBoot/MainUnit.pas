@@ -553,7 +553,7 @@ begin
   begin
     // open registry key
     winRegistry := TRegistry.Create;
-    winRegistry.RootKey := HKEY_LOCAL_MACHINE;
+    winRegistry.RootKey := HKEY_CURRENT_USER;
     winRegistry.OpenKeyReadOnly('Software\Feaser\MicroBoot');
 
     // attempt to read out the stored interface filename (without path)
@@ -705,7 +705,7 @@ begin
     begin
       // store last used library in register
       winRegistry := TRegistry.Create;
-      winRegistry.RootKey := HKEY_LOCAL_MACHINE;
+      winRegistry.RootKey := HKEY_CURRENT_USER;
       winRegistry.OpenKey('Software\Feaser\MicroBoot', true);
       winRegistry.WriteString('Interface', ExtractFileName(MbiLibFile));
       winRegistry.Free;
