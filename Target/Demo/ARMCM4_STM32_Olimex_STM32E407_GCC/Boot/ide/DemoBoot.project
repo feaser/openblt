@@ -9,6 +9,37 @@
     <VirtualDirectory Name="ARMCM4_STM32_Olimex_STM32E407_GCC">
       <VirtualDirectory Name="Boot">
         <VirtualDirectory Name="lib">
+          <VirtualDirectory Name="usbotgdriver">
+            <VirtualDirectory Name="inc">
+              <File Name="../lib/usbotgdriver/inc/usb_bsp.h"/>
+              <File Name="../lib/usbotgdriver/inc/usb_core.h"/>
+              <File Name="../lib/usbotgdriver/inc/usb_dcd.h"/>
+              <File Name="../lib/usbotgdriver/inc/usb_dcd_int.h"/>
+              <File Name="../lib/usbotgdriver/inc/usb_defines.h"/>
+              <File Name="../lib/usbotgdriver/inc/usb_regs.h"/>
+            </VirtualDirectory>
+            <VirtualDirectory Name="src">
+              <File Name="../lib/usbotgdriver/src/usb_core.c"/>
+              <File Name="../lib/usbotgdriver/src/usb_dcd.c"/>
+              <File Name="../lib/usbotgdriver/src/usb_dcd_int.c"/>
+            </VirtualDirectory>
+          </VirtualDirectory>
+          <VirtualDirectory Name="usbdevicelib">
+            <VirtualDirectory Name="Core">
+              <VirtualDirectory Name="inc">
+                <File Name="../lib/usbdevicelib/Core/inc/usbd_core.h"/>
+                <File Name="../lib/usbdevicelib/Core/inc/usbd_def.h"/>
+                <File Name="../lib/usbdevicelib/Core/inc/usbd_ioreq.h"/>
+                <File Name="../lib/usbdevicelib/Core/inc/usbd_req.h"/>
+                <File Name="../lib/usbdevicelib/Core/inc/usbd_usr.h"/>
+              </VirtualDirectory>
+              <VirtualDirectory Name="src">
+                <File Name="../lib/usbdevicelib/Core/src/usbd_core.c"/>
+                <File Name="../lib/usbdevicelib/Core/src/usbd_ioreq.c"/>
+                <File Name="../lib/usbdevicelib/Core/src/usbd_req.c"/>
+              </VirtualDirectory>
+            </VirtualDirectory>
+          </VirtualDirectory>
           <VirtualDirectory Name="stdperiphlib">
             <VirtualDirectory Name="STM32F4xx_StdPeriph_Driver">
               <VirtualDirectory Name="inc">
@@ -119,6 +150,14 @@
         <File Name="../blt_conf.h"/>
         <File Name="../hooks.c"/>
         <File Name="../main.c"/>
+        <File Name="../usbd_bulk.c"/>
+        <File Name="../usbd_bulk.h"/>
+        <File Name="../usbd_conf.h"/>
+        <File Name="../usbd_desc.c"/>
+        <File Name="../usbd_desc.h"/>
+        <File Name="../usbd_usr.c"/>
+        <File Name="../usb_bsp.c"/>
+        <File Name="../usb_conf.h"/>
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>
@@ -333,6 +372,8 @@ continue
       <File Name="../../../../Source/ARMCM4_STM32/types.h"/>
       <File Name="../../../../Source/ARMCM4_STM32/uart.c"/>
       <File Name="../../../../Source/ARMCM4_STM32/uart.h"/>
+      <File Name="../../../../Source/ARMCM4_STM32/usb.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/usb.h"/>
     </VirtualDirectory>
     <File Name="../../../../Source/assert.c"/>
     <File Name="../../../../Source/assert.h"/>

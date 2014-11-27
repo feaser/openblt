@@ -38,6 +38,31 @@ PROJ_FILES= \
 blt_conf.h \
 hooks.c \
 main.c \
+usbd_bulk.c \
+usbd_bulk.h \
+usbd_conf.h \
+usbd_desc.c \
+usbd_desc.h \
+usbd_usr.c \
+usb_bsp.c \
+usb_conf.h \
+./lib/usbdevicelib/Core/inc/usbd_core.h \
+./lib/usbdevicelib/Core/inc/usbd_def.h \
+./lib/usbdevicelib/Core/inc/usbd_ioreq.h \
+./lib/usbdevicelib/Core/inc/usbd_req.h \
+./lib/usbdevicelib/Core/inc/usbd_usr.h \
+./lib/usbdevicelib/Core/src/usbd_core.c \
+./lib/usbdevicelib/Core/src/usbd_ioreq.c \
+./lib/usbdevicelib/Core/src/usbd_req.c \
+./lib/usbotgdriver/inc/usb_bsp.h \
+./lib/usbotgdriver/inc/usb_core.h \
+./lib/usbotgdriver/inc/usb_dcd.h \
+./lib/usbotgdriver/inc/usb_dcd_int.h \
+./lib/usbotgdriver/inc/usb_defines.h \
+./lib/usbotgdriver/inc/usb_regs.h \
+./lib/usbotgdriver/src/usb_core.c \
+./lib/usbotgdriver/src/usb_dcd.c \
+./lib/usbotgdriver/src/usb_dcd_int.c \
 ./lib/fatfs/ffconf.h \
 ./lib/fatfs/mmc.c \
 ./lib/ethernetlib/inc/stm32_eth.h \
@@ -161,6 +186,8 @@ main.c \
 ../../../Source/ARMCM4_STM32/flash.h \
 ../../../Source/ARMCM4_STM32/uart.c \
 ../../../Source/ARMCM4_STM32/uart.h \
+../../../Source/ARMCM4_STM32/usb.c \
+../../../Source/ARMCM4_STM32/usb.h \
 ../../../Source/ARMCM4_STM32/nvm.c \
 ../../../Source/ARMCM4_STM32/nvm.h \
 ../../../Source/ARMCM4_STM32/timer.c \
@@ -208,7 +235,7 @@ CFLAGS   = -g -D inline= -mthumb -mcpu=cortex-m4 -O1 -T memory.x
 CFLAGS  += -D PACK_STRUCT_END=__attribute\(\(packed\)\) -Wno-main
 CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) 
 CFLAGS  += -ffunction-sections -fdata-sections $(INC_PATH) -D STM32F4XX -D GCC_ARMCM3
-CFLAGS  += -D USE_STDPERIPH_DRIVER -D HSE_VALUE=12000000 
+CFLAGS  += -D USE_STDPERIPH_DRIVER -D HSE_VALUE=12000000 -D USE_USB_OTG_FS
 CFLAGS  += -Wa,-adhlns="$(OBJ_PATH)/$(subst .o,.lst,$@)" -Wno-attributes
 LFLAGS   = -nostartfiles -Xlinker -M -Xlinker -Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS  += $(LIB_PATH) -Xlinker --gc-sections

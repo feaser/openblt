@@ -70,6 +70,48 @@ blt_bool BackDoorEntryHook(void)
 
 
 /****************************************************************************************
+*   U S B   C O M M U N I C A T I O N   I N T E R F A C E   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_COM_USB_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB device should be connected
+**            to the USB bus. 
+** \param     connect BLT_TRUE to connect and BLT_FALSE to disconnect.
+** \return    none.
+**
+****************************************************************************************/
+void UsbConnectHook(blt_bool connect)
+{
+} /*** end of UsbConnect ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device
+**            to enter a low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbEnterLowPowerModeHook(void)
+{
+  /* support to enter a low power mode can be implemented here */
+} /*** end of UsbEnterLowPowerMode ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device to
+**            exit low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbLeaveLowPowerModeHook(void)
+{
+  /* support to leave a low power mode can be implemented here */
+} /*** end of UsbLeaveLowPowerMode ***/
+#endif /* BOOT_COM_USB_ENABLE > 0 */
+
+
+/****************************************************************************************
 *   C P U   D R I V E R   H O O K   F U N C T I O N S
 ****************************************************************************************/
 
@@ -85,7 +127,11 @@ blt_bool BackDoorEntryHook(void)
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
-  /* okay to start the user program */
+  /* do not start the user program is the pushbutton is pressed */
+  if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == Bit_SET)
+  {
+    return BLT_FALSE;
+  }
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/
 #endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */

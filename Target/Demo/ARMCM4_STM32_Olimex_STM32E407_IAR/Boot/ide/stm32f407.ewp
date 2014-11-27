@@ -165,6 +165,7 @@
         <option>
           <name>CCDefines</name>
           <state>USE_STDPERIPH_DRIVER</state>
+          <state>USE_USB_OTG_FS</state>
           <state>STM32F4XX</state>
           <state>HSE_VALUE=12000000</state>
         </option>
@@ -304,6 +305,10 @@
           <state>$PROJ_DIR$\..\lib\fatfs</state>
           <state>$PROJ_DIR$\..\lib\uip</state>
           <state>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc</state>
+          <state>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc</state>
+          <state>$PROJ_DIR$\..\lib\usbdevicelib\Core\src</state>
+          <state>$PROJ_DIR$\..\lib\usbotgdriver\inc</state>
+          <state>$PROJ_DIR$\..\lib\usbotgdriver\src</state>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
@@ -2086,6 +2091,60 @@
           <name>$PROJ_DIR$\..\lib\uip\uip-conf.h</name>
         </file>
       </group>
+      <group>
+        <name>usbdevicelib</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_bsp.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbotgdriver\src\usb_core.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_core.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbotgdriver\src\usb_dcd.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_dcd.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbotgdriver\src\usb_dcd_int.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_dcd_int.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_defines.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_regs.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\src\usbd_core.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_core.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_def.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\src\usbd_ioreq.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_ioreq.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\src\usbd_req.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_req.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_usr.h</name>
+        </file>
+      </group>
     </group>
     <file>
       <name>$PROJ_DIR$\..\blt_conf.h</name>
@@ -2095,6 +2154,30 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usb_bsp.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usb_conf.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usbd_bulk.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usbd_bulk.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usbd_conf.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usbd_desc.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usbd_desc.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usbd_usr.c</name>
     </file>
   </group>
   <group>
@@ -2148,6 +2231,12 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32\uart.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32\usb.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32\usb.h</name>
       </file>
     </group>
     <group>

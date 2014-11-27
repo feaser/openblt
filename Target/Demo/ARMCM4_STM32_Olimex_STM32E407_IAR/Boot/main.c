@@ -74,17 +74,27 @@ void main(void)
 ****************************************************************************************/
 static void Init(void)
 {
+  GPIO_InitTypeDef  GPIO_InitStructure;
 #if (BOOT_COM_UART_ENABLE > 0)
-  GPIO_InitTypeDef  GPIO_InitStructure;
 #elif (BOOT_FILE_SYS_ENABLE > 0)
-  GPIO_InitTypeDef  GPIO_InitStructure;
   USART_InitTypeDef USART_InitStructure;
-#elif (BOOT_COM_CAN_ENABLE > 0)
-  GPIO_InitTypeDef  GPIO_InitStructure;
 #endif  
 
   /* initialize the system and its clocks */
   SystemInit();
+  
+  /* initialize the button as a digital input. is used to override the starting of
+   * the user program.
+   */
+  /* enable the GPIO Clock */
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+  /* configure the GPIO pin */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  
   
 #if (BOOT_COM_UART_ENABLE > 0)
   /* enable UART peripheral clock */
