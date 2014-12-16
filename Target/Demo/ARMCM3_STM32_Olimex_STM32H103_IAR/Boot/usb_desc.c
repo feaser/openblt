@@ -52,10 +52,10 @@ const uint8_t Bulk_DeviceDescriptor[] =
     0x00,   /* bDeviceSubClass */
     0x00,   /* bDeviceProtocol */
     0x40,   /* bMaxPacketSize0 */
-    0x45,
-    0x01,   /* idVendor = 0x0145 */
-    0x23,
-    0x00,   /* idProduct = 0x0023 */
+    0x50,
+    0x1d,   /* idVendor = 0x1d50 */
+    0xac,
+    0x60,   /* idProduct = 0x60ac */
     0x00,
     0x01,   /* bcdDevice = 1.00 */
     1,      /* Index of string descriptor describing manufacturer */

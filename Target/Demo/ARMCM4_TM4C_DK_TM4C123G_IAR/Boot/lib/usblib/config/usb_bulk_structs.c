@@ -147,8 +147,8 @@ extern const tUSBBuffer g_sRxBuffer;
 
 tUSBDBulkDevice g_sBulkDevice =
 {
-    0x0145,
-    0x0023,
+    0x1d50,
+    0x60ac,
     500,
     USB_CONF_ATTR_SELF_PWR,
     USBBufferEventCallback,

@@ -73,8 +73,8 @@ type
 // Constant data declarations
 //***************************************************************************************
 const
-  deviceGuid: tguid = '{50D05884-7B6E-40DF-A3DF-88CFBAA05F65}';
-
+  deviceGuid: tguid = '{807999C3-E4E0-40EA-8188-48E852B54F2B}';
+               
 
 implementation
 
