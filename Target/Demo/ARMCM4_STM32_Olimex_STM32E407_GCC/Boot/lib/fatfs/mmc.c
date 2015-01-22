@@ -2812,6 +2812,7 @@ static SD_Error FindSCR(uint16_t rca, uint32_t *pscr)
   uint32_t index = 0;
   SD_Error errorstatus = SD_OK;
   uint32_t tempscr[2] = {0, 0};
+  uint32_t timeout = 0;
 
   /*!< Set Block Size To 8 Bytes */
   /*!< Send CMD55 APP_CMD with argument as card's RCA */
@@ -2873,6 +2874,13 @@ static SD_Error FindSCR(uint16_t rca, uint32_t *pscr)
     {
       *(tempscr + index) = SDIO_ReadData();
       index++;
+		}
+
+		timeout++;
+
+		if (timeout > 10000)
+		{
+			return SD_DATA_TIMEOUT;
     }
   }
 
@@ -3139,12 +3147,15 @@ void SD_SDIO_DMA_IRQHANDLER(void)
 DSTATUS disk_initialize (BYTE drv)
 {
 	SD_Error result = SD_Init();
-	if (result == SD_OK) {
+	if (result == SD_OK)
+	{
 		SD_CardInfo card;
 		Stat &= ~STA_NOINIT;        /* Clear STA_NOINIT */
-		SD_GetCardInfo(&card);
+		SD_GetCardInfo (&card);
 		return RES_OK;
-	} else {
+	}
+	else
+	{
 		Stat = STA_NOINIT;        /* Set STA_NOINIT */
 		return RES_NOTRDY;
 	}
@@ -3366,9 +3377,13 @@ DRESULT disk_ioctl(BYTE drv, BYTE ctrl, void *buff)
 
 	res = RES_ERROR;
 
-	if (Stat & STA_NOINIT) return RES_NOTRDY;
+	if (Stat & STA_NOINIT)
+	{
+		return RES_NOTRDY;
+	}
 
-	switch (ctrl) {
+	switch (ctrl)
+	{
 		case CTRL_SYNC :		/* Make sure that no pending write process */
 			res = RES_OK;
 			break;
@@ -3389,7 +3404,9 @@ DRESULT disk_ioctl(BYTE drv, BYTE ctrl, void *buff)
 
 		case GET_BLOCK_SIZE :	/* Get erase block size in unit of sector (DWORD) */
 			if(drv == 0)
-				*(DWORD*)buff = 32;
+			{
+				* (DWORD*)buff = 32;
+			}
 			res = RES_OK;
 			break;
 
