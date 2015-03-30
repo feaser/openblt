@@ -103,7 +103,7 @@ void ComInit(void)
 void ComTask(void)
 {
   /* make xcpCtoReqPacket static for runtime efficiency */
-  static unsigned char xcpCtoReqPacket[BOOT_COM_RX_MAX_DATA];
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RX_MAX_DATA];
  
 #if (BOOT_COM_CAN_ENABLE > 0)
   if (CanReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)

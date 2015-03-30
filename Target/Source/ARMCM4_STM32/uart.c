@@ -199,7 +199,7 @@ static blt_bool UartReceiveByte(blt_int8u *data)
   if (USART_GetFlagStatus(USART_CHANNEL, USART_FLAG_RXNE) == SET)
   {
     /* retrieve and store the newly received byte */
-    *data = (unsigned char)USART_ReceiveData(USART_CHANNEL);
+    *data = (blt_int8u)USART_ReceiveData(USART_CHANNEL);
     /* all done */
     return BLT_TRUE;
   }
