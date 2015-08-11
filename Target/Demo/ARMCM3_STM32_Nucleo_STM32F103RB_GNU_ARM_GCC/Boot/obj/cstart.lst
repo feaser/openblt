@@ -1,0 +1,196 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"cstart.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.reset_handler,"ax",%progbits
+  19              		.align	2
+  20              		.global	reset_handler
+  21              		.thumb
+  22              		.thumb_func
+  24              	reset_handler:
+  25              	.LFB0:
+  26              		.file 1 "../../../Source/ARMCM3_STM32/GCC/cstart.c"
+   1:../../../Source/ARMCM3_STM32/GCC/cstart.c **** /************************************************************************************//**
+   2:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * \file         Source\ARMCM3_STM32\GCC\cstart.c
+   3:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * \brief        Bootloader C startup source file.
+   4:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * \ingroup      Target_ARMCM3_STM32
+   5:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * \internal
+   6:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *----------------------------------------------------------------------------------------
+   7:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *                          C O P Y R I G H T
+   8:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *----------------------------------------------------------------------------------------
+   9:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+  10:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *
+  11:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *----------------------------------------------------------------------------------------
+  12:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *                            L I C E N S E
+  13:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *----------------------------------------------------------------------------------------
+  14:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+  15:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * modify it under the terms of the GNU General Public License as published by the Free
+  16:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * Software Foundation, either version 3 of the License, or (at your option) any later
+  17:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * version.
+  18:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *
+  19:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  20:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  21:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * PURPOSE. See the GNU General Public License for more details.
+  22:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *
+  23:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * You should have received a copy of the GNU General Public License along with OpenBLT.
+  24:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * If not, see <http://www.gnu.org/licenses/>.
+  25:../../../Source/ARMCM3_STM32/GCC/cstart.c **** *
+  26:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * A special exception to the GPL is included to allow you to distribute a combined work 
+  27:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * that includes OpenBLT without being obliged to provide the source code for any 
+  28:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * proprietary components. The exception text is included at the bottom of the license
+  29:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * file <license.html>.
+  30:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * 
+  31:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * \endinternal
+  32:../../../Source/ARMCM3_STM32/GCC/cstart.c **** ****************************************************************************************/
+  33:../../../Source/ARMCM3_STM32/GCC/cstart.c **** 
+  34:../../../Source/ARMCM3_STM32/GCC/cstart.c **** /****************************************************************************************
+  35:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * Include files
+  36:../../../Source/ARMCM3_STM32/GCC/cstart.c **** ****************************************************************************************/
+  37:../../../Source/ARMCM3_STM32/GCC/cstart.c **** #include "boot.h"                                    /* bootloader generic header      */
+  38:../../../Source/ARMCM3_STM32/GCC/cstart.c **** 
+  39:../../../Source/ARMCM3_STM32/GCC/cstart.c **** 
+  40:../../../Source/ARMCM3_STM32/GCC/cstart.c **** /****************************************************************************************
+  41:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * External function protoypes
+  42:../../../Source/ARMCM3_STM32/GCC/cstart.c **** ****************************************************************************************/
+  43:../../../Source/ARMCM3_STM32/GCC/cstart.c **** extern int  main(void);
+  44:../../../Source/ARMCM3_STM32/GCC/cstart.c **** 
+  45:../../../Source/ARMCM3_STM32/GCC/cstart.c **** 
+  46:../../../Source/ARMCM3_STM32/GCC/cstart.c **** /****************************************************************************************
+  47:../../../Source/ARMCM3_STM32/GCC/cstart.c **** * External data declarations
+  48:../../../Source/ARMCM3_STM32/GCC/cstart.c **** ****************************************************************************************/
+  49:../../../Source/ARMCM3_STM32/GCC/cstart.c **** /* these externals are declared by the linker */
+  50:../../../Source/ARMCM3_STM32/GCC/cstart.c **** extern blt_int32u _etext;
+  51:../../../Source/ARMCM3_STM32/GCC/cstart.c **** extern blt_int32u _data;
+  52:../../../Source/ARMCM3_STM32/GCC/cstart.c **** extern blt_int32u _edata;
+  53:../../../Source/ARMCM3_STM32/GCC/cstart.c **** extern blt_int32u _bss;
+  54:../../../Source/ARMCM3_STM32/GCC/cstart.c **** extern blt_int32u _ebss;
+  55:../../../Source/ARMCM3_STM32/GCC/cstart.c **** extern blt_int32u _estack;
+  56:../../../Source/ARMCM3_STM32/GCC/cstart.c **** 
+  57:../../../Source/ARMCM3_STM32/GCC/cstart.c **** 
+  58:../../../Source/ARMCM3_STM32/GCC/cstart.c **** /************************************************************************************//**
+  59:../../../Source/ARMCM3_STM32/GCC/cstart.c **** ** \brief     Reset interrupt service routine. Configures the stack, initializes 
+  60:../../../Source/ARMCM3_STM32/GCC/cstart.c **** **            RAM and jumps to function main.
+  61:../../../Source/ARMCM3_STM32/GCC/cstart.c **** ** \return    none.
+  62:../../../Source/ARMCM3_STM32/GCC/cstart.c **** **
+  63:../../../Source/ARMCM3_STM32/GCC/cstart.c **** ****************************************************************************************/
+  64:../../../Source/ARMCM3_STM32/GCC/cstart.c **** void reset_handler(void)
+  65:../../../Source/ARMCM3_STM32/GCC/cstart.c **** {
+  27              		.loc 1 65 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+  66:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   blt_int32u *pSrc, *pDest;
+  67:../../../Source/ARMCM3_STM32/GCC/cstart.c **** 
+  68:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   /* disable interrupts first */
+  69:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   __asm("    cpsid     i");
+  35              		.loc 1 69 0
+  36              	@ 69 "../../../Source/ARMCM3_STM32/GCC/cstart.c" 1
+  37 0002 72B6     		    cpsid     i
+  38              	@ 0 "" 2
+  39              	.LVL0:
+  70:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   /* copy the data segment initializers from flash to SRAM */
+  71:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   pSrc = &_etext;
+  72:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   for(pDest = &_data; pDest < &_edata; )
+  40              		.loc 1 72 0
+  41              		.thumb
+  42 0004 0E4B     		ldr	r3, .L6
+  43 0006 0F4A     		ldr	r2, .L6+4
+  44 0008 9A42     		cmp	r2, r3
+  45 000a 0DD2     		bcs	.L2
+  46 000c 101D     		adds	r0, r2, #4
+  47 000e 0333     		adds	r3, r3, #3
+  48 0010 181A     		subs	r0, r3, r0
+  49 0012 20F00300 		bic	r0, r0, #3
+  50 0016 0430     		adds	r0, r0, #4
+  51 0018 0B4B     		ldr	r3, .L6+8
+  52 001a 1844     		add	r0, r0, r3
+  53              	.LVL1:
+  54              	.L3:
+  73:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   {
+  74:../../../Source/ARMCM3_STM32/GCC/cstart.c ****     *pDest++ = *pSrc++;
+  55              		.loc 1 74 0
+  56 001c 53F8041B 		ldr	r1, [r3], #4
+  57              	.LVL2:
+  58 0020 42F8041B 		str	r1, [r2], #4
+  59              	.LVL3:
+  72:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   {
+  60              		.loc 1 72 0
+  61 0024 8342     		cmp	r3, r0
+  62 0026 F9D1     		bne	.L3
+  63              	.LVL4:
+  64              	.L2:
+  75:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   }
+  76:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   /* zero fill the bss segment. this is done with inline assembly since this will 
+  77:../../../Source/ARMCM3_STM32/GCC/cstart.c ****    * clear the value of pDest if it is not kept in a register.
+  78:../../../Source/ARMCM3_STM32/GCC/cstart.c ****    */
+  79:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   __asm("    ldr     r0, =_bss\n"
+  65              		.loc 1 79 0
+  66              	@ 79 "../../../Source/ARMCM3_STM32/GCC/cstart.c" 1
+  67 0028 0848     		    ldr     r0, =_bss
+  68 002a 0949     	    ldr     r1, =_ebss
+  69 002c 4FF00002 	    mov     r2, #0
+  70              	    .thumb_func
+  71              	zero_loop:
+  72 0030 8842     	        cmp     r0, r1
+  73 0032 B8BF     	        it      lt
+  74 0034 40F8042B 	        strlt   r2, [r0], #4
+  75 0038 FADB     	        blt     zero_loop
+  76              	@ 0 "" 2
+  80:../../../Source/ARMCM3_STM32/GCC/cstart.c ****         "    ldr     r1, =_ebss\n"
+  81:../../../Source/ARMCM3_STM32/GCC/cstart.c ****         "    mov     r2, #0\n"
+  82:../../../Source/ARMCM3_STM32/GCC/cstart.c ****         "    .thumb_func\n"
+  83:../../../Source/ARMCM3_STM32/GCC/cstart.c ****         "zero_loop:\n"
+  84:../../../Source/ARMCM3_STM32/GCC/cstart.c ****         "        cmp     r0, r1\n"
+  85:../../../Source/ARMCM3_STM32/GCC/cstart.c ****         "        it      lt\n"
+  86:../../../Source/ARMCM3_STM32/GCC/cstart.c ****         "        strlt   r2, [r0], #4\n"
+  87:../../../Source/ARMCM3_STM32/GCC/cstart.c ****         "        blt     zero_loop");
+  88:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   /* start the software application by calling its entry point */
+  89:../../../Source/ARMCM3_STM32/GCC/cstart.c ****   main();
+  77              		.loc 1 89 0
+  78              		.thumb
+  79 003a FFF7FEFF 		bl	main
+  80              	.LVL5:
+  81 003e 08BD     		pop	{r3, pc}
+  82              	.L7:
+  83              		.align	2
+  84              	.L6:
+  85 0040 00000000 		.word	_edata
+  86 0044 00000000 		.word	_data
+  87 0048 00000000 		.word	_etext
+  88              		.cfi_endproc
+  89              	.LFE0:
+  91              		.text
+  92              	.Letext0:
+  93              		.file 2 "../../../Source/ARMCM3_STM32/types.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 cstart.c
+C:\Users\lwngim1\AppData\Local\Temp\ccu7mGw5.s:19     .text.reset_handler:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccu7mGw5.s:24     .text.reset_handler:00000000 reset_handler
+C:\Users\lwngim1\AppData\Local\Temp\ccu7mGw5.s:71     .text.reset_handler:00000030 zero_loop
+C:\Users\lwngim1\AppData\Local\Temp\ccu7mGw5.s:85     .text.reset_handler:00000040 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+_bss
+_ebss
+main
+_edata
+_data
+_etext

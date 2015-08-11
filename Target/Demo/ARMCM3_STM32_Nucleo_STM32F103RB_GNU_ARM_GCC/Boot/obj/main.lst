@@ -1,0 +1,431 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"main.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.main,"ax",%progbits
+  19              		.align	2
+  20              		.global	main
+  21              		.thumb
+  22              		.thumb_func
+  24              	main:
+  25              	.LFB29:
+  26              		.file 1 "main.c"
+   1:main.c        **** /************************************************************************************//**
+   2:main.c        **** * \file         Demo\ARMCM3_STM32_Olimex_STM32P103_GCC\Boot\main.c
+   3:main.c        **** * \brief        Bootloader application source file.
+   4:main.c        **** * \ingroup      Boot_ARMCM3_STM32_Olimex_STM32P103_GCC
+   5:main.c        **** * \internal
+   6:main.c        **** *----------------------------------------------------------------------------------------
+   7:main.c        **** *                          C O P Y R I G H T
+   8:main.c        **** *----------------------------------------------------------------------------------------
+   9:main.c        **** *   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+  10:main.c        **** *
+  11:main.c        **** *----------------------------------------------------------------------------------------
+  12:main.c        **** *                            L I C E N S E
+  13:main.c        **** *----------------------------------------------------------------------------------------
+  14:main.c        **** * This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+  15:main.c        **** * modify it under the terms of the GNU General Public License as published by the Free
+  16:main.c        **** * Software Foundation, either version 3 of the License, or (at your option) any later
+  17:main.c        **** * version.
+  18:main.c        **** *
+  19:main.c        **** * OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  20:main.c        **** * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  21:main.c        **** * PURPOSE. See the GNU General Public License for more details.
+  22:main.c        **** *
+  23:main.c        **** * You should have received a copy of the GNU General Public License along with OpenBLT.
+  24:main.c        **** * If not, see <http://www.gnu.org/licenses/>.
+  25:main.c        **** *
+  26:main.c        **** * A special exception to the GPL is included to allow you to distribute a combined work
+  27:main.c        **** * that includes OpenBLT without being obliged to provide the source code for any
+  28:main.c        **** * proprietary components. The exception text is included at the bottom of the license
+  29:main.c        **** * file <license.html>.
+  30:main.c        **** *
+  31:main.c        **** * \endinternal
+  32:main.c        **** ****************************************************************************************/
+  33:main.c        **** 
+  34:main.c        **** /****************************************************************************************
+  35:main.c        **** * Include files
+  36:main.c        **** ****************************************************************************************/
+  37:main.c        **** #include "boot.h"                                /* bootloader generic header          */
+  38:main.c        **** #include "stm32f10x.h"                           /* microcontroller registers          */
+  39:main.c        **** #if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  40:main.c        **** #include "stm32f10x_conf.h"                      /* STM32 peripheral drivers           */
+  41:main.c        **** #endif
+  42:main.c        **** 
+  43:main.c        **** 
+  44:main.c        **** /****************************************************************************************
+  45:main.c        **** * Function prototypes
+  46:main.c        **** ****************************************************************************************/
+  47:main.c        **** static void Init(void);
+  48:main.c        **** 
+  49:main.c        **** 
+  50:main.c        **** /************************************************************************************//**
+  51:main.c        **** ** \brief     This is the entry point for the bootloader application and is called
+  52:main.c        **** **            by the reset interrupt vector after the C-startup routines executed.
+  53:main.c        **** ** \return    Program return code.
+  54:main.c        **** **
+  55:main.c        **** ****************************************************************************************/
+  56:main.c        **** int main(void)
+  57:main.c        **** {
+  27              		.loc 1 57 0
+  28              		.cfi_startproc
+  29              		@ Volatile: function does not return.
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 00B5     		push	{lr}
+  33              		.cfi_def_cfa_offset 4
+  34              		.cfi_offset 14, -4
+  35 0002 83B0     		sub	sp, sp, #12
+  36              		.cfi_def_cfa_offset 16
+  37              	.LBB4:
+  38              	.LBB5:
+  58:main.c        ****   /* initialize the microcontroller */
+  59:main.c        ****   Init();
+  60:main.c        ****   /* initialize the bootloader */
+  61:main.c        ****   BootInit();
+  62:main.c        **** 
+  63:main.c        ****   /* start the infinite program loop */
+  64:main.c        ****   while (1)
+  65:main.c        ****   {
+  66:main.c        ****     /* run the bootloader task */
+  67:main.c        ****     BootTask();
+  68:main.c        ****   }
+  69:main.c        **** 
+  70:main.c        ****   /* program should never get here */
+  71:main.c        ****   return 0;
+  72:main.c        **** } /*** end of main ***/
+  73:main.c        **** 
+  74:main.c        **** 
+  75:main.c        **** /************************************************************************************//**
+  76:main.c        **** ** \brief     Initializes the microcontroller.
+  77:main.c        **** ** \return    none.
+  78:main.c        **** **
+  79:main.c        **** ****************************************************************************************/
+  80:main.c        **** static void Init(void)
+  81:main.c        **** {
+  82:main.c        ****   volatile blt_int32u StartUpCounter = 0, HSEStatus = 0;
+  39              		.loc 1 82 0
+  40 0004 0023     		movs	r3, #0
+  41 0006 0093     		str	r3, [sp]
+  42 0008 0193     		str	r3, [sp, #4]
+  83:main.c        ****   blt_int32u pll_multiplier;
+  84:main.c        **** #if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  85:main.c        ****   GPIO_InitTypeDef  GPIO_InitStruct;
+  86:main.c        ****   USART_InitTypeDef USART_InitStruct;
+  87:main.c        **** #endif
+  88:main.c        **** 
+  89:main.c        ****   /* reset the RCC clock configuration to the default reset state (for debug purpose) */
+  90:main.c        ****   /* set HSION bit */
+  91:main.c        ****   RCC->CR |= (blt_int32u)0x00000001;
+  43              		.loc 1 91 0
+  44 000a 03F18043 		add	r3, r3, #1073741824
+  45 000e 03F50433 		add	r3, r3, #135168
+  46 0012 1A68     		ldr	r2, [r3]
+  47 0014 42F00102 		orr	r2, r2, #1
+  48 0018 1A60     		str	r2, [r3]
+  92:main.c        ****   /* reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
+  93:main.c        ****   RCC->CFGR &= (blt_int32u)0xF8FF0000;
+  49              		.loc 1 93 0
+  50 001a 5968     		ldr	r1, [r3, #4]
+  51 001c 434A     		ldr	r2, .L12
+  52 001e 0A40     		ands	r2, r2, r1
+  53 0020 5A60     		str	r2, [r3, #4]
+  94:main.c        ****   /* reset HSEON, CSSON and PLLON bits */
+  95:main.c        ****   RCC->CR &= (blt_int32u)0xFEF6FFFF;
+  54              		.loc 1 95 0
+  55 0022 1A68     		ldr	r2, [r3]
+  56 0024 22F08472 		bic	r2, r2, #17301504
+  57 0028 22F48032 		bic	r2, r2, #65536
+  58 002c 1A60     		str	r2, [r3]
+  96:main.c        ****   /* reset HSEBYP bit */
+  97:main.c        ****   RCC->CR &= (blt_int32u)0xFFFBFFFF;
+  59              		.loc 1 97 0
+  60 002e 1A68     		ldr	r2, [r3]
+  61 0030 22F48022 		bic	r2, r2, #262144
+  62 0034 1A60     		str	r2, [r3]
+  98:main.c        ****   /* reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
+  99:main.c        ****   RCC->CFGR &= (blt_int32u)0xFF80FFFF;
+  63              		.loc 1 99 0
+  64 0036 5A68     		ldr	r2, [r3, #4]
+  65 0038 22F4FE02 		bic	r2, r2, #8323072
+  66 003c 5A60     		str	r2, [r3, #4]
+ 100:main.c        ****   /* disable all interrupts and clear pending bits  */
+ 101:main.c        ****   RCC->CIR = 0x009F0000;
+  67              		.loc 1 101 0
+  68 003e 4FF41F02 		mov	r2, #10420224
+  69 0042 9A60     		str	r2, [r3, #8]
+ 102:main.c        ****   /* enable HSE */
+ 103:main.c        ****   RCC->CR |= ((blt_int32u)RCC_CR_HSEON);
+  70              		.loc 1 103 0
+  71 0044 1A68     		ldr	r2, [r3]
+  72 0046 42F48032 		orr	r2, r2, #65536
+  73 004a 1A60     		str	r2, [r3]
+ 104:main.c        ****   /* wait till HSE is ready and if Time out is reached exit */
+ 105:main.c        ****   do
+ 106:main.c        ****   {
+ 107:main.c        ****     HSEStatus = RCC->CR & RCC_CR_HSERDY;
+  74              		.loc 1 107 0
+  75 004c 1946     		mov	r1, r3
+ 108:main.c        ****     StartUpCounter++;
+ 109:main.c        ****   }
+ 110:main.c        ****   while((HSEStatus == 0) && (StartUpCounter != 1500));
+  76              		.loc 1 110 0
+  77 004e 40F2DC52 		movw	r2, #1500
+  78              	.L3:
+ 107:main.c        ****     StartUpCounter++;
+  79              		.loc 1 107 0
+  80 0052 0B68     		ldr	r3, [r1]
+  81 0054 03F40033 		and	r3, r3, #131072
+  82 0058 0193     		str	r3, [sp, #4]
+ 108:main.c        ****     StartUpCounter++;
+  83              		.loc 1 108 0
+  84 005a 009B     		ldr	r3, [sp]
+  85 005c 0133     		adds	r3, r3, #1
+  86 005e 0093     		str	r3, [sp]
+  87              		.loc 1 110 0
+  88 0060 019B     		ldr	r3, [sp, #4]
+  89 0062 13B9     		cbnz	r3, .L2
+  90 0064 009B     		ldr	r3, [sp]
+  91 0066 9342     		cmp	r3, r2
+  92 0068 F3D1     		bne	.L3
+  93              	.L2:
+ 111:main.c        ****   /* check if time out was reached */
+ 112:main.c        ****   if ((RCC->CR & RCC_CR_HSERDY) == RESET)
+  94              		.loc 1 112 0
+  95 006a 314B     		ldr	r3, .L12+4
+  96 006c 1B68     		ldr	r3, [r3]
+  97 006e 13F4003F 		tst	r3, #131072
+  98 0072 03D1     		bne	.L4
+ 113:main.c        ****   {
+ 114:main.c        ****     /* cannot continue when HSE is not ready */
+ 115:main.c        ****     ASSERT_RT(BLT_FALSE);
+  99              		.loc 1 115 0
+ 100 0074 2F48     		ldr	r0, .L12+8
+ 101 0076 7321     		movs	r1, #115
+ 102 0078 FFF7FEFF 		bl	AssertFailure
+ 103              	.LVL0:
+ 104              	.L4:
+ 116:main.c        ****   }
+ 117:main.c        ****   /* enable flash prefetch buffer */
+ 118:main.c        ****   FLASH->ACR |= FLASH_ACR_PRFTBE;
+ 105              		.loc 1 118 0
+ 106 007c 2E4B     		ldr	r3, .L12+12
+ 107 007e 1A68     		ldr	r2, [r3]
+ 108 0080 42F01002 		orr	r2, r2, #16
+ 109 0084 1A60     		str	r2, [r3]
+ 119:main.c        ****   /* reset flash wait state configuration to default 0 wait states */
+ 120:main.c        ****   FLASH->ACR &= (blt_int32u)((blt_int32u)~FLASH_ACR_LATENCY);
+ 110              		.loc 1 120 0
+ 111 0086 1A68     		ldr	r2, [r3]
+ 112 0088 22F00302 		bic	r2, r2, #3
+ 113 008c 1A60     		str	r2, [r3]
+ 121:main.c        **** #if (BOOT_CPU_SYSTEM_SPEED_KHZ > 48000)
+ 122:main.c        ****   /* configure 2 flash wait states */
+ 123:main.c        ****   FLASH->ACR |= (blt_int32u)FLASH_ACR_LATENCY_2;
+ 114              		.loc 1 123 0
+ 115 008e 1A68     		ldr	r2, [r3]
+ 116 0090 42F00202 		orr	r2, r2, #2
+ 117 0094 1A60     		str	r2, [r3]
+ 124:main.c        **** #elif (BOOT_CPU_SYSTEM_SPEED_KHZ > 24000)
+ 125:main.c        ****   /* configure 1 flash wait states */
+ 126:main.c        ****   FLASH->ACR |= (blt_int32u)FLASH_ACR_LATENCY_1;
+ 127:main.c        **** #endif
+ 128:main.c        ****   /* HCLK = SYSCLK */
+ 129:main.c        ****   RCC->CFGR |= (blt_int32u)RCC_CFGR_HPRE_DIV1;
+ 118              		.loc 1 129 0
+ 119 0096 A3F58053 		sub	r3, r3, #4096
+ 120 009a 5A68     		ldr	r2, [r3, #4]
+ 121 009c 5A60     		str	r2, [r3, #4]
+ 130:main.c        ****   /* PCLK2 = HCLK/2 */
+ 131:main.c        ****   RCC->CFGR |= (blt_int32u)RCC_CFGR_PPRE2_DIV2;
+ 122              		.loc 1 131 0
+ 123 009e 5A68     		ldr	r2, [r3, #4]
+ 124 00a0 42F40052 		orr	r2, r2, #8192
+ 125 00a4 5A60     		str	r2, [r3, #4]
+ 132:main.c        ****   /* PCLK1 = HCLK/2 */
+ 133:main.c        ****   RCC->CFGR |= (blt_int32u)RCC_CFGR_PPRE1_DIV2;
+ 126              		.loc 1 133 0
+ 127 00a6 5A68     		ldr	r2, [r3, #4]
+ 128 00a8 42F48062 		orr	r2, r2, #1024
+ 129 00ac 5A60     		str	r2, [r3, #4]
+ 134:main.c        ****   /* reset PLL configuration */
+ 135:main.c        ****   RCC->CFGR &= (blt_int32u)((blt_int32u)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | \
+ 130              		.loc 1 135 0
+ 131 00ae 5A68     		ldr	r2, [r3, #4]
+ 132 00b0 22F47C12 		bic	r2, r2, #4128768
+ 133 00b4 5A60     		str	r2, [r3, #4]
+ 134              	.LVL1:
+ 136:main.c        ****                                           RCC_CFGR_PLLMULL));
+ 137:main.c        ****   /* assert that the pll_multiplier is between 2 and 16 */
+ 138:main.c        ****   ASSERT_CT((BOOT_CPU_SYSTEM_SPEED_KHZ/BOOT_CPU_XTAL_SPEED_KHZ) >= 2);
+ 139:main.c        ****   ASSERT_CT((BOOT_CPU_SYSTEM_SPEED_KHZ/BOOT_CPU_XTAL_SPEED_KHZ) <= 16);
+ 140:main.c        ****   /* calculate multiplier value */
+ 141:main.c        ****   pll_multiplier = BOOT_CPU_SYSTEM_SPEED_KHZ/BOOT_CPU_XTAL_SPEED_KHZ;
+ 142:main.c        ****   /* convert to register value */
+ 143:main.c        ****   pll_multiplier = (blt_int32u)((pll_multiplier - 2) << 18);
+ 144:main.c        ****   /* set the PLL multiplier and clock source */
+ 145:main.c        ****   RCC->CFGR |= (blt_int32u)(RCC_CFGR_PLLSRC_HSE | pll_multiplier);
+ 135              		.loc 1 145 0
+ 136 00b6 5A68     		ldr	r2, [r3, #4]
+ 137 00b8 42F4E812 		orr	r2, r2, #1900544
+ 138 00bc 5A60     		str	r2, [r3, #4]
+ 146:main.c        ****   /* enable PLL */
+ 147:main.c        ****   RCC->CR |= RCC_CR_PLLON;
+ 139              		.loc 1 147 0
+ 140 00be 1A68     		ldr	r2, [r3]
+ 141 00c0 42F08072 		orr	r2, r2, #16777216
+ 142 00c4 1A60     		str	r2, [r3]
+ 143              	.L5:
+ 148:main.c        ****   /* wait till PLL is ready */
+ 149:main.c        ****   while((RCC->CR & RCC_CR_PLLRDY) == 0)
+ 144              		.loc 1 149 0
+ 145 00c6 1A68     		ldr	r2, [r3]
+ 146 00c8 12F0007F 		tst	r2, #33554432
+ 147 00cc FBD0     		beq	.L5
+ 150:main.c        ****   {
+ 151:main.c        ****   }
+ 152:main.c        ****   /* select PLL as system clock source */
+ 153:main.c        ****   RCC->CFGR &= (blt_int32u)((blt_int32u)~(RCC_CFGR_SW));
+ 148              		.loc 1 153 0
+ 149 00ce 184B     		ldr	r3, .L12+4
+ 150 00d0 5A68     		ldr	r2, [r3, #4]
+ 151 00d2 22F00302 		bic	r2, r2, #3
+ 152 00d6 5A60     		str	r2, [r3, #4]
+ 154:main.c        ****   RCC->CFGR |= (blt_int32u)RCC_CFGR_SW_PLL;
+ 153              		.loc 1 154 0
+ 154 00d8 5A68     		ldr	r2, [r3, #4]
+ 155 00da 42F00202 		orr	r2, r2, #2
+ 156 00de 5A60     		str	r2, [r3, #4]
+ 155:main.c        ****   /* wait till PLL is used as system clock source */
+ 156:main.c        ****   while ((RCC->CFGR & (blt_int32u)RCC_CFGR_SWS) != (blt_int32u)0x08)
+ 157              		.loc 1 156 0
+ 158 00e0 1A46     		mov	r2, r3
+ 159              	.L6:
+ 160 00e2 5368     		ldr	r3, [r2, #4]
+ 161 00e4 03F00C03 		and	r3, r3, #12
+ 162 00e8 082B     		cmp	r3, #8
+ 163 00ea FAD1     		bne	.L6
+ 157:main.c        ****   {
+ 158:main.c        ****   }
+ 159:main.c        **** #if (BOOT_COM_CAN_ENABLE > 0)
+ 160:main.c        ****   /* enable clocks for CAN transmitter and receiver pins (GPIOB and AFIO) */
+ 161:main.c        ****   RCC->APB2ENR |= (blt_int32u)(0x00000008 | 0x00000001);
+ 162:main.c        ****   /* configure CAN Rx (GPIOB8) as alternate function input pull-up */
+ 163:main.c        ****   /* first reset the configuration */
+ 164:main.c        ****   GPIOB->CRH &= ~(blt_int32u)((blt_int32u)0xf << 0);
+ 165:main.c        ****   /* CNF8[1:0] = %10 and MODE8[1:0] = %00 */
+ 166:main.c        ****   GPIOB->CRH |= (blt_int32u)((blt_int32u)0x8 << 0);
+ 167:main.c        ****   /* configure CAN Tx (GPIOB9) as alternate function push-pull */
+ 168:main.c        ****   /* first reset the configuration */
+ 169:main.c        ****   GPIOB->CRH &= ~(blt_int32u)((blt_int32u)0xf << 4);
+ 170:main.c        ****   /* CNF9[1:0] = %10 and MODE9[1:0] = %11 */
+ 171:main.c        ****   GPIOB->CRH |= (blt_int32u)((blt_int32u)0xb << 4);
+ 172:main.c        ****   /* remap CAN1 pins to PortB */
+ 173:main.c        ****   AFIO->MAPR &= ~(blt_int32u)((blt_int32u)0x3 << 13);
+ 174:main.c        ****   AFIO->MAPR |=  (blt_int32u)((blt_int32u)0x2 << 13);
+ 175:main.c        ****   /* enable clocks for CAN controller peripheral */
+ 176:main.c        ****   RCC->APB1ENR |= (blt_int32u)0x02000000;
+ 177:main.c        **** #endif
+ 178:main.c        **** #if (BOOT_COM_UART_ENABLE > 0)
+ 179:main.c        ****   /* enable clock for USART2 peripheral */
+ 180:main.c        ****   RCC->APB1ENR |= (blt_int32u)0x00020000;
+ 164              		.loc 1 180 0
+ 165 00ec 104B     		ldr	r3, .L12+4
+ 166 00ee DA69     		ldr	r2, [r3, #28]
+ 167 00f0 42F40032 		orr	r2, r2, #131072
+ 168 00f4 DA61     		str	r2, [r3, #28]
+ 181:main.c        ****   /* enable clocks for USART2 transmitter and receiver pins (GPIOA and AFIO) */
+ 182:main.c        ****   RCC->APB2ENR |= (blt_int32u)(0x00000004 | 0x00000001);
+ 169              		.loc 1 182 0
+ 170 00f6 9A69     		ldr	r2, [r3, #24]
+ 171 00f8 42F00502 		orr	r2, r2, #5
+ 172 00fc 9A61     		str	r2, [r3, #24]
+ 183:main.c        ****   /* configure USART2 Tx (GPIOA2) as alternate function push-pull */
+ 184:main.c        ****   /* first reset the configuration */
+ 185:main.c        ****   GPIOA->CRL &= ~(blt_int32u)((blt_int32u)0xf << 8);
+ 173              		.loc 1 185 0
+ 174 00fe A3F58433 		sub	r3, r3, #67584
+ 175 0102 1A68     		ldr	r2, [r3]
+ 176 0104 22F47062 		bic	r2, r2, #3840
+ 177 0108 1A60     		str	r2, [r3]
+ 186:main.c        ****   /* CNF2[1:0] = %10 and MODE2[1:0] = %11 */
+ 187:main.c        ****   GPIOA->CRL |= (blt_int32u)((blt_int32u)0xb << 8);
+ 178              		.loc 1 187 0
+ 179 010a 1A68     		ldr	r2, [r3]
+ 180 010c 42F43062 		orr	r2, r2, #2816
+ 181 0110 1A60     		str	r2, [r3]
+ 188:main.c        ****   /* configure USART2 Rx (GPIOA3) as alternate function input floating */
+ 189:main.c        ****   /* first reset the configuration */
+ 190:main.c        ****   GPIOA->CRL &= ~(blt_int32u)((blt_int32u)0xf << 12);
+ 182              		.loc 1 190 0
+ 183 0112 1A68     		ldr	r2, [r3]
+ 184 0114 22F47042 		bic	r2, r2, #61440
+ 185 0118 1A60     		str	r2, [r3]
+ 191:main.c        ****   /* CNF2[1:0] = %01 and MODE2[1:0] = %00 */
+ 192:main.c        ****   GPIOA->CRL |= (blt_int32u)((blt_int32u)0x4 << 12);
+ 186              		.loc 1 192 0
+ 187 011a 1A68     		ldr	r2, [r3]
+ 188 011c 42F48042 		orr	r2, r2, #16384
+ 189 0120 1A60     		str	r2, [r3]
+ 190              	.LBE5:
+ 191              	.LBE4:
+  61:main.c        **** 
+ 192              		.loc 1 61 0
+ 193 0122 FFF7FEFF 		bl	BootInit
+ 194              	.LVL2:
+ 195              	.L7:
+  67:main.c        ****   }
+ 196              		.loc 1 67 0 discriminator 1
+ 197 0126 FFF7FEFF 		bl	BootTask
+ 198              	.LVL3:
+  68:main.c        **** 
+ 199              		.loc 1 68 0 discriminator 1
+ 200 012a FCE7     		b	.L7
+ 201              	.L13:
+ 202              		.align	2
+ 203              	.L12:
+ 204 012c 0000FFF8 		.word	-117506048
+ 205 0130 00100240 		.word	1073876992
+ 206 0134 00000000 		.word	.LC0
+ 207 0138 00200240 		.word	1073881088
+ 208              		.cfi_endproc
+ 209              	.LFE29:
+ 211              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 212              		.align	2
+ 213              	.LC0:
+ 214 0000 6D61696E 		.ascii	"main.c\000"
+ 214      2E6300
+ 215 0007 00       		.text
+ 216              	.Letext0:
+ 217              		.file 2 "../../../Source/ARMCM3_STM32/types.h"
+ 218              		.file 3 "c:\\program files (x86)\\gnu tools arm embedded\\4.9 2015q1\\arm-none-eabi\\include\\mach
+ 219              		.file 4 "c:\\program files (x86)\\gnu tools arm embedded\\4.9 2015q1\\arm-none-eabi\\include\\stdi
+ 220              		.file 5 "./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h"
+ 221              		.file 6 "../../../Source/boot.h"
+ 222              		.file 7 "./lib/CMSIS/CM3/CoreSupport/core_cm3.h"
+ 223              		.file 8 "../../../Source/assert.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\lwngim1\AppData\Local\Temp\cc1yUehE.s:19     .text.main:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\cc1yUehE.s:24     .text.main:00000000 main
+C:\Users\lwngim1\AppData\Local\Temp\cc1yUehE.s:204    .text.main:0000012c $d
+C:\Users\lwngim1\AppData\Local\Temp\cc1yUehE.s:212    .rodata.str1.4:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+AssertFailure
+BootInit
+BootTask

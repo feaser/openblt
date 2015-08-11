@@ -1,0 +1,595 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"com.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.ComInit,"ax",%progbits
+  19              		.align	2
+  20              		.global	ComInit
+  21              		.thumb
+  22              		.thumb_func
+  24              	ComInit:
+  25              	.LFB0:
+  26              		.file 1 "../../../Source/com.c"
+   1:../../../Source/com.c **** /************************************************************************************//**
+   2:../../../Source/com.c **** * \file         Source\com.c
+   3:../../../Source/com.c **** * \brief        Bootloader communication interface source file.
+   4:../../../Source/com.c **** * \ingroup      Core
+   5:../../../Source/com.c **** * \internal
+   6:../../../Source/com.c **** *----------------------------------------------------------------------------------------
+   7:../../../Source/com.c **** *                          C O P Y R I G H T
+   8:../../../Source/com.c **** *----------------------------------------------------------------------------------------
+   9:../../../Source/com.c **** *   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+  10:../../../Source/com.c **** *
+  11:../../../Source/com.c **** *----------------------------------------------------------------------------------------
+  12:../../../Source/com.c **** *                            L I C E N S E
+  13:../../../Source/com.c **** *----------------------------------------------------------------------------------------
+  14:../../../Source/com.c **** * This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+  15:../../../Source/com.c **** * modify it under the terms of the GNU General Public License as published by the Free
+  16:../../../Source/com.c **** * Software Foundation, either version 3 of the License, or (at your option) any later
+  17:../../../Source/com.c **** * version.
+  18:../../../Source/com.c **** *
+  19:../../../Source/com.c **** * OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  20:../../../Source/com.c **** * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  21:../../../Source/com.c **** * PURPOSE. See the GNU General Public License for more details.
+  22:../../../Source/com.c **** *
+  23:../../../Source/com.c **** * You should have received a copy of the GNU General Public License along with OpenBLT.
+  24:../../../Source/com.c **** * If not, see <http://www.gnu.org/licenses/>.
+  25:../../../Source/com.c **** *
+  26:../../../Source/com.c **** * A special exception to the GPL is included to allow you to distribute a combined work 
+  27:../../../Source/com.c **** * that includes OpenBLT without being obliged to provide the source code for any 
+  28:../../../Source/com.c **** * proprietary components. The exception text is included at the bottom of the license
+  29:../../../Source/com.c **** * file <license.html>.
+  30:../../../Source/com.c **** * 
+  31:../../../Source/com.c **** * \endinternal
+  32:../../../Source/com.c **** ****************************************************************************************/
+  33:../../../Source/com.c **** 
+  34:../../../Source/com.c **** /****************************************************************************************
+  35:../../../Source/com.c **** * Include files
+  36:../../../Source/com.c **** ****************************************************************************************/
+  37:../../../Source/com.c **** #include "boot.h"                                /* bootloader generic header          */
+  38:../../../Source/com.c **** #if (BOOT_COM_CAN_ENABLE > 0)
+  39:../../../Source/com.c ****   #include "can.h"                                    /* can driver module             */
+  40:../../../Source/com.c **** #endif
+  41:../../../Source/com.c **** #if (BOOT_COM_UART_ENABLE > 0)
+  42:../../../Source/com.c ****   #include "uart.h"                                   /* uart driver module            */
+  43:../../../Source/com.c **** #endif
+  44:../../../Source/com.c **** #if (BOOT_COM_USB_ENABLE > 0)
+  45:../../../Source/com.c ****   #include "usb.h"                                    /* usb driver module             */
+  46:../../../Source/com.c **** #endif
+  47:../../../Source/com.c **** #if (BOOT_COM_NET_ENABLE > 0)
+  48:../../../Source/com.c ****   #include "net.h"                                    /* tcp/ip driver module          */
+  49:../../../Source/com.c **** #endif
+  50:../../../Source/com.c **** 
+  51:../../../Source/com.c **** 
+  52:../../../Source/com.c **** #if (BOOT_COM_ENABLE > 0)
+  53:../../../Source/com.c **** /****************************************************************************************
+  54:../../../Source/com.c **** * Local data declarations
+  55:../../../Source/com.c **** ****************************************************************************************/
+  56:../../../Source/com.c **** /** \brief Holds the communication interface of the currently active interface. */
+  57:../../../Source/com.c **** static tComInterfaceId comActiveInterface = COM_IF_OTHER;
+  58:../../../Source/com.c **** 
+  59:../../../Source/com.c **** 
+  60:../../../Source/com.c **** /************************************************************************************//**
+  61:../../../Source/com.c **** ** \brief     Initializes the communication module including the hardware needed for 
+  62:../../../Source/com.c **** **            the communication.
+  63:../../../Source/com.c **** ** \return    none
+  64:../../../Source/com.c **** **
+  65:../../../Source/com.c **** ****************************************************************************************/
+  66:../../../Source/com.c **** void ComInit(void)
+  67:../../../Source/com.c **** {
+  27              		.loc 1 67 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+  68:../../../Source/com.c ****   /* initialize the XCP communication protocol */
+  69:../../../Source/com.c ****   XcpInit();
+  35              		.loc 1 69 0
+  36 0002 FFF7FEFF 		bl	XcpInit
+  37              	.LVL0:
+  70:../../../Source/com.c **** #if (BOOT_COM_CAN_ENABLE > 0)
+  71:../../../Source/com.c ****   /* initialize the CAN controller */
+  72:../../../Source/com.c ****   CanInit();
+  73:../../../Source/com.c ****   /* set it as active */
+  74:../../../Source/com.c ****   comActiveInterface = COM_IF_CAN;
+  75:../../../Source/com.c **** #endif
+  76:../../../Source/com.c **** #if (BOOT_COM_UART_ENABLE > 0)
+  77:../../../Source/com.c ****   /* initialize the UART interface */
+  78:../../../Source/com.c ****   UartInit();
+  38              		.loc 1 78 0
+  39 0006 FFF7FEFF 		bl	UartInit
+  40              	.LVL1:
+  79:../../../Source/com.c ****   /* set it as active */
+  80:../../../Source/com.c ****   comActiveInterface = COM_IF_UART;
+  41              		.loc 1 80 0
+  42 000a 0022     		movs	r2, #0
+  43 000c 014B     		ldr	r3, .L3
+  44 000e 1A70     		strb	r2, [r3]
+  45 0010 08BD     		pop	{r3, pc}
+  46              	.L4:
+  47 0012 00BF     		.align	2
+  48              	.L3:
+  49 0014 00000000 		.word	.LANCHOR0
+  50              		.cfi_endproc
+  51              	.LFE0:
+  53              		.section	.text.ComTask,"ax",%progbits
+  54              		.align	2
+  55              		.global	ComTask
+  56              		.thumb
+  57              		.thumb_func
+  59              	ComTask:
+  60              	.LFB1:
+  81:../../../Source/com.c **** #endif
+  82:../../../Source/com.c **** #if (BOOT_COM_USB_ENABLE > 0)
+  83:../../../Source/com.c ****   /* initialize the USB interface */
+  84:../../../Source/com.c ****   UsbInit();
+  85:../../../Source/com.c ****   /* set it as active */
+  86:../../../Source/com.c ****   comActiveInterface = COM_IF_USB;
+  87:../../../Source/com.c **** #endif
+  88:../../../Source/com.c **** #if (BOOT_COM_NET_ENABLE > 0)
+  89:../../../Source/com.c ****   /* initialize the TCP/IP interface */
+  90:../../../Source/com.c ****   NetInit();
+  91:../../../Source/com.c ****   /* set it as active */
+  92:../../../Source/com.c ****   comActiveInterface = COM_IF_NET;
+  93:../../../Source/com.c **** #endif
+  94:../../../Source/com.c **** } /*** end of ComInit ***/
+  95:../../../Source/com.c **** 
+  96:../../../Source/com.c **** 
+  97:../../../Source/com.c **** /************************************************************************************//**
+  98:../../../Source/com.c **** ** \brief     Updates the communication module by checking if new data was received 
+  99:../../../Source/com.c **** **            and submitting the request to process newly received data.
+ 100:../../../Source/com.c **** ** \return    none
+ 101:../../../Source/com.c **** **
+ 102:../../../Source/com.c **** ****************************************************************************************/
+ 103:../../../Source/com.c **** void ComTask(void)
+ 104:../../../Source/com.c **** {
+  61              		.loc 1 104 0
+  62              		.cfi_startproc
+  63              		@ args = 0, pretend = 0, frame = 0
+  64              		@ frame_needed = 0, uses_anonymous_args = 0
+  65 0000 08B5     		push	{r3, lr}
+  66              		.cfi_def_cfa_offset 8
+  67              		.cfi_offset 3, -8
+  68              		.cfi_offset 14, -4
+ 105:../../../Source/com.c ****   /* make xcpCtoReqPacket static for runtime efficiency */
+ 106:../../../Source/com.c ****   static blt_int8u xcpCtoReqPacket[BOOT_COM_RX_MAX_DATA];
+ 107:../../../Source/com.c ****  
+ 108:../../../Source/com.c **** #if (BOOT_COM_CAN_ENABLE > 0)
+ 109:../../../Source/com.c ****   if (CanReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+ 110:../../../Source/com.c ****   {
+ 111:../../../Source/com.c ****     /* make this the active interface */
+ 112:../../../Source/com.c ****     comActiveInterface = COM_IF_CAN;
+ 113:../../../Source/com.c ****     /* process packet */
+ 114:../../../Source/com.c ****     XcpPacketReceived(&xcpCtoReqPacket[0]);
+ 115:../../../Source/com.c ****   }
+ 116:../../../Source/com.c **** #endif
+ 117:../../../Source/com.c **** #if (BOOT_COM_UART_ENABLE > 0)
+ 118:../../../Source/com.c ****   if (UartReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+  69              		.loc 1 118 0
+  70 0002 0648     		ldr	r0, .L8
+  71 0004 FFF7FEFF 		bl	UartReceivePacket
+  72              	.LVL2:
+  73 0008 0128     		cmp	r0, #1
+  74 000a 05D1     		bne	.L5
+ 119:../../../Source/com.c ****   {
+ 120:../../../Source/com.c ****     /* make this the active interface */
+ 121:../../../Source/com.c ****     comActiveInterface = COM_IF_UART;
+  75              		.loc 1 121 0
+  76 000c 0022     		movs	r2, #0
+  77 000e 044B     		ldr	r3, .L8+4
+  78 0010 1A70     		strb	r2, [r3]
+ 122:../../../Source/com.c ****     /* process packet */
+ 123:../../../Source/com.c ****     XcpPacketReceived(&xcpCtoReqPacket[0]);
+  79              		.loc 1 123 0
+  80 0012 0248     		ldr	r0, .L8
+  81 0014 FFF7FEFF 		bl	XcpPacketReceived
+  82              	.LVL3:
+  83              	.L5:
+  84 0018 08BD     		pop	{r3, pc}
+  85              	.L9:
+  86 001a 00BF     		.align	2
+  87              	.L8:
+  88 001c 00000000 		.word	.LANCHOR1
+  89 0020 00000000 		.word	.LANCHOR0
+  90              		.cfi_endproc
+  91              	.LFE1:
+  93              		.section	.text.ComFree,"ax",%progbits
+  94              		.align	2
+  95              		.global	ComFree
+  96              		.thumb
+  97              		.thumb_func
+  99              	ComFree:
+ 100              	.LFB2:
+ 124:../../../Source/com.c ****   }
+ 125:../../../Source/com.c **** #endif
+ 126:../../../Source/com.c **** #if (BOOT_COM_USB_ENABLE > 0)
+ 127:../../../Source/com.c ****   if (UsbReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+ 128:../../../Source/com.c ****   {
+ 129:../../../Source/com.c ****     /* make this the active interface */
+ 130:../../../Source/com.c ****     comActiveInterface = COM_IF_USB;
+ 131:../../../Source/com.c ****     /* process packet */
+ 132:../../../Source/com.c ****     XcpPacketReceived(&xcpCtoReqPacket[0]);
+ 133:../../../Source/com.c ****   }
+ 134:../../../Source/com.c **** #endif
+ 135:../../../Source/com.c **** #if (BOOT_COM_NET_ENABLE > 0)
+ 136:../../../Source/com.c ****   if (NetReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+ 137:../../../Source/com.c ****   {
+ 138:../../../Source/com.c ****     /* make this the active interface */
+ 139:../../../Source/com.c ****     comActiveInterface = COM_IF_NET;
+ 140:../../../Source/com.c ****     /* process packet */
+ 141:../../../Source/com.c ****     XcpPacketReceived(&xcpCtoReqPacket[0]);
+ 142:../../../Source/com.c ****   }
+ 143:../../../Source/com.c **** #endif
+ 144:../../../Source/com.c **** } /*** end of ComTask ***/
+ 145:../../../Source/com.c **** 
+ 146:../../../Source/com.c **** 
+ 147:../../../Source/com.c **** /************************************************************************************//**
+ 148:../../../Source/com.c **** ** \brief     Releases the communication module.
+ 149:../../../Source/com.c **** ** \return    none
+ 150:../../../Source/com.c **** **
+ 151:../../../Source/com.c **** ****************************************************************************************/
+ 152:../../../Source/com.c **** void ComFree(void)
+ 153:../../../Source/com.c **** {
+ 101              		.loc 1 153 0
+ 102              		.cfi_startproc
+ 103              		@ args = 0, pretend = 0, frame = 0
+ 104              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105              		@ link register save eliminated.
+ 106 0000 7047     		bx	lr
+ 107              		.cfi_endproc
+ 108              	.LFE2:
+ 110 0002 00BF     		.section	.text.ComTransmitPacket,"ax",%progbits
+ 111              		.align	2
+ 112              		.global	ComTransmitPacket
+ 113              		.thumb
+ 114              		.thumb_func
+ 116              	ComTransmitPacket:
+ 117              	.LFB3:
+ 154:../../../Source/com.c **** #if (BOOT_COM_USB_ENABLE > 0)
+ 155:../../../Source/com.c ****   /* disconnect the usb device from the usb host */
+ 156:../../../Source/com.c ****   UsbFree();
+ 157:../../../Source/com.c **** #endif
+ 158:../../../Source/com.c **** } /*** end of ComFree ***/
+ 159:../../../Source/com.c **** 
+ 160:../../../Source/com.c **** 
+ 161:../../../Source/com.c **** /************************************************************************************//**
+ 162:../../../Source/com.c **** ** \brief     Transmits the packet using the xcp transport layer.
+ 163:../../../Source/com.c **** ** \param     data Pointer to the byte buffer with packet data.
+ 164:../../../Source/com.c **** ** \param     len  Number of data bytes that need to be transmitted.
+ 165:../../../Source/com.c **** ** \return    none
+ 166:../../../Source/com.c **** **
+ 167:../../../Source/com.c **** ****************************************************************************************/
+ 168:../../../Source/com.c **** void ComTransmitPacket(blt_int8u *data, blt_int16u len)
+ 169:../../../Source/com.c **** {
+ 118              		.loc 1 169 0
+ 119              		.cfi_startproc
+ 120              		@ args = 0, pretend = 0, frame = 0
+ 121              		@ frame_needed = 0, uses_anonymous_args = 0
+ 122              	.LVL4:
+ 123              		.loc 1 169 0
+ 124 0000 08B5     		push	{r3, lr}
+ 125              		.cfi_def_cfa_offset 8
+ 126              		.cfi_offset 3, -8
+ 127              		.cfi_offset 14, -4
+ 170:../../../Source/com.c **** #if (BOOT_COM_CAN_ENABLE > 0)
+ 171:../../../Source/com.c ****   /* transmit the packet. note that len is limited to 8 in the plausibility check,
+ 172:../../../Source/com.c ****    * so cast is okay.
+ 173:../../../Source/com.c ****    */
+ 174:../../../Source/com.c ****   if (comActiveInterface == COM_IF_CAN)
+ 175:../../../Source/com.c ****   {
+ 176:../../../Source/com.c ****     CanTransmitPacket(data, (blt_int8u)len);
+ 177:../../../Source/com.c ****   }
+ 178:../../../Source/com.c **** #endif
+ 179:../../../Source/com.c **** #if (BOOT_COM_UART_ENABLE > 0)
+ 180:../../../Source/com.c ****   /* transmit the packet. note that len is limited to 255 in the plausibility check,
+ 181:../../../Source/com.c ****    * so cast is okay.
+ 182:../../../Source/com.c ****    */
+ 183:../../../Source/com.c ****   if (comActiveInterface == COM_IF_UART)
+ 128              		.loc 1 183 0
+ 129 0002 044B     		ldr	r3, .L14
+ 130 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 131 0006 13B9     		cbnz	r3, .L12
+ 184:../../../Source/com.c ****   {
+ 185:../../../Source/com.c ****     UartTransmitPacket(data, (blt_int8u)len);
+ 132              		.loc 1 185 0
+ 133 0008 C9B2     		uxtb	r1, r1
+ 134              	.LVL5:
+ 135 000a FFF7FEFF 		bl	UartTransmitPacket
+ 136              	.LVL6:
+ 137              	.L12:
+ 186:../../../Source/com.c ****   }
+ 187:../../../Source/com.c **** #endif
+ 188:../../../Source/com.c **** #if (BOOT_COM_USB_ENABLE > 0)
+ 189:../../../Source/com.c ****   /* transmit the packet */
+ 190:../../../Source/com.c ****   if (comActiveInterface == COM_IF_USB)
+ 191:../../../Source/com.c ****   {
+ 192:../../../Source/com.c ****     UsbTransmitPacket(data, len);
+ 193:../../../Source/com.c ****   }
+ 194:../../../Source/com.c **** #endif
+ 195:../../../Source/com.c **** #if (BOOT_COM_NET_ENABLE > 0)
+ 196:../../../Source/com.c ****   if (comActiveInterface == COM_IF_NET)
+ 197:../../../Source/com.c ****   {
+ 198:../../../Source/com.c ****     /* transmit the packet */
+ 199:../../../Source/com.c ****     NetTransmitPacket(data, len);
+ 200:../../../Source/com.c ****   }
+ 201:../../../Source/com.c **** #endif
+ 202:../../../Source/com.c **** 
+ 203:../../../Source/com.c ****   /* send signal that the packet was transmitted */
+ 204:../../../Source/com.c ****   XcpPacketTransmitted();
+ 138              		.loc 1 204 0
+ 139 000e FFF7FEFF 		bl	XcpPacketTransmitted
+ 140              	.LVL7:
+ 141 0012 08BD     		pop	{r3, pc}
+ 142              	.L15:
+ 143              		.align	2
+ 144              	.L14:
+ 145 0014 00000000 		.word	.LANCHOR0
+ 146              		.cfi_endproc
+ 147              	.LFE3:
+ 149              		.section	.text.ComGetActiveInterfaceMaxRxLen,"ax",%progbits
+ 150              		.align	2
+ 151              		.global	ComGetActiveInterfaceMaxRxLen
+ 152              		.thumb
+ 153              		.thumb_func
+ 155              	ComGetActiveInterfaceMaxRxLen:
+ 156              	.LFB4:
+ 205:../../../Source/com.c **** } /*** end of ComTransmitPacket ***/
+ 206:../../../Source/com.c **** 
+ 207:../../../Source/com.c **** 
+ 208:../../../Source/com.c **** /************************************************************************************//**
+ 209:../../../Source/com.c **** ** \brief     Obtains the maximum number of bytes that can be received on the specified
+ 210:../../../Source/com.c **** **            communication interface.
+ 211:../../../Source/com.c **** ** \return    Maximum number of bytes that can be received.
+ 212:../../../Source/com.c **** **
+ 213:../../../Source/com.c **** ****************************************************************************************/
+ 214:../../../Source/com.c **** blt_int16u ComGetActiveInterfaceMaxRxLen(void)
+ 215:../../../Source/com.c **** {
+ 157              		.loc 1 215 0
+ 158              		.cfi_startproc
+ 159              		@ args = 0, pretend = 0, frame = 0
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 161              		@ link register save eliminated.
+ 216:../../../Source/com.c ****   blt_int16u result;
+ 217:../../../Source/com.c ****   
+ 218:../../../Source/com.c ****   /* filter on communication interface identifier */
+ 219:../../../Source/com.c ****   switch (comActiveInterface)
+ 162              		.loc 1 219 0
+ 163 0000 074B     		ldr	r3, .L22
+ 164 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 165 0004 022B     		cmp	r3, #2
+ 166 0006 06D0     		beq	.L18
+ 167 0008 032B     		cmp	r3, #3
+ 168 000a 06D0     		beq	.L19
+ 169 000c 012B     		cmp	r3, #1
+ 220:../../../Source/com.c ****   {
+ 221:../../../Source/com.c ****     case COM_IF_UART:
+ 222:../../../Source/com.c ****       result = BOOT_COM_UART_RX_MAX_DATA;
+ 170              		.loc 1 222 0
+ 171 000e 0CBF     		ite	eq
+ 172 0010 0820     		moveq	r0, #8
+ 173 0012 4020     		movne	r0, #64
+ 174 0014 7047     		bx	lr
+ 175              	.L18:
+ 176              	.LVL8:
+ 223:../../../Source/com.c ****       break;
+ 224:../../../Source/com.c **** 
+ 225:../../../Source/com.c ****     case COM_IF_CAN:
+ 226:../../../Source/com.c ****       result = BOOT_COM_CAN_RX_MAX_DATA;
+ 227:../../../Source/com.c ****       break;
+ 228:../../../Source/com.c **** 
+ 229:../../../Source/com.c ****     case COM_IF_USB:
+ 230:../../../Source/com.c ****       result = BOOT_COM_USB_RX_MAX_DATA;
+ 177              		.loc 1 230 0
+ 178 0016 0020     		movs	r0, #0
+ 231:../../../Source/com.c ****       break;
+ 179              		.loc 1 231 0
+ 180 0018 7047     		bx	lr
+ 181              	.LVL9:
+ 182              	.L19:
+ 232:../../../Source/com.c **** 
+ 233:../../../Source/com.c ****     case COM_IF_NET:
+ 234:../../../Source/com.c ****       result = BOOT_COM_NET_RX_MAX_DATA;
+ 183              		.loc 1 234 0
+ 184 001a 0020     		movs	r0, #0
+ 185              	.LVL10:
+ 235:../../../Source/com.c ****       break;
+ 236:../../../Source/com.c ****       
+ 237:../../../Source/com.c ****     default:
+ 238:../../../Source/com.c ****       result = BOOT_COM_RX_MAX_DATA;
+ 239:../../../Source/com.c ****       break;
+ 240:../../../Source/com.c ****   }
+ 241:../../../Source/com.c ****   
+ 242:../../../Source/com.c ****   return result;
+ 243:../../../Source/com.c **** } /*** end of ComGetActiveInterfaceMaxRxLen ***/
+ 186              		.loc 1 243 0
+ 187 001c 7047     		bx	lr
+ 188              	.L23:
+ 189 001e 00BF     		.align	2
+ 190              	.L22:
+ 191 0020 00000000 		.word	.LANCHOR0
+ 192              		.cfi_endproc
+ 193              	.LFE4:
+ 195              		.section	.text.ComGetActiveInterfaceMaxTxLen,"ax",%progbits
+ 196              		.align	2
+ 197              		.global	ComGetActiveInterfaceMaxTxLen
+ 198              		.thumb
+ 199              		.thumb_func
+ 201              	ComGetActiveInterfaceMaxTxLen:
+ 202              	.LFB5:
+ 244:../../../Source/com.c **** 
+ 245:../../../Source/com.c **** 
+ 246:../../../Source/com.c **** /************************************************************************************//**
+ 247:../../../Source/com.c **** ** \brief     Obtains the maximum number of bytes that can be transmitted on the 
+ 248:../../../Source/com.c **** **            specified communication interface.
+ 249:../../../Source/com.c **** ** \return    Maximum number of bytes that can be received.
+ 250:../../../Source/com.c **** **
+ 251:../../../Source/com.c **** ****************************************************************************************/
+ 252:../../../Source/com.c **** blt_int16u ComGetActiveInterfaceMaxTxLen(void)
+ 253:../../../Source/com.c **** {
+ 203              		.loc 1 253 0
+ 204              		.cfi_startproc
+ 205              		@ args = 0, pretend = 0, frame = 0
+ 206              		@ frame_needed = 0, uses_anonymous_args = 0
+ 207              		@ link register save eliminated.
+ 254:../../../Source/com.c ****   blt_int16u result;
+ 255:../../../Source/com.c ****   
+ 256:../../../Source/com.c ****   /* filter on communication interface identifier */
+ 257:../../../Source/com.c ****   switch (comActiveInterface)
+ 208              		.loc 1 257 0
+ 209 0000 074B     		ldr	r3, .L30
+ 210 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 211 0004 022B     		cmp	r3, #2
+ 212 0006 06D0     		beq	.L26
+ 213 0008 032B     		cmp	r3, #3
+ 214 000a 06D0     		beq	.L27
+ 215 000c 012B     		cmp	r3, #1
+ 258:../../../Source/com.c ****   {
+ 259:../../../Source/com.c ****     case COM_IF_UART:
+ 260:../../../Source/com.c ****       result = BOOT_COM_UART_TX_MAX_DATA;
+ 216              		.loc 1 260 0
+ 217 000e 0CBF     		ite	eq
+ 218 0010 0820     		moveq	r0, #8
+ 219 0012 4020     		movne	r0, #64
+ 220 0014 7047     		bx	lr
+ 221              	.L26:
+ 222              	.LVL11:
+ 261:../../../Source/com.c ****       break;
+ 262:../../../Source/com.c **** 
+ 263:../../../Source/com.c ****     case COM_IF_CAN:
+ 264:../../../Source/com.c ****       result = BOOT_COM_CAN_TX_MAX_DATA;
+ 265:../../../Source/com.c ****       break;
+ 266:../../../Source/com.c **** 
+ 267:../../../Source/com.c ****     case COM_IF_USB:
+ 268:../../../Source/com.c ****       result = BOOT_COM_USB_TX_MAX_DATA;
+ 223              		.loc 1 268 0
+ 224 0016 0020     		movs	r0, #0
+ 269:../../../Source/com.c ****       break;
+ 225              		.loc 1 269 0
+ 226 0018 7047     		bx	lr
+ 227              	.LVL12:
+ 228              	.L27:
+ 270:../../../Source/com.c **** 
+ 271:../../../Source/com.c ****     case COM_IF_NET:
+ 272:../../../Source/com.c ****       result = BOOT_COM_NET_TX_MAX_DATA;
+ 229              		.loc 1 272 0
+ 230 001a 0020     		movs	r0, #0
+ 231              	.LVL13:
+ 273:../../../Source/com.c ****       break;
+ 274:../../../Source/com.c ****       
+ 275:../../../Source/com.c ****     default:
+ 276:../../../Source/com.c ****       result = BOOT_COM_TX_MAX_DATA;
+ 277:../../../Source/com.c ****       break;
+ 278:../../../Source/com.c ****   }
+ 279:../../../Source/com.c ****   
+ 280:../../../Source/com.c ****   return result;
+ 281:../../../Source/com.c **** } /*** end of ComGetActiveInterfaceMaxTxLen ***/
+ 232              		.loc 1 281 0
+ 233 001c 7047     		bx	lr
+ 234              	.L31:
+ 235 001e 00BF     		.align	2
+ 236              	.L30:
+ 237 0020 00000000 		.word	.LANCHOR0
+ 238              		.cfi_endproc
+ 239              	.LFE5:
+ 241              		.section	.text.ComIsConnected,"ax",%progbits
+ 242              		.align	2
+ 243              		.global	ComIsConnected
+ 244              		.thumb
+ 245              		.thumb_func
+ 247              	ComIsConnected:
+ 248              	.LFB6:
+ 282:../../../Source/com.c **** 
+ 283:../../../Source/com.c **** 
+ 284:../../../Source/com.c **** /************************************************************************************//**
+ 285:../../../Source/com.c **** ** \brief     This function obtains the XCP connection state.
+ 286:../../../Source/com.c **** ** \return    BLT_TRUE when an XCP connection is established, BLT_FALSE otherwise.
+ 287:../../../Source/com.c **** **
+ 288:../../../Source/com.c **** ****************************************************************************************/
+ 289:../../../Source/com.c **** blt_bool ComIsConnected(void)
+ 290:../../../Source/com.c **** {
+ 249              		.loc 1 290 0
+ 250              		.cfi_startproc
+ 251              		@ args = 0, pretend = 0, frame = 0
+ 252              		@ frame_needed = 0, uses_anonymous_args = 0
+ 253 0000 08B5     		push	{r3, lr}
+ 254              		.cfi_def_cfa_offset 8
+ 255              		.cfi_offset 3, -8
+ 256              		.cfi_offset 14, -4
+ 291:../../../Source/com.c ****   return XcpIsConnected();
+ 257              		.loc 1 291 0
+ 258 0002 FFF7FEFF 		bl	XcpIsConnected
+ 259              	.LVL14:
+ 292:../../../Source/com.c **** } /*** end of ComIsConnected ***/
+ 260              		.loc 1 292 0
+ 261 0006 08BD     		pop	{r3, pc}
+ 262              		.cfi_endproc
+ 263              	.LFE6:
+ 265              		.section	.data.comActiveInterface,"aw",%progbits
+ 266              		.set	.LANCHOR0,. + 0
+ 269              	comActiveInterface:
+ 270 0000 04       		.byte	4
+ 271              		.section	.bss.xcpCtoReqPacket.4189,"aw",%nobits
+ 272              		.align	2
+ 273              		.set	.LANCHOR1,. + 0
+ 276              	xcpCtoReqPacket.4189:
+ 277 0000 00000000 		.space	64
+ 277      00000000 
+ 277      00000000 
+ 277      00000000 
+ 277      00000000 
+ 278              		.text
+ 279              	.Letext0:
+ 280              		.file 2 "../../../Source/ARMCM3_STM32/types.h"
+ 281              		.file 3 "../../../Source/com.h"
+ 282              		.file 4 "../../../Source/xcp.h"
+ 283              		.file 5 "../../../Source/ARMCM3_STM32/uart.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 com.c
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:19     .text.ComInit:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:24     .text.ComInit:00000000 ComInit
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:49     .text.ComInit:00000014 $d
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:54     .text.ComTask:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:59     .text.ComTask:00000000 ComTask
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:88     .text.ComTask:0000001c $d
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:94     .text.ComFree:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:99     .text.ComFree:00000000 ComFree
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:111    .text.ComTransmitPacket:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:116    .text.ComTransmitPacket:00000000 ComTransmitPacket
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:145    .text.ComTransmitPacket:00000014 $d
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:150    .text.ComGetActiveInterfaceMaxRxLen:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:155    .text.ComGetActiveInterfaceMaxRxLen:00000000 ComGetActiveInterfaceMaxRxLen
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:191    .text.ComGetActiveInterfaceMaxRxLen:00000020 $d
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:196    .text.ComGetActiveInterfaceMaxTxLen:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:201    .text.ComGetActiveInterfaceMaxTxLen:00000000 ComGetActiveInterfaceMaxTxLen
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:237    .text.ComGetActiveInterfaceMaxTxLen:00000020 $d
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:242    .text.ComIsConnected:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:247    .text.ComIsConnected:00000000 ComIsConnected
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:269    .data.comActiveInterface:00000000 comActiveInterface
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:272    .bss.xcpCtoReqPacket.4189:00000000 $d
+C:\Users\lwngim1\AppData\Local\Temp\ccQn89P2.s:276    .bss.xcpCtoReqPacket.4189:00000000 xcpCtoReqPacket.4189
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+XcpInit
+UartInit
+UartReceivePacket
+XcpPacketReceived
+UartTransmitPacket
+XcpPacketTransmitted
+XcpIsConnected

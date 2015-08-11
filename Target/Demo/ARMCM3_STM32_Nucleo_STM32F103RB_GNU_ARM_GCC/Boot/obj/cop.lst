@@ -1,0 +1,127 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"cop.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.CopInit,"ax",%progbits
+  19              		.align	2
+  20              		.global	CopInit
+  21              		.thumb
+  22              		.thumb_func
+  24              	CopInit:
+  25              	.LFB0:
+  26              		.file 1 "../../../Source/cop.c"
+   1:../../../Source/cop.c **** /************************************************************************************//**
+   2:../../../Source/cop.c **** * \file         Source\cop.c
+   3:../../../Source/cop.c **** * \brief        Bootloader watchdog module source file.
+   4:../../../Source/cop.c **** * \ingroup      Core
+   5:../../../Source/cop.c **** * \internal
+   6:../../../Source/cop.c **** *----------------------------------------------------------------------------------------
+   7:../../../Source/cop.c **** *                          C O P Y R I G H T
+   8:../../../Source/cop.c **** *----------------------------------------------------------------------------------------
+   9:../../../Source/cop.c **** *   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+  10:../../../Source/cop.c **** *
+  11:../../../Source/cop.c **** *----------------------------------------------------------------------------------------
+  12:../../../Source/cop.c **** *                            L I C E N S E
+  13:../../../Source/cop.c **** *----------------------------------------------------------------------------------------
+  14:../../../Source/cop.c **** * This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+  15:../../../Source/cop.c **** * modify it under the terms of the GNU General Public License as published by the Free
+  16:../../../Source/cop.c **** * Software Foundation, either version 3 of the License, or (at your option) any later
+  17:../../../Source/cop.c **** * version.
+  18:../../../Source/cop.c **** *
+  19:../../../Source/cop.c **** * OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  20:../../../Source/cop.c **** * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  21:../../../Source/cop.c **** * PURPOSE. See the GNU General Public License for more details.
+  22:../../../Source/cop.c **** *
+  23:../../../Source/cop.c **** * You should have received a copy of the GNU General Public License along with OpenBLT.
+  24:../../../Source/cop.c **** * If not, see <http://www.gnu.org/licenses/>.
+  25:../../../Source/cop.c **** *
+  26:../../../Source/cop.c **** * A special exception to the GPL is included to allow you to distribute a combined work 
+  27:../../../Source/cop.c **** * that includes OpenBLT without being obliged to provide the source code for any 
+  28:../../../Source/cop.c **** * proprietary components. The exception text is included at the bottom of the license
+  29:../../../Source/cop.c **** * file <license.html>.
+  30:../../../Source/cop.c **** * 
+  31:../../../Source/cop.c **** * \endinternal
+  32:../../../Source/cop.c **** ****************************************************************************************/
+  33:../../../Source/cop.c **** 
+  34:../../../Source/cop.c **** /****************************************************************************************
+  35:../../../Source/cop.c **** * Include files
+  36:../../../Source/cop.c **** ****************************************************************************************/
+  37:../../../Source/cop.c **** #include "boot.h"                                /* bootloader generic header          */
+  38:../../../Source/cop.c **** 
+  39:../../../Source/cop.c **** 
+  40:../../../Source/cop.c **** /****************************************************************************************
+  41:../../../Source/cop.c **** * Hook functions
+  42:../../../Source/cop.c **** ****************************************************************************************/
+  43:../../../Source/cop.c **** #if (BOOT_COP_HOOKS_ENABLE > 0)
+  44:../../../Source/cop.c **** extern void CopInitHook(void);
+  45:../../../Source/cop.c **** extern void CopServiceHook(void);
+  46:../../../Source/cop.c **** #endif
+  47:../../../Source/cop.c **** 
+  48:../../../Source/cop.c **** 
+  49:../../../Source/cop.c **** /************************************************************************************//**
+  50:../../../Source/cop.c **** ** \brief     Watchdog initialization function.
+  51:../../../Source/cop.c **** ** \return    none
+  52:../../../Source/cop.c **** **
+  53:../../../Source/cop.c **** ****************************************************************************************/
+  54:../../../Source/cop.c **** void CopInit(void)
+  55:../../../Source/cop.c **** {
+  27              		.loc 1 55 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  32 0000 7047     		bx	lr
+  33              		.cfi_endproc
+  34              	.LFE0:
+  36 0002 00BF     		.section	.text.CopService,"ax",%progbits
+  37              		.align	2
+  38              		.global	CopService
+  39              		.thumb
+  40              		.thumb_func
+  42              	CopService:
+  43              	.LFB1:
+  56:../../../Source/cop.c **** #if (BOOT_COP_HOOKS_ENABLE > 0)
+  57:../../../Source/cop.c ****   CopInitHook();
+  58:../../../Source/cop.c **** #endif
+  59:../../../Source/cop.c **** } /*** end of CopInit ***/
+  60:../../../Source/cop.c **** 
+  61:../../../Source/cop.c **** 
+  62:../../../Source/cop.c **** /************************************************************************************//**
+  63:../../../Source/cop.c **** ** \brief     Watchdog service function to prevent the watchdog from timing out.
+  64:../../../Source/cop.c **** ** \return    none
+  65:../../../Source/cop.c **** **
+  66:../../../Source/cop.c **** ****************************************************************************************/
+  67:../../../Source/cop.c **** void CopService(void)
+  68:../../../Source/cop.c **** {
+  44              		.loc 1 68 0
+  45              		.cfi_startproc
+  46              		@ args = 0, pretend = 0, frame = 0
+  47              		@ frame_needed = 0, uses_anonymous_args = 0
+  48              		@ link register save eliminated.
+  49 0000 7047     		bx	lr
+  50              		.cfi_endproc
+  51              	.LFE1:
+  53 0002 00BF     		.text
+  54              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 cop.c
+C:\Users\lwngim1\AppData\Local\Temp\cc52PIju.s:19     .text.CopInit:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\cc52PIju.s:24     .text.CopInit:00000000 CopInit
+C:\Users\lwngim1\AppData\Local\Temp\cc52PIju.s:37     .text.CopService:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\cc52PIju.s:42     .text.CopService:00000000 CopService
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS

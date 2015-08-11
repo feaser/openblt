@@ -1,0 +1,310 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"backdoor.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.BackDoorCheck,"ax",%progbits
+  19              		.align	2
+  20              		.global	BackDoorCheck
+  21              		.thumb
+  22              		.thumb_func
+  24              	BackDoorCheck:
+  25              	.LFB1:
+  26              		.file 1 "../../../Source/backdoor.c"
+   1:../../../Source/backdoor.c **** /************************************************************************************//**
+   2:../../../Source/backdoor.c **** * \file         Source\backdoor.c
+   3:../../../Source/backdoor.c **** * \brief        Bootloader backdoor entry source file.
+   4:../../../Source/backdoor.c **** * \ingroup      Core
+   5:../../../Source/backdoor.c **** * \internal
+   6:../../../Source/backdoor.c **** *----------------------------------------------------------------------------------------
+   7:../../../Source/backdoor.c **** *                          C O P Y R I G H T
+   8:../../../Source/backdoor.c **** *----------------------------------------------------------------------------------------
+   9:../../../Source/backdoor.c **** *   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+  10:../../../Source/backdoor.c **** *
+  11:../../../Source/backdoor.c **** *----------------------------------------------------------------------------------------
+  12:../../../Source/backdoor.c **** *                            L I C E N S E
+  13:../../../Source/backdoor.c **** *----------------------------------------------------------------------------------------
+  14:../../../Source/backdoor.c **** * This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+  15:../../../Source/backdoor.c **** * modify it under the terms of the GNU General Public License as published by the Free
+  16:../../../Source/backdoor.c **** * Software Foundation, either version 3 of the License, or (at your option) any later
+  17:../../../Source/backdoor.c **** * version.
+  18:../../../Source/backdoor.c **** *
+  19:../../../Source/backdoor.c **** * OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  20:../../../Source/backdoor.c **** * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  21:../../../Source/backdoor.c **** * PURPOSE. See the GNU General Public License for more details.
+  22:../../../Source/backdoor.c **** *
+  23:../../../Source/backdoor.c **** * You should have received a copy of the GNU General Public License along with OpenBLT.
+  24:../../../Source/backdoor.c **** * If not, see <http://www.gnu.org/licenses/>.
+  25:../../../Source/backdoor.c **** *
+  26:../../../Source/backdoor.c **** * A special exception to the GPL is included to allow you to distribute a combined work 
+  27:../../../Source/backdoor.c **** * that includes OpenBLT without being obliged to provide the source code for any 
+  28:../../../Source/backdoor.c **** * proprietary components. The exception text is included at the bottom of the license
+  29:../../../Source/backdoor.c **** * file <license.html>.
+  30:../../../Source/backdoor.c **** * 
+  31:../../../Source/backdoor.c **** * \endinternal
+  32:../../../Source/backdoor.c **** ****************************************************************************************/
+  33:../../../Source/backdoor.c **** 
+  34:../../../Source/backdoor.c **** /****************************************************************************************
+  35:../../../Source/backdoor.c **** * Include files
+  36:../../../Source/backdoor.c **** ****************************************************************************************/
+  37:../../../Source/backdoor.c **** #include "boot.h"                                /* bootloader generic header          */
+  38:../../../Source/backdoor.c **** 
+  39:../../../Source/backdoor.c **** 
+  40:../../../Source/backdoor.c **** /****************************************************************************************
+  41:../../../Source/backdoor.c **** * Macro definitions
+  42:../../../Source/backdoor.c **** ****************************************************************************************/
+  43:../../../Source/backdoor.c **** #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+  44:../../../Source/backdoor.c ****   #ifndef BACKDOOR_ENTRY_TIMEOUT_MS
+  45:../../../Source/backdoor.c ****   /** \brief Sets the time in milliseconds that the backdoor is open, but allow an 
+  46:../../../Source/backdoor.c ****    *         override for this time. note that this time should be at least 2.5 times
+  47:../../../Source/backdoor.c ****    *         as long as the time that is configured in Microboot's XCP settings for the
+  48:../../../Source/backdoor.c ****    *         connect command response. This is the last entry on XCP Timeouts tab. By 
+  49:../../../Source/backdoor.c ****    *         default the connect command response is configured as 20ms by Microboot,
+  50:../../../Source/backdoor.c ****    *         except for TCP/IP where it is 300ms due to accomodate for worldwide
+  51:../../../Source/backdoor.c ****    *         network latency. For CAN this was also adjusted to 500ms so that Microboot
+  52:../../../Source/backdoor.c ****    *         can wait for the bootloader to initialize. Otherwise errorframes can be
+  53:../../../Source/backdoor.c ****    *         generated on the CAN bus.
+  54:../../../Source/backdoor.c ****    */
+  55:../../../Source/backdoor.c ****     #if (BOOT_COM_NET_ENABLE == 1)
+  56:../../../Source/backdoor.c ****       #define BACKDOOR_ENTRY_TIMEOUT_MS  (750)
+  57:../../../Source/backdoor.c ****     #elif (BOOT_COM_CAN_ENABLE == 1)
+  58:../../../Source/backdoor.c ****       #define BACKDOOR_ENTRY_TIMEOUT_MS  (500)
+  59:../../../Source/backdoor.c ****     #else
+  60:../../../Source/backdoor.c ****       #define BACKDOOR_ENTRY_TIMEOUT_MS  (50)
+  61:../../../Source/backdoor.c ****     #endif
+  62:../../../Source/backdoor.c ****   #endif
+  63:../../../Source/backdoor.c **** #endif
+  64:../../../Source/backdoor.c **** 
+  65:../../../Source/backdoor.c **** /****************************************************************************************
+  66:../../../Source/backdoor.c **** * Hook functions
+  67:../../../Source/backdoor.c **** ****************************************************************************************/
+  68:../../../Source/backdoor.c **** #if (BOOT_BACKDOOR_HOOKS_ENABLE > 0)
+  69:../../../Source/backdoor.c **** extern void BackDoorInitHook(void);
+  70:../../../Source/backdoor.c **** extern blt_bool BackDoorEntryHook(void);
+  71:../../../Source/backdoor.c **** #endif
+  72:../../../Source/backdoor.c **** 
+  73:../../../Source/backdoor.c **** 
+  74:../../../Source/backdoor.c **** /****************************************************************************************
+  75:../../../Source/backdoor.c **** * Local data declarations
+  76:../../../Source/backdoor.c **** ****************************************************************************************/
+  77:../../../Source/backdoor.c **** #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+  78:../../../Source/backdoor.c **** /** \brief To determine if the backdoor is open or closed. */
+  79:../../../Source/backdoor.c **** static blt_bool backdoorOpen;
+  80:../../../Source/backdoor.c **** /** \brief To determine how long the backdoor has been open in milliseconds. */
+  81:../../../Source/backdoor.c **** static blt_int32u backdoorOpenTime;
+  82:../../../Source/backdoor.c **** #endif
+  83:../../../Source/backdoor.c **** 
+  84:../../../Source/backdoor.c **** 
+  85:../../../Source/backdoor.c **** /************************************************************************************//**
+  86:../../../Source/backdoor.c **** ** \brief     Initializes the backdoor entry option.
+  87:../../../Source/backdoor.c **** ** \return    none
+  88:../../../Source/backdoor.c **** **
+  89:../../../Source/backdoor.c **** ****************************************************************************************/
+  90:../../../Source/backdoor.c **** void BackDoorInit(void)
+  91:../../../Source/backdoor.c **** {
+  92:../../../Source/backdoor.c **** #if (BOOT_BACKDOOR_HOOKS_ENABLE > 0)
+  93:../../../Source/backdoor.c ****   /* initialize application's backdoor functionality */
+  94:../../../Source/backdoor.c ****   BackDoorInitHook();
+  95:../../../Source/backdoor.c ****   
+  96:../../../Source/backdoor.c ****   /* attempt to start the user program when no backdoor entry is requested */
+  97:../../../Source/backdoor.c ****   if (BackDoorEntryHook() == BLT_FALSE)
+  98:../../../Source/backdoor.c ****   {
+  99:../../../Source/backdoor.c ****     /* this function does not return if a valid user program is present */
+ 100:../../../Source/backdoor.c ****     CpuStartUserProgram();
+ 101:../../../Source/backdoor.c ****   }
+ 102:../../../Source/backdoor.c ****   #if (BOOT_FILE_SYS_ENABLE > 0)
+ 103:../../../Source/backdoor.c ****   else
+ 104:../../../Source/backdoor.c ****   {
+ 105:../../../Source/backdoor.c ****     /* the backdoor is open so we should check if a update from locally  attached storage 
+ 106:../../../Source/backdoor.c ****      * is requested and, if so, start it.
+ 107:../../../Source/backdoor.c ****      */
+ 108:../../../Source/backdoor.c ****     FileHandleFirmwareUpdateRequest();
+ 109:../../../Source/backdoor.c ****   }
+ 110:../../../Source/backdoor.c ****   #endif
+ 111:../../../Source/backdoor.c **** #else
+ 112:../../../Source/backdoor.c ****   /* open the backdoor after a reset */
+ 113:../../../Source/backdoor.c ****   backdoorOpen = BLT_TRUE;
+ 114:../../../Source/backdoor.c ****   backdoorOpenTime = TimerGet();
+ 115:../../../Source/backdoor.c **** #endif
+ 116:../../../Source/backdoor.c ****   /* perform the first check that open/closes the backdoor */
+ 117:../../../Source/backdoor.c ****   BackDoorCheck();
+ 118:../../../Source/backdoor.c **** } /*** end of BackDoorInit ***/
+ 119:../../../Source/backdoor.c **** 
+ 120:../../../Source/backdoor.c **** 
+ 121:../../../Source/backdoor.c **** /************************************************************************************//**
+ 122:../../../Source/backdoor.c **** ** \brief     The default backdoor entry feature keeps the bootloader active for a
+ 123:../../../Source/backdoor.c **** **            predetermined time after reset, allowing the host application to
+ 124:../../../Source/backdoor.c **** **            establish a connection and start a programming sequence. This function
+ 125:../../../Source/backdoor.c **** **            controls the opening/closing of the backdoor.
+ 126:../../../Source/backdoor.c **** ** \return    none
+ 127:../../../Source/backdoor.c **** **
+ 128:../../../Source/backdoor.c **** ****************************************************************************************/
+ 129:../../../Source/backdoor.c **** void BackDoorCheck(void)
+ 130:../../../Source/backdoor.c **** {
+  27              		.loc 1 130 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+ 131:../../../Source/backdoor.c **** #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+ 132:../../../Source/backdoor.c ****   #if (BOOT_COM_ENABLE > 0)
+ 133:../../../Source/backdoor.c ****   /* check if a connection with the host was already established. in this case the
+ 134:../../../Source/backdoor.c ****    * backdoor stays open anyway, so no need to check if it needs to be closed. 
+ 135:../../../Source/backdoor.c ****    */
+ 136:../../../Source/backdoor.c ****   if (ComIsConnected() == BLT_TRUE)
+  35              		.loc 1 136 0
+  36 0002 FFF7FEFF 		bl	ComIsConnected
+  37              	.LVL0:
+  38 0006 0128     		cmp	r0, #1
+  39 0008 0FD0     		beq	.L1
+ 137:../../../Source/backdoor.c ****   {
+ 138:../../../Source/backdoor.c ****     return;
+ 139:../../../Source/backdoor.c ****   }
+ 140:../../../Source/backdoor.c ****   #endif
+ 141:../../../Source/backdoor.c ****   #if (BOOT_FILE_SYS_ENABLE > 0)
+ 142:../../../Source/backdoor.c ****   /* check if the file module is busy, indicating that a firmware update through the
+ 143:../../../Source/backdoor.c ****    * locally attached storage is in progress. in this case the backdoor stays open 
+ 144:../../../Source/backdoor.c ****    * anyway, so no need to check if it needs to be closed. 
+ 145:../../../Source/backdoor.c ****    */
+ 146:../../../Source/backdoor.c ****   if (FileIsIdle() == BLT_FALSE)
+ 147:../../../Source/backdoor.c ****   {
+ 148:../../../Source/backdoor.c ****     return;
+ 149:../../../Source/backdoor.c ****   }
+ 150:../../../Source/backdoor.c ****   #endif  
+ 151:../../../Source/backdoor.c ****   
+ 152:../../../Source/backdoor.c ****   /* when the backdoor is still open, check if it's time to close it */
+ 153:../../../Source/backdoor.c ****   if (backdoorOpen == BLT_TRUE)
+  40              		.loc 1 153 0
+  41 000a 084B     		ldr	r3, .L4
+  42 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  43 000e 012B     		cmp	r3, #1
+  44 0010 0BD1     		bne	.L1
+ 154:../../../Source/backdoor.c ****   {
+ 155:../../../Source/backdoor.c ****     /* check if the backdoor entry time window elapsed */
+ 156:../../../Source/backdoor.c ****     if (TimerGet() >= (BACKDOOR_ENTRY_TIMEOUT_MS + backdoorOpenTime))
+  45              		.loc 1 156 0
+  46 0012 FFF7FEFF 		bl	TimerGet
+  47              	.LVL1:
+  48 0016 064B     		ldr	r3, .L4+4
+  49 0018 1B68     		ldr	r3, [r3]
+  50 001a 3233     		adds	r3, r3, #50
+  51 001c 9842     		cmp	r0, r3
+  52 001e 04D3     		bcc	.L1
+ 157:../../../Source/backdoor.c ****     {
+ 158:../../../Source/backdoor.c ****       /* close the backdoor */
+ 159:../../../Source/backdoor.c ****       backdoorOpen = BLT_FALSE;
+  53              		.loc 1 159 0
+  54 0020 0022     		movs	r2, #0
+  55 0022 024B     		ldr	r3, .L4
+  56 0024 1A70     		strb	r2, [r3]
+ 160:../../../Source/backdoor.c ****       #if (BOOT_FILE_SYS_ENABLE > 0)
+ 161:../../../Source/backdoor.c ****       /* during the timed backdoor no remote update request was detected. now do one
+ 162:../../../Source/backdoor.c ****        * last check to see if a firmware update from locally attached storage is
+ 163:../../../Source/backdoor.c ****        * pending.
+ 164:../../../Source/backdoor.c ****        */
+ 165:../../../Source/backdoor.c ****       if (FileHandleFirmwareUpdateRequest() == BLT_FALSE)
+ 166:../../../Source/backdoor.c ****       #endif
+ 167:../../../Source/backdoor.c ****       {
+ 168:../../../Source/backdoor.c ****         /* no firmware update requests detected, so attempt to start the user program.
+ 169:../../../Source/backdoor.c ****          * this function does not return if a valid user program is present.
+ 170:../../../Source/backdoor.c ****          */
+ 171:../../../Source/backdoor.c ****         CpuStartUserProgram();
+  57              		.loc 1 171 0
+  58 0026 FFF7FEFF 		bl	CpuStartUserProgram
+  59              	.LVL2:
+  60              	.L1:
+  61 002a 08BD     		pop	{r3, pc}
+  62              	.L5:
+  63              		.align	2
+  64              	.L4:
+  65 002c 00000000 		.word	.LANCHOR0
+  66 0030 00000000 		.word	.LANCHOR1
+  67              		.cfi_endproc
+  68              	.LFE1:
+  70              		.section	.text.BackDoorInit,"ax",%progbits
+  71              		.align	2
+  72              		.global	BackDoorInit
+  73              		.thumb
+  74              		.thumb_func
+  76              	BackDoorInit:
+  77              	.LFB0:
+  91:../../../Source/backdoor.c **** #if (BOOT_BACKDOOR_HOOKS_ENABLE > 0)
+  78              		.loc 1 91 0
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 0
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82 0000 08B5     		push	{r3, lr}
+  83              		.cfi_def_cfa_offset 8
+  84              		.cfi_offset 3, -8
+  85              		.cfi_offset 14, -4
+ 113:../../../Source/backdoor.c ****   backdoorOpenTime = TimerGet();
+  86              		.loc 1 113 0
+  87 0002 0122     		movs	r2, #1
+  88 0004 044B     		ldr	r3, .L8
+  89 0006 1A70     		strb	r2, [r3]
+ 114:../../../Source/backdoor.c **** #endif
+  90              		.loc 1 114 0
+  91 0008 FFF7FEFF 		bl	TimerGet
+  92              	.LVL3:
+  93 000c 034B     		ldr	r3, .L8+4
+  94 000e 1860     		str	r0, [r3]
+ 117:../../../Source/backdoor.c **** } /*** end of BackDoorInit ***/
+  95              		.loc 1 117 0
+  96 0010 FFF7FEFF 		bl	BackDoorCheck
+  97              	.LVL4:
+  98 0014 08BD     		pop	{r3, pc}
+  99              	.L9:
+ 100 0016 00BF     		.align	2
+ 101              	.L8:
+ 102 0018 00000000 		.word	.LANCHOR0
+ 103 001c 00000000 		.word	.LANCHOR1
+ 104              		.cfi_endproc
+ 105              	.LFE0:
+ 107              		.section	.bss.backdoorOpen,"aw",%nobits
+ 108              		.set	.LANCHOR0,. + 0
+ 111              	backdoorOpen:
+ 112 0000 00       		.space	1
+ 113              		.section	.bss.backdoorOpenTime,"aw",%nobits
+ 114              		.align	2
+ 115              		.set	.LANCHOR1,. + 0
+ 118              	backdoorOpenTime:
+ 119 0000 00000000 		.space	4
+ 120              		.text
+ 121              	.Letext0:
+ 122              		.file 2 "../../../Source/ARMCM3_STM32/types.h"
+ 123              		.file 3 "../../../Source/com.h"
+ 124              		.file 4 "../../../Source/ARMCM3_STM32/timer.h"
+ 125              		.file 5 "../../../Source/ARMCM3_STM32/cpu.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 backdoor.c
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:19     .text.BackDoorCheck:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:24     .text.BackDoorCheck:00000000 BackDoorCheck
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:65     .text.BackDoorCheck:0000002c $d
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:71     .text.BackDoorInit:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:76     .text.BackDoorInit:00000000 BackDoorInit
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:102    .text.BackDoorInit:00000018 $d
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:111    .bss.backdoorOpen:00000000 backdoorOpen
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:112    .bss.backdoorOpen:00000000 $d
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:114    .bss.backdoorOpenTime:00000000 $d
+C:\Users\lwngim1\AppData\Local\Temp\ccV5nJcl.s:118    .bss.backdoorOpenTime:00000000 backdoorOpenTime
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+ComIsConnected
+TimerGet
+CpuStartUserProgram

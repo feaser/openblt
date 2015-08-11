@@ -1,0 +1,375 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"nvm.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.NvmInit,"ax",%progbits
+  19              		.align	2
+  20              		.global	NvmInit
+  21              		.thumb
+  22              		.thumb_func
+  24              	NvmInit:
+  25              	.LFB0:
+  26              		.file 1 "../../../Source/ARMCM3_STM32/nvm.c"
+   1:../../../Source/ARMCM3_STM32/nvm.c **** /************************************************************************************//**
+   2:../../../Source/ARMCM3_STM32/nvm.c **** * \file         Source\ARMCM3_STM32\nvm.c
+   3:../../../Source/ARMCM3_STM32/nvm.c **** * \brief        Bootloader non-volatile memory driver source file.
+   4:../../../Source/ARMCM3_STM32/nvm.c **** * \ingroup      Target_ARMCM3_STM32
+   5:../../../Source/ARMCM3_STM32/nvm.c **** * \internal
+   6:../../../Source/ARMCM3_STM32/nvm.c **** *----------------------------------------------------------------------------------------
+   7:../../../Source/ARMCM3_STM32/nvm.c **** *                          C O P Y R I G H T
+   8:../../../Source/ARMCM3_STM32/nvm.c **** *----------------------------------------------------------------------------------------
+   9:../../../Source/ARMCM3_STM32/nvm.c **** *   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+  10:../../../Source/ARMCM3_STM32/nvm.c **** *
+  11:../../../Source/ARMCM3_STM32/nvm.c **** *----------------------------------------------------------------------------------------
+  12:../../../Source/ARMCM3_STM32/nvm.c **** *                            L I C E N S E
+  13:../../../Source/ARMCM3_STM32/nvm.c **** *----------------------------------------------------------------------------------------
+  14:../../../Source/ARMCM3_STM32/nvm.c **** * This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+  15:../../../Source/ARMCM3_STM32/nvm.c **** * modify it under the terms of the GNU General Public License as published by the Free
+  16:../../../Source/ARMCM3_STM32/nvm.c **** * Software Foundation, either version 3 of the License, or (at your option) any later
+  17:../../../Source/ARMCM3_STM32/nvm.c **** * version.
+  18:../../../Source/ARMCM3_STM32/nvm.c **** *
+  19:../../../Source/ARMCM3_STM32/nvm.c **** * OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  20:../../../Source/ARMCM3_STM32/nvm.c **** * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  21:../../../Source/ARMCM3_STM32/nvm.c **** * PURPOSE. See the GNU General Public License for more details.
+  22:../../../Source/ARMCM3_STM32/nvm.c **** *
+  23:../../../Source/ARMCM3_STM32/nvm.c **** * You should have received a copy of the GNU General Public License along with OpenBLT.
+  24:../../../Source/ARMCM3_STM32/nvm.c **** * If not, see <http://www.gnu.org/licenses/>.
+  25:../../../Source/ARMCM3_STM32/nvm.c **** *
+  26:../../../Source/ARMCM3_STM32/nvm.c **** * A special exception to the GPL is included to allow you to distribute a combined work 
+  27:../../../Source/ARMCM3_STM32/nvm.c **** * that includes OpenBLT without being obliged to provide the source code for any 
+  28:../../../Source/ARMCM3_STM32/nvm.c **** * proprietary components. The exception text is included at the bottom of the license
+  29:../../../Source/ARMCM3_STM32/nvm.c **** * file <license.html>.
+  30:../../../Source/ARMCM3_STM32/nvm.c **** * 
+  31:../../../Source/ARMCM3_STM32/nvm.c **** * \endinternal
+  32:../../../Source/ARMCM3_STM32/nvm.c **** ****************************************************************************************/
+  33:../../../Source/ARMCM3_STM32/nvm.c **** 
+  34:../../../Source/ARMCM3_STM32/nvm.c **** /****************************************************************************************
+  35:../../../Source/ARMCM3_STM32/nvm.c **** * Include files
+  36:../../../Source/ARMCM3_STM32/nvm.c **** ****************************************************************************************/
+  37:../../../Source/ARMCM3_STM32/nvm.c **** #include "boot.h"                                /* bootloader generic header          */
+  38:../../../Source/ARMCM3_STM32/nvm.c **** 
+  39:../../../Source/ARMCM3_STM32/nvm.c **** 
+  40:../../../Source/ARMCM3_STM32/nvm.c **** /****************************************************************************************
+  41:../../../Source/ARMCM3_STM32/nvm.c **** * Hook functions
+  42:../../../Source/ARMCM3_STM32/nvm.c **** ****************************************************************************************/
+  43:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_HOOKS_ENABLE > 0)
+  44:../../../Source/ARMCM3_STM32/nvm.c **** extern void      NvmInitHook(void);
+  45:../../../Source/ARMCM3_STM32/nvm.c **** extern blt_int8u NvmWriteHook(blt_addr addr, blt_int32u len, blt_int8u *data);
+  46:../../../Source/ARMCM3_STM32/nvm.c **** extern blt_int8u NvmEraseHook(blt_addr addr, blt_int32u len);
+  47:../../../Source/ARMCM3_STM32/nvm.c **** extern blt_bool  NvmDoneHook(void);
+  48:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+  49:../../../Source/ARMCM3_STM32/nvm.c **** 
+  50:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0)
+  51:../../../Source/ARMCM3_STM32/nvm.c **** extern blt_bool  NvmWriteChecksumHook(void);
+  52:../../../Source/ARMCM3_STM32/nvm.c **** extern blt_bool  NvmVerifyChecksumHook(void);
+  53:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+  54:../../../Source/ARMCM3_STM32/nvm.c **** 
+  55:../../../Source/ARMCM3_STM32/nvm.c **** 
+  56:../../../Source/ARMCM3_STM32/nvm.c **** 
+  57:../../../Source/ARMCM3_STM32/nvm.c **** /************************************************************************************//**
+  58:../../../Source/ARMCM3_STM32/nvm.c **** ** \brief     Initializes the NVM driver.
+  59:../../../Source/ARMCM3_STM32/nvm.c **** ** \return    none.
+  60:../../../Source/ARMCM3_STM32/nvm.c **** **
+  61:../../../Source/ARMCM3_STM32/nvm.c **** ****************************************************************************************/
+  62:../../../Source/ARMCM3_STM32/nvm.c **** void NvmInit(void)
+  63:../../../Source/ARMCM3_STM32/nvm.c **** {
+  27              		.loc 1 63 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+  64:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_HOOKS_ENABLE > 0)
+  65:../../../Source/ARMCM3_STM32/nvm.c ****   /* give the application a chance to initialize a driver for operating on NVM
+  66:../../../Source/ARMCM3_STM32/nvm.c ****    * that is not by default supported by this driver.
+  67:../../../Source/ARMCM3_STM32/nvm.c ****    */
+  68:../../../Source/ARMCM3_STM32/nvm.c ****   NvmInitHook();
+  69:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+  70:../../../Source/ARMCM3_STM32/nvm.c **** 
+  71:../../../Source/ARMCM3_STM32/nvm.c ****   /* init the internal driver */
+  72:../../../Source/ARMCM3_STM32/nvm.c ****   FlashInit();
+  35              		.loc 1 72 0
+  36 0002 FFF7FEFF 		bl	FlashInit
+  37              	.LVL0:
+  38 0006 08BD     		pop	{r3, pc}
+  39              		.cfi_endproc
+  40              	.LFE0:
+  42              		.section	.text.NvmWrite,"ax",%progbits
+  43              		.align	2
+  44              		.global	NvmWrite
+  45              		.thumb
+  46              		.thumb_func
+  48              	NvmWrite:
+  49              	.LFB1:
+  73:../../../Source/ARMCM3_STM32/nvm.c **** } /*** end of NvmInit ***/
+  74:../../../Source/ARMCM3_STM32/nvm.c **** 
+  75:../../../Source/ARMCM3_STM32/nvm.c **** 
+  76:../../../Source/ARMCM3_STM32/nvm.c **** /************************************************************************************//**
+  77:../../../Source/ARMCM3_STM32/nvm.c **** ** \brief     Programs the non-volatile memory.
+  78:../../../Source/ARMCM3_STM32/nvm.c **** ** \param     addr Start address.
+  79:../../../Source/ARMCM3_STM32/nvm.c **** ** \param     len  Length in bytes.
+  80:../../../Source/ARMCM3_STM32/nvm.c **** ** \param     data Pointer to the data buffer.
+  81:../../../Source/ARMCM3_STM32/nvm.c **** ** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
+  82:../../../Source/ARMCM3_STM32/nvm.c **** **
+  83:../../../Source/ARMCM3_STM32/nvm.c **** ****************************************************************************************/
+  84:../../../Source/ARMCM3_STM32/nvm.c **** blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
+  85:../../../Source/ARMCM3_STM32/nvm.c **** {
+  50              		.loc 1 85 0
+  51              		.cfi_startproc
+  52              		@ args = 0, pretend = 0, frame = 0
+  53              		@ frame_needed = 0, uses_anonymous_args = 0
+  54              	.LVL1:
+  55 0000 08B5     		push	{r3, lr}
+  56              		.cfi_def_cfa_offset 8
+  57              		.cfi_offset 3, -8
+  58              		.cfi_offset 14, -4
+  86:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_HOOKS_ENABLE > 0)
+  87:../../../Source/ARMCM3_STM32/nvm.c ****   blt_int8u result = BLT_NVM_NOT_IN_RANGE;
+  88:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+  89:../../../Source/ARMCM3_STM32/nvm.c **** 
+  90:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_HOOKS_ENABLE > 0)
+  91:../../../Source/ARMCM3_STM32/nvm.c ****   /* give the application a chance to operate on memory that is not by default supported
+  92:../../../Source/ARMCM3_STM32/nvm.c ****    * by this driver.
+  93:../../../Source/ARMCM3_STM32/nvm.c ****    */
+  94:../../../Source/ARMCM3_STM32/nvm.c ****   result = NvmWriteHook(addr, len, data);
+  95:../../../Source/ARMCM3_STM32/nvm.c ****   
+  96:../../../Source/ARMCM3_STM32/nvm.c ****   /* process the return code */
+  97:../../../Source/ARMCM3_STM32/nvm.c ****   if (result == BLT_NVM_OKAY)
+  98:../../../Source/ARMCM3_STM32/nvm.c ****   {
+  99:../../../Source/ARMCM3_STM32/nvm.c ****     /* data was within range of the additionally supported memory and succesfully
+ 100:../../../Source/ARMCM3_STM32/nvm.c ****      * programmed, so we are all done. 
+ 101:../../../Source/ARMCM3_STM32/nvm.c ****      */
+ 102:../../../Source/ARMCM3_STM32/nvm.c ****     return BLT_TRUE;
+ 103:../../../Source/ARMCM3_STM32/nvm.c ****   }
+ 104:../../../Source/ARMCM3_STM32/nvm.c ****   else if (result == BLT_NVM_ERROR)
+ 105:../../../Source/ARMCM3_STM32/nvm.c ****   {
+ 106:../../../Source/ARMCM3_STM32/nvm.c ****     /* data was within range of the additionally supported memory and attempted to be
+ 107:../../../Source/ARMCM3_STM32/nvm.c ****      * programmed, but an error occurred, so we can't continue.
+ 108:../../../Source/ARMCM3_STM32/nvm.c ****      */
+ 109:../../../Source/ARMCM3_STM32/nvm.c ****     return BLT_FALSE;
+ 110:../../../Source/ARMCM3_STM32/nvm.c ****   }
+ 111:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+ 112:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 113:../../../Source/ARMCM3_STM32/nvm.c ****   /* still here so the internal driver should try and perform the program operation */
+ 114:../../../Source/ARMCM3_STM32/nvm.c ****   return FlashWrite(addr, len, data);
+  59              		.loc 1 114 0
+  60 0002 FFF7FEFF 		bl	FlashWrite
+  61              	.LVL2:
+ 115:../../../Source/ARMCM3_STM32/nvm.c **** } /*** end of NvmWrite ***/
+  62              		.loc 1 115 0
+  63 0006 08BD     		pop	{r3, pc}
+  64              		.cfi_endproc
+  65              	.LFE1:
+  67              		.section	.text.NvmErase,"ax",%progbits
+  68              		.align	2
+  69              		.global	NvmErase
+  70              		.thumb
+  71              		.thumb_func
+  73              	NvmErase:
+  74              	.LFB2:
+ 116:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 117:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 118:../../../Source/ARMCM3_STM32/nvm.c **** /************************************************************************************//**
+ 119:../../../Source/ARMCM3_STM32/nvm.c **** ** \brief     Erases the non-volatile memory.
+ 120:../../../Source/ARMCM3_STM32/nvm.c **** ** \param     addr Start address.
+ 121:../../../Source/ARMCM3_STM32/nvm.c **** ** \param     len  Length in bytes.
+ 122:../../../Source/ARMCM3_STM32/nvm.c **** ** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
+ 123:../../../Source/ARMCM3_STM32/nvm.c **** **
+ 124:../../../Source/ARMCM3_STM32/nvm.c **** ****************************************************************************************/
+ 125:../../../Source/ARMCM3_STM32/nvm.c **** blt_bool NvmErase(blt_addr addr, blt_int32u len)
+ 126:../../../Source/ARMCM3_STM32/nvm.c **** {
+  75              		.loc 1 126 0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              	.LVL3:
+  80 0000 08B5     		push	{r3, lr}
+  81              		.cfi_def_cfa_offset 8
+  82              		.cfi_offset 3, -8
+  83              		.cfi_offset 14, -4
+ 127:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_HOOKS_ENABLE > 0)
+ 128:../../../Source/ARMCM3_STM32/nvm.c ****   blt_int8u result = BLT_NVM_NOT_IN_RANGE;
+ 129:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+ 130:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 131:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_HOOKS_ENABLE > 0)
+ 132:../../../Source/ARMCM3_STM32/nvm.c ****   /* give the application a chance to operate on memory that is not by default supported
+ 133:../../../Source/ARMCM3_STM32/nvm.c ****    * by this driver.
+ 134:../../../Source/ARMCM3_STM32/nvm.c ****    */
+ 135:../../../Source/ARMCM3_STM32/nvm.c ****   result = NvmEraseHook(addr, len);
+ 136:../../../Source/ARMCM3_STM32/nvm.c ****   
+ 137:../../../Source/ARMCM3_STM32/nvm.c ****   /* process the return code */
+ 138:../../../Source/ARMCM3_STM32/nvm.c ****   if (result == BLT_NVM_OKAY)
+ 139:../../../Source/ARMCM3_STM32/nvm.c ****   {
+ 140:../../../Source/ARMCM3_STM32/nvm.c ****     /* address was within range of the additionally supported memory and succesfully
+ 141:../../../Source/ARMCM3_STM32/nvm.c ****      * erased, so we are all done. 
+ 142:../../../Source/ARMCM3_STM32/nvm.c ****      */
+ 143:../../../Source/ARMCM3_STM32/nvm.c ****     return BLT_TRUE;
+ 144:../../../Source/ARMCM3_STM32/nvm.c ****   }
+ 145:../../../Source/ARMCM3_STM32/nvm.c ****   else if (result == BLT_NVM_ERROR)
+ 146:../../../Source/ARMCM3_STM32/nvm.c ****   {
+ 147:../../../Source/ARMCM3_STM32/nvm.c ****     /* address was within range of the additionally supported memory and attempted to be
+ 148:../../../Source/ARMCM3_STM32/nvm.c ****      * erased, but an error occurred, so we can't continue.
+ 149:../../../Source/ARMCM3_STM32/nvm.c ****      */
+ 150:../../../Source/ARMCM3_STM32/nvm.c ****     return BLT_FALSE;
+ 151:../../../Source/ARMCM3_STM32/nvm.c ****   }
+ 152:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+ 153:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 154:../../../Source/ARMCM3_STM32/nvm.c ****   /* still here so the internal driver should try and perform the erase operation */
+ 155:../../../Source/ARMCM3_STM32/nvm.c ****   return FlashErase(addr, len);
+  84              		.loc 1 155 0
+  85 0002 FFF7FEFF 		bl	FlashErase
+  86              	.LVL4:
+ 156:../../../Source/ARMCM3_STM32/nvm.c **** } /*** end of NvmErase ***/
+  87              		.loc 1 156 0
+  88 0006 08BD     		pop	{r3, pc}
+  89              		.cfi_endproc
+  90              	.LFE2:
+  92              		.section	.text.NvmVerifyChecksum,"ax",%progbits
+  93              		.align	2
+  94              		.global	NvmVerifyChecksum
+  95              		.thumb
+  96              		.thumb_func
+  98              	NvmVerifyChecksum:
+  99              	.LFB3:
+ 157:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 158:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 159:../../../Source/ARMCM3_STM32/nvm.c **** /************************************************************************************//**
+ 160:../../../Source/ARMCM3_STM32/nvm.c **** ** \brief     Verifies the checksum, which indicates that a valid user program is
+ 161:../../../Source/ARMCM3_STM32/nvm.c **** **            present and can be started.
+ 162:../../../Source/ARMCM3_STM32/nvm.c **** ** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
+ 163:../../../Source/ARMCM3_STM32/nvm.c **** **
+ 164:../../../Source/ARMCM3_STM32/nvm.c **** ****************************************************************************************/
+ 165:../../../Source/ARMCM3_STM32/nvm.c **** blt_bool NvmVerifyChecksum(void)
+ 166:../../../Source/ARMCM3_STM32/nvm.c **** {
+ 100              		.loc 1 166 0
+ 101              		.cfi_startproc
+ 102              		@ args = 0, pretend = 0, frame = 0
+ 103              		@ frame_needed = 0, uses_anonymous_args = 0
+ 104 0000 08B5     		push	{r3, lr}
+ 105              		.cfi_def_cfa_offset 8
+ 106              		.cfi_offset 3, -8
+ 107              		.cfi_offset 14, -4
+ 167:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0)
+ 168:../../../Source/ARMCM3_STM32/nvm.c ****   /* check checksum using the application specific method. */
+ 169:../../../Source/ARMCM3_STM32/nvm.c ****   return NvmVerifyChecksumHook();
+ 170:../../../Source/ARMCM3_STM32/nvm.c **** #else
+ 171:../../../Source/ARMCM3_STM32/nvm.c ****   /* check checksum using the interally supported method. */
+ 172:../../../Source/ARMCM3_STM32/nvm.c ****   return FlashVerifyChecksum();
+ 108              		.loc 1 172 0
+ 109 0002 FFF7FEFF 		bl	FlashVerifyChecksum
+ 110              	.LVL5:
+ 173:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+ 174:../../../Source/ARMCM3_STM32/nvm.c **** } /*** end of NvmVerifyChecksum ***/
+ 111              		.loc 1 174 0
+ 112 0006 08BD     		pop	{r3, pc}
+ 113              		.cfi_endproc
+ 114              	.LFE3:
+ 116              		.section	.text.NvmDone,"ax",%progbits
+ 117              		.align	2
+ 118              		.global	NvmDone
+ 119              		.thumb
+ 120              		.thumb_func
+ 122              	NvmDone:
+ 123              	.LFB4:
+ 175:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 176:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 177:../../../Source/ARMCM3_STM32/nvm.c **** /************************************************************************************//**
+ 178:../../../Source/ARMCM3_STM32/nvm.c **** ** \brief     Once all erase and programming operations are completed, this 
+ 179:../../../Source/ARMCM3_STM32/nvm.c **** **            function is called, so at the end of the programming session and 
+ 180:../../../Source/ARMCM3_STM32/nvm.c **** **            right before a software reset is performed. It is used to calculate
+ 181:../../../Source/ARMCM3_STM32/nvm.c **** **            a checksum and program this into flash. This checksum is later used
+ 182:../../../Source/ARMCM3_STM32/nvm.c **** **            to determine if a valid user program is present in flash. 
+ 183:../../../Source/ARMCM3_STM32/nvm.c **** ** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
+ 184:../../../Source/ARMCM3_STM32/nvm.c **** **
+ 185:../../../Source/ARMCM3_STM32/nvm.c **** ****************************************************************************************/
+ 186:../../../Source/ARMCM3_STM32/nvm.c **** blt_bool NvmDone(void)
+ 187:../../../Source/ARMCM3_STM32/nvm.c **** {
+ 124              		.loc 1 187 0
+ 125              		.cfi_startproc
+ 126              		@ args = 0, pretend = 0, frame = 0
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128 0000 08B5     		push	{r3, lr}
+ 129              		.cfi_def_cfa_offset 8
+ 130              		.cfi_offset 3, -8
+ 131              		.cfi_offset 14, -4
+ 188:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_HOOKS_ENABLE > 0)
+ 189:../../../Source/ARMCM3_STM32/nvm.c ****   /* give the application's NVM driver a chance to finish up */
+ 190:../../../Source/ARMCM3_STM32/nvm.c ****   if (NvmDoneHook() == BLT_FALSE)
+ 191:../../../Source/ARMCM3_STM32/nvm.c ****   {
+ 192:../../../Source/ARMCM3_STM32/nvm.c ****     /* error so no need to continue */
+ 193:../../../Source/ARMCM3_STM32/nvm.c ****     return BLT_FALSE;
+ 194:../../../Source/ARMCM3_STM32/nvm.c ****   }
+ 195:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+ 196:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 197:../../../Source/ARMCM3_STM32/nvm.c **** #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0)
+ 198:../../../Source/ARMCM3_STM32/nvm.c ****   /* compute and write checksum, using the application specific method. */
+ 199:../../../Source/ARMCM3_STM32/nvm.c ****   if (NvmWriteChecksumHook() == BLT_FALSE)
+ 200:../../../Source/ARMCM3_STM32/nvm.c ****   {
+ 201:../../../Source/ARMCM3_STM32/nvm.c ****     return BLT_FALSE;
+ 202:../../../Source/ARMCM3_STM32/nvm.c ****   }
+ 203:../../../Source/ARMCM3_STM32/nvm.c **** #else
+ 204:../../../Source/ARMCM3_STM32/nvm.c ****   /* compute and write checksum, which is programmed by the internal driver. */
+ 205:../../../Source/ARMCM3_STM32/nvm.c ****   if (FlashWriteChecksum() == BLT_FALSE)
+ 132              		.loc 1 205 0
+ 133 0002 FFF7FEFF 		bl	FlashWriteChecksum
+ 134              	.LVL6:
+ 135 0006 0346     		mov	r3, r0
+ 136 0008 10B1     		cbz	r0, .L10
+ 206:../../../Source/ARMCM3_STM32/nvm.c ****   {
+ 207:../../../Source/ARMCM3_STM32/nvm.c ****     return BLT_FALSE;
+ 208:../../../Source/ARMCM3_STM32/nvm.c ****   }
+ 209:../../../Source/ARMCM3_STM32/nvm.c **** #endif
+ 210:../../../Source/ARMCM3_STM32/nvm.c **** 
+ 211:../../../Source/ARMCM3_STM32/nvm.c ****   /* finish up internal driver operations */
+ 212:../../../Source/ARMCM3_STM32/nvm.c ****   return FlashDone();
+ 137              		.loc 1 212 0
+ 138 000a FFF7FEFF 		bl	FlashDone
+ 139              	.LVL7:
+ 140 000e 0346     		mov	r3, r0
+ 141              	.L10:
+ 213:../../../Source/ARMCM3_STM32/nvm.c **** } /*** end of NvmDone ***/
+ 142              		.loc 1 213 0
+ 143 0010 1846     		mov	r0, r3
+ 144 0012 08BD     		pop	{r3, pc}
+ 145              		.cfi_endproc
+ 146              	.LFE4:
+ 148              		.text
+ 149              	.Letext0:
+ 150              		.file 2 "../../../Source/ARMCM3_STM32/types.h"
+ 151              		.file 3 "../../../Source/ARMCM3_STM32/flash.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 nvm.c
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:19     .text.NvmInit:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:24     .text.NvmInit:00000000 NvmInit
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:43     .text.NvmWrite:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:48     .text.NvmWrite:00000000 NvmWrite
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:68     .text.NvmErase:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:73     .text.NvmErase:00000000 NvmErase
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:93     .text.NvmVerifyChecksum:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:98     .text.NvmVerifyChecksum:00000000 NvmVerifyChecksum
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:117    .text.NvmDone:00000000 $t
+C:\Users\lwngim1\AppData\Local\Temp\ccilMVOl.s:122    .text.NvmDone:00000000 NvmDone
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+FlashInit
+FlashWrite
+FlashErase
+FlashVerifyChecksum
+FlashWriteChecksum
+FlashDone
