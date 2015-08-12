@@ -1,0 +1,147 @@
+
+bin/openblt_demoprog_nucleo_stm32f103rb.elf:     file format elf32-littlearm
+bin/openblt_demoprog_nucleo_stm32f103rb.elf
+architecture: arm, flags 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+start address 0x08000000
+
+Program Header:
+    LOAD off    0x00008000 vaddr 0x08000000 paddr 0x08000000 align 2**15
+         filesz 0x00000f34 memsz 0x00000f34 flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08000f34 align 2**15
+         filesz 0x00000001 memsz 0x000006f4 flags rw-
+private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000f34  08000000  08000000  00008000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000001  20000000  08000f34  00010000  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          000006f0  20000004  08000f38  00010001  2**2
+                  ALLOC
+  3 .debug_info   000024ef  00000000  00000000  00010001  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 0000101f  00000000  00000000  000124f0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_aranges 000002e0  00000000  00000000  0001350f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_ranges 00000230  00000000  00000000  000137ef  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000d69  00000000  00000000  00013a1f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    00000b6b  00000000  00000000  00014788  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .comment      00000070  00000000  00000000  000152f3  2**0
+                  CONTENTS, READONLY
+ 10 .ARM.attributes 00000033  00000000  00000000  00015363  2**0
+                  CONTENTS, READONLY
+ 11 .debug_frame  000005f8  00000000  00000000  00015398  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_loc    00000f4a  00000000  00000000  00015990  2**0
+                  CONTENTS, READONLY, DEBUGGING
+SYMBOL TABLE:
+08000000 l    d  .text	00000000 .text
+20000000 l    d  .data	00000000 .data
+20000004 l    d  .bss	00000000 .bss
+00000000 l    d  .debug_info	00000000 .debug_info
+00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
+00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_ranges	00000000 .debug_ranges
+00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_str	00000000 .debug_str
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
+00000000 l    d  .debug_frame	00000000 .debug_frame
+00000000 l    d  .debug_loc	00000000 .debug_loc
+00000000 l    df *ABS*	00000000 vectors.c
+00000000 l    df *ABS*	00000000 main.c
+00000000 l    df *ABS*	00000000 boot.c
+00000000 l    df *ABS*	00000000 com.c
+20000000 l     O .data	00000001 comActiveInterface
+20000004 l     O .bss	00000040 xcpCtoReqPacket.4189
+00000000 l    df *ABS*	00000000 xcp.c
+08000360 l     F .text	00000014 XcpSetCtoError
+08000e40 l     O .text	00000008 xcpStationId
+20000044 l     O .bss	0000004c xcpInfo
+00000000 l    df *ABS*	00000000 backdoor.c
+20000090 l     O .bss	00000001 backdoorOpen
+20000094 l     O .bss	00000004 backdoorOpenTime
+00000000 l    df *ABS*	00000000 cop.c
+00000000 l    df *ABS*	00000000 assert.c
+20000098 l     O .bss	00000004 assert_failure_file
+2000009c l     O .bss	00000004 assert_failure_line
+00000000 l    df *ABS*	00000000 cpu.c
+00000000 l    df *ABS*	00000000 uart.c
+08000784 l     F .text	00000040 UartTransmitByte
+200000a0 l     O .bss	00000041 xcpCtoReqPacket.4212
+200000e4 l     O .bss	00000001 xcpCtoRxLength.4213
+200000e5 l     O .bss	00000001 xcpCtoRxInProgress.4214
+00000000 l    df *ABS*	00000000 nvm.c
+00000000 l    df *ABS*	00000000 timer.c
+200000e8 l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 flash.c
+08000964 l     F .text	00000010 FlashLock
+08000974 l     F .text	0000003c FlashGetSector
+080009b0 l     F .text	000000b4 FlashWriteBlock
+08000a64 l     F .text	00000058 FlashSwitchBlock
+08000abc l     F .text	00000082 FlashAddToBlock
+08000e6c l     O .text	0000009c flashLayout
+200000ec l     O .bss	00000204 bootBlockInfo
+200002f0 l     O .bss	00000204 blockInfo
+00000000 l    df *ABS*	00000000 cstart.c
+08000e14 l     F .text	00000000 zero_loop
+00000000 l    df *ABS*	00000000 
+00000200 l       *ABS*	00000000 __STACKSIZE__
+080002b8 g     F .text	00000018 ComInit
+08000b58 g     F .text	00000050 FlashWrite
+0800071c g     F .text	00000018 AssertFailure
+08000de4 g     F .text	0000004c reset_handler
+08000938 g     F .text	0000001c TimerUpdate
+080003a0 g     F .text	00000010 XcpPacketTransmitted
+080002d0 g     F .text	00000024 ComTask
+0800028c g     F .text	00000018 BootInit
+080006f4 g     F .text	00000020 BackDoorInit
+08000718 g     F .text	00000002 CopService
+08000f34 g       .text	00000000 _etext
+08000dcc g     F .text	00000008 FlashGetUserProgBaseAddress
+0800092c g     F .text	0000000c TimerReset
+080002a4 g     F .text	00000014 BootTask
+08000cf0 g     F .text	00000050 FlashWriteChecksum
+080002f8 g     F .text	00000018 ComTransmitPacket
+08000390 g     F .text	00000010 XcpIsConnected
+080008d4 g     F .text	00000008 NvmInit
+08000b40 g     F .text	00000018 FlashInit
+200004f4 g       .bss	00000000 _ebss
+08000dd4 g     F .text	00000010 UnusedISR
+080002f4 g     F .text	00000002 ComFree
+080007c4 g     F .text	00000028 UartInit
+080008e4 g     F .text	00000008 NvmErase
+20000004 g       .bss	00000000 _bss
+080003b0 g     F .text	00000310 XcpPacketReceived
+08000d90 g     F .text	0000003c FlashDone
+08000374 g     F .text	0000001c XcpInit
+08000ba8 g     F .text	00000148 FlashErase
+08000150 g     F .text	0000013c main
+080008f4 g     F .text	00000014 NvmDone
+080007ec g     F .text	00000058 UartTransmitPacket
+080008ec g     F .text	00000008 NvmVerifyChecksum
+08000764 g     F .text	00000020 CpuMemCopy
+08000334 g     F .text	00000024 ComGetActiveInterfaceMaxTxLen
+08000844 g     F .text	00000090 UartReceivePacket
+20000000 g       .data	00000000 _data
+08000714 g     F .text	00000002 CopInit
+080008dc g     F .text	00000008 NvmWrite
+08000734 g     F .text	00000030 CpuStartUserProgram
+200006f4 g       .bss	00000000 _estack
+08000d40 g     F .text	00000050 FlashVerifyChecksum
+20000001 g       .data	00000000 _edata
+08000000 g     O .text	00000150 _vectab
+08000358 g     F .text	00000008 ComIsConnected
+08000310 g     F .text	00000024 ComGetActiveInterfaceMaxRxLen
+080006c0 g     F .text	00000034 BackDoorCheck
+200004f4 g       .bss	00000000 _stack
+08000954 g     F .text	00000010 TimerGet
+08000908 g     F .text	00000024 TimerInit
+
+
