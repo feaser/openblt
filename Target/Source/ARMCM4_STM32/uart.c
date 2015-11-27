@@ -43,6 +43,10 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Timeout time for the reception of a CTO packet. The timer is started upon
+ *         reception of the first packet byte.
+ */
+#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /* map the configured UART channel index to the STM32's USART peripheral */
 #if (BOOT_COM_UART_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to USART1. */
@@ -145,6 +149,7 @@ blt_bool UartReceivePacket(blt_int8u *data)
   static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
+  static blt_int32u xcpCtoRxStartTime = 0;
 
   /* start of cto packet received? */
   if (xcpCtoRxInProgress == BLT_FALSE)
@@ -154,10 +159,12 @@ blt_bool UartReceivePacket(blt_int8u *data)
     {
       if (xcpCtoReqPacket[0] > 0)
       {
-        /* indicate that a cto packet is being received */
-        xcpCtoRxInProgress = BLT_TRUE;
+        /* store the start time */
+        xcpCtoRxStartTime = TimerGet();
         /* reset packet data count */
         xcpCtoRxLength = 0;
+        /* indicate that a cto packet is being received */
+        xcpCtoRxInProgress = BLT_TRUE;
       }
     }
   }
@@ -176,9 +183,19 @@ blt_bool UartReceivePacket(blt_int8u *data)
         CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);        
         /* done with cto packet reception */
         xcpCtoRxInProgress = BLT_FALSE;
-
         /* packet reception complete */
         return BLT_TRUE;
+      }
+    }
+    else
+    {
+      /* check packet reception timeout */
+      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      {
+        /* cancel cto packet reception due to timeout. note that that automaticaly
+         * discards the already received packet bytes, allowing the host to retry.
+         */
+        xcpCtoRxInProgress = BLT_FALSE;
       }
     }
   }
