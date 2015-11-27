@@ -218,6 +218,16 @@ begin
   // init the return value
   result := false;
 
+  // during high burst I/O the USB/RS232 emulated COM-ports sometimes have problems
+  // processing all the data. therefore, add a small delay time between packet I/O.
+  // exclude the CONNECT command because of the default small backdoor time of the
+  // bootloader
+  if packetData[0] <> $FF then
+  begin
+    Application.ProcessMessages;
+    Sleep(5);
+  end;
+
   // prepare the packet. length goes in the first byte followed by the packet data
   SetLength(msgData, packetLen+1);
   msgData[0] := packetLen;

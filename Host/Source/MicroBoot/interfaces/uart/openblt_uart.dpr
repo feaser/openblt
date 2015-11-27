@@ -287,9 +287,17 @@ begin
     sessionStartResult := kProgSessionGenericError;
     while sessionStartResult <> kProgSessionStarted do
     begin
-      sessionStartResult := loader.StartProgrammingSession;
-      Application.ProcessMessages;
-      Sleep(5);
+      // disconnect COM-port for board that have on board FTDI type chip that powers down
+      // during power cycling
+      loader.Disconnect;
+      // reconnect COM-port. no need to check the return value because it might fail when
+      // an FTDI type chip is on board while it is cycling power.
+      if loader.Connect then
+      begin
+        sessionStartResult := loader.StartProgrammingSession;
+        Application.ProcessMessages;
+        Sleep(5);
+      end;
       // don't retry if the error was caused by not being able to unprotect the programming resource
       if sessionStartResult = kProgSessionUnlockError then
       begin
@@ -561,7 +569,7 @@ end; //*** end of MbiDescription ***
 //***************************************************************************************
 function MbiVersion : Longword; stdcall;
 begin
-  Result := 10000; // v1.00.00
+  Result := 10001; // v1.00.01
 end; //*** end of MbiVersion ***
 
 
