@@ -569,7 +569,7 @@ end; //*** end of MbiDescription ***
 //***************************************************************************************
 function MbiVersion : Longword; stdcall;
 begin
-  Result := 10001; // v1.00.01
+  Result := 10002; // v1.00.02
 end; //*** end of MbiVersion ***
 
 

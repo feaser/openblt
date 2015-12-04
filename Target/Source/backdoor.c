@@ -48,16 +48,16 @@
    *         connect command response. This is the last entry on XCP Timeouts tab. By 
    *         default the connect command response is configured as 20ms by Microboot,
    *         except for TCP/IP where it is 300ms due to accomodate for worldwide
-   *         network latency. For CAN this was also adjusted to 500ms so that Microboot
-   *         can wait for the bootloader to initialize. Otherwise errorframes can be
-   *         generated on the CAN bus.
+   *         network latency. The default value was chosen safely for compatibility
+   *         reasons with all supported communication interfaces. It could be made 
+   *         shorter your bootloader. To change this value, simply add the macro
+   *         BACKDOOR_ENTRY_TIMEOUT_MS to blt_conf.h with your desired backdoor open time
+   *         in milliseconds.
    */
     #if (BOOT_COM_NET_ENABLE == 1)
       #define BACKDOOR_ENTRY_TIMEOUT_MS  (750)
-    #elif (BOOT_COM_CAN_ENABLE == 1)
-      #define BACKDOOR_ENTRY_TIMEOUT_MS  (500)
     #else
-      #define BACKDOOR_ENTRY_TIMEOUT_MS  (50)
+      #define BACKDOOR_ENTRY_TIMEOUT_MS  (500)
     #endif
   #endif
 #endif
