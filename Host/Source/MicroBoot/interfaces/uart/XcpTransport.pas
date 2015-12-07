@@ -154,23 +154,8 @@ begin
 
     // configure port
     configIndex := settingsIni.ReadInteger('sci', 'port', 0);
-    //sciDriver.Port := pnCOM1; // init to default value
-
     sciDriver.Port := pnCustom;
     sciDriver.PortName := Format( '\\.\COM%d', [ord(configIndex + 1)] );
-
-    {
-    case configIndex of
-      0 : sciDriver.Port := pnCOM1;
-      1 : sciDriver.Port := pnCOM2;
-      2 : sciDriver.Port := pnCOM3;
-      3 : sciDriver.Port := pnCOM4;
-      4 : sciDriver.Port := pnCOM5;
-      5 : sciDriver.Port := pnCOM6;
-      6 : sciDriver.Port := pnCOM7;
-      7 : sciDriver.Port := pnCOM8;
-    end;
-    }
 
     // release ini file object
     settingsIni.Free;
