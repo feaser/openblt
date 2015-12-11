@@ -125,7 +125,7 @@ sb_uint8 XcpTransportInit(sb_char *device, sb_uint32 baudrate)
   /* disable hardware flow control */
   options.c_cflag &= ~CRTSCTS;
   /* configure raw input */
-  options.c_lflag &= ~(ICANON | ISIG);
+  options.c_lflag &= ~(ICANON | ISIG | ECHO | ECHOE);
   /* configure raw output */
   options.c_oflag &= ~OPOST;
   /* configure timeouts */
