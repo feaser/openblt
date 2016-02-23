@@ -184,7 +184,7 @@ blt_bool FileHandleFirmwareUpdateRequest(void)
 ****************************************************************************************/
 void FileTask(void)
 {
-  blt_int16s  parse_result;
+  blt_int16s  parse_result = 0;
   blt_char   *read_line_ptr;
   
   /* ------------------------------- idle -------------------------------------------- */
