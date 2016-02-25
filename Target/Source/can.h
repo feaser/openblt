@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source\HCS12\nvm.h
-* \brief        Bootloader non-volatile memory driver header file.
-* \ingroup      Target_HCS12
+* \file         Source\can.h
+* \brief        Bootloader CAN communication interface header file.
+* \ingroup      Core
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,36 +30,18 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef NVM_H
-#define NVM_H
+#ifndef CAN_H
+#define CAN_H
 
-/****************************************************************************************
-* Include files
-****************************************************************************************/
-#include "flash.h"                                     /* LPC2xxx flash driver         */
-
-
+#if (BOOT_COM_CAN_ENABLE > 0)
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void     NvmInit(void);
-blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data);
-blt_bool NvmErase(blt_addr addr, blt_int32u len);
-blt_bool NvmVerifyChecksum(void);
-blt_bool NvmDone(void);
+void     CanInit(void);
+void     CanTransmitPacket(blt_int8u *data, blt_int8u len);
+blt_bool CanReceivePacket(blt_int8u *data);
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 
-/****************************************************************************************
-* Macro definitions
-****************************************************************************************/
-/* return codes for hook function NvmWrite/Erase */
-/** \brief Return code for success. */
-#define BLT_NVM_ERROR                   (0x00)
-/** \brief Return code for error. */
-#define BLT_NVM_OKAY                    (0x01)
-/** \brief Return code for not in range. */
-#define BLT_NVM_NOT_IN_RANGE            (0x02)
-
-
-#endif /* NVM_H */
-/*********************************** end of nvm.h **************************************/
+#endif /* CAN_H */
+/*********************************** end of can.h **************************************/

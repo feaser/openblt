@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_LM3S\cpu.h
+* \file         Source\cpu.h
 * \brief        Bootloader cpu module header file.
-* \ingroup      Target_ARMCM3_LM3S
+* \ingroup      Core
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E

@@ -35,6 +35,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "flash.h"
 
 
 /****************************************************************************************
@@ -172,6 +173,18 @@ blt_bool NvmVerifyChecksum(void)
   return FlashVerifyChecksum();
 #endif
 } /*** end of NvmVerifyChecksum ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the base address of the non-volatile memory available to the user 
+**            program. This is typically that start of the vector table.
+** \return    Base address.
+**
+****************************************************************************************/
+blt_addr NvmGetUserProgBaseAddress(void)
+{
+  return FlashGetUserProgBaseAddress();
+} /*** end of NvmGetUserProgBaseAddress ***/
 
 
 /************************************************************************************//**

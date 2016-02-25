@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source\HCS12\cpu.h
-* \brief        Bootloader cpu module header file.
-* \ingroup      Target_HCS12
+* \file         Source\usb.h
+* \brief        Bootloader USB communication interface header file.
+* \ingroup      Core
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,17 +30,28 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef CPU_H
-#define CPU_H
+#ifndef USB_H
+#define USB_H
 
-
+#if (BOOT_COM_USB_ENABLE > 0)
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void CpuStartUserProgram(void);
-void CpuMemCopy(blt_addr dest, blt_addr src, blt_int16u len);
-void CpuReset(void);
+void     UsbInit(void);
+void     UsbFree(void);
+void     UsbTransmitPacket(blt_int8u *data, blt_int8u len);
+blt_bool UsbReceivePacket(blt_int8u *data);
+
+/****************************************************************************************
+* Hook functions
+****************************************************************************************/
+extern void UsbEnterLowPowerModeHook(void);
+extern void UsbLeaveLowPowerModeHook(void);
+extern void UsbConnectHook(blt_bool connect);
 
 
-#endif /* CPU_H */
-/*********************************** end of cpu.h **************************************/
+#endif /* BOOT_COM_USB_ENABLE > 0 */
+
+
+#endif /* USB_H */
+/*********************************** end of usb.h **************************************/

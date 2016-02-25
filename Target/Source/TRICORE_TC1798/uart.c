@@ -35,6 +35,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "cpu_comp.h"                            /* compiler specific CPU definitions  */
 
 
 #if (BOOT_COM_UART_ENABLE > 0)

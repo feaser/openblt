@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_STM32\can.h
-* \brief        Bootloader CAN communication interface header file.
-* \ingroup      Target_ARMCM4_STM32
+* \file         Source\timer.h
+* \brief        Bootloader timer driver header file.
+* \ingroup      Core
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,18 +30,17 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef CAN_H
-#define CAN_H
+#ifndef TIMER_H
+#define TIMER_H
 
-#if (BOOT_COM_CAN_ENABLE > 0)
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void     CanInit(void);
-void     CanTransmitPacket(blt_int8u *data, blt_int8u len);
-blt_bool CanReceivePacket(blt_int8u *data);
-#endif /* BOOT_COM_CAN_ENABLE > 0 */
+void       TimerInit(void);
+void       TimerUpdate(void);
+blt_int32u TimerGet(void);
+void       TimerReset(void);
 
 
-#endif /* CAN_H */
-/*********************************** end of can.h **************************************/
+#endif /* TIMER_H */
+/*********************************** end of timer.h ************************************/

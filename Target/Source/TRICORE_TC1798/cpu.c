@@ -41,7 +41,7 @@
 * Macro definitions
 ****************************************************************************************/
 /** \brief Pointer to the user program's reset vector. */
-#define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)(FlashGetUserProgBaseAddress()))
+#define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)(NvmGetUserProgBaseAddress()))
 
 
 /****************************************************************************************

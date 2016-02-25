@@ -41,7 +41,7 @@
 * Macro definitions
 ****************************************************************************************/
 /** \brief Start address of the user program vector table. */
-#define CPU_USER_PROG_VECTORS_START_ADDR   ((blt_addr)FlashGetUserProgBaseAddress())
+#define CPU_USER_PROG_VECTORS_START_ADDR   ((blt_addr)NvmGetUserProgBaseAddress())
 /** \brief Start address of the RAM vector table. */
 #define CPU_RAM_VECTORS_START_ADDR         ((blt_addr)0x40000000)
 /** \brief Size of the vector table in bytes. */

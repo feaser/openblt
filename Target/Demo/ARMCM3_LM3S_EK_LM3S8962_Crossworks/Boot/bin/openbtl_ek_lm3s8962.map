@@ -468,7 +468,7 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= __FLASH_segment_end__)), error: .init is too large to fit in FLASH memory segment)
                 0x000001f8                __text_load_start__ = ALIGN (__init_end__, 0x4)
 
-.text           0x000001f8     0x1b98
+.text           0x000001f8     0x1bbc
                 0x000001f8                __text_start__ = .
  *(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table .ARM.extab* .gnu.linkonce.armextab.*)
  .glue_7        0x00000000        0x0 linker stubs
@@ -612,91 +612,94 @@ Linker script and memory map
  .text.NvmVerifyChecksum
                 0x00001722        0x4 THUMB Debug/../../obj/nvm.o
                 0x00001722                NvmVerifyChecksum
- .text.NvmDone  0x00001726       0x12 THUMB Debug/../../obj/nvm.o
-                0x00001726                NvmDone
+ .text.NvmGetUserProgBaseAddress
+                0x00001726        0x4 THUMB Debug/../../obj/nvm.o
+                0x00001726                NvmGetUserProgBaseAddress
+ .text.NvmDone  0x0000172a       0x12 THUMB Debug/../../obj/nvm.o
+                0x0000172a                NvmDone
  .text.TimerInit
-                0x00001738       0x20 THUMB Debug/../../obj/timer.o
-                0x00001738                TimerInit
+                0x0000173c       0x20 THUMB Debug/../../obj/timer.o
+                0x0000173c                TimerInit
  .text.TimerReset
-                0x00001758        0xc THUMB Debug/../../obj/timer.o
-                0x00001758                TimerReset
+                0x0000175c        0xc THUMB Debug/../../obj/timer.o
+                0x0000175c                TimerReset
  .text.TimerUpdate
-                0x00001764       0x1c THUMB Debug/../../obj/timer.o
-                0x00001764                TimerUpdate
+                0x00001768       0x1c THUMB Debug/../../obj/timer.o
+                0x00001768                TimerUpdate
  .text.TimerGet
-                0x00001780       0x10 THUMB Debug/../../obj/timer.o
-                0x00001780                TimerGet
+                0x00001784       0x10 THUMB Debug/../../obj/timer.o
+                0x00001784                TimerGet
  .text.UartInit
-                0x00001790       0x28 THUMB Debug/../../obj/uart.o
-                0x00001790                UartInit
+                0x00001794       0x28 THUMB Debug/../../obj/uart.o
+                0x00001794                UartInit
  .text.UartTransmitPacket
-                0x000017b8       0x6c THUMB Debug/../../obj/uart.o
-                0x000017b8                UartTransmitPacket
+                0x000017bc       0x6c THUMB Debug/../../obj/uart.o
+                0x000017bc                UartTransmitPacket
  .text.UartReceivePacket
-                0x00001824       0x70 THUMB Debug/../../obj/uart.o
-                0x00001824                UartReceivePacket
- .text.CanInit  0x00001894       0xa0 THUMB Debug/../../obj/can.o
-                0x00001894                CanInit
+                0x00001828       0x90 THUMB Debug/../../obj/uart.o
+                0x00001828                UartReceivePacket
+ .text.CanInit  0x000018b8       0xa0 THUMB Debug/../../obj/can.o
+                0x000018b8                CanInit
  .text.CanTransmitPacket
-                0x00001934       0x54 THUMB Debug/../../obj/can.o
-                0x00001934                CanTransmitPacket
+                0x00001958       0x54 THUMB Debug/../../obj/can.o
+                0x00001958                CanTransmitPacket
  .text.CanReceivePacket
-                0x00001988       0x2c THUMB Debug/../../obj/can.o
-                0x00001988                CanReceivePacket
+                0x000019ac       0x2c THUMB Debug/../../obj/can.o
+                0x000019ac                CanReceivePacket
  .text.AssertFailure
-                0x000019b4       0x18 THUMB Debug/../../obj/assert.o
-                0x000019b4                AssertFailure
+                0x000019d8       0x18 THUMB Debug/../../obj/assert.o
+                0x000019d8                AssertFailure
  .text.BackDoorCheck
-                0x000019cc       0x38 THUMB Debug/../../obj/backdoor.o
-                0x000019cc                BackDoorCheck
+                0x000019f0       0x38 THUMB Debug/../../obj/backdoor.o
+                0x000019f0                BackDoorCheck
  .text.BackDoorInit
-                0x00001a04       0x20 THUMB Debug/../../obj/backdoor.o
-                0x00001a04                BackDoorInit
+                0x00001a28       0x20 THUMB Debug/../../obj/backdoor.o
+                0x00001a28                BackDoorInit
  .text.BootInit
-                0x00001a24       0x1a THUMB Debug/../../obj/boot.o
-                0x00001a24                BootInit
+                0x00001a48       0x1a THUMB Debug/../../obj/boot.o
+                0x00001a48                BootInit
  .text.BootTask
-                0x00001a3e       0x16 THUMB Debug/../../obj/boot.o
-                0x00001a3e                BootTask
- .text.ComInit  0x00001a54       0x20 THUMB Debug/../../obj/com.o
-                0x00001a54                ComInit
- .text.ComTask  0x00001a74       0x3c THUMB Debug/../../obj/com.o
-                0x00001a74                ComTask
- .text.ComFree  0x00001ab0        0x2 THUMB Debug/../../obj/com.o
-                0x00001ab0                ComFree
- *fill*         0x00001ab2        0x2 00
+                0x00001a62       0x16 THUMB Debug/../../obj/boot.o
+                0x00001a62                BootTask
+ .text.ComInit  0x00001a78       0x20 THUMB Debug/../../obj/com.o
+                0x00001a78                ComInit
+ .text.ComTask  0x00001a98       0x3c THUMB Debug/../../obj/com.o
+                0x00001a98                ComTask
+ .text.ComFree  0x00001ad4        0x2 THUMB Debug/../../obj/com.o
+                0x00001ad4                ComFree
+ *fill*         0x00001ad6        0x2 00
  .text.ComTransmitPacket
-                0x00001ab4       0x30 THUMB Debug/../../obj/com.o
-                0x00001ab4                ComTransmitPacket
+                0x00001ad8       0x30 THUMB Debug/../../obj/com.o
+                0x00001ad8                ComTransmitPacket
  .text.ComGetActiveInterfaceMaxRxLen
-                0x00001ae4       0x20 THUMB Debug/../../obj/com.o
-                0x00001ae4                ComGetActiveInterfaceMaxRxLen
+                0x00001b08       0x20 THUMB Debug/../../obj/com.o
+                0x00001b08                ComGetActiveInterfaceMaxRxLen
  .text.ComGetActiveInterfaceMaxTxLen
-                0x00001b04       0x20 THUMB Debug/../../obj/com.o
-                0x00001b04                ComGetActiveInterfaceMaxTxLen
+                0x00001b28       0x20 THUMB Debug/../../obj/com.o
+                0x00001b28                ComGetActiveInterfaceMaxTxLen
  .text.ComIsConnected
-                0x00001b24        0x4 THUMB Debug/../../obj/com.o
-                0x00001b24                ComIsConnected
- .text.CopInit  0x00001b28        0x2 THUMB Debug/../../obj/cop.o
-                0x00001b28                CopInit
+                0x00001b48        0x4 THUMB Debug/../../obj/com.o
+                0x00001b48                ComIsConnected
+ .text.CopInit  0x00001b4c        0x2 THUMB Debug/../../obj/cop.o
+                0x00001b4c                CopInit
  .text.CopService
-                0x00001b2a        0x2 THUMB Debug/../../obj/cop.o
-                0x00001b2a                CopService
+                0x00001b4e        0x2 THUMB Debug/../../obj/cop.o
+                0x00001b4e                CopService
  .text.XcpSetCtoError
-                0x00001b2c       0x14 THUMB Debug/../../obj/xcp.o
- .text.XcpInit  0x00001b40       0x1c THUMB Debug/../../obj/xcp.o
-                0x00001b40                XcpInit
+                0x00001b50       0x14 THUMB Debug/../../obj/xcp.o
+ .text.XcpInit  0x00001b64       0x1c THUMB Debug/../../obj/xcp.o
+                0x00001b64                XcpInit
  .text.XcpIsConnected
-                0x00001b5c       0x10 THUMB Debug/../../obj/xcp.o
-                0x00001b5c                XcpIsConnected
+                0x00001b80       0x10 THUMB Debug/../../obj/xcp.o
+                0x00001b80                XcpIsConnected
  .text.XcpPacketTransmitted
-                0x00001b6c       0x10 THUMB Debug/../../obj/xcp.o
-                0x00001b6c                XcpPacketTransmitted
+                0x00001b90       0x10 THUMB Debug/../../obj/xcp.o
+                0x00001b90                XcpPacketTransmitted
  .text.XcpPacketReceived
-                0x00001b7c      0x214 THUMB Debug/../../obj/xcp.o
-                0x00001b7c                XcpPacketReceived
-                0x00001d90                __text_end__ = (__text_start__ + SIZEOF (.text))
-                0x00001d90                __text_load_end__ = __text_end__
+                0x00001ba0      0x214 THUMB Debug/../../obj/xcp.o
+                0x00001ba0                XcpPacketReceived
+                0x00001db4                __text_end__ = (__text_start__ + SIZEOF (.text))
+                0x00001db4                __text_load_end__ = __text_end__
 
 .vfp11_veneer   0x00000000        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
@@ -707,85 +710,85 @@ Linker script and memory map
 .iplt           0x00000000        0x0
  .iplt          0x00000000        0x0 THUMB Debug/../../obj/sysctl.o
                 0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= __FLASH_segment_end__)), error: .text is too large to fit in FLASH memory segment)
-                0x00001d90                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
+                0x00001db4                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
 
-.dtors          0x00001d90        0x0
-                0x00001d90                __dtors_start__ = .
+.dtors          0x00001db4        0x0
+                0x00001db4                __dtors_start__ = .
  *(SORT(.dtors.*))
  *(.dtors)
  *(.fini_array .fini_array.*)
-                0x00001d90                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
-                0x00001d90                __dtors_load_end__ = __dtors_end__
+                0x00001db4                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
+                0x00001db4                __dtors_load_end__ = __dtors_end__
                 0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= __FLASH_segment_end__)), error: .dtors is too large to fit in FLASH memory segment)
-                0x00001d90                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
+                0x00001db4                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
 
-.ctors          0x00001d90        0x0
-                0x00001d90                __ctors_start__ = .
+.ctors          0x00001db4        0x0
+                0x00001db4                __ctors_start__ = .
  *(SORT(.ctors.*))
  *(.ctors)
  *(.init_array .init_array.*)
-                0x00001d90                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
-                0x00001d90                __ctors_load_end__ = __ctors_end__
+                0x00001db4                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
+                0x00001db4                __ctors_load_end__ = __ctors_end__
                 0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= __FLASH_segment_end__)), error: .ctors is too large to fit in FLASH memory segment)
-                0x00001d90                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
+                0x00001db4                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
 
-.rodata         0x00001d90      0x52f
-                0x00001d90                __rodata_start__ = .
+.rodata         0x00001db4      0x52f
+                0x00001db4                __rodata_start__ = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
  .rodata.g_pulXtals
-                0x00001d90       0x5c THUMB Debug/../../obj/sysctl.o
+                0x00001db4       0x5c THUMB Debug/../../obj/sysctl.o
  .rodata.str1.1
-                0x00001dec       0x6b THUMB Debug/../../obj/sysctl.o
- *fill*         0x00001e57        0x1 00
+                0x00001e10       0x6b THUMB Debug/../../obj/sysctl.o
+ *fill*         0x00001e7b        0x1 00
  .rodata.g_pulRCGCRegs
-                0x00001e58        0xc THUMB Debug/../../obj/sysctl.o
+                0x00001e7c        0xc THUMB Debug/../../obj/sysctl.o
  .rodata.str1.1
-                0x00001e64       0x6e THUMB Debug/../../obj/interrupt.o
+                0x00001e88       0x6e THUMB Debug/../../obj/interrupt.o
  .rodata.str1.1
-                0x00001ed2       0x69 THUMB Debug/../../obj/gpio.o
+                0x00001ef6       0x69 THUMB Debug/../../obj/gpio.o
  .rodata.str1.1
-                0x00001f3b       0x6d THUMB Debug/../../obj/flashlib.o
+                0x00001f5f       0x6d THUMB Debug/../../obj/flashlib.o
  .rodata.str1.1
-                0x00001fa8       0x6c THUMB Debug/../../obj/uartlib.o
+                0x00001fcc       0x6c THUMB Debug/../../obj/uartlib.o
  .rodata.str1.1
-                0x00002014       0x6b THUMB Debug/../../obj/canlib.o
+                0x00002038       0x6b THUMB Debug/../../obj/canlib.o
  .rodata.str1.1
-                0x0000207f       0x85 THUMB Debug/../../obj/vectors.o
+                0x000020a3       0x85 THUMB Debug/../../obj/vectors.o
  .rodata.flashLayout
-                0x00002104       0xc0 THUMB Debug/../../obj/flash.o
+                0x00002128       0xc0 THUMB Debug/../../obj/flash.o
  .rodata.str1.1
-                0x000021c4       0x77 THUMB Debug/../../obj/uart.o
+                0x000021e8       0x77 THUMB Debug/../../obj/uart.o
  .rodata.str1.1
-                0x0000223b       0x76 THUMB Debug/../../obj/can.o
+                0x0000225f       0x76 THUMB Debug/../../obj/can.o
  .rodata.CSWTCH.9
-                0x000022b1        0x3 THUMB Debug/../../obj/com.o
+                0x000022d5        0x3 THUMB Debug/../../obj/com.o
  .rodata.CSWTCH.12
-                0x000022b4        0x3 THUMB Debug/../../obj/com.o
+                0x000022d8        0x3 THUMB Debug/../../obj/com.o
  .rodata.xcpStationId
-                0x000022b7        0x8 THUMB Debug/../../obj/xcp.o
-                0x000022bf                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
-                0x000022bf                __rodata_load_end__ = __rodata_end__
+                0x000022db        0x8 THUMB Debug/../../obj/xcp.o
+                0x000022e3                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
+                0x000022e3                __rodata_load_end__ = __rodata_end__
 
 .rel.dyn        0x00000000        0x0
  .rel.iplt      0x00000000        0x0 THUMB Debug/../../obj/sysctl.o
                 0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= __FLASH_segment_end__)), error: .rodata is too large to fit in FLASH memory segment)
-                0x000022c0                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
+                0x000022e4                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
 
-.ARM.exidx      0x000022c0        0x0
-                0x000022c0                __ARM.exidx_start__ = .
-                0x000022c0                __exidx_start = __ARM.exidx_start__
+.ARM.exidx      0x000022e4        0x0
+                0x000022e4                __ARM.exidx_start__ = .
+                0x000022e4                __exidx_start = __ARM.exidx_start__
  *(.ARM.exidx .ARM.exidx.*)
-                0x000022c0                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
-                0x000022c0                __exidx_end = __ARM.exidx_end__
-                0x000022c0                __ARM.exidx_load_end__ = __ARM.exidx_end__
+                0x000022e4                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
+                0x000022e4                __exidx_end = __ARM.exidx_end__
+                0x000022e4                __ARM.exidx_load_end__ = __ARM.exidx_end__
                 0x00000001                . = ASSERT (((__ARM.exidx_end__ >= __FLASH_segment_start__) && (__ARM.exidx_end__ <= __FLASH_segment_end__)), error: .ARM.exidx is too large to fit in FLASH memory segment)
-                0x000022c0                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
+                0x000022e4                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
 
-.fast           0x20000000        0x0 load address 0x000022c0
+.fast           0x20000000        0x0 load address 0x000022e4
                 0x20000000                __fast_start__ = .
  *(.fast .fast.*)
                 0x20000000                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
-                0x000022c0                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
+                0x000022e4                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
                 0x00000001                . = ASSERT (((__fast_load_end__ >= __FLASH_segment_start__) && (__fast_load_end__ <= __FLASH_segment_end__)), error: .fast is too large to fit in FLASH memory segment)
 
 .fast_run       0x20000000        0x0
@@ -794,21 +797,21 @@ Linker script and memory map
                 0x20000000                __fast_run_end__ = (__fast_run_start__ + SIZEOF (.fast_run))
                 0x20000000                __fast_run_load_end__ = __fast_run_end__
                 0x00000001                . = ASSERT (((__fast_run_end__ >= __SRAM_segment_start__) && (__fast_run_end__ <= __SRAM_segment_end__)), error: .fast_run is too large to fit in SRAM memory segment)
-                0x000022c0                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
+                0x000022e4                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
 
-.data           0x20000000        0x1 load address 0x000022c0
+.data           0x20000000        0x1 load address 0x000022e4
                 0x20000000                __data_start__ = .
  *(.data .data.* .gnu.linkonce.d.*)
  .data.comActiveInterface
                 0x20000000        0x1 THUMB Debug/../../obj/com.o
                 0x20000001                __data_end__ = (__data_start__ + SIZEOF (.data))
-                0x000022c1                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
+                0x000022e5                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
 
 .igot.plt       0x00000000        0x0
  .igot.plt      0x00000000        0x0 THUMB Debug/../../obj/sysctl.o
                 0x00000001                . = ASSERT (((__data_load_end__ >= __FLASH_segment_start__) && (__data_load_end__ <= __FLASH_segment_end__)), error: .data is too large to fit in FLASH memory segment)
 
-.data_run       0x20000000        0x1 load address 0x000022c0
+.data_run       0x20000000        0x1 load address 0x000022e4
                 0x20000000                __data_run_start__ = .
                 0x20000001                . = MAX ((__data_run_start__ + SIZEOF (.data)), .)
  *fill*         0x20000000        0x1 00
@@ -817,7 +820,7 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__data_run_end__ >= __SRAM_segment_start__) && (__data_run_end__ <= __SRAM_segment_end__)), error: .data_run is too large to fit in SRAM memory segment)
                 0x20000004                __bss_load_start__ = ALIGN (__data_run_end__, 0x4)
 
-.bss            0x20000004      0x4ec
+.bss            0x20000004      0x4f0
                 0x20000004                __bss_start__ = .
  *(.bss .bss.* .gnu.linkonce.b.*)
  .bss.bootBlockInfo
@@ -826,90 +829,92 @@ Linker script and memory map
                 0x20000208      0x204 THUMB Debug/../../obj/flash.o
  .bss.millisecond_counter
                 0x2000040c        0x4 THUMB Debug/../../obj/timer.o
- .bss.xcpCtoRxLength.3924
-                0x20000410        0x1 THUMB Debug/../../obj/uart.o
- .bss.xcpCtoRxInProgress.3925
-                0x20000411        0x1 THUMB Debug/../../obj/uart.o
- .bss.xcpCtoReqPacket.3923
-                0x20000412       0x41 THUMB Debug/../../obj/uart.o
- *fill*         0x20000453        0x1 00
+ .bss.xcpCtoRxStartTime.3911
+                0x20000410        0x4 THUMB Debug/../../obj/uart.o
+ .bss.xcpCtoReqPacket.3908
+                0x20000414       0x41 THUMB Debug/../../obj/uart.o
+ .bss.xcpCtoRxInProgress.3910
+                0x20000455        0x1 THUMB Debug/../../obj/uart.o
+ .bss.xcpCtoRxLength.3909
+                0x20000456        0x1 THUMB Debug/../../obj/uart.o
+ *fill*         0x20000457        0x1 00
  .bss.assert_failure_file
-                0x20000454        0x4 THUMB Debug/../../obj/assert.o
- .bss.assert_failure_line
                 0x20000458        0x4 THUMB Debug/../../obj/assert.o
+ .bss.assert_failure_line
+                0x2000045c        0x4 THUMB Debug/../../obj/assert.o
  .bss.backdoorOpen
-                0x2000045c        0x1 THUMB Debug/../../obj/backdoor.o
- *fill*         0x2000045d        0x3 00
+                0x20000460        0x1 THUMB Debug/../../obj/backdoor.o
+ *fill*         0x20000461        0x3 00
  .bss.backdoorOpenTime
-                0x20000460        0x4 THUMB Debug/../../obj/backdoor.o
- .bss.xcpCtoReqPacket.3726
-                0x20000464       0x40 THUMB Debug/../../obj/com.o
- .bss.xcpInfo   0x200004a4       0x4c THUMB Debug/../../obj/xcp.o
+                0x20000464        0x4 THUMB Debug/../../obj/backdoor.o
+ .bss.xcpCtoReqPacket.3711
+                0x20000468       0x40 THUMB Debug/../../obj/com.o
+ .bss.xcpInfo   0x200004a8       0x4c THUMB Debug/../../obj/xcp.o
  *(COMMON)
-                0x200004f0                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
-                0x200004f0                __bss_load_end__ = __bss_end__
+                0x200004f4                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
+                0x200004f4                __bss_load_end__ = __bss_end__
                 0x00000001                . = ASSERT (((__bss_end__ >= __SRAM_segment_start__) && (__bss_end__ <= __SRAM_segment_end__)), error: .bss is too large to fit in SRAM memory segment)
-                0x200004f0                __non_init_load_start__ = ALIGN (__bss_end__, 0x4)
+                0x200004f4                __non_init_load_start__ = ALIGN (__bss_end__, 0x4)
 
-.non_init       0x200004f0        0x0
-                0x200004f0                __non_init_start__ = .
+.non_init       0x200004f4        0x0
+                0x200004f4                __non_init_start__ = .
  *(.non_init .non_init.*)
-                0x200004f0                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
-                0x200004f0                __non_init_load_end__ = __non_init_end__
+                0x200004f4                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
+                0x200004f4                __non_init_load_end__ = __non_init_end__
                 0x00000001                . = ASSERT (((__non_init_end__ >= __SRAM_segment_start__) && (__non_init_end__ <= __SRAM_segment_end__)), error: .non_init is too large to fit in SRAM memory segment)
-                0x200004f0                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
+                0x200004f4                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
 
-.heap           0x200004f0       0x80
-                0x200004f0                __heap_start__ = .
+.heap           0x200004f4       0x80
+                0x200004f4                __heap_start__ = .
  *(.heap .heap.*)
-                0x20000570                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
- *fill*         0x200004f0       0x80 00
-                0x20000570                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
-                0x20000570                __heap_load_end__ = __heap_end__
+                0x20000574                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
+ *fill*         0x200004f4       0x80 00
+                0x20000574                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
+                0x20000574                __heap_load_end__ = __heap_end__
                 0x00000001                . = ASSERT (((__heap_end__ >= __SRAM_segment_start__) && (__heap_end__ <= __SRAM_segment_end__)), error: .heap is too large to fit in SRAM memory segment)
-                0x20000570                __stack_load_start__ = ALIGN (__heap_end__, 0x4)
+                0x20000574                __stack_load_start__ = ALIGN (__heap_end__, 0x4)
 
-.stack          0x20000570      0x200
-                0x20000570                __stack_start__ = .
+.stack          0x20000574      0x200
+                0x20000574                __stack_start__ = .
  *(.stack .stack.*)
-                0x20000770                . = ALIGN (MAX ((__stack_start__ + __STACKSIZE__), .), 0x4)
- *fill*         0x20000570      0x200 00
-                0x20000770                __stack_end__ = (__stack_start__ + SIZEOF (.stack))
-                0x20000770                __stack_load_end__ = __stack_end__
+                0x20000774                . = ALIGN (MAX ((__stack_start__ + __STACKSIZE__), .), 0x4)
+ *fill*         0x20000574      0x200 00
+                0x20000774                __stack_end__ = (__stack_start__ + SIZEOF (.stack))
+                0x20000774                __stack_load_end__ = __stack_end__
                 0x00000001                . = ASSERT (((__stack_end__ >= __SRAM_segment_start__) && (__stack_end__ <= __SRAM_segment_end__)), error: .stack is too large to fit in SRAM memory segment)
-                0x20000770                __stack_process_load_start__ = ALIGN (__stack_end__, 0x4)
+                0x20000774                __stack_process_load_start__ = ALIGN (__stack_end__, 0x4)
 
-.stack_process  0x20000770        0x0
-                0x20000770                __stack_process_start__ = .
+.stack_process  0x20000774        0x0
+                0x20000774                __stack_process_start__ = .
  *(.stack_process .stack_process.*)
-                0x20000770                . = ALIGN (MAX ((__stack_process_start__ + __STACKSIZE_PROCESS__), .), 0x4)
-                0x20000770                __stack_process_end__ = (__stack_process_start__ + SIZEOF (.stack_process))
-                0x20000770                __stack_process_load_end__ = __stack_process_end__
+                0x20000774                . = ALIGN (MAX ((__stack_process_start__ + __STACKSIZE_PROCESS__), .), 0x4)
+                0x20000774                __stack_process_end__ = (__stack_process_start__ + SIZEOF (.stack_process))
+                0x20000774                __stack_process_load_end__ = __stack_process_end__
                 0x00000001                . = ASSERT (((__stack_process_end__ >= __SRAM_segment_start__) && (__stack_process_end__ <= __SRAM_segment_end__)), error: .stack_process is too large to fit in SRAM memory segment)
-                0x20000770                __tbss_load_start__ = ALIGN (__stack_process_end__, 0x4)
+                0x20000774                __tbss_load_start__ = ALIGN (__stack_process_end__, 0x4)
 
-.tbss           0x20000770        0x0
-                0x20000770                __tbss_start__ = .
+.tbss           0x20000774        0x0
+                0x20000774                __tbss_start__ = .
  *(.tbss .tbss.*)
-                0x20000770                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
-                0x20000770                __tbss_load_end__ = __tbss_end__
+                0x20000774                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
+                0x20000774                __tbss_load_end__ = __tbss_end__
                 0x00000001                . = ASSERT (((__tbss_end__ >= __SRAM_segment_start__) && (__tbss_end__ <= __SRAM_segment_end__)), error: .tbss is too large to fit in SRAM memory segment)
-                0x000022c4                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
+                0x000022e8                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
 
-.tdata          0x20000770        0x0 load address 0x000022c4
-                0x20000770                __tdata_start__ = .
+.tdata          0x20000774        0x0 load address 0x000022e8
+                0x20000774                __tdata_start__ = .
  *(.tdata .tdata.*)
-                0x20000770                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
-                0x000022c4                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
-                0x000022c4                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
+                0x20000774                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
+                0x000022e8                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
+                0x000022e8                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
                 0x00000001                . = ASSERT (((__tdata_load_end__ >= __FLASH_segment_start__) && (__tdata_load_end__ <= __FLASH_segment_end__)), error: .tdata is too large to fit in FLASH memory segment)
 
-.tdata_run      0x20000770        0x0
-                0x20000770                __tdata_run_start__ = .
-                0x20000770                . = MAX ((__tdata_run_start__ + SIZEOF (.tdata)), .)
-                0x20000770                __tdata_run_end__ = (__tdata_run_start__ + SIZEOF (.tdata_run))
-                0x20000770                __tdata_run_load_end__ = __tdata_run_end__
-                0x20000770                __SRAM_segment_used_end__ = (ALIGN (__tbss_end__, 0x4) + SIZEOF (.tdata_run))
+.tdata_run      0x20000774        0x0
+                0x20000774                __tdata_run_start__ = .
+                0x20000774                . = MAX ((__tdata_run_start__ + SIZEOF (.tdata)), .)
+                0x20000774                __tdata_run_end__ = (__tdata_run_start__ + SIZEOF (.tdata_run))
+                0x20000774                __tdata_run_load_end__ = __tdata_run_end__
+                0x20000774                __SRAM_segment_used_end__ = (ALIGN (__tbss_end__, 0x4) + SIZEOF (.tdata_run))
                 0x00000001                . = ASSERT (((__tdata_run_end__ >= __SRAM_segment_start__) && (__tdata_run_end__ <= __SRAM_segment_end__)), error: .tdata_run is too large to fit in SRAM memory segment)
 START GROUP
 LOAD THUMB Debug/../../obj/sysctl.o
@@ -938,7 +943,7 @@ LOAD THUMB Debug/../../obj/xcp.o
 END GROUP
 OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/Boot/ide/../bin/openbtl_ek_lm3s8962.elf elf32-littlearm)
 
-.debug_frame    0x00000000     0x18b8
+.debug_frame    0x00000000     0x18c8
  .debug_frame   0x00000000      0x404 THUMB Debug/../../obj/sysctl.o
  .debug_frame   0x00000404      0x18c THUMB Debug/../../obj/interrupt.o
  .debug_frame   0x00000590      0x434 THUMB Debug/../../obj/gpio.o
@@ -949,18 +954,18 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/B
  .debug_frame   0x0000132c       0x20 THUMB Debug/../../obj/vectors.o
  .debug_frame   0x0000134c       0x60 THUMB Debug/../../obj/cpu.o
  .debug_frame   0x000013ac      0x150 THUMB Debug/../../obj/flash.o
- .debug_frame   0x000014fc       0x6c THUMB Debug/../../obj/nvm.o
- .debug_frame   0x00001568       0x5c THUMB Debug/../../obj/timer.o
- .debug_frame   0x000015c4       0x70 THUMB Debug/../../obj/uart.o
- .debug_frame   0x00001634       0x7c THUMB Debug/../../obj/can.o
- .debug_frame   0x000016b0       0x2c THUMB Debug/../../obj/assert.o
- .debug_frame   0x000016dc       0x48 THUMB Debug/../../obj/backdoor.o
- .debug_frame   0x00001724       0x48 THUMB Debug/../../obj/boot.o
- .debug_frame   0x0000176c       0xa8 THUMB Debug/../../obj/com.o
- .debug_frame   0x00001814       0x30 THUMB Debug/../../obj/cop.o
- .debug_frame   0x00001844       0x74 THUMB Debug/../../obj/xcp.o
+ .debug_frame   0x000014fc       0x7c THUMB Debug/../../obj/nvm.o
+ .debug_frame   0x00001578       0x5c THUMB Debug/../../obj/timer.o
+ .debug_frame   0x000015d4       0x70 THUMB Debug/../../obj/uart.o
+ .debug_frame   0x00001644       0x7c THUMB Debug/../../obj/can.o
+ .debug_frame   0x000016c0       0x2c THUMB Debug/../../obj/assert.o
+ .debug_frame   0x000016ec       0x48 THUMB Debug/../../obj/backdoor.o
+ .debug_frame   0x00001734       0x48 THUMB Debug/../../obj/boot.o
+ .debug_frame   0x0000177c       0xa8 THUMB Debug/../../obj/com.o
+ .debug_frame   0x00001824       0x30 THUMB Debug/../../obj/cop.o
+ .debug_frame   0x00001854       0x74 THUMB Debug/../../obj/xcp.o
 
-.debug_info     0x00000000     0x8442
+.debug_info     0x00000000     0x84ad
  .debug_info    0x00000000      0xca4 THUMB Debug/../../obj/sysctl.o
  .debug_info    0x00000ca4      0x545 THUMB Debug/../../obj/interrupt.o
  .debug_info    0x000011e9     0x15bc THUMB Debug/../../obj/gpio.o
@@ -972,18 +977,18 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/B
  .debug_info    0x00005bb7      0x134 THUMB Debug/../../obj/vectors.o
  .debug_info    0x00005ceb      0x1d0 THUMB Debug/../../obj/cpu.o
  .debug_info    0x00005ebb      0x89d THUMB Debug/../../obj/flash.o
- .debug_info    0x00006758      0x241 THUMB Debug/../../obj/nvm.o
- .debug_info    0x00006999      0x13e THUMB Debug/../../obj/timer.o
- .debug_info    0x00006ad7      0x4e5 THUMB Debug/../../obj/uart.o
- .debug_info    0x00006fbc      0x557 THUMB Debug/../../obj/can.o
- .debug_info    0x00007513       0xf8 THUMB Debug/../../obj/assert.o
- .debug_info    0x0000760b      0x121 THUMB Debug/../../obj/backdoor.o
- .debug_info    0x0000772c      0x141 THUMB Debug/../../obj/boot.o
- .debug_info    0x0000786d      0x352 THUMB Debug/../../obj/com.o
- .debug_info    0x00007bbf       0x88 THUMB Debug/../../obj/cop.o
- .debug_info    0x00007c47      0x7fb THUMB Debug/../../obj/xcp.o
+ .debug_info    0x00006758      0x277 THUMB Debug/../../obj/nvm.o
+ .debug_info    0x000069cf      0x13e THUMB Debug/../../obj/timer.o
+ .debug_info    0x00006b0d      0x51a THUMB Debug/../../obj/uart.o
+ .debug_info    0x00007027      0x557 THUMB Debug/../../obj/can.o
+ .debug_info    0x0000757e       0xf8 THUMB Debug/../../obj/assert.o
+ .debug_info    0x00007676      0x121 THUMB Debug/../../obj/backdoor.o
+ .debug_info    0x00007797      0x141 THUMB Debug/../../obj/boot.o
+ .debug_info    0x000078d8      0x352 THUMB Debug/../../obj/com.o
+ .debug_info    0x00007c2a       0x88 THUMB Debug/../../obj/cop.o
+ .debug_info    0x00007cb2      0x7fb THUMB Debug/../../obj/xcp.o
 
-.debug_abbrev   0x00000000     0x1d0c
+.debug_abbrev   0x00000000     0x1d1f
  .debug_abbrev  0x00000000      0x207 THUMB Debug/../../obj/sysctl.o
  .debug_abbrev  0x00000207      0x1ea THUMB Debug/../../obj/interrupt.o
  .debug_abbrev  0x000003f1      0x18e THUMB Debug/../../obj/gpio.o
@@ -997,16 +1002,16 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/B
  .debug_abbrev  0x00000e1e      0x2df THUMB Debug/../../obj/flash.o
  .debug_abbrev  0x000010fd      0x123 THUMB Debug/../../obj/nvm.o
  .debug_abbrev  0x00001220      0x101 THUMB Debug/../../obj/timer.o
- .debug_abbrev  0x00001321      0x1ea THUMB Debug/../../obj/uart.o
- .debug_abbrev  0x0000150b      0x1f6 THUMB Debug/../../obj/can.o
- .debug_abbrev  0x00001701       0x9b THUMB Debug/../../obj/assert.o
- .debug_abbrev  0x0000179c       0x9d THUMB Debug/../../obj/backdoor.o
- .debug_abbrev  0x00001839       0x6e THUMB Debug/../../obj/boot.o
- .debug_abbrev  0x000018a7      0x192 THUMB Debug/../../obj/com.o
- .debug_abbrev  0x00001a39       0x42 THUMB Debug/../../obj/cop.o
- .debug_abbrev  0x00001a7b      0x291 THUMB Debug/../../obj/xcp.o
+ .debug_abbrev  0x00001321      0x1fd THUMB Debug/../../obj/uart.o
+ .debug_abbrev  0x0000151e      0x1f6 THUMB Debug/../../obj/can.o
+ .debug_abbrev  0x00001714       0x9b THUMB Debug/../../obj/assert.o
+ .debug_abbrev  0x000017af       0x9d THUMB Debug/../../obj/backdoor.o
+ .debug_abbrev  0x0000184c       0x6e THUMB Debug/../../obj/boot.o
+ .debug_abbrev  0x000018ba      0x192 THUMB Debug/../../obj/com.o
+ .debug_abbrev  0x00001a4c       0x42 THUMB Debug/../../obj/cop.o
+ .debug_abbrev  0x00001a8e      0x291 THUMB Debug/../../obj/xcp.o
 
-.debug_loc      0x00000000     0x531d
+.debug_loc      0x00000000     0x5328
  .debug_loc     0x00000000      0xa92 THUMB Debug/../../obj/sysctl.o
  .debug_loc     0x00000a92      0x432 THUMB Debug/../../obj/interrupt.o
  .debug_loc     0x00000ec4      0xf68 THUMB Debug/../../obj/gpio.o
@@ -1018,15 +1023,15 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/B
  .debug_loc     0x0000441e      0x679 THUMB Debug/../../obj/flash.o
  .debug_loc     0x00004a97       0xc5 THUMB Debug/../../obj/nvm.o
  .debug_loc     0x00004b5c       0x20 THUMB Debug/../../obj/timer.o
- .debug_loc     0x00004b7c      0x150 THUMB Debug/../../obj/uart.o
- .debug_loc     0x00004ccc      0x15f THUMB Debug/../../obj/can.o
- .debug_loc     0x00004e2b       0x71 THUMB Debug/../../obj/assert.o
- .debug_loc     0x00004e9c       0x40 THUMB Debug/../../obj/backdoor.o
- .debug_loc     0x00004edc       0x40 THUMB Debug/../../obj/boot.o
- .debug_loc     0x00004f1c       0x9f THUMB Debug/../../obj/com.o
- .debug_loc     0x00004fbb      0x362 THUMB Debug/../../obj/xcp.o
+ .debug_loc     0x00004b7c      0x15b THUMB Debug/../../obj/uart.o
+ .debug_loc     0x00004cd7      0x15f THUMB Debug/../../obj/can.o
+ .debug_loc     0x00004e36       0x71 THUMB Debug/../../obj/assert.o
+ .debug_loc     0x00004ea7       0x40 THUMB Debug/../../obj/backdoor.o
+ .debug_loc     0x00004ee7       0x40 THUMB Debug/../../obj/boot.o
+ .debug_loc     0x00004f27       0x9f THUMB Debug/../../obj/com.o
+ .debug_loc     0x00004fc6      0x362 THUMB Debug/../../obj/xcp.o
 
-.debug_aranges  0x00000000      0x8f8
+.debug_aranges  0x00000000      0x900
  .debug_aranges
                 0x00000000      0x178 THUMB Debug/../../obj/sysctl.o
  .debug_aranges
@@ -1050,27 +1055,27 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/B
  .debug_aranges
                 0x00000688       0x70 THUMB Debug/../../obj/flash.o
  .debug_aranges
-                0x000006f8       0x40 THUMB Debug/../../obj/nvm.o
+                0x000006f8       0x48 THUMB Debug/../../obj/nvm.o
  .debug_aranges
-                0x00000738       0x38 THUMB Debug/../../obj/timer.o
+                0x00000740       0x38 THUMB Debug/../../obj/timer.o
  .debug_aranges
-                0x00000770       0x30 THUMB Debug/../../obj/uart.o
+                0x00000778       0x30 THUMB Debug/../../obj/uart.o
  .debug_aranges
-                0x000007a0       0x30 THUMB Debug/../../obj/can.o
+                0x000007a8       0x30 THUMB Debug/../../obj/can.o
  .debug_aranges
-                0x000007d0       0x20 THUMB Debug/../../obj/assert.o
+                0x000007d8       0x20 THUMB Debug/../../obj/assert.o
  .debug_aranges
-                0x000007f0       0x28 THUMB Debug/../../obj/backdoor.o
+                0x000007f8       0x28 THUMB Debug/../../obj/backdoor.o
  .debug_aranges
-                0x00000818       0x28 THUMB Debug/../../obj/boot.o
+                0x00000820       0x28 THUMB Debug/../../obj/boot.o
  .debug_aranges
-                0x00000840       0x50 THUMB Debug/../../obj/com.o
+                0x00000848       0x50 THUMB Debug/../../obj/com.o
  .debug_aranges
-                0x00000890       0x28 THUMB Debug/../../obj/cop.o
+                0x00000898       0x28 THUMB Debug/../../obj/cop.o
  .debug_aranges
-                0x000008b8       0x40 THUMB Debug/../../obj/xcp.o
+                0x000008c0       0x40 THUMB Debug/../../obj/xcp.o
 
-.debug_ranges   0x00000000      0x8d8
+.debug_ranges   0x00000000      0x8d0
  .debug_ranges  0x00000000      0x168 THUMB Debug/../../obj/sysctl.o
  .debug_ranges  0x00000168       0x80 THUMB Debug/../../obj/interrupt.o
  .debug_ranges  0x000001e8      0x118 THUMB Debug/../../obj/gpio.o
@@ -1081,18 +1086,18 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/B
  .debug_ranges  0x000005a8       0x10 THUMB Debug/../../obj/vectors.o
  .debug_ranges  0x000005b8       0x20 THUMB Debug/../../obj/cpu.o
  .debug_ranges  0x000005d8       0x60 THUMB Debug/../../obj/flash.o
- .debug_ranges  0x00000638       0x30 THUMB Debug/../../obj/nvm.o
- .debug_ranges  0x00000668       0x40 THUMB Debug/../../obj/timer.o
- .debug_ranges  0x000006a8       0xa0 THUMB Debug/../../obj/uart.o
- .debug_ranges  0x00000748       0x20 THUMB Debug/../../obj/can.o
- .debug_ranges  0x00000768       0x10 THUMB Debug/../../obj/assert.o
- .debug_ranges  0x00000778       0x18 THUMB Debug/../../obj/backdoor.o
- .debug_ranges  0x00000790       0x18 THUMB Debug/../../obj/boot.o
- .debug_ranges  0x000007a8       0x40 THUMB Debug/../../obj/com.o
- .debug_ranges  0x000007e8       0x18 THUMB Debug/../../obj/cop.o
- .debug_ranges  0x00000800       0xd8 THUMB Debug/../../obj/xcp.o
+ .debug_ranges  0x00000638       0x38 THUMB Debug/../../obj/nvm.o
+ .debug_ranges  0x00000670       0x40 THUMB Debug/../../obj/timer.o
+ .debug_ranges  0x000006b0       0x90 THUMB Debug/../../obj/uart.o
+ .debug_ranges  0x00000740       0x20 THUMB Debug/../../obj/can.o
+ .debug_ranges  0x00000760       0x10 THUMB Debug/../../obj/assert.o
+ .debug_ranges  0x00000770       0x18 THUMB Debug/../../obj/backdoor.o
+ .debug_ranges  0x00000788       0x18 THUMB Debug/../../obj/boot.o
+ .debug_ranges  0x000007a0       0x40 THUMB Debug/../../obj/com.o
+ .debug_ranges  0x000007e0       0x18 THUMB Debug/../../obj/cop.o
+ .debug_ranges  0x000007f8       0xd8 THUMB Debug/../../obj/xcp.o
 
-.debug_line     0x00000000     0x3dfa
+.debug_line     0x00000000     0x3d9a
  .debug_line    0x00000000      0x85b THUMB Debug/../../obj/sysctl.o
  .debug_line    0x0000085b      0x33c THUMB Debug/../../obj/interrupt.o
  .debug_line    0x00000b97      0x68a THUMB Debug/../../obj/gpio.o
@@ -1102,20 +1107,20 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/B
  .debug_line    0x000024ef      0x17f THUMB Debug/../../obj/main.o
  .debug_line    0x0000266e      0x12d THUMB Debug/../../obj/cstart.o
  .debug_line    0x0000279b      0x1a2 THUMB Debug/../../obj/vectors.o
- .debug_line    0x0000293d      0x17c THUMB Debug/../../obj/cpu.o
- .debug_line    0x00002ab9      0x363 THUMB Debug/../../obj/flash.o
- .debug_line    0x00002e1c      0x10f THUMB Debug/../../obj/nvm.o
- .debug_line    0x00002f2b       0xf8 THUMB Debug/../../obj/timer.o
- .debug_line    0x00003023      0x2a1 THUMB Debug/../../obj/uart.o
- .debug_line    0x000032c4      0x28c THUMB Debug/../../obj/can.o
- .debug_line    0x00003550      0x127 THUMB Debug/../../obj/assert.o
- .debug_line    0x00003677      0x157 THUMB Debug/../../obj/backdoor.o
- .debug_line    0x000037ce      0x159 THUMB Debug/../../obj/boot.o
- .debug_line    0x00003927      0x1d0 THUMB Debug/../../obj/com.o
- .debug_line    0x00003af7       0xa9 THUMB Debug/../../obj/cop.o
- .debug_line    0x00003ba0      0x25a THUMB Debug/../../obj/xcp.o
+ .debug_line    0x0000293d      0x171 THUMB Debug/../../obj/cpu.o
+ .debug_line    0x00002aae      0x363 THUMB Debug/../../obj/flash.o
+ .debug_line    0x00002e11      0x121 THUMB Debug/../../obj/nvm.o
+ .debug_line    0x00002f32       0xf8 THUMB Debug/../../obj/timer.o
+ .debug_line    0x0000302a      0x2aa THUMB Debug/../../obj/uart.o
+ .debug_line    0x000032d4      0x28c THUMB Debug/../../obj/can.o
+ .debug_line    0x00003560      0x127 THUMB Debug/../../obj/assert.o
+ .debug_line    0x00003687      0x157 THUMB Debug/../../obj/backdoor.o
+ .debug_line    0x000037de       0xe9 THUMB Debug/../../obj/boot.o
+ .debug_line    0x000038c7      0x1d0 THUMB Debug/../../obj/com.o
+ .debug_line    0x00003a97       0xa9 THUMB Debug/../../obj/cop.o
+ .debug_line    0x00003b40      0x25a THUMB Debug/../../obj/xcp.o
 
-.debug_str      0x00000000     0x2364
+.debug_str      0x00000000     0x2390
  .debug_str     0x00000000      0x5a3 THUMB Debug/../../obj/sysctl.o
                                 0x5f9 (size before relaxing)
  .debug_str     0x000005a3      0x1d3 THUMB Debug/../../obj/interrupt.o
@@ -1132,29 +1137,29 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/B
                                 0x160 (size before relaxing)
  .debug_str     0x0000160a       0xb4 THUMB Debug/../../obj/vectors.o
                                 0x183 (size before relaxing)
- .debug_str     0x000016be      0x13b THUMB Debug/../../obj/cpu.o
-                                0x1ea (size before relaxing)
- .debug_str     0x000017f9      0x25e THUMB Debug/../../obj/flash.o
+ .debug_str     0x000016be      0x139 THUMB Debug/../../obj/cpu.o
+                                0x1e8 (size before relaxing)
+ .debug_str     0x000017f7      0x27a THUMB Debug/../../obj/flash.o
                                 0x3ab (size before relaxing)
- .debug_str     0x00001a57       0x98 THUMB Debug/../../obj/nvm.o
-                                0x1d0 (size before relaxing)
- .debug_str     0x00001aef       0xc2 THUMB Debug/../../obj/timer.o
+ .debug_str     0x00001a71       0x98 THUMB Debug/../../obj/nvm.o
+                                0x206 (size before relaxing)
+ .debug_str     0x00001b09       0xc2 THUMB Debug/../../obj/timer.o
                                 0x17c (size before relaxing)
- .debug_str     0x00001bb1      0x10e THUMB Debug/../../obj/uart.o
-                                0x2af (size before relaxing)
- .debug_str     0x00001cbf       0xf5 THUMB Debug/../../obj/can.o
+ .debug_str     0x00001bcb      0x120 THUMB Debug/../../obj/uart.o
+                                0x2ca (size before relaxing)
+ .debug_str     0x00001ceb       0xf5 THUMB Debug/../../obj/can.o
                                 0x3a5 (size before relaxing)
- .debug_str     0x00001db4       0x95 THUMB Debug/../../obj/assert.o
+ .debug_str     0x00001de0       0x95 THUMB Debug/../../obj/assert.o
                                 0x170 (size before relaxing)
- .debug_str     0x00001e49       0xb7 THUMB Debug/../../obj/backdoor.o
+ .debug_str     0x00001e75       0xb7 THUMB Debug/../../obj/backdoor.o
                                 0x18c (size before relaxing)
- .debug_str     0x00001f00       0x83 THUMB Debug/../../obj/boot.o
+ .debug_str     0x00001f2c       0x83 THUMB Debug/../../obj/boot.o
                                 0x17d (size before relaxing)
- .debug_str     0x00001f83      0x153 THUMB Debug/../../obj/com.o
+ .debug_str     0x00001faf      0x153 THUMB Debug/../../obj/com.o
                                 0x2ba (size before relaxing)
- .debug_str     0x000020d6       0x6a THUMB Debug/../../obj/cop.o
+ .debug_str     0x00002102       0x6a THUMB Debug/../../obj/cop.o
                                 0x121 (size before relaxing)
- .debug_str     0x00002140      0x224 THUMB Debug/../../obj/xcp.o
+ .debug_str     0x0000216c      0x224 THUMB Debug/../../obj/xcp.o
                                 0x3de (size before relaxing)
 
 .comment        0x00000000       0x4e

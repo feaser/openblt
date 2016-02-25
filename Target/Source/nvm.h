@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source\TRICORE_TC1798\uart.h
-* \brief        Bootloader UART communication interface header file.
-* \ingroup      Target_TRICORE_TC1798
+* \file         Source\nvm.h
+* \brief        Bootloader non-volatile memory driver header file.
+* \ingroup      Core
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2015  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,18 +30,31 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef UART_H
-#define UART_H
+#ifndef NVM_H
+#define NVM_H
 
-#if (BOOT_COM_UART_ENABLE > 0)
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void     UartInit(void);
-void     UartTransmitPacket(blt_int8u *data, blt_int8u len);
-blt_bool UartReceivePacket(blt_int8u *data);
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+void     NvmInit(void);
+blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data);
+blt_bool NvmErase(blt_addr addr, blt_int32u len);
+blt_bool NvmVerifyChecksum(void);
+blt_addr NvmGetUserProgBaseAddress(void);
+blt_bool NvmDone(void);
 
 
-#endif /* UART_H */
-/*********************************** end of uart.h *************************************/
+/****************************************************************************************
+* Macro definitions
+****************************************************************************************/
+/* return codes for hook function NvmWrite/Erase */
+/** \brief Return code for success. */
+#define BLT_NVM_ERROR                   (0x00)
+/** \brief Return code for error. */
+#define BLT_NVM_OKAY                    (0x01)
+/** \brief Return code for not in range. */
+#define BLT_NVM_NOT_IN_RANGE            (0x02)
+
+
+#endif /* NVM_H */
+/*********************************** end of nvm.h **************************************/

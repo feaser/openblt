@@ -176,22 +176,22 @@ usb_conf.h \
 ../../../Source/file.h \
 ../../../Source/assert.c \
 ../../../Source/assert.h \
+../../../Source/can.h \
+../../../Source/cpu.h \
+../../../Source/uart.h \
+../../../Source/usb.h \
+../../../Source/nvm.h \
+../../../Source/timer.h \
 ../../../Source/plausibility.h \
 ../../../Source/ARMCM4_STM32/types.h \
 ../../../Source/ARMCM4_STM32/can.c \
-../../../Source/ARMCM4_STM32/can.h \
 ../../../Source/ARMCM4_STM32/cpu.c \
-../../../Source/ARMCM4_STM32/cpu.h \
 ../../../Source/ARMCM4_STM32/flash.c \
 ../../../Source/ARMCM4_STM32/flash.h \
 ../../../Source/ARMCM4_STM32/uart.c \
-../../../Source/ARMCM4_STM32/uart.h \
 ../../../Source/ARMCM4_STM32/usb.c \
-../../../Source/ARMCM4_STM32/usb.h \
 ../../../Source/ARMCM4_STM32/nvm.c \
-../../../Source/ARMCM4_STM32/nvm.h \
 ../../../Source/ARMCM4_STM32/timer.c \
-../../../Source/ARMCM4_STM32/timer.h \
 ../../../Source/ARMCM4_STM32/GCC/vectors.c \
 ../../../Source/ARMCM4_STM32/GCC/cstart.c
 

@@ -6,23 +6,19 @@
     <configuration Name="RAM" Placement="RAM" linker_section_placement_file="$(StudioDir)/targets/Cortex_M/ram_placement.xml" target_reset_script="SRAMReset()"/>
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc"/>
-      <folder Name="Source">
+      <folder Name="Source" file_name="">
         <folder Name="ARMCM3_EFM32">
           <folder Name="Crossworks">
             <file file_name="../../../../Source/ARMCM3_EFM32/Crossworks/cstart.s"/>
             <file file_name="../../../../Source/ARMCM3_EFM32/Crossworks/vectors.c"/>
           </folder>
           <file file_name="../../../../Source/ARMCM3_EFM32/cpu.c"/>
-          <file file_name="../../../../Source/ARMCM3_EFM32/cpu.h"/>
           <file file_name="../../../../Source/ARMCM3_EFM32/flash.c"/>
           <file file_name="../../../../Source/ARMCM3_EFM32/flash.h"/>
           <file file_name="../../../../Source/ARMCM3_EFM32/nvm.c"/>
-          <file file_name="../../../../Source/ARMCM3_EFM32/nvm.h"/>
           <file file_name="../../../../Source/ARMCM3_EFM32/timer.c"/>
-          <file file_name="../../../../Source/ARMCM3_EFM32/timer.h"/>
           <file file_name="../../../../Source/ARMCM3_EFM32/types.h"/>
           <file file_name="../../../../Source/ARMCM3_EFM32/uart.c"/>
-          <file file_name="../../../../Source/ARMCM3_EFM32/uart.h"/>
         </folder>
         <file file_name="../../../../Source/assert.c"/>
         <file file_name="../../../../Source/assert.h"/>
@@ -37,6 +33,10 @@
         <file file_name="../../../../Source/plausibility.h"/>
         <file file_name="../../../../Source/xcp.c"/>
         <file file_name="../../../../Source/xcp.h"/>
+        <file file_name="../../../../Source/cpu.h"/>
+        <file file_name="../../../../Source/nvm.h"/>
+        <file file_name="../../../../Source/timer.h"/>
+        <file file_name="../../../../Source/uart.h"/>
       </folder>
       <folder Name="Demo">
         <folder Name="Boot" file_name="">

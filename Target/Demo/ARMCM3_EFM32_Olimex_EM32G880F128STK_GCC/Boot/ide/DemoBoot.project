@@ -5,38 +5,6 @@
       <![CDATA[00010001N0005Debug000000000000]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="Source">
-    <VirtualDirectory Name="ARMCM3_EFM32">
-      <VirtualDirectory Name="GCC">
-        <File Name="../../../../Source/ARMCM3_EFM32/GCC/cstart.c"/>
-        <File Name="../../../../Source/ARMCM3_EFM32/GCC/vectors.c"/>
-      </VirtualDirectory>
-      <File Name="../../../../Source/ARMCM3_EFM32/cpu.c"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/cpu.h"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/flash.c"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/flash.h"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/nvm.c"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/nvm.h"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/timer.c"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/timer.h"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/types.h"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/uart.c"/>
-      <File Name="../../../../Source/ARMCM3_EFM32/uart.h"/>
-    </VirtualDirectory>
-    <File Name="../../../../Source/assert.c"/>
-    <File Name="../../../../Source/assert.h"/>
-    <File Name="../../../../Source/backdoor.c"/>
-    <File Name="../../../../Source/backdoor.h"/>
-    <File Name="../../../../Source/boot.c"/>
-    <File Name="../../../../Source/boot.h"/>
-    <File Name="../../../../Source/com.c"/>
-    <File Name="../../../../Source/com.h"/>
-    <File Name="../../../../Source/cop.c"/>
-    <File Name="../../../../Source/cop.h"/>
-    <File Name="../../../../Source/plausibility.h"/>
-    <File Name="../../../../Source/xcp.c"/>
-    <File Name="../../../../Source/xcp.h"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="Demo">
     <VirtualDirectory Name="ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC">
       <VirtualDirectory Name="Boot">
@@ -129,9 +97,9 @@
             </VirtualDirectory>
           </VirtualDirectory>
         </VirtualDirectory>
+        <File Name="../blt_conf.h"/>
         <File Name="../hooks.c"/>
         <File Name="../main.c"/>
-        <File Name="../blt_conf.h"/>
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>
@@ -208,4 +176,42 @@ continue
       </AdditionalRules>
     </Configuration>
   </Settings>
+  <VirtualDirectory Name="Source">
+    <VirtualDirectory Name="ARMCM3_EFM32">
+      <VirtualDirectory Name="GCC">
+        <File Name="../../../../Source/ARMCM3_EFM32/GCC/cstart.c"/>
+        <File Name="../../../../Source/ARMCM3_EFM32/GCC/vectors.c"/>
+      </VirtualDirectory>
+      <File Name="../../../../Source/ARMCM3_EFM32/cpu.c"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/flash.c"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/flash.h"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/nvm.c"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/timer.c"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/types.h"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/uart.c"/>
+    </VirtualDirectory>
+    <File Name="../../../../Source/assert.c"/>
+    <File Name="../../../../Source/assert.h"/>
+    <File Name="../../../../Source/backdoor.c"/>
+    <File Name="../../../../Source/backdoor.h"/>
+    <File Name="../../../../Source/boot.c"/>
+    <File Name="../../../../Source/boot.h"/>
+    <File Name="../../../../Source/can.h"/>
+    <File Name="../../../../Source/com.c"/>
+    <File Name="../../../../Source/com.h"/>
+    <File Name="../../../../Source/cop.c"/>
+    <File Name="../../../../Source/cop.h"/>
+    <File Name="../../../../Source/cpu.h"/>
+    <File Name="../../../../Source/file.c"/>
+    <File Name="../../../../Source/file.h"/>
+    <File Name="../../../../Source/net.c"/>
+    <File Name="../../../../Source/net.h"/>
+    <File Name="../../../../Source/nvm.h"/>
+    <File Name="../../../../Source/plausibility.h"/>
+    <File Name="../../../../Source/timer.h"/>
+    <File Name="../../../../Source/uart.h"/>
+    <File Name="../../../../Source/usb.h"/>
+    <File Name="../../../../Source/xcp.c"/>
+    <File Name="../../../../Source/xcp.h"/>
+  </VirtualDirectory>
 </CodeLite_Project>

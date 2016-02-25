@@ -31,11 +31,14 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_core.h"
-
+#include "boot.h"
 
 /** @addtogroup USBD_USER
   * @{
   */
+extern void UsbEnterLowPowerModeHook(void);
+extern void UsbLeaveLowPowerModeHook(void);
+extern void UsbConnectHook(blt_bool connect);
 
 /** @addtogroup USBD_MSC_DEMO_USER_CALLBACKS
   * @{

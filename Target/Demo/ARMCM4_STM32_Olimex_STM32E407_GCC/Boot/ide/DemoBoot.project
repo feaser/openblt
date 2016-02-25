@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="DemoBoot" InternalType="">
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00010001N0005Debug000000000000]]>
-    </Plugin>
-  </Plugins>
   <VirtualDirectory Name="Demo">
     <VirtualDirectory Name="ARMCM4_STM32_Olimex_STM32E407_GCC">
       <VirtualDirectory Name="Boot">
@@ -161,6 +156,11 @@
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
   <Description/>
   <Dependencies/>
   <Settings Type="Dynamic Library">
@@ -354,43 +354,43 @@ continue
         </VirtualDirectory>
       </VirtualDirectory>
     </VirtualDirectory>
-    <VirtualDirectory Name="ARMCM4_STM32">
-      <VirtualDirectory Name="GCC">
-        <File Name="../../../../Source/ARMCM4_STM32/GCC/cstart.c"/>
-        <File Name="../../../../Source/ARMCM4_STM32/GCC/vectors.c"/>
-      </VirtualDirectory>
-      <File Name="../../../../Source/ARMCM4_STM32/can.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/can.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/cpu.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/cpu.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/flash.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/flash.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/nvm.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/nvm.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/timer.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/timer.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/types.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/uart.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/uart.h"/>
-      <File Name="../../../../Source/ARMCM4_STM32/usb.c"/>
-      <File Name="../../../../Source/ARMCM4_STM32/usb.h"/>
-    </VirtualDirectory>
     <File Name="../../../../Source/assert.c"/>
     <File Name="../../../../Source/assert.h"/>
     <File Name="../../../../Source/backdoor.c"/>
     <File Name="../../../../Source/backdoor.h"/>
     <File Name="../../../../Source/boot.c"/>
     <File Name="../../../../Source/boot.h"/>
+    <File Name="../../../../Source/can.h"/>
     <File Name="../../../../Source/com.c"/>
     <File Name="../../../../Source/com.h"/>
     <File Name="../../../../Source/cop.c"/>
     <File Name="../../../../Source/cop.h"/>
+    <File Name="../../../../Source/cpu.h"/>
     <File Name="../../../../Source/file.c"/>
     <File Name="../../../../Source/file.h"/>
     <File Name="../../../../Source/net.c"/>
     <File Name="../../../../Source/net.h"/>
+    <File Name="../../../../Source/nvm.h"/>
     <File Name="../../../../Source/plausibility.h"/>
+    <File Name="../../../../Source/timer.h"/>
+    <File Name="../../../../Source/uart.h"/>
+    <File Name="../../../../Source/usb.h"/>
     <File Name="../../../../Source/xcp.c"/>
     <File Name="../../../../Source/xcp.h"/>
+    <VirtualDirectory Name="ARMCM4_STM32">
+      <File Name="../../../../Source/ARMCM4_STM32/can.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/cpu.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/flash.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/flash.h"/>
+      <File Name="../../../../Source/ARMCM4_STM32/nvm.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/timer.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/types.h"/>
+      <File Name="../../../../Source/ARMCM4_STM32/uart.c"/>
+      <File Name="../../../../Source/ARMCM4_STM32/usb.c"/>
+      <VirtualDirectory Name="GCC">
+        <File Name="../../../../Source/ARMCM4_STM32/GCC/cstart.c"/>
+        <File Name="../../../../Source/ARMCM4_STM32/GCC/vectors.c"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
   </VirtualDirectory>
 </CodeLite_Project>

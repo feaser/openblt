@@ -45,7 +45,7 @@
  *  \attention This value must be updated if the memory reserved for the bootloader
  *             changes.
  */
-#define CPU_USER_PROGRAM_STARTADDR_PTR    (FlashGetUserProgBaseAddress() - 2)
+#define CPU_USER_PROGRAM_STARTADDR_PTR    (NvmGetUserProgBaseAddress() - 2)
 
 
 /****************************************************************************************

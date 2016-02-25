@@ -89,6 +89,10 @@ main.c \
 ../../../Source/net.h \
 ../../../Source/assert.c \
 ../../../Source/assert.h \
+../../../Source/cpu.h \
+../../../Source/uart.h \
+../../../Source/nvm.h \
+../../../Source/timer.h \
 ../../../Source/plausibility.h \
 ../../../Source/third_party/fatfs/src/diskio.h \
 ../../../Source/third_party/fatfs/src/ff.c \
@@ -115,13 +119,9 @@ main.c \
 ../../../Source/third_party/uip/uip/uipopt.h \
 ../../../Source/ARMCM3_LM3S/types.h \
 ../../../Source/ARMCM3_LM3S/cpu.c \
-../../../Source/ARMCM3_LM3S/cpu.h \
 ../../../Source/ARMCM3_LM3S/uart.c \
-../../../Source/ARMCM3_LM3S/uart.h \
 ../../../Source/ARMCM3_LM3S/nvm.c \
-../../../Source/ARMCM3_LM3S/nvm.h \
 ../../../Source/ARMCM3_LM3S/timer.c \
-../../../Source/ARMCM3_LM3S/timer.h \
 ../../../Source/ARMCM3_LM3S/flash.c \
 ../../../Source/ARMCM3_LM3S/flash.h \
 ../../../Source/ARMCM3_LM3S/GCC/vectors.c \
