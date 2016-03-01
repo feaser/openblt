@@ -71,7 +71,8 @@
  *
  * \hideinitializer
  */
-struct timer {
+struct timer
+{
   clock_time_t start;
   clock_time_t interval;
 };

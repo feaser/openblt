@@ -33,7 +33,8 @@
    of our application, and the memory required for this state is
    allocated together with each TCP connection. One application state
    for each TCP connection. */
-typedef struct hello_world_state {
+typedef struct hello_world_state
+{
   struct psock p;
   char inputbuffer[10];
   char name[40];

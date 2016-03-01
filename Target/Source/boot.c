@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -38,7 +38,7 @@
 
 
 /************************************************************************************//**
-** \brief     Initializes the bootloader core. 
+** \brief     Initializes the bootloader core.
 ** \return    none
 **
 ****************************************************************************************/
@@ -50,21 +50,21 @@ void BootInit(void)
   TimerInit();
   /* initialize the non-volatile memory driver */
   NvmInit();
-  #if (BOOT_FILE_SYS_ENABLE > 0)
+#if (BOOT_FILE_SYS_ENABLE > 0)
   /* initialize the file system module */
   FileInit();
-  #endif 
-  #if (BOOT_COM_ENABLE > 0)
+#endif
+#if (BOOT_COM_ENABLE > 0)
   /* initialize the communication module */
   ComInit();
-  #endif
+#endif
   /* initialize the backdoor entry */
   BackDoorInit();
 } /*** end of BootInit ***/
 
 
 /************************************************************************************//**
-** \brief     Task function of the bootloader core that drives the program. 
+** \brief     Task function of the bootloader core that drives the program.
 ** \return    none
 **
 ****************************************************************************************/
@@ -74,14 +74,14 @@ void BootTask(void)
   CopService();
   /* update the millisecond timer */
   TimerUpdate();
-  #if (BOOT_FILE_SYS_ENABLE > 0)
+#if (BOOT_FILE_SYS_ENABLE > 0)
   /* call worker task for updating firmware from locally attached file storage */
   FileTask();
-  #endif /* BOOT_FILE_SYS_ENABLE > 0 */
-  #if (BOOT_COM_ENABLE > 0)
+#endif /* BOOT_FILE_SYS_ENABLE > 0 */
+#if (BOOT_COM_ENABLE > 0)
   /* process possibly pending communication data */
   ComTask();
-  #endif
+#endif
   /* control the backdoor */
   BackDoorCheck();
 } /*** end of BootTask ***/

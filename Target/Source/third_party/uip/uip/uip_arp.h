@@ -7,13 +7,13 @@
  * \addtogroup uiparp
  * @{
  */
- 
+
 /**
  * \file
  * Macros and definitions for the ARP module.
  * \author Adam Dunkels <adam@dunkels.com>
  */
-  
+
 
 /*
  * Copyright (c) 2001-2003, Adam Dunkels.
@@ -60,7 +60,8 @@ extern struct uip_eth_addr uip_ethaddr;
 /**
  * The Ethernet header.
  */
-struct uip_eth_hdr {
+struct uip_eth_hdr
+{
   struct uip_eth_addr dest;
   struct uip_eth_addr src;
   u16_t type;

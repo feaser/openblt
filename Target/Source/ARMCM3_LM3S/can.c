@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -66,8 +66,8 @@ static const blt_int16u canBitNum2Mask[] =
 
 
 /************************************************************************************//**
-** \brief     Attempts to match the bittiming parameters to the requested baudrate 
-**            for a sample point between 65 and 75%, through a linear search 
+** \brief     Attempts to match the bittiming parameters to the requested baudrate
+**            for a sample point between 65 and 75%, through a linear search
 **            algorithm. It is based on the equation:
 **              baudrate = CAN Clock Freq/((1+PropSeg+Phase1Seg+Phase2Seg)*Prescaler)
 ** \return    BLT_TRUE if a valid bittiming configuration was found and set. BLT_FALSE
@@ -91,7 +91,7 @@ static blt_int8u CanSetBittiming(void)
     {
       samplepoint = ((1+bitClkParms.uSyncPropPhase1Seg) * 100) / (1+bitClkParms.uSyncPropPhase1Seg+bitClkParms.uPhase2Seg);
       /* check that sample points is within the preferred range */
-      if ( (samplepoint >= 65) && (samplepoint <= 75) )
+      if ((samplepoint >= 65) && (samplepoint <= 75))
       {
         /* does a prescaler exist to get the exact baudrate with these bittiming
          * settings?
@@ -104,7 +104,7 @@ static blt_int8u CanSetBittiming(void)
            */
           if (bitClkParms.uPhase2Seg < 4)
           {
-           bitClkParms.uSJW = bitClkParms.uPhase2Seg;
+            bitClkParms.uSJW = bitClkParms.uPhase2Seg;
           }
           /* calculate the actual prescaler value */
           bitClkParms.uQuantumPrescaler = ((BOOT_CPU_XTAL_SPEED_KHZ*1000)/BOOT_COM_CAN_BAUDRATE)/(1+bitClkParms.uSyncPropPhase1Seg+bitClkParms.uPhase2Seg);
@@ -131,10 +131,10 @@ void CanInit(void)
   blt_bool      result;
   tCANMsgObject rxMsgObject;
 
-  /* the current implementation supports CAN0. throw an assertion error in case a 
-   * different CAN channel is configured.  
+  /* the current implementation supports CAN0. throw an assertion error in case a
+   * different CAN channel is configured.
    */
-  ASSERT_CT(BOOT_COM_CAN_CHANNEL_INDEX == 0); 
+  ASSERT_CT(BOOT_COM_CAN_CHANNEL_INDEX == 0);
   /* enable the CAN controller */
   SysCtlPeripheralEnable(SYSCTL_PERIPH_CAN0);
   /* reset the state of the CAN controller, including the message objects */

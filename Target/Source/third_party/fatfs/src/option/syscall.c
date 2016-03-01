@@ -18,17 +18,17 @@
 /  returned, the f_mount function fails with FR_INT_ERR.
 */
 
-int ff_cre_syncobj (	/* 1:Function succeeded, 0:Could not create due to any error */
-	BYTE vol,			/* Corresponding logical drive being processed */
-	_SYNC_t *sobj		/* Pointer to return the created sync object */
+int ff_cre_syncobj(  /* 1:Function succeeded, 0:Could not create due to any error */
+  BYTE vol,			/* Corresponding logical drive being processed */
+  _SYNC_t *sobj		/* Pointer to return the created sync object */
 )
 {
-	int ret;
+  int ret;
 //	static _SYNC_t sem[_VOLUMES];	/* FreeRTOS */
 
 
-	*sobj = CreateMutex(NULL, FALSE, NULL);		/* Win32 */
-	ret = (*sobj != INVALID_HANDLE_VALUE);
+  *sobj = CreateMutex(NULL, FALSE, NULL);		/* Win32 */
+  ret = (*sobj != INVALID_HANDLE_VALUE);
 
 //	*sobj = SyncObjects[vol];		/* uITRON (give a static created sync object) */
 //	ret = 1;						/* The initial value of the semaphore must be 1. */
@@ -41,7 +41,7 @@ int ff_cre_syncobj (	/* 1:Function succeeded, 0:Could not create due to any erro
 //	*sobj = sem[vol];
 //	ret = (*sobj != NULL);
 
-	return ret;
+  return ret;
 }
 
 
@@ -54,14 +54,14 @@ int ff_cre_syncobj (	/* 1:Function succeeded, 0:Could not create due to any erro
 /  returned, the f_mount function fails with FR_INT_ERR.
 */
 
-int ff_del_syncobj (	/* 1:Function succeeded, 0:Could not delete due to any error */
-	_SYNC_t sobj		/* Sync object tied to the logical drive to be deleted */
+int ff_del_syncobj(  /* 1:Function succeeded, 0:Could not delete due to any error */
+  _SYNC_t sobj		/* Sync object tied to the logical drive to be deleted */
 )
 {
-	int ret;
+  int ret;
 
 
-	ret = CloseHandle(sobj);	/* Win32 */
+  ret = CloseHandle(sobj);	/* Win32 */
 
 //	ret = 1;					/* uITRON (nothing to do) */
 
@@ -70,7 +70,7 @@ int ff_del_syncobj (	/* 1:Function succeeded, 0:Could not delete due to any erro
 
 //	ret = 1;					/* FreeRTOS (nothing to do) */
 
-	return ret;
+  return ret;
 }
 
 
@@ -82,13 +82,13 @@ int ff_del_syncobj (	/* 1:Function succeeded, 0:Could not delete due to any erro
 /  When a FALSE is returned, the file function fails with FR_TIMEOUT.
 */
 
-int ff_req_grant (	/* TRUE:Got a grant to access the volume, FALSE:Could not get a grant */
-	_SYNC_t sobj	/* Sync object to wait */
+int ff_req_grant(  /* TRUE:Got a grant to access the volume, FALSE:Could not get a grant */
+  _SYNC_t sobj	/* Sync object to wait */
 )
 {
-	int ret;
+  int ret;
 
-	ret = (WaitForSingleObject(sobj, _FS_TIMEOUT) == WAIT_OBJECT_0);	/* Win32 */
+  ret = (WaitForSingleObject(sobj, _FS_TIMEOUT) == WAIT_OBJECT_0);	/* Win32 */
 
 //	ret = (wai_sem(sobj) == E_OK);				/* uITRON */
 
@@ -97,7 +97,7 @@ int ff_req_grant (	/* TRUE:Got a grant to access the volume, FALSE:Could not get
 
 //	ret = (xSemaphoreTake(sobj, _FS_TIMEOUT) == pdTRUE);	/* FreeRTOS */
 
-	return ret;
+  return ret;
 }
 
 
@@ -108,11 +108,11 @@ int ff_req_grant (	/* TRUE:Got a grant to access the volume, FALSE:Could not get
 /* This function is called on leaving file functions to unlock the volume.
 */
 
-void ff_rel_grant (
-	_SYNC_t sobj	/* Sync object to be signaled */
+void ff_rel_grant(
+  _SYNC_t sobj	/* Sync object to be signaled */
 )
 {
-	ReleaseMutex(sobj);		/* Win32 */
+  ReleaseMutex(sobj);		/* Win32 */
 
 //	sig_sem(sobj);			/* uITRON */
 
@@ -133,11 +133,11 @@ void ff_rel_grant (
 /* If a NULL is returned, the file function fails with FR_NOT_ENOUGH_CORE.
 */
 
-void* ff_memalloc (	/* Returns pointer to the allocated memory block */
-	UINT msize		/* Number of bytes to allocate */
+void *ff_memalloc(  /* Returns pointer to the allocated memory block */
+  UINT msize		/* Number of bytes to allocate */
 )
 {
-	return malloc(msize);
+  return malloc(msize);
 }
 
 
@@ -145,11 +145,11 @@ void* ff_memalloc (	/* Returns pointer to the allocated memory block */
 /* Free a memory block                                                    */
 /*------------------------------------------------------------------------*/
 
-void ff_memfree (
-	void* mblock	/* Pointer to the memory block to free */
+void ff_memfree(
+  void *mblock	/* Pointer to the memory block to free */
 )
 {
-	free(mblock);
+  free(mblock);
 }
 
 #endif

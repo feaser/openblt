@@ -71,21 +71,22 @@ void smtp_init(void);
 /* Functions. */
 void smtp_configure(char *localhostname, u16_t *smtpserver);
 unsigned char smtp_send(char *to, char *from,
-			char *subject, char *msg,
-			u16_t msglen);
+                        char *subject, char *msg,
+                        u16_t msglen);
 #define SMTP_SEND(to, cc, from, subject, msg) \
         smtp_send(to, cc, from, subject, msg, strlen(msg))
 
 void smtp_appcall(void);
 
-struct smtp_state {
+struct smtp_state
+{
   u8_t state;
   char *to;
   char *from;
   char *subject;
   char *msg;
   u16_t msglen;
-  
+
   u16_t sentlen, textlen;
   u16_t sendptr;
 

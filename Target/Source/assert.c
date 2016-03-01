@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -48,7 +48,7 @@ static volatile blt_int32u assert_failure_line;
 
 
 /************************************************************************************//**
-** \brief     Called when a runtime assertion failed. It stores information about where 
+** \brief     Called when a runtime assertion failed. It stores information about where
 **            the assertion occurred and halts the software program.
 ** \param     file   Name of the source file where the assertion occurred.
 ** \param     line   Linenumber in the source file where the assertion occurred.
@@ -61,10 +61,10 @@ void AssertFailure(blt_char *file, blt_int32u line)
   assert_failure_file = file;
   assert_failure_line = line;
   /* hang the software so that it requires a hard reset */
-  for(;;) 
-  { 
+  for (;;)
+  {
     /* keep servicing the watchdog so that this one does not cause a reset */
-    CopService(); 
+    CopService();
   }
 } /*** end of AssertFailure ***/
 #endif /* !NDEBUG */

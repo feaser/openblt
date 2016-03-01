@@ -37,7 +37,8 @@
 
 #define HTTPD_FS_STATISTICS 1
 
-struct httpd_fs_file {
+struct httpd_fs_file
+{
   char *data;
   int len;
 };

@@ -46,7 +46,8 @@
 
 static struct dhcpc_state s;
 
-struct dhcp_msg {
+struct dhcp_msg
+{
   u8_t op, htype, hlen, hops;
   u8_t xid[4];
   u16_t secs, flags;
@@ -186,12 +187,12 @@ send_request(void)
   struct dhcp_msg *m = (struct dhcp_msg *)uip_appdata;
 
   create_msg(m);
-  
+
   end = add_msg_type(&m->options[4], DHCPREQUEST);
   end = add_server_id(end);
   end = add_req_ipaddr(end);
   end = add_end(end);
-  
+
   uip_send(uip_appdata, end - (u8_t *)uip_appdata);
 }
 /*---------------------------------------------------------------------------*/
@@ -201,28 +202,30 @@ parse_options(u8_t *optptr, int len)
   u8_t *end = optptr + len;
   u8_t type = 0;
 
-  while(optptr < end) {
-    switch(*optptr) {
-    case DHCP_OPTION_SUBNET_MASK:
-      memcpy(s.netmask, optptr + 2, 4);
-      break;
-    case DHCP_OPTION_ROUTER:
-      memcpy(s.default_router, optptr + 2, 4);
-      break;
-    case DHCP_OPTION_DNS_SERVER:
-      memcpy(s.dnsaddr, optptr + 2, 4);
-      break;
-    case DHCP_OPTION_MSG_TYPE:
-      type = *(optptr + 2);
-      break;
-    case DHCP_OPTION_SERVER_ID:
-      memcpy(s.serverid, optptr + 2, 4);
-      break;
-    case DHCP_OPTION_LEASE_TIME:
-      memcpy(s.lease_time, optptr + 2, 4);
-      break;
-    case DHCP_OPTION_END:
-      return type;
+  while (optptr < end)
+  {
+    switch (*optptr)
+    {
+      case DHCP_OPTION_SUBNET_MASK:
+        memcpy(s.netmask, optptr + 2, 4);
+        break;
+      case DHCP_OPTION_ROUTER:
+        memcpy(s.default_router, optptr + 2, 4);
+        break;
+      case DHCP_OPTION_DNS_SERVER:
+        memcpy(s.dnsaddr, optptr + 2, 4);
+        break;
+      case DHCP_OPTION_MSG_TYPE:
+        type = *(optptr + 2);
+        break;
+      case DHCP_OPTION_SERVER_ID:
+        memcpy(s.serverid, optptr + 2, 4);
+        break;
+      case DHCP_OPTION_LEASE_TIME:
+        memcpy(s.lease_time, optptr + 2, 4);
+        break;
+      case DHCP_OPTION_END:
+        return type;
     }
 
     optptr += optptr[1] + 2;
@@ -234,10 +237,11 @@ static u8_t
 parse_msg(void)
 {
   struct dhcp_msg *m = (struct dhcp_msg *)uip_appdata;
-  
-  if(m->op == DHCP_REPLY &&
-     memcmp(m->xid, xid, sizeof(xid)) == 0 &&
-     memcmp(m->chaddr, s.mac_addr, s.mac_len) == 0) {
+
+  if (m->op == DHCP_REPLY &&
+      memcmp(m->xid, xid, sizeof(xid)) == 0 &&
+      memcmp(m->chaddr, s.mac_addr, s.mac_len) == 0)
+  {
     memcpy(s.ipaddr, m->yiaddr, 4);
     return parse_options(&m->options[4], uip_datalen());
   }
@@ -248,73 +252,84 @@ static
 PT_THREAD(handle_dhcp(void))
 {
   PT_BEGIN(&s.pt);
-  
+
   /* try_again:*/
   s.state = STATE_SENDING;
   s.ticks = CLOCK_SECOND;
 
-  do {
+  do
+  {
     send_discover();
     timer_set(&s.timer, s.ticks);
     PT_YIELD(&s.pt);
     PT_WAIT_UNTIL(&s.pt, uip_newdata() || timer_expired(&s.timer));
 
-    if(uip_newdata() && parse_msg() == DHCPOFFER) {
+    if (uip_newdata() && parse_msg() == DHCPOFFER)
+    {
       s.state = STATE_OFFER_RECEIVED;
       break;
     }
 
-    if(s.ticks < CLOCK_SECOND * 60) {
+    if (s.ticks < CLOCK_SECOND * 60)
+    {
       s.ticks *= 2;
     }
-  } while(s.state != STATE_OFFER_RECEIVED);
-  
+  }
+  while (s.state != STATE_OFFER_RECEIVED);
+
   s.ticks = CLOCK_SECOND;
 
-  do {
+  do
+  {
     send_request();
     timer_set(&s.timer, s.ticks);
     PT_YIELD(&s.pt);
     PT_WAIT_UNTIL(&s.pt, uip_newdata() || timer_expired(&s.timer));
 
-    if(uip_newdata() && parse_msg() == DHCPACK) {
+    if (uip_newdata() && parse_msg() == DHCPACK)
+    {
       s.state = STATE_CONFIG_RECEIVED;
       break;
     }
 
-    if(s.ticks <= CLOCK_SECOND * 10) {
+    if (s.ticks <= CLOCK_SECOND * 10)
+    {
       s.ticks += CLOCK_SECOND;
-    } else {
+    }
+    else
+    {
       PT_RESTART(&s.pt);
     }
-  } while(s.state != STATE_CONFIG_RECEIVED);
-  
+  }
+  while (s.state != STATE_CONFIG_RECEIVED);
+
 #if 0
   printf("Got IP address %d.%d.%d.%d\n",
-	 uip_ipaddr1(s.ipaddr), uip_ipaddr2(s.ipaddr),
-	 uip_ipaddr3(s.ipaddr), uip_ipaddr4(s.ipaddr));
+         uip_ipaddr1(s.ipaddr), uip_ipaddr2(s.ipaddr),
+         uip_ipaddr3(s.ipaddr), uip_ipaddr4(s.ipaddr));
   printf("Got netmask %d.%d.%d.%d\n",
-	 uip_ipaddr1(s.netmask), uip_ipaddr2(s.netmask),
-	 uip_ipaddr3(s.netmask), uip_ipaddr4(s.netmask));
+         uip_ipaddr1(s.netmask), uip_ipaddr2(s.netmask),
+         uip_ipaddr3(s.netmask), uip_ipaddr4(s.netmask));
   printf("Got DNS server %d.%d.%d.%d\n",
-	 uip_ipaddr1(s.dnsaddr), uip_ipaddr2(s.dnsaddr),
-	 uip_ipaddr3(s.dnsaddr), uip_ipaddr4(s.dnsaddr));
+         uip_ipaddr1(s.dnsaddr), uip_ipaddr2(s.dnsaddr),
+         uip_ipaddr3(s.dnsaddr), uip_ipaddr4(s.dnsaddr));
   printf("Got default router %d.%d.%d.%d\n",
-	 uip_ipaddr1(s.default_router), uip_ipaddr2(s.default_router),
-	 uip_ipaddr3(s.default_router), uip_ipaddr4(s.default_router));
+         uip_ipaddr1(s.default_router), uip_ipaddr2(s.default_router),
+         uip_ipaddr3(s.default_router), uip_ipaddr4(s.default_router));
   printf("Lease expires in %ld seconds\n",
-	 ntohs(s.lease_time[0])*65536ul + ntohs(s.lease_time[1]));
+         ntohs(s.lease_time[0])*65536ul + ntohs(s.lease_time[1]));
 #endif
 
   dhcpc_configured(&s);
-  
+
   /*  timer_stop(&s.timer);*/
 
   /*
    * PT_END restarts the thread so we do this instead. Eventually we
    * should reacquire expired leases here.
    */
-  while(1) {
+  while (1)
+  {
     PT_YIELD(&s.pt);
   }
 
@@ -325,14 +340,15 @@ void
 dhcpc_init(const void *mac_addr, int mac_len)
 {
   uip_ipaddr_t addr;
-  
+
   s.mac_addr = mac_addr;
   s.mac_len  = mac_len;
 
   s.state = STATE_INITIAL;
   uip_ipaddr(addr, 255,255,255,255);
   s.conn = uip_udp_new(&addr, HTONS(DHCPC_SERVER_PORT));
-  if(s.conn != NULL) {
+  if (s.conn != NULL)
+  {
     uip_udp_bind(s.conn, HTONS(DHCPC_CLIENT_PORT));
   }
   PT_INIT(&s.pt);
@@ -348,8 +364,9 @@ void
 dhcpc_request(void)
 {
   u16_t ipaddr[2];
-  
-  if(s.state == STATE_INITIAL) {
+
+  if (s.state == STATE_INITIAL)
+  {
     uip_ipaddr(ipaddr, 0,0,0,0);
     uip_sethostaddr(ipaddr);
     /*    handle_dhcp(PROCESS_EVENT_NONE, NULL);*/

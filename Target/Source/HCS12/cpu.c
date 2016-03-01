@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -41,7 +41,7 @@
 * Macro definitions
 ****************************************************************************************/
 /** \brief Start address of the user program. This is the address of the reset vector
- *         in the user program's vector table.  
+ *         in the user program's vector table.
  *  \attention This value must be updated if the memory reserved for the bootloader
  *             changes.
  */
@@ -64,7 +64,7 @@ extern void reset_handler(void);                      /* implemented in C startu
 
 /************************************************************************************//**
 ** \brief     Starts the user program, if one is present. In this case this function
-**            does not return. 
+**            does not return.
 ** \return    none.
 **
 ****************************************************************************************/
@@ -78,25 +78,25 @@ void CpuStartUserProgram(void)
     /* not a valid user program so it cannot be started */
     return;
   }
-  #if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+#if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
   /* invoke callback */
   if (CpuUserProgramStartHook() == BLT_FALSE)
   {
     /* callback requests the user program to not be started */
     return;
   }
-  #endif
-  #if (BOOT_COM_ENABLE > 0)
+#endif
+#if (BOOT_COM_ENABLE > 0)
   /* release the communication interface */
   ComFree();
-  #endif
+#endif
   /* reset the timer */
   TimerReset();
   /* set the address where the bootloader needs to jump to. this is the address of
    * the last entry in the user program's vector table. this address points to the
    * user program's reset handler.
    */
-  pProgResetHandler = (void(*)(void))(*((blt_int16u*)CPU_USER_PROGRAM_STARTADDR_PTR));
+  pProgResetHandler = (void(*)(void))(*((blt_int16u *)CPU_USER_PROGRAM_STARTADDR_PTR));
   /* start the user program by activating its reset interrupt service routine */
   pProgResetHandler();
 } /*** end of CpuStartUserProgram ***/
@@ -106,7 +106,7 @@ void CpuStartUserProgram(void)
 ** \brief     Copies data from the source to the destination address.
 ** \param     dest Destination address for the data.
 ** \param     src  Source address of the data.
-** \param     len  length of the data in bytes. 
+** \param     len  length of the data in bytes.
 ** \return    none.
 **
 ****************************************************************************************/
@@ -119,7 +119,7 @@ void CpuMemCopy(blt_addr dest, blt_addr src, blt_int16u len)
   to = (blt_int8u *)dest;
 
   /* copy all bytes from source address to destination address */
-  while(len-- > 0)
+  while (len-- > 0)
   {
     /* store byte value from source to destination */
     *to++ = *from++;

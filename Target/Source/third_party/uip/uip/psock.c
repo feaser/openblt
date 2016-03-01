@@ -73,7 +73,7 @@
 /*---------------------------------------------------------------------------*/
 static void
 buf_setup(struct psock_buf *buf,
-	  u8_t *bufptr, u16_t bufsize)
+          u8_t *bufptr, u16_t bufsize)
 {
   buf->ptr = bufptr;
   buf->left = bufsize;
@@ -81,23 +81,28 @@ buf_setup(struct psock_buf *buf,
 /*---------------------------------------------------------------------------*/
 static u8_t
 buf_bufdata(struct psock_buf *buf, u16_t len,
-	    u8_t **dataptr, u16_t *datalen)
+            u8_t **dataptr, u16_t *datalen)
 {
-  if(*datalen < buf->left) {
+  if (*datalen < buf->left)
+  {
     memcpy(buf->ptr, *dataptr, *datalen);
     buf->ptr += *datalen;
     buf->left -= *datalen;
     *dataptr += *datalen;
     *datalen = 0;
     return BUF_NOT_FULL;
-  } else if(*datalen == buf->left) {
+  }
+  else if (*datalen == buf->left)
+  {
     memcpy(buf->ptr, *dataptr, *datalen);
     buf->ptr += *datalen;
     buf->left = 0;
     *dataptr += *datalen;
     *datalen = 0;
     return BUF_FULL;
-  } else {
+  }
+  else
+  {
     memcpy(buf->ptr, *dataptr, buf->left);
     buf->ptr += buf->left;
     *datalen -= buf->left;
@@ -109,45 +114,54 @@ buf_bufdata(struct psock_buf *buf, u16_t len,
 /*---------------------------------------------------------------------------*/
 static u8_t
 buf_bufto(register struct psock_buf *buf, u8_t endmarker,
-	  register u8_t **dataptr, register u16_t *datalen)
+          register u8_t **dataptr, register u16_t *datalen)
 {
   u8_t c;
-  while(buf->left > 0 && *datalen > 0) {
+  while (buf->left > 0 && *datalen > 0)
+  {
     c = *buf->ptr = **dataptr;
     ++*dataptr;
     ++buf->ptr;
     --*datalen;
     --buf->left;
-    
-    if(c == endmarker) {
+
+    if (c == endmarker)
+    {
       return BUF_FOUND;
     }
   }
 
-  if(*datalen == 0) {
+  if (*datalen == 0)
+  {
     return BUF_NOT_FOUND;
   }
 
-  while(*datalen > 0) {
+  while (*datalen > 0)
+  {
     c = **dataptr;
     --*datalen;
     ++*dataptr;
-    
-    if(c == endmarker) {
+
+    if (c == endmarker)
+    {
       return BUF_FOUND | BUF_FULL;
     }
   }
-  
+
   return BUF_FULL;
 }
 /*---------------------------------------------------------------------------*/
 static char
 send_data(register struct psock *s)
 {
-  if(s->state != STATE_DATA_SENT || uip_rexmit()) {
-    if(s->sendlen > uip_mss()) {
+  if (s->state != STATE_DATA_SENT || uip_rexmit())
+  {
+    if (s->sendlen > uip_mss())
+    {
       uip_send(s->sendptr, uip_mss());
-    } else {
+    }
+    else
+    {
       uip_send(s->sendptr, s->sendlen);
     }
     s->state = STATE_DATA_SENT;
@@ -159,11 +173,15 @@ send_data(register struct psock *s)
 static char
 data_acked(register struct psock *s)
 {
-  if(s->state == STATE_DATA_SENT && uip_acked()) {
-    if(s->sendlen > uip_mss()) {
+  if (s->state == STATE_DATA_SENT && uip_acked())
+  {
+    if (s->sendlen > uip_mss())
+    {
       s->sendlen -= uip_mss();
       s->sendptr += uip_mss();
-    } else {
+    }
+    else
+    {
       s->sendptr += s->sendlen;
       s->sendlen = 0;
     }
@@ -174,12 +192,13 @@ data_acked(register struct psock *s)
 }
 /*---------------------------------------------------------------------------*/
 PT_THREAD(psock_send(register struct psock *s, const char *buf,
-		     unsigned int len))
+                     unsigned int len))
 {
   PT_BEGIN(&s->psockpt);
 
   /* If there is no data to send, we exit immediately. */
-  if(len == 0) {
+  if (len == 0)
+  {
     PT_EXIT(&s->psockpt);
   }
 
@@ -192,7 +211,8 @@ PT_THREAD(psock_send(register struct psock *s, const char *buf,
 
   /* We loop here until all data is sent. The s->sendlen variable is
      updated by the data_sent() function. */
-  while(s->sendlen > 0) {
+  while (s->sendlen > 0)
+  {
 
     /*
      * The condition for this PT_WAIT_UNTIL is a little tricky: the
@@ -208,17 +228,18 @@ PT_THREAD(psock_send(register struct psock *s, const char *buf,
   }
 
   s->state = STATE_NONE;
-  
+
   PT_END(&s->psockpt);
 }
 /*---------------------------------------------------------------------------*/
 PT_THREAD(psock_generator_send(register struct psock *s,
-			       unsigned short (*generate)(void *), void *arg))
+                               unsigned short(*generate)(void *), void *arg))
 {
   PT_BEGIN(&s->psockpt);
 
   /* Ensure that there is a generator function to call. */
-  if(generate == NULL) {
+  if (generate == NULL)
+  {
     PT_EXIT(&s->psockpt);
   }
 
@@ -227,19 +248,22 @@ PT_THREAD(psock_generator_send(register struct psock *s,
   s->sendlen = generate(arg);
   s->sendptr = uip_appdata;
 
-  s->state = STATE_NONE;  
-  do {
+  s->state = STATE_NONE;
+  do
+  {
     /* Call the generator function again if we are called to perform a
        retransmission. */
-    if(uip_rexmit()) {
+    if (uip_rexmit())
+    {
       generate(arg);
     }
     /* Wait until all data is sent and acknowledged. */
     PT_WAIT_UNTIL(&s->psockpt, data_acked(s) & send_data(s));
-  } while(s->sendlen > 0);
-  
+  }
+  while (s->sendlen > 0);
+
   s->state = STATE_NONE;
-  
+
   PT_END(&s->psockpt);
 }
 /*---------------------------------------------------------------------------*/
@@ -252,18 +276,25 @@ psock_datalen(struct psock *psock)
 char
 psock_newdata(struct psock *s)
 {
-  if(s->readlen > 0) {
+  if (s->readlen > 0)
+  {
     /* There is data in the uip_appdata buffer that has not yet been
        read with the PSOCK_READ functions. */
     return 1;
-  } else if(s->state == STATE_READ) {
+  }
+  else if (s->state == STATE_READ)
+  {
     /* All data in uip_appdata buffer already consumed. */
     s->state = STATE_BLOCKED_NEWDATA;
     return 0;
-  } else if(uip_newdata()) {
+  }
+  else if (uip_newdata())
+  {
     /* There is new data that has not been consumed. */
     return 1;
-  } else {
+  }
+  else
+  {
     /* There is no new data. */
     return 0;
   }
@@ -274,22 +305,26 @@ PT_THREAD(psock_readto(register struct psock *psock, unsigned char c))
   PT_BEGIN(&psock->psockpt);
 
   buf_setup(&psock->buf, psock->bufptr, psock->bufsize);
-  
+
   /* XXX: Should add buf_checkmarker() before do{} loop, if
      incoming data has been handled while waiting for a write. */
 
-  do {
-    if(psock->readlen == 0) {
+  do
+  {
+    if (psock->readlen == 0)
+    {
       PT_WAIT_UNTIL(&psock->psockpt, psock_newdata(psock));
       psock->state = STATE_READ;
       psock->readptr = (u8_t *)uip_appdata;
       psock->readlen = uip_datalen();
     }
-  } while((buf_bufto(&psock->buf, c,
-		     &psock->readptr,
-		     &psock->readlen) & BUF_FOUND) == 0);
-  
-  if(psock_datalen(psock) == 0) {
+  }
+  while ((buf_bufto(&psock->buf, c,
+                    &psock->readptr,
+                    &psock->readlen) & BUF_FOUND) == 0);
+
+  if (psock_datalen(psock) == 0)
+  {
     psock->state = STATE_NONE;
     PT_RESTART(&psock->psockpt);
   }
@@ -301,23 +336,27 @@ PT_THREAD(psock_readbuf(register struct psock *psock))
   PT_BEGIN(&psock->psockpt);
 
   buf_setup(&psock->buf, psock->bufptr, psock->bufsize);
-  
+
   /* XXX: Should add buf_checkmarker() before do{} loop, if
      incoming data has been handled while waiting for a write. */
 
-  do {
-    if(psock->readlen == 0) {
+  do
+  {
+    if (psock->readlen == 0)
+    {
       PT_WAIT_UNTIL(&psock->psockpt, psock_newdata(psock));
       printf("Waited for newdata\n");
       psock->state = STATE_READ;
       psock->readptr = (u8_t *)uip_appdata;
       psock->readlen = uip_datalen();
     }
-  } while(buf_bufdata(&psock->buf, psock->bufsize,
-			 &psock->readptr,
-			 &psock->readlen) != BUF_FULL);
+  }
+  while (buf_bufdata(&psock->buf, psock->bufsize,
+                     &psock->readptr,
+                     &psock->readlen) != BUF_FULL);
 
-  if(psock_datalen(psock) == 0) {
+  if (psock_datalen(psock) == 0)
+  {
     psock->state = STATE_NONE;
     PT_RESTART(&psock->psockpt);
   }

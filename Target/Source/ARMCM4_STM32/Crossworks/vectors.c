@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -47,7 +47,7 @@ extern void reset_handler(void);                      /* implemented in cstart.s
 * External data declarations
 ****************************************************************************************/
 /** \brief Stack end address (memory.x)  */
-extern blt_int32u __stack_end__;                      
+extern blt_int32u __stack_end__;
 
 
 /************************************************************************************//**
@@ -70,13 +70,13 @@ typedef union
 {
   void (*func)(void);                                 /**< for ISR function pointers   */
   blt_int32u ptr;                                     /**< for stack pointer entry     */
-}tIsrFunc;
+} tIsrFunc;
 
 /** \brief Interrupt vector table. */
-__attribute__ ((section(".vectors")))
+__attribute__((section(".vectors")))
 const tIsrFunc _vectors[] =
 {
-  { .ptr = (blt_int32u)&__stack_end__ },              /* the initial stack pointer     */
+  { .ptr = (blt_int32u) &__stack_end__ },             /* the initial stack pointer     */
   reset_handler,                                      /* the reset handler             */
   UnusedISR,                                          /* NMI Handler                   */
   UnusedISR,                                          /* Hard Fault Handler            */

@@ -36,7 +36,8 @@
 #include "uip_timer.h"
 #include "pt.h"
 
-struct dhcpc_state {
+struct dhcpc_state
+{
   struct pt pt;
   char state;
   struct uip_udp_conn *conn;
@@ -44,7 +45,7 @@ struct dhcpc_state {
   u16_t ticks;
   const void *mac_addr;
   int mac_len;
-  
+
   u8_t serverid[4];
 
   u16_t lease_time[2];

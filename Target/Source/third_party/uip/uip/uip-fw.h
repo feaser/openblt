@@ -51,14 +51,15 @@
 /**
  * Representation of a uIP network interface.
  */
-struct uip_fw_netif {
+struct uip_fw_netif
+{
   struct uip_fw_netif *next;  /**< Pointer to the next interface when
 				 linked in a list. */
   u16_t ipaddr[2];            /**< The IP address of this interface. */
   u16_t netmask[2];           /**< The netmask of the interface. */
   u8_t (* output)(void);
-                              /**< A pointer to the function that
-				 sends a packet. */
+  /**< A pointer to the function that
+  sends a packet. */
 };
 
 /**

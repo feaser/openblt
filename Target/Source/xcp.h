@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 #ifndef XCP_H
@@ -56,13 +56,13 @@
 #define XCP_STATION_ID_STRING          "OpenBLT"
 
 #if (BOOT_CPU_BYTE_ORDER_MOTOROLA > 0)
-  /** \brief XCP byte ordering according to the Motorola (little-endian). */
-  #define XCP_MOTOROLA_FORMAT          (0x01)
+/** \brief XCP byte ordering according to the Motorola (little-endian). */
+#define XCP_MOTOROLA_FORMAT          (0x01)
 #else
-  /** \brief XCP byte ordering according to the Intel (big-endian). */
-  #define XCP_MOTOROLA_FORMAT          (0x00)
+/** \brief XCP byte ordering according to the Intel (big-endian). */
+#define XCP_MOTOROLA_FORMAT          (0x00)
 #endif
-  
+
 /** \brief Enable (=1) or disable (=0) support for the calibration resource. This is
  *         required when data is written to RAM during the XCP session.
  */
@@ -113,7 +113,7 @@
 #define XCP_RES_PGM            (0x10)
 /** \brief data STIMulation resource. */
 #define XCP_RES_STIM           (0x08)
-/** \brief Data AcQuisition resource. */ 
+/** \brief Data AcQuisition resource. */
 #define XCP_RES_DAQ            (0x04)
 /** \brief CALibration and PAGing resource. */
 #define XCP_RES_CALPAG         (0x01)

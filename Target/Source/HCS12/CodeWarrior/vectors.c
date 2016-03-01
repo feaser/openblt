@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -42,7 +42,7 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-/** \brief Start address of the user program's vector table. 
+/** \brief Start address of the user program's vector table.
  *  \attention This value must be updated if the memory reserved for the bootloader
  *             changes.
  */
@@ -66,7 +66,7 @@ extern void near main(void);
 ****************************************************************************************/
 /** \brief Type for vector table entries. */
 typedef void (*near tIsrFunc)(void);
-                          
+
 
 /************************************************************************************//**
 ** \brief     Wrapper for calling the default reset handler which puts the communication
@@ -94,7 +94,7 @@ void reset_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -107,7 +107,7 @@ void Vector0_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (0 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (0 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -119,7 +119,7 @@ void Vector0_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -132,7 +132,7 @@ void Vector1_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (1 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (1 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -144,7 +144,7 @@ void Vector1_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -157,7 +157,7 @@ void Vector2_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (2 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (2 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -169,7 +169,7 @@ void Vector2_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -182,7 +182,7 @@ void Vector3_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (3 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (3 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -194,7 +194,7 @@ void Vector3_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -207,7 +207,7 @@ void Vector4_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (4 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (4 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -219,7 +219,7 @@ void Vector4_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -232,7 +232,7 @@ void Vector5_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (5 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (5 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -244,7 +244,7 @@ void Vector5_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -257,7 +257,7 @@ void Vector6_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (6 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (6 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -269,7 +269,7 @@ void Vector6_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -282,7 +282,7 @@ void Vector7_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (7 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (7 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -294,7 +294,7 @@ void Vector7_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -307,7 +307,7 @@ void Vector8_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (8 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (8 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -319,7 +319,7 @@ void Vector8_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -332,7 +332,7 @@ void Vector9_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (9 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (9 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -344,7 +344,7 @@ void Vector9_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -357,7 +357,7 @@ void Vector10_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (10 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (10 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -369,7 +369,7 @@ void Vector10_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -382,7 +382,7 @@ void Vector11_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (11 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (11 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -394,7 +394,7 @@ void Vector11_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -407,7 +407,7 @@ void Vector12_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (12 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (12 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -419,7 +419,7 @@ void Vector12_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -432,7 +432,7 @@ void Vector13_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (13 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (13 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -444,7 +444,7 @@ void Vector13_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -457,7 +457,7 @@ void Vector14_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (14 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (14 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -469,7 +469,7 @@ void Vector14_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -482,7 +482,7 @@ void Vector15_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (15 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (15 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -494,7 +494,7 @@ void Vector15_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -507,7 +507,7 @@ void Vector16_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (16 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (16 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -519,7 +519,7 @@ void Vector16_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -532,7 +532,7 @@ void Vector17_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (17 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (17 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -544,7 +544,7 @@ void Vector17_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -557,7 +557,7 @@ void Vector18_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (18 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (18 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -569,7 +569,7 @@ void Vector18_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -582,7 +582,7 @@ void Vector19_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (19 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (19 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -594,7 +594,7 @@ void Vector19_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -607,7 +607,7 @@ void Vector20_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (20 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (20 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -619,7 +619,7 @@ void Vector20_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -632,7 +632,7 @@ void Vector21_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (21 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (21 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -644,7 +644,7 @@ void Vector21_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -657,7 +657,7 @@ void Vector22_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (22 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (22 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -669,7 +669,7 @@ void Vector22_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -682,7 +682,7 @@ void Vector23_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (23 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (23 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -694,7 +694,7 @@ void Vector23_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -707,7 +707,7 @@ void Vector24_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (24 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (24 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -719,7 +719,7 @@ void Vector24_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -732,7 +732,7 @@ void Vector25_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (25 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (25 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -744,7 +744,7 @@ void Vector25_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -757,7 +757,7 @@ void Vector26_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (26 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (26 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -769,7 +769,7 @@ void Vector26_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -782,7 +782,7 @@ void Vector27_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (27 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (27 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -794,7 +794,7 @@ void Vector27_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -807,7 +807,7 @@ void Vector28_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (28 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (28 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -819,7 +819,7 @@ void Vector28_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -832,7 +832,7 @@ void Vector29_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (29 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (29 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -840,11 +840,11 @@ void Vector29_handler(void)
     JMP 0,X
   }
 } /*** end of Vector29_handler ***/
- 
+
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -857,7 +857,7 @@ void Vector30_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (30 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (30 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -869,7 +869,7 @@ void Vector30_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -882,7 +882,7 @@ void Vector31_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (31 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (31 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -895,7 +895,7 @@ void Vector31_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -908,7 +908,7 @@ void Vector32_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (32 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (32 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -920,7 +920,7 @@ void Vector32_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -933,7 +933,7 @@ void Vector33_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (33 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (33 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -945,7 +945,7 @@ void Vector33_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -958,7 +958,7 @@ void Vector34_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (34 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (34 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -970,7 +970,7 @@ void Vector34_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -983,7 +983,7 @@ void Vector35_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (35 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (35 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -995,7 +995,7 @@ void Vector35_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1008,7 +1008,7 @@ void Vector36_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (36 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (36 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1020,7 +1020,7 @@ void Vector36_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1033,7 +1033,7 @@ void Vector37_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (37 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (37 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1045,7 +1045,7 @@ void Vector37_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1058,7 +1058,7 @@ void Vector38_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (38 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (38 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1070,7 +1070,7 @@ void Vector38_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1083,7 +1083,7 @@ void Vector39_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (39 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (39 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1095,7 +1095,7 @@ void Vector39_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1108,7 +1108,7 @@ void Vector40_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (40 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (40 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1120,7 +1120,7 @@ void Vector40_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1133,7 +1133,7 @@ void Vector41_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (41 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (41 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1145,7 +1145,7 @@ void Vector41_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1158,7 +1158,7 @@ void Vector42_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (42 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (42 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1170,7 +1170,7 @@ void Vector42_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1183,7 +1183,7 @@ void Vector43_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (43 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (43 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1195,7 +1195,7 @@ void Vector43_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1208,7 +1208,7 @@ void Vector44_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (44 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (44 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1220,7 +1220,7 @@ void Vector44_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1233,7 +1233,7 @@ void Vector45_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (45 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (45 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1245,7 +1245,7 @@ void Vector45_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1258,7 +1258,7 @@ void Vector46_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (46 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (46 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1270,7 +1270,7 @@ void Vector46_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1283,7 +1283,7 @@ void Vector47_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (47 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (47 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1295,7 +1295,7 @@ void Vector47_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1308,7 +1308,7 @@ void Vector48_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (48 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (48 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1320,7 +1320,7 @@ void Vector48_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1333,7 +1333,7 @@ void Vector49_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (49 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (49 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1345,7 +1345,7 @@ void Vector49_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1358,7 +1358,7 @@ void Vector50_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (50 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (50 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1370,7 +1370,7 @@ void Vector50_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1383,7 +1383,7 @@ void Vector51_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (51 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (51 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1395,7 +1395,7 @@ void Vector51_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1408,7 +1408,7 @@ void Vector52_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (52 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (52 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1420,7 +1420,7 @@ void Vector52_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1433,7 +1433,7 @@ void Vector53_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (53 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (53 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1445,7 +1445,7 @@ void Vector53_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1458,7 +1458,7 @@ void Vector54_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (54 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (54 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1470,7 +1470,7 @@ void Vector54_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1483,7 +1483,7 @@ void Vector55_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (55 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (55 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1495,7 +1495,7 @@ void Vector55_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1508,7 +1508,7 @@ void Vector56_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (56 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (56 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1520,7 +1520,7 @@ void Vector56_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1533,7 +1533,7 @@ void Vector57_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (57 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (57 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1545,7 +1545,7 @@ void Vector57_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1558,7 +1558,7 @@ void Vector58_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (58 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (58 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1570,7 +1570,7 @@ void Vector58_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1583,7 +1583,7 @@ void Vector59_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (59 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (59 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1595,7 +1595,7 @@ void Vector59_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1608,7 +1608,7 @@ void Vector60_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (60 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (60 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1620,7 +1620,7 @@ void Vector60_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1633,7 +1633,7 @@ void Vector61_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (61 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (61 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1645,7 +1645,7 @@ void Vector61_handler(void)
 
 /************************************************************************************//**
 ** \brief     ISR handler for a specific vector index in the interrupt vector table for
-**            linking the actual interrupts vectors to the one in the user program's 
+**            linking the actual interrupts vectors to the one in the user program's
 **            vector table.
 ** \return    none.
 **
@@ -1658,7 +1658,7 @@ void Vector62_handler(void)
   asm
   {
     /* Load the address of the user program's ISR into X. */
-    LDX (VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (62 * 2))
+    LDX(VCT_USER_PROGRAM_VECTOR_TABLE_STARTADDR + (62 * 2))
     /* Jump there. It is important to use the JMP instruction here as opposed to other
      * branch instruction, because the JMP instruction does not modify the stack by
      * saving a return address for example.
@@ -1671,7 +1671,7 @@ void Vector62_handler(void)
 /****************************************************************************************
 *                I N T E R R U P T     V E C T O R     T A B L E
 ****************************************************************************************/
-/** \brief The interrupt vector table. It contains the reset vector and all other 
+/** \brief The interrupt vector table. It contains the reset vector and all other
  *         interrupts vectors are remapped to the user program vector table.
  */
 const tIsrFunc _vectab[] @0xff80 =
@@ -1724,7 +1724,7 @@ const tIsrFunc _vectab[] @0xff80 =
   (tIsrFunc)Vector45_handler,                         /* Pulse AccA Input Edge 0xFFDA  */
   (tIsrFunc)Vector46_handler,                         /* Pulse AccA Overflow 0xFFDC    */
   (tIsrFunc)Vector47_handler,                         /* Timer Overflow 0xFFDE         */
-  (tIsrFunc)Vector48_handler,                         /* Timer 7 0xFFE0                */ 
+  (tIsrFunc)Vector48_handler,                         /* Timer 7 0xFFE0                */
   (tIsrFunc)Vector49_handler,                         /* Timer 6 0xFFE2                */
   (tIsrFunc)Vector50_handler,                         /* Timer 5 0xFFE4                */
   (tIsrFunc)Vector51_handler,                         /* Timer 4 0xFFE6                */

@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -44,7 +44,7 @@
 ****************************************************************************************/
 /** \brief Structure type with the layout of a CAN reception message slot. */
 typedef volatile struct
-{ 
+{
   volatile blt_int8u  idr[4];              /**< identifier register 0..3               */
   volatile blt_int8u  dsr[8];              /**< data segment register 0..7             */
   volatile blt_int8u  dlr;                 /**< data length register                   */
@@ -54,7 +54,7 @@ typedef volatile struct
 
 /** \brief Structure type with the layout of a CAN transmit message slot. */
 typedef volatile struct
-{ 
+{
   volatile blt_int8u  idr[4];              /**< identifier register 0..3               */
   volatile blt_int8u  dsr[8];              /**< data segment register 0..7             */
   volatile blt_int8u  dlr;                 /**< data length register                   */
@@ -64,7 +64,7 @@ typedef volatile struct
 
 /** \brief Structure type with the layout of the CAN related control registers. */
 typedef volatile struct
-{ 
+{
   volatile blt_int8u cctl0;                /**< control register 0                     */
   volatile blt_int8u cctl1;                /**< control register 1                     */
   volatile blt_int8u cbtr0;                /**< bus timing register 0                  */
@@ -187,26 +187,27 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int8u *btr0, blt_int8u *b
 *            with a sample point between 68..78%.
 */
 static const tCanBusTiming canTiming[] =
-{                       /*  TQ | TSEG1 | TSEG2 | SP  */
-                        /* ------------------------- */
-    {  5, 2 },          /*   8 |   5   |   2   | 75% */
-    {  6, 2 },          /*   9 |   6   |   2   | 78% */
-    {  6, 3 },          /*  10 |   6   |   3   | 70% */
-    {  7, 3 },          /*  11 |   7   |   3   | 73% */
-    {  8, 3 },          /*  12 |   8   |   3   | 75% */
-    {  9, 3 },          /*  13 |   9   |   3   | 77% */
-    {  9, 4 },          /*  14 |   9   |   4   | 71% */
-    { 10, 4 },          /*  15 |  10   |   4   | 73% */
-    { 11, 4 },          /*  16 |  11   |   4   | 75% */
-    { 12, 4 },          /*  17 |  12   |   4   | 76% */
-    { 12, 5 },          /*  18 |  12   |   5   | 72% */
-    { 13, 5 },          /*  19 |  13   |   5   | 74% */
-    { 14, 5 },          /*  20 |  14   |   5   | 75% */
-    { 15, 5 },          /*  21 |  15   |   5   | 76% */
-    { 15, 6 },          /*  22 |  15   |   6   | 73% */
-    { 16, 6 },          /*  23 |  16   |   6   | 74% */
-    { 16, 7 },          /*  24 |  16   |   7   | 71% */
-    { 16, 8 }           /*  25 |  16   |   8   | 68% */
+{
+  /*  TQ | TSEG1 | TSEG2 | SP  */
+  /* ------------------------- */
+  {  5, 2 },          /*   8 |   5   |   2   | 75% */
+  {  6, 2 },          /*   9 |   6   |   2   | 78% */
+  {  6, 3 },          /*  10 |   6   |   3   | 70% */
+  {  7, 3 },          /*  11 |   7   |   3   | 73% */
+  {  8, 3 },          /*  12 |   8   |   3   | 75% */
+  {  9, 3 },          /*  13 |   9   |   3   | 77% */
+  {  9, 4 },          /*  14 |   9   |   4   | 71% */
+  { 10, 4 },          /*  15 |  10   |   4   | 73% */
+  { 11, 4 },          /*  16 |  11   |   4   | 75% */
+  { 12, 4 },          /*  17 |  12   |   4   | 76% */
+  { 12, 5 },          /*  18 |  12   |   5   | 72% */
+  { 13, 5 },          /*  19 |  13   |   5   | 74% */
+  { 14, 5 },          /*  20 |  14   |   5   | 75% */
+  { 15, 5 },          /*  21 |  15   |   5   | 76% */
+  { 15, 6 },          /*  22 |  15   |   6   | 73% */
+  { 16, 6 },          /*  23 |  16   |   6   | 74% */
+  { 16, 7 },          /*  24 |  16   |   7   | 71% */
+  { 16, 8 }           /*  25 |  16   |   8   | 68% */
 };
 
 
@@ -221,11 +222,11 @@ void CanInit(void)
   blt_bool  result;
   blt_int32u accept_code;
   blt_int32u accept_mask;
-  
-  /* the current implementation supports CAN0..4. throw an assertion error in case a 
-   * different CAN channel is configured.  
+
+  /* the current implementation supports CAN0..4. throw an assertion error in case a
+   * different CAN channel is configured.
    */
-  ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX >= 0) && (BOOT_COM_CAN_CHANNEL_INDEX <= 4)); 
+  ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX >= 0) && (BOOT_COM_CAN_CHANNEL_INDEX <= 4));
 
   /* enter initialization mode. note that this automatically disables CAN interrupts */
   CAN->cctl0 = INITRQ_BIT;
@@ -243,7 +244,7 @@ void CanInit(void)
   /* configure baudrate */
   result = CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &btrRegValues[0], &btrRegValues[1]);
   ASSERT_RT(result == BLT_TRUE);
-  
+
   /* configure the baudrate */
   CAN->cbtr0 = btrRegValues[0];
   CAN->cbtr1 = btrRegValues[1];
@@ -253,7 +254,7 @@ void CanInit(void)
    * identifiers and filter 0 to receive standard 11-bit identifiers.
    */
   CAN->cidac &= ~(IDAM1_BIT | IDAM0_BIT);
-  
+
   /* set the acceptance filter code and mask to a value that only BOOT_COM_CAN_RX_MSG_ID
    * is received.
    */
@@ -305,7 +306,7 @@ void CanInit(void)
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int8u byte_idx;
-  
+
   /* double check that the transmit slot is really available */
   ASSERT_RT((CAN->ctflg & TXE0_BIT) != 0);
 
@@ -367,25 +368,25 @@ blt_bool CanReceivePacket(blt_int8u *data)
   if ((CAN->crflg & RXF_BIT) == RXF_BIT)
   {
     /* check IDE-bit to determine if it is a 11-bit or 29-bit identifier */
-    if ((CAN->rxSlot.idr[1] & IDE_BIT) == 0)             
+    if ((CAN->rxSlot.idr[1] & IDE_BIT) == 0)
     {
       /* 11-bit id */
-      rxMsgId = (*(blt_int16u*)(&CAN->rxSlot.idr[0])) >> 5;
+      rxMsgId = (*(blt_int16u *)(&CAN->rxSlot.idr[0])) >> 5;
     }
     else
     {
       /* 29-bit id */
-      rxMsgId = (blt_int32u)(((*(blt_int32u*)(&CAN->rxSlot.idr[0])) & 0x0007ffff) >> 1) |
-                (blt_int32u)(((*(blt_int32u*)(&CAN->rxSlot.idr[0])) & 0xffe00000) >> 3);
+      rxMsgId = (blt_int32u)(((*(blt_int32u *)(&CAN->rxSlot.idr[0])) & 0x0007ffff) >> 1) |
+                (blt_int32u)(((*(blt_int32u *)(&CAN->rxSlot.idr[0])) & 0xffe00000) >> 3);
     }
-    /* is this the packet identifier? */    
+    /* is this the packet identifier? */
     if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)
     {
       result = BLT_TRUE;
       /* store the dlc */
       rxMsgLen = CAN->rxSlot.dlr & 0xf;
       /* copy message data */
-      for (byte_idx=0; byte_idx<rxMsgLen; byte_idx++)                      
+      for (byte_idx=0; byte_idx<rxMsgLen; byte_idx++)
       {
         data[byte_idx] = CAN->rxSlot.dsr[byte_idx];
       }
@@ -403,7 +404,7 @@ blt_bool CanReceivePacket(blt_int8u *data)
 ** \param     baud The desired baudrate in kbps. Valid values are 10..1000.
 ** \param     btr0 Pointer to where the value for register CANxBTR0 will be stored.
 ** \param     btr1 Pointer to where the value for register CANxBTR1 will be stored.
-** \return    BLT_TRUE if the CAN bustiming register values were found, BLT_FALSE 
+** \return    BLT_TRUE if the CAN bustiming register values were found, BLT_FALSE
 **            otherwise.
 **
 ****************************************************************************************/
@@ -421,7 +422,7 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int8u *btr0, blt_int8u *b
       prescaler = (blt_int8u)(BOOT_CPU_XTAL_SPEED_KHZ/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1)));
 
       /* make sure the prescaler is valid */
-      if ( (prescaler > 0) && (prescaler <= 64) )
+      if ((prescaler > 0) && (prescaler <= 64))
       {
         /* store the MSCAN bustiming register values */
         *btr0 = prescaler - 1;

@@ -51,7 +51,8 @@
 
 #include "lc.h"
 
-struct pt {
+struct pt
+{
   lc_t lc;
 };
 

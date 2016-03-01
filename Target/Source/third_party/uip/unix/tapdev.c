@@ -71,9 +71,10 @@ void
 tapdev_init(void)
 {
   char buf[1024];
-  
+
   fd = open(DEVTAP, O_RDWR);
-  if(fd == -1) {
+  if (fd == -1)
+  {
     perror("tapdev: tapdev_init: open");
     exit(1);
   }
@@ -83,7 +84,8 @@ tapdev_init(void)
     struct ifreq ifr;
     memset(&ifr, 0, sizeof(ifr));
     ifr.ifr_flags = IFF_TAP|IFF_NO_PI;
-    if (ioctl(fd, TUNSETIFF, (void *) &ifr) < 0) {
+    if (ioctl(fd, TUNSETIFF, (void *) &ifr) < 0)
+    {
       perror(buf);
       exit(1);
     }
@@ -91,7 +93,7 @@ tapdev_init(void)
 #endif /* Linux */
 
   snprintf(buf, sizeof(buf), "ifconfig tap0 inet %d.%d.%d.%d",
-	   UIP_DRIPADDR0, UIP_DRIPADDR1, UIP_DRIPADDR2, UIP_DRIPADDR3);
+           UIP_DRIPADDR0, UIP_DRIPADDR1, UIP_DRIPADDR2, UIP_DRIPADDR3);
   system(buf);
 
 }
@@ -102,7 +104,7 @@ tapdev_read(void)
   fd_set fdset;
   struct timeval tv, now;
   int ret;
-  
+
   tv.tv_sec = 0;
   tv.tv_usec = 1000;
 
@@ -111,11 +113,13 @@ tapdev_read(void)
   FD_SET(fd, &fdset);
 
   ret = select(fd + 1, &fdset, NULL, NULL, &tv);
-  if(ret == 0) {
+  if (ret == 0)
+  {
     return 0;
   }
   ret = read(fd, uip_buf, UIP_BUFSIZE);
-  if(ret == -1) {
+  if (ret == -1)
+  {
     perror("tap_dev: tapdev_read: read");
   }
 
@@ -144,7 +148,8 @@ tapdev_send(void)
     return;
     }*/
   ret = write(fd, uip_buf, uip_len);
-  if(ret == -1) {
+  if (ret == -1)
+  {
     perror("tap_dev: tapdev_send: writev");
     exit(1);
   }

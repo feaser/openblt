@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -44,8 +44,8 @@
 * Type definitions
 ****************************************************************************************/
 /** \brief Enumeration for the different internal module states. */
-typedef enum 
-{ 
+typedef enum
+{
   FIRMWARE_UPDATE_STATE_IDLE,                    /**< idle state                       */
   FIRMWARE_UPDATE_STATE_STARTING,                /**< starting state                   */
   FIRMWARE_UPDATE_STATE_ERASING,                 /**< erasing state                    */
@@ -53,14 +53,14 @@ typedef enum
 } tFirmwareUpdateState;
 
 /** \brief Structure type with information for the memory erase opeartion. */
-typedef struct 
+typedef struct
 {
   blt_addr   start_address;                      /**< erase start address              */
   blt_int32u total_size;                         /**< total number of bytes to erase   */
 } tFileEraseInfo;
 
 /** \brief Structure type for grouping FATFS related objects used by this module. */
-typedef struct 
+typedef struct
 {
   FATFS fs;                                      /**< file system object for mouting   */
   FIL   file;                                    /**< file object for firmware file    */
@@ -107,7 +107,7 @@ static blt_char             loggingStr[64];
 
 /***********************************************************************************//**
 ** \brief     Initializes the file system interface module. The initial firmware
-**            update state is set to idle and the file system is mounted as 
+**            update state is set to idle and the file system is mounted as
 **            logical disk 0.
 ** \return    none
 **
@@ -115,7 +115,7 @@ static blt_char             loggingStr[64];
 void FileInit(void)
 {
   FRESULT fresult;
-    
+
   /* set the initial state */
   firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
   /* mount the file system, using logical disk 0 */
@@ -150,7 +150,7 @@ blt_bool FileIsIdle(void)
 ****************************************************************************************/
 blt_bool FileHandleFirmwareUpdateRequest(void)
 {
-  #if (BOOT_COM_ENABLE > 0)
+#if (BOOT_COM_ENABLE > 0)
   /* make sure that there is no connection with a remote host to prevent two firmware
    * updates happening at the same time
    */
@@ -158,7 +158,7 @@ blt_bool FileHandleFirmwareUpdateRequest(void)
   {
     return BLT_FALSE;
   }
-  #endif
+#endif
   /* a new firmware update request can only be handled if not already busy with one */
   if (firmwareUpdateState != FIRMWARE_UPDATE_STATE_IDLE)
   {
@@ -186,7 +186,7 @@ void FileTask(void)
 {
   blt_int16s  parse_result = 0;
   blt_char   *read_line_ptr;
-  
+
   /* ------------------------------- idle -------------------------------------------- */
   if (firmwareUpdateState == FIRMWARE_UPDATE_STATE_IDLE)
   {
@@ -195,32 +195,32 @@ void FileTask(void)
   /* ------------------------------- starting ---------------------------------------- */
   else if (firmwareUpdateState == FIRMWARE_UPDATE_STATE_STARTING)
   {
-    #if (BOOT_FILE_STARTED_HOOK_ENABLE > 0)
+#if (BOOT_FILE_STARTED_HOOK_ENABLE > 0)
     /* inform application about update started event via hook function */
     FileFirmwareUpdateStartedHook();
-    #endif
-    #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#endif
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
     FileFirmwareUpdateLogHook("Firmware update request detected\n\r");
     FileFirmwareUpdateLogHook("Opening firmware file for reading...");
-    #endif
+#endif
     /* attempt to obtain a file object for the firmware file */
     if (f_open(&fatFsObjects.file, FileGetFirmwareFilenameHook(), FA_OPEN_EXISTING | FA_READ) != FR_OK)
     {
       /* can't open file */
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("ERROR\n\r");
-      #endif
-      #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
       FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_OPEN_FIRMWARE_FILE);
-      #endif        
+#endif
       /* nothing left to do now */
       return;
     }
-    #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
     FileFirmwareUpdateLogHook("OK\n\r");
     FileFirmwareUpdateLogHook("Starting the programming sequence\n\r");
     FileFirmwareUpdateLogHook("Parsing firmware file to obtain erase size...");
-    #endif
+#endif
     /* prepare data objects for the erasing state */
     eraseInfo.start_address = 0;
     eraseInfo.total_size = 0;
@@ -235,12 +235,12 @@ void FileTask(void)
     /* check if an error occurred */
     if (f_error(&fatFsObjects.file) > 0)
     {
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("ERROR\n\r");
-      #endif
-      #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
       FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_READ_FROM_FILE);
-      #endif       
+#endif
       /* close the file */
       f_close(&fatFsObjects.file);
       /* cannot continue with firmware update so go back to idle state */
@@ -254,12 +254,12 @@ void FileTask(void)
       /* check parsing result */
       if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
       {
-        #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("ERROR\n\r");
-        #endif
-        #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_INVALID_CHECKSUM_IN_FILE);
-        #endif       
+#endif
         /* close the file */
         f_close(&fatFsObjects.file);
         /* cannot continue with firmware update so go back to idle state */
@@ -293,19 +293,19 @@ void FileTask(void)
       /* rewind the file in preparation for the programming state */
       if (f_lseek(&fatFsObjects.file, 0) != FR_OK)
       {
-        #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("ERROR\n\r");
-        #endif
-        #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_REWINDING_FILE_READ_POINTER);
-        #endif       
+#endif
         /* close the file */
         f_close(&fatFsObjects.file);
         /* cannot continue with firmware update so go back to idle state */
         firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("OK\n\r");
       FileFirmwareUpdateLogHook("Erasing ");
       /* convert size to string  */
@@ -319,25 +319,25 @@ void FileTask(void)
       FileLibByteToHexString((blt_int8u)eraseInfo.start_address, &loggingStr[6]);
       FileFirmwareUpdateLogHook(loggingStr);
       FileFirmwareUpdateLogHook("...");
-      #endif
+#endif
       /* still here so we are ready to perform the memory erase operation */
       if (NvmErase(eraseInfo.start_address, eraseInfo.total_size) == BLT_FALSE)
       {
-        #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("ERROR\n\r");
-        #endif
-        #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_ERASE_MEMORY);
-        #endif       
+#endif
         /* close the file */
         f_close(&fatFsObjects.file);
         /* cannot continue with firmware update so go back to idle state */
         firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("OK\n\r");
-      #endif
+#endif
       /* all okay, then go to programming state */
       firmwareUpdateState = FIRMWARE_UPDATE_STATE_PROGRAMMING;
     }
@@ -350,12 +350,12 @@ void FileTask(void)
     /* check if an error occurred */
     if (f_error(&fatFsObjects.file) > 0)
     {
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("Reading line from file...ERROR\n\r");
-      #endif
-      #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
       FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_READ_FROM_FILE);
-      #endif       
+#endif
       /* close the file */
       f_close(&fatFsObjects.file);
       /* cannot continue with firmware update so go back to idle state */
@@ -369,12 +369,12 @@ void FileTask(void)
       /* check parsing result */
       if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
       {
-        #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("Invalid checksum found...ERROR\n\r");
-        #endif
-        #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_INVALID_CHECKSUM_IN_FILE);
-        #endif       
+#endif
         /* close the file */
         f_close(&fatFsObjects.file);
         /* cannot continue with firmware update so go back to idle state */
@@ -385,7 +385,7 @@ void FileTask(void)
     /* only process parsing results if the line contained address/data info */
     if (parse_result > 0)
     {
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("Programming ");
       /* convert size to string  */
       FileLibLongToIntString(parse_result, loggingStr);
@@ -398,62 +398,62 @@ void FileTask(void)
       FileLibByteToHexString((blt_int8u)lineParseObject.address, &loggingStr[6]);
       FileFirmwareUpdateLogHook(loggingStr);
       FileFirmwareUpdateLogHook("...");
-      #endif
+#endif
       /* program the data */
       if (NvmWrite(lineParseObject.address, parse_result, lineParseObject.data) == BLT_FALSE)
       {
-        #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("ERROR\n\r");
-        #endif
-        #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_PROGRAM_MEMORY);
-        #endif       
+#endif
         /* close the file */
         f_close(&fatFsObjects.file);
         /* cannot continue with firmware update so go back to idle state */
         firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("OK\n\r");
-      #endif
+#endif
     }
     /* check if the end of the file was reached */
     if (f_eof(&fatFsObjects.file) > 0)
     {
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("Writing program checksum...");
-      #endif
+#endif
       /* finish the programming by writing the checksum */
       if (NvmDone() == BLT_FALSE)
       {
-        #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("ERROR\n\r");
-        #endif
-        #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
         FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_WRITE_CHECKSUM);
-        #endif       
+#endif
         /* close the file */
         f_close(&fatFsObjects.file);
         /* cannot continue with firmware update so go back to idle state */
         firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("OK\n\r");
       FileFirmwareUpdateLogHook("Closing firmware file\n\r");
-      #endif
+#endif
       /* close the file */
       f_close(&fatFsObjects.file);
-      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("Firmware update successfully completed\n\r");
-      #endif
+#endif
       /* all done so transistion back to idle mode */
       firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
-      #if (BOOT_FILE_COMPLETED_HOOK_ENABLE > 0)
+#if (BOOT_FILE_COMPLETED_HOOK_ENABLE > 0)
       /* inform application about update completed event via hook function */
       FileFirmwareUpdateCompletedHook();
-      #endif
+#endif
       /* attempt to start the user program now that programming is done. note that
        * a call to CpuReset() won't work correctly here, because if the same firmware
        * file is still on the locally attached storage, it will just restart the
@@ -474,7 +474,7 @@ void FileTask(void)
 tSrecLineType FileSrecGetLineType(const blt_char *line)
 {
   /* check if the line starts with the 'S' character, followed by a digit */
-  if ( (toupper(line[0]) != 'S') || (isdigit(line[1]) == 0) )
+  if ((toupper(line[0]) != 'S') || (isdigit(line[1]) == 0))
   {
     /* not a valid S-Record line type */
     return LINE_TYPE_UNSUPPORTED;
@@ -508,7 +508,7 @@ blt_bool FileSrecVerifyChecksum(const blt_char *line)
 {
   blt_int16u bytes_on_line;
   blt_int8u  checksum = 0;
-  
+
   /* adjust pointer to point to byte count value */
   line += 2;
   /* read out the number of byte values that follow on the line */
@@ -518,7 +518,7 @@ blt_bool FileSrecVerifyChecksum(const blt_char *line)
   /* adjust pointer to the first byte of the address */
   line += 2;
   /* add byte values of address and data, but not the final checksum */
-  do 
+  do
   {
     /* add the next byte value to the checksum */
     checksum += FileLibHexStringToByte(line);
@@ -526,7 +526,7 @@ blt_bool FileSrecVerifyChecksum(const blt_char *line)
     bytes_on_line--;
     /* point to next hex string in the line */
     line += 2;
-  } 
+  }
   while (bytes_on_line > 1);
   /* the checksum is calculated by summing up the values of the byte count, address and
    * databytes and then taking the 1-complement of the sum's least signigicant byte */
@@ -543,14 +543,14 @@ blt_bool FileSrecVerifyChecksum(const blt_char *line)
 
 
 /************************************************************************************//**
-** \brief     Parses a line from a Motorola S-Record file and looks for S1, S2 or S3 
+** \brief     Parses a line from a Motorola S-Record file and looks for S1, S2 or S3
 **            lines with data. Note that if a null pointer is passed as the data
 **            parameter, then no data is extracted from the line.
 ** \param     line    A line from the S-Record.
 ** \param     address Address found in the S-Record data line.
 ** \param     data    Byte array where the data bytes from the S-Record data line
 **                    are stored.
-** \return    The number of data bytes found on the S-record data line, 0 in case 
+** \return    The number of data bytes found on the S-record data line, 0 in case
 **            the line is not an S1, S2 or S3 line or ERROR_SREC_INVALID_CHECKSUM
 **            in case the checksum validation failed.
 **
@@ -561,7 +561,7 @@ blt_int16s FileSrecParseLine(const blt_char *line, blt_addr *address, blt_int8u 
   blt_int16s    data_byte_count = 0;
   blt_int16u    bytes_on_line;
   blt_int16u    i;
-  
+
   /* check pointers and not that data can be a null pointer */
   ASSERT_RT((address != BLT_NULL) && (line != BLT_NULL));
   /* figure out what type of line we are dealing with */
@@ -606,7 +606,7 @@ blt_int16s FileSrecParseLine(const blt_char *line, blt_addr *address, blt_int8u 
         }
       }
       break;
-      
+
     /* ---------------------------- S2 line type ------------------------------------- */
     case LINE_TYPE_S2:
       /* adjust pointer to point to byte count value */
@@ -634,7 +634,7 @@ blt_int16s FileSrecParseLine(const blt_char *line, blt_addr *address, blt_int8u 
         }
       }
       break;
-      
+
     /* ---------------------------- S3 line type ------------------------------------- */
     case LINE_TYPE_S3:
       /* adjust pointer to point to byte count value */
@@ -668,7 +668,7 @@ blt_int16s FileSrecParseLine(const blt_char *line, blt_addr *address, blt_int8u 
     default:
       break;
   }
-  
+
   return data_byte_count;
 } /*** end of FileSrecParseLine ***/
 
@@ -685,7 +685,7 @@ blt_int16s FileSrecParseLine(const blt_char *line, blt_addr *address, blt_int8u 
 static blt_char FileLibByteNibbleToChar(blt_int8u nibble)
 {
   blt_char  c;
-  
+
   /* convert to ASCII value */
   c = (nibble & 0x0f) + '0';
   if (nibble > 9)
@@ -735,7 +735,7 @@ static blt_char *FileLibByteToHexString(blt_int8u byte_val, blt_char *destinatio
 static blt_char *FileLibLongToIntString(blt_int32u long_val, blt_char *destination)
 {
   blt_int32u long_val_cpy = long_val;
-  
+
   /* first determine how many digits there will be */
   do
   {
@@ -745,7 +745,7 @@ static blt_char *FileLibLongToIntString(blt_int32u long_val, blt_char *destinati
   while (long_val_cpy > 0);
   /* add space for the string termination and add it */
   *destination = '\0';
-  /* now add the digits from right to left */  
+  /* now add the digits from right to left */
   long_val_cpy = long_val;
   do
   {
@@ -777,21 +777,21 @@ static blt_int8u FileLibHexStringToByte(const blt_char *hexstring)
   blt_int8u result = 0;
   blt_char  c;
   blt_int8u counter;
-  
+
   /* a hexadecimal character is 2 characters long (i.e 0x4F minus the 0x part) */
   for (counter=0; counter < 2; counter++)
   {
     /* read out the character */
     c = toupper(hexstring[counter]);
     /* check that the character is 0..9 or A..F */
-    if ( (c < '0') || (c > 'F') || ( (c > '9') && (c < 'A') ) )
+    if ((c < '0') || (c > 'F') || ((c > '9') && (c < 'A')))
     {
       /* character not valid */
       return 0;
     }
     /* convert character to 4-bit value (check ASCII table for more info) */
     c -= '0';
-    if (c > 9) 
+    if (c > 9)
     {
       c -= 7;
     }

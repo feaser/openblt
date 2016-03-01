@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -44,23 +44,23 @@
 ****************************************************************************************/
 typedef struct
 {
-    blt_int32u      reserved0[0x1];     /* 0x0 */
-    ASCn_PISEL_t    PISEL;              /* 0x4 */
-    ASCn_ID_t       ID;                 /* 0x8 */
-    blt_int32u      reserved3[0x1];     /* 0xc */
-    ASCn_CON_t      CON;                /* 0x10 */
-    ASCn_BG_t       BG;                 /* 0x14 */
-    ASCn_FDV_t      FDV;                /* 0x18 */
-    blt_int32u      reserved7[0x1];     /* 0x1c */
-    ASCn_TBUF_t     TBUF;               /* 0x20 */
-    ASCn_RBUF_t     RBUF;               /* 0x24 */
-    blt_int32u      reserved10[0xa];    /* 0x28 */
-    ASCn_WHBCON_t   WHBCON;             /* 0x50 */
-    blt_int32u      reserved12[0x27];   /* 0x54 */
-    ASCn_TSRC_t     TSRC;               /* 0xf0 */
-    ASCn_RSRC_t     RSRC;               /* 0xf4 */
-    ASCn_ESRC_t     ESRC;               /* 0xf8 */
-    ASCn_TBSRC_t    TBSRC;              /* 0xfc */
+  blt_int32u      reserved0[0x1];     /* 0x0 */
+  ASCn_PISEL_t    PISEL;              /* 0x4 */
+  ASCn_ID_t       ID;                 /* 0x8 */
+  blt_int32u      reserved3[0x1];     /* 0xc */
+  ASCn_CON_t      CON;                /* 0x10 */
+  ASCn_BG_t       BG;                 /* 0x14 */
+  ASCn_FDV_t      FDV;                /* 0x18 */
+  blt_int32u      reserved7[0x1];     /* 0x1c */
+  ASCn_TBUF_t     TBUF;               /* 0x20 */
+  ASCn_RBUF_t     RBUF;               /* 0x24 */
+  blt_int32u      reserved10[0xa];    /* 0x28 */
+  ASCn_WHBCON_t   WHBCON;             /* 0x50 */
+  blt_int32u      reserved12[0x27];   /* 0x54 */
+  ASCn_TSRC_t     TSRC;               /* 0xf0 */
+  ASCn_RSRC_t     RSRC;               /* 0xf4 */
+  ASCn_ESRC_t     ESRC;               /* 0xf8 */
+  ASCn_TBSRC_t    TBSRC;              /* 0xfc */
 } tUartRegs;
 
 
@@ -104,33 +104,33 @@ void UartInit(void)
 {
   blt_int32u frequency, reload_value, fdv, dfreq;
 
-	/* Compute system frequency and reload value for ASC */
-	frequency = BOOT_CPU_SYSTEM_SPEED_KHZ * 1000;
+  /* Compute system frequency and reload value for ASC */
+  frequency = BOOT_CPU_SYSTEM_SPEED_KHZ * 1000;
 
-	/* reload_value = fdv/512 * freq/16/baudrate -1  ==>
+  /* reload_value = fdv/512 * freq/16/baudrate -1  ==>
    * reload_value = (512*freq)/(baudrate * 512*16) - 1
    * fdv = (reload_value + 1) * (baudrate*512*16/freq)
    * reload_value = (frequency / 32) / baudrate - 1;
-	 */
-	reload_value = (frequency / ((blt_int32u)BOOT_COM_UART_BAUDRATE * 16)) - 1;
-	dfreq = frequency / (16*512);
-	fdv = (reload_value + 1) * (blt_int32u)BOOT_COM_UART_BAUDRATE / dfreq;
+   */
+  reload_value = (frequency / ((blt_int32u)BOOT_COM_UART_BAUDRATE * 16)) - 1;
+  dfreq = frequency / (16*512);
+  fdv = (reload_value + 1) * (blt_int32u)BOOT_COM_UART_BAUDRATE / dfreq;
 
-	/* enable ASC module */
-	CpuEnterInitMode();
-	ASC0_CLC.bits.RMC = 1;
-	ASC0_CLC.bits.DISR = 0;
-	CpuLeaveInitMode();
+  /* enable ASC module */
+  CpuEnterInitMode();
+  ASC0_CLC.bits.RMC = 1;
+  ASC0_CLC.bits.DISR = 0;
+  CpuLeaveInitMode();
 
   /* configure the ASC module for 8,n,1 */
   UARTx->CON.reg = 0;
-	UARTx->BG.reg  = reload_value;
-	UARTx->FDV.reg = fdv;
+  UARTx->BG.reg  = reload_value;
+  UARTx->FDV.reg = fdv;
 
-	UARTx->CON.bits.M = 0x01;
-	UARTx->CON.bits.R = 1;
-	UARTx->CON.bits.REN = 1;
-	UARTx->CON.bits.FDE = 1;
+  UARTx->CON.bits.M = 0x01;
+  UARTx->CON.bits.R = 1;
+  UARTx->CON.bits.REN = 1;
+  UARTx->CON.bits.FDE = 1;
 } /*** end of UartInit ***/
 
 
@@ -147,12 +147,12 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
   blt_bool result;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);  
+  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
 
-  /* first transmit the length of the packet */  
+  /* first transmit the length of the packet */
   result = UartTransmitByte(len);
-  ASSERT_RT(result == BLT_TRUE);  
-  
+  ASSERT_RT(result == BLT_TRUE);
+
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
   {
@@ -160,7 +160,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     CopService();
     /* write byte */
     result = UartTransmitByte(data[data_index]);
-    ASSERT_RT(result == BLT_TRUE);  
+    ASSERT_RT(result == BLT_TRUE);
   }
 } /*** end of UartTransmitPacket ***/
 
@@ -207,7 +207,7 @@ blt_bool UartReceivePacket(blt_int8u *data)
       if (xcpCtoRxLength == xcpCtoReqPacket[0])
       {
         /* copy the packet data */
-        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);        
+        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);
         /* done with cto packet reception */
         xcpCtoRxInProgress = BLT_FALSE;
         /* packet reception complete */
@@ -249,7 +249,7 @@ static blt_bool UartReceiveByte(blt_int8u *data)
     /* reset the reception event flag */
     UARTx->RSRC.bits.CLRR = 1;
     /* set result to indicate that a new byte was received */
-    result = BLT_TRUE; 
+    result = BLT_TRUE;
   }
 
   /* inform caller about the result */
@@ -270,10 +270,10 @@ static blt_bool UartTransmitByte(blt_int8u data)
   /* write byte to transmit buffer register */
   UARTx->TBUF.reg = data;
   /* wait for transmit buffer register to be empty */
-	while(UARTx->TBSRC.bits.SRR == 0)
+  while (UARTx->TBSRC.bits.SRR == 0)
   {
     CopService();
-  }  
+  }
   /* byte transmitted */
   return BLT_TRUE;
 } /*** end of UartTransmitByte ***/

@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -55,7 +55,7 @@
 
 /** \brief The flash driver is setup to operate on the cached PFLASH addresses, whereas
  *         the actual PFLASH commands should operate on non-cached addresses. This
- *         macro defines the offset between cached (80xxxxxxh) and non-cached 
+ *         macro defines the offset between cached (80xxxxxxh) and non-cached
  *        (A0xxxxxxh) addresses.
  */
 #define FLASH_NON_CACHED_OFFSET (0x20000000u)
@@ -72,7 +72,7 @@
 /** \brief Base address of the PFLASH0 flash status register. */
 #define FLASH_PFLASH1_FSR_ADDR  (0xF8004010u)
 
-/** \brief Macro that returns the PFLASHx modules base address, giving any address 
+/** \brief Macro that returns the PFLASHx modules base address, giving any address
  *         in PFLASH.
  */
 #define FLASH_GET_PFLASH_BASE(addr) ((addr < FLASH_PFLASH1_BASE) ? \
@@ -89,7 +89,7 @@
  */
 #define FLASH_GET_FSR_REG_ADDR(addr) ((addr < FLASH_PFLASH1_BASE) ? \
                                       FLASH_PFLASH0_FSR_ADDR : FLASH_PFLASH1_FSR_ADDR)
-                                      
+
 /** \brief Offset in bytes from the bootblock's base address where the checksum is
  *         located.
  */
@@ -109,7 +109,7 @@
 * Type definitions
 ****************************************************************************************/
 /** \brief Flash sector descriptor type. */
-typedef struct 
+typedef struct
 {
   blt_addr   sector_start;                       /**< sector start address             */
   blt_int32u sector_size;                        /**< sector size in bytes             */
@@ -117,10 +117,10 @@ typedef struct
 } tFlashSector;
 
 /** \brief    Structure type for grouping flash block information.
- *  \details  Programming is done per block of max FLASH_WRITE_BLOCK_SIZE. for this a 
+ *  \details  Programming is done per block of max FLASH_WRITE_BLOCK_SIZE. for this a
  *            flash block manager is implemented in this driver. this flash block manager
- *            depends on this flash block info structure. It holds the base address of 
- *            the flash block and the data that should be programmed into the flash 
+ *            depends on this flash block info structure. It holds the base address of
+ *            the flash block and the data that should be programmed into the flash
  *            block. The .base_addr must be a multiple of FLASH_WRITE_BLOCK_SIZE.
  */
 typedef struct
@@ -135,7 +135,7 @@ typedef struct
 ****************************************************************************************/
 static blt_bool   FlashInitBlock(tFlashBlockInfo *block, blt_addr address);
 static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_addr);
-static blt_bool   FlashAddToBlock(tFlashBlockInfo *block, blt_addr address, 
+static blt_bool   FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
                                   blt_int8u *data, blt_int32u len);
 static blt_bool   FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool   FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
@@ -150,10 +150,10 @@ static blt_bool   FlashTricoreEraseSector(blt_addr start_addr);
 * Local constant declarations
 ****************************************************************************************/
 /** \brief   Array wit the layout of the flash memory.
- *  \details The current implementation assumes that the bootloader is in the 2Mbyte 
+ *  \details The current implementation assumes that the bootloader is in the 2Mbyte
  *           PFLASH0 and supports flash operations only on the 2Mbyte PFLASH1. The reason
  *           for this is that a flash module cannot be in read mode and command mode at
- *           the same time. A future improvement is one where the actual flash command 
+ *           the same time. A future improvement is one where the actual flash command
  *           code is copied and run from RAM, to bypass this restriction.
  */
 static const tFlashSector flashLayout[] =
@@ -185,30 +185,30 @@ static const tFlashSector flashLayout[] =
 ****************************************************************************************/
 /** \brief   Local variable with information about the flash block that is currently
  *           being operated on.
- *  \details The smallest amount of flash that can be programmed is 
+ *  \details The smallest amount of flash that can be programmed is
  *           FLASH_WRITE_BLOCK_SIZE. A flash block manager is implemented in this driver
  *           and stores info in this variable. Whenever new data should be flashed, it
  *           is first added to a RAM buffer, which is part of this variable. Whenever
  *           the RAM buffer, which has the size of a flash block, is full or  data needs
- *           to be written to a different block, the contents of the RAM buffer are 
- *           programmed to flash. The flash block manager requires some software 
- *           overhead, yet results is faster flash programming because data is first 
- *           harvested, ideally until there is enough to program an entire flash block, 
+ *           to be written to a different block, the contents of the RAM buffer are
+ *           programmed to flash. The flash block manager requires some software
+ *           overhead, yet results is faster flash programming because data is first
+ *           harvested, ideally until there is enough to program an entire flash block,
  *           before the flash device is actually operated on.
  */
 static tFlashBlockInfo blockInfo;
 
 /** \brief   Local variable with information about the flash boot block.
- *  \details The first block of the user program holds the vector table, which on the 
- *           STM32 is also the where the checksum is written to. Is it likely that 
+ *  \details The first block of the user program holds the vector table, which on the
+ *           STM32 is also the where the checksum is written to. Is it likely that
  *           the vector table is first flashed and then, at the end of the programming
  *           sequence, the checksum. This means that this flash block need to be written
  *           to twice. Normally this is not a problem with flash memory, as long as you
- *           write the same values to those bytes that are not supposed to be changed 
+ *           write the same values to those bytes that are not supposed to be changed
  *           and the locations where you do write to are still in the erased 0xFF state.
- *           Unfortunately, writing twice to flash this way, does not work reliably on 
+ *           Unfortunately, writing twice to flash this way, does not work reliably on
  *           all micros. This is why we need to have an extra block, the bootblock,
- *           placed under the management of the block manager. This way is it possible 
+ *           placed under the management of the block manager. This way is it possible
  *           to implement functionality so that the bootblock is only written to once
  *           at the end of the programming sequence.
  */
@@ -216,7 +216,7 @@ static tFlashBlockInfo bootBlockInfo;
 
 
 /************************************************************************************//**
-** \brief     Initializes the flash driver. 
+** \brief     Initializes the flash driver.
 ** \return    none.
 **
 ****************************************************************************************/
@@ -230,12 +230,12 @@ void FlashInit(void)
 
 /************************************************************************************//**
 ** \brief     Writes the data to flash through a flash block manager. Note that this
-**            function also checks that no data is programmed outside the flash 
+**            function also checks that no data is programmed outside the flash
 **            memory region, so the bootloader can never be overwritten.
 ** \param     addr Start address.
 ** \param     len  Length in bytes.
 ** \param     data Pointer to the data buffer.
-** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
@@ -243,10 +243,10 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
   blt_addr base_addr;
 
   /* make sure the addresses are within the flash device */
-  if ( (FlashGetSector(addr) == FLASH_INVALID_SECTOR) || \
-       (FlashGetSector(addr+len-1) == FLASH_INVALID_SECTOR) )
+  if ((FlashGetSector(addr) == FLASH_INVALID_SECTOR) || \
+      (FlashGetSector(addr+len-1) == FLASH_INVALID_SECTOR))
   {
-    return BLT_FALSE;       
+    return BLT_FALSE;
   }
 
   /* if this is the bootblock, then let the boot block manager handle it */
@@ -262,24 +262,24 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 
 
 /************************************************************************************//**
-** \brief     Erases the flash memory. Note that this function also checks that no 
-**            data is erased outside the flash memory region, so the bootloader can 
+** \brief     Erases the flash memory. Note that this function also checks that no
+**            data is erased outside the flash memory region, so the bootloader can
 **            never be erased.
 ** \param     addr Start address.
 ** \param     len  Length in bytes.
-** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool FlashErase(blt_addr addr, blt_int32u len)
 {
   blt_int8u first_sector;
   blt_int8u last_sector;
-  
+
   /* obtain the first and last sector number */
   first_sector = FlashGetSector(addr);
   last_sector  = FlashGetSector(addr+len-1);
   /* check them */
-  if ( (first_sector == FLASH_INVALID_SECTOR) || (last_sector == FLASH_INVALID_SECTOR) )
+  if ((first_sector == FLASH_INVALID_SECTOR) || (last_sector == FLASH_INVALID_SECTOR))
   {
     return BLT_FALSE;
   }
@@ -294,7 +294,7 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
 **            the checksum, the bootloader can check if the programming session
 **            was completed, which indicates that a valid user programming is
 **            present and can be started.
-** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool FlashWriteChecksum(void)
@@ -304,16 +304,16 @@ blt_bool FlashWriteChecksum(void)
 
   /* for the Tricore TC1798 target, the bootlblock is FLASH_WRITE_BLOCK_SIZE in size.
    * the actual 32-bit checksum value in this bootblock is located at:
-   * <bootblock_base_addr> + 4. 
+   * <bootblock_base_addr> + 4.
    * for this reason the checksum is defined as the one's complement value of the sum
    * of everything else in the bootblock, so starting at:
    * <bootblock_base_addr> + 8 and ending at:
    * <bootblock_base_addr> + FLASH_WRITE_BLOCK_SIZE - 1;
-   * 
-   * note that the user program need to be modified to reserve 32-bit at 
+   *
+   * note that the user program need to be modified to reserve 32-bit at
    * <bootblock_base_addr> + 4, because the bootload will write the checksum value
    * here. refer to the port specific documentation for additional details.
-   * 
+   *
    * keep in mind that this checksum is just used as a user program signature, i.e. as
    * a flag to figure out if a user program is present or not. the checksum is not
    * calculated over the full user program size. such a checksum routine is typically
@@ -323,35 +323,35 @@ blt_bool FlashWriteChecksum(void)
    * You can then implement your own checksum write/verify routines in the hook
    * functions NvmWriteChecksumHook() and NvmVerifyChecksumHook().
    */
-  
+
   /* first check that the bootblock contains valid data. if not, this means the
    * bootblock is not part of the reprogramming this time and therefore no
    * new checksum needs to be written
    */
-   if (bootBlockInfo.base_addr == FLASH_INVALID_ADDRESS)
-   {
+  if (bootBlockInfo.base_addr == FLASH_INVALID_ADDRESS)
+  {
     return BLT_TRUE;
-   }
+  }
 
   /* compute the checksum. note that the data in the checksum range is not yet written
    * to flash but is present in the bootblock data structure at this point.
    */
   for (wordIdx = 0; wordIdx < FLASH_CS_RANGE_TOTAL_WORDS; wordIdx++)
   {
-    signature_checksum += *((blt_int32u*)(&bootBlockInfo.data[(wordIdx*4)+FLASH_CS_RANGE_START_OFFSET]));
-  } 
+    signature_checksum += *((blt_int32u *)(&bootBlockInfo.data[(wordIdx*4)+FLASH_CS_RANGE_START_OFFSET]));
+  }
   signature_checksum  = ~signature_checksum; /* one's complement */
 
   /* write the checksum */
-  return FlashWrite(flashLayout[0].sector_start+FLASH_CS_OFFSET, 
-                    sizeof(blt_addr), (blt_int8u*)&signature_checksum);
+  return FlashWrite(flashLayout[0].sector_start+FLASH_CS_OFFSET,
+                    sizeof(blt_addr), (blt_int8u *)&signature_checksum);
 } /*** end of FlashWriteChecksum ***/
 
 
 /************************************************************************************//**
 ** \brief     Verifies the checksum, which indicates that a valid user program is
 **            present and can be started.
-** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool FlashVerifyChecksum(void)
@@ -363,14 +363,14 @@ blt_bool FlashVerifyChecksum(void)
   /* compute the checksum by reading it from flash */
   for (wordIdx = 0; wordIdx < FLASH_CS_RANGE_TOTAL_WORDS; wordIdx++)
   {
-    signature_checksum += *((blt_int32u*)(flashLayout[0].sector_start + (wordIdx*4) + FLASH_CS_RANGE_START_OFFSET));
-  } 
+    signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start + (wordIdx*4) + FLASH_CS_RANGE_START_OFFSET));
+  }
   signature_checksum  = ~signature_checksum; /* one's complement */
 
   /* read the checksum value from flash that was writtin by the bootloader at the end
    * of the last firmware update
    */
-  signature_checksum_rom = *((blt_int32u*)(flashLayout[0].sector_start + FLASH_CS_OFFSET));
+  signature_checksum_rom = *((blt_int32u *)(flashLayout[0].sector_start + FLASH_CS_OFFSET));
   /* verify that they are both the same */
   if (signature_checksum == signature_checksum_rom)
   {
@@ -385,7 +385,7 @@ blt_bool FlashVerifyChecksum(void)
 /************************************************************************************//**
 ** \brief     Finalizes the flash driver operations. There could still be data in
 **            the currently active block that needs to be flashed.
-** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 blt_bool FlashDone(void)
@@ -398,7 +398,7 @@ blt_bool FlashDone(void)
       return BLT_FALSE;
     }
   }
-  
+
   /* check if there is still data waiting to be programmed */
   if (blockInfo.base_addr != FLASH_INVALID_ADDRESS)
   {
@@ -407,7 +407,7 @@ blt_bool FlashDone(void)
       return BLT_FALSE;
     }
   }
-  /* still here so all is okay */  
+  /* still here so all is okay */
   return BLT_TRUE;
 } /*** end of FlashDone ***/
 
@@ -425,16 +425,16 @@ blt_addr FlashGetUserProgBaseAddress(void)
 
 
 /************************************************************************************//**
-** \brief     Copies data currently in flash to the block->data and sets the 
+** \brief     Copies data currently in flash to the block->data and sets the
 **            base address.
 ** \param     block   Pointer to flash block info structure to operate on.
 ** \param     address Base address of the block data.
-** \return    BLT_TRUE if successful, BLT_FALSE otherwise. 
+** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
 static blt_bool FlashInitBlock(tFlashBlockInfo *block, blt_addr address)
 {
-  /* check address alignment */  
+  /* check address alignment */
   if ((address % FLASH_WRITE_BLOCK_SIZE) != 0)
   {
     return BLT_FALSE;
@@ -445,8 +445,8 @@ static blt_bool FlashInitBlock(tFlashBlockInfo *block, blt_addr address)
     /* block already initialized, so nothing to do */
     return BLT_TRUE;
   }
-  /* set the base address and copies the current data from flash */  
-  block->base_addr = address;  
+  /* set the base address and copies the current data from flash */
+  block->base_addr = address;
   CpuMemCopy((blt_addr)block->data, address, FLASH_WRITE_BLOCK_SIZE);
   return BLT_TRUE;
 } /*** end of FlashInitBlock ***/
@@ -465,14 +465,14 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
 {
   /* check if a switch needs to be made away from the boot block. in this case the boot
    * block shouldn't be written yet, because this is done at the end of the programming
-   * session by FlashDone(), this is right after the checksum was written. 
+   * session by FlashDone(), this is right after the checksum was written.
    */
   if (block == &bootBlockInfo)
   {
     /* switch from the boot block to the generic block info structure */
     block = &blockInfo;
   }
-  /* check if a switch back into the bootblock is needed. in this case the generic block 
+  /* check if a switch back into the bootblock is needed. in this case the generic block
    * doesn't need to be written here yet.
    */
   else if (base_addr == flashLayout[0].sector_start)
@@ -491,7 +491,7 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
   }
 
   /* initialize tne new block when necessary */
-  if (FlashInitBlock(block, base_addr) == BLT_FALSE) 
+  if (FlashInitBlock(block, base_addr) == BLT_FALSE)
   {
     return BLT_NULL;
   }
@@ -513,13 +513,13 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
 ** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address, 
+static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
                                 blt_int8u *data, blt_int32u len)
 {
   blt_addr   current_base_addr;
   blt_int8u  *dst;
   blt_int8u  *src;
-  
+
   /* determine the current base address */
   current_base_addr = (address/FLASH_WRITE_BLOCK_SIZE)*FLASH_WRITE_BLOCK_SIZE;
 
@@ -543,7 +543,7 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
       return BLT_FALSE;
     }
   }
-  
+
   /* add the data to the current block, but check for block overflow */
   dst = &(block->data[address - block->base_addr]);
   src = data;
@@ -597,7 +597,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   /* the FLASH_WRITE_BLOCK_SIZE is configured to exactly match the size of a page in
    * PFLASH. so here simply need to program one page in PFLASH.
    */
-  return FlashTricoreProgramPage(block->base_addr, block->data);  
+  return FlashTricoreProgramPage(block->base_addr, block->data);
 } /*** end of FlashWriteBlock ***/
 
 
@@ -618,8 +618,8 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
   {
     return BLT_FALSE;
   }
-  if ( (first_sector < flashLayout[0].sector_num) || \
-       (last_sector > flashLayout[FLASH_TOTAL_SECTORS-1].sector_num) )
+  if ((first_sector < flashLayout[0].sector_num) || \
+      (last_sector > flashLayout[FLASH_TOTAL_SECTORS-1].sector_num))
   {
     return BLT_FALSE;
   }
@@ -652,16 +652,16 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 static blt_int8u FlashGetSector(blt_addr address)
 {
   blt_int8u sectorIdx;
-  
+
   /* search through the sectors to find the right one */
   for (sectorIdx = 0; sectorIdx < FLASH_TOTAL_SECTORS; sectorIdx++)
   {
     /* keep the watchdog happy */
     CopService();
     /* is the address in this sector? */
-    if ( (address >= flashLayout[sectorIdx].sector_start) && \
-         (address < (flashLayout[sectorIdx].sector_start + \
-                  flashLayout[sectorIdx].sector_size)) )
+    if ((address >= flashLayout[sectorIdx].sector_start) && \
+        (address < (flashLayout[sectorIdx].sector_start + \
+                    flashLayout[sectorIdx].sector_size)))
     {
       /* return the sector number */
       return flashLayout[sectorIdx].sector_num;
@@ -681,7 +681,7 @@ static blt_int8u FlashGetSector(blt_addr address)
 static blt_addr FlashGetSectorBaseAddr(blt_int8u sector)
 {
   blt_int8u sectorIdx;
-  
+
   /* search through the sectors to find the right one */
   for (sectorIdx = 0; sectorIdx < FLASH_TOTAL_SECTORS; sectorIdx++)
   {
@@ -706,7 +706,7 @@ static blt_addr FlashGetSectorBaseAddr(blt_int8u sector)
 static blt_int32u FlashGetSectorSize(blt_int8u sector)
 {
   blt_int8u sectorIdx;
-  
+
   /* search through the sectors to find the right one */
   for (sectorIdx = 0; sectorIdx < FLASH_TOTAL_SECTORS; sectorIdx++)
   {
@@ -739,7 +739,7 @@ static blt_bool FlashTricoreProgramPage(blt_addr start_addr, blt_int8u *data)
   blt_int8u *readPtr;
   blt_int32u idx;
   FLASHn_FSR_t *pflashFSR;
-  
+
   /* check address alignment to a page in PFLASH */
   if ((start_addr % FLASH_WRITE_BLOCK_SIZE) != 0)
   {
@@ -756,23 +756,23 @@ static blt_bool FlashTricoreProgramPage(blt_addr start_addr, blt_int8u *data)
   /* perform DSYNC */
   CpuSetDSYNC();
   /* wait until FSR.xFPAGE = '1' */
-	while(pflashFSR->bits.PFPAGE != 1)
-	{
+  while (pflashFSR->bits.PFPAGE != 1)
+  {
     /* fail if FSR.SQER = '1' */
-		if (pflashFSR->bits.SQER == 1)
-		{
-			return BLT_FALSE;
-		}
+    if (pflashFSR->bits.SQER == 1)
+    {
+      return BLT_FALSE;
+    }
     /* fail if FSR.PROER = '1' */
-		if (pflashFSR->bits.PROER == 1)
-		{
-			return BLT_FALSE;
-		}
+    if (pflashFSR->bits.PROER == 1)
+    {
+      return BLT_FALSE;
+    }
     /* keep the watchdog happy */
     CopService();
-	}
+  }
   /* load FLASH_WRITE_BLOCK_SIZE bytes of program data into the assembly buffer */
-  dataPtr = (blt_int32u *)data; 
+  dataPtr = (blt_int32u *)data;
   for (idx = 0; idx <(FLASH_WRITE_BLOCK_SIZE/8u); idx++)
   {
     /* write first 32-bit value */
@@ -790,55 +790,55 @@ static blt_bool FlashTricoreProgramPage(blt_addr start_addr, blt_int8u *data)
   /* perform DSYNC */
   CpuSetDSYNC();
   /* wait until FSR.PROG = '1' */
-	while(pflashFSR->bits.PROG != 1)
-	{
+  while (pflashFSR->bits.PROG != 1)
+  {
     /* fail if FSR.SQER = '1' */
-		if (pflashFSR->bits.SQER == 1)
-		{
-			return BLT_FALSE;
-		}
+    if (pflashFSR->bits.SQER == 1)
+    {
+      return BLT_FALSE;
+    }
     /* fail if FSR.PROER = '1' */
-		if (pflashFSR->bits.PROER == 1)
-		{
-			return BLT_FALSE;
-		}
+    if (pflashFSR->bits.PROER == 1)
+    {
+      return BLT_FALSE;
+    }
     /* keep the watchdog happy */
     CopService();
-	}
+  }
   /* wait until FSR.xBUSY = '0' */
-	while(pflashFSR->bits.PBUSY == 1)
-	{
+  while (pflashFSR->bits.PBUSY == 1)
+  {
     /* check flag FSR.xFOPER for ‘1’ as abort criterion to protect against hardware
      * failures causing BUSY to stay '1'
      */
-		if (pflashFSR->bits.PFOPER == 1)
-		{
-			return BLT_FALSE;
-		}
+    if (pflashFSR->bits.PFOPER == 1)
+    {
+      return BLT_FALSE;
+    }
     /* keep the watchdog happy */
     CopService();
-	}
+  }
   /* check FSR.VER flag */
-	if (pflashFSR->bits.VER != 0)
-	{
-		return BLT_FALSE;
-	}
+  if (pflashFSR->bits.VER != 0)
+  {
+    return BLT_FALSE;
+  }
   /* fail if FSR.xFOPER = '1' */
-	if (pflashFSR->bits.PFOPER != 0)
-	{
-		return BLT_FALSE;
-	}
+  if (pflashFSR->bits.PFOPER != 0)
+  {
+    return BLT_FALSE;
+  }
   /* evaluate FSR.xDBER */
-	if(pflashFSR->bits.PFDBER != 0)
-	{
-		return BLT_FALSE;
-	}
+  if (pflashFSR->bits.PFDBER != 0)
+  {
+    return BLT_FALSE;
+  }
   /* use "clear status" command to clear flags */
   FLASH_WRITE_TO_U32_PTR_BY_ADDR(baseAddr + 0x5554u, 0x000000F5u);
-  /* perform verification by checking the written values. do this on a byte-per-byte 
-   * basis to also check the code for byte swapping mistakes. 
+  /* perform verification by checking the written values. do this on a byte-per-byte
+   * basis to also check the code for byte swapping mistakes.
    */
-  readPtr = (blt_int8u *)start_addr; 
+  readPtr = (blt_int8u *)start_addr;
   for (idx = 0; idx <FLASH_WRITE_BLOCK_SIZE; idx++)
   {
     /* verify 32-bits at a time */
@@ -869,7 +869,7 @@ static blt_bool FlashTricoreEraseSector(blt_addr start_addr)
   blt_int8u sectorNum;
   blt_int32u *readPtr;
   blt_int32u idx;
-  
+
   /* determine base address of the PFLASH module */
   baseAddr = FLASH_GET_PFLASH_BASE(start_addr);
   /* set pointer for the PFLASH module's FSR register */
@@ -885,49 +885,49 @@ static blt_bool FlashTricoreEraseSector(blt_addr start_addr)
   FLASH_WRITE_TO_U32_PTR_BY_ADDR(start_addr, 0x00000030u);
   /* perform DSYNC */
   CpuSetDSYNC();
-  /* wait until FSR.ERASE = '1' */  
-	while(pflashFSR->bits.ERASE != 1)
-	{
+  /* wait until FSR.ERASE = '1' */
+  while (pflashFSR->bits.ERASE != 1)
+  {
     /* fail if FSR.SQER = '1' */
-		if (pflashFSR->bits.SQER == 1)
-		{
-			return BLT_FALSE;
-		}
+    if (pflashFSR->bits.SQER == 1)
+    {
+      return BLT_FALSE;
+    }
     /* fail if FSR.PROER = '1' */
-		if (pflashFSR->bits.PROER == 1)
-		{
-			return BLT_FALSE;
-		}
+    if (pflashFSR->bits.PROER == 1)
+    {
+      return BLT_FALSE;
+    }
     /* keep the watchdog happy */
     CopService();
-	}
+  }
   /* wait until FSR.xBUSY = '0' */
-	while(pflashFSR->bits.PBUSY == 1)
-	{
+  while (pflashFSR->bits.PBUSY == 1)
+  {
     /* check flag FSR.xFOPER for ‘1’ as abort criterion to protect against hardware
      * failures causing BUSY to stay '1'
      */
-		if (pflashFSR->bits.PFOPER == 1)
-		{
-			return BLT_FALSE;
-		}
+    if (pflashFSR->bits.PFOPER == 1)
+    {
+      return BLT_FALSE;
+    }
     /* keep the watchdog happy */
     CopService();
-	}
+  }
   /* check FSR.VER flag */
-	if (pflashFSR->bits.VER != 0)
-	{
-		return BLT_FALSE;
-	}
+  if (pflashFSR->bits.VER != 0)
+  {
+    return BLT_FALSE;
+  }
   /* fail if FSR.xFOPER = '1' */
-	if (pflashFSR->bits.PFOPER != 0)
-	{
-		return BLT_FALSE;
-	}
+  if (pflashFSR->bits.PFOPER != 0)
+  {
+    return BLT_FALSE;
+  }
   /* use "clear status" command to clear flags */
   FLASH_WRITE_TO_U32_PTR_BY_ADDR(baseAddr + 0x5554u, 0x000000F5u);
 
-  /* perform erase verification */  
+  /* perform erase verification */
   sectorNum = FlashGetSector(start_addr);
   if (sectorNum == FLASH_INVALID_SECTOR)
   {

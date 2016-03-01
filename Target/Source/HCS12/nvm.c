@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -92,12 +92,12 @@ blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
    * by this driver.
    */
   result = NvmWriteHook(addr, len, data);
-  
+
   /* process the return code */
   if (result == BLT_NVM_OKAY)
   {
     /* data was within range of the additionally supported memory and succesfully
-     * programmed, so we are all done. 
+     * programmed, so we are all done.
      */
     return BLT_TRUE;
   }
@@ -133,12 +133,12 @@ blt_bool NvmErase(blt_addr addr, blt_int32u len)
    * by this driver.
    */
   result = NvmEraseHook(addr, len);
-  
+
   /* process the return code */
   if (result == BLT_NVM_OKAY)
   {
     /* address was within range of the additionally supported memory and succesfully
-     * erased, so we are all done. 
+     * erased, so we are all done.
      */
     return BLT_TRUE;
   }
@@ -175,7 +175,7 @@ blt_bool NvmVerifyChecksum(void)
 
 
 /************************************************************************************//**
-** \brief     Obtains the base address of the non-volatile memory available to the user 
+** \brief     Obtains the base address of the non-volatile memory available to the user
 **            program. This is typically that start of the vector table.
 ** \return    Base address.
 **
@@ -187,11 +187,11 @@ blt_addr NvmGetUserProgBaseAddress(void)
 
 
 /************************************************************************************//**
-** \brief     Once all erase and programming operations are completed, this 
-**            function is called, so at the end of the programming session and 
+** \brief     Once all erase and programming operations are completed, this
+**            function is called, so at the end of the programming session and
 **            right before a software reset is performed. It is used to calculate
 **            a checksum and program this into flash. This checksum is later used
-**            to determine if a valid user program is present in flash. 
+**            to determine if a valid user program is present in flash.
 ** \return    BLT_TRUE if successful, BLT_FALSE otherwise.
 **
 ****************************************************************************************/

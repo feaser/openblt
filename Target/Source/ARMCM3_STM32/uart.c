@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -109,10 +109,10 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  /* the current implementation supports USART1 and USART2. throw an assertion error in 
-   * case a different UART channel is configured.  
+  /* the current implementation supports USART1 and USART2. throw an assertion error in
+   * case a different UART channel is configured.
    */
-  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) || (BOOT_COM_UART_CHANNEL_INDEX == 1)); 
+  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) || (BOOT_COM_UART_CHANNEL_INDEX == 1));
   /* first reset the UART configuration. note that this already configures the UART
    * for 1 stopbit, 8 databits and no parity.
    */
@@ -145,10 +145,10 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
   /* verify validity of the len-paramenter */
   ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
 
-  /* first transmit the length of the packet */  
+  /* first transmit the length of the packet */
   result = UartTransmitByte(len);
-  ASSERT_RT(result == BLT_TRUE);  
-  
+  ASSERT_RT(result == BLT_TRUE);
+
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
   {
@@ -156,7 +156,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     CopService();
     /* write byte */
     result = UartTransmitByte(data[data_index]);
-    ASSERT_RT(result == BLT_TRUE);  
+    ASSERT_RT(result == BLT_TRUE);
   }
 } /*** end of UartTransmitPacket ***/
 
@@ -203,7 +203,7 @@ blt_bool UartReceivePacket(blt_int8u *data)
       if (xcpCtoRxLength == xcpCtoReqPacket[0])
       {
         /* copy the packet data */
-        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);        
+        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);
         /* done with cto packet reception */
         xcpCtoRxInProgress = BLT_FALSE;
         /* packet reception complete */
@@ -236,7 +236,7 @@ blt_bool UartReceivePacket(blt_int8u *data)
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
   /* check if a new byte was received by means of the RDR-bit */
-  if((UARTx->SR & UART_BIT_RXNE) != 0)
+  if ((UARTx->SR & UART_BIT_RXNE) != 0)
   {
     /* store the received byte */
     data[0] = UARTx->DR;
@@ -265,8 +265,8 @@ static blt_bool UartTransmitByte(blt_int8u data)
   /* write byte to transmit holding register */
   UARTx->DR = data;
   /* wait for tx holding register to be empty */
-  while((UARTx->SR & UART_BIT_TXE) == 0) 
-  { 
+  while ((UARTx->SR & UART_BIT_TXE) == 0)
+  {
     /* keep the watchdog happy */
     CopService();
   }

@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -65,7 +65,7 @@ typedef struct t_fifo_ctrl
   blt_int8u          *writeptr;                    /**< pointer to next free location  */
   blt_int8u           length;                      /**< number of buffer elements      */
   blt_int8u           entries;                     /**< # of full buffer elements      */
-  blt_int8u           handle;                      /**< handle of the buffer           */ 
+  blt_int8u           handle;                      /**< handle of the buffer           */
   struct t_fifo_ctrl *fifoctrlptr;                 /**< pointer to free buffer control */
 } tFifoCtrl;
 
@@ -123,15 +123,15 @@ void UsbInit(void)
   fifoPipeBulkIN.handle  = UsbFifoMgrCreate(fifoPipeBulkIN.data,  FIFO_PIPE_SIZE);
   fifoPipeBulkOUT.handle = UsbFifoMgrCreate(fifoPipeBulkOUT.data, FIFO_PIPE_SIZE);
   /* validate fifo handles */
-  ASSERT_RT( (fifoPipeBulkIN.handle  != FIFO_ERR_INVALID_HANDLE) && \
-             (fifoPipeBulkOUT.handle != FIFO_ERR_INVALID_HANDLE) );
+  ASSERT_RT((fifoPipeBulkIN.handle  != FIFO_ERR_INVALID_HANDLE) && \
+            (fifoPipeBulkOUT.handle != FIFO_ERR_INVALID_HANDLE));
   /* initialize the low level USB driver */
   USB_Init();
 } /*** end of UsbInit ***/
 
 
 /************************************************************************************//**
-** \brief     Releases the USB communication interface. 
+** \brief     Releases the USB communication interface.
 ** \return    none.
 **
 ****************************************************************************************/
@@ -155,12 +155,12 @@ void UsbTransmitPacket(blt_int8u *data, blt_int8u len)
   blt_bool result;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_USB_TX_MAX_DATA);  
+  ASSERT_RT(len <= BOOT_COM_USB_TX_MAX_DATA);
 
-  /* first transmit the length of the packet */  
+  /* first transmit the length of the packet */
   result = UsbTransmitByte(len);
-  ASSERT_RT(result == BLT_TRUE);  
-  
+  ASSERT_RT(result == BLT_TRUE);
+
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
   {
@@ -168,7 +168,7 @@ void UsbTransmitPacket(blt_int8u *data, blt_int8u len)
     CopService();
     /* write byte */
     result = UsbTransmitByte(data[data_index]);
-    ASSERT_RT(result == BLT_TRUE);  
+    ASSERT_RT(result == BLT_TRUE);
   }
 } /*** end of UsbTransmitPacket ***/
 
@@ -215,7 +215,7 @@ blt_bool UsbReceivePacket(blt_int8u *data)
       if (xcpCtoRxLength == xcpCtoReqPacket[0])
       {
         /* copy the packet data */
-        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);        
+        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);
         /* done with cto packet reception */
         xcpCtoRxInProgress = BLT_FALSE;
 
@@ -238,7 +238,7 @@ blt_bool UsbReceivePacket(blt_int8u *data)
 static blt_bool UsbReceiveByte(blt_int8u *data)
 {
   blt_bool result;
- 
+
   /* obtain data from the fifo */
   result = UsbFifoMgrRead(fifoPipeBulkOUT.handle, data);
   return result;
@@ -254,7 +254,7 @@ static blt_bool UsbReceiveByte(blt_int8u *data)
 static blt_bool UsbTransmitByte(blt_int8u data)
 {
   blt_bool result;
- 
+
   /* write data from to fifo */
   result = UsbFifoMgrWrite(fifoPipeBulkIN.handle, data);
   return result;
@@ -333,14 +333,14 @@ void UsbTransmitPipeBulkIN(void)
     result = UsbFifoMgrRead(fifoPipeBulkIN.handle, &byte_value);
     ASSERT_RT(result == BLT_TRUE);
     /* store it in the endpoint's RAM */
-    USB_Tx_Buffer[byte_counter] = byte_value; 
+    USB_Tx_Buffer[byte_counter] = byte_value;
   }
   /* store it in the endpoint's RAM */
   UserToPMABufferCopy(&USB_Tx_Buffer[0], ENDP1_TXADDR, nr_of_bytes_for_tx_endpoint);
   /* set the number of bytes that need to be transmitted from this endpoint */
   SetEPTxCount(ENDP1, nr_of_bytes_for_tx_endpoint);
   /* inform the endpoint that it can start its transmission because the data is valid */
-  SetEPTxValid(ENDP1); 
+  SetEPTxValid(ENDP1);
 } /*** end of UsbTransmitPipeBulkIN ***/
 
 
@@ -356,12 +356,12 @@ void UsbReceivePipeBulkOUT(void)
   uint16_t USB_Rx_Cnt;
   uint16_t byte_counter;
   blt_bool result;
-  
+
   /* Get the received data buffer and update the counter */
   USB_Rx_Cnt = USB_SIL_Read(EP1_OUT, USB_Rx_Buffer);
-  
-  /* USB data will be immediately processed, this allow next USB traffic being 
-   * NAKed till the end of the USART Xfer 
+
+  /* USB data will be immediately processed, this allow next USB traffic being
+   * NAKed till the end of the USART Xfer
    */
   for (byte_counter=0; byte_counter<USB_Rx_Cnt; byte_counter++)
   {
@@ -383,23 +383,23 @@ void UsbReceivePipeBulkOUT(void)
 ** \return    none.
 **
 ****************************************************************************************/
-static void IntToUnicode (blt_int32u value , blt_int8u *pbuf , blt_int8u len)
+static void IntToUnicode(blt_int32u value , blt_int8u *pbuf , blt_int8u len)
 {
   blt_int8u idx = 0;
-  
-  for( idx = 0 ; idx < len ; idx ++)
+
+  for (idx = 0 ; idx < len ; idx ++)
   {
-    if( ((value >> 28)) < 0xA )
+    if (((value >> 28)) < 0xA)
     {
       pbuf[ 2* idx] = (value >> 28) + '0';
     }
     else
     {
-      pbuf[2* idx] = (value >> 28) + 'A' - 10; 
+      pbuf[2* idx] = (value >> 28) + 'A' - 10;
     }
-    
+
     value = value << 4;
-    
+
     pbuf[ 2* idx + 1] = 0;
   }
 } /*** end of IntToUnicode ***/
@@ -414,9 +414,9 @@ void UsbGetSerialNum(void)
 {
   blt_int32u Device_Serial0, Device_Serial1, Device_Serial2;
 
-  Device_Serial0 = *(volatile blt_int32u*)(0x1FFFF7E8);
-  Device_Serial1 = *(volatile blt_int32u*)(0x1FFFF7EC);
-  Device_Serial2 = *(volatile blt_int32u*)(0x1FFFF7F0);
+  Device_Serial0 = *(volatile blt_int32u *)(0x1FFFF7E8);
+  Device_Serial1 = *(volatile blt_int32u *)(0x1FFFF7EC);
+  Device_Serial2 = *(volatile blt_int32u *)(0x1FFFF7F0);
 
   Device_Serial0 += Device_Serial2;
 
@@ -488,7 +488,7 @@ static blt_int8u UsbFifoMgrCreate(blt_int8u *buffer, blt_int8u length)
   pbc->writeptr = buffer;
   pbc->entries = 0;
   pbc->startptr = buffer;
-  pbc->endptr = (blt_int8u*)(buffer + length - 1);
+  pbc->endptr = (blt_int8u *)(buffer + length - 1);
 
   /* return the handle to the successfully created fifo control */
   return pbc->handle;
@@ -524,7 +524,7 @@ static blt_bool UsbFifoMgrWrite(blt_int8u handle, blt_int8u data)
     /* set write pointer to start of the cyclic fifo */
     fifoCtrl[handle].writeptr = fifoCtrl[handle].startptr;
   }
-  /* still here so all is okay */	
+  /* still here so all is okay */
   return BLT_TRUE;
 } /*** end of UsbFifoMgrWrite ***/
 

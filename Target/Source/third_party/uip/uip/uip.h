@@ -95,7 +95,7 @@ typedef uip_ip4addr_t uip_ipaddr_t;
 
  uip_ipaddr(&addr, 192,168,1,2);
  uip_sethostaddr(&addr);
- 
+
  \endcode
  * \param addr A pointer to an IP address of type uip_ipaddr_t;
  *
@@ -753,7 +753,7 @@ void uip_send(const void *data, int len);
  \code
  uip_ipaddr_t addr;
  struct uip_udp_conn *c;
- 
+
  uip_ipaddr(&addr, 192,168,2,1);
  c = uip_udp_new(&addr, HTONS(12345));
  if(c != NULL) {
@@ -814,7 +814,7 @@ struct uip_udp_conn *uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport);
  * These functions can be used for converting between different data
  * formats used by uIP.
  */
- 
+
 /**
  * Construct an IP address from four bytes.
  *
@@ -826,7 +826,7 @@ struct uip_udp_conn *uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport);
  \code
  uip_ipaddr_t ipaddr;
  struct uip_conn *c;
- 
+
  uip_ipaddr(&ipaddr, 192,168,1,2);
  c = uip_connect(&ipaddr, HTONS(80));
  \endcode
@@ -1155,13 +1155,14 @@ extern u16_t uip_urglen, uip_surglen;
  * file pointers) for the connection. The type of this field is
  * configured in the "uipopt.h" header file.
  */
-struct uip_conn {
+struct uip_conn
+{
   uip_ipaddr_t ripaddr;   /**< The IP address of the remote host. */
-  
+
   u16_t lport;        /**< The local TCP port, in network byte order. */
   u16_t rport;        /**< The local remote TCP port, in network byte
 			 order. */
-  
+
   u8_t rcv_nxt[4];    /**< The sequence number that we expect to
 			 receive next. */
   u8_t snd_nxt[4];    /**< The sequence number that was last sent by
@@ -1215,7 +1216,8 @@ extern u8_t uip_acc32[4];
 /**
  * Representation of a uIP UDP connection.
  */
-struct uip_udp_conn {
+struct uip_udp_conn
+{
   uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
   u16_t lport;        /**< The local port number in network byte order. */
   u16_t rport;        /**< The remote port number in network byte order. */
@@ -1237,8 +1239,10 @@ extern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
  * UIP_STATISTICS is set to 1.
  *
  */
-struct uip_stats {
-  struct {
+struct uip_stats
+{
+  struct
+  {
     uip_stats_t drop;     /**< Number of dropped packets at the IP
 			     layer. */
     uip_stats_t recv;     /**< Number of received packets at the IP
@@ -1258,7 +1262,8 @@ struct uip_stats {
     uip_stats_t protoerr; /**< Number of packets dropped since they
 			     were neither ICMP, UDP nor TCP. */
   } ip;                   /**< IP statistics. */
-  struct {
+  struct
+  {
     uip_stats_t drop;     /**< Number of dropped ICMP packets. */
     uip_stats_t recv;     /**< Number of received ICMP packets. */
     uip_stats_t sent;     /**< Number of sent ICMP packets. */
@@ -1266,7 +1271,8 @@ struct uip_stats {
 			     type. */
   } icmp;                 /**< ICMP statistics. */
 #if UIP_TCP
-  struct {
+  struct
+  {
     uip_stats_t drop;     /**< Number of dropped TCP segments. */
     uip_stats_t recv;     /**< Number of recived TCP segments. */
     uip_stats_t sent;     /**< Number of sent TCP segments. */
@@ -1283,7 +1289,8 @@ struct uip_stats {
   } tcp;                  /**< TCP statistics. */
 #endif /* UIP_TCP */
 #if UIP_UDP
-  struct {
+  struct
+  {
     uip_stats_t drop;     /**< Number of dropped UDP segments. */
     uip_stats_t recv;     /**< Number of recived UDP segments. */
     uip_stats_t sent;     /**< Number of sent UDP segments. */
@@ -1362,7 +1369,7 @@ void uip_process(u8_t flag);
    incoming data that should be processed, or because the periodic
    timer has fired. These values are never used directly, but only in
    the macrose defined in this file. */
- 
+
 #define UIP_DATA          1     /* Tells uIP that there is incoming
 				   data in the uip_buf buffer. The
 				   length of the data is stored in the
@@ -1389,15 +1396,16 @@ void uip_process(u8_t flag);
 #define UIP_TIME_WAIT   7
 #define UIP_LAST_ACK    8
 #define UIP_TS_MASK     15
-  
+
 #define UIP_STOPPED      16
 
 /* The TCP and IP headers. */
-struct uip_tcpip_hdr {
+struct uip_tcpip_hdr
+{
 #if UIP_CONF_IPV6
   /* IPv6 header. */
   u8_t vtc,
-    tcflow;
+       tcflow;
   u16_t flow;
   u8_t len[2];
   u8_t proto, ttl;
@@ -1405,36 +1413,37 @@ struct uip_tcpip_hdr {
 #else /* UIP_CONF_IPV6 */
   /* IPv4 header. */
   u8_t vhl,
-    tos,
-    len[2],
-    ipid[2],
-    ipoffset[2],
-    ttl,
-    proto;
+       tos,
+       len[2],
+       ipid[2],
+       ipoffset[2],
+       ttl,
+       proto;
   u16_t ipchksum;
   u16_t srcipaddr[2],
-    destipaddr[2];
+        destipaddr[2];
 #endif /* UIP_CONF_IPV6 */
-  
+
   /* TCP header. */
   u16_t srcport,
-    destport;
+        destport;
   u8_t seqno[4],
-    ackno[4],
-    tcpoffset,
-    flags,
-    wnd[2];
+       ackno[4],
+       tcpoffset,
+       flags,
+       wnd[2];
   u16_t tcpchksum;
   u8_t urgp[2];
   u8_t optdata[4];
 };
 
 /* The ICMP and IP headers. */
-struct uip_icmpip_hdr {
+struct uip_icmpip_hdr
+{
 #if UIP_CONF_IPV6
   /* IPv6 header. */
   u8_t vtc,
-    tcf;
+       tcf;
   u16_t flow;
   u8_t len[2];
   u8_t proto, ttl;
@@ -1442,17 +1451,17 @@ struct uip_icmpip_hdr {
 #else /* UIP_CONF_IPV6 */
   /* IPv4 header. */
   u8_t vhl,
-    tos,
-    len[2],
-    ipid[2],
-    ipoffset[2],
-    ttl,
-    proto;
+       tos,
+       len[2],
+       ipid[2],
+       ipoffset[2],
+       ttl,
+       proto;
   u16_t ipchksum;
   u16_t srcipaddr[2],
-    destipaddr[2];
+        destipaddr[2];
 #endif /* UIP_CONF_IPV6 */
-  
+
   /* ICMP (echo) header. */
   u8_t type, icode;
   u16_t icmpchksum;
@@ -1467,11 +1476,12 @@ struct uip_icmpip_hdr {
 
 
 /* The UDP and IP headers. */
-struct uip_udpip_hdr {
+struct uip_udpip_hdr
+{
 #if UIP_CONF_IPV6
   /* IPv6 header. */
   u8_t vtc,
-    tcf;
+       tcf;
   u16_t flow;
   u8_t len[2];
   u8_t proto, ttl;
@@ -1479,20 +1489,20 @@ struct uip_udpip_hdr {
 #else /* UIP_CONF_IPV6 */
   /* IP header. */
   u8_t vhl,
-    tos,
-    len[2],
-    ipid[2],
-    ipoffset[2],
-    ttl,
-    proto;
+       tos,
+       len[2],
+       ipid[2],
+       ipoffset[2],
+       ttl,
+       proto;
   u16_t ipchksum;
   u16_t srcipaddr[2],
-    destipaddr[2];
+        destipaddr[2];
 #endif /* UIP_CONF_IPV6 */
-  
+
   /* UDP header. */
   u16_t srcport,
-    destport;
+        destport;
   u16_t udplen;
   u16_t udpchksum;
 };
@@ -1549,7 +1559,8 @@ extern uip_ipaddr_t uip_hostaddr, uip_netmask, uip_draddr;
 /**
  * Representation of a 48-bit Ethernet address.
  */
-struct uip_eth_addr {
+struct uip_eth_addr
+{
   u8_t addr[6];
 };
 

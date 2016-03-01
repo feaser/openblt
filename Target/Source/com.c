@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -36,16 +36,16 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_CAN_ENABLE > 0)
-  #include "can.h"                                    /* can driver module             */
+#include "can.h"                                    /* can driver module             */
 #endif
 #if (BOOT_COM_UART_ENABLE > 0)
-  #include "uart.h"                                   /* uart driver module            */
+#include "uart.h"                                   /* uart driver module            */
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
-  #include "usb.h"                                    /* usb driver module             */
+#include "usb.h"                                    /* usb driver module             */
 #endif
 #if (BOOT_COM_NET_ENABLE > 0)
-  #include "net.h"                                    /* tcp/ip driver module          */
+#include "net.h"                                    /* tcp/ip driver module          */
 #endif
 
 
@@ -58,7 +58,7 @@ static tComInterfaceId comActiveInterface = COM_IF_OTHER;
 
 
 /************************************************************************************//**
-** \brief     Initializes the communication module including the hardware needed for 
+** \brief     Initializes the communication module including the hardware needed for
 **            the communication.
 ** \return    none
 **
@@ -95,7 +95,7 @@ void ComInit(void)
 
 
 /************************************************************************************//**
-** \brief     Updates the communication module by checking if new data was received 
+** \brief     Updates the communication module by checking if new data was received
 **            and submitting the request to process newly received data.
 ** \return    none
 **
@@ -104,7 +104,7 @@ void ComTask(void)
 {
   /* make xcpCtoReqPacket static for runtime efficiency */
   static blt_int8u xcpCtoReqPacket[BOOT_COM_RX_MAX_DATA];
- 
+
 #if (BOOT_COM_CAN_ENABLE > 0)
   if (CanReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
   {
@@ -214,7 +214,7 @@ void ComTransmitPacket(blt_int8u *data, blt_int16u len)
 blt_int16u ComGetActiveInterfaceMaxRxLen(void)
 {
   blt_int16u result;
-  
+
   /* filter on communication interface identifier */
   switch (comActiveInterface)
   {
@@ -233,18 +233,18 @@ blt_int16u ComGetActiveInterfaceMaxRxLen(void)
     case COM_IF_NET:
       result = BOOT_COM_NET_RX_MAX_DATA;
       break;
-      
+
     default:
       result = BOOT_COM_RX_MAX_DATA;
       break;
   }
-  
+
   return result;
 } /*** end of ComGetActiveInterfaceMaxRxLen ***/
 
 
 /************************************************************************************//**
-** \brief     Obtains the maximum number of bytes that can be transmitted on the 
+** \brief     Obtains the maximum number of bytes that can be transmitted on the
 **            specified communication interface.
 ** \return    Maximum number of bytes that can be received.
 **
@@ -252,7 +252,7 @@ blt_int16u ComGetActiveInterfaceMaxRxLen(void)
 blt_int16u ComGetActiveInterfaceMaxTxLen(void)
 {
   blt_int16u result;
-  
+
   /* filter on communication interface identifier */
   switch (comActiveInterface)
   {
@@ -271,12 +271,12 @@ blt_int16u ComGetActiveInterfaceMaxTxLen(void)
     case COM_IF_NET:
       result = BOOT_COM_NET_TX_MAX_DATA;
       break;
-      
+
     default:
       result = BOOT_COM_TX_MAX_DATA;
       break;
   }
-  
+
   return result;
 } /*** end of ComGetActiveInterfaceMaxTxLen ***/
 

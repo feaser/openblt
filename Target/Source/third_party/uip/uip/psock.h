@@ -84,15 +84,16 @@
 #include "uipopt.h"
 #include "pt.h"
 
- /*
- * The structure that holds the state of a buffer.
- *
- * This structure holds the state of a uIP buffer. The structure has
- * no user-visible elements, but is used through the functions
- * provided by the library.
- *
- */
-struct psock_buf {
+/*
+* The structure that holds the state of a buffer.
+*
+* This structure holds the state of a uIP buffer. The structure has
+* no user-visible elements, but is used through the functions
+* provided by the library.
+*
+*/
+struct psock_buf
+{
   u8_t *ptr;
   unsigned short left;
 };
@@ -103,23 +104,24 @@ struct psock_buf {
  * The protosocket structrure is an opaque structure with no user-visible
  * elements.
  */
-struct psock {
+struct psock
+{
   struct pt pt, psockpt; /* Protothreads - one that's using the psock
 			    functions, and one that runs inside the
 			    psock functions. */
   const u8_t *sendptr;   /* Pointer to the next data to be sent. */
   u8_t *readptr;         /* Pointer to the next data to be read. */
-  
+
   char *bufptr;          /* Pointer to the buffer used for buffering
 			    incoming data. */
-  
+
   u16_t sendlen;         /* The number of bytes left to be sent. */
   u16_t readlen;         /* The number of bytes left to be read. */
 
   struct psock_buf buf;  /* The structure holding the state of the
 			    input buffer. */
   unsigned int bufsize;  /* The size of the input buffer. */
-  
+
   unsigned char state;   /* The state of the protosocket. */
 };
 
@@ -192,7 +194,7 @@ PT_THREAD(psock_send(struct psock *psock, const char *buf, unsigned int len));
     PT_WAIT_THREAD(&((psock)->pt), psock_send(psock, str, strlen(str)))
 
 PT_THREAD(psock_generator_send(struct psock *psock,
-				unsigned short (*f)(void *), void *arg));
+                               unsigned short(*f)(void *), void *arg));
 
 /**
  * \brief      Generate data with a function and send it
@@ -353,13 +355,13 @@ char psock_newdata(struct psock *s);
    PSOCK_BEGIN(s);
 
    PSOCK_WAIT_UNTIL(s, PSOCK_NEWADATA(s) || timer_expired(t));
-   
+
    if(PSOCK_NEWDATA(s)) {
      PSOCK_READTO(s, '\n');
    } else {
      handle_timed_out(s);
    }
-   
+
    PSOCK_END(s);
  }
  \endcode

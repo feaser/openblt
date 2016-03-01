@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -46,7 +46,7 @@
  */
 static blt_int32u millisecond_counter;
 
-/** \brief Holds the timer tick count for 1 millisecond. */ 
+/** \brief Holds the timer tick count for 1 millisecond. */
 static blt_int16u millisecond_ticks;
 
 
@@ -58,13 +58,13 @@ static blt_int16u millisecond_ticks;
 void TimerInit(void)
 {
   blt_int32u dummy;
-  
+
   /* reset the timer configuration */
   TimerReset();
   /* obtain "E" access rights */
   CpuEnterInitMode();
   /* enable the GPT12 timer module */
-  GPT120_CLC.reg  = 0x00000000;  
+  GPT120_CLC.reg  = 0x00000000;
   /* dummy read to avoid pipeline effects */
   dummy = GPT120_CLC.reg;
   /* release "E" access rights */
@@ -80,7 +80,7 @@ void TimerInit(void)
    */
   GPT120_T3CON.reg  = 0x00000845;
   /* reset the timer 3 register so that counter starts at 0 */
-  GPT120_T3.reg = 0x00000000;  
+  GPT120_T3.reg = 0x00000000;
   /* calculate the number of timer ticks in 1 millisecond */
   millisecond_ticks = ((blt_int32u)BOOT_CPU_SYSTEM_SPEED_KHZ / 128);
   /* reset the millisecond counter value */
@@ -100,11 +100,11 @@ void TimerReset(void)
   /* revert back to timer 3 configuration reset value */
   GPT120_T3CON.reg  = 0x00000000;
   /* revert back to timer 3 reset value */
-  GPT120_T3.reg = 0x00000000;  
+  GPT120_T3.reg = 0x00000000;
   /* obtain "E" access rights */
   CpuEnterInitMode();
   /* disable the GPT12 timer module */
-  GPT120_CLC.reg  = 0x00000003;  
+  GPT120_CLC.reg  = 0x00000003;
   /* dummy read to avoid pipeline effects */
   dummy = GPT120_CLC.reg;
   /* release "E" access rights */

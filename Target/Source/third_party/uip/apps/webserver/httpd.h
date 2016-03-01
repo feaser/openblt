@@ -38,7 +38,8 @@
 #include "psock.h"
 #include "httpd-fs.h"
 
-struct httpd_state {
+struct httpd_state
+{
   unsigned char timer;
   struct psock sin, sout;
   struct pt outputpt, scriptpt;
@@ -49,7 +50,7 @@ struct httpd_state {
   int len;
   char *scriptptr;
   int scriptlen;
-  
+
   unsigned short count;
 };
 

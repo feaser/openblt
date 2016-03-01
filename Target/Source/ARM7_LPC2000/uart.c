@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -100,11 +100,11 @@ static blt_bool UartTransmitByte(blt_int8u data);
 void UartInit(void)
 {
   blt_int32u baud_reg_value;                           /* baudrate register value      */
-  
-  /* the current implementation supports UART0. throw an assertion error in case 
-   * a different UART channel is configured.  
+
+  /* the current implementation supports UART0. throw an assertion error in case
+   * a different UART channel is configured.
    */
-  ASSERT_CT(BOOT_COM_UART_CHANNEL_INDEX == 0); 
+  ASSERT_CT(BOOT_COM_UART_CHANNEL_INDEX == 0);
   /* disable UART related interrupt generation. this driver works in polling mode */
   U0IER = 0;
   /* clear interrupt id register */
@@ -113,19 +113,19 @@ void UartInit(void)
   U0LSR = 0;
   /* set divisor latch DLAB = 1 so buadrate can be configured */
   U0LCR = UART_DLAB;
-  /* Baudrate calculation: 
-   *   y = BOOT_CPU_SYSTEM_SPEED_KHZ * 1000 / 16 / BOOT_COM_UART_BAUDRATE and add 
+  /* Baudrate calculation:
+   *   y = BOOT_CPU_SYSTEM_SPEED_KHZ * 1000 / 16 / BOOT_COM_UART_BAUDRATE and add
    *   smartness to automatically round the value up/down using the following trick:
    *     y = x/n can round with y = (x + (n + 1)/2 ) / n
    */
   /* check that baudrate register value is not 0 */
   ASSERT_CT((((BOOT_CPU_SYSTEM_SPEED_KHZ*1000/16)+((BOOT_COM_UART_BAUDRATE+1)/2))/  \
-               BOOT_COM_UART_BAUDRATE) > 0);
+             BOOT_COM_UART_BAUDRATE) > 0);
   /* check that baudrate register value is not greater than max 16-bit unsigned value */
   ASSERT_CT((((BOOT_CPU_SYSTEM_SPEED_KHZ*1000/16)+((BOOT_COM_UART_BAUDRATE+1)/2))/  \
-               BOOT_COM_UART_BAUDRATE) <= 65535);
+             BOOT_COM_UART_BAUDRATE) <= 65535);
   baud_reg_value = (((BOOT_CPU_SYSTEM_SPEED_KHZ*1000/16)+ \
-                    ((BOOT_COM_UART_BAUDRATE+1)/2))/BOOT_COM_UART_BAUDRATE);
+                     ((BOOT_COM_UART_BAUDRATE+1)/2))/BOOT_COM_UART_BAUDRATE);
   /* write the calculated baudrate selector value to the registers */
   U0DLL = (blt_int8u)baud_reg_value;
   U0DLM = (blt_int8u)(baud_reg_value >> 8);
@@ -149,12 +149,12 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
   blt_bool result;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);  
+  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
 
-  /* first transmit the length of the packet */  
+  /* first transmit the length of the packet */
   result = UartTransmitByte(len);
-  ASSERT_RT(result == BLT_TRUE);  
-  
+  ASSERT_RT(result == BLT_TRUE);
+
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
   {
@@ -162,7 +162,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     CopService();
     /* write byte */
     result = UartTransmitByte(data[data_index]);
-    ASSERT_RT(result == BLT_TRUE);  
+    ASSERT_RT(result == BLT_TRUE);
   }
 } /*** end of UartTransmitPacket ***/
 
@@ -209,7 +209,7 @@ blt_bool UartReceivePacket(blt_int8u *data)
       if (xcpCtoRxLength == xcpCtoReqPacket[0])
       {
         /* copy the packet data */
-        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);        
+        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);
         /* done with cto packet reception */
         xcpCtoRxInProgress = BLT_FALSE;
         /* packet reception complete */
@@ -242,7 +242,7 @@ blt_bool UartReceivePacket(blt_int8u *data)
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
   /* check if a new byte was received by means of the RDR-bit */
-  if((U0LSR & UART_RDR) != 0)
+  if ((U0LSR & UART_RDR) != 0)
   {
     /* store the received byte */
     data[0] = U0RBR;
@@ -271,8 +271,8 @@ static blt_bool UartTransmitByte(blt_int8u data)
   /* write byte to transmit holding register */
   U0THR = data;
   /* wait for tx holding register to be empty */
-  while((U0LSR & UART_THRE) == 0) 
-  { 
+  while ((U0LSR & UART_THRE) == 0)
+  {
     /* keep the watchdog happy */
     CopService();
   }

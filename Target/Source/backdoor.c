@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -41,25 +41,25 @@
 * Macro definitions
 ****************************************************************************************/
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
-  #ifndef BACKDOOR_ENTRY_TIMEOUT_MS
-  /** \brief Sets the time in milliseconds that the backdoor is open, but allow an 
-   *         override for this time. note that this time should be at least 2.5 times
-   *         as long as the time that is configured in Microboot's XCP settings for the
-   *         connect command response. This is the last entry on XCP Timeouts tab. By 
-   *         default the connect command response is configured as 20ms by Microboot,
-   *         except for TCP/IP where it is 300ms due to accomodate for worldwide
-   *         network latency. The default value was chosen safely for compatibility
-   *         reasons with all supported communication interfaces. It could be made 
-   *         shorter your bootloader. To change this value, simply add the macro
-   *         BACKDOOR_ENTRY_TIMEOUT_MS to blt_conf.h with your desired backdoor open time
-   *         in milliseconds.
-   */
-    #if (BOOT_COM_NET_ENABLE == 1)
-      #define BACKDOOR_ENTRY_TIMEOUT_MS  (750)
-    #else
-      #define BACKDOOR_ENTRY_TIMEOUT_MS  (500)
-    #endif
-  #endif
+#ifndef BACKDOOR_ENTRY_TIMEOUT_MS
+/** \brief Sets the time in milliseconds that the backdoor is open, but allow an
+ *         override for this time. note that this time should be at least 2.5 times
+ *         as long as the time that is configured in Microboot's XCP settings for the
+ *         connect command response. This is the last entry on XCP Timeouts tab. By
+ *         default the connect command response is configured as 20ms by Microboot,
+ *         except for TCP/IP where it is 300ms due to accomodate for worldwide
+ *         network latency. The default value was chosen safely for compatibility
+ *         reasons with all supported communication interfaces. It could be made
+ *         shorter your bootloader. To change this value, simply add the macro
+ *         BACKDOOR_ENTRY_TIMEOUT_MS to blt_conf.h with your desired backdoor open time
+ *         in milliseconds.
+ */
+#if (BOOT_COM_NET_ENABLE == 1)
+#define BACKDOOR_ENTRY_TIMEOUT_MS  (750)
+#else
+#define BACKDOOR_ENTRY_TIMEOUT_MS  (500)
+#endif
+#endif
 #endif
 
 /****************************************************************************************
@@ -92,22 +92,22 @@ void BackDoorInit(void)
 #if (BOOT_BACKDOOR_HOOKS_ENABLE > 0)
   /* initialize application's backdoor functionality */
   BackDoorInitHook();
-  
+
   /* attempt to start the user program when no backdoor entry is requested */
   if (BackDoorEntryHook() == BLT_FALSE)
   {
     /* this function does not return if a valid user program is present */
     CpuStartUserProgram();
   }
-  #if (BOOT_FILE_SYS_ENABLE > 0)
+#if (BOOT_FILE_SYS_ENABLE > 0)
   else
   {
-    /* the backdoor is open so we should check if a update from locally  attached storage 
+    /* the backdoor is open so we should check if a update from locally  attached storage
      * is requested and, if so, start it.
      */
     FileHandleFirmwareUpdateRequest();
   }
-  #endif
+#endif
 #else
   /* open the backdoor after a reset */
   backdoorOpen = BLT_TRUE;
@@ -129,26 +129,26 @@ void BackDoorInit(void)
 void BackDoorCheck(void)
 {
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
-  #if (BOOT_COM_ENABLE > 0)
+#if (BOOT_COM_ENABLE > 0)
   /* check if a connection with the host was already established. in this case the
-   * backdoor stays open anyway, so no need to check if it needs to be closed. 
+   * backdoor stays open anyway, so no need to check if it needs to be closed.
    */
   if (ComIsConnected() == BLT_TRUE)
   {
     return;
   }
-  #endif
-  #if (BOOT_FILE_SYS_ENABLE > 0)
+#endif
+#if (BOOT_FILE_SYS_ENABLE > 0)
   /* check if the file module is busy, indicating that a firmware update through the
-   * locally attached storage is in progress. in this case the backdoor stays open 
-   * anyway, so no need to check if it needs to be closed. 
+   * locally attached storage is in progress. in this case the backdoor stays open
+   * anyway, so no need to check if it needs to be closed.
    */
   if (FileIsIdle() == BLT_FALSE)
   {
     return;
   }
-  #endif  
-  
+#endif
+
   /* when the backdoor is still open, check if it's time to close it */
   if (backdoorOpen == BLT_TRUE)
   {
@@ -157,13 +157,13 @@ void BackDoorCheck(void)
     {
       /* close the backdoor */
       backdoorOpen = BLT_FALSE;
-      #if (BOOT_FILE_SYS_ENABLE > 0)
+#if (BOOT_FILE_SYS_ENABLE > 0)
       /* during the timed backdoor no remote update request was detected. now do one
        * last check to see if a firmware update from locally attached storage is
        * pending.
        */
       if (FileHandleFirmwareUpdateRequest() == BLT_FALSE)
-      #endif
+#endif
       {
         /* no firmware update requests detected, so attempt to start the user program.
          * this function does not return if a valid user program is present.

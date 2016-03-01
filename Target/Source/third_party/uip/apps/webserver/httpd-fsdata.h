@@ -37,7 +37,8 @@
 
 #include "uip.h"
 
-struct httpd_fsdata_file {
+struct httpd_fsdata_file
+{
   const struct httpd_fsdata_file *next;
   const char *name;
   const char *data;
@@ -49,7 +50,8 @@ struct httpd_fsdata_file {
 #endif /* HTTPD_FS_STATISTICS */
 };
 
-struct httpd_fsdata_file_noconst {
+struct httpd_fsdata_file_noconst
+{
   struct httpd_fsdata_file *next;
   char *name;
   char *data;

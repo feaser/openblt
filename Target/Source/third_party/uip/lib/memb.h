@@ -102,7 +102,8 @@ MEMB(connections, sizeof(struct connection), 16);
                                           MEMB_CONCAT(name,_memb_count), \
                                           (void *)MEMB_CONCAT(name,_memb_mem)}
 
-struct memb_blocks {
+struct memb_blocks
+{
   unsigned short size;
   unsigned short num;
   char *count;

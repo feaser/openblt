@@ -52,7 +52,8 @@
 
 #define WEBCLIENT_CONF_MAX_URLLEN 100
 
-struct webclient_state {
+struct webclient_state
+{
   u8_t timer;
   u8_t state;
   u8_t httpflag;
@@ -62,7 +63,7 @@ struct webclient_state {
   char file[WEBCLIENT_CONF_MAX_URLLEN];
   u16_t getrequestptr;
   u16_t getrequestleft;
-  
+
   char httpheaderline[200];
   u16_t httpheaderlineptr;
 

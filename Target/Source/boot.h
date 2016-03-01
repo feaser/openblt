@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 #ifndef BOOT_H
@@ -48,7 +48,7 @@
 * Include files
 ****************************************************************************************/
 /* Note that it is possible to override the standard blt_conf.h configuration header
- * file with a project specific one that is defined in the IDE/makefile. For example, 
+ * file with a project specific one that is defined in the IDE/makefile. For example,
  * the following define could be configured: PROJ_BLT_CONF_H="my_boot_config.h". This can
  * be handy if you use the bootloader in several projects with a different configuration,
  * and enables you to have just one bootloader source base.

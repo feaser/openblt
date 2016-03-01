@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -58,7 +58,7 @@ typedef struct
   volatile blt_int32u RDTR;
   volatile blt_int32u RDLR;
   volatile blt_int32u RDHR;
-} tCanRxFIFOMailBox; 
+} tCanRxFIFOMailBox;
 
 /** \brief CAN filter register layout. */
 typedef struct
@@ -92,7 +92,7 @@ typedef struct
   volatile blt_int32u FA1R;
   blt_int32u          RESERVED5[8];
   tCanFilter          sFilterRegister[28];
-} tCanRegs;                                           
+} tCanRegs;
 
 
 /****************************************************************************************
@@ -149,48 +149,49 @@ typedef struct t_can_bus_timing
 * Local constant declarations
 ****************************************************************************************/
 /** \brief CAN bittiming table for dynamically calculating the bittiming settings.
- *  \details According to the CAN protocol 1 bit-time can be made up of between 8..25 
- *           time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC 
- *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) * 
+ *  \details According to the CAN protocol 1 bit-time can be made up of between 8..25
+ *           time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC
+ *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) *
  *           100%. This array contains possible and valid time quanta configurations with
  *           a sample point between 68..78%.
  */
 static const tCanBusTiming canTiming[] =
-{                       /*  TQ | TSEG1 | TSEG2 | SP  */
-                        /* ------------------------- */
-    {  5, 2 },          /*   8 |   5   |   2   | 75% */
-    {  6, 2 },          /*   9 |   6   |   2   | 78% */
-    {  6, 3 },          /*  10 |   6   |   3   | 70% */
-    {  7, 3 },          /*  11 |   7   |   3   | 73% */
-    {  8, 3 },          /*  12 |   8   |   3   | 75% */
-    {  9, 3 },          /*  13 |   9   |   3   | 77% */
-    {  9, 4 },          /*  14 |   9   |   4   | 71% */
-    { 10, 4 },          /*  15 |  10   |   4   | 73% */
-    { 11, 4 },          /*  16 |  11   |   4   | 75% */
-    { 12, 4 },          /*  17 |  12   |   4   | 76% */
-    { 12, 5 },          /*  18 |  12   |   5   | 72% */
-    { 13, 5 },          /*  19 |  13   |   5   | 74% */
-    { 14, 5 },          /*  20 |  14   |   5   | 75% */
-    { 15, 5 },          /*  21 |  15   |   5   | 76% */
-    { 15, 6 },          /*  22 |  15   |   6   | 73% */
-    { 16, 6 },          /*  23 |  16   |   6   | 74% */
-    { 16, 7 },          /*  24 |  16   |   7   | 71% */
-    { 16, 8 }           /*  25 |  16   |   8   | 68% */
+{
+  /*  TQ | TSEG1 | TSEG2 | SP  */
+  /* ------------------------- */
+  {  5, 2 },          /*   8 |   5   |   2   | 75% */
+  {  6, 2 },          /*   9 |   6   |   2   | 78% */
+  {  6, 3 },          /*  10 |   6   |   3   | 70% */
+  {  7, 3 },          /*  11 |   7   |   3   | 73% */
+  {  8, 3 },          /*  12 |   8   |   3   | 75% */
+  {  9, 3 },          /*  13 |   9   |   3   | 77% */
+  {  9, 4 },          /*  14 |   9   |   4   | 71% */
+  { 10, 4 },          /*  15 |  10   |   4   | 73% */
+  { 11, 4 },          /*  16 |  11   |   4   | 75% */
+  { 12, 4 },          /*  17 |  12   |   4   | 76% */
+  { 12, 5 },          /*  18 |  12   |   5   | 72% */
+  { 13, 5 },          /*  19 |  13   |   5   | 74% */
+  { 14, 5 },          /*  20 |  14   |   5   | 75% */
+  { 15, 5 },          /*  21 |  15   |   5   | 76% */
+  { 15, 6 },          /*  22 |  15   |   6   | 73% */
+  { 16, 6 },          /*  23 |  16   |   6   | 74% */
+  { 16, 7 },          /*  24 |  16   |   7   | 71% */
+  { 16, 8 }           /*  25 |  16   |   8   | 68% */
 };
 
 
 /************************************************************************************//**
-** \brief     Search algorithm to match the desired baudrate to a possible bus 
+** \brief     Search algorithm to match the desired baudrate to a possible bus
 **            timing configuration.
 ** \param     baud The desired baudrate in kbps. Valid values are 10..1000.
 ** \param     prescaler Pointer to where the value for the prescaler will be stored.
 ** \param     tseg1 Pointer to where the value for TSEG2 will be stored.
 ** \param     tseg2 Pointer to where the value for TSEG2 will be stored.
-** \return    BLT_TRUE if the CAN bustiming register values were found, BLT_FALSE 
+** \return    BLT_TRUE if the CAN bustiming register values were found, BLT_FALSE
 **            otherwise.
 **
 ****************************************************************************************/
-static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler, 
+static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
                                   blt_int8u *tseg1, blt_int8u *tseg2)
 {
   blt_int8u  cnt;
@@ -204,7 +205,7 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
       *prescaler = (BOOT_CPU_SYSTEM_SPEED_KHZ/4)/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
 
       /* make sure the prescaler is valid */
-      if ( (*prescaler > 0) && (*prescaler <= 1024) )
+      if ((*prescaler > 0) && (*prescaler <= 1024))
       {
         /* store the bustiming configuration */
         *tseg1 = canTiming[cnt].tseg1;
@@ -230,10 +231,10 @@ void CanInit(void)
   blt_int8u  tseg1, tseg2;
   blt_bool   result;
 
-  /* the current implementation supports CAN1 and 2. throw an assertion error in case a 
-   * different CAN channel is configured.  
+  /* the current implementation supports CAN1 and 2. throw an assertion error in case a
+   * different CAN channel is configured.
    */
-  ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX == 0 || BOOT_COM_CAN_CHANNEL_INDEX == 1)); 
+  ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX == 0 || BOOT_COM_CAN_CHANNEL_INDEX == 1));
 
   /* obtain bittiming configuration information */
   result = CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &tseg1, &tseg2);
@@ -279,8 +280,8 @@ void CanInit(void)
   /* 32-bit scale for the filter */
   CAN1->FS1R |= CAN_BIT_FILTER0;
   /* open up the acceptance filter to receive all messages */
-  CAN1->sFilterRegister[0].FR1 = 0; 
-  CAN1->sFilterRegister[0].FR2 = 0; 
+  CAN1->sFilterRegister[0].FR1 = 0;
+  CAN1->sFilterRegister[0].FR2 = 0;
   /* select id/mask mode for the filter */
   CAN1->FM1R &= ~CAN_BIT_FILTER0;
   /* FIFO 0 assignation for the filter */
@@ -297,8 +298,8 @@ void CanInit(void)
   /* 32-bit scale for the filter */
   CAN1->FS1R |= CAN_BIT_FILTER14;
   /* open up the acceptance filter to receive all messages */
-  CAN1->sFilterRegister[14].FR1 = 0; 
-  CAN1->sFilterRegister[14].FR2 = 0; 
+  CAN1->sFilterRegister[14].FR1 = 0;
+  CAN1->sFilterRegister[14].FR2 = 0;
   /* select id/mask mode for the filter */
   CAN1->FM1R &= ~CAN_BIT_FILTER14;
   /* FIFO 0 assignation for the filter */
@@ -307,7 +308,7 @@ void CanInit(void)
   CAN1->FA1R |= CAN_BIT_FILTER14;
   /* leave initialisation mode for the acceptance filter */
   CAN1->FMR &= ~CAN_BIT_FINIT;
-#endif  
+#endif
 } /*** end of CanInit ***/
 
 

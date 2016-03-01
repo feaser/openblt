@@ -51,14 +51,16 @@ uip_split_output(void)
   u16_t tcplen, len1, len2;
 
   /* We only try to split maximum sized TCP segments. */
-  if(BUF->proto == UIP_PROTO_TCP &&
-     uip_len == UIP_BUFSIZE - UIP_LLH_LEN) {
+  if (BUF->proto == UIP_PROTO_TCP &&
+      uip_len == UIP_BUFSIZE - UIP_LLH_LEN)
+  {
 
     tcplen = uip_len - UIP_TCPIP_HLEN;
     /* Split the segment in two. If the original packet length was
        odd, we make the second packet one byte larger. */
     len1 = len2 = tcplen / 2;
-    if(len1 + len2 < tcplen) {
+    if (len1 + len2 < tcplen)
+    {
       ++len2;
     }
 
@@ -74,7 +76,7 @@ uip_split_output(void)
     BUF->len[0] = uip_len >> 8;
     BUF->len[1] = uip_len & 0xff;
 #endif /* UIP_CONF_IPV6 */
-    
+
     /* Recalculate the TCP checksum. */
     BUF->tcpchksum = 0;
     BUF->tcpchksum = ~(uip_tcpchksum());
@@ -84,7 +86,7 @@ uip_split_output(void)
     BUF->ipchksum = 0;
     BUF->ipchksum = ~(uip_ipchksum());
 #endif /* UIP_CONF_IPV6 */
-    
+
     /* Transmit the first packet. */
     /*    uip_fw_output();*/
     tcpip_output();
@@ -104,7 +106,7 @@ uip_split_output(void)
     BUF->len[0] = uip_len >> 8;
     BUF->len[1] = uip_len & 0xff;
 #endif /* UIP_CONF_IPV6 */
-    
+
     /*    uip_appdata += len1;*/
     memcpy(uip_appdata, (u8_t *)uip_appdata + len1, len2);
 
@@ -113,7 +115,7 @@ uip_split_output(void)
     BUF->seqno[1] = uip_acc32[1];
     BUF->seqno[2] = uip_acc32[2];
     BUF->seqno[3] = uip_acc32[3];
-    
+
     /* Recalculate the TCP checksum. */
     BUF->tcpchksum = 0;
     BUF->tcpchksum = ~(uip_tcpchksum());
@@ -127,10 +129,12 @@ uip_split_output(void)
     /* Transmit the second packet. */
     /*    uip_fw_output();*/
     tcpip_output();
-  } else {
+  }
+  else
+  {
     /*    uip_fw_output();*/
     tcpip_output();
   }
-     
+
 }
 /*-----------------------------------------------------------------------------*/

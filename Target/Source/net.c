@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -91,15 +91,15 @@ static blt_int32u ARPTimerTimeOut;
 void NetInit(void)
 {
   uip_ipaddr_t ipaddr;
-  #if (BOOT_COM_NET_IPADDR_HOOK_ENABLE > 0)
+#if (BOOT_COM_NET_IPADDR_HOOK_ENABLE > 0)
   blt_int8u ipAddrArray[4];
-  #endif
-  #if (BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0)
   blt_int8u netMaskArray[4];
-  #endif
-  #if (BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0)
+#endif
+#if (BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0)
   blt_int8u gatewayAddrArray[4];
-  #endif
+#endif
 
   /* initialize the network device */
   netdev_init();
@@ -109,36 +109,36 @@ void NetInit(void)
   /* initialize the uIP TCP/IP stack. */
   uip_init();
   /* set the IP address */
-  #if (BOOT_COM_NET_IPADDR_HOOK_ENABLE > 0)
+#if (BOOT_COM_NET_IPADDR_HOOK_ENABLE > 0)
   NetIpAddressHook(ipAddrArray);
   uip_ipaddr(ipaddr, ipAddrArray[0], ipAddrArray[1], ipAddrArray[2], ipAddrArray[3]);
-  #else
+#else
   uip_ipaddr(ipaddr, BOOT_COM_NET_IPADDR0, BOOT_COM_NET_IPADDR1, BOOT_COM_NET_IPADDR2,
              BOOT_COM_NET_IPADDR3);
-  #endif
+#endif
   uip_sethostaddr(ipaddr);
   /* set the network mask */
-  #if (BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0)
+#if (BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0)
   NetNetworkMaskHook(netMaskArray);
   uip_ipaddr(ipaddr, netMaskArray[0], netMaskArray[1], netMaskArray[2], netMaskArray[3]);
-  #else
+#else
   uip_ipaddr(ipaddr, BOOT_COM_NET_NETMASK0, BOOT_COM_NET_NETMASK1, BOOT_COM_NET_NETMASK2,
              BOOT_COM_NET_NETMASK3);
-  #endif
+#endif
   uip_setnetmask(ipaddr);
   /* set the gateway address */
-  #if (BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0)
+#if (BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0)
   NetGatewayAddressHook(gatewayAddrArray);
   uip_ipaddr(ipaddr, gatewayAddrArray[0], gatewayAddrArray[1], gatewayAddrArray[2], gatewayAddrArray[3]);
-  #else
+#else
   uip_ipaddr(ipaddr, BOOT_COM_NET_GATEWAY0, BOOT_COM_NET_GATEWAY1, BOOT_COM_NET_GATEWAY2,
              BOOT_COM_NET_GATEWAY3);
-  #endif
+#endif
   uip_setdraddr(ipaddr);
   /* start listening on the configured port for XCP transfers on TCP/IP */
   uip_listen(HTONS(BOOT_COM_NET_PORT));
   /* initialize the MAC and set the MAC address */
-  netdev_init_mac();  
+  netdev_init_mac();
 } /*** end of NetInit ***/
 
 
@@ -153,12 +153,12 @@ void NetTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   uip_tcp_appstate_t *s;
   blt_int16u cnt;
-  
+
   /* get pointer to application state */
   s = &(uip_conn->appstate);
 
   /* add the dto counter first */
-  *(blt_int32u*)&(s->dto_data[0]) = s->dto_counter;
+  *(blt_int32u *)&(s->dto_data[0]) = s->dto_counter;
   /* copy the actual XCP response */
   for (cnt=0; cnt<len; cnt++)
   {
@@ -181,12 +181,12 @@ void NetTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool NetReceivePacket(blt_int8u *data)
 {
-  /* run the TCP/IP server task function, which will handle the reception and 
+  /* run the TCP/IP server task function, which will handle the reception and
    * transmission of XCP packets
    */
   NetServerTask();
-  
-  /* packet reception and transmission is completely handled by the NetServerTask so 
+
+  /* packet reception and transmission is completely handled by the NetServerTask so
    * always return BLT_FALSE here.
    */
   return BLT_FALSE;
@@ -208,8 +208,8 @@ void NetApp(void)
 
   /* get pointer to application state */
   s = &(uip_conn->appstate);
-  
-  if (uip_connected()) 
+
+  if (uip_connected())
   {
     /* init the dto counter and reset the pending dto data length */
     s->dto_counter = 1;
@@ -217,13 +217,13 @@ void NetApp(void)
     return;
   }
 
-  if (uip_acked()) 
+  if (uip_acked())
   {
     /* dto sent so set the pending dto data length to zero */
     s->dto_len = 0;
   }
 
-  if (uip_rexmit()) 
+  if (uip_rexmit())
   {
     /* retransmit the currently pending dto response */
     if (s->dto_len > 0)
@@ -231,9 +231,9 @@ void NetApp(void)
       /* resend the last pending dto response */
       uip_send(s->dto_data, s->dto_len);
     }
-  }  
+  }
 
-  if (uip_newdata()) 
+  if (uip_newdata())
   {
     /* XCP is request/response. this means is a new request comes in when a response
      * transmission is still pending, the XCP master either re-initialized or sent
@@ -257,16 +257,16 @@ static void NetServerTask(void)
 {
   blt_int32u connection;
   blt_int32u packetLen;
-  
+
   /* check for an RX packet and read it. */
   packetLen = netdev_read();
-  if(packetLen > 0)
+  if (packetLen > 0)
   {
     /* set uip_len for uIP stack usage */
     uip_len = (blt_int16u)packetLen;
 
     /* process incoming IP packets here. */
-    if(NET_UIP_HEADER_BUF->type == htons(UIP_ETHTYPE_IP))
+    if (NET_UIP_HEADER_BUF->type == htons(UIP_ETHTYPE_IP))
     {
       uip_arp_ipin();
       uip_input();
@@ -274,7 +274,7 @@ static void NetServerTask(void)
        * should be sent out on the network, the global variable
        * uip_len is set to a value > 0.
        */
-      if(uip_len > 0)
+      if (uip_len > 0)
       {
         uip_arp_out();
         netdev_send();
@@ -282,7 +282,7 @@ static void NetServerTask(void)
       }
     }
     /* process incoming ARP packets here. */
-    else if(NET_UIP_HEADER_BUF->type == htons(UIP_ETHTYPE_ARP))
+    else if (NET_UIP_HEADER_BUF->type == htons(UIP_ETHTYPE_ARP))
     {
       uip_arp_arpin();
 
@@ -290,14 +290,14 @@ static void NetServerTask(void)
        * should be sent out on the network, the global variable
        * uip_len is set to a value > 0.
        */
-      if(uip_len > 0)
+      if (uip_len > 0)
       {
         netdev_send();
         uip_len = 0;
       }
     }
   }
-  
+
   /* process TCP/IP Periodic Timer here. */
   if (TimerGet() >= periodicTimerTimeOut)
   {
@@ -309,7 +309,7 @@ static void NetServerTask(void)
        * should be sent out on the network, the global variable
        * uip_len is set to a value > 0.
        */
-      if(uip_len > 0)
+      if (uip_len > 0)
       {
         uip_arp_out();
         netdev_send();
@@ -317,12 +317,12 @@ static void NetServerTask(void)
       }
     }
   }
-  
+
   /* process ARP Timer here. */
   if (TimerGet() >= ARPTimerTimeOut)
   {
-      ARPTimerTimeOut += NET_UIP_ARP_TIMER_MS;
-      uip_arp_timer();
+    ARPTimerTimeOut += NET_UIP_ARP_TIMER_MS;
+    uip_arp_timer();
   }
 } /*** end of NetServerTask ***/
 #endif /* BOOT_COM_NET_ENABLE > 0 */

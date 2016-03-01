@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -49,7 +49,7 @@
 /* XCP packet identifiers */
 /** \brief Command response packet identifier. */
 #define XCP_PID_RES                 (0xff)
-/** \brief Error packet identifier. */            
+/** \brief Error packet identifier. */
 #define XCP_PID_ERR                 (0xfe)
 
 /* XCP error codes */
@@ -138,7 +138,7 @@ typedef struct
 static void      XcpTransmitPacket(blt_int8u *data, blt_int16s len);
 
 /* application specific functions */
-static blt_int8u XcpComputeChecksum(blt_int32u address, blt_int32u length, 
+static blt_int8u XcpComputeChecksum(blt_int32u address, blt_int32u length,
                                     blt_int32u *checksum);
 
 #if (XCP_SEED_KEY_PROTECTION_EN == 1)
@@ -205,7 +205,7 @@ extern blt_int8u XcpVerifyKeyHook(blt_int8u resource, blt_int8u *key, blt_int8u 
 * External functions
 ****************************************************************************************/
 #if (BOOT_COM_ENABLE == 0)
-/* in case no internally supported communication interface is used, a custom 
+/* in case no internally supported communication interface is used, a custom
  * communication module can be added. In order to use the XCP protocol in the custom
  * communication module, this hook function needs to be implemented. In the XCP protocol
  * is not needed, then simply remove the xcp.c source from the project.
@@ -261,7 +261,7 @@ blt_bool XcpIsConnected(void)
 
 
 /************************************************************************************//**
-** \brief     Informs the core that a pending packet transmission was completed by 
+** \brief     Informs the core that a pending packet transmission was completed by
 **            the transport layer.
 ** \return    none
 **
@@ -405,7 +405,7 @@ static void XcpTransmitPacket(blt_int8u *data, blt_int16s len)
 #else
   ComTransmitPacket(data, len);
 #endif
-  
+
 } /*** end of XcpTransmitPacket ***/
 
 
@@ -426,7 +426,7 @@ static blt_int8u XcpComputeChecksum(blt_int32u address, blt_int32u length,
   /* this example computes the checksum using the add byte to byte algorithm */
   while (length-- > 0)
   {
-    cs += *((blt_int8u*)(blt_addr)address);
+    cs += *((blt_int8u *)(blt_addr)address);
     address++;
   }
 
@@ -438,8 +438,8 @@ static blt_int8u XcpComputeChecksum(blt_int32u address, blt_int32u length,
 
 #if (XCP_SEED_KEY_PROTECTION_EN == 1)
 /************************************************************************************//**
-** \brief     Provides a seed to the XCP master that will be used for the key 
-**            generation when the master attempts to unlock the specified resource. 
+** \brief     Provides a seed to the XCP master that will be used for the key
+**            generation when the master attempts to unlock the specified resource.
 **            Called by the GET_SEED command.
 ** \param     resource  Resource that the seed if requested for (XCP_RES_XXX).
 ** \param     seed      Pointer to byte buffer wher the seed will be stored.
@@ -454,8 +454,8 @@ static blt_int8u XcpGetSeed(blt_int8u resource, blt_int8u *seed)
 
 
 /************************************************************************************//**
-** \brief     Called by the UNLOCK command and checks if the key to unlock the 
-**            specified resource was correct. If so, then the resource protection 
+** \brief     Called by the UNLOCK command and checks if the key to unlock the
+**            specified resource was correct. If so, then the resource protection
 **            will be removed.
 ** \param     resource  resource to unlock (XCP_RES_XXX).
 ** \param     key       pointer to the byte buffer holding the key.
@@ -481,25 +481,25 @@ static void XcpProtectResources(void)
   xcpInfo.protection = 0;
 
 #if (XCP_SEED_KEY_PROTECTION_EN == 1)
-  #if (XCP_RES_CALIBRATION_EN == 1)
+#if (XCP_RES_CALIBRATION_EN == 1)
   xcpInfo.protection |= XCP_RES_CALPAG;
-  #endif
+#endif
 
-  #if (XCP_RES_PAGING_EN == 1)
+#if (XCP_RES_PAGING_EN == 1)
   xcpInfo.protection |= XCP_RES_CALPAG;
-  #endif
+#endif
 
-  #if (XCP_RES_PROGRAMMING_EN == 1)
+#if (XCP_RES_PROGRAMMING_EN == 1)
   xcpInfo.protection |= XCP_RES_PGM;
-  #endif
+#endif
 
-  #if (XCP_RES_DATA_ACQUISITION_EN == 1)
+#if (XCP_RES_DATA_ACQUISITION_EN == 1)
   xcpInfo.protection |= XCP_RES_DAQ;
-  #endif
+#endif
 
-  #if (XCP_RES_DATA_STIMULATION_EN == 1)
+#if (XCP_RES_DATA_STIMULATION_EN == 1)
   xcpInfo.protection |= XCP_RES_STIM;
-  #endif
+#endif
 #endif /* XCP_SEED_KEY_PROTECTION_EN == 1 */
 } /*** end of XcpProtectResources ***/
 
@@ -531,7 +531,7 @@ static void XcpCmdConnect(blt_int8u *data)
   /* suppress compiler warning for unused parameter */
   data = data;
 
-  #if (BOOT_FILE_SYS_ENABLE > 0)
+#if (BOOT_FILE_SYS_ENABLE > 0)
   /* reject the connection if the file module is not idle. this means that a firmware
    * update from the locally attached storage is in progress
    */
@@ -541,9 +541,9 @@ static void XcpCmdConnect(blt_int8u *data)
     XcpSetCtoError(XCP_ERR_CMD_BUSY);
     return;
   }
-  #endif  
-  
-  #if (XCP_CONNECT_MODE_HOOK_EN == 1)
+#endif
+
+#if (XCP_CONNECT_MODE_HOOK_EN == 1)
   /* pass on the mode to a application specific hook function. This function can determine
    * is the mode is supported or not. A return value of BLT_FALSE causes the CONNECT command
    * to be ignored. Note that this mode could potentially be used to specify a node ID in a
@@ -555,7 +555,7 @@ static void XcpCmdConnect(blt_int8u *data)
     xcpInfo.ctoLen = 0;
     return;
   }
-  #endif
+#endif
 
   /* enable resource protection */
   XcpProtectResources();
@@ -613,7 +613,7 @@ static void XcpCmdConnect(blt_int8u *data)
 
   /* set packet length */
   xcpInfo.ctoLen = 8;
-  
+
 } /*** end of XcpCmdConnect ***/
 
 
@@ -717,7 +717,7 @@ static void XcpCmdGetId(blt_int8u *data)
   xcpInfo.ctoData[3] = 0;
 
   /* store station id length (excl. null termination) for response packet */
-  *(blt_int32u*)&xcpInfo.ctoData[4] = (sizeof(xcpStationId)/sizeof(xcpStationId[0])) - 1;
+  *(blt_int32u *)&xcpInfo.ctoData[4] = (sizeof(xcpStationId)/sizeof(xcpStationId[0])) - 1;
 
   /* set packet length */
   xcpInfo.ctoLen = 8;
@@ -737,7 +737,7 @@ static void XcpCmdSetMta(blt_int8u *data)
   xcpInfo.ctoData[0] = XCP_PID_RES;
 
   /* update mta. current implementation ignores address extension */
-  xcpInfo.mta = *(blt_int32u*)&data[4];
+  xcpInfo.mta = *(blt_int32u *)&data[4];
 
   /* set packet length */
   xcpInfo.ctoLen = 1;
@@ -793,7 +793,7 @@ static void XcpCmdShortUpload(blt_int8u *data)
   }
 
   /* update mta. current implementation ignores address extension */
-  xcpInfo.mta = *(blt_int32u*)&data[4];
+  xcpInfo.mta = *(blt_int32u *)&data[4];
 
   /* copy the data from memory to the data packet */
   CpuMemCopy((blt_addr)((blt_int32u)&xcpInfo.ctoData[1]),(blt_addr)xcpInfo.mta, data[1]);
@@ -870,7 +870,7 @@ static void XcpCmdDownloadMax(blt_int8u *data)
 
   /* copy the data from the data packet to memory */
   CpuMemCopy((blt_addr)xcpInfo.mta, (blt_addr)((blt_int32u)&data[1]), \
-              XCP_CTO_PACKET_LEN-1);
+             XCP_CTO_PACKET_LEN-1);
 
   /* set packet id to command response packet */
   xcpInfo.ctoData[0] = XCP_PID_RES;
@@ -897,8 +897,8 @@ static void XcpCmdBuildCheckSum(blt_int8u *data)
   xcpInfo.ctoData[0] = XCP_PID_RES;
 
   /* obtain checksum and checksum type */
-  xcpInfo.ctoData[1] = XcpComputeChecksum(xcpInfo.mta, *(blt_int32u*)&data[4],
-                                          (blt_int32u*)&xcpInfo.ctoData[4]);
+  xcpInfo.ctoData[1] = XcpComputeChecksum(xcpInfo.mta, *(blt_int32u *)&data[4],
+                                          (blt_int32u *)&xcpInfo.ctoData[4]);
 
   /* initialize reserved parameters */
   xcpInfo.ctoData[2] = 0;
@@ -1266,7 +1266,7 @@ static void XcpCmdProgramClear(blt_int8u *data)
 #endif
 
   /* erase the memory */
-  if (NvmErase((blt_addr)xcpInfo.mta, *(blt_int32u*)&data[4]) == 0)
+  if (NvmErase((blt_addr)xcpInfo.mta, *(blt_int32u *)&data[4]) == 0)
   {
     /* error occurred during erasure */
     XcpSetCtoError(XCP_ERR_GENERIC);

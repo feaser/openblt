@@ -65,7 +65,8 @@ hello_world_appcall(void)
    * If a new connection was just established, we should initialize
    * the protosocket in our applications' state structure.
    */
-  if(uip_connected()) {
+  if (uip_connected())
+  {
     PSOCK_INIT(&s->p, s->inputbuffer, sizeof(s->inputbuffer));
   }
 
@@ -94,7 +95,7 @@ handle_connection(struct hello_world_state *s)
   PSOCK_SEND_STR(&s->p, "Hello ");
   PSOCK_SEND_STR(&s->p, s->name);
   PSOCK_CLOSE(&s->p);
-  
+
   PSOCK_END(&s->p);
 }
 /*---------------------------------------------------------------------------*/

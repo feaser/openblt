@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 #ifndef CPU_COMP_H
@@ -36,10 +36,10 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include  <TC1798.h> 
+#include  <TC1798.h>
 #include  <machine/intrinsics.h>
-#include  <machine/cint.h> 
-#include  <sys/types.h> 
+#include  <machine/cint.h>
+#include  <sys/types.h>
 
 
 /****************************************************************************************
@@ -48,7 +48,7 @@
 /** \brief Macro for performing a processor specific desync. This part is located in the
  *         compiler specific part because it uses an inline assembly call.
  */
-#define CpuSetDSYNC()   asm("DSYNC") 
+#define CpuSetDSYNC()   asm("DSYNC")
 
 
 /****************************************************************************************

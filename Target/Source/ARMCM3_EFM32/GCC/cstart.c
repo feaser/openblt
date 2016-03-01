@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -57,7 +57,7 @@ extern blt_int32u _estack;
 
 
 /************************************************************************************//**
-** \brief     Reset interrupt service routine. Configures the stack, initializes 
+** \brief     Reset interrupt service routine. Configures the stack, initializes
 **            RAM and jumps to function main.
 ** \return    none.
 **
@@ -70,11 +70,11 @@ void reset_handler(void)
   __asm("    cpsid     i");
   /* copy the data segment initializers from flash to SRAM */
   pSrc = &_etext;
-  for(pDest = &_data; pDest < &_edata; )
+  for (pDest = &_data; pDest < &_edata;)
   {
     *pDest++ = *pSrc++;
   }
-  /* zero fill the bss segment. this is done with inline assembly since this will 
+  /* zero fill the bss segment. this is done with inline assembly since this will
    * clear the value of pDest if it is not kept in a register.
    */
   __asm("    ldr     r0, =_bss\n"

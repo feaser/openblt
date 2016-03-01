@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -45,10 +45,10 @@ static void CpuWriteWDTCON0(blt_int32u uwValue);
 
 /************************************************************************************//**
 ** \brief     This macro clears the EndInit bit, which controls access to system critical
-**            registers. Clearing the EndInit bit unlocks all EndInit protectedd 
+**            registers. Clearing the EndInit bit unlocks all EndInit protectedd
 **            registers. Modifications of the EndInit bit are monitored by the watchdog
 **            timer such that after clearing the EndInit, the watchdog timer enters a
-**            defined time-out mode; EndInit must be set again before the time-out 
+**            defined time-out mode; EndInit must be set again before the time-out
 **            expires.
 ** \return    none.
 **
@@ -58,7 +58,7 @@ void CpuEnterInitMode(void)
   /* request clearing of the EndInit bit */
   CpuWriteWDTCON0(WDT_CON0.reg & ~0x00000001);
   /* wait for hardware handshake */
-  while (WDT_CON0.bits.ENDINIT != 0)  
+  while (WDT_CON0.bits.ENDINIT != 0)
   {
     /* keep the watchdog happy */
     CopService();
@@ -94,16 +94,16 @@ static void CpuWriteWDTCON0(blt_int32u value)
   /* set HWPW1 = 1111b */
   dummy |= 0x000000F0;
   /* set HWPW0 = WDTDR */
-  if(WDT_CON1.bits.DR)
+  if (WDT_CON1.bits.DR)
   {
-    dummy |= 0x00000008;     
+    dummy |= 0x00000008;
   }
   else
   {
     dummy &= ~0x00000008;
   }
   /* set HWPW0 = WDTIR */
-  if(WDT_CON1.bits.IR)
+  if (WDT_CON1.bits.IR)
   {
     dummy |= 0x00000004;
   }

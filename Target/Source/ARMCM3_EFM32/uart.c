@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -110,12 +110,12 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
   blt_bool result;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);  
+  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
 
-  /* first transmit the length of the packet */  
+  /* first transmit the length of the packet */
   result = UartTransmitByte(len);
-  ASSERT_RT(result == BLT_TRUE);  
-  
+  ASSERT_RT(result == BLT_TRUE);
+
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
   {
@@ -123,7 +123,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     CopService();
     /* write byte */
     result = UartTransmitByte(data[data_index]);
-    ASSERT_RT(result == BLT_TRUE);  
+    ASSERT_RT(result == BLT_TRUE);
   }
 } /*** end of UartTransmitPacket ***/
 
@@ -170,7 +170,7 @@ blt_bool UartReceivePacket(blt_int8u *data)
       if (xcpCtoRxLength == xcpCtoReqPacket[0])
       {
         /* copy the packet data */
-        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);        
+        CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);
         /* done with cto packet reception */
         xcpCtoRxInProgress = BLT_FALSE;
         /* packet reception complete */
@@ -233,8 +233,8 @@ static blt_bool UartTransmitByte(blt_int8u data)
   /* write byte to transmit holding register */
   LEUART_Tx(LEUART1, data);
   /* wait for tx holding register to be empty */
-  while((LEUART1->STATUS & LEUART_STATUS_TXBL) == 0) 
-  { 
+  while ((LEUART1->STATUS & LEUART_STATUS_TXBL) == 0)
+  {
     /* keep the watchdog happy */
     CopService();
   }

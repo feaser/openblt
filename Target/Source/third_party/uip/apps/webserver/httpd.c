@@ -81,13 +81,16 @@ generate_part_of_file(void *state)
 {
   struct httpd_state *s = (struct httpd_state *)state;
 
-  if(s->file.len > uip_mss()) {
+  if (s->file.len > uip_mss())
+  {
     s->len = uip_mss();
-  } else {
+  }
+  else
+  {
     s->len = s->file.len;
   }
   memcpy(uip_appdata, s->file.data, s->len);
-  
+
   return s->len;
 }
 /*---------------------------------------------------------------------------*/
@@ -95,13 +98,15 @@ static
 PT_THREAD(send_file(struct httpd_state *s))
 {
   PSOCK_BEGIN(&s->sout);
-  
-  do {
+
+  do
+  {
     PSOCK_GENERATOR_SEND(&s->sout, generate_part_of_file, s);
     s->file.len -= s->len;
     s->file.data += s->len;
-  } while(s->file.len > 0);
-      
+  }
+  while (s->file.len > 0);
+
   PSOCK_END(&s->sout);
 }
 /*---------------------------------------------------------------------------*/
@@ -111,7 +116,7 @@ PT_THREAD(send_part_of_file(struct httpd_state *s))
   PSOCK_BEGIN(&s->sout);
 
   PSOCK_SEND(&s->sout, s->file.data, s->len);
-  
+
   PSOCK_END(&s->sout);
 }
 /*---------------------------------------------------------------------------*/
@@ -128,59 +133,74 @@ static
 PT_THREAD(handle_script(struct httpd_state *s))
 {
   char *ptr;
-  
+
   PT_BEGIN(&s->scriptpt);
 
 
-  while(s->file.len > 0) {
+  while (s->file.len > 0)
+  {
 
     /* Check if we should start executing a script. */
-    if(*s->file.data == ISO_percent &&
-       *(s->file.data + 1) == ISO_bang) {
+    if (*s->file.data == ISO_percent &&
+        *(s->file.data + 1) == ISO_bang)
+    {
       s->scriptptr = s->file.data + 3;
       s->scriptlen = s->file.len - 3;
-      if(*(s->scriptptr - 1) == ISO_colon) {
-	httpd_fs_open(s->scriptptr + 1, &s->file);
-	PT_WAIT_THREAD(&s->scriptpt, send_file(s));
-      } else {
-	PT_WAIT_THREAD(&s->scriptpt,
-		       httpd_cgi(s->scriptptr)(s, s->scriptptr));
+      if (*(s->scriptptr - 1) == ISO_colon)
+      {
+        httpd_fs_open(s->scriptptr + 1, &s->file);
+        PT_WAIT_THREAD(&s->scriptpt, send_file(s));
+      }
+      else
+      {
+        PT_WAIT_THREAD(&s->scriptpt,
+                       httpd_cgi(s->scriptptr)(s, s->scriptptr));
       }
       next_scriptstate(s);
-      
+
       /* The script is over, so we reset the pointers and continue
-	 sending the rest of the file. */
+      sending the rest of the file. */
       s->file.data = s->scriptptr;
       s->file.len = s->scriptlen;
-    } else {
+    }
+    else
+    {
       /* See if we find the start of script marker in the block of HTML
-	 to be sent. */
+      to be sent. */
 
-      if(s->file.len > uip_mss()) {
-	s->len = uip_mss();
-      } else {
-	s->len = s->file.len;
+      if (s->file.len > uip_mss())
+      {
+        s->len = uip_mss();
+      }
+      else
+      {
+        s->len = s->file.len;
       }
 
-      if(*s->file.data == ISO_percent) {
-	ptr = strchr(s->file.data + 1, ISO_percent);
-      } else {
-	ptr = strchr(s->file.data, ISO_percent);
+      if (*s->file.data == ISO_percent)
+      {
+        ptr = strchr(s->file.data + 1, ISO_percent);
       }
-      if(ptr != NULL &&
-	 ptr != s->file.data) {
-	s->len = (int)(ptr - s->file.data);
-	if(s->len >= uip_mss()) {
-	  s->len = uip_mss();
-	}
+      else
+      {
+        ptr = strchr(s->file.data, ISO_percent);
+      }
+      if (ptr != NULL &&
+          ptr != s->file.data)
+      {
+        s->len = (int)(ptr - s->file.data);
+        if (s->len >= uip_mss())
+        {
+          s->len = uip_mss();
+        }
       }
       PT_WAIT_THREAD(&s->scriptpt, send_part_of_file(s));
       s->file.data += s->len;
       s->file.len -= s->len;
-      
+
     }
   }
-  
+
   PT_END(&s->scriptpt);
 }
 /*---------------------------------------------------------------------------*/
@@ -194,20 +214,33 @@ PT_THREAD(send_headers(struct httpd_state *s, const char *statushdr))
   PSOCK_SEND_STR(&s->sout, statushdr);
 
   ptr = strrchr(s->filename, ISO_period);
-  if(ptr == NULL) {
+  if (ptr == NULL)
+  {
     PSOCK_SEND_STR(&s->sout, http_content_type_binary);
-  } else if(strncmp(http_html, ptr, 5) == 0 ||
-	    strncmp(http_shtml, ptr, 6) == 0) {
+  }
+  else if (strncmp(http_html, ptr, 5) == 0 ||
+           strncmp(http_shtml, ptr, 6) == 0)
+  {
     PSOCK_SEND_STR(&s->sout, http_content_type_html);
-  } else if(strncmp(http_css, ptr, 4) == 0) {
+  }
+  else if (strncmp(http_css, ptr, 4) == 0)
+  {
     PSOCK_SEND_STR(&s->sout, http_content_type_css);
-  } else if(strncmp(http_png, ptr, 4) == 0) {
+  }
+  else if (strncmp(http_png, ptr, 4) == 0)
+  {
     PSOCK_SEND_STR(&s->sout, http_content_type_png);
-  } else if(strncmp(http_gif, ptr, 4) == 0) {
+  }
+  else if (strncmp(http_gif, ptr, 4) == 0)
+  {
     PSOCK_SEND_STR(&s->sout, http_content_type_gif);
-  } else if(strncmp(http_jpg, ptr, 4) == 0) {
+  }
+  else if (strncmp(http_jpg, ptr, 4) == 0)
+  {
     PSOCK_SEND_STR(&s->sout, http_content_type_jpg);
-  } else {
+  }
+  else
+  {
     PSOCK_SEND_STR(&s->sout, http_content_type_plain);
   }
   PSOCK_END(&s->sout);
@@ -217,28 +250,34 @@ static
 PT_THREAD(handle_output(struct httpd_state *s))
 {
   char *ptr;
-  
+
   PT_BEGIN(&s->outputpt);
- 
-  if(!httpd_fs_open(s->filename, &s->file)) {
+
+  if (!httpd_fs_open(s->filename, &s->file))
+  {
     httpd_fs_open(http_404_html, &s->file);
     strcpy(s->filename, http_404_html);
     PT_WAIT_THREAD(&s->outputpt,
-		   send_headers(s,
-		   http_header_404));
+                   send_headers(s,
+                                http_header_404));
     PT_WAIT_THREAD(&s->outputpt,
-		   send_file(s));
-  } else {
+                   send_file(s));
+  }
+  else
+  {
     PT_WAIT_THREAD(&s->outputpt,
-		   send_headers(s,
-		   http_header_200));
+                   send_headers(s,
+                                http_header_200));
     ptr = strchr(s->filename, ISO_period);
-    if(ptr != NULL && strncmp(ptr, http_shtml, 6) == 0) {
+    if (ptr != NULL && strncmp(ptr, http_shtml, 6) == 0)
+    {
       PT_INIT(&s->scriptpt);
       PT_WAIT_THREAD(&s->outputpt, handle_script(s));
-    } else {
+    }
+    else
+    {
       PT_WAIT_THREAD(&s->outputpt,
-		     send_file(s));
+                     send_file(s));
     }
   }
   PSOCK_CLOSE(&s->sout);
@@ -252,36 +291,43 @@ PT_THREAD(handle_input(struct httpd_state *s))
 
   PSOCK_READTO(&s->sin, ISO_space);
 
-  
-  if(strncmp(s->inputbuf, http_get, 4) != 0) {
+
+  if (strncmp(s->inputbuf, http_get, 4) != 0)
+  {
     PSOCK_CLOSE_EXIT(&s->sin);
   }
   PSOCK_READTO(&s->sin, ISO_space);
 
-  if(s->inputbuf[0] != ISO_slash) {
+  if (s->inputbuf[0] != ISO_slash)
+  {
     PSOCK_CLOSE_EXIT(&s->sin);
   }
 
-  if(s->inputbuf[1] == ISO_space) {
+  if (s->inputbuf[1] == ISO_space)
+  {
     strncpy(s->filename, http_index_html, sizeof(s->filename));
-  } else {
+  }
+  else
+  {
     s->inputbuf[PSOCK_DATALEN(&s->sin) - 1] = 0;
     strncpy(s->filename, &s->inputbuf[0], sizeof(s->filename));
   }
 
   /*  httpd_log_file(uip_conn->ripaddr, s->filename);*/
-  
+
   s->state = STATE_OUTPUT;
 
-  while(1) {
+  while (1)
+  {
     PSOCK_READTO(&s->sin, ISO_nl);
 
-    if(strncmp(s->inputbuf, http_referer, 8) == 0) {
+    if (strncmp(s->inputbuf, http_referer, 8) == 0)
+    {
       s->inputbuf[PSOCK_DATALEN(&s->sin) - 2] = 0;
       /*      httpd_log(&s->inputbuf[9]);*/
     }
   }
-  
+
   PSOCK_END(&s->sin);
 }
 /*---------------------------------------------------------------------------*/
@@ -289,7 +335,8 @@ static void
 handle_connection(struct httpd_state *s)
 {
   handle_input(s);
-  if(s->state == STATE_OUTPUT) {
+  if (s->state == STATE_OUTPUT)
+  {
     handle_output(s);
   }
 }
@@ -299,8 +346,11 @@ httpd_appcall(void)
 {
   struct httpd_state *s = (struct httpd_state *)&(uip_conn->appstate);
 
-  if(uip_closed() || uip_aborted() || uip_timedout()) {
-  } else if(uip_connected()) {
+  if (uip_closed() || uip_aborted() || uip_timedout())
+  {
+  }
+  else if (uip_connected())
+  {
     PSOCK_INIT(&s->sin, s->inputbuf, sizeof(s->inputbuf) - 1);
     PSOCK_INIT(&s->sout, s->inputbuf, sizeof(s->inputbuf) - 1);
     PT_INIT(&s->outputpt);
@@ -308,17 +358,25 @@ httpd_appcall(void)
     /*    timer_set(&s->timer, CLOCK_SECOND * 100);*/
     s->timer = 0;
     handle_connection(s);
-  } else if(s != NULL) {
-    if(uip_poll()) {
+  }
+  else if (s != NULL)
+  {
+    if (uip_poll())
+    {
       ++s->timer;
-      if(s->timer >= 20) {
-	uip_abort();
+      if (s->timer >= 20)
+      {
+        uip_abort();
       }
-    } else {
+    }
+    else
+    {
       s->timer = 0;
     }
     handle_connection(s);
-  } else {
+  }
+  else
+  {
     uip_abort();
   }
 }

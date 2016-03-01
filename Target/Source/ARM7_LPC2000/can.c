@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -43,7 +43,7 @@
 * Macro definitions
 ****************************************************************************************/
 /** \brief Transmit buffer 1 idle bit. */
-#define CAN_TBS1        (0x00000004)             
+#define CAN_TBS1        (0x00000004)
 /** \brief Transmit buffer 1 complete bit. */
 #define CAN_TCS1        (0x00000008)
 /** \brief Receive buffer release bit. */
@@ -104,42 +104,43 @@ typedef struct t_can_bus_timing
 * Local constant declarations
 ****************************************************************************************/
 /** \brief CAN bittiming table for dynamically calculating the bittiming settings.
- *  \details According to the CAN protocol 1 bit-time can be made up of between 8..25 
- *           time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC 
- *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) * 
+ *  \details According to the CAN protocol 1 bit-time can be made up of between 8..25
+ *           time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC
+ *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) *
  *           100%. This array contains possible and valid time quanta configurations with
  *           a sample point between 68..78%.
  */
 static const tCanBusTiming canTiming[] =
-{                       /*  TQ | TSEG1 | TSEG2 | SP  */
-                        /* ------------------------- */
-    {  5, 2 },          /*   8 |   5   |   2   | 75% */
-    {  6, 2 },          /*   9 |   6   |   2   | 78% */
-    {  6, 3 },          /*  10 |   6   |   3   | 70% */
-    {  7, 3 },          /*  11 |   7   |   3   | 73% */
-    {  8, 3 },          /*  12 |   8   |   3   | 75% */
-    {  9, 3 },          /*  13 |   9   |   3   | 77% */
-    {  9, 4 },          /*  14 |   9   |   4   | 71% */
-    { 10, 4 },          /*  15 |  10   |   4   | 73% */
-    { 11, 4 },          /*  16 |  11   |   4   | 75% */
-    { 12, 4 },          /*  17 |  12   |   4   | 76% */
-    { 12, 5 },          /*  18 |  12   |   5   | 72% */
-    { 13, 5 },          /*  19 |  13   |   5   | 74% */
-    { 14, 5 },          /*  20 |  14   |   5   | 75% */
-    { 15, 5 },          /*  21 |  15   |   5   | 76% */
-    { 15, 6 },          /*  22 |  15   |   6   | 73% */
-    { 16, 6 },          /*  23 |  16   |   6   | 74% */
-    { 16, 7 },          /*  24 |  16   |   7   | 71% */
-    { 16, 8 }           /*  25 |  16   |   8   | 68% */
+{
+  /*  TQ | TSEG1 | TSEG2 | SP  */
+  /* ------------------------- */
+  {  5, 2 },          /*   8 |   5   |   2   | 75% */
+  {  6, 2 },          /*   9 |   6   |   2   | 78% */
+  {  6, 3 },          /*  10 |   6   |   3   | 70% */
+  {  7, 3 },          /*  11 |   7   |   3   | 73% */
+  {  8, 3 },          /*  12 |   8   |   3   | 75% */
+  {  9, 3 },          /*  13 |   9   |   3   | 77% */
+  {  9, 4 },          /*  14 |   9   |   4   | 71% */
+  { 10, 4 },          /*  15 |  10   |   4   | 73% */
+  { 11, 4 },          /*  16 |  11   |   4   | 75% */
+  { 12, 4 },          /*  17 |  12   |   4   | 76% */
+  { 12, 5 },          /*  18 |  12   |   5   | 72% */
+  { 13, 5 },          /*  19 |  13   |   5   | 74% */
+  { 14, 5 },          /*  20 |  14   |   5   | 75% */
+  { 15, 5 },          /*  21 |  15   |   5   | 76% */
+  { 15, 6 },          /*  22 |  15   |   6   | 73% */
+  { 16, 6 },          /*  23 |  16   |   6   | 74% */
+  { 16, 7 },          /*  24 |  16   |   7   | 71% */
+  { 16, 8 }           /*  25 |  16   |   8   | 68% */
 };
 
 
 /************************************************************************************//**
-** \brief     Search algorithm to match the desired baudrate to a possible bus 
+** \brief     Search algorithm to match the desired baudrate to a possible bus
 **            timing configuration.
 ** \param     baud The desired baudrate in kbps. Valid values are 10..1000.
 ** \param     btr  Pointer to where the value for register CANxBTR will be stored.
-** \return    BLT_TRUE if the CAN bustiming register values were found, BLT_FALSE 
+** \return    BLT_TRUE if the CAN bustiming register values were found, BLT_FALSE
 **            otherwise.
 **
 ****************************************************************************************/
@@ -157,7 +158,7 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int32u *btr)
       prescaler = BOOT_CPU_SYSTEM_SPEED_KHZ/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
 
       /* make sure the prescaler is valid */
-      if ( (prescaler > 0) && (prescaler <= 1024) )
+      if ((prescaler > 0) && (prescaler <= 1024))
       {
         /* store the prescaler and bustiming register value */
         *btr  = prescaler - 1;
@@ -181,25 +182,25 @@ void CanInit(void)
 {
   blt_bool   result;
   blt_int32u btr_reg_value=0;
-  
-  /* the current implementation supports CAN1, which has channel index 0. throw an 
-   * assertion error in case a different CAN channel is configured.  
+
+  /* the current implementation supports CAN1, which has channel index 0. throw an
+   * assertion error in case a different CAN channel is configured.
    */
-  ASSERT_CT(BOOT_COM_CAN_CHANNEL_INDEX == 0); 
+  ASSERT_CT(BOOT_COM_CAN_CHANNEL_INDEX == 0);
   /* configure acceptance filter for bypass mode so it receives all messages */
   CANAFMR = 0x00000002L;
   /* take CAN controller offline and go into reset mode */
-  CAN1MOD = 1; 
+  CAN1MOD = 1;
   /* disable all interrupts. driver only needs to work in polling mode */
   CAN1IER = 0;
   /* reset CAN controller status */
-  CAN1GSR = 0; 
+  CAN1GSR = 0;
   /* configure the bittiming */
   result = CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &btr_reg_value);
   /* check that a valid baudrate configuration was found */
   ASSERT_RT(result == BLT_TRUE);
   /* write the bittiming configuration to the register */
-  CAN1BTR = btr_reg_value;  
+  CAN1BTR = btr_reg_value;
   /* enter normal operating mode and synchronize to the CAN bus */
   CAN1MOD = 0;
 } /*** end of CanInit ***/
@@ -217,7 +218,7 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   /* check that transmit buffer 1 is ready to accept a new message */
   ASSERT_RT((CAN1SR & CAN_TBS1) != 0);
   /* write dlc and configure message as a standard message with 11-bit identifier */
-  CAN1TFI1 = (len << 16);  
+  CAN1TFI1 = (len << 16);
   /* write the message identifier */
   CAN1TID1 = BOOT_COM_CAN_TX_MSG_ID;
   /* write the first set of 4 data bytes */
@@ -227,7 +228,7 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   /* write transmission request for transmit buffer 1 */
   CAN1CMR = CAN_TR | CAN_STB1;
   /* wait for transmit completion */
-  while ((CAN1SR & CAN_TCS1) == 0) 
+  while ((CAN1SR & CAN_TCS1) == 0)
   {
     /* keep the watchdog happy */
     CopService();
@@ -254,14 +255,14 @@ blt_bool CanReceivePacket(blt_int8u *data)
     return BLT_FALSE;
   }
   /* store the message data */
-  data[0] = (blt_int8u)CAN1RDA; 
-  data[1] = (blt_int8u)(CAN1RDA >> 8); 
-  data[2] = (blt_int8u)(CAN1RDA >> 16); 
-  data[3] = (blt_int8u)(CAN1RDA >> 24); 
-  data[4] = (blt_int8u)CAN1RDB; 
-  data[5] = (blt_int8u)(CAN1RDB >> 8); 
-  data[6] = (blt_int8u)(CAN1RDB >> 16); 
-  data[7] = (blt_int8u)(CAN1RDB >> 24); 
+  data[0] = (blt_int8u)CAN1RDA;
+  data[1] = (blt_int8u)(CAN1RDA >> 8);
+  data[2] = (blt_int8u)(CAN1RDA >> 16);
+  data[3] = (blt_int8u)(CAN1RDA >> 24);
+  data[4] = (blt_int8u)CAN1RDB;
+  data[5] = (blt_int8u)(CAN1RDB >> 8);
+  data[6] = (blt_int8u)(CAN1RDB >> 16);
+  data[7] = (blt_int8u)(CAN1RDB >> 24);
   /* release the receive buffer */
   CAN1CMR = CAN_RRB;
   /* inform called that a new data was received */
