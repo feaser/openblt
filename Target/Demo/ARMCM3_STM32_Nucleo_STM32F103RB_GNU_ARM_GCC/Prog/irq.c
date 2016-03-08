@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_GCC\Prog\irq.c
+* \file         Demo\ARMCM3_STM32_Nucleo_STM32F103RB_GNU_ARM_GCC\Prog\irq.c
 * \brief        IRQ driver source file.
-* \ingroup      Prog_ARMCM3_STM32_Olimex_STM32P103_GCC
+* \ingroup      Prog_ARMCM3_STM32_Nucleo_STM32F103RB_GNU_ARM_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

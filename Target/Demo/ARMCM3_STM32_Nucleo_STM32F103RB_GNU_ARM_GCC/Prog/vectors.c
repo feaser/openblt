@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_GCC\Prog\vectors.c
+* \file         Demo\ARMCM3_STM32_Nucleo_STM32F103RB_GNU_ARM_GCC\Prog\vectors.c
 * \brief        Demo program interrupt vectors source file.
-* \ingroup      Prog_ARMCM3_STM32_Olimex_STM32P103_GCC
+* \ingroup      Prog_ARMCM3_STM32_Nucleo_STM32F103RB_GNU_ARM_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -23,11 +23,11 @@
 * You should have received a copy of the GNU General Public License along with OpenBLT.
 * If not, see <http://www.gnu.org/licenses/>.
 *
-* A special exception to the GPL is included to allow you to distribute a combined work 
-* that includes OpenBLT without being obliged to provide the source code for any 
+* A special exception to the GPL is included to allow you to distribute a combined work
+* that includes OpenBLT without being obliged to provide the source code for any
 * proprietary components. The exception text is included at the bottom of the license
 * file <license.html>.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
