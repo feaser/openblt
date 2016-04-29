@@ -132,6 +132,7 @@ Reset_Handler:
 /* Initialize the stackpointer. this is done automatically after a reset event, but
  * this program is started by the bootloader and not a reset event. */
     ldr    r1, =__StackTop
+    mov    sp, r1    
 
 /*     Loop to copy data from read only memory to RAM. The ranges
  *      of copy from/to are specified by following symbols evaluated in

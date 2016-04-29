@@ -135,6 +135,7 @@ Reset_Handler:
  * the bootloader performs a software reset by calling this reset handler, in
  * which case the stackpointer is not yet initialized. */
     ldr    r1, =__StackTop
+    mov    sp, r1
 
 /*     Loop to copy data from read only memory to RAM. The ranges
  *      of copy from/to are specified by following symbols evaluated in
