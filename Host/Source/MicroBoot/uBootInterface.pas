@@ -7,7 +7,7 @@ unit uBootInterface;
 //---------------------------------------------------------------------------------------
 //                          C O P Y R I G H T
 //---------------------------------------------------------------------------------------
-//          Copyright (c) by Feaser LLC         All rights reserved.
+//   Copyright (c) 2011 by Feaser    http://www.feaser.com    All rights reserved
 //
 //   This software has been carefully tested, but is not guaranteed for any particular
 // purpose. The author does not offer any warranties and does not guarantee the accuracy,
@@ -15,18 +15,20 @@ unit uBootInterface;
 //              omissions or the results obtained from use of the software.
 //
 //---------------------------------------------------------------------------------------
-//                          A U T H O R   I D E N T I T Y
+//                            L I C E N S E
 //---------------------------------------------------------------------------------------
-// Initials     Name                      Contact
-// --------     ---------------------     ----------------------
-// Vg           Frank Voorburg            voorburg@feaser.com
+// This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+// modify it under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option) any later
+// version.
 //
-//---------------------------------------------------------------------------------------
-//                          R E V I S I O N   H I S T O R Y
-//---------------------------------------------------------------------------------------
-// Date         Version  Author  Description
-// ---------    -------  ------  --------------------------------------------------------
-// 01-Aug-05    1.00.00    Vg    - Creation
+// OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+// PURPOSE. See the GNU General Public License for more details.
+//
+// You have received a copy of the GNU General Public License along with OpenBLT. It 
+// should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
+//
 //***************************************************************************************
 interface
 
