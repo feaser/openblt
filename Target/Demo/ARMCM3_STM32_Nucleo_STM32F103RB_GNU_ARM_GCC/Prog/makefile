@@ -196,11 +196,11 @@ $(COBJS): %.o: %.c $(PROJ_CHDRS)
 #|---------------------------------------------------------------------------------------|
 clean : 
 	@echo +++ Cleaning build environment
-	@rm -f $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
-	@rm -f $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
-	@rm -f $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
-	@rm -f $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
-	@rm -f $(BIN_PATH)/$(PROJ_NAME).srec
+	@cs-rm -f $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
+	@cs-rm -f $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
+	@cs-rm -f $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
+	@cs-rm -f $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
+	@cs-rm -f $(BIN_PATH)/$(PROJ_NAME).srec
 	@echo +++ Clean complete
 
                                                                                                                                                                                                                                                                 

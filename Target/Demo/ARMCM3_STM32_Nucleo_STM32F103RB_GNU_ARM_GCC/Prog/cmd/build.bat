@@ -1,3 +1,2 @@
 @echo off
-call env.bat
-make --directory=../ all
+cs-make --directory=../ all

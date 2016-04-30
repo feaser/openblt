@@ -1,3 +1,2 @@
 @echo off
-call env.bat
-make --directory=../ clean
+cs-make --directory=../ clean
