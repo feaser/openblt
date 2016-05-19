@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_IAR\Prog\led.c
-* \brief        LED driver source file.
-* \ingroup      Prog_ARMCM3_STM32_Olimex_STM32P103_IAR
+* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_Keil\Prog\irq.c
+* \brief        IRQ driver source file.
+* \ingroup      Prog_ARMCM3_STM32_Olimex_STM32P103_Keil
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -33,68 +33,57 @@
 
 
 /****************************************************************************************
-* Macro definitions
+* Local data definitions
 ****************************************************************************************/
-/** \brief Toggle interval time in milliseconds. */
-#define LED_TOGGLE_MS  (500)
+/** \brief Interrupt nesting counter. Used for global interrupt en/disable. */
+static unsigned char interruptNesting = 0;
 
 
 /************************************************************************************//**
-** \brief     Initializes the LED. The board doesn't have a dedicted LED so an
-**            indicator on the LCD is used instead.
+** \brief     Enables the generation IRQ interrupts. Typically called once during
+**            software startup after completion of the initialization.
 ** \return    none.
 **
 ****************************************************************************************/
-void LedInit(void)
+void IrqInterruptEnable(void)
 {
-  GPIO_InitTypeDef  gpio_init;
-
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-  gpio_init.GPIO_Pin   = GPIO_Pin_12;
-  gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
-  gpio_init.GPIO_Mode  = GPIO_Mode_Out_PP;
-  GPIO_Init(GPIOC, &gpio_init);
-  /* turn the LED off */
-  GPIO_SetBits(GPIOC, GPIO_Pin_12);
-} /*** end of LedInit ***/
+  __enable_irq();
+} /*** end of IrqInterruptEnable ***/
 
 
 /************************************************************************************//**
-** \brief     Toggles the LED at a fixed time interval.
+** \brief     Disables the generation IRQ interrupts and stores information on
+**            whether or not the interrupts were already disabled before explicitly
+**            disabling them with this function. Normally used as a pair together
+**            with IrqInterruptRestore during a critical section.
 ** \return    none.
 **
 ****************************************************************************************/
-void LedToggle(void)
+void IrqInterruptDisable(void)
 {
-  static unsigned char led_toggle_state = 0;
-  static unsigned long timer_counter_last = 0;
-  unsigned long timer_counter_now;
-
-  /* check if toggle interval time passed */
-  timer_counter_now = TimerGet();
-  if ( (timer_counter_now - timer_counter_last) < LED_TOGGLE_MS)
+  if (interruptNesting == 0)
   {
-    /* not yet time to toggle */
-    return;
+    __disable_irq();
   }
-  
-  /* determine toggle action */
-  if (led_toggle_state == 0)
+  interruptNesting++;
+} /*** end of IrqInterruptDisable ***/
+
+
+/************************************************************************************//**
+** \brief     Restore the generation IRQ interrupts to the setting it had prior to
+**            calling IrqInterruptDisable. Normally used as a pair together with
+**            IrqInterruptDisable during a critical section.
+** \return    none.
+**
+****************************************************************************************/
+void IrqInterruptRestore(void)
+{
+  interruptNesting--;
+  if (interruptNesting == 0)
   {
-    led_toggle_state = 1;
-    /* turn the LED on */
-    GPIO_ResetBits(GPIOC, GPIO_Pin_12);
+    __enable_irq();
   }
-  else
-  {
-    led_toggle_state = 0;
-    /* turn the LED off */
-    GPIO_SetBits(GPIOC, GPIO_Pin_12);
-  }
-
-  /* store toggle time to determine next toggle interval */
-  timer_counter_last = timer_counter_now;
-} /*** end of LedToggle ***/
+} /*** end of IrqInterruptRestore ***/
 
 
-/*********************************** end of led.c **************************************/
+/*********************************** end of irq.c **************************************/

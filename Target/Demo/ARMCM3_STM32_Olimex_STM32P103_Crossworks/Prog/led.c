@@ -54,6 +54,8 @@ void LedInit(void)
   gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
   gpio_init.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(GPIOC, &gpio_init);
+  /* turn the LED off */
+  GPIO_SetBits(GPIOC, GPIO_Pin_12);
 } /*** end of LedInit ***/
 
 

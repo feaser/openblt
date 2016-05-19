@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_IAR\Prog\led.c
+* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_Keil\Prog\led.c
 * \brief        LED driver source file.
-* \ingroup      Prog_ARMCM3_STM32_Olimex_STM32P103_IAR
+* \ingroup      Prog_ARMCM3_STM32_Olimex_STM32P103_Keil
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E

@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_IAR\Prog\led.c
-* \brief        LED driver source file.
-* \ingroup      Prog_ARMCM3_STM32_Olimex_STM32P103_IAR
+* \file         Demo\ARMCM3_STM32_Olimex_STM32P103_Keil\Prog\main.c
+* \brief        Demo program application source file.
+* \ingroup      Prog_ARMCM3_STM32_Olimex_STM32P103_Keil
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -33,68 +33,51 @@
 
 
 /****************************************************************************************
-* Macro definitions
+* Function prototypes
 ****************************************************************************************/
-/** \brief Toggle interval time in milliseconds. */
-#define LED_TOGGLE_MS  (500)
+static void Init(void);
 
 
 /************************************************************************************//**
-** \brief     Initializes the LED. The board doesn't have a dedicted LED so an
-**            indicator on the LCD is used instead.
-** \return    none.
+** \brief     This is the entry point for the bootloader application and is called 
+**            by the reset interrupt vector after the C-startup routines executed.
+** \return    Program exit code.
 **
 ****************************************************************************************/
-void LedInit(void)
+int main(void)
 {
-  GPIO_InitTypeDef  gpio_init;
+  /* initialize the microcontroller */
+  Init();
+  /* initialize the bootloader interface */
+  BootComInit();
 
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-  gpio_init.GPIO_Pin   = GPIO_Pin_12;
-  gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
-  gpio_init.GPIO_Mode  = GPIO_Mode_Out_PP;
-  GPIO_Init(GPIOC, &gpio_init);
-  /* turn the LED off */
-  GPIO_SetBits(GPIOC, GPIO_Pin_12);
-} /*** end of LedInit ***/
+  /* start the infinite program loop */
+  while (1)
+  {
+    /* toggle LED with a fixed frequency */
+    LedToggle();
+    /* check for bootloader activation request */
+    BootComCheckActivationRequest();
+  }
+	/* code should never get here */
+	return 0;
+} /*** end of main ***/
 
 
 /************************************************************************************//**
-** \brief     Toggles the LED at a fixed time interval.
+** \brief     Initializes the microcontroller.
 ** \return    none.
 **
 ****************************************************************************************/
-void LedToggle(void)
+static void Init(void)
 {
-  static unsigned char led_toggle_state = 0;
-  static unsigned long timer_counter_last = 0;
-  unsigned long timer_counter_now;
-
-  /* check if toggle interval time passed */
-  timer_counter_now = TimerGet();
-  if ( (timer_counter_now - timer_counter_last) < LED_TOGGLE_MS)
-  {
-    /* not yet time to toggle */
-    return;
-  }
-  
-  /* determine toggle action */
-  if (led_toggle_state == 0)
-  {
-    led_toggle_state = 1;
-    /* turn the LED on */
-    GPIO_ResetBits(GPIOC, GPIO_Pin_12);
-  }
-  else
-  {
-    led_toggle_state = 0;
-    /* turn the LED off */
-    GPIO_SetBits(GPIOC, GPIO_Pin_12);
-  }
-
-  /* store toggle time to determine next toggle interval */
-  timer_counter_last = timer_counter_now;
-} /*** end of LedToggle ***/
+  /* init the led driver */
+  LedInit();
+  /* init the timer driver */
+  TimerInit();
+  /* enable IRQ's, because they were initially disabled by the bootloader */
+  IrqInterruptEnable();
+} /*** end of Init ***/
 
 
-/*********************************** end of led.c **************************************/
+/*********************************** end of main.c *************************************/
