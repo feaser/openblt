@@ -370,7 +370,7 @@
 #define BOOT_COM_NET_GATEWAY_HOOK_ENABLE (0)
 #endif
 
-#endif /* BOOT_COM_USB_ENABLE > 0 */
+#endif /* BOOT_COM_NET_ENABLE > 0 */
 
 #ifndef BOOT_FILE_SYS_ENABLE
 #define BOOT_FILE_SYS_ENABLE      (0)
