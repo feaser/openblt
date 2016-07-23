@@ -362,13 +362,25 @@ void FileFirmwareUpdateStartedHook(void)
 void FileFirmwareUpdateCompletedHook(void)
 {
   #if (BOOT_FILE_LOGGING_ENABLE > 0)
+  blt_int32u timeoutTime;
+
   /* close the log file */
   if (logfile.canUse == BLT_TRUE)
   {
     f_close(&logfile.handle);
   }
-  /* wait for all logging related transmission to complete */
-  while(USART_GetFlagStatus(USART6, USART_FLAG_TC) == RESET);
+  /* wait for all logging related transmission to complete with a maximum wait time of
+   * 100ms.
+   */
+  timeoutTime = TimerGet() + 100;
+  while(USART_GetFlagStatus(USART6, USART_FLAG_TC) == RESET)
+  {
+    /* check for timeout */
+    if (TimerGet() > timeoutTime)
+    {
+      break;
+    }
+  }
   #endif
   /* now delete the firmware file from the disk since the update was successful */
   f_unlink(firmwareFilename);

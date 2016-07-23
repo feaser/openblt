@@ -20,7 +20,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
@@ -469,7 +469,7 @@ void FileTask(void)
 tSrecLineType FileSrecGetLineType(const blt_char *line)
 {
   /* check if the line starts with the 'S' character, followed by a digit */
-  if ((toupper(line[0]) != 'S') || (isdigit(line[1]) == 0))
+  if ((toupper((blt_int16s)(line[0])) != 'S') || (isdigit((blt_int16s)(line[1])) == 0))
   {
     /* not a valid S-Record line type */
     return LINE_TYPE_UNSUPPORTED;
@@ -689,7 +689,7 @@ static blt_char FileLibByteNibbleToChar(blt_int8u nibble)
   }
   else
   {
-    c = toupper(c);
+    c = toupper((blt_int16s)c);
   }
   /* return the character */
   return c;
@@ -777,7 +777,7 @@ static blt_int8u FileLibHexStringToByte(const blt_char *hexstring)
   for (counter=0; counter < 2; counter++)
   {
     /* read out the character */
-    c = toupper(hexstring[counter]);
+    c = toupper((blt_int16s)(hexstring[counter]));
     /* check that the character is 0..9 or A..F */
     if ((c < '0') || (c > 'F') || ((c > '9') && (c < 'A')))
     {
