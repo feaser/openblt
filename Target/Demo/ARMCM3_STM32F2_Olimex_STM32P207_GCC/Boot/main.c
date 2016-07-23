@@ -132,6 +132,24 @@ static void Init(void)
   /* enable UART */
   USART_Cmd(USART3, ENABLE);
 #endif
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* enable clocks for CAN1 transmitter and receiver pins */
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  /* select alternate function for the CAN2 pins */
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource8, GPIO_AF_CAN1);
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource9, GPIO_AF_CAN1);
+  /* configure CAN1 RX and TX pins */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  /* enable CAN clock */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
+#endif
+
 } /*** end of Init ***/
 
 
