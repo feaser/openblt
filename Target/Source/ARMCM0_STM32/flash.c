@@ -20,7 +20,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
@@ -596,7 +596,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
       break;
     }
     /* verify that the written data is actually there */
-    if (*(volatile blt_int32u*)prog_addr != prog_data)
+    if (*(volatile blt_int32u *)prog_addr != prog_data)
     {
       result = BLT_FALSE;
       break;
@@ -636,7 +636,7 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
   /* unlock the flash array */
   FLASH_Unlock();
   /* clear pending flags (if any) */
-  FLASH_ClearFlag( FLASH_FLAG_EOP | FLASH_FLAG_WRPERR | FLASH_FLAG_PGERR );
+  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_WRPERR | FLASH_FLAG_PGERR);
   /* check that the flash peripheral is not busy */
   if (FLASH_GetStatus() == FLASH_BUSY)
   {

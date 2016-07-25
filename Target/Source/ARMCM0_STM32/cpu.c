@@ -20,7 +20,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
@@ -97,7 +97,7 @@ void CpuStartUserProgram(void)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
   /* copy user program vector's to RAM */
   CpuMemCopy(CPU_USER_PROGRAM_RAM_BASEADDR, CPU_USER_PROGRAM_VECTABLE_OFFSET,
-            CPU_USER_PROGRAM_VECTABLE_SIZE);
+             CPU_USER_PROGRAM_VECTABLE_SIZE);
   /* remap RAM so that it also appears at address 0x00000000. this way the user program's
    * vector table in RAM is used instead of the bootloader's vector table in flash.
    */
