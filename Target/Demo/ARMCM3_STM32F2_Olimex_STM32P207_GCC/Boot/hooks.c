@@ -348,7 +348,7 @@ void FileFirmwareUpdateCompletedHook(void)
    * 100ms.
    */
   timeoutTime = TimerGet() + 100;
-  while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET)
+  while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET)
   {
     /* check for timeout */
     if (TimerGet() > timeoutTime)
