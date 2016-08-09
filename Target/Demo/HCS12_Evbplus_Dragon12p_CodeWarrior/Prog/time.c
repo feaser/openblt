@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\timer.c
+* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\time.c
 * \brief        Timer driver source file.
 * \ingroup      Prog_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

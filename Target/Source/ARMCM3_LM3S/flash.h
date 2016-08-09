@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_LM3S\flash.c
-* \brief        Bootloader flash driver source file.
+* \file         Source\ARMCM3_LM3S\flash.h
+* \brief        Bootloader flash driver header file.
 * \ingroup      Target_ARMCM3_LM3S
 * \internal
 *----------------------------------------------------------------------------------------

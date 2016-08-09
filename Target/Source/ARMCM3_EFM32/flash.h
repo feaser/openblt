@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_EFM32\flash.c
-* \brief        Bootloader flash driver source file.
+* \file         Source\ARMCM3_EFM32\flash.h
+* \brief        Bootloader flash driver header file.
 * \ingroup      Target_ARMCM3_EFM32
 * \internal
 *----------------------------------------------------------------------------------------
