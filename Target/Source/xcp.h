@@ -51,10 +51,10 @@
 #define XCP_STATION_ID_STRING          "OpenBLT"
 
 #if (BOOT_CPU_BYTE_ORDER_MOTOROLA > 0)
-/** \brief XCP byte ordering according to the Motorola (little-endian). */
+/** \brief XCP byte ordering according to the Motorola (big-endian). */
 #define XCP_MOTOROLA_FORMAT          (0x01)
 #else
-/** \brief XCP byte ordering according to the Intel (big-endian). */
+/** \brief XCP byte ordering according to the Intel (little-endian). */
 #define XCP_MOTOROLA_FORMAT          (0x00)
 #endif
 

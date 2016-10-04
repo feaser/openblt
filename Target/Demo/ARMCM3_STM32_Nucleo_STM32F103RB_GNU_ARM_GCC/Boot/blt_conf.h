@@ -36,8 +36,8 @@
  * needed. Set these through configurables BOOT_CPU_XTAL_SPEED_KHZ and
  * BOOT_CPU_SYSTEM_SPEED_KHZ, respectively. To enable data exchange with the host that is
  * not dependent on the targets architecture, the byte ordering needs to be known.
- * Setting BOOT_CPU_BYTE_ORDER_MOTOROLA to 1 selects little endian mode and 0 selects
- * big endian mode.
+ * Setting BOOT_CPU_BYTE_ORDER_MOTOROLA to 1 selects big endian mode and 0 selects
+ * little endian mode.
  *
  * Set BOOT_CPU_USER_PROGRAM_START_HOOK to 1 if you would like a hook function to be
  * called the moment the user program is about to be started. This could be used to
