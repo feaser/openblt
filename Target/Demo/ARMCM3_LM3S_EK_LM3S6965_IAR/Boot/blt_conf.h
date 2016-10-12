@@ -143,10 +143,6 @@
  * when connected to the network via a router this can take several seconds. feel free to
  * shorten/lengthen this time for finetuning. the only downside of a long backdoor open 
  * time is that the starting of the user program will also be delayed for this time.
- *
- * Also note that when the target is directly connected to the ethernet port of a PC, 
- * the checkbox "Automatically retry socket connection" should be checked in the 
- * Microboot settings. if connecting via a router the uncheck this checkbox.
  */
 #define BACKDOOR_ENTRY_TIMEOUT_MS  (10000)
 #endif
