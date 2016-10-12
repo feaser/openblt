@@ -148,7 +148,7 @@ end; //*** end of Create ***
 //***************************************************************************************
 destructor TMicroBootInterface.Destroy;
 begin
-  if FLibraryHandle = 0 then //##Vg shouldn't this be <> 0?
+  if FLibraryHandle <> 0 then
   begin
     FreeLibrary(FLibraryHandle); // release the handle
   end;

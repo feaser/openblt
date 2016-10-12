@@ -35,7 +35,8 @@ uses
   Forms,
   MainUnit in 'MainUnit.pas' {mainForm},
   SettingsUnit in 'SettingsUnit.pas' {settingsForm},
-  StopWatch in 'StopWatch.pas';
+  StopWatch in 'StopWatch.pas',
+  uBootInterface in 'uBootInterface.pas';
 
 {$R *.RES}
 

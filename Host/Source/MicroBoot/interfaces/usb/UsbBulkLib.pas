@@ -89,7 +89,7 @@ external DLL_Name;
 
 
 //***************************************************************************************
-// NAME:           UblDllTransmit
+// NAME:           UblTransmit
 // PARAMETER:      data    pointer to byte array with transmit data.
 //                 len     number of bytes to transmit.
 // RETURN VALUE:   UBL_OKAY if successful, UBL_ERROR otherwise.
@@ -104,7 +104,7 @@ external DLL_Name;
 
 
 //***************************************************************************************
-// NAME:           UblDllReceive
+// NAME:           UblReceive
 // PARAMETER:      data    pointer to byte array where the data will be stored.
 //                 len     number of bytes to receive.
 //                 timeout max time in milliseconds for the read to complete.

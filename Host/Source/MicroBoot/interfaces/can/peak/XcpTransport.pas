@@ -36,36 +36,35 @@ interface
 // Includes
 //***************************************************************************************
 uses
-  Windows, Messages, SysUtils, Classes, Forms, IniFiles, PCANdrvD;
+  Windows, Messages, SysUtils, Classes, Forms, IniFiles, PCANBasic;
 
 
 //***************************************************************************************
 // Global Constants
 //***************************************************************************************
-const kMaxPacketSize = 256;
+// a CAN message can only have up to 8 bytes
+const kMaxPacketSize = 8;
 
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
-  TXcpTransportInfo = (kNone, kResponse, kError);
+  TPCANhardware = ( PCAN_PCI = $40, PCAN_USB = $50, PCAN_PCC = $60 );
 
-
-type
   TXcpTransport = class(TObject)
   private
-    comEventInfo : TXcpTransportInfo;
-    comEvent     : THandle;
     packetTxId   : LongWord;
     packetRxId   : Longword;
     extendedId   : Boolean;
-    procedure OnCanMessage(Sender: TObject; Direction: TPCanDirection; Message: TPCanMessage);
-    function  MsgWaitForSingleObject(hHandle: THandle; dwMilliseconds: DWORD): DWORD;
+    canHardware  : TPCANhardware; { PCAN_xxx }
+    canChannel   : Word; { currently supported is 1..8 }
+    canBaudrate  : Word; { in bits/sec }
+    connected    : Boolean;
+    function ConstructPeakHandle(hardware: TPCANhardware; channel: Word): TPCANHandle;
   public
     packetData   : array[0..kMaxPacketSize-1] of Byte;
     packetLen    : Word;
-    pcanDriver   : TPCanDriver;
     constructor Create;
     procedure   Configure(iniFile : string);
     function    Connect: Boolean;
@@ -90,22 +89,6 @@ begin
   // call inherited constructor
   inherited Create;
 
-  // reset can event info
-  comEventInfo := kNone;
-
-  // create the event that requires manual reset
-  comEvent := CreateEvent(nil, True, False, nil);
-
-  if comEvent = 0 then
-    Application.MessageBox( 'Could not obtain event placeholder.',
-                            'Error', MB_OK or MB_ICONERROR );
-
-  // create a pcan driver instance
-  pcanDriver := TPCanDriver.Create(nil);
-
-  // set can driver event handlers
-  pcanDriver.OnMessage := OnCanMessage;
-
   // reset the packet ids
   packetTxId := 0;
   packetRxId := 0;
@@ -115,6 +98,9 @@ begin
 
   // reset packet length
   packetLen := 0;
+
+  // disconnected by default
+  connected := false;
 end; //*** end of Create ***
 
 
@@ -127,12 +113,6 @@ end; //*** end of Create ***
 //***************************************************************************************
 destructor TXcpTransport.Destroy;
 begin
-  // release can driver instance
-  pcanDriver.Free;
-
-  // release event handle
-  CloseHandle(comEvent);
-
   // call inherited destructor
   inherited;
 end; //*** end of Destroy ***
@@ -148,7 +128,6 @@ end; //*** end of Destroy ***
 procedure TXcpTransport.Configure(iniFile : string);
 var
   settingsIni : TIniFile;
-  hwIndex     : integer;
 begin
 	// read XCP configuration from INI
   if FileExists(iniFile) then
@@ -156,23 +135,36 @@ begin
     // create ini file object
     settingsIni := TIniFile.Create(iniFile);
 
+    // set hardware configuration
+    case settingsIni.ReadInteger('can', 'hardware', 0) of
+      0: canHardware := PCAN_USB;
+      1: canHardware := PCAN_PCI;
+      2: canHardware := PCAN_PCC;
+      else
+        canHardware := PCAN_USB;
+    end;
+    canChannel := settingsIni.ReadInteger('can', 'channel', 0) + 1;
+
+    case settingsIni.ReadInteger('can', 'baudrate', 2) of
+      0: canBaudrate  := PCAN_BAUD_1M;
+      1: canBaudrate  := PCAN_BAUD_800K;
+      2: canBaudrate  := PCAN_BAUD_500K;
+      3: canBaudrate  := PCAN_BAUD_250K;
+      4: canBaudrate  := PCAN_BAUD_125K;
+      5: canBaudrate  := PCAN_BAUD_100K;
+      6: canBaudrate  := PCAN_BAUD_83K;
+      7: canBaudrate  := PCAN_BAUD_33K;
+      8: canBaudrate  := PCAN_BAUD_20K;
+      9: canBaudrate  := PCAN_BAUD_10K;
+      10: canBaudrate := PCAN_BAUD_5K;
+      else
+        canBaudrate := PCAN_BAUD_500K;
+    end;
+
     // set message configuration
     packetTxId := settingsIni.ReadInteger('can', 'txid', $667);
     packetRxId := settingsIni.ReadInteger('can', 'rxid', $7e1);
     extendedId := settingsIni.ReadBool('can', 'extended', false);
-
-    // configure can hardware
-    hwIndex := settingsIni.ReadInteger('can', 'hardware', 0);
-    pcanDriver.Hardware := PCAN_USB1CH; // init to PCAN_USB1CH
-    case hwIndex of
-      0 : pcanDriver.Hardware := PCAN_USB1CH;
-    end;
-
-    // configure baudrate
-    pcanDriver.BaudRate := settingsIni.ReadInteger('can', 'baudrate', 500) * 1000;
-
-    // only 1 channel on PCAN USB 1CH
-    pcanDriver.Channel := pcanchannel0;
 
     // release ini file object
     settingsIni.Free;
@@ -188,10 +180,33 @@ end; //*** end of Configure ***
 //
 //***************************************************************************************
 function TXcpTransport.Connect: Boolean;
+var
+  status: TPCANStatus;
+  iBuffer : Integer;
 begin
-  result := true;
-  if not pcanDriver.Connect then
-    result := false;
+  // init result value
+  result := false;
+
+  // disconnect first if still connected
+  if connected then
+    Disconnect;
+
+  // attempt to connect to the CAN hardware interface
+  status := CAN_Initialize(ConstructPeakHandle(canHardware, canChannel), canBaudrate, 0, 0, 0);
+
+  // process the result
+  if status = PCAN_ERROR_OK then
+  begin
+    // connected. now enable the bus off automatic reset
+    iBuffer := PCAN_PARAMETER_ON;
+    status := CAN_SetValue(ConstructPeakHandle(canHardware, canChannel), PCAN_BUSOFF_AUTORESET,
+                           PLongWord(@iBuffer), sizeof(iBuffer));
+    if status = PCAN_ERROR_OK then
+    begin
+      connected := true;
+      result := true;
+    end;
+  end;
 end; //*** end of Connect ***
 
 
@@ -203,8 +218,21 @@ end; //*** end of Connect ***
 //
 //***************************************************************************************
 function TXcpTransport.IsComError: Boolean;
+var
+  status: TPCANStatus;
 begin
-  result := pcanDriver.IsComError;
+  // init result to no error.
+  result := false;
+
+  // check for bus off error if connected
+  if connected then
+  begin
+    status := CAN_GetStatus(ConstructPeakHandle(canHardware, canChannel));
+    if (status = PCAN_ERROR_BUSOFF) or (status = PCAN_ERROR_BUSHEAVY) then
+    begin
+      result := true;
+    end;
+  end;
 end; //*** end of IsComError ***
 
 
@@ -218,57 +246,89 @@ end; //*** end of IsComError ***
 //***************************************************************************************
 function TXcpTransport.SendPacket(timeOutms: LongWord): Boolean;
 var
-  pcanmsg : TPCanMessage;
-  cnt : byte;
-  waitResult: Integer;
+  txMsg: TPCANMsg;
+  rxMsg: TPCANMsg;
+  byteIdx: Byte;
+  status: TPCANStatus;
+  responseReceived: Boolean;
+  timeoutTime: DWORD;
 begin
-  // do not send any more data on the network when we are in bus off state.
-  if IsComError then
+  // initialize the result value
+  result := false;
+
+  // do not send data when the packet length is invalid or when not connected
+  // to the CAN hardware
+  if (packetLen > kMaxPacketSize) or (not connected) then
   begin
-    result := false;
     Exit;
   end;
 
-  // prepare the packet
-  pcanmsg.id      := LongInt(PacketTxId);
-  pcanmsg.dlc     := packetLen;
-  pcanmsg.ext     := extendedId;
-  for cnt := 0 to packetLen-1 do
+  // prepare the packet for transmission in a CAN message
+  txMsg.ID := packetTxId;
+  if extendedId then
+    txMsg.MSGTYPE := PCAN_MESSAGE_EXTENDED
+  else
+    txMsg.MSGTYPE := PCAN_MESSAGE_STANDARD;
+  txMsg.LEN := packetLen;
+  for byteIdx := 0 to (packetLen-1) do
   begin
-    pcanmsg.data[cnt] := packetData[cnt];
+    txMsg.DATA[byteIdx] := packetData[byteIdx];
   end;
 
-  // make sure the event is reset
-  ResetEvent(comEvent);
-  comEventInfo := kNone;
-
-  // submit the packet transmission request
-  if not pcanDriver.Transmit(pcanmsg) then
+  // transmit the packet via CAN
+  status := CAN_Write(ConstructPeakHandle(canHardware, canChannel), txMsg);
+  if status <> PCAN_ERROR_OK then
   begin
-    // unable to submit tx request
-    result := False;
     Exit;
+
   end;
 
-  // packet is being transmitted. Now wait for the response to come in
-  waitResult := MsgWaitForSingleObject(comEvent, timeOutms);
+  // reset flag and set the reception timeout time
+  responseReceived := false;
+  timeoutTime := GetTickCount + timeOutms;
 
-  if waitResult <> WAIT_OBJECT_0 then
+  // attempt to receive the packet response within the timeout time
+  repeat
+    // read out the next message in the receive queue
+    status := CAN_Read(ConstructPeakHandle(canHardware, canChannel), rxMsg, nil);
+    // check if an error occurred
+    if (status <> PCAN_ERROR_OK) and (status <> PCAN_ERROR_QRCVEMPTY) then
+    begin
+      // error detected. stop loop.
+      Break;
+    end
+    // no error occurred, so either a message was received or the queue was
+    // empty. check for the latter condition
+    else if status = PCAN_ERROR_OK then
+    begin
+      // was the newly received CAN message the response we are waiting for?
+      if rxMsg.ID = packetRxId then
+      begin
+        // was the id type also a match?
+        if ((rxMsg.MSGTYPE = PCAN_MESSAGE_STANDARD) and (not extendedId)) or
+           ((rxMsg.MSGTYPE = PCAN_MESSAGE_EXTENDED) and (extendedId)) then
+        begin
+          // response received. set flag
+          responseReceived := true;
+        end;
+      end;
+    end;
+    // give the application a chance to use the processor
+    Application.ProcessMessages;
+  until (GetTickCount > timeoutTime) or (responseReceived);
+
+  // check if the response was correctly received
+  if responseReceived then
   begin
-    // no com event triggered so either a timeout or internal error occurred
-    result := False;
-    Exit;
+    // copy the response for futher processing
+    packetLen := rxMsg.LEN;
+    for byteIdx := 0 to (packetLen-1) do
+    begin
+      packetData[byteIdx] := rxMsg.DATA[byteIdx];
+    end;
+    // success
+    result := true;
   end;
-
-  // com event was triggered. now check if the reponse was correctly received
-  if comEventInfo <> kResponse then
-  begin
-    result := False;
-    Exit;
-  end;
-
-  // packet successfully transmitted and response packet received
-  result := True;
 end; //*** end of SendPacket ***
 
 
@@ -281,97 +341,28 @@ end; //*** end of SendPacket ***
 //***************************************************************************************
 procedure TXcpTransport.Disconnect;
 begin
-  pcanDriver.Disconnect;
+  // disconnect CAN interface if connected
+  if connected then
+  begin
+    CAN_Uninitialize(ConstructPeakHandle(canHardware, canChannel));
+  end;
+  connected := false;
 end; //*** end of Disconnect ***
 
 
 //***************************************************************************************
-// NAME:           OnCanMessage
-// PRECONDITIONS:  none
-// PARAMETER:      none
-// RETURN VALUE:   none
-// DESCRIPTION:    Can message event handler
+// NAME:           ConstructPeakHandle
+// PARAMETER:      hardware Peak hardware identifier.
+//                 channel Peak channel.
+// RETURN VALUE:   Peak hardware channel handle.
+// DESCRIPTION:    Converts this class' hardware and channel values into a handle that
+//                 can be passed to the Peak API.
 //
 //***************************************************************************************
-procedure TXcpTransport.OnCanMessage(Sender: TObject; Direction: TPCanDirection; Message: TPCanMessage);
-var
-  cnt : integer;
+function TXcpTransport.ConstructPeakHandle(hardware: TPCANhardware; channel: Word): TPCANHandle;
 begin
-  // the event we are interested in is the reception of the command response from
-  // slave.
-  if Direction = PCanRx then
-  begin
-    if Message.id = LongInt(PacketRxId) then
-    begin
-      // store response data
-      for cnt := 0 to Message.dlc-1 do
-      begin
-        packetData[cnt] := Message.data[cnt];
-      end;
-
-      // store response length
-      packetLen := Message.dlc;
-
-      // set event flag
-      comEventInfo := kResponse;
-
-      // trigger the event
-      SetEvent(comEvent);
-    end;
-  end;
-end; //*** end of OnCanMessage ***
-
-
-//***************************************************************************************
-// NAME:           MsgWaitForSingleObject
-// PRECONDITIONS:  none
-// PARAMETER:      none
-// RETURN VALUE:   none
-// DESCRIPTION:    Improved version of WaitForSingleObject. This version actually
-//                 processes messages in the queue instead of blocking them.
-//
-//***************************************************************************************
-function TXcpTransport.MsgWaitForSingleObject(hHandle: THandle; dwMilliseconds: DWORD): DWORD;
-var
-  dwEnd:DWord;
-begin
-  // compute the time when the WaitForSingleObject is supposed to time out
-  dwEnd := GetTickCount + dwMilliseconds;
-
-  repeat
-    // wait for an event to happen or a message to be in the queue
-    result := MsgWaitForMultipleObjects(1, hHandle, False, dwMilliseconds, QS_ALLINPUT);
-
-    // a message was in the queue?
-    if result = WAIT_OBJECT_0 + 1 then
-    begin
-      // process these messages
-      Application.ProcessMessages;
-
-      // check for timeout manually because if a message in the queue occurred, the
-      // MsgWaitForMultipleObjects will be called again and the timer will start from
-      // scratch. we need to make sure the correct timeout time is used.
-      dwMilliseconds := GetTickCount;
-      if dwMilliseconds < dwEnd then
-      begin
-        dwMilliseconds := dwEnd - dwMilliseconds;
-      end
-      else
-      begin
-        // timeout occured
-        result := WAIT_TIMEOUT;
-        Break;
-      end;
-    end
-    else
-    // the event occured?
-    begin
-      // we can stop
-      Break;
-    end;
-  until True = False;
-end; //*** end of MsgWaitForSingleObject ***
-
+  result := Word(hardware) + channel;
+end; //*** end of ConstructPeakHandle ***
 
 end.
 //******************************** end of XcpTransport.pas ******************************

@@ -61,7 +61,6 @@ type
     socket       : TTCPClient;
     hostname     : string;
     port         : string;
-    connectRetry : Boolean;
     croCounter   : LongWord;
     procedure OnSocketDataAvailable(Sender: TObject; WinSocket: TSocket);
     function  MsgWaitForSingleObject(hHandle: THandle; dwMilliseconds: DWORD): DWORD;
@@ -156,9 +155,6 @@ begin
     // configure port
     port := settingsIni.ReadString('net', 'port', '1000');
 
-    // configure the connection retry feature
-    connectRetry := settingsIni.ReadBool('net', 'retry', false);
-
     // release ini file object
     settingsIni.Free;
   end
@@ -169,9 +165,6 @@ begin
 
     // configure default port
     port := '1000';
-
-    // configure default connection retry feature setting
-    connectRetry := false;
   end;
 end; //*** end of Configure ***
 
@@ -208,15 +201,11 @@ begin
   // wait for the connection to be established
   while socket.SocketState <> ssConnected do
   begin
-    // check timeout if connection retry feature is enabled
-    if connectRetry then
+    // check for timeout
+    if GetTickCount > connectTimeout then
     begin
-      // check for timeout
-      if GetTickCount > connectTimeout then
-      begin
-        result := false;
-        Exit;
-      end;
+      result := false;
+      Exit;
     end;
 
     Application.ProcessMessages;

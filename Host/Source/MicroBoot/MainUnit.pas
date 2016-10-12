@@ -141,6 +141,8 @@ end; //*** end of OnMbiStarted ***
 procedure TmainForm.OnMbiProgress(progress: Longword);
 begin
   prgDownload.Position := progress; // update the progress bar
+  prgDownload.Position := progress-1; // fix for progress bar not going to 100%
+  prgDownload.Position := progress; // update the progress bar
 end; //*** end of OnMbiProgress ***
 
 
@@ -178,7 +180,7 @@ end; //*** end of OnMbiDone ***
 //***************************************************************************************
 procedure TmainForm.OnMbiError(error: ShortString);
 begin
-  ShowMessage(error); // display error
+  ShowMessage(String(error)); // display error
   Timer.Enabled := false; // stop the timer
   StopWatch.Stop; // stop the stopwatch
   mainForm.Caption := FormCaption; // restore caption
@@ -205,7 +207,7 @@ procedure TmainForm.OnMbiLog(info:  ShortString);
 begin
   if MbiLogging = True then
   begin
-    LogLines.Add(info); // add to log
+    LogLines.Add(String(info)); // add to log
   end;
 end; //*** end of OnMbiLog ***
 
@@ -221,7 +223,7 @@ end; //*** end of OnMbiLog ***
 procedure TmainForm.OnMbiInfo(info:  ShortString);
 begin
   if NtbPages.PageIndex = 1 then
-    lblDownloadProgress.Caption := info;
+    lblDownloadProgress.Caption := String(info);
 end; //*** end of OnMbiLog ***
 
 
@@ -235,8 +237,8 @@ end; //*** end of OnMbiLog ***
 //***************************************************************************************
 function  TmainForm.GetActiveMbi : string;
 begin
-  if IsMbiInterface(MbiLibFile) then
-    Result := MbiLibFile
+  if IsMbiInterface(String(MbiLibFile)) then
+    Result := String(MbiLibFile)
   else
     Result := '';
 end; //*** end of GetActiveMbi ***
@@ -255,7 +257,7 @@ begin
 
   if IsMbiInterface(libFile) then
   begin
-    MbiLibFile := libFile;
+    MbiLibFile := ShortString(libFile);
     MbiInterfaced := MbiInterface.Enable(libFile, OnMbiStarted, OnMbiProgress,
                                          OnMbiDone, OnMbiError, OnMbiLog, OnMbiInfo);
   end;
@@ -315,7 +317,8 @@ begin
     end;
   end;
   Result := LibValid;
-end; //*** end of IsMbiInterface ***
+end;
+//*** end of IsMbiInterface ***
 
 
 //***************************************************************************************
@@ -348,7 +351,7 @@ begin
 
       if Assigned(DescriptionFnc) then
       begin
-        Result := Result + DescriptionFnc;
+        Result := Result + String(DescriptionFnc);
       end;
 
       if Assigned(VersionFnc) then
@@ -406,11 +409,11 @@ end; //*** end of GetInterfaceFileList ***
 //***************************************************************************************
 procedure TmainForm.StartFileDownload(fileName : ShortString);
 begin
-  if FileExists(fileName) and (MbiInterfaced = True) then
+  if FileExists(String(fileName)) and (MbiInterfaced = True) then
   begin
     FormCaption := mainForm.Caption; // backup original caption
     mainForm.Caption := FormCaption + ' - Downloading ' +
-                        ExtractFileName(fileName) + '...';
+                        ExtractFileName(String(fileName)) + '...';
     prgDownload.Position := 0; // reset the progress bar
     NtbPages.PageIndex := 1; // go to the next page
     btnSettings.Enabled := false; // settings can't be changed anymore
@@ -432,7 +435,7 @@ begin
   // display interface library description
   if MbiInterfaced = True then
   begin
-    lblInterfaceName.Caption := 'for ' + MbiInterface.Description;
+    lblInterfaceName.Caption := 'for ' + String(MbiInterface.Description);
   end
   else
   begin
@@ -538,7 +541,7 @@ begin
     // is it a valid Mbi interface library?
     if IsMbiInterface(foundLibrary) = True then
     begin
-      MbiLibFile := foundLibrary;
+      MbiLibFile := ShortString(foundLibrary);
       foundInterface := True;
     end;
   end;
@@ -560,7 +563,7 @@ begin
       // is it a valid Mbi interface library?
       if IsMbiInterface(foundLibrary) = True then
       begin
-        MbiLibFile := foundLibrary;
+        MbiLibFile := ShortString(foundLibrary);
         foundInterface := True;
       end;
     end;
@@ -579,7 +582,7 @@ begin
       // is it a valid Mbi interface library?
       if IsMbiInterface(foundLibrary) = True then
       begin
-        MbiLibFile := foundLibrary;
+        MbiLibFile := ShortString(foundLibrary);
         foundInterface := True;
       end;
     end;
@@ -589,7 +592,7 @@ begin
   // did we find a Mbi interface library?
   if foundInterface = True then
   begin
-    SetActiveMbi(MbiLibFile);
+    SetActiveMbi(String(MbiLibFile));
   end;
 
   // create the stopwatch timer
@@ -634,7 +637,7 @@ begin
   if (ParamCount > 0) and (FileExists(ParamStr(ParamCount))) then
   begin
     edtDownloadFile.Text := ParamStr(ParamCount);
-    StartFileDownload(ParamStr(ParamCount));
+    StartFileDownload(ShortString(ParamStr(ParamCount)));
     Exit; // nothing more todo
   end;
 
@@ -653,7 +656,7 @@ begin
           if FileExists(OpenDialog.FileName) then
           begin
             edtDownloadFile.Text := OpenDialog.FileName;
-            StartFileDownload(OpenDialog.FileName);
+            StartFileDownload(ShortString(OpenDialog.FileName));
           end;
         end;
       end;
@@ -676,7 +679,7 @@ begin
     if FileExists(OpenDialog.FileName) then
     begin
       edtDownloadFile.Text := OpenDialog.FileName;
-      StartFileDownload(OpenDialog.FileName);
+      StartFileDownload(ShortString(OpenDialog.FileName));
     end;
   end;
 end; //*** end of btnBrowseClick ***
@@ -702,7 +705,7 @@ begin
       winRegistry := TRegistry.Create;
       winRegistry.RootKey := HKEY_CURRENT_USER;
       winRegistry.OpenKey('Software\Feaser\MicroBoot', true);
-      winRegistry.WriteString('Interface', ExtractFileName(MbiLibFile));
+      winRegistry.WriteString('Interface', ExtractFileName(String(MbiLibFile)));
       winRegistry.Free;
     end;
     UpdateInterfaceLabel;
@@ -751,7 +754,7 @@ begin
     // start the download
     if FileExists(edtDownloadFile.Text) then
     begin
-      StartFileDownload(edtDownloadFile.Text);
+      StartFileDownload(ShortString(edtDownloadFile.Text));
     end;
 
   end;

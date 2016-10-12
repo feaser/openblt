@@ -453,6 +453,10 @@ begin
   // init return value
   Result := false;
 
+  // validate packet length. it must always be > 0
+  if comDriver.packetLen = 0 then
+    Exit;
+
   // make a copy of the packet data because the synch command could overwrite it
   SetLength(dataCpy, comDriver.packetLen);
   for cnt := 0 to comDriver.packetLen-1 do
@@ -1255,6 +1259,10 @@ var
 begin
   // init return value
   result := false;
+
+  // validate FCtoPGMPacketLen because using it to prevent possible divide by 0
+  if FCtoPGMPacketLen = 0 then
+    exit;
 
   // set the start address for the program operation
   if not CmdSetMta(addr) then Exit;

@@ -36,7 +36,7 @@ interface
 //***************************************************************************************
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, IniFiles;
+  StdCtrls, ComCtrls, ExtCtrls, IniFiles, Vcl.Imaging.pngimage;
 
 
 //***************************************************************************************
@@ -102,7 +102,8 @@ implementation
 procedure TXcpSettingsForm.btnOKClick(Sender: TObject);
 begin
   ModalResult := mrOK;
-end; //*** end of btnOKClick ***
+end;
+//*** end of btnOKClick ***
 
 
 //***************************************************************************************

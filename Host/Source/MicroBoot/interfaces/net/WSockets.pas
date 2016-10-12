@@ -425,8 +425,8 @@ begin
       with WSAData do
         begin
           FVersion:= Concat(IntToStr(Hi(wVersion)),'.',(IntToStr(Lo(wVersion))));
-          FDescription:= StrPas(szDescription);
-          FSystemStatus:= StrPas(szSystemStatus);
+          FDescription:= String(szDescription);
+          FSystemStatus:= String(szSystemStatus);
           FMaxSockets:= iMaxSockets;
           FMaxUDPSize:= iMaxUDPDg;
         end;
@@ -462,16 +462,16 @@ begin
       Exit;
     end;
 
-  ServEnt:= getservbyname(PChar(Port), ProtoEnt^.p_name);
+  ServEnt:= getservbyname(PAnsiChar(AnsiString(Port)), ProtoEnt^.p_name);
   if ServEnt = nil then
     SockAddrIn.sin_port:= htons(StrToInt(Port))
   else
     SockAddrIn.sin_port:= ServEnt^.s_port;
 
-  SockAddrIn.sin_addr.s_addr:= inet_addr(PChar(Host));
-  if SockAddrIn.sin_addr.s_addr = INADDR_NONE then
+  SockAddrIn.sin_addr.s_addr:= inet_addr(PAnsiChar(AnsiString(Host)));
+  if SockAddrIn.sin_addr.s_addr = Integer(INADDR_NONE) then
     begin
-      HostEnt:= gethostbyname(PChar(Host));
+      HostEnt:= gethostbyname(PAnsiChar(AnsiString(Host)));
       if HostEnt = nil then
         begin
          SocketError(WSAGetLastError);
@@ -495,7 +495,7 @@ begin
   if ProtoEnt = nil then
     Exit;
 
-  ServEnt:= getservbyname(PChar(Port), ProtoEnt^.p_name);
+  ServEnt:= getservbyname(PAnsiChar(AnsiString(Port)), ProtoEnt^.p_name);
   if ServEnt = nil then
     SockAddrIn.sin_port:= htons(StrToInt(Port))
   else
@@ -518,13 +518,13 @@ begin
   if ProtoEnt = nil then
     Exit;
 
-  ServEnt:= getservbyname(PChar(Port), ProtoEnt^.p_name);
+  ServEnt:= getservbyname(PAnsiChar(AnsiString(Port)), ProtoEnt^.p_name);
   if ServEnt = nil then
     SockAddrIn.sin_port:= htons(StrToInt(Port))
   else
     SockAddrIn.sin_port:= ServEnt^.s_port;
 
-  SockAddrIn.sin_addr.s_addr:= INADDR_BROADCAST;
+  SockAddrIn.sin_addr.s_addr:= Integer(INADDR_BROADCAST);
   Result:= true;
 end;
 
@@ -534,12 +534,12 @@ var
 begin
   HostEnt:= gethostbyaddr(@SockAddrIn.sin_addr.S_addr, 4, AF_INET);
   if HostEnt <> nil then
-    Result:= HostEnt.h_name;
+    Result:= String(AnsiString(HostEnt.h_name));
 end;
 
 function TCustomWSocket.SockAddrInToAddress(SockAddrIn: TSockAddrIn): string;
 begin
-  Result:= inet_ntoa(SockAddrIn.sin_addr);
+  Result:= String(AnsiString(inet_ntoa(SockAddrIn.sin_addr)));
 end;
 
 function TCustomWSocket.SockAddrInToPort(SockAddrIn: TSockAddrIn): string;
@@ -560,7 +560,7 @@ begin
         begin
           HostEnt:= gethostbyaddr(@SockAddrIn.sin_addr.S_addr, 4, AF_INET);
           if HostEnt <> nil then
-            Result:= HostEnt.h_name;
+            Result:= String(AnsiString(HostEnt.h_name));
         end;
     end;
 end;
@@ -574,7 +574,7 @@ begin
     begin
       Len:= SizeOf(SockAddrIn);
       if getsockname(Socket, SockAddrIn, Len) <> SOCKET_ERROR then
-        Result:= inet_ntoa(SockAddrIn.sin_addr);
+        Result:= String(AnsiString(inet_ntoa(SockAddrIn.sin_addr)));
     end;
 end;
 
@@ -604,7 +604,7 @@ begin
         begin
           HostEnt:= gethostbyaddr(@SockAddrIn.sin_addr.S_addr, 4, AF_INET);
           if HostEnt <> nil then
-            Result:= HostEnt.h_name;
+            Result:= String(AnsiString(HostEnt.h_name));
         end;
     end;
 end;
@@ -618,7 +618,7 @@ begin
     begin
       Len:= SizeOf(SockAddrIn);
       if getpeername(Socket, SockAddrIn, Len) <> SOCKET_ERROR then
-        Result:= inet_ntoa(SockAddrIn.sin_addr);
+        Result:= String(AnsiString(inet_ntoa(SockAddrIn.sin_addr)));
     end;
 end;
 
@@ -881,7 +881,7 @@ function TCustomWSocket.GetLocalHostAddress: string;
 var
   SockAddrIn: TSockAddrIn;
   HostEnt: PHostEnt;
-  szHostName: array[0..128] of char;
+  szHostName: array[0..128] of ansichar;
 begin
   if gethostname(szHostName, 128) = 0 then
     begin
@@ -891,7 +891,7 @@ begin
       else
         begin
           SockAddrIn.sin_addr.S_addr:= longint(plongint(HostEnt^.h_addr_list^)^);
-          Result:= inet_ntoa(SockAddrIn.sin_addr);
+          Result:= String(AnsiString(inet_ntoa(SockAddrIn.sin_addr)));
         end;
     end
   else
@@ -900,10 +900,10 @@ end;
 
 function TCustomWSocket.GetLocalHostName: string;
 var
-  szHostName: array[0..128] of char;
+  szHostName: array[0..128] of ansichar;
 begin
   if gethostname(szHostName, 128) = 0 then
-    Result:= szHostName
+    Result:= String(AnsiString(szHostName))
   else
     SocketError(WSAGetLastError);
 end;
@@ -1019,7 +1019,7 @@ begin
     end;
 
   SockOpt:= true; {Enable OOB Data inline}
-  if setsockopt(FLocalSocket, SOL_SOCKET, SO_OOBINLINE, PChar(@SockOpt), SizeOf(SockOpt)) <> 0 then
+  if setsockopt(FLocalSocket, SOL_SOCKET, SO_OOBINLINE, PAnsiChar(@SockOpt), SizeOf(SockOpt)) <> 0 then
     begin
       SocketError(WSAGetLastError);
       closesocket(FLocalSocket);
@@ -1136,7 +1136,7 @@ begin
         end;
 
       SockOpt:= true; {Enable OOB Data inline}
-      if setsockopt(NewSocket, SOL_SOCKET, SO_OOBINLINE	, PChar(@SockOpt), SizeOf(SockOpt)) <> 0 then
+      if setsockopt(NewSocket, SOL_SOCKET, SO_OOBINLINE	, PAnsiChar(@SockOpt), SizeOf(SockOpt)) <> 0 then
         begin
           SocketError(WSAGetLastError);
           closesocket(NewSocket);
@@ -1495,7 +1495,7 @@ begin
     end;
 
   SockOpt:= true; {Enable Broadcasting on this Socket}
-  if setsockopt(FLocalSocket, SOL_SOCKET, SO_BROADCAST, PChar(@SockOpt), SizeOf(SockOpt)) <> 0 then
+  if setsockopt(FLocalSocket, SOL_SOCKET, SO_BROADCAST, PAnsiChar(@SockOpt), SizeOf(SockOpt)) <> 0 then
     begin
       SocketError(WSAGetLastError);
       closesocket(FLocalSocket);

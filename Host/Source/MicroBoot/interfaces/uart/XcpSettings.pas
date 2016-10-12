@@ -36,7 +36,7 @@ interface
 //***************************************************************************************
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, IniFiles;
+  StdCtrls, ComCtrls, ExtCtrls, IniFiles, Vcl.Imaging.pngimage;
 
 
 //***************************************************************************************

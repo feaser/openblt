@@ -51,9 +51,7 @@ uses
   XcpLoader in '..\..\XcpLoader.pas',
   XcpTransport in 'XcpTransport.pas',
   XcpSettings in 'XcpSettings.pas' {XcpSettingsForm},
-  pcan_usb in 'Pcan_usb.pas',
-  PCANdrvD in 'PCANdrvD.pas';
-
+  PCANBasic in 'PCANBasic.pas';
 
 //***************************************************************************************
 // Global Constants
@@ -225,7 +223,7 @@ begin
     end;
 
     // update the log
-    MbiCallbackOnLog(logStr);
+    MbiCallbackOnLog(ShortString(logStr));
 
     // update loop variables
 	  len := len - currentWriteCnt;
@@ -259,25 +257,25 @@ begin
 
   // connect the transport layer
   MbiCallbackOnInfo('Connecting to the CAN interface.');
-  MbiCallbackOnLog('Connecting to the CAN interface. t='+TimeToStr(Time));
+  MbiCallbackOnLog('Connecting to the CAN interface. t='+ShortString(TimeToStr(Time)));
   Application.ProcessMessages;
   if not loader.Connect then
   begin
     // update the user info
     MbiCallbackOnError('Could not connect to CAN interface. Check your configuration.');
-    MbiCallbackOnLog('Could not connect to CAN interface. Check your configuration and try again. t='+TimeToStr(Time));
+    MbiCallbackOnLog('Could not connect to CAN interface. Check your configuration and try again. t='+ShortString(TimeToStr(Time)));
     Exit;
   end;
 
   //---------------- start the programming session --------------------------------------
-  MbiCallbackOnLog('Starting the programming session. t='+TimeToStr(Time));
+  MbiCallbackOnLog('Starting the programming session. t='+ShortString(TimeToStr(Time)));
 
   // try initial connect via XCP. if the user program is able to reactivate the bootloader
   // it will do so now
   sessionStartResult := loader.StartProgrammingSession;
   if sessionStartResult = kProgSessionUnlockError then
   begin
-    MbiCallbackOnLog('Security issue. Could not unprotect the programming resource. Check your configured XCP protection DLL. t='+TimeToStr(Time));
+    MbiCallbackOnLog('Security issue. Could not unprotect the programming resource. Check your configured XCP protection DLL. t='+ShortString(TimeToStr(Time)));
     MbiCallbackOnError('Security issue. Could not unprotect the programming resource.');
     loader.Disconnect;
     Exit;
@@ -287,11 +285,11 @@ begin
   begin
     // update the user info
     MbiCallbackOnInfo('Could not connect. Retrying. Reset your target if this takes a long time.');
-    MbiCallbackOnLog('Connect failed. Switching to backdoor entry mode. t='+TimeToStr(Time));
+    MbiCallbackOnLog('Connect failed. Switching to backdoor entry mode. t='+ShortString(TimeToStr(Time)));
     Application.ProcessMessages;
     // possible that the bootloader is being activated, which means that the target's
     // CAN controller is being reinitialized. We should not send any data on the CAN
-    // network for this to finish. 200ms should do it. not that the backdoor entry time
+    // network for this to finish. 200ms should do it. note that the backdoor entry time
     // should be at least 2.5x this.
     Sleep(200);
     // continuously try to connect via XCP true the backdoor
@@ -301,17 +299,17 @@ begin
       sessionStartResult := loader.StartProgrammingSession;
       Application.ProcessMessages;
       Sleep(5);
-      // if the is in reset of otherwise does not have the CAN controller synchronized to
+      // if the hardware is in reset or otherwise does not have the CAN controller synchronized to
       // the CAN bus, we will be generating error frames, possibly leading to a bus off.
       // check for this
       if loader.IsComError then
       begin
         // bus off state, so try to recover.
-        MbiCallbackOnLog('Communication error detected. Trying automatic recovery. t='+TimeToStr(Time));
+        MbiCallbackOnLog('Communication error detected. Trying automatic recovery. t='+ShortString(TimeToStr(Time)));
         loader.Disconnect;
         if not loader.Connect then
         begin
-          MbiCallbackOnLog('Could not connect to CAN interface. Check your configuration and try again. t='+TimeToStr(Time));
+          MbiCallbackOnLog('Could not connect to CAN interface. Check your configuration and try again. t='+ShortString(TimeToStr(Time)));
           MbiCallbackOnError('Could not connect to CAN interface. Check your configuration.');
           Exit;
         end;
@@ -320,7 +318,7 @@ begin
       // don't retry if the error was caused by not being able to unprotect the programming resource
       if sessionStartResult = kProgSessionUnlockError then
       begin
-        MbiCallbackOnLog('Security issue. Could not unprotect the programming resource. Check your configured XCP protection DLL. t='+TimeToStr(Time));
+        MbiCallbackOnLog('Security issue. Could not unprotect the programming resource. Check your configured XCP protection DLL. t='+ShortString(TimeToStr(Time)));
         MbiCallbackOnError('Security issue. Could not unprotect the programming resource.');
         Exit;
       end;
@@ -335,7 +333,7 @@ begin
   end;
 
   // still here so programming session was started
-  MbiCallbackOnLog('Programming session started. t='+TimeToStr(Time));
+  MbiCallbackOnLog('Programming session started. t='+ShortString(TimeToStr(Time)));
 
   // create the datafile object
   datafile := TXcpDataFile.Create(progfile);
@@ -361,16 +359,16 @@ begin
     datafile.GetRegionInfo(regionCnt, addr, len);
 
     // erase the memory
-    MbiCallbackOnLog('Clearing Memory '+Format('addr:0x%x,len:0x%x',[addr,len])+'. t='+TimeToStr(Time));
+    MbiCallbackOnLog('Clearing Memory '+ShortString(Format('addr:0x%x,len:0x%x',[addr,len]))+'. t='+ShortString(TimeToStr(Time)));
     if not loader.ClearMemory(addr, len) then
     begin
       loader.GetLastError(errorInfo);
-      MbiCallbackOnLog('Could not clear memory ('+errorInfo+'). t='+TimeToStr(Time));
-      MbiCallbackOnError('Could not clear memory ('+errorInfo+').');
+      MbiCallbackOnLog('Could not clear memory ('+ShortString(errorInfo)+'). t='+ShortString(TimeToStr(Time)));
+      MbiCallbackOnError('Could not clear memory ('+ShortString(errorInfo)+').');
       datafile.Free;
       Exit;
     end;
-    MbiCallbackOnLog('Memory cleared. t='+TimeToStr(Time));
+    MbiCallbackOnLog('Memory cleared. t='+ShortString(TimeToStr(Time)));
   end;
 
   //---------------- next program the memory regions ------------------------------------
@@ -394,18 +392,18 @@ begin
   		if currentWriteCnt = 0 then currentWriteCnt := kMaxProgLen;
 
       // program the data
-      MbiCallbackOnLog('Programming Data '+Format('addr:0x%x,len:0x%x',[addr,currentWriteCnt])+'. t='+TimeToStr(Time));
+      MbiCallbackOnLog('Programming Data '+ShortString(Format('addr:0x%x,len:0x%x',[addr,currentWriteCnt]))+'. t='+ShortString(TimeToStr(Time)));
       LogData(@progdata[bufferOffset], currentWriteCnt);
 
       if not loader.WriteData(addr, currentWriteCnt, @progdata[bufferOffset]) then
       begin
         loader.GetLastError(errorInfo);
-        MbiCallbackOnLog('Could not program data ('+errorInfo+'). t='+TimeToStr(Time));
-        MbiCallbackOnError('Could not program data ('+errorInfo+').');
+        MbiCallbackOnLog('Could not program data ('+ShortString(errorInfo)+'). t='+ShortString(TimeToStr(Time)));
+        MbiCallbackOnError('Could not program data ('+ShortString(errorInfo)+').');
         datafile.Free;
         Exit;
       end;
-      MbiCallbackOnLog('Data Programmed. t='+TimeToStr(Time));
+      MbiCallbackOnLog('Data Programmed. t='+ShortString(TimeToStr(Time)));
 
       // update progress
       progress := progress + currentWriteCnt;
@@ -417,28 +415,28 @@ begin
       bufferOffset := bufferOffset + currentWriteCnt;
 
       // update the user info
-      MbiCallbackOnInfo('Programming data... ' + Format('(%.1n of %.1n Kbytes)',[(progress/1024), dataSizeKB]));
+      MbiCallbackOnInfo('Programming data... ' + ShortString(Format('(%.1n of %.1n Kbytes)',[(progress/1024), dataSizeKB])));
 
 	  end;
   end;
 
   //---------------- stop the programming session ---------------------------------------
-  MbiCallbackOnLog('Stopping the programming session. t='+TimeToStr(Time));
+  MbiCallbackOnLog('Stopping the programming session. t='+ShortString(TimeToStr(Time)));
   if not loader.StopProgrammingSession then
   begin
     loader.GetLastError(errorInfo);
-    MbiCallbackOnLog('Could not stop the programming session ('+errorInfo+'). t='+TimeToStr(Time));
-    MbiCallbackOnError('Could not stop the programming session ('+errorInfo+').');
+    MbiCallbackOnLog('Could not stop the programming session ('+ShortString(errorInfo)+'). t='+ShortString(TimeToStr(Time)));
+    MbiCallbackOnError('Could not stop the programming session ('+ShortString(errorInfo)+').');
     datafile.Free;
     Exit;
   end;
-  MbiCallbackOnLog('Programming session stopped. t='+TimeToStr(Time));
+  MbiCallbackOnLog('Programming session stopped. t='+ShortString(TimeToStr(Time)));
 
   // all done so set progress to 100% and finish up
   progress := datafile.GetDataCnt;
   datafile.Free;
   MbiCallbackOnProgress(progress);
-  MbiCallbackOnLog('File successfully downloaded t='+TimeToStr(Time));
+  MbiCallbackOnLog('File successfully downloaded t='+ShortString(TimeToStr(Time)));
   MbiCallbackOnDone;
 
 end; //*** end of OnTimeout ***
@@ -502,7 +500,7 @@ begin
   timer.Enabled := True;
 
   // store the program's filename
-  progfile := fileName;
+  progfile := String(fileName);
 end; //*** end of MbiStart ***
 
 
@@ -520,7 +518,7 @@ begin
   stopRequest := true;
 
   // disconnect the transport layer
-  MbiCallbackOnLog('Disconnecting the transport layer. t='+TimeToStr(Time));
+  MbiCallbackOnLog('Disconnecting the transport layer. t='+ShortString(TimeToStr(Time)));
   loader.Disconnect;
 end; //*** end of MbiStop ***
 
@@ -639,15 +637,15 @@ end; //*** end of MbiConfigure ***
 //***************************************************************************************
 exports
   //--- begin of don't change ---
-  MbiInit        index 1,
-  MbiStart       index 2,
-  MbiStop        index 3,
-  MbiDeInit      index 4,
-  MbiName        index 5,
-  MbiDescription index 6,
-  MbiVersion     index 7,
-  MbiConfigure   index 8,
-  MbiVInterface  index 9;
+  MbiInit,
+  MbiStart,
+  MbiStop,
+  MbiDeInit,
+  MbiName,
+  MbiDescription,
+  MbiVersion,
+  MbiConfigure,
+  MbiVInterface;
   //--- end of don't change ---
 
 end.

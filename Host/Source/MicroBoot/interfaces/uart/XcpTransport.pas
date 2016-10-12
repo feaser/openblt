@@ -36,7 +36,7 @@ interface
 // Includes
 //***************************************************************************************
 uses
-  Windows, Messages, SysUtils, Classes, Forms, CPDrv, IniFiles;
+  Windows, Messages, SysUtils, Classes, Forms, CPort, IniFiles;
 
 
 //***************************************************************************************
@@ -54,7 +54,7 @@ type
   public
     packetData   : array[0..kMaxPacketSize-1] of Byte;
     packetLen    : Word;
-    sciDriver    : TCommPortDriver;
+    sciDriver    : TComPort;
     constructor Create;
     procedure   Configure(iniFile : string);
     function    Connect : Boolean;
@@ -80,14 +80,12 @@ begin
   inherited Create;
 
   // create a sci driver instance
-  sciDriver := TCommPortDriver.Create(nil);
+  sciDriver := TComPort.Create(nil);
 
   // init sci settings
-  sciDriver.DataBits := db8BITS;
-  sciDriver.StopBits := sb1BITS;
-  sciDriver.Parity := ptNONE;
-  sciDriver.SwFlow := sfNONE;
-  sciDriver.PollingDelay := 5;
+  sciDriver.DataBits := dbEight;
+  sciDriver.StopBits := sbOneStopBit;
+  sciDriver.Parity.Bits := prNone;
 
   // reset packet length
   packetLen := 0;
@@ -149,8 +147,7 @@ begin
 
     // configure port
     configIndex := settingsIni.ReadInteger('sci', 'port', 0);
-    sciDriver.Port := pnCustom;
-    sciDriver.PortName := Format( '\\.\COM%d', [ord(configIndex + 1)] );
+    sciDriver.Port := Format( 'COM%d', [ord(configIndex + 1)] );
 
     // release ini file object
     settingsIni.Free;
@@ -167,9 +164,8 @@ end; //*** end of Configure ***
 //***************************************************************************************
 function TXcpTransport.Connect : Boolean;
 begin
-  result := true;
-  if not sciDriver.Connect then
-    result := false;
+  sciDriver.Open;
+  result := sciDriver.Connected;
 end; //*** end of Connect ***
 
 
@@ -199,7 +195,6 @@ var
   msgData : array of Byte;
   resLen  : byte;
   cnt     : byte;
-  dwEnd   :DWord;
 begin
   // init the return value
   result := false;
@@ -222,35 +217,26 @@ begin
     msgData[cnt+1] := packetData[cnt];
   end;
 
+  // configure transmit timeout. timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
+  sciDriver.Timeouts.WriteTotalConstant := 0;
+  sciDriver.Timeouts.WriteTotalMultiplier := timeOutms div (packetLen+1);
+
   // submit the packet transmission request
-  if sciDriver.SendData(@msgData[0], packetLen+1) <> (packetLen+1)  then
+  if sciDriver.Write(msgData[0], packetLen+1) <> (packetLen+1) then
   begin
     // unable to submit tx request
     Exit;
   end;
 
-  // compute timeout time
-  dwEnd := GetTickCount + timeOutms;
+  // configure reception timeout. timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
+  sciDriver.Timeouts.ReadTotalConstant := timeOutms;
+  sciDriver.Timeouts.ReadTotalMultiplier := 0;
 
-  // configure timeout for first byte
-  sciDriver.InputTimeout := timeOutms;
-
-  // receive the first byte which holds the packet length
-  if sciDriver.ReadByte(resLen) = true then
+  // receive the first byte which should hold the packet length
+  if sciDriver.Read(resLen, 1) = 1 then
   begin
-    timeOutms := GetTickCount;
-    if timeOutms < dwEnd then
-    begin
-      // configure timeout for remaining bytes
-      sciDriver.InputTimeout := dwEnd - timeOutms;
-    end
-    else
-    begin
-      Exit; // timed out
-    end;
-
     // receive the actual packet data
-    if sciDriver.ReadData(@packetData[0], resLen) = resLen then
+    if sciDriver.Read(packetData[0], resLen) = resLen then
     begin
       packetLen := resLen;
       result := true;
@@ -268,7 +254,7 @@ end; //*** end of SendPacket ***
 //***************************************************************************************
 procedure TXcpTransport.Disconnect;
 begin
-  sciDriver.Disconnect;
+  sciDriver.Close;
 end; //*** end of Disconnect ***
 
 

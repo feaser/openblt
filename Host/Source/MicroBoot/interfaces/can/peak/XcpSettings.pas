@@ -36,7 +36,7 @@ interface
 //***************************************************************************************
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, IniFiles;
+  StdCtrls, ComCtrls, ExtCtrls, IniFiles, Vcl.Imaging.pngimage;
 
 
 //***************************************************************************************
@@ -60,7 +60,6 @@ type
     cmbChannel: TComboBox;
     lblBaudRate: TLabel;
     chbExtendedId: TCheckBox;
-    edtBaudRate: TEdit;
     lblT1: TLabel;
     lblT3: TLabel;
     lblT4: TLabel;
@@ -83,13 +82,22 @@ type
     openDialog: TOpenDialog;
     edtTconnect: TEdit;
     lblTconnect: TLabel;
+    cmbBaudrate: TComboBox;
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
+    procedure cmbHardwareChange(Sender: TObject);
+    procedure edtTransmitIdChange(Sender: TObject);
+    procedure edtTransmitIdKeyPress(Sender: TObject; var Key: Char);
+    procedure edtReceiveIdKeyPress(Sender: TObject; var Key: Char);
+    procedure edtReceiveIdChange(Sender: TObject);
   private
     { Private declarations }
+    procedure ValidateHexCanIdInputChange(EdtID: TEdit);
+    procedure ValidateHexCanIdInputPress(Sender: TObject; var Key: char);
   public
     { Public declarations }
+    procedure SetAvailableChannels;
   end;
 
 type
@@ -106,6 +114,187 @@ type
 
 implementation
 {$R *.DFM}
+
+//***************************************************************************************
+// NAME:           SetAvailableChannels
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Updates the items in the channels combobox based on the selected
+//                 hardware.
+//
+//***************************************************************************************
+procedure TXcpSettingsForm.SetAvailableChannels;
+var
+  maxChannels: Integer;
+  channelCnt: Integer;
+  oldSelectedIdx: Integer;
+begin
+  // init to safe value
+  maxChannels := 2;
+
+  case cmbHardware.ItemIndex of
+    0 , 1: { PCAN USB or PCAN PCI }
+    begin
+      maxChannels := 8;
+    end;
+    2: { PCAN PC Card }
+    begin
+      maxChannels := 2;
+    end;
+  end;
+
+  // backup currently selected channel
+  oldSelectedIdx := cmbChannel.ItemIndex;
+
+  // update the combobox contents
+  cmbChannel.Items.Clear;
+  for channelCnt := 1 to maxChannels do
+  begin
+    cmbChannel.Items.Add('Channel' + InttoStr(channelCnt));
+  end;
+  cmbChannel.DropDownCount := maxChannels;
+
+  // restore the selected channel
+  if oldSelectedIdx >= (maxChannels) then
+  begin
+    cmbChannel.ItemIndex := 0;
+  end
+  else
+  begin
+    cmbChannel.ItemIndex := oldSelectedIdx;
+  end;
+end; //*** end of SetAvailableChannels ***
+
+
+//***************************************************************************************
+// NAME:           ValidateHexCanIdInputChange
+// PARAMETER:      EdtID Signal source.
+// RETURN VALUE:   none.
+// DESCRIPTION:    Checks to see if a valid hexadecimal CAN identifier was entered in
+//                 the specified edit box. Should be called in the edit box's onChange
+//                 event handler.
+//
+//***************************************************************************************
+procedure TXcpSettingsForm.ValidateHexCanIdInputChange(EdtID: TEdit);
+var
+  value: Int64;
+begin
+  // prevent a message identifier > 0x1FFFFFFF from being entered
+  if EdtID.Text <> '' then
+  begin
+    try
+      value := StrToInt64('$' + EdtID.Text);
+      if value < 0 then
+      begin
+        EdtID.Text := '0';
+      end
+      else if value > $1FFFFFFF then
+      begin
+        EdtID.Text := '1FFFFFFF';
+      end;
+      // automatically set extended if flag
+      if value > $7ff then
+        chbExtendedId.Checked := True;
+    except
+      // use id 0 if a non hex value was entered, for example through copy-paste
+      EdtID.Text := '0';
+    end;
+  end;
+end; //*** end of ValidateHexCanIdInputChange ***
+
+
+//***************************************************************************************
+// NAME:           ValidateHexCanIdInputPress
+// PARAMETER:      Sender Signal source.
+//                 Key The key's character code that was pressed.
+// RETURN VALUE:   none.
+// DESCRIPTION:    Checks to see if a valid hexadecimal CAN identifier was entered in
+//                 the specified edit box. Should be called in the edit box's onPress
+//                 event handler.
+//
+//***************************************************************************************
+procedure TXcpSettingsForm.ValidateHexCanIdInputPress(Sender: TObject; var Key: char);
+begin
+  if not (AnsiChar(Key) In ['0'..'9', 'a'..'f', 'A'..'F', #8, ^V, ^C]) then // #8 = backspace
+  begin
+    // ignore it
+    Key := #0;
+  end;
+  // convert a..f to upper case
+  if AnsiChar(Key) In ['a'..'f'] then
+  begin
+    Key := UpCase(Key);
+  end;
+end; //*** end of ValidateHexCanIdInputPress ***
+
+
+//***************************************************************************************
+// NAME:           cmbHardwareChange
+// PARAMETER:      none
+// RETURN VALUE:   modal result
+// DESCRIPTION:    Event handler for when the hardware combobox selection changed.
+//
+//***************************************************************************************
+procedure TXcpSettingsForm.cmbHardwareChange(Sender: TObject);
+begin
+  SetAvailableChannels;
+end; //*** end of cmbHardwareChange ***
+
+
+//***************************************************************************************
+// NAME:           edtTransmitIdChange
+// PARAMETER:      Sender Signal source.
+// RETURN VALUE:   None.
+// DESCRIPTION:    Called when the text in the edit box changed.
+//
+//***************************************************************************************
+procedure TXcpSettingsForm.edtReceiveIdChange(Sender: TObject);
+begin
+  ValidateHexCanIdInputChange(edtReceiveId);
+end; //*** end of edtReceiveIdChange ***
+
+
+//***************************************************************************************
+// NAME:           edtReceiveIdKeyPress
+// PARAMETER:      Sender Signal source.
+//                 Key The key's character code that was pressed.
+// RETURN VALUE:   None.
+// DESCRIPTION:    Called when a key is pressed.
+//
+//***************************************************************************************
+procedure TXcpSettingsForm.edtReceiveIdKeyPress(Sender: TObject; var Key: Char);
+begin
+  ValidateHexCanIdInputPress(edtReceiveId, Key);
+end; //*** end of edtReceiveIdKeyPress ***
+
+
+//***************************************************************************************
+// NAME:           edtTransmitIdChange
+// PARAMETER:      Sender Signal source.
+// RETURN VALUE:   None.
+// DESCRIPTION:    Called when the text in the edit box changed.
+//
+//***************************************************************************************
+procedure TXcpSettingsForm.edtTransmitIdChange(Sender: TObject);
+begin
+  ValidateHexCanIdInputChange(edtTransmitId);
+end; //*** end of edtTransmitIdChange ***
+
+
+//***************************************************************************************
+// NAME:           edtTransmitIdKeyPress
+// PARAMETER:      Sender Signal source.
+//                 Key The key's character code that was pressed.
+// RETURN VALUE:   None.
+// DESCRIPTION:    Called when a key is pressed.
+//
+//***************************************************************************************
+procedure TXcpSettingsForm.edtTransmitIdKeyPress(Sender: TObject; var Key: Char);
+begin
+  ValidateHexCanIdInputPress(edtTransmitId, Key);
+end; //*** end of edtTransmitIdKeyPress ***
+
+
 //***************************************************************************************
 // NAME:           btnOKClick
 // PARAMETER:      none
@@ -196,6 +385,7 @@ end; //*** end of Destroy ***
 function TXcpSettings.Configure : Boolean;
 var
   settingsIni: TIniFile;
+  settingsInt: Integer;
 begin
   // initialize the return value
   result := false;
@@ -207,9 +397,22 @@ begin
     settingsIni := TIniFile.Create(FIniFile);
 
     // CAN related elements
-    FSettingsForm.cmbHardware.ItemIndex := settingsIni.ReadInteger('can', 'hardware', 0);
-    FSettingsForm.cmbChannel.ItemIndex := settingsIni.ReadInteger('can', 'channel', 0);
-    FSettingsForm.edtBaudRate.Text := IntToStr(settingsIni.ReadInteger('can', 'baudrate', 500));
+    settingsInt := settingsIni.ReadInteger('can', 'hardware', 0);
+    if settingsInt > FSettingsForm.cmbHardware.Items.Count then
+      settingsInt := 0;
+    FSettingsForm.cmbHardware.ItemIndex := settingsInt;
+    FSettingsForm.SetAvailableChannels;
+
+    settingsInt := settingsIni.ReadInteger('can', 'channel', 0);
+    if settingsInt >= FSettingsForm.cmbChannel.Items.Count then
+      settingsInt := 0;
+    FSettingsForm.cmbChannel.ItemIndex := settingsInt;
+
+    settingsInt := settingsIni.ReadInteger('can', 'baudrate', 2);
+    if settingsInt >= FSettingsForm.cmbBaudrate.Items.Count then
+      settingsInt := 2;
+    FSettingsForm.cmbBaudrate.ItemIndex := settingsInt;
+
     FSettingsForm.chbExtendedId.Checked := settingsIni.ReadBool('can', 'extended', false);
     FSettingsForm.edtTransmitId.Text := Format('%x',[settingsIni.ReadInteger('can', 'txid', $667)]);
     FSettingsForm.edtReceiveId.Text := Format('%x',[settingsIni.ReadInteger('can', 'rxid', $7e1)]);
@@ -231,8 +434,9 @@ begin
     // set defaults
     // CAN related elements
     FSettingsForm.cmbHardware.ItemIndex := 0;
+    FSettingsForm.SetAvailableChannels;
     FSettingsForm.cmbChannel.ItemIndex := 0;
-    FSettingsForm.edtBaudRate.Text := IntToStr(500);
+    FSettingsForm.cmbBaudrate.ItemIndex := 2;
     FSettingsForm.chbExtendedId.Checked := false;
     FSettingsForm.edtTransmitId.Text := Format('%x',[$667]);
     FSettingsForm.edtReceiveId.Text := Format('%x',[$7e1]);
@@ -258,7 +462,7 @@ begin
       // CAN related elements
       settingsIni.WriteInteger('can', 'hardware', FSettingsForm.cmbHardware.ItemIndex);
       settingsIni.WriteInteger('can', 'channel', FSettingsForm.cmbChannel.ItemIndex);
-      settingsIni.WriteInteger('can', 'baudrate', StrToInt(FSettingsForm.edtBaudRate.Text));
+      settingsIni.WriteInteger('can', 'baudrate', FSettingsForm.cmbBaudrate.ItemIndex);
       settingsIni.WriteBool('can', 'extended', FSettingsForm.chbExtendedId.Checked);
       settingsIni.WriteInteger('can', 'txid', StrToInt('$'+FSettingsForm.edtTransmitId.Text));
       settingsIni.WriteInteger('can', 'rxid', StrToInt('$'+FSettingsForm.edtReceiveId.Text));
