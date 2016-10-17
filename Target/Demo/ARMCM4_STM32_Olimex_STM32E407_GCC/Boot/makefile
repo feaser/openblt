@@ -193,6 +193,7 @@ usb_conf.h \
 ../../../Source/ARMCM4_STM32/nvm.c \
 ../../../Source/ARMCM4_STM32/timer.c \
 ../../../Source/ARMCM4_STM32/GCC/vectors.c \
+../../../Source/ARMCM4_STM32/GCC/cpu_comp.c \
 ../../../Source/ARMCM4_STM32/GCC/cstart.c
 
 

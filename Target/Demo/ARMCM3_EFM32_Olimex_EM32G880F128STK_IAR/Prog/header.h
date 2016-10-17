@@ -38,7 +38,6 @@
 #include "efm32_gpio.h"                                /* EFM32 GPIO management        */
 #include "efm32_leuart.h"                              /* EFM32 LEUART management      */
 #include "boot.h"                                      /* bootloader interface driver  */
-#include "irq.h"                                       /* IRQ driver                   */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
 

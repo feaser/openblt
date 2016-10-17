@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="DemoProg" InternalType="">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="Demo">
     <VirtualDirectory Name="ARMCM3_LM3S_EK_LM3S8962_GCC">
       <VirtualDirectory Name="Prog">
@@ -88,8 +93,6 @@
         <File Name="../boot.h"/>
         <File Name="../cstart.c"/>
         <File Name="../header.h"/>
-        <File Name="../irq.c"/>
-        <File Name="../irq.h"/>
         <File Name="../led.c"/>
         <File Name="../led.h"/>
         <File Name="../main.c"/>
@@ -99,11 +102,6 @@
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00010001N0005Debug000000000000]]>
-    </Plugin>
-  </Plugins>
   <Description/>
   <Dependencies/>
   <Settings Type="Dynamic Library">

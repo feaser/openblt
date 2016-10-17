@@ -37,8 +37,6 @@ PROJ_NAME=demoprog_olimex_stm32h103
 PROJ_FILES= \
 cstart.c \
 header.h \
-irq.c \
-irq.h \
 led.c \
 led.h \
 main.c \

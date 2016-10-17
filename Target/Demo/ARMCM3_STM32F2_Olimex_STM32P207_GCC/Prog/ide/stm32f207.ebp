@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <EmBitz_project_file>
-	<EmBitzVersion release="0.42" revision="0" />
+	<EmBitzVersion release="1.00" revision="0" />
 	<FileVersion major="1" minor="0" />
 	<Project>
 		<Option title="stm32f207" />
 		<Option pch_mode="2" />
 		<Option compiler="armgcc_eb" />
-		<Option virtualFolders="Libs\;Libs\cmsis\;Libs\SPL\;Sources\;" />
+		<Option virtualFolders="Libs\;Srcs\;Libs\cmcis\;Libs\SPL\;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="..\bin\demoprog_stm32f207.elf" />
@@ -59,36 +59,29 @@
 		</ExtraCommands>
 		<Unit filename="..\boot.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\boot.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\header.h">
-			<Option virtualFolder="Sources\" />
-		</Unit>
-		<Unit filename="..\irq.c">
-			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
-		</Unit>
-		<Unit filename="..\irq.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\led.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\led.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\core_cm3.h">
-			<Option virtualFolder="Libs\cmsis\" />
+			<Option virtualFolder="Libs\cmcis\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\core_cmFunc.h">
-			<Option virtualFolder="Libs\cmsis\" />
+			<Option virtualFolder="Libs\cmcis\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\core_cmInstr.h">
-			<Option virtualFolder="Libs\cmsis\" />
+			<Option virtualFolder="Libs\cmcis\" />
 		</Unit>
 		<Unit filename="..\lib\SPL\inc\misc.h">
 			<Option virtualFolder="Libs\SPL\" />
@@ -307,24 +300,24 @@
 		</Unit>
 		<Unit filename="..\main.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\startup_stm32f2xx.S">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\timer.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\timer.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger>
 				<target_debugging_settings target="Debug" active_interface="J-link">
-					<debug_interface interface_id="J-link" ip_address="localhost" ip_port="2331" path="%Software\SEGGER\J-Link:InstallPath%" executable="JLinkGDBServer.exe" description="" dont_start_server="false" backoff_time="2000" options="2" reg_filter="0" active_family="STMicroelectronics">
+					<debug_interface interface_id="J-link" ip_address="localhost" ip_port="2331" path="%Software\SEGGER\J-Link:InstallPath%" executable="JLinkGDBServer.exe" description="" dont_start_server="false" backoff_time="2000" options="2" reg_filter="0" active_family="STMicroelectronics" gdb_before_conn="" gdb_after_conn="">
 						<family_options family_id="STMicroelectronics">
 							<option opt_id="ID_DEVICE" opt_value="STM32F207ZE" />
 							<option opt_id="ID_JTAG_SWD" opt_value="jtag" />
@@ -346,7 +339,7 @@
 							<option opt_id="ID_THUMB_SWI" opt_value="" />
 						</family_options>
 					</debug_interface>
-					<debug_interface interface_id="ST-link" ip_address="" ip_port="" path="" executable="" description="" dont_start_server="false" backoff_time="" options="0" reg_filter="0" active_family="">
+					<debug_interface interface_id="ST-link" ip_address="" ip_port="" path="" executable="" description="" dont_start_server="false" backoff_time="" options="0" reg_filter="0" active_family="" gdb_before_conn="" gdb_after_conn="">
 						<family_options family_id="STMicroelectronics">
 							<option opt_id="ID_JTAG_SWD" opt_value="swd" />
 							<option opt_id="ID_VECTOR_START" opt_value="0x08000000" />

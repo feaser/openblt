@@ -15,7 +15,6 @@ FILE SECTION
 rtshc12.c.o (ansisi.lib)                Model: SMALL,         Lang: ANSI-C
 mc9s12dg256.c.o                         Model: SMALL,         Lang: ANSI-C
 boot.c.o                                Model: SMALL,         Lang: ANSI-C
-irq.c.o                                 Model: SMALL,         Lang: ANSI-C
 led.c.o                                 Model: SMALL,         Lang: ANSI-C
 main.c.o                                Model: SMALL,         Lang: ANSI-C
 time.c.o                                Model: SMALL,         Lang: ANSI-C
@@ -30,7 +29,7 @@ _startupData is allocated at 0xC03B and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
   _Range   pZeroOut       0x1100     76
-  _Copy    *toCopyDownBeg 0xC358
+  _Copy    *toCopyDownBeg 0xC355
 } _startupData;
 
 *********************************************************************************************
@@ -40,8 +39,8 @@ Section Name                    Size  Type     From       To       Segment
 .init                             59     R     0xC000     0xC03A   ROM_C000
 .startData                        10     R     0xC03B     0xC044   ROM_C000
 .rodata                           36     R     0xC045     0xC068   ROM_C000
-.text                            704     R     0xC069     0xC328   ROM_C000
-.copy                              2     R     0xC358     0xC359   ROM_C000
+.text                            701     R     0xC069     0xC325   ROM_C000
+.copy                              2     R     0xC355     0xC356   ROM_C000
 .stack                           256   R/W     0x1000     0x10FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -386,10 +385,10 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_2be                   2   N/I      0x2BE      0x2BF   .absSeg340
 .abs_section_e77e                130     R     0xE77E     0xE7FF   .absSeg341
 .bss                              76   R/W     0x1100     0x114B   RAM
-RUNTIME                           47     R     0xC329     0xC357   ROM_C000
+RUNTIME                           47     R     0xC326     0xC354   ROM_C000
 
 Summary of section sizes per section type:
-READ_ONLY (R):         3DC (dec:      988)
+READ_ONLY (R):         3D9 (dec:      985)
 READ_WRITE (R/W):      14C (dec:      332)
 NO_INIT (N/I):         190 (dec:      400)
 
@@ -404,9 +403,9 @@ OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 MODULE:                 -- rtshc12.c.o (ansisi.lib) --
 - PROCEDURES:
-     _LSHRU                                    C329      11      17       1   RUNTIME     
-     _LCMP                                     C33A      19      25       1   RUNTIME     
-     _LINC                                     C353       5       5       1   RUNTIME     
+     _LSHRU                                    C326      11      17       1   RUNTIME     
+     _LCMP                                     C337      19      25       1   RUNTIME     
+     _LINC                                     C350       5       5       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- mc9s12dg256.c.o --
 - PROCEDURES:
@@ -768,35 +767,31 @@ MODULE:                 -- boot.c.o --
      xcpCtoRxInProgress.3                      1100       1       1       3   .bss        
      xcpCtoReqPacket.1                         1101      41      65       5   .bss        
      xcpCtoRxLength.2                          1142       1       1       4   .bss        
-MODULE:                 -- irq.c.o --
-- PROCEDURES:
-     IrqInterruptEnable                        C24F       3       3       1   .text       
-- VARIABLES:
 MODULE:                 -- led.c.o --
 - PROCEDURES:
-     LedInit                                   C252       F      15       1   .text       
-     LedToggle                                 C261      48      72       1   .text       
+     LedInit                                   C24F       F      15       1   .text       
+     LedToggle                                 C25E      48      72       1   .text       
 - VARIABLES:
      led_toggle_state.1                        1143       1       1       3   .bss        
      timer_counter_last.2                      1144       4       4       5   .bss        
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C2A9       E      14       1   .text       
-     Init                                      C2B7       C      12       1   .text       
-     SysClockInit                              C2C3       1       1       1   .text       
+     main                                      C2A6       E      14       1   .text       
+     Init                                      C2B4       C      12       1   .text       
+     SysClockInit                              C2C0       1       1       1   .text       
 - VARIABLES:
 MODULE:                 -- time.c.o --
 - PROCEDURES:
-     TimeInit                                  C2C4      1E      30       1   .text       
-     TimeDeinit                                C2E2      1C      28       1   .text       
-     TimeSet                                   C2FE       7       7       1   .text       
-     TimeGet                                   C305       7       7       1   .text       
-     TimeISRHandler                            C30C      1B      27       1   .text       
+     TimeInit                                  C2C1      1E      30       1   .text       
+     TimeDeinit                                C2DF      1C      28       1   .text       
+     TimeSet                                   C2FB       7       7       1   .text       
+     TimeGet                                   C302       7       7       1   .text       
+     TimeISRHandler                            C309      1B      27       1   .text       
 - VARIABLES:
      millisecond_counter                       1148       4       4       8   .bss        
 MODULE:                 -- vectors.c.o --
 - PROCEDURES:
-     UnusedISR                                 C327       2       2      62   .text       
+     UnusedISR                                 C324       2       2      62   .text       
 - VARIABLES:
      _vectab                                   E77E      82     130       0   .abs_section_e77e
 MODULE:                 -- cstartup.c.o --
@@ -815,7 +810,6 @@ MODULE STATISTIC
   rtshc12.c.o (ansisi.lib)                     0     47      0
   mc9s12dg256.c.o                            400      0      0
   boot.c.o                                    67    486     36
-  irq.c.o                                      0      3      0
   led.c.o                                      5     87      0
   main.c.o                                     0     27      0
   time.c.o                                     4     99      0
@@ -829,9 +823,8 @@ SECTION USE IN OBJECT-ALLOCATION SECTION
 SECTION: ".text"
   BootComInit BootComCheckActivationRequest BootActivate BootComUartInit 
   BootComUartCheckActivationRequest UartReceiveByte CanGetSpeedConfig 
-  BootComCanInit BootComCanCheckActivationRequest IrqInterruptEnable LedInit 
-  LedToggle main Init SysClockInit TimeInit TimeDeinit TimeSet TimeGet 
-  TimeISRHandler UnusedISR 
+  BootComCanInit BootComCanCheckActivationRequest LedInit LedToggle main Init 
+  SysClockInit TimeInit TimeDeinit TimeSet TimeGet TimeISRHandler UnusedISR 
 SECTION: ".bss"
   xcpCtoRxInProgress.3 xcpCtoReqPacket.1 xcpCtoRxLength.2 led_toggle_state.1 
   timer_counter_last.2 millisecond_counter 
@@ -1889,21 +1882,20 @@ OBJECT LIST SORTED BY ADDRESS
      CanGetSpeedConfig                         C0EF      66     102       1   .text       
      BootComCanInit                            C155      8C     140       1   .text       
      BootComCanCheckActivationRequest          C1E1      6E     110       1   .text       
-     IrqInterruptEnable                        C24F       3       3       1   .text       
-     LedInit                                   C252       F      15       1   .text       
-     LedToggle                                 C261      48      72       1   .text       
-     main                                      C2A9       E      14       1   .text       
-     Init                                      C2B7       C      12       1   .text       
-     SysClockInit                              C2C3       1       1       1   .text       
-     TimeInit                                  C2C4      1E      30       1   .text       
-     TimeDeinit                                C2E2      1C      28       1   .text       
-     TimeSet                                   C2FE       7       7       1   .text       
-     TimeGet                                   C305       7       7       1   .text       
-     TimeISRHandler                            C30C      1B      27       1   .text       
-     UnusedISR                                 C327       2       2      62   .text       
-     _LSHRU                                    C329      11      17       1   RUNTIME     
-     _LCMP                                     C33A      19      25       1   RUNTIME     
-     _LINC                                     C353       5       5       1   RUNTIME     
+     LedInit                                   C24F       F      15       1   .text       
+     LedToggle                                 C25E      48      72       1   .text       
+     main                                      C2A6       E      14       1   .text       
+     Init                                      C2B4       C      12       1   .text       
+     SysClockInit                              C2C0       1       1       1   .text       
+     TimeInit                                  C2C1      1E      30       1   .text       
+     TimeDeinit                                C2DF      1C      28       1   .text       
+     TimeSet                                   C2FB       7       7       1   .text       
+     TimeGet                                   C302       7       7       1   .text       
+     TimeISRHandler                            C309      1B      27       1   .text       
+     UnusedISR                                 C324       2       2      62   .text       
+     _LSHRU                                    C326      11      17       1   RUNTIME     
+     _LCMP                                     C337      19      25       1   RUNTIME     
+     _LINC                                     C350       5       5       1   RUNTIME     
      _vectab                                   E77E      82     130       0   .abs_section_e77e
 
 *********************************************************************************************
@@ -1917,18 +1909,14 @@ rtshc12.c.o (ansisi.lib):
   _COPY _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE 
   _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL 
   _FPCMP 
-irq.c.o:
-  IrqInterruptDisable IrqInterruptRestore 
 NOT USED VARIABLES
 rtshc12.c.o (ansisi.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
-irq.c.o:
-  irqNesting irqCCRregSave 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC358 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC355 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1959,7 +1947,6 @@ LedToggle                 USES TimeGet timer_counter_last.2 _LCMP
 main                      USES Init BootComInit LedToggle 
                                 BootComCheckActivationRequest 
 Init                      USES SysClockInit LedInit TimeInit 
-                                IrqInterruptEnable 
 TimeInit                  USES TimeDeinit _TIOS _TFLG1 _TCNT _TC0 _TIE _TSCR1 
                                 TimeSet 
 TimeDeinit                USES _TIE _TSCR1 _TSCR2 _TIOS _TTOV _TCTL1 _TCTL2 
@@ -1983,13 +1970,11 @@ DEPENDENCY TREE
  |  |  +- LedInit             
  |  |  |    
  |  |  +- TimeInit            
- |  |  |  | 
- |  |  |  +- TimeDeinit          
- |  |  |  |    
- |  |  |  +- TimeSet             
- |  |  |       
- |  |  +- IrqInterruptEnable  
- |  |       
+ |  |     | 
+ |  |     +- TimeDeinit          
+ |  |     |    
+ |  |     +- TimeSet             
+ |  |          
  |  +- BootComInit         
  |  |  | 
  |  |  +- BootComUartInit     
@@ -2040,6 +2025,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 5
-Total size of all blocks to be downloaded: 988
+Number of blocks to be downloaded: 6
+Total size of all blocks to be downloaded: 985
 

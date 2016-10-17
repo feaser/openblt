@@ -125,6 +125,7 @@ main.c \
 ../../../Source/ARMCM3_LM3S/flash.c \
 ../../../Source/ARMCM3_LM3S/flash.h \
 ../../../Source/ARMCM3_LM3S/GCC/vectors.c \
+../../../Source/ARMCM3_LM3S/GCC/cpu_comp.c \
 ../../../Source/ARMCM3_LM3S/GCC/cstart.c
 
 

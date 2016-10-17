@@ -132,6 +132,7 @@ main.c \
 ../../../Source/ARMCM3_EFM32/flash.c \
 ../../../Source/ARMCM3_EFM32/flash.h \
 ../../../Source/ARMCM3_EFM32/GCC/vectors.c \
+../../../Source/ARMCM3_EFM32/GCC/cpu_comp.c \
 ../../../Source/ARMCM3_EFM32/GCC/cstart.c
 
 

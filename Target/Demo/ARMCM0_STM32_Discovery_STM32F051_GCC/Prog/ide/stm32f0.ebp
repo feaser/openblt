@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <EmBitz_project_file>
-	<EmBitzVersion release="0.42" revision="0" />
+	<EmBitzVersion release="1.00" revision="0" />
 	<FileVersion major="1" minor="0" />
 	<Project>
 		<Option title="stm32f0" />
 		<Option pch_mode="2" />
 		<Option compiler="armgcc_eb" />
-		<Option virtualFolders="Libs\;Libs\cmsis\;Libs\SPL\;Sources\;" />
+		<Option virtualFolders="Libs\;Srcs\;Libs\cmcis\;Libs\SPL\;" />
 		<Build>
 			<Target title="Debug">
 				<Option output=".\..\bin\demoprog_stm32f051.elf" />
@@ -59,35 +59,35 @@
 		</ExtraCommands>
 		<Unit filename="..\boot.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\boot.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\header.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\led.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\led.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\arm_common_tables.h">
-			<Option virtualFolder="Libs\cmsis\" />
+			<Option virtualFolder="Libs\cmcis\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\arm_math.h">
-			<Option virtualFolder="Libs\cmsis\" />
+			<Option virtualFolder="Libs\cmcis\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\core_cm0.h">
-			<Option virtualFolder="Libs\cmsis\" />
+			<Option virtualFolder="Libs\cmcis\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\core_cmFunc.h">
-			<Option virtualFolder="Libs\cmsis\" />
+			<Option virtualFolder="Libs\cmcis\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\core_cmInstr.h">
-			<Option virtualFolder="Libs\cmsis\" />
+			<Option virtualFolder="Libs\cmcis\" />
 		</Unit>
 		<Unit filename="..\lib\SPL\inc\stm32f0xx_adc.h">
 			<Option virtualFolder="Libs\SPL\" />
@@ -265,24 +265,24 @@
 		</Unit>
 		<Unit filename="..\main.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\startup_stm32f0xx.S">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\timer.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\timer.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger>
 				<target_debugging_settings target="Debug" active_interface="ST-link">
-					<debug_interface interface_id="ST-link" ip_address="localhost" ip_port="4242" path="${EMBITZ}\share\contrib" executable="STLinkGDB.exe" description="" dont_start_server="false" backoff_time="1000" options="2" reg_filter="0" active_family="STMicroelectronics">
+					<debug_interface interface_id="ST-link" ip_address="localhost" ip_port="4242" path="${EMBITZ}\share\contrib" executable="STLinkGDB.exe" description="" dont_start_server="false" backoff_time="1000" options="2" reg_filter="0" active_family="STMicroelectronics" gdb_before_conn="" gdb_after_conn="">
 						<family_options family_id="STMicroelectronics">
 							<option opt_id="ID_JTAG_SWD" opt_value="swd" />
 							<option opt_id="ID_VECTOR_START" opt_value="0x08000000" />

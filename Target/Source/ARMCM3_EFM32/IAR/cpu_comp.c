@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_IAR\Prog\irq.h
-* \brief        IRQ driver header file.
-* \ingroup      Prog_ARMCM3_EFM32_Olimex_EM32G880F128STK_IAR
+* \file         Source\ARMCM3_EFM32\IAR\cpu_comp.c
+* \brief        Bootloader cpu module source file.
+* \ingroup      Target_ARMCM3_EFM32
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -20,21 +20,38 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
-#ifndef IRQ_H
-#define IRQ_H
 
 /****************************************************************************************
-* Function prototypes
+* Include files
 ****************************************************************************************/
-void IrqInterruptEnable(void);
-void IrqInterruptDisable(void);
-void IrqInterruptRestore(void);
+#include "boot.h"                                /* bootloader generic header          */
+#include <intrinsics.h>                          /* IAR intrinsics                     */
 
 
-#endif /* IRQ_H */
-/*********************************** end of irq.h **************************************/
+/************************************************************************************//**
+** \brief     Disable global interrupts.
+** \return    none.
+**
+****************************************************************************************/
+void CpuIrqDisable(void)
+{
+  __disable_interrupt();
+} /*** end of CpuIrqDisable ***/
+
+
+/************************************************************************************//**
+** \brief     Enable global interrupts.
+** \return    none.
+**
+****************************************************************************************/
+void CpuIrqEnable(void)
+{
+  __enable_interrupt();
+} /*** end of CpuIrqEnable ***/
+
+/*********************************** end of cpu_comp.c *********************************/

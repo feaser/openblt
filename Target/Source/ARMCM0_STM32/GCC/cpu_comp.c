@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32_Olimex_STM32E407_Crossworks\Prog\irq.h
-* \brief        IRQ driver header file.
-* \ingroup      Prog_ARMCM4_STM32_Olimex_STM32E407_Crossworks
+* \file         Source\ARMCM0_STM32\GCC\cpu_comp.c
+* \brief        Bootloader cpu module source file.
+* \ingroup      Target_ARMCM0_STM32
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -20,21 +20,37 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
-#ifndef IRQ_H
-#define IRQ_H
 
 /****************************************************************************************
-* Function prototypes
+* Include files
 ****************************************************************************************/
-void IrqInterruptEnable(void);
-void IrqInterruptDisable(void);
-void IrqInterruptRestore(void);
+#include "boot.h"                                /* bootloader generic header          */
 
 
-#endif /* IRQ_H */
-/*********************************** end of irq.h **************************************/
+/************************************************************************************//**
+** \brief     Disable global interrupts.
+** \return    none.
+**
+****************************************************************************************/
+void CpuIrqDisable(void)
+{
+  __asm volatile ("cpsid i");
+} /*** end of CpuIrqDisable ***/
+
+
+/************************************************************************************//**
+** \brief     Enable global interrupts.
+** \return    none.
+**
+****************************************************************************************/
+void CpuIrqEnable(void)
+{
+  __asm volatile ("cpsie i");
+} /*** end of CpuIrqEnable ***/
+
+/*********************************** end of cpu_comp.c *********************************/

@@ -34,7 +34,6 @@
 #include "../Boot/blt_conf.h"                          /* bootloader configuration     */
 #include "stm32f2xx.h"                                 /* STM32 registers and drivers  */
 #include "boot.h"                                      /* bootloader interface driver  */
-#include "irq.h"                                       /* IRQ driver                   */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
 

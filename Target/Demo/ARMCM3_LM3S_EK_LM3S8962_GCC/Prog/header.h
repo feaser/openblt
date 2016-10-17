@@ -33,7 +33,6 @@
 ****************************************************************************************/
 #include "../Boot/blt_conf.h"                          /* bootloader configuration     */
 #include "boot.h"                                      /* bootloader interface driver  */
-#include "irq.h"                                       /* IRQ driver                   */
 #include "led.h"                                       /* LED driver                   */
 #include "time.h"                                      /* Timer driver                 */
 #include "inc/hw_ints.h"

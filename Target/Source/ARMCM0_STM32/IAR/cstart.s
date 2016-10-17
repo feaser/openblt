@@ -118,9 +118,6 @@ __vector_table
         PUBWEAK Reset_Handler
         SECTION .text:CODE:REORDER(2)
 Reset_Handler
-;; Disable interrupts first
-        CPSID   I
-        
 ;; Initialize the stackpointer. this is done automatically after a reset event.
 ;; the bootloader performs a software reset by calling this reset handler, in
 ;; which case the stackpointer is not yet initialized.

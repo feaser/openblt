@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="DemoBoot" InternalType="">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="Demo">
     <VirtualDirectory Name="ARMCM4_STM32_Olimex_STM32E407_GCC">
       <VirtualDirectory Name="Boot">
@@ -156,11 +161,6 @@
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00010001N0005Debug000000000000]]>
-    </Plugin>
-  </Plugins>
   <Description/>
   <Dependencies/>
   <Settings Type="Dynamic Library">
@@ -390,6 +390,7 @@ continue
       <VirtualDirectory Name="GCC">
         <File Name="../../../../Source/ARMCM4_STM32/GCC/cstart.c"/>
         <File Name="../../../../Source/ARMCM4_STM32/GCC/vectors.c"/>
+        <File Name="../../../../Source/ARMCM4_STM32/GCC/cpu_comp.c"/>
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>

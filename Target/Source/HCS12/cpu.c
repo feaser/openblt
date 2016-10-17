@@ -58,6 +58,21 @@ extern void reset_handler(void);                      /* implemented in C startu
 
 
 /************************************************************************************//**
+** \brief     Initializes the CPU module.
+** \return    none.
+**
+****************************************************************************************/
+void CpuInit(void)
+{
+  /* bootloader runs in polling mode so disable the global interrupts. this is done for
+   * safety reasons. if the bootloader was started from a running user program, it could 
+   * be that the user program did not properly disable the interrupt generation of 
+   * peripherals. */
+  CpuIrqDisable();
+} /*** end of CpuInit ***/
+
+
+/************************************************************************************//**
 ** \brief     Starts the user program, if one is present. In this case this function
 **            does not return.
 ** \return    none.

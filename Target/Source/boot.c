@@ -39,6 +39,8 @@
 ****************************************************************************************/
 void BootInit(void)
 {
+  /* initialize the CPU */
+  CpuInit();
   /* initialize the watchdog */
   CopInit();
   /* initialize the millisecond timer */

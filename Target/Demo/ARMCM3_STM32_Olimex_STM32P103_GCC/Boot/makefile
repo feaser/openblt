@@ -88,6 +88,7 @@ main.c \
 ../../../Source/ARMCM3_STM32/flash.c \
 ../../../Source/ARMCM3_STM32/flash.h \
 ../../../Source/ARMCM3_STM32/GCC/vectors.c \
+../../../Source/ARMCM3_STM32/GCC/cpu_comp.c \
 ../../../Source/ARMCM3_STM32/GCC/cstart.c
 
 

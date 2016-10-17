@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="DemoBoot" InternalType="">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="Demo">
     <VirtualDirectory Name="ARM7_LPC2000_Olimex_LPC_L2294_GCC">
       <VirtualDirectory Name="Boot">
@@ -12,11 +17,6 @@
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00010001N0005Debug000000000000]]>
-    </Plugin>
-  </Plugins>
   <Description/>
   <Dependencies/>
   <Settings Type="Dynamic Library">
@@ -126,6 +126,7 @@ continue
         <File Name="../../../../Source/ARM7_LPC2000/GCC/flash.c"/>
         <File Name="../../../../Source/ARM7_LPC2000/GCC/flash.h"/>
         <File Name="../../../../Source/ARM7_LPC2000/GCC/vectors.c"/>
+        <File Name="../../../../Source/ARM7_LPC2000/GCC/cpu_comp.c"/>
       </VirtualDirectory>
     </VirtualDirectory>
   </VirtualDirectory>

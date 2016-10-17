@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <EmBitz_project_file>
-	<EmBitzVersion release="0.42" revision="0" />
+	<EmBitzVersion release="1.00" revision="0" />
 	<FileVersion major="1" minor="0" />
 	<Project>
 		<Option title="stm32f0" />
 		<Option pch_mode="2" />
 		<Option compiler="armgcc_eb" />
-		<Option virtualFolders="Libs\;Libs\cmsis\;Libs\SPL\;Sources\;Sources\Core\;" />
+		<Option virtualFolders="Libs\;Srcs\;Libs\cmsis\;Libs\SPL\;Srcs\Core\;" />
 		<Build>
 			<Target title="Debug">
 				<Option output=".\..\bin\openblt_stm32f051.elf" />
@@ -61,18 +61,18 @@
 			<Mode after="1" />
 		</ExtraCommands>
 		<Unit filename="..\blt_conf.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\hooks.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\led.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\led.h">
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\arm_common_tables.h">
 			<Option virtualFolder="Libs\cmsis\" />
@@ -265,100 +265,124 @@
 		</Unit>
 		<Unit filename="..\main.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32\cpu.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32\flash.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32\flash.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM0_STM32\GCC\cpu_comp.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32\GCC\cstart.S">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32\nvm.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32\timer.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32\types.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32\uart.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\assert.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\assert.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\backdoor.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\backdoor.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\boot.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\boot.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\can.h">
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\com.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\com.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\cop.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\cop.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\cpu.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\file.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\file.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\net.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\net.h">
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\nvm.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\plausibility.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\timer.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\uart.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\usb.h">
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\xcp.c">
 			<Option compilerVar="CC" />
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\xcp.h">
-			<Option virtualFolder="Sources\Core\" />
+			<Option virtualFolder="Srcs\Core\" />
 		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger>
 				<target_debugging_settings target="Debug" active_interface="ST-link">
-					<debug_interface interface_id="ST-link" ip_address="localhost" ip_port="4242" path="${EMBITZ}\share\contrib" executable="STLinkGDB.exe" description="" dont_start_server="false" backoff_time="1000" options="2" reg_filter="0" active_family="STMicroelectronics">
+					<debug_interface interface_id="ST-link" ip_address="localhost" ip_port="4242" path="${EMBITZ}\share\contrib" executable="STLinkGDB.exe" description="" dont_start_server="false" backoff_time="1000" options="2" reg_filter="0" active_family="STMicroelectronics" gdb_before_conn="" gdb_after_conn="">
 						<family_options family_id="STMicroelectronics">
 							<option opt_id="ID_JTAG_SWD" opt_value="swd" />
 							<option opt_id="ID_VECTOR_START" opt_value="0x08000000" />

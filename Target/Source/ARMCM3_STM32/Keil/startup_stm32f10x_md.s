@@ -130,8 +130,6 @@ Reset_Handler    PROC
                  EXPORT  Reset_Handler             [WEAK]
      IMPORT  __main
      IMPORT  SystemInit
-		         ; Disable interrupts first for OpenBLT
-                 CPSID   I  
                  LDR     R0, =SystemInit
                  BLX     R0
                  LDR     R0, =__main

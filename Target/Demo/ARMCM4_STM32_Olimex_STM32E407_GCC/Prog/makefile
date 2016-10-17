@@ -39,8 +39,6 @@ boot.c \
 boot.h \
 cstart.c \
 header.h \
-irq.c \
-irq.h \
 led.c \
 led.h \
 net.c \

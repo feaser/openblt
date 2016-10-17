@@ -35,7 +35,6 @@
 #include "stm32f4xx.h"                                 /* STM32 registers              */
 #include "stm32f4xx_conf.h"                            /* STM32 peripheral drivers     */
 #include "boot.h"                                      /* bootloader interface driver  */
-#include "irq.h"                                       /* IRQ driver                   */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
 #include "net.h"                                       /* TCP/IP server application    */

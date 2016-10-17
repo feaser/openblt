@@ -8,9 +8,10 @@
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc"/>
       <folder Name="Source" file_name="">
         <folder Name="ARMCM3_EFM32">
-          <folder Name="Crossworks">
+          <folder Name="Crossworks" file_name="">
             <file file_name="../../../../Source/ARMCM3_EFM32/Crossworks/cstart.s"/>
             <file file_name="../../../../Source/ARMCM3_EFM32/Crossworks/vectors.c"/>
+            <file file_name="../../../../Source/ARMCM3_EFM32/Crossworks/cpu_comp.c"/>
           </folder>
           <file file_name="../../../../Source/ARMCM3_EFM32/cpu.c"/>
           <file file_name="../../../../Source/ARMCM3_EFM32/flash.c"/>

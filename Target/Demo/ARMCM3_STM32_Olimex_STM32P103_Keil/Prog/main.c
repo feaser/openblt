@@ -75,8 +75,6 @@ static void Init(void)
   LedInit();
   /* init the timer driver */
   TimerInit();
-  /* enable IRQ's, because they were initially disabled by the bootloader */
-  IrqInterruptEnable();
 } /*** end of Init ***/
 
 

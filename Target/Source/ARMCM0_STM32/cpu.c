@@ -63,6 +63,21 @@ extern void Reset_Handler(void);                      /* implemented in C-startu
 
 
 /************************************************************************************//**
+** \brief     Initializes the CPU module.
+** \return    none.
+**
+****************************************************************************************/
+void CpuInit(void)
+{
+  /* bootloader runs in polling mode so disable the global interrupts. this is done for
+   * safety reasons. if the bootloader was started from a running user program, it could 
+   * be that the user program did not properly disable the interrupt generation of 
+   * peripherals. */
+  CpuIrqDisable();
+} /*** end of CpuInit ***/
+
+
+/************************************************************************************//**
 ** \brief     Starts the user program, if one is present. In this case this function
 **            does not return.
 ** \return    none.
@@ -108,11 +123,10 @@ void CpuStartUserProgram(void)
    */
   pProgResetHandler = (void(*)(void))(*((blt_addr *)CPU_USER_PROGRAM_STARTADDR_PTR));
   /* The Cortex-M0 core has interrupts enabled out of reset. the bootloader
-   * explicitly disables these for security reasons in the C-startup.
-   * Enable them here again, so it does not have to be done by the user
-   * program.
+   * explicitly disables these for security reasons. Enable them here again, so it does 
+   * not have to be done by the user program.
    */
-  __enable_irq();
+  CpuIrqEnable();
   /* start the user program by activating its reset interrupt service routine */
   pProgResetHandler();
 } /*** end of CpuStartUserProgram ***/

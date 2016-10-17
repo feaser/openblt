@@ -68,6 +68,7 @@ lpc2294.h \
 ../../../Source/ARM7_LPC2000/GCC/flash.c \
 ../../../Source/ARM7_LPC2000/GCC/flash.h \
 ../../../Source/ARM7_LPC2000/GCC/vectors.c \
+../../../Source/ARM7_LPC2000/GCC/cpu_comp.c \
 ../../../Source/ARM7_LPC2000/GCC/cstart.s
 
 

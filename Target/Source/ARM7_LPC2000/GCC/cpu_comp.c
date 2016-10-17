@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_TM4C_DK_TM4C123G_IAR\Prog\irq.c
-* \brief        IRQ driver source file.
-* \ingroup      Prog_ARMCM4_TM4C_DK_TM4C123G_IAR
+* \file         Source\ARM7_LPC2000\GCC\cpu_comp.c
+* \brief        Bootloader cpu module source file.
+* \ingroup      Target_ARM7_LPC2000
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2014  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -20,70 +20,72 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "header.h"                                    /* generic header               */
-
-
-/****************************************************************************************
-* Local data definitions
-****************************************************************************************/
-/** \brief Interrupt nesting counter. Used for global interrupt en/disable. */
-static unsigned char interruptNesting = 0;
+#include "boot.h"                                /* bootloader generic header          */
 
 
 /************************************************************************************//**
-** \brief     Enables the generation IRQ interrupts. Typically called once during
-**            software startup after completion of the initialization.
-** \return    none.
+** \brief     Obtains current value of CPSR CPU register. Derived from a sample by R O 
+**            Software that is Copyright 2004, R O SoftWare, and can be used for hobby 
+**            or commercial purposes.
+** \return    CPSR value.
 **
 ****************************************************************************************/
-void IrqInterruptEnable(void)
+static blt_int32u IrqGetCPSR(void)
 {
-  IntMasterEnable();
-} /*** end of IrqInterruptEnable ***/
+  blt_int32u retval;
+  asm volatile (" mrs  %0, cpsr" : "=r" (retval) : /* no inputs */  );
+  return retval;
+} /*** end of IrqGetCPSR ***/
 
 
 /************************************************************************************//**
-** \brief     Disables the generation IRQ interrupts and stores information on
-**            whether or not the interrupts were already disabled before explicitly
-**            disabling them with this function. Normally used as a pair together
-**            with IrqInterruptRestore during a critical section.
+** \brief     Update value of CPSR CPU register. Derived from a sample by R O 
+**            Software that is Copyright 2004, R O SoftWare, and can be used for hobby 
+**            or commercial purposes.
+** \param     val CPSR value.
 ** \return    none.
 **
 ****************************************************************************************/
-void IrqInterruptDisable(void)
+static void IrqSetCPSR(blt_int32u val)
 {
-  if (interruptNesting == 0)
-  {
-    IntMasterDisable();
-  }
-  interruptNesting++;
-} /*** end of IrqInterruptDisable ***/
+  asm volatile (" msr  cpsr, %0" : /* no outputs */ : "r" (val)  );
+} /*** end of IrqSetCPSR ***/
 
 
 /************************************************************************************//**
-** \brief     Restore the generation IRQ interrupts to the setting it had prior to
-**            calling IrqInterruptDisable. Normally used as a pair together with
-**            IrqInterruptDisable during a critical section.
+** \brief     Disable global interrupts.
 ** \return    none.
 **
 ****************************************************************************************/
-void IrqInterruptRestore(void)
+void CpuIrqDisable(void)
 {
-  interruptNesting--;
-  if (interruptNesting == 0)
-  {
-    IntMasterEnable();
-  }
-} /*** end of IrqInterruptRestore ***/
+  blt_int32u _cpsr;
+
+  _cpsr = IrqGetCPSR();
+  IrqSetCPSR(_cpsr | 0x00000080);
+} /*** end of CpuIrqDisable ***/
 
 
-/*********************************** end of irq.c **************************************/
+/************************************************************************************//**
+** \brief     Enable global interrupts.
+** \return    none.
+**
+****************************************************************************************/
+void CpuIrqEnable(void)
+{
+  blt_int32u _cpsr;
+
+  _cpsr = IrqGetCPSR();
+  IrqSetCPSR(_cpsr & ~0x00000080);
+} /*** end of CpuIrqEnable ***/
+
+/*********************************** end of cpu_comp.c *********************************/

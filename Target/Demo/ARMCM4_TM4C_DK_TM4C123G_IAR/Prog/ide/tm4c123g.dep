@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>2863895661</fileChecksum>
+  <fileChecksum>2832983660</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
@@ -88,16 +88,16 @@
       <file>$PROJ_DIR$\..\time.c</file>
       <file>$PROJ_DIR$\..\time.h</file>
       <file>$PROJ_DIR$\..\vectors.c</file>
-      <file>$PROJ_DIR$\..\obj\uartstdio.o</file>
       <file>$PROJ_DIR$\..\obj\usb_serial_structs.o</file>
+      <file>$PROJ_DIR$\..\obj\uartstdio.o</file>
       <file>$PROJ_DIR$\..\obj\vectors.o</file>
-      <file>$PROJ_DIR$\..\obj\fpu.o</file>
-      <file>$PROJ_DIR$\..\obj\qs-logger.pbi</file>
-      <file>$PROJ_DIR$\..\obj\sysexc.pbi</file>
       <file>$PROJ_DIR$\..\obj\boot.pbi</file>
-      <file>$PROJ_DIR$\..\obj\ustdlib.pbi</file>
       <file>$PROJ_DIR$\..\obj\usbstick.o</file>
+      <file>$PROJ_DIR$\..\obj\ustdlib.pbi</file>
+      <file>$PROJ_DIR$\..\obj\sysexc.pbi</file>
       <file>$PROJ_DIR$\..\obj\flash.o</file>
+      <file>$PROJ_DIR$\..\obj\qs-logger.pbi</file>
+      <file>$PROJ_DIR$\..\obj\fpu.o</file>
       <file>$PROJ_DIR$\..\obj\irq.pbi</file>
       <file>$PROJ_DIR$\..\obj\usbserial.o</file>
       <file>$PROJ_DIR$\..\obj\cfal96x64x16.pbi</file>
@@ -168,8 +168,8 @@
       <file>$PROJ_DIR$\menus.c</file>
       <file>$PROJ_DIR$\acquire.c</file>
       <file>$PROJ_DIR$\..\memory.x</file>
-      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\port\fat_usbmsc.c</file>
       <file>$PROJ_DIR$\..\obj\eeprom.o</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\port\fat_usbmsc.c</file>
       <file>$PROJ_DIR$\..\obj\images.pbi</file>
       <file>$PROJ_DIR$\..\obj\qei.pbi</file>
       <file>$PROJ_DIR$\..\obj\fat_usbmsc.pbi</file>
@@ -323,7 +323,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 163</file>
+          <file> 162</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -346,7 +346,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 91</file>
+          <file> 89</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -369,7 +369,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 85</file>
+          <file> 91</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -402,10 +402,6 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 53 56 57 62 65 8 16 22</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
           <file> 145 142 138 149 140 141 147 139 146 53 56 57 62 65 8 16 22</file>
         </tool>
       </inputs>
@@ -448,6 +444,10 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
+          <file> 145 142 138 149 140 141 147 139 146 55 56 57 62 65 8 20 22</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
           <file> 145 142 138 149 140 141 147 139 146 55 56 57 62 65 8 20 22</file>
         </tool>
       </inputs>
@@ -631,7 +631,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 87</file>
+          <file> 88</file>
         </tool>
       </outputs>
       <inputs>
@@ -792,13 +792,13 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 88</file>
+          <file> 85</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -853,7 +853,7 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -876,7 +876,7 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -899,7 +899,7 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -922,7 +922,7 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -945,7 +945,7 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 161 200 144 168 196 173 137 163 91 85 206 135 205 204 148 150 143 181 207 136 216 178 175 183 179 210 191 118 123 116 84 119 192 112 113 109</file>
+          <file> 161 200 144 168 196 173 137 162 89 91 206 135 205 204 150 143 181 207 136 216 178 175 183 179 210 191 118 123 116 84 119 192 112 113 109</file>
         </tool>
       </inputs>
     </file>
@@ -967,7 +967,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 90</file>
+          <file> 86</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -980,7 +980,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 82</file>
+          <file> 83</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -993,7 +993,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 83</file>
+          <file> 82</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -1010,7 +1010,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 89</file>
+          <file> 87</file>
         </tool>
       </outputs>
     </file>
@@ -1062,7 +1062,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 86</file>
+          <file> 90</file>
         </tool>
       </outputs>
     </file>

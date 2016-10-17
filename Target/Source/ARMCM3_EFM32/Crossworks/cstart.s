@@ -68,8 +68,6 @@
 **
 ****************************************************************************************/
 reset_handler:
-  /* disable interrupts first */
-  cpsid i
   ldr r1, =__stack_end__
 #ifdef __ARM_EABI__
   mov r2, #0x7

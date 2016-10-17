@@ -61,8 +61,6 @@ void reset_handler(void)
 {
   blt_int32u *pSrc, *pDest;
 
-  /* disable interrupts first */
-  __asm("    cpsid     i");
   /* copy the data segment initializers from flash to SRAM */
   pSrc = &_etext;
   for (pDest = &_data; pDest < &_edata;)

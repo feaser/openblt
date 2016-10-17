@@ -34,7 +34,6 @@
 #include "../Boot/blt_conf.h"                          /* bootloader configuration     */
 #include "stm32f10x.h"                                 /* STM32 register definitions   */
 #include "stm32f10x_conf.h"                            /* STM32 peripheral drivers     */
-#include "irq.h"                                       /* IRQ driver                   */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
 
