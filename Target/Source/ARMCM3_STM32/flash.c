@@ -52,8 +52,17 @@
 #endif
 /** \brief Macro for accessing the flash control registers. */
 #define FLASH                           ((tFlashRegs *) (blt_int32u)0x40022000)
-/** \brief Offset into the user program's vector table where the checksum is located. */
+/** \brief Offset into the user program's vector table where the checksum is located. 
+ *         For this target it is set to the end of the vector table. Note that the 
+ *         value can be overriden in blt_conf.h, because the size of the vector table
+ *         could vary. When changing this value, don't forget to update the location
+ *         of the checksum in the user program accordingly. Otherwise the checksum
+ *         verification will always fail.
+ */
+#ifndef FLASH_VECTOR_TABLE_CS_OFFSET
 #define FLASH_VECTOR_TABLE_CS_OFFSET    (0x150)
+#endif
+
 #define FLASH_KEY1                      ((blt_int32u)0x45670123)
 #define FLASH_KEY2                      ((blt_int32u)0xCDEF89AB)
 #define FLASH_LOCK_BIT                  ((blt_int32u)0x00000080)
@@ -64,6 +73,14 @@
 #define FLASH_PER_BIT                   ((blt_int32u)0x00000002)
 #define FLASH_STRT_BIT                  ((blt_int32u)0x00000040)
 #define FLASH_PG_BIT                    ((blt_int32u)0x00000001)
+
+
+/****************************************************************************************
+* Plausibility checks
+****************************************************************************************/
+#if (FLASH_VECTOR_TABLE_CS_OFFSET > FLASH_WRITE_BLOCK_SIZE)
+#error "FLASH_VECTOR_TABLE_CS_OFFSET is set too high. It must be located in the first writable block."
+#endif
 
 
 /****************************************************************************************

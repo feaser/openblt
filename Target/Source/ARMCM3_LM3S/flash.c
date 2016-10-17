@@ -48,8 +48,24 @@
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 /** \brief Number of bytes to erase per erase operation. */
 #define FLASH_ERASE_BLOCK_SIZE          (0x400)
-/** \brief Offset into the user program's vector table where the checksum is located. */
+/** \brief Offset into the user program's vector table where the checksum is located. 
+ *         For this target it is set to the end of the vector table. Note that the 
+ *         value can be overriden in blt_conf.h, because the size of the vector table
+ *         could vary. When changing this value, don't forget to update the location
+ *         of the checksum in the user program accordingly. Otherwise the checksum
+ *         verification will always fail.
+ */
+#ifndef FLASH_VECTOR_TABLE_CS_OFFSET
 #define FLASH_VECTOR_TABLE_CS_OFFSET    (0xF0)
+#endif
+
+
+/****************************************************************************************
+* Plausibility checks
+****************************************************************************************/
+#if (FLASH_VECTOR_TABLE_CS_OFFSET > FLASH_WRITE_BLOCK_SIZE)
+#error "FLASH_VECTOR_TABLE_CS_OFFSET is set too high. It must be located in the first writable block."
+#endif
 
 
 /****************************************************************************************
