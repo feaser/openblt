@@ -99,6 +99,14 @@
 #define FLASH_CS_RANGE_TOTAL_WORDS    ((FLASH_WRITE_BLOCK_SIZE/4u) - \
                                        (FLASH_CS_RANGE_START_OFFSET/4u))
 
+                                       
+/****************************************************************************************
+* Plausibility checks
+****************************************************************************************/
+#ifndef BOOT_FLASH_CUSTOM_LAYOUT_ENABLE
+#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (0u)
+#endif
+
 
 /****************************************************************************************
 * Type definitions
@@ -144,6 +152,15 @@ static blt_bool   FlashTricoreEraseSector(blt_addr start_addr);
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
+/** \brief   If desired, it is possible to set BOOT_FLASH_CUSTOM_LAYOUT_ENABLE to > 0
+ *           in blt_conf.h and then implement your own version of the flashLayout[] table
+ *           in a source-file with the name flash_layout.c. This way you customize the
+ *           flash memory size reserved for the bootloader, without having to modify
+ *           the flashLayout[] table in this file directly. This file will then include
+ *           flash_layout.c so there is no need to compile it additionally with your
+ *           project.
+ */
+#if (BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0)
 /** \brief   Array wit the layout of the flash memory.
  *  \details The current implementation assumes that the bootloader is in the 2Mbyte
  *           PFLASH0 and supports flash operations only on the 2Mbyte PFLASH1. The reason
@@ -173,6 +190,9 @@ static const tFlashSector flashLayout[] =
 #error "BOOT_NVM_SIZE_KB > 2048 is currently not supported."
 #endif
 };
+#else
+#include "flash_layout.c"
+#endif /* BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0 */
 
 
 /****************************************************************************************

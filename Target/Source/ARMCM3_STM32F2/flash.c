@@ -63,6 +63,10 @@
 #error "FLASH_VECTOR_TABLE_CS_OFFSET is set too high. It must be located in the first writable block."
 #endif
 
+#ifndef BOOT_FLASH_CUSTOM_LAYOUT_ENABLE
+#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (0u)
+#endif
+
 
 /****************************************************************************************
 * Type definitions
@@ -104,6 +108,15 @@ static blt_int8u FlashGetSector(blt_addr address);
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
+/** \brief   If desired, it is possible to set BOOT_FLASH_CUSTOM_LAYOUT_ENABLE to > 0
+ *           in blt_conf.h and then implement your own version of the flashLayout[] table
+ *           in a source-file with the name flash_layout.c. This way you customize the
+ *           flash memory size reserved for the bootloader, without having to modify
+ *           the flashLayout[] table in this file directly. This file will then include
+ *           flash_layout.c so there is no need to compile it additionally with your
+ *           project.
+ */
+#if (BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0)
 /** \brief   Array wit the layout of the flash memory.
  *  \details Also controls what part of the flash memory is reserved for the bootloader.
  *           If the bootloader size changes, the reserved sectors for the bootloader
@@ -137,6 +150,9 @@ static const tFlashSector flashLayout[] =
 #error "BOOT_NVM_SIZE_KB > 1024 is currently not supported."
 #endif
 };
+#else
+#include "flash_layout.c"
+#endif /* BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0 */
 
 /** \brief   Lookup table to quickly convert sector number to mask.
  *  \details The STM32F2x Standard Peripheral Library driver needs a sector mask instead

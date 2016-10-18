@@ -60,6 +60,14 @@
 
 
 /****************************************************************************************
+* Plausibility checks
+****************************************************************************************/
+#ifndef BOOT_FLASH_CUSTOM_LAYOUT_ENABLE
+#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (0u)
+#endif
+
+
+/****************************************************************************************
 * Type definitions
 ****************************************************************************************/
 /** \brief Function pointer type that is needed to call IAP functions of the
@@ -106,6 +114,15 @@ static blt_int8u FlashGetSector(blt_addr address);
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
+/** \brief   If desired, it is possible to set BOOT_FLASH_CUSTOM_LAYOUT_ENABLE to > 0
+ *           in blt_conf.h and then implement your own version of the flashLayout[] table
+ *           in a source-file with the name flash_layout.c. This way you customize the
+ *           flash memory size reserved for the bootloader, without having to modify
+ *           the flashLayout[] table in this file directly. This file will then include
+ *           flash_layout.c so there is no need to compile it additionally with your
+ *           project.
+ */
+#if (BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0)
 /** \brief   Array wit the layout of the flash memory.
  *  \details Also controls what part of the flash memory is reserved for the bootloader.
  *           If the bootloader size changes, the reserved sectors for the bootloader
@@ -165,6 +182,9 @@ static const tFlashSector flashLayout[] =
   /* { 0x0003E000, 0x02000, 17},           flash sector 17 - used by NXP bootcode      */
 #endif
 };
+#else
+#include "flash_layout.c"
+#endif /* BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0 */
 
 
 /****************************************************************************************

@@ -99,6 +99,14 @@
 
 
 /****************************************************************************************
+* Plausibility checks
+****************************************************************************************/
+#ifndef BOOT_FLASH_CUSTOM_LAYOUT_ENABLE
+#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (0u)
+#endif
+
+
+/****************************************************************************************
 * Type definitions
 ****************************************************************************************/
 /** \brief Structure type for the flash sectors in the flash layout table. */
@@ -155,6 +163,15 @@ static blt_bool   FlashOperate(blt_int8u cmd, blt_addr addr, blt_int16u data);
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
+/** \brief   If desired, it is possible to set BOOT_FLASH_CUSTOM_LAYOUT_ENABLE to > 0
+ *           in blt_conf.h and then implement your own version of the flashLayout[] table
+ *           in a source-file with the name flash_layout.c. This way you customize the
+ *           flash memory size reserved for the bootloader, without having to modify
+ *           the flashLayout[] table in this file directly. This file will then include
+ *           flash_layout.c so there is no need to compile it additionally with your
+ *           project.
+ */
+#if (BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0)
 /** \brief   Array wit the layout of the flash memory.
  *  \details Also controls what part of the flash memory is reserved for the bootloader.
  *           If the bootloader size changes, the reserved sectors for the bootloader
@@ -167,7 +184,7 @@ static blt_bool   FlashOperate(blt_int8u cmd, blt_addr addr, blt_int16u data);
  */
 static const tFlashSector flashLayout[] =
 {
-#if (BOOT_NVM_SIZE_KB > 512)
+#if (BOOT_NVM_SIZE_KB > 512)                                     
 #error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
 #endif
 #if (BOOT_NVM_SIZE_KB >= 512)
@@ -220,6 +237,10 @@ static const tFlashSector flashLayout[] =
   /* { 0xFF000, 0x0800 },                  flash page 0x3F - reserved for bootloader   */
   /* { 0xFF800, 0x0800 },                  flash page 0x3F - reserved for bootloader   */
 };
+#else
+#include "flash_layout.c"
+#endif /* BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0 */
+
 
 /** \brief  Array with executable code for performing flash operations.
  *  \details This array contains the machine code to perform the actual command on the
