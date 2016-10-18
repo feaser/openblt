@@ -32,6 +32,7 @@
 #include "boot.h"                                /* bootloader generic header          */
 
 
+#if (BOOT_COM_ENABLE > 0)
 /****************************************************************************************
 * Defines
 ****************************************************************************************/
@@ -1338,6 +1339,6 @@ static void XcpCmdProgramPrepare(blt_int8u *data)
 } /*** end of XcpCmdProgramPrepare ***/
 #endif /* XCP_RES_PROGRAMMING_EN == 1 */
 
-
+#endif /* BOOT_COM_ENABLE > 0 */
 
 /******************************** end of xcp.c *****************************************/
