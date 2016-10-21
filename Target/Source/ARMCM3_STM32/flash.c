@@ -78,7 +78,7 @@
 /****************************************************************************************
 * Plausibility checks
 ****************************************************************************************/
-#if (FLASH_VECTOR_TABLE_CS_OFFSET > FLASH_WRITE_BLOCK_SIZE)
+#if (FLASH_VECTOR_TABLE_CS_OFFSET >= FLASH_WRITE_BLOCK_SIZE)
 #error "FLASH_VECTOR_TABLE_CS_OFFSET is set too high. It must be located in the first writable block."
 #endif
 
