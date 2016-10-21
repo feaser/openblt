@@ -20,7 +20,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
@@ -36,7 +36,7 @@
  * needed. Set these through configurables BOOT_CPU_XTAL_SPEED_KHZ and
  * BOOT_CPU_SYSTEM_SPEED_KHZ, respectively. To enable data exchange with the host that is
  * not dependent on the targets architecture, the byte ordering needs to be known.
- * Setting BOOT_CPU_BYTE_ORDER_MOTOROLA to 1 selects big endian mode and 0 selects 
+ * Setting BOOT_CPU_BYTE_ORDER_MOTOROLA to 1 selects big endian mode and 0 selects
  * little endian mode.
  *
  * Set BOOT_CPU_USER_PROGRAM_START_HOOK to 1 if you would like a hook function to be
@@ -105,7 +105,7 @@
 /** \brief Enable/disable the NVM hook function for supporting additional memory devices. */
 #define BOOT_NVM_HOOKS_ENABLE           (0)
 /** \brief Configure the size of the default memory device (typically flash EEPROM). */
-#define BOOT_NVM_SIZE_KB                (64)
+#define BOOT_NVM_SIZE_KB                (2048)
 /** \brief Enable/disable hooks functions to override the user program checksum handling. */
 #define BOOT_NVM_CHECKSUM_HOOKS_ENABLE  (0)
 

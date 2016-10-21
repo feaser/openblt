@@ -3766,232 +3766,232 @@ LOAD c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-
                 0x00000000                __HEAP_SIZE = 0x0
                 0x00000100                __STACK_SIZE = 0x100
 
-.text           0x08004000      0xd44
+.text           0x08004000      0xd48
  *(.isr_vector)
- .isr_vector    0x08004000      0x200 ..\obj\startup_xmc4700.o
+ .isr_vector    0x08004000      0x204 ..\obj\startup_xmc4700.o
                 0x08004000                __isr_vector
  *(.text*)
- .text          0x08004200       0x5c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
- .text          0x0800425c       0x74 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
-                0x0800425c                _start
-                0x0800425c                _mainCRTStartup
+ .text          0x08004204       0x5c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ .text          0x08004260       0x74 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+                0x08004260                _start
+                0x08004260                _mainCRTStartup
  .text.BootComUartInit
-                0x080042d0       0xa4 ..\obj\boot.o
+                0x080042d4       0xa4 ..\obj\boot.o
  .text.UartReceiveByte
-                0x08004374       0x24 ..\obj\boot.o
+                0x08004378       0x24 ..\obj\boot.o
  .text.BootComInit
-                0x08004398        0x8 ..\obj\boot.o
-                0x08004398                BootComInit
+                0x0800439c        0x8 ..\obj\boot.o
+                0x0800439c                BootComInit
  .text.BootActivate
-                0x080043a0       0x24 ..\obj\boot.o
-                0x080043a0                BootActivate
+                0x080043a4       0x24 ..\obj\boot.o
+                0x080043a4                BootActivate
  .text.BootComUartCheckActivationRequest
-                0x080043c4       0x6c ..\obj\boot.o
+                0x080043c8       0x6c ..\obj\boot.o
  .text.BootComCheckActivationRequest
-                0x08004430        0x8 ..\obj\boot.o
-                0x08004430                BootComCheckActivationRequest
- .text.LedInit  0x08004438       0x1c ..\obj\led.o
-                0x08004438                LedInit
+                0x08004434        0x8 ..\obj\boot.o
+                0x08004434                BootComCheckActivationRequest
+ .text.LedInit  0x0800443c       0x1c ..\obj\led.o
+                0x0800443c                LedInit
  .text.LedToggle
-                0x08004454       0x48 ..\obj\led.o
-                0x08004454                LedToggle
- .text.delay    0x0800449c       0x1c ..\obj\lib\system_xmc4700.o
+                0x08004458       0x48 ..\obj\led.o
+                0x08004458                LedToggle
+ .text.delay    0x080044a0       0x1c ..\obj\lib\system_xmc4700.o
  .text.SystemCoreSetup
-                0x080044b8       0x44 ..\obj\lib\system_xmc4700.o
-                0x080044b8                SystemCoreSetup
+                0x080044bc       0x44 ..\obj\lib\system_xmc4700.o
+                0x080044bc                SystemCoreSetup
  .text.OSCHP_GetFrequency
-                0x080044fc        0x8 ..\obj\lib\system_xmc4700.o
-                0x080044fc                OSCHP_GetFrequency
+                0x08004500        0x8 ..\obj\lib\system_xmc4700.o
+                0x08004500                OSCHP_GetFrequency
  .text.SystemCoreClockUpdate
-                0x08004504       0x8c ..\obj\lib\system_xmc4700.o
-                0x08004504                SystemCoreClockUpdate
+                0x08004508       0x8c ..\obj\lib\system_xmc4700.o
+                0x08004508                SystemCoreClockUpdate
  .text.SystemCoreClockSetup
-                0x08004590      0x1bc ..\obj\lib\system_xmc4700.o
-                0x08004590                SystemCoreClockSetup
+                0x08004594      0x1bc ..\obj\lib\system_xmc4700.o
+                0x08004594                SystemCoreClockSetup
  .text.SystemInit
-                0x0800474c       0x1c ..\obj\lib\system_xmc4700.o
-                0x0800474c                SystemInit
+                0x08004750       0x1c ..\obj\lib\system_xmc4700.o
+                0x08004750                SystemInit
  .text.XMC_GPIO_Init
-                0x08004768       0x94 ..\obj\lib\xmclib\src\xmc4_gpio.o
-                0x08004768                XMC_GPIO_Init
+                0x0800476c       0x94 ..\obj\lib\xmclib\src\xmc4_gpio.o
+                0x0800476c                XMC_GPIO_Init
  .text.XMC_SCU_RESET_DeassertPeripheralReset
-                0x080047fc       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
-                0x080047fc                XMC_SCU_RESET_DeassertPeripheralReset
+                0x08004800       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x08004800                XMC_SCU_RESET_DeassertPeripheralReset
  .text.XMC_SCU_CLOCK_GetPeripheralClockFrequency
-                0x08004814       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
-                0x08004814                XMC_SCU_CLOCK_GetPeripheralClockFrequency
+                0x08004818       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x08004818                XMC_SCU_CLOCK_GetPeripheralClockFrequency
  .text.XMC_SCU_CLOCK_UngatePeripheralClock
-                0x0800482c       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
-                0x0800482c                XMC_SCU_CLOCK_UngatePeripheralClock
+                0x08004830       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x08004830                XMC_SCU_CLOCK_UngatePeripheralClock
  .text.XMC_GPIO_SetMode
-                0x08004844       0x30 ..\obj\lib\xmclib\src\xmc_gpio.o
-                0x08004844                XMC_GPIO_SetMode
+                0x08004848       0x30 ..\obj\lib\xmclib\src\xmc_gpio.o
+                0x08004848                XMC_GPIO_SetMode
  .text.XMC_UART_CH_Init
-                0x08004874       0x68 ..\obj\lib\xmclib\src\xmc_uart.o
-                0x08004874                XMC_UART_CH_Init
+                0x08004878       0x68 ..\obj\lib\xmclib\src\xmc_uart.o
+                0x08004878                XMC_UART_CH_Init
  .text.XMC_UART_CH_GetReceivedData
-                0x080048dc       0x18 ..\obj\lib\xmclib\src\xmc_uart.o
-                0x080048dc                XMC_UART_CH_GetReceivedData
+                0x080048e0       0x18 ..\obj\lib\xmclib\src\xmc_uart.o
+                0x080048e0                XMC_UART_CH_GetReceivedData
  .text.XMC_USIC_CH_SetBaudrate
-                0x080048f4       0x8c ..\obj\lib\xmclib\src\xmc_usic.o
-                0x080048f4                XMC_USIC_CH_SetBaudrate
+                0x080048f8       0x8c ..\obj\lib\xmclib\src\xmc_usic.o
+                0x080048f8                XMC_USIC_CH_SetBaudrate
  .text.XMC_USIC_CH_TXFIFO_Configure
-                0x08004980       0x30 ..\obj\lib\xmclib\src\xmc_usic.o
-                0x08004980                XMC_USIC_CH_TXFIFO_Configure
+                0x08004984       0x30 ..\obj\lib\xmclib\src\xmc_usic.o
+                0x08004984                XMC_USIC_CH_TXFIFO_Configure
  .text.XMC_USIC_CH_RXFIFO_Configure
-                0x080049b0       0x34 ..\obj\lib\xmclib\src\xmc_usic.o
-                0x080049b0                XMC_USIC_CH_RXFIFO_Configure
+                0x080049b4       0x34 ..\obj\lib\xmclib\src\xmc_usic.o
+                0x080049b4                XMC_USIC_CH_RXFIFO_Configure
  .text.XMC_USIC_Enable
-                0x080049e4       0x5c ..\obj\lib\xmclib\src\xmc_usic.o
-                0x080049e4                XMC_USIC_Enable
+                0x080049e8       0x5c ..\obj\lib\xmclib\src\xmc_usic.o
+                0x080049e8                XMC_USIC_Enable
  .text.XMC_USIC_CH_Enable
-                0x08004a40       0x74 ..\obj\lib\xmclib\src\xmc_usic.o
-                0x08004a40                XMC_USIC_CH_Enable
- .text.Init     0x08004ab4       0x10 ..\obj\main.o
- .text.main     0x08004ac4       0x14 ..\obj\main.o
-                0x08004ac4                main
- .text          0x08004ad8      0x134 ..\obj\startup_xmc4700.o
-                0x08004ad8                Reset_Handler
-                0x08004b26                NMI_Handler
-                0x08004b28                HardFault_Handler
-                0x08004b2a                MemManage_Handler
-                0x08004b2c                BusFault_Handler
-                0x08004b2e                UsageFault_Handler
-                0x08004b30                SVC_Handler
-                0x08004b32                DebugMon_Handler
-                0x08004b34                PendSV_Handler
-                0x08004b38                Default_Handler
-                0x08004b3a                SCU_0_IRQHandler
-                0x08004b3c                ERU0_0_IRQHandler
-                0x08004b3e                ERU0_1_IRQHandler
-                0x08004b40                ERU0_2_IRQHandler
-                0x08004b42                ERU0_3_IRQHandler
-                0x08004b44                ERU1_0_IRQHandler
-                0x08004b46                ERU1_1_IRQHandler
-                0x08004b48                ERU1_2_IRQHandler
-                0x08004b4a                ERU1_3_IRQHandler
-                0x08004b4c                PMU0_0_IRQHandler
-                0x08004b4e                VADC0_C0_0_IRQHandler
-                0x08004b50                VADC0_C0_1_IRQHandler
-                0x08004b52                VADC0_C0_2_IRQHandler
-                0x08004b54                VADC0_C0_3_IRQHandler
-                0x08004b56                VADC0_G0_0_IRQHandler
-                0x08004b58                VADC0_G0_1_IRQHandler
-                0x08004b5a                VADC0_G0_2_IRQHandler
-                0x08004b5c                VADC0_G0_3_IRQHandler
-                0x08004b5e                VADC0_G1_0_IRQHandler
-                0x08004b60                VADC0_G1_1_IRQHandler
-                0x08004b62                VADC0_G1_2_IRQHandler
-                0x08004b64                VADC0_G1_3_IRQHandler
-                0x08004b66                VADC0_G2_0_IRQHandler
-                0x08004b68                VADC0_G2_1_IRQHandler
-                0x08004b6a                VADC0_G2_2_IRQHandler
-                0x08004b6c                VADC0_G2_3_IRQHandler
-                0x08004b6e                VADC0_G3_0_IRQHandler
-                0x08004b70                VADC0_G3_1_IRQHandler
-                0x08004b72                VADC0_G3_2_IRQHandler
-                0x08004b74                VADC0_G3_3_IRQHandler
-                0x08004b76                DSD0_0_IRQHandler
-                0x08004b78                DSD0_1_IRQHandler
-                0x08004b7a                DSD0_2_IRQHandler
-                0x08004b7c                DSD0_3_IRQHandler
-                0x08004b7e                DSD0_4_IRQHandler
-                0x08004b80                DSD0_5_IRQHandler
-                0x08004b82                DSD0_6_IRQHandler
-                0x08004b84                DSD0_7_IRQHandler
-                0x08004b86                DAC0_0_IRQHandler
-                0x08004b88                DAC0_1_IRQHandler
-                0x08004b8a                CCU40_0_IRQHandler
-                0x08004b8c                CCU40_1_IRQHandler
-                0x08004b8e                CCU40_2_IRQHandler
-                0x08004b90                CCU40_3_IRQHandler
-                0x08004b92                CCU41_0_IRQHandler
-                0x08004b94                CCU41_1_IRQHandler
-                0x08004b96                CCU41_2_IRQHandler
-                0x08004b98                CCU41_3_IRQHandler
-                0x08004b9a                CCU42_0_IRQHandler
-                0x08004b9c                CCU42_1_IRQHandler
-                0x08004b9e                CCU42_2_IRQHandler
-                0x08004ba0                CCU42_3_IRQHandler
-                0x08004ba2                CCU43_0_IRQHandler
-                0x08004ba4                CCU43_1_IRQHandler
-                0x08004ba6                CCU43_2_IRQHandler
-                0x08004ba8                CCU43_3_IRQHandler
-                0x08004baa                CCU80_0_IRQHandler
-                0x08004bac                CCU80_1_IRQHandler
-                0x08004bae                CCU80_2_IRQHandler
-                0x08004bb0                CCU80_3_IRQHandler
-                0x08004bb2                CCU81_0_IRQHandler
-                0x08004bb4                CCU81_1_IRQHandler
-                0x08004bb6                CCU81_2_IRQHandler
-                0x08004bb8                CCU81_3_IRQHandler
-                0x08004bba                POSIF0_0_IRQHandler
-                0x08004bbc                POSIF0_1_IRQHandler
-                0x08004bbe                POSIF1_0_IRQHandler
-                0x08004bc0                POSIF1_1_IRQHandler
-                0x08004bc2                CAN0_0_IRQHandler
-                0x08004bc4                CAN0_1_IRQHandler
-                0x08004bc6                CAN0_2_IRQHandler
-                0x08004bc8                CAN0_3_IRQHandler
-                0x08004bca                CAN0_4_IRQHandler
-                0x08004bcc                CAN0_5_IRQHandler
-                0x08004bce                CAN0_6_IRQHandler
-                0x08004bd0                CAN0_7_IRQHandler
-                0x08004bd2                USIC0_0_IRQHandler
-                0x08004bd4                USIC0_1_IRQHandler
-                0x08004bd6                USIC0_2_IRQHandler
-                0x08004bd8                USIC0_3_IRQHandler
-                0x08004bda                USIC0_4_IRQHandler
-                0x08004bdc                USIC0_5_IRQHandler
-                0x08004bde                USIC1_0_IRQHandler
-                0x08004be0                USIC1_1_IRQHandler
-                0x08004be2                USIC1_2_IRQHandler
-                0x08004be4                USIC1_3_IRQHandler
-                0x08004be6                USIC1_4_IRQHandler
-                0x08004be8                USIC1_5_IRQHandler
-                0x08004bea                USIC2_0_IRQHandler
-                0x08004bec                USIC2_1_IRQHandler
-                0x08004bee                USIC2_2_IRQHandler
-                0x08004bf0                USIC2_3_IRQHandler
-                0x08004bf2                USIC2_4_IRQHandler
-                0x08004bf4                USIC2_5_IRQHandler
-                0x08004bf6                LEDTS0_0_IRQHandler
-                0x08004bf8                FCE0_0_IRQHandler
-                0x08004bfa                GPDMA0_0_IRQHandler
-                0x08004bfc                SDMMC0_0_IRQHandler
-                0x08004bfe                USB0_0_IRQHandler
-                0x08004c00                ETH0_0_IRQHandler
-                0x08004c02                GPDMA1_0_IRQHandler
+                0x08004a44       0x74 ..\obj\lib\xmclib\src\xmc_usic.o
+                0x08004a44                XMC_USIC_CH_Enable
+ .text.Init     0x08004ab8       0x10 ..\obj\main.o
+ .text.main     0x08004ac8       0x14 ..\obj\main.o
+                0x08004ac8                main
+ .text          0x08004adc      0x134 ..\obj\startup_xmc4700.o
+                0x08004adc                Reset_Handler
+                0x08004b2a                NMI_Handler
+                0x08004b2c                HardFault_Handler
+                0x08004b2e                MemManage_Handler
+                0x08004b30                BusFault_Handler
+                0x08004b32                UsageFault_Handler
+                0x08004b34                SVC_Handler
+                0x08004b36                DebugMon_Handler
+                0x08004b38                PendSV_Handler
+                0x08004b3c                Default_Handler
+                0x08004b3e                SCU_0_IRQHandler
+                0x08004b40                ERU0_0_IRQHandler
+                0x08004b42                ERU0_1_IRQHandler
+                0x08004b44                ERU0_2_IRQHandler
+                0x08004b46                ERU0_3_IRQHandler
+                0x08004b48                ERU1_0_IRQHandler
+                0x08004b4a                ERU1_1_IRQHandler
+                0x08004b4c                ERU1_2_IRQHandler
+                0x08004b4e                ERU1_3_IRQHandler
+                0x08004b50                PMU0_0_IRQHandler
+                0x08004b52                VADC0_C0_0_IRQHandler
+                0x08004b54                VADC0_C0_1_IRQHandler
+                0x08004b56                VADC0_C0_2_IRQHandler
+                0x08004b58                VADC0_C0_3_IRQHandler
+                0x08004b5a                VADC0_G0_0_IRQHandler
+                0x08004b5c                VADC0_G0_1_IRQHandler
+                0x08004b5e                VADC0_G0_2_IRQHandler
+                0x08004b60                VADC0_G0_3_IRQHandler
+                0x08004b62                VADC0_G1_0_IRQHandler
+                0x08004b64                VADC0_G1_1_IRQHandler
+                0x08004b66                VADC0_G1_2_IRQHandler
+                0x08004b68                VADC0_G1_3_IRQHandler
+                0x08004b6a                VADC0_G2_0_IRQHandler
+                0x08004b6c                VADC0_G2_1_IRQHandler
+                0x08004b6e                VADC0_G2_2_IRQHandler
+                0x08004b70                VADC0_G2_3_IRQHandler
+                0x08004b72                VADC0_G3_0_IRQHandler
+                0x08004b74                VADC0_G3_1_IRQHandler
+                0x08004b76                VADC0_G3_2_IRQHandler
+                0x08004b78                VADC0_G3_3_IRQHandler
+                0x08004b7a                DSD0_0_IRQHandler
+                0x08004b7c                DSD0_1_IRQHandler
+                0x08004b7e                DSD0_2_IRQHandler
+                0x08004b80                DSD0_3_IRQHandler
+                0x08004b82                DSD0_4_IRQHandler
+                0x08004b84                DSD0_5_IRQHandler
+                0x08004b86                DSD0_6_IRQHandler
+                0x08004b88                DSD0_7_IRQHandler
+                0x08004b8a                DAC0_0_IRQHandler
+                0x08004b8c                DAC0_1_IRQHandler
+                0x08004b8e                CCU40_0_IRQHandler
+                0x08004b90                CCU40_1_IRQHandler
+                0x08004b92                CCU40_2_IRQHandler
+                0x08004b94                CCU40_3_IRQHandler
+                0x08004b96                CCU41_0_IRQHandler
+                0x08004b98                CCU41_1_IRQHandler
+                0x08004b9a                CCU41_2_IRQHandler
+                0x08004b9c                CCU41_3_IRQHandler
+                0x08004b9e                CCU42_0_IRQHandler
+                0x08004ba0                CCU42_1_IRQHandler
+                0x08004ba2                CCU42_2_IRQHandler
+                0x08004ba4                CCU42_3_IRQHandler
+                0x08004ba6                CCU43_0_IRQHandler
+                0x08004ba8                CCU43_1_IRQHandler
+                0x08004baa                CCU43_2_IRQHandler
+                0x08004bac                CCU43_3_IRQHandler
+                0x08004bae                CCU80_0_IRQHandler
+                0x08004bb0                CCU80_1_IRQHandler
+                0x08004bb2                CCU80_2_IRQHandler
+                0x08004bb4                CCU80_3_IRQHandler
+                0x08004bb6                CCU81_0_IRQHandler
+                0x08004bb8                CCU81_1_IRQHandler
+                0x08004bba                CCU81_2_IRQHandler
+                0x08004bbc                CCU81_3_IRQHandler
+                0x08004bbe                POSIF0_0_IRQHandler
+                0x08004bc0                POSIF0_1_IRQHandler
+                0x08004bc2                POSIF1_0_IRQHandler
+                0x08004bc4                POSIF1_1_IRQHandler
+                0x08004bc6                CAN0_0_IRQHandler
+                0x08004bc8                CAN0_1_IRQHandler
+                0x08004bca                CAN0_2_IRQHandler
+                0x08004bcc                CAN0_3_IRQHandler
+                0x08004bce                CAN0_4_IRQHandler
+                0x08004bd0                CAN0_5_IRQHandler
+                0x08004bd2                CAN0_6_IRQHandler
+                0x08004bd4                CAN0_7_IRQHandler
+                0x08004bd6                USIC0_0_IRQHandler
+                0x08004bd8                USIC0_1_IRQHandler
+                0x08004bda                USIC0_2_IRQHandler
+                0x08004bdc                USIC0_3_IRQHandler
+                0x08004bde                USIC0_4_IRQHandler
+                0x08004be0                USIC0_5_IRQHandler
+                0x08004be2                USIC1_0_IRQHandler
+                0x08004be4                USIC1_1_IRQHandler
+                0x08004be6                USIC1_2_IRQHandler
+                0x08004be8                USIC1_3_IRQHandler
+                0x08004bea                USIC1_4_IRQHandler
+                0x08004bec                USIC1_5_IRQHandler
+                0x08004bee                USIC2_0_IRQHandler
+                0x08004bf0                USIC2_1_IRQHandler
+                0x08004bf2                USIC2_2_IRQHandler
+                0x08004bf4                USIC2_3_IRQHandler
+                0x08004bf6                USIC2_4_IRQHandler
+                0x08004bf8                USIC2_5_IRQHandler
+                0x08004bfa                LEDTS0_0_IRQHandler
+                0x08004bfc                FCE0_0_IRQHandler
+                0x08004bfe                GPDMA0_0_IRQHandler
+                0x08004c00                SDMMC0_0_IRQHandler
+                0x08004c02                USB0_0_IRQHandler
+                0x08004c04                ETH0_0_IRQHandler
+                0x08004c06                GPDMA1_0_IRQHandler
  .text.TimerSet
-                0x08004c0c        0xc ..\obj\timer.o
-                0x08004c0c                TimerSet
+                0x08004c10        0xc ..\obj\timer.o
+                0x08004c10                TimerSet
  .text.TimerInit
-                0x08004c18       0x44 ..\obj\timer.o
-                0x08004c18                TimerInit
+                0x08004c1c       0x44 ..\obj\timer.o
+                0x08004c1c                TimerInit
  .text.TimerGet
-                0x08004c5c        0xc ..\obj\timer.o
-                0x08004c5c                TimerGet
+                0x08004c60        0xc ..\obj\timer.o
+                0x08004c60                TimerGet
  .text.SysTick_Handler
-                0x08004c68       0x10 ..\obj\timer.o
-                0x08004c68                SysTick_Handler
- .text.exit     0x08004c78       0x28 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-exit.o)
-                0x08004c78                exit
+                0x08004c6c       0x10 ..\obj\timer.o
+                0x08004c6c                SysTick_Handler
+ .text.exit     0x08004c7c       0x28 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-exit.o)
+                0x08004c7c                exit
  .text.__libc_init_array
-                0x08004ca0       0x4c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-init.o)
-                0x08004ca0                __libc_init_array
- .text.memset   0x08004cec       0x10 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-memset.o)
-                0x08004cec                memset
- .text._exit    0x08004cfc        0x2 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libnosys_s.a(_exit.o)
-                0x08004cfc                _exit
+                0x08004ca4       0x4c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-init.o)
+                0x08004ca4                __libc_init_array
+ .text.memset   0x08004cf0       0x10 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-memset.o)
+                0x08004cf0                memset
+ .text._exit    0x08004d00        0x2 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libnosys_s.a(_exit.o)
+                0x08004d00                _exit
  *(.init)
- *fill*         0x08004cfe        0x2 
- .init          0x08004d00        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
-                0x08004d00                _init
- .init          0x08004d04        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ *fill*         0x08004d02        0x2 
+ .init          0x08004d04        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+                0x08004d04                _init
+ .init          0x08004d08        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
  *(.fini)
- .fini          0x08004d0c        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
-                0x08004d0c                _fini
- .fini          0x08004d10        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ .fini          0x08004d10        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+                0x08004d10                _fini
+ .fini          0x08004d14        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
  *crtbegin.o(.ctors)
  *crtbegin?.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .ctors)
@@ -4004,48 +4004,48 @@ LOAD c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-
  *(.dtors)
  *(.rodata*)
  .rodata.clear_peripheral_gate.7688
-                0x08004d18       0x10 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x08004d1c       0x10 ..\obj\lib\xmclib\src\xmc4_scu.o
  .rodata.clear_peripheral_reset.7567
-                0x08004d28       0x10 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x08004d2c       0x10 ..\obj\lib\xmclib\src\xmc4_scu.o
  .rodata.str1.1
-                0x08004d38        0x2 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
- *fill*         0x08004d3a        0x2 
+                0x08004d3c        0x2 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
+ *fill*         0x08004d3e        0x2 
  .rodata._global_impure_ptr
-                0x08004d3c        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
-                0x08004d3c                _global_impure_ptr
+                0x08004d40        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
+                0x08004d40                _global_impure_ptr
  *(.eh_frame*)
- .eh_frame      0x08004d40        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
- .eh_frame      0x08004d40        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .eh_frame      0x08004d44        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ .eh_frame      0x08004d44        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
 
-.glue_7         0x08004d44        0x0
- .glue_7        0x08004d44        0x0 linker stubs
+.glue_7         0x08004d48        0x0
+ .glue_7        0x08004d48        0x0 linker stubs
 
-.glue_7t        0x08004d44        0x0
- .glue_7t       0x08004d44        0x0 linker stubs
+.glue_7t        0x08004d48        0x0
+ .glue_7t       0x08004d48        0x0 linker stubs
 
-.vfp11_veneer   0x08004d44        0x0
- .vfp11_veneer  0x08004d44        0x0 linker stubs
+.vfp11_veneer   0x08004d48        0x0
+ .vfp11_veneer  0x08004d48        0x0 linker stubs
 
-.v4_bx          0x08004d44        0x0
- .v4_bx         0x08004d44        0x0 linker stubs
+.v4_bx          0x08004d48        0x0
+ .v4_bx         0x08004d48        0x0 linker stubs
 
-.iplt           0x08004d44        0x0
- .iplt          0x08004d44        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+.iplt           0x08004d48        0x0
+ .iplt          0x08004d48        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x08004d44                __exidx_start = .
+                0x08004d48                __exidx_start = .
 
-.ARM.exidx      0x08004d44        0x8
+.ARM.exidx      0x08004d48        0x8
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
- .ARM.exidx     0x08004d44        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
-                0x08004d4c                __exidx_end = .
-                0x08004d4c                __etext = .
+ .ARM.exidx     0x08004d48        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+                0x08004d50                __exidx_end = .
+                0x08004d50                __etext = .
 
-.rel.dyn        0x08004d4c        0x0
- .rel.iplt      0x08004d4c        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+.rel.dyn        0x08004d50        0x0
+ .rel.iplt      0x08004d50        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
 
-.data           0x20000000       0x68 load address 0x08004d4c
+.data           0x20000000       0x68 load address 0x08004d50
                 0x20000000                __data_start__ = .
  *(vtable)
  *(.data*)
@@ -4070,18 +4070,18 @@ LOAD c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-
                 0x20000068                . = ALIGN (0x4)
                 0x20000068                __data_end__ = .
 
-.jcr            0x20000068        0x0 load address 0x08004db4
+.jcr            0x20000068        0x0 load address 0x08004db8
  .jcr           0x20000068        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
 
-.igot.plt       0x20000068        0x0 load address 0x08004db4
+.igot.plt       0x20000068        0x0 load address 0x08004db8
  .igot.plt      0x20000068        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
 
-.no_init        0x20000068       0x14 load address 0x08004db4
+.no_init        0x20000068       0x14 load address 0x08004db8
  .no_init       0x20000068       0x14 ..\obj\lib\system_xmc4700.o
                 0x20000068                SystemCoreClock
                 0x2000006c                g_chipid
 
-.bss            0x2000007c       0x70 load address 0x08004dc8
+.bss            0x2000007c       0x70 load address 0x08004dcc
                 0x2000007c                __bss_start__ = .
  *(.bss*)
  .bss           0x2000007c       0x1c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
@@ -4362,27 +4362,27 @@ OUTPUT(..\bin\demoprog_xmc4700.elf elf32-littlearm)
  .debug_line    0x00002ad1       0xe3 ..\obj\startup_xmc4700.o
  .debug_line    0x00002bb4      0x310 ..\obj\timer.o
 
-.debug_str      0x00000000    0x80b89
- .debug_str     0x00000000    0x7c274 ..\obj\boot.o
-                              0x7c4ee (size before relaxing)
- .debug_str     0x0007c274       0x9c ..\obj\led.o
-                              0x7b0eb (size before relaxing)
- .debug_str     0x0007c310      0xe04 ..\obj\lib\system_xmc4700.o
+.debug_str      0x00000000    0x80b8b
+ .debug_str     0x00000000    0x7c276 ..\obj\boot.o
+                              0x7c4f0 (size before relaxing)
+ .debug_str     0x0007c276       0x9c ..\obj\led.o
+                              0x7b0ed (size before relaxing)
+ .debug_str     0x0007c312      0xe04 ..\obj\lib\system_xmc4700.o
                               0x75a23 (size before relaxing)
- .debug_str     0x0007d114       0x8f ..\obj\lib\xmclib\src\xmc4_gpio.o
+ .debug_str     0x0007d116       0x8f ..\obj\lib\xmclib\src\xmc4_gpio.o
                               0x7b076 (size before relaxing)
- .debug_str     0x0007d1a3     0x24f8 ..\obj\lib\xmclib\src\xmc4_scu.o
+ .debug_str     0x0007d1a5     0x24f8 ..\obj\lib\xmclib\src\xmc4_scu.o
                               0x778ea (size before relaxing)
- .debug_str     0x0007f69b       0x7b ..\obj\lib\xmclib\src\xmc_gpio.o
+ .debug_str     0x0007f69d       0x7b ..\obj\lib\xmclib\src\xmc_gpio.o
                               0x7aef1 (size before relaxing)
- .debug_str     0x0007f716      0x608 ..\obj\lib\xmclib\src\xmc_uart.o
+ .debug_str     0x0007f718      0x608 ..\obj\lib\xmclib\src\xmc_uart.o
                               0x76c8d (size before relaxing)
- .debug_str     0x0007fd1e      0x797 ..\obj\lib\xmclib\src\xmc_usic.o
+ .debug_str     0x0007fd20      0x797 ..\obj\lib\xmclib\src\xmc_usic.o
                               0x774ce (size before relaxing)
- .debug_str     0x000804b5       0x14 ..\obj\main.o
-                              0x72356 (size before relaxing)
- .debug_str     0x000804c9      0x6c0 ..\obj\timer.o
-                              0x72a7f (size before relaxing)
+ .debug_str     0x000804b7       0x14 ..\obj\main.o
+                              0x72358 (size before relaxing)
+ .debug_str     0x000804cb      0x6c0 ..\obj\timer.o
+                              0x72a81 (size before relaxing)
 
 .debug_frame    0x00000000      0xbf0
  .debug_frame   0x00000000       0xac ..\obj\boot.o

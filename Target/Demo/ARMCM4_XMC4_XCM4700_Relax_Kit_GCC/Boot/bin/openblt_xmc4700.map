@@ -305,7 +305,7 @@ Discarded input sections
  .debug_macro   0x00000000      0x2a1 ..\obj\lib\xmclib\src\xmc4_eru.o
  .debug_macro   0x00000000       0xa6 ..\obj\lib\xmclib\src\xmc4_eru.o
  .debug_line    0x00000000      0x45b ..\obj\lib\xmclib\src\xmc4_eru.o
- .debug_str     0x00000000    0x778d0 ..\obj\lib\xmclib\src\xmc4_eru.o
+ .debug_str     0x00000000    0x778d2 ..\obj\lib\xmclib\src\xmc4_eru.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc4_eru.o
  .debug_frame   0x00000000       0x40 ..\obj\lib\xmclib\src\xmc4_eru.o
  .ARM.attributes
@@ -352,34 +352,18 @@ Discarded input sections
  .text          0x00000000        0x0 ..\obj\lib\xmclib\src\xmc4_flash.o
  .data          0x00000000        0x0 ..\obj\lib\xmclib\src\xmc4_flash.o
  .bss           0x00000000        0x0 ..\obj\lib\xmclib\src\xmc4_flash.o
- .text.XMC_FLASH_lEnterPageModeCommand
-                0x00000000        0xc ..\obj\lib\xmclib\src\xmc4_flash.o
- .text.XMC_FLASH_lLoadPageCommand
-                0x00000000       0x10 ..\obj\lib\xmclib\src\xmc4_flash.o
- .text.XMC_FLASH_lWritePageCommand
-                0x00000000       0x24 ..\obj\lib\xmclib\src\xmc4_flash.o
  .text.XMC_FLASH_lWriteUCBPageCommand
                 0x00000000       0x24 ..\obj\lib\xmclib\src\xmc4_flash.o
- .text.XMC_FLASH_lEraseSectorCommand
-                0x00000000       0x28 ..\obj\lib\xmclib\src\xmc4_flash.o
  .text.XMC_FLASH_lDisableSectorWriteProtectionCommand
                 0x00000000       0x34 ..\obj\lib\xmclib\src\xmc4_flash.o
  .text.XMC_FLASH_lDisableReadProtectionCommand
                 0x00000000       0x34 ..\obj\lib\xmclib\src\xmc4_flash.o
- .text.XMC_FLASH_lClearStatusCommand
-                0x00000000        0xc ..\obj\lib\xmclib\src\xmc4_flash.o
  .text.XMC_FLASH_ClearStatus
                 0x00000000        0x8 ..\obj\lib\xmclib\src\xmc4_flash.o
- .text.XMC_FLASH_GetStatus
-                0x00000000       0x10 ..\obj\lib\xmclib\src\xmc4_flash.o
  .text.XMC_FLASH_EnableEvent
                 0x00000000       0x14 ..\obj\lib\xmclib\src\xmc4_flash.o
  .text.XMC_FLASH_DisableEvent
                 0x00000000       0x14 ..\obj\lib\xmclib\src\xmc4_flash.o
- .text.XMC_FLASH_ProgramPage
-                0x00000000       0x30 ..\obj\lib\xmclib\src\xmc4_flash.o
- .text.XMC_FLASH_EraseSector
-                0x00000000       0x10 ..\obj\lib\xmclib\src\xmc4_flash.o
  .text.XMC_FLASH_lErasePhysicalSectorCommand
                 0x00000000       0x28 ..\obj\lib\xmclib\src\xmc4_flash.o
  .text.XMC_FLASH_lRepairPhysicalSectorCommand
@@ -404,13 +388,6 @@ Discarded input sections
                 0x00000000        0xc ..\obj\lib\xmclib\src\xmc4_flash.o
  .rodata.str1.4
                 0x00000000       0x1f ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_info    0x00000000      0xa00 ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_abbrev  0x00000000      0x212 ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_loc     0x00000000      0x627 ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_aranges
-                0x00000000       0xe0 ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_ranges  0x00000000       0xd0 ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_macro   0x00000000      0x23d ..\obj\lib\xmclib\src\xmc4_flash.o
  .debug_macro   0x00000000      0x892 ..\obj\lib\xmclib\src\xmc4_flash.o
  .debug_macro   0x00000000      0x174 ..\obj\lib\xmclib\src\xmc4_flash.o
  .debug_macro   0x00000000       0x22 ..\obj\lib\xmclib\src\xmc4_flash.o
@@ -449,13 +426,6 @@ Discarded input sections
  .debug_macro   0x00000000       0x9f ..\obj\lib\xmclib\src\xmc4_flash.o
  .debug_macro   0x00000000       0x28 ..\obj\lib\xmclib\src\xmc4_flash.o
  .debug_macro   0x00000000       0x28 ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_macro   0x00000000       0xda ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_line    0x00000000      0x66f ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_str     0x00000000    0x76ba3 ..\obj\lib\xmclib\src\xmc4_flash.o
- .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc4_flash.o
- .debug_frame   0x00000000      0x264 ..\obj\lib\xmclib\src\xmc4_flash.o
- .ARM.attributes
-                0x00000000       0x39 ..\obj\lib\xmclib\src\xmc4_flash.o
  .group         0x00000000        0x8 ..\obj\lib\xmclib\src\xmc4_gpio.o
  .group         0x00000000        0x8 ..\obj\lib\xmclib\src\xmc4_gpio.o
  .group         0x00000000        0x8 ..\obj\lib\xmclib\src\xmc4_gpio.o
@@ -668,7 +638,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x35 ..\obj\lib\xmclib\src\xmc4_rtc.o
  .debug_macro   0x00000000       0xa0 ..\obj\lib\xmclib\src\xmc4_rtc.o
  .debug_line    0x00000000      0x5d1 ..\obj\lib\xmclib\src\xmc4_rtc.o
- .debug_str     0x00000000    0x76d08 ..\obj\lib\xmclib\src\xmc4_rtc.o
+ .debug_str     0x00000000    0x76d0a ..\obj\lib\xmclib\src\xmc4_rtc.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc4_rtc.o
  .debug_frame   0x00000000       0x9c ..\obj\lib\xmclib\src\xmc4_rtc.o
  .ARM.attributes
@@ -1090,7 +1060,7 @@ Discarded input sections
  .debug_macro   0x00000000      0x70a ..\obj\lib\xmclib\src\xmc_can.o
  .debug_macro   0x00000000       0x20 ..\obj\lib\xmclib\src\xmc_can.o
  .debug_line    0x00000000      0x77d ..\obj\lib\xmclib\src\xmc_can.o
- .debug_str     0x00000000    0x7a279 ..\obj\lib\xmclib\src\xmc_can.o
+ .debug_str     0x00000000    0x7a27b ..\obj\lib\xmclib\src\xmc_can.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_can.o
  .debug_frame   0x00000000      0x20c ..\obj\lib\xmclib\src\xmc_can.o
  .ARM.attributes
@@ -1248,7 +1218,7 @@ Discarded input sections
  .debug_macro   0x00000000      0x740 ..\obj\lib\xmclib\src\xmc_ccu4.o
  .debug_macro   0x00000000       0xa6 ..\obj\lib\xmclib\src\xmc_ccu4.o
  .debug_line    0x00000000      0xc42 ..\obj\lib\xmclib\src\xmc_ccu4.o
- .debug_str     0x00000000    0x79ba5 ..\obj\lib\xmclib\src\xmc_ccu4.o
+ .debug_str     0x00000000    0x79ba7 ..\obj\lib\xmclib\src\xmc_ccu4.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_ccu4.o
  .debug_frame   0x00000000      0x358 ..\obj\lib\xmclib\src\xmc_ccu4.o
  .ARM.attributes
@@ -1428,7 +1398,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x12 ..\obj\lib\xmclib\src\xmc_ccu8.o
  .debug_macro   0x00000000       0xa6 ..\obj\lib\xmclib\src\xmc_ccu8.o
  .debug_line    0x00000000      0xd89 ..\obj\lib\xmclib\src\xmc_ccu8.o
- .debug_str     0x00000000    0x79da1 ..\obj\lib\xmclib\src\xmc_ccu8.o
+ .debug_str     0x00000000    0x79da3 ..\obj\lib\xmclib\src\xmc_ccu8.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_ccu8.o
  .debug_frame   0x00000000      0x474 ..\obj\lib\xmclib\src\xmc_ccu8.o
  .ARM.attributes
@@ -1542,7 +1512,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x28 ..\obj\lib\xmclib\src\xmc_common.o
  .debug_macro   0x00000000       0x28 ..\obj\lib\xmclib\src\xmc_common.o
  .debug_line    0x00000000      0x519 ..\obj\lib\xmclib\src\xmc_common.o
- .debug_str     0x00000000    0x75ac5 ..\obj\lib\xmclib\src\xmc_common.o
+ .debug_str     0x00000000    0x75ac7 ..\obj\lib\xmclib\src\xmc_common.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_common.o
  .debug_frame   0x00000000       0xe0 ..\obj\lib\xmclib\src\xmc_common.o
  .ARM.attributes
@@ -1664,7 +1634,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x51 ..\obj\lib\xmclib\src\xmc_dac.o
  .debug_macro   0x00000000       0xa0 ..\obj\lib\xmclib\src\xmc_dac.o
  .debug_line    0x00000000      0x69b ..\obj\lib\xmclib\src\xmc_dac.o
- .debug_str     0x00000000    0x77418 ..\obj\lib\xmclib\src\xmc_dac.o
+ .debug_str     0x00000000    0x7741a ..\obj\lib\xmclib\src\xmc_dac.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_dac.o
  .debug_frame   0x00000000      0x168 ..\obj\lib\xmclib\src\xmc_dac.o
  .ARM.attributes
@@ -1830,7 +1800,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x1c ..\obj\lib\xmclib\src\xmc_dma.o
  .debug_macro   0x00000000       0xa6 ..\obj\lib\xmclib\src\xmc_dma.o
  .debug_line    0x00000000      0x820 ..\obj\lib\xmclib\src\xmc_dma.o
- .debug_str     0x00000000    0x79cc2 ..\obj\lib\xmclib\src\xmc_dma.o
+ .debug_str     0x00000000    0x79cc4 ..\obj\lib\xmclib\src\xmc_dma.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_dma.o
  .debug_frame   0x00000000      0x2dc ..\obj\lib\xmclib\src\xmc_dma.o
  .ARM.attributes
@@ -1959,7 +1929,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xa0 ..\obj\lib\xmclib\src\xmc_dsd.o
  .debug_macro   0x00000000       0x10 ..\obj\lib\xmclib\src\xmc_dsd.o
  .debug_line    0x00000000      0x696 ..\obj\lib\xmclib\src\xmc_dsd.o
- .debug_str     0x00000000    0x76fea ..\obj\lib\xmclib\src\xmc_dsd.o
+ .debug_str     0x00000000    0x76fec ..\obj\lib\xmclib\src\xmc_dsd.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_dsd.o
  .debug_frame   0x00000000      0x190 ..\obj\lib\xmclib\src\xmc_dsd.o
  .ARM.attributes
@@ -2063,7 +2033,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xa0 ..\obj\lib\xmclib\src\xmc_ebu.o
  .debug_macro   0x00000000       0x10 ..\obj\lib\xmclib\src\xmc_ebu.o
  .debug_line    0x00000000      0x49a ..\obj\lib\xmclib\src\xmc_ebu.o
- .debug_str     0x00000000    0x76ca4 ..\obj\lib\xmclib\src\xmc_ebu.o
+ .debug_str     0x00000000    0x76ca6 ..\obj\lib\xmclib\src\xmc_ebu.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_ebu.o
  .debug_frame   0x00000000       0x64 ..\obj\lib\xmclib\src\xmc_ebu.o
  .ARM.attributes
@@ -2187,7 +2157,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x10 ..\obj\lib\xmclib\src\xmc_eru.o
  .debug_macro   0x00000000      0x2a1 ..\obj\lib\xmclib\src\xmc_eru.o
  .debug_line    0x00000000      0x648 ..\obj\lib\xmclib\src\xmc_eru.o
- .debug_str     0x00000000    0x77ec8 ..\obj\lib\xmclib\src\xmc_eru.o
+ .debug_str     0x00000000    0x77eca ..\obj\lib\xmclib\src\xmc_eru.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_eru.o
  .debug_frame   0x00000000      0x180 ..\obj\lib\xmclib\src\xmc_eru.o
  .ARM.attributes
@@ -2355,7 +2325,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x29 ..\obj\lib\xmclib\src\xmc_eth_mac.o
  .debug_macro   0x00000000       0xa6 ..\obj\lib\xmclib\src\xmc_eth_mac.o
  .debug_line    0x00000000      0x8a8 ..\obj\lib\xmclib\src\xmc_eth_mac.o
- .debug_str     0x00000000    0x78b72 ..\obj\lib\xmclib\src\xmc_eth_mac.o
+ .debug_str     0x00000000    0x78b74 ..\obj\lib\xmclib\src\xmc_eth_mac.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_eth_mac.o
  .debug_frame   0x00000000      0x344 ..\obj\lib\xmclib\src\xmc_eth_mac.o
  .ARM.attributes
@@ -2471,7 +2441,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x40 ..\obj\lib\xmclib\src\xmc_fce.o
  .debug_macro   0x00000000       0xa0 ..\obj\lib\xmclib\src\xmc_fce.o
  .debug_line    0x00000000      0x586 ..\obj\lib\xmclib\src\xmc_fce.o
- .debug_str     0x00000000    0x76998 ..\obj\lib\xmclib\src\xmc_fce.o
+ .debug_str     0x00000000    0x7699a ..\obj\lib\xmclib\src\xmc_fce.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_fce.o
  .debug_frame   0x00000000      0x130 ..\obj\lib\xmclib\src\xmc_fce.o
  .ARM.attributes
@@ -2648,7 +2618,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x28 ..\obj\lib\xmclib\src\xmc_hrpwm.o
  .debug_macro   0x00000000       0x28 ..\obj\lib\xmclib\src\xmc_hrpwm.o
  .debug_line    0x00000000      0x40c ..\obj\lib\xmclib\src\xmc_hrpwm.o
- .debug_str     0x00000000    0x75900 ..\obj\lib\xmclib\src\xmc_hrpwm.o
+ .debug_str     0x00000000    0x75902 ..\obj\lib\xmclib\src\xmc_hrpwm.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_hrpwm.o
  .ARM.attributes
                 0x00000000       0x39 ..\obj\lib\xmclib\src\xmc_hrpwm.o
@@ -2775,7 +2745,7 @@ Discarded input sections
  .debug_macro   0x00000000      0x2da ..\obj\lib\xmclib\src\xmc_i2c.o
  .debug_macro   0x00000000       0x2e ..\obj\lib\xmclib\src\xmc_i2c.o
  .debug_line    0x00000000      0x654 ..\obj\lib\xmclib\src\xmc_i2c.o
- .debug_str     0x00000000    0x7711c ..\obj\lib\xmclib\src\xmc_i2c.o
+ .debug_str     0x00000000    0x7711e ..\obj\lib\xmclib\src\xmc_i2c.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_i2c.o
  .debug_frame   0x00000000      0x12c ..\obj\lib\xmclib\src\xmc_i2c.o
  .ARM.attributes
@@ -2893,7 +2863,7 @@ Discarded input sections
  .debug_macro   0x00000000      0x2da ..\obj\lib\xmclib\src\xmc_i2s.o
  .debug_macro   0x00000000       0x28 ..\obj\lib\xmclib\src\xmc_i2s.o
  .debug_line    0x00000000      0x56c ..\obj\lib\xmclib\src\xmc_i2s.o
- .debug_str     0x00000000    0x77530 ..\obj\lib\xmclib\src\xmc_i2s.o
+ .debug_str     0x00000000    0x77532 ..\obj\lib\xmclib\src\xmc_i2s.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_i2s.o
  .debug_frame   0x00000000       0xb8 ..\obj\lib\xmclib\src\xmc_i2s.o
  .ARM.attributes
@@ -3023,7 +2993,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xa0 ..\obj\lib\xmclib\src\xmc_ledts.o
  .debug_macro   0x00000000       0x2c ..\obj\lib\xmclib\src\xmc_ledts.o
  .debug_line    0x00000000      0x618 ..\obj\lib\xmclib\src\xmc_ledts.o
- .debug_str     0x00000000    0x76e43 ..\obj\lib\xmclib\src\xmc_ledts.o
+ .debug_str     0x00000000    0x76e45 ..\obj\lib\xmclib\src\xmc_ledts.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_ledts.o
  .debug_frame   0x00000000      0x1cc ..\obj\lib\xmclib\src\xmc_ledts.o
  .ARM.attributes
@@ -3137,7 +3107,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xa0 ..\obj\lib\xmclib\src\xmc_posif.o
  .debug_macro   0x00000000       0x1c ..\obj\lib\xmclib\src\xmc_posif.o
  .debug_line    0x00000000      0x591 ..\obj\lib\xmclib\src\xmc_posif.o
- .debug_str     0x00000000    0x76e29 ..\obj\lib\xmclib\src\xmc_posif.o
+ .debug_str     0x00000000    0x76e2b ..\obj\lib\xmclib\src\xmc_posif.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_posif.o
  .debug_frame   0x00000000       0xec ..\obj\lib\xmclib\src\xmc_posif.o
  .ARM.attributes
@@ -3275,7 +3245,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xd7 ..\obj\lib\xmclib\src\xmc_rtc.o
  .debug_macro   0x00000000       0x35 ..\obj\lib\xmclib\src\xmc_rtc.o
  .debug_line    0x00000000      0x674 ..\obj\lib\xmclib\src\xmc_rtc.o
- .debug_str     0x00000000    0x76dc0 ..\obj\lib\xmclib\src\xmc_rtc.o
+ .debug_str     0x00000000    0x76dc2 ..\obj\lib\xmclib\src\xmc_rtc.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_rtc.o
  .debug_frame   0x00000000       0xd8 ..\obj\lib\xmclib\src\xmc_rtc.o
  .ARM.attributes
@@ -3399,7 +3369,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x38 ..\obj\lib\xmclib\src\xmc_sdmmc.o
  .debug_macro   0x00000000       0xa6 ..\obj\lib\xmclib\src\xmc_sdmmc.o
  .debug_line    0x00000000      0x644 ..\obj\lib\xmclib\src\xmc_sdmmc.o
- .debug_str     0x00000000    0x77d74 ..\obj\lib\xmclib\src\xmc_sdmmc.o
+ .debug_str     0x00000000    0x77d76 ..\obj\lib\xmclib\src\xmc_sdmmc.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_sdmmc.o
  .debug_frame   0x00000000      0x170 ..\obj\lib\xmclib\src\xmc_sdmmc.o
  .ARM.attributes
@@ -3519,7 +3489,7 @@ Discarded input sections
  .debug_macro   0x00000000      0x2da ..\obj\lib\xmclib\src\xmc_spi.o
  .debug_macro   0x00000000       0x28 ..\obj\lib\xmclib\src\xmc_spi.o
  .debug_line    0x00000000      0x580 ..\obj\lib\xmclib\src\xmc_spi.o
- .debug_str     0x00000000    0x7770b ..\obj\lib\xmclib\src\xmc_spi.o
+ .debug_str     0x00000000    0x7770d ..\obj\lib\xmclib\src\xmc_spi.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_spi.o
  .debug_frame   0x00000000       0xe4 ..\obj\lib\xmclib\src\xmc_spi.o
  .ARM.attributes
@@ -3806,7 +3776,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xa6 ..\obj\lib\xmclib\src\xmc_usbd.o
  .debug_macro   0x00000000       0xc5 ..\obj\lib\xmclib\src\xmc_usbd.o
  .debug_line    0x00000000      0xa51 ..\obj\lib\xmclib\src\xmc_usbd.o
- .debug_str     0x00000000    0x79673 ..\obj\lib\xmclib\src\xmc_usbd.o
+ .debug_str     0x00000000    0x79675 ..\obj\lib\xmclib\src\xmc_usbd.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_usbd.o
  .debug_frame   0x00000000      0x3d4 ..\obj\lib\xmclib\src\xmc_usbd.o
  .ARM.attributes
@@ -4146,7 +4116,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xa0 ..\obj\lib\xmclib\src\xmc_vadc.o
  .debug_macro   0x00000000       0x66 ..\obj\lib\xmclib\src\xmc_vadc.o
  .debug_line    0x00000000     0x1209 ..\obj\lib\xmclib\src\xmc_vadc.o
- .debug_str     0x00000000    0x78c79 ..\obj\lib\xmclib\src\xmc_vadc.o
+ .debug_str     0x00000000    0x78c7b ..\obj\lib\xmclib\src\xmc_vadc.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_vadc.o
  .debug_frame   0x00000000      0x790 ..\obj\lib\xmclib\src\xmc_vadc.o
  .ARM.attributes
@@ -4246,7 +4216,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x28 ..\obj\lib\xmclib\src\xmc_wdt.o
  .debug_macro   0x00000000       0xa6 ..\obj\lib\xmclib\src\xmc_wdt.o
  .debug_line    0x00000000      0x45c ..\obj\lib\xmclib\src\xmc_wdt.o
- .debug_str     0x00000000    0x76778 ..\obj\lib\xmclib\src\xmc_wdt.o
+ .debug_str     0x00000000    0x7677a ..\obj\lib\xmclib\src\xmc_wdt.o
  .comment       0x00000000       0x6f ..\obj\lib\xmclib\src\xmc_wdt.o
  .debug_frame   0x00000000       0x58 ..\obj\lib\xmclib\src\xmc_wdt.o
  .ARM.attributes
@@ -4372,6 +4342,35 @@ Discarded input sections
  .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .text          0x00000000        0x0 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .data          0x00000000        0x0 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .bss           0x00000000        0x0 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
@@ -4384,6 +4383,35 @@ Discarded input sections
  .debug_macro   0x00000000       0x1c ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .debug_macro   0x00000000       0x9f ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .debug_macro   0x00000000       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000      0x174 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x22 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x87 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x44 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0xfd ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x5e ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000      0x1df ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x22 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x52 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x35 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x9c ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x52 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x1f ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x43 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x20 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000      0x187 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000      0x30d ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x10 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x35 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000      0x162 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x2d ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x3b ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x50 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000      0xe66 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x16 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000    0x166f2 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x12 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0x4c ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x00000000       0xda ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
  .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
  .group         0x00000000        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
@@ -4696,7 +4724,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x35 ..\obj\~#\~#\~#\source\file.o
  .debug_macro   0x00000000       0xac ..\obj\~#\~#\~#\source\file.o
  .debug_line    0x00000000      0x2fa ..\obj\~#\~#\~#\source\file.o
- .debug_str     0x00000000     0x5f70 ..\obj\~#\~#\~#\source\file.o
+ .debug_str     0x00000000     0x5f72 ..\obj\~#\~#\~#\source\file.o
  .comment       0x00000000       0x6f ..\obj\~#\~#\~#\source\file.o
  .ARM.attributes
                 0x00000000       0x39 ..\obj\~#\~#\~#\source\file.o
@@ -4727,7 +4755,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x9f ..\obj\~#\~#\~#\source\net.o
  .debug_macro   0x00000000       0x28 ..\obj\~#\~#\~#\source\net.o
  .debug_line    0x00000000       0xee ..\obj\~#\~#\~#\source\net.o
- .debug_str     0x00000000     0x2dd6 ..\obj\~#\~#\~#\source\net.o
+ .debug_str     0x00000000     0x2dd8 ..\obj\~#\~#\~#\source\net.o
  .comment       0x00000000       0x6f ..\obj\~#\~#\~#\source\net.o
  .ARM.attributes
                 0x00000000       0x39 ..\obj\~#\~#\~#\source\net.o
@@ -4799,7 +4827,7 @@ LOAD c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-
                 0x00000000                __HEAP_SIZE = 0x0
                 0x00000800                __STACK_SIZE = 0x800
 
-.text           0x08000000     0x1a50
+.text           0x08000000     0x1cbc
  *(.isr_vector)
  .isr_vector    0x08000000      0x200 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
                 0x08000000                __isr_vector
@@ -4842,356 +4870,384 @@ LOAD c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-
  .text.SystemInit
                 0x08000620       0x1c ..\obj\lib\system_xmc4700.o
                 0x08000620                SystemInit
+ .text.XMC_FLASH_lEnterPageModeCommand
+                0x0800063c        0xc ..\obj\lib\xmclib\src\xmc4_flash.o
+                0x0800063c                XMC_FLASH_lEnterPageModeCommand
+ .text.XMC_FLASH_lLoadPageCommand
+                0x08000648       0x10 ..\obj\lib\xmclib\src\xmc4_flash.o
+                0x08000648                XMC_FLASH_lLoadPageCommand
+ .text.XMC_FLASH_lWritePageCommand
+                0x08000658       0x24 ..\obj\lib\xmclib\src\xmc4_flash.o
+                0x08000658                XMC_FLASH_lWritePageCommand
+ .text.XMC_FLASH_lEraseSectorCommand
+                0x0800067c       0x28 ..\obj\lib\xmclib\src\xmc4_flash.o
+                0x0800067c                XMC_FLASH_lEraseSectorCommand
+ .text.XMC_FLASH_lClearStatusCommand
+                0x080006a4        0xc ..\obj\lib\xmclib\src\xmc4_flash.o
+                0x080006a4                XMC_FLASH_lClearStatusCommand
+ .text.XMC_FLASH_GetStatus
+                0x080006b0       0x10 ..\obj\lib\xmclib\src\xmc4_flash.o
+                0x080006b0                XMC_FLASH_GetStatus
+ .text.XMC_FLASH_ProgramPage
+                0x080006c0       0x30 ..\obj\lib\xmclib\src\xmc4_flash.o
+                0x080006c0                XMC_FLASH_ProgramPage
+ .text.XMC_FLASH_EraseSector
+                0x080006f0       0x10 ..\obj\lib\xmclib\src\xmc4_flash.o
+                0x080006f0                XMC_FLASH_EraseSector
  .text.XMC_GPIO_Init
-                0x0800063c      0x1a0 ..\obj\lib\xmclib\src\xmc4_gpio.o
-                0x0800063c                XMC_GPIO_Init
+                0x08000700      0x1a0 ..\obj\lib\xmclib\src\xmc4_gpio.o
+                0x08000700                XMC_GPIO_Init
  .text.XMC_SCU_RESET_DeassertPeripheralReset
-                0x080007dc       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
-                0x080007dc                XMC_SCU_RESET_DeassertPeripheralReset
+                0x080008a0       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x080008a0                XMC_SCU_RESET_DeassertPeripheralReset
  .text.XMC_SCU_CLOCK_GetPeripheralClockFrequency
-                0x080007f4       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
-                0x080007f4                XMC_SCU_CLOCK_GetPeripheralClockFrequency
+                0x080008b8       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x080008b8                XMC_SCU_CLOCK_GetPeripheralClockFrequency
  .text.XMC_SCU_CLOCK_UngatePeripheralClock
-                0x0800080c       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
-                0x0800080c                XMC_SCU_CLOCK_UngatePeripheralClock
+                0x080008d0       0x18 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x080008d0                XMC_SCU_CLOCK_UngatePeripheralClock
  .text.XMC_GPIO_SetMode
-                0x08000824      0x138 ..\obj\lib\xmclib\src\xmc_gpio.o
-                0x08000824                XMC_GPIO_SetMode
+                0x080008e8      0x138 ..\obj\lib\xmclib\src\xmc_gpio.o
+                0x080008e8                XMC_GPIO_SetMode
  .text.XMC_UART_CH_Init
-                0x0800095c       0x68 ..\obj\lib\xmclib\src\xmc_uart.o
-                0x0800095c                XMC_UART_CH_Init
+                0x08000a20       0x68 ..\obj\lib\xmclib\src\xmc_uart.o
+                0x08000a20                XMC_UART_CH_Init
  .text.XMC_UART_CH_Transmit
-                0x080009c4       0x24 ..\obj\lib\xmclib\src\xmc_uart.o
-                0x080009c4                XMC_UART_CH_Transmit
+                0x08000a88       0x24 ..\obj\lib\xmclib\src\xmc_uart.o
+                0x08000a88                XMC_UART_CH_Transmit
  .text.XMC_UART_CH_GetReceivedData
-                0x080009e8       0x18 ..\obj\lib\xmclib\src\xmc_uart.o
-                0x080009e8                XMC_UART_CH_GetReceivedData
+                0x08000aac       0x18 ..\obj\lib\xmclib\src\xmc_uart.o
+                0x08000aac                XMC_UART_CH_GetReceivedData
  .text.XMC_USIC_CH_SetBaudrate
-                0x08000a00       0x8c ..\obj\lib\xmclib\src\xmc_usic.o
-                0x08000a00                XMC_USIC_CH_SetBaudrate
+                0x08000ac4       0x8c ..\obj\lib\xmclib\src\xmc_usic.o
+                0x08000ac4                XMC_USIC_CH_SetBaudrate
  .text.XMC_USIC_CH_TXFIFO_Configure
-                0x08000a8c       0x30 ..\obj\lib\xmclib\src\xmc_usic.o
-                0x08000a8c                XMC_USIC_CH_TXFIFO_Configure
+                0x08000b50       0x30 ..\obj\lib\xmclib\src\xmc_usic.o
+                0x08000b50                XMC_USIC_CH_TXFIFO_Configure
  .text.XMC_USIC_CH_RXFIFO_Configure
-                0x08000abc       0x34 ..\obj\lib\xmclib\src\xmc_usic.o
-                0x08000abc                XMC_USIC_CH_RXFIFO_Configure
+                0x08000b80       0x34 ..\obj\lib\xmclib\src\xmc_usic.o
+                0x08000b80                XMC_USIC_CH_RXFIFO_Configure
  .text.XMC_USIC_Enable
-                0x08000af0       0x6c ..\obj\lib\xmclib\src\xmc_usic.o
-                0x08000af0                XMC_USIC_Enable
+                0x08000bb4       0x6c ..\obj\lib\xmclib\src\xmc_usic.o
+                0x08000bb4                XMC_USIC_Enable
  .text.XMC_USIC_CH_Enable
-                0x08000b5c       0xe0 ..\obj\lib\xmclib\src\xmc_usic.o
-                0x08000b5c                XMC_USIC_CH_Enable
- .text.Init     0x08000c3c       0x2c ..\obj\main.o
+                0x08000c20       0xe0 ..\obj\lib\xmclib\src\xmc_usic.o
+                0x08000c20                XMC_USIC_CH_Enable
+ .text.Init     0x08000d00       0x2c ..\obj\main.o
  .text.PostInit
-                0x08000c68       0x50 ..\obj\main.o
- .text.main     0x08000cb8       0x14 ..\obj\main.o
-                0x08000cb8                main
- .text.CpuInit  0x08000ccc        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
-                0x08000ccc                CpuInit
+                0x08000d2c       0x50 ..\obj\main.o
+ .text.main     0x08000d7c       0x14 ..\obj\main.o
+                0x08000d7c                main
+ .text.CpuInit  0x08000d90        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+                0x08000d90                CpuInit
  .text.CpuStartUserProgram
-                0x08000cd4       0x38 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
-                0x08000cd4                CpuStartUserProgram
+                0x08000d98       0x38 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+                0x08000d98                CpuStartUserProgram
  .text.CpuMemCopy
-                0x08000d0c       0x20 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
-                0x08000d0c                CpuMemCopy
- .text.FlashWriteBlock
-                0x08000d2c        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
- .text.FlashEraseSectors
-                0x08000d30        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x08000dd0       0x20 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+                0x08000dd0                CpuMemCopy
+ .text.FlashTranslateToNonCachedAddress
+                0x08000df0        0xc ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .text.FlashGetSector
-                0x08000d34       0x48 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x08000dfc       0x48 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .text.FlashGetSectorBaseAddr
+                0x08000e44       0x38 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .text.FlashInitBlock
-                0x08000d7c       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x08000e7c       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .text.FlashWriteBlock
+                0x08000ea4       0x90 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .text.FlashSwitchBlock
-                0x08000da4       0x40 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x08000f34       0x40 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .text.FlashAddToBlock
-                0x08000de4       0x7c ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x08000f74       0x7c ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .text.FlashEraseSectors
+                0x08000ff0       0x80 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .text.FlashInit
-                0x08000e60       0x18 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
-                0x08000e60                FlashInit
+                0x08001070       0x18 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x08001070                FlashInit
  .text.FlashWrite
-                0x08000e78       0x5c ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
-                0x08000e78                FlashWrite
+                0x08001088       0x60 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x08001088                FlashWrite
  .text.FlashErase
-                0x08000ed4       0x30 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
-                0x08000ed4                FlashErase
+                0x080010e8       0x34 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x080010e8                FlashErase
  .text.FlashWriteChecksum
-                0x08000f04       0x50 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
-                0x08000f04                FlashWriteChecksum
+                0x0800111c       0x50 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x0800111c                FlashWriteChecksum
  .text.FlashVerifyChecksum
-                0x08000f54       0x58 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
-                0x08000f54                FlashVerifyChecksum
+                0x0800116c       0x58 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x0800116c                FlashVerifyChecksum
  .text.FlashDone
-                0x08000fac       0x40 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
-                0x08000fac                FlashDone
+                0x080011c4       0x40 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x080011c4                FlashDone
  .text.FlashGetUserProgBaseAddress
-                0x08000fec        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
-                0x08000fec                FlashGetUserProgBaseAddress
+                0x08001204        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x08001204                FlashGetUserProgBaseAddress
  .text.CpuIrqDisable
-                0x08000ff4        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
-                0x08000ff4                CpuIrqDisable
+                0x0800120c        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+                0x0800120c                CpuIrqDisable
  .text.CpuIrqEnable
-                0x08000ff8        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
-                0x08000ff8                CpuIrqEnable
- .text          0x08000ffc      0x12c ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
-                0x08000ffc                Reset_Handler
-                0x08001042                NMI_Handler
-                0x08001044                HardFault_Handler
-                0x08001046                MemManage_Handler
-                0x08001048                BusFault_Handler
-                0x0800104a                UsageFault_Handler
-                0x0800104c                SVC_Handler
-                0x0800104e                DebugMon_Handler
-                0x08001050                PendSV_Handler
-                0x08001052                SysTick_Handler
-                0x08001054                Default_Handler
-                0x08001056                SCU_0_IRQHandler
-                0x08001058                ERU0_0_IRQHandler
-                0x0800105a                ERU0_1_IRQHandler
-                0x0800105c                ERU0_2_IRQHandler
-                0x0800105e                ERU0_3_IRQHandler
-                0x08001060                ERU1_0_IRQHandler
-                0x08001062                ERU1_1_IRQHandler
-                0x08001064                ERU1_2_IRQHandler
-                0x08001066                ERU1_3_IRQHandler
-                0x08001068                PMU0_0_IRQHandler
-                0x0800106a                VADC0_C0_0_IRQHandler
-                0x0800106c                VADC0_C0_1_IRQHandler
-                0x0800106e                VADC0_C0_2_IRQHandler
-                0x08001070                VADC0_C0_3_IRQHandler
-                0x08001072                VADC0_G0_0_IRQHandler
-                0x08001074                VADC0_G0_1_IRQHandler
-                0x08001076                VADC0_G0_2_IRQHandler
-                0x08001078                VADC0_G0_3_IRQHandler
-                0x0800107a                VADC0_G1_0_IRQHandler
-                0x0800107c                VADC0_G1_1_IRQHandler
-                0x0800107e                VADC0_G1_2_IRQHandler
-                0x08001080                VADC0_G1_3_IRQHandler
-                0x08001082                VADC0_G2_0_IRQHandler
-                0x08001084                VADC0_G2_1_IRQHandler
-                0x08001086                VADC0_G2_2_IRQHandler
-                0x08001088                VADC0_G2_3_IRQHandler
-                0x0800108a                VADC0_G3_0_IRQHandler
-                0x0800108c                VADC0_G3_1_IRQHandler
-                0x0800108e                VADC0_G3_2_IRQHandler
-                0x08001090                VADC0_G3_3_IRQHandler
-                0x08001092                DSD0_0_IRQHandler
-                0x08001094                DSD0_1_IRQHandler
-                0x08001096                DSD0_2_IRQHandler
-                0x08001098                DSD0_3_IRQHandler
-                0x0800109a                DSD0_4_IRQHandler
-                0x0800109c                DSD0_5_IRQHandler
-                0x0800109e                DSD0_6_IRQHandler
-                0x080010a0                DSD0_7_IRQHandler
-                0x080010a2                DAC0_0_IRQHandler
-                0x080010a4                DAC0_1_IRQHandler
-                0x080010a6                CCU40_0_IRQHandler
-                0x080010a8                CCU40_1_IRQHandler
-                0x080010aa                CCU40_2_IRQHandler
-                0x080010ac                CCU40_3_IRQHandler
-                0x080010ae                CCU41_0_IRQHandler
-                0x080010b0                CCU41_1_IRQHandler
-                0x080010b2                CCU41_2_IRQHandler
-                0x080010b4                CCU41_3_IRQHandler
-                0x080010b6                CCU42_0_IRQHandler
-                0x080010b8                CCU42_1_IRQHandler
-                0x080010ba                CCU42_2_IRQHandler
-                0x080010bc                CCU42_3_IRQHandler
-                0x080010be                CCU43_0_IRQHandler
-                0x080010c0                CCU43_1_IRQHandler
-                0x080010c2                CCU43_2_IRQHandler
-                0x080010c4                CCU43_3_IRQHandler
-                0x080010c6                CCU80_0_IRQHandler
-                0x080010c8                CCU80_1_IRQHandler
-                0x080010ca                CCU80_2_IRQHandler
-                0x080010cc                CCU80_3_IRQHandler
-                0x080010ce                CCU81_0_IRQHandler
-                0x080010d0                CCU81_1_IRQHandler
-                0x080010d2                CCU81_2_IRQHandler
-                0x080010d4                CCU81_3_IRQHandler
-                0x080010d6                POSIF0_0_IRQHandler
-                0x080010d8                POSIF0_1_IRQHandler
-                0x080010da                POSIF1_0_IRQHandler
-                0x080010dc                POSIF1_1_IRQHandler
-                0x080010de                CAN0_0_IRQHandler
-                0x080010e0                CAN0_1_IRQHandler
-                0x080010e2                CAN0_2_IRQHandler
-                0x080010e4                CAN0_3_IRQHandler
-                0x080010e6                CAN0_4_IRQHandler
-                0x080010e8                CAN0_5_IRQHandler
-                0x080010ea                CAN0_6_IRQHandler
-                0x080010ec                CAN0_7_IRQHandler
-                0x080010ee                USIC0_0_IRQHandler
-                0x080010f0                USIC0_1_IRQHandler
-                0x080010f2                USIC0_2_IRQHandler
-                0x080010f4                USIC0_3_IRQHandler
-                0x080010f6                USIC0_4_IRQHandler
-                0x080010f8                USIC0_5_IRQHandler
-                0x080010fa                USIC1_0_IRQHandler
-                0x080010fc                USIC1_1_IRQHandler
-                0x080010fe                USIC1_2_IRQHandler
-                0x08001100                USIC1_3_IRQHandler
-                0x08001102                USIC1_4_IRQHandler
-                0x08001104                USIC1_5_IRQHandler
-                0x08001106                USIC2_0_IRQHandler
-                0x08001108                USIC2_1_IRQHandler
-                0x0800110a                USIC2_2_IRQHandler
-                0x0800110c                USIC2_3_IRQHandler
-                0x0800110e                USIC2_4_IRQHandler
-                0x08001110                USIC2_5_IRQHandler
-                0x08001112                LEDTS0_0_IRQHandler
-                0x08001114                FCE0_0_IRQHandler
-                0x08001116                GPDMA0_0_IRQHandler
-                0x08001118                SDMMC0_0_IRQHandler
-                0x0800111a                USB0_0_IRQHandler
-                0x0800111c                ETH0_0_IRQHandler
-                0x0800111e                GPDMA1_0_IRQHandler
- .text.NvmInit  0x08001128        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
-                0x08001128                NvmInit
+                0x08001210        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+                0x08001210                CpuIrqEnable
+ .text          0x08001214      0x12c ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
+                0x08001214                Reset_Handler
+                0x0800125a                NMI_Handler
+                0x0800125c                HardFault_Handler
+                0x0800125e                MemManage_Handler
+                0x08001260                BusFault_Handler
+                0x08001262                UsageFault_Handler
+                0x08001264                SVC_Handler
+                0x08001266                DebugMon_Handler
+                0x08001268                PendSV_Handler
+                0x0800126a                SysTick_Handler
+                0x0800126c                Default_Handler
+                0x0800126e                SCU_0_IRQHandler
+                0x08001270                ERU0_0_IRQHandler
+                0x08001272                ERU0_1_IRQHandler
+                0x08001274                ERU0_2_IRQHandler
+                0x08001276                ERU0_3_IRQHandler
+                0x08001278                ERU1_0_IRQHandler
+                0x0800127a                ERU1_1_IRQHandler
+                0x0800127c                ERU1_2_IRQHandler
+                0x0800127e                ERU1_3_IRQHandler
+                0x08001280                PMU0_0_IRQHandler
+                0x08001282                VADC0_C0_0_IRQHandler
+                0x08001284                VADC0_C0_1_IRQHandler
+                0x08001286                VADC0_C0_2_IRQHandler
+                0x08001288                VADC0_C0_3_IRQHandler
+                0x0800128a                VADC0_G0_0_IRQHandler
+                0x0800128c                VADC0_G0_1_IRQHandler
+                0x0800128e                VADC0_G0_2_IRQHandler
+                0x08001290                VADC0_G0_3_IRQHandler
+                0x08001292                VADC0_G1_0_IRQHandler
+                0x08001294                VADC0_G1_1_IRQHandler
+                0x08001296                VADC0_G1_2_IRQHandler
+                0x08001298                VADC0_G1_3_IRQHandler
+                0x0800129a                VADC0_G2_0_IRQHandler
+                0x0800129c                VADC0_G2_1_IRQHandler
+                0x0800129e                VADC0_G2_2_IRQHandler
+                0x080012a0                VADC0_G2_3_IRQHandler
+                0x080012a2                VADC0_G3_0_IRQHandler
+                0x080012a4                VADC0_G3_1_IRQHandler
+                0x080012a6                VADC0_G3_2_IRQHandler
+                0x080012a8                VADC0_G3_3_IRQHandler
+                0x080012aa                DSD0_0_IRQHandler
+                0x080012ac                DSD0_1_IRQHandler
+                0x080012ae                DSD0_2_IRQHandler
+                0x080012b0                DSD0_3_IRQHandler
+                0x080012b2                DSD0_4_IRQHandler
+                0x080012b4                DSD0_5_IRQHandler
+                0x080012b6                DSD0_6_IRQHandler
+                0x080012b8                DSD0_7_IRQHandler
+                0x080012ba                DAC0_0_IRQHandler
+                0x080012bc                DAC0_1_IRQHandler
+                0x080012be                CCU40_0_IRQHandler
+                0x080012c0                CCU40_1_IRQHandler
+                0x080012c2                CCU40_2_IRQHandler
+                0x080012c4                CCU40_3_IRQHandler
+                0x080012c6                CCU41_0_IRQHandler
+                0x080012c8                CCU41_1_IRQHandler
+                0x080012ca                CCU41_2_IRQHandler
+                0x080012cc                CCU41_3_IRQHandler
+                0x080012ce                CCU42_0_IRQHandler
+                0x080012d0                CCU42_1_IRQHandler
+                0x080012d2                CCU42_2_IRQHandler
+                0x080012d4                CCU42_3_IRQHandler
+                0x080012d6                CCU43_0_IRQHandler
+                0x080012d8                CCU43_1_IRQHandler
+                0x080012da                CCU43_2_IRQHandler
+                0x080012dc                CCU43_3_IRQHandler
+                0x080012de                CCU80_0_IRQHandler
+                0x080012e0                CCU80_1_IRQHandler
+                0x080012e2                CCU80_2_IRQHandler
+                0x080012e4                CCU80_3_IRQHandler
+                0x080012e6                CCU81_0_IRQHandler
+                0x080012e8                CCU81_1_IRQHandler
+                0x080012ea                CCU81_2_IRQHandler
+                0x080012ec                CCU81_3_IRQHandler
+                0x080012ee                POSIF0_0_IRQHandler
+                0x080012f0                POSIF0_1_IRQHandler
+                0x080012f2                POSIF1_0_IRQHandler
+                0x080012f4                POSIF1_1_IRQHandler
+                0x080012f6                CAN0_0_IRQHandler
+                0x080012f8                CAN0_1_IRQHandler
+                0x080012fa                CAN0_2_IRQHandler
+                0x080012fc                CAN0_3_IRQHandler
+                0x080012fe                CAN0_4_IRQHandler
+                0x08001300                CAN0_5_IRQHandler
+                0x08001302                CAN0_6_IRQHandler
+                0x08001304                CAN0_7_IRQHandler
+                0x08001306                USIC0_0_IRQHandler
+                0x08001308                USIC0_1_IRQHandler
+                0x0800130a                USIC0_2_IRQHandler
+                0x0800130c                USIC0_3_IRQHandler
+                0x0800130e                USIC0_4_IRQHandler
+                0x08001310                USIC0_5_IRQHandler
+                0x08001312                USIC1_0_IRQHandler
+                0x08001314                USIC1_1_IRQHandler
+                0x08001316                USIC1_2_IRQHandler
+                0x08001318                USIC1_3_IRQHandler
+                0x0800131a                USIC1_4_IRQHandler
+                0x0800131c                USIC1_5_IRQHandler
+                0x0800131e                USIC2_0_IRQHandler
+                0x08001320                USIC2_1_IRQHandler
+                0x08001322                USIC2_2_IRQHandler
+                0x08001324                USIC2_3_IRQHandler
+                0x08001326                USIC2_4_IRQHandler
+                0x08001328                USIC2_5_IRQHandler
+                0x0800132a                LEDTS0_0_IRQHandler
+                0x0800132c                FCE0_0_IRQHandler
+                0x0800132e                GPDMA0_0_IRQHandler
+                0x08001330                SDMMC0_0_IRQHandler
+                0x08001332                USB0_0_IRQHandler
+                0x08001334                ETH0_0_IRQHandler
+                0x08001336                GPDMA1_0_IRQHandler
+ .text.NvmInit  0x08001340        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+                0x08001340                NvmInit
  .text.NvmWrite
-                0x08001130        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
-                0x08001130                NvmWrite
+                0x08001348        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+                0x08001348                NvmWrite
  .text.NvmErase
-                0x08001138        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
-                0x08001138                NvmErase
+                0x08001350        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+                0x08001350                NvmErase
  .text.NvmVerifyChecksum
-                0x08001140        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
-                0x08001140                NvmVerifyChecksum
+                0x08001358        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+                0x08001358                NvmVerifyChecksum
  .text.NvmGetUserProgBaseAddress
-                0x08001148        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
-                0x08001148                NvmGetUserProgBaseAddress
- .text.NvmDone  0x08001150       0x14 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
-                0x08001150                NvmDone
+                0x08001360        0x8 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+                0x08001360                NvmGetUserProgBaseAddress
+ .text.NvmDone  0x08001368       0x14 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+                0x08001368                NvmDone
  .text.TimerReset
-                0x08001164        0xc ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
-                0x08001164                TimerReset
+                0x0800137c        0xc ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+                0x0800137c                TimerReset
  .text.TimerInit
-                0x08001170       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
-                0x08001170                TimerInit
+                0x08001388       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+                0x08001388                TimerInit
  .text.TimerUpdate
-                0x08001198       0x1c ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
-                0x08001198                TimerUpdate
+                0x080013b0       0x1c ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+                0x080013b0                TimerUpdate
  .text.TimerGet
-                0x080011b4       0x10 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
-                0x080011b4                TimerGet
+                0x080013cc       0x10 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+                0x080013cc                TimerGet
  .text.UartTransmitByte
-                0x080011c4       0x3c ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x080013dc       0x3c ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
  .text.UartReceiveByte
-                0x08001200       0x24 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x08001418       0x24 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
  .text.UartInit
-                0x08001224       0x5c ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
-                0x08001224                UartInit
+                0x0800143c       0x5c ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x0800143c                UartInit
  .text.UartTransmitPacket
-                0x08001280       0x50 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
-                0x08001280                UartTransmitPacket
+                0x08001498       0x50 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x08001498                UartTransmitPacket
  .text.UartReceivePacket
-                0x080012d0       0xa0 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
-                0x080012d0                UartReceivePacket
+                0x080014e8       0xa0 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x080014e8                UartReceivePacket
  .text.AssertFailure
-                0x08001370       0x10 ..\obj\~#\~#\~#\source\assert.o
-                0x08001370                AssertFailure
+                0x08001588       0x10 ..\obj\~#\~#\~#\source\assert.o
+                0x08001588                AssertFailure
  .text.BackDoorCheck
-                0x08001380       0x38 ..\obj\~#\~#\~#\source\backdoor.o
-                0x08001380                BackDoorCheck
+                0x08001598       0x38 ..\obj\~#\~#\~#\source\backdoor.o
+                0x08001598                BackDoorCheck
  .text.BackDoorInit
-                0x080013b8       0x20 ..\obj\~#\~#\~#\source\backdoor.o
-                0x080013b8                BackDoorInit
+                0x080015d0       0x20 ..\obj\~#\~#\~#\source\backdoor.o
+                0x080015d0                BackDoorInit
  .text.BootInit
-                0x080013d8       0x1c ..\obj\~#\~#\~#\source\boot.o
-                0x080013d8                BootInit
+                0x080015f0       0x1c ..\obj\~#\~#\~#\source\boot.o
+                0x080015f0                BootInit
  .text.BootTask
-                0x080013f4       0x14 ..\obj\~#\~#\~#\source\boot.o
-                0x080013f4                BootTask
- .text.ComInit  0x08001408       0x18 ..\obj\~#\~#\~#\source\com.o
-                0x08001408                ComInit
- .text.ComTask  0x08001420       0x24 ..\obj\~#\~#\~#\source\com.o
-                0x08001420                ComTask
- .text.ComFree  0x08001444        0x4 ..\obj\~#\~#\~#\source\com.o
-                0x08001444                ComFree
+                0x0800160c       0x14 ..\obj\~#\~#\~#\source\boot.o
+                0x0800160c                BootTask
+ .text.ComInit  0x08001620       0x18 ..\obj\~#\~#\~#\source\com.o
+                0x08001620                ComInit
+ .text.ComTask  0x08001638       0x24 ..\obj\~#\~#\~#\source\com.o
+                0x08001638                ComTask
+ .text.ComFree  0x0800165c        0x4 ..\obj\~#\~#\~#\source\com.o
+                0x0800165c                ComFree
  .text.ComTransmitPacket
-                0x08001448       0x18 ..\obj\~#\~#\~#\source\com.o
-                0x08001448                ComTransmitPacket
+                0x08001660       0x18 ..\obj\~#\~#\~#\source\com.o
+                0x08001660                ComTransmitPacket
  .text.ComGetActiveInterfaceMaxRxLen
-                0x08001460       0x18 ..\obj\~#\~#\~#\source\com.o
-                0x08001460                ComGetActiveInterfaceMaxRxLen
+                0x08001678       0x18 ..\obj\~#\~#\~#\source\com.o
+                0x08001678                ComGetActiveInterfaceMaxRxLen
  .text.ComGetActiveInterfaceMaxTxLen
-                0x08001478       0x18 ..\obj\~#\~#\~#\source\com.o
-                0x08001478                ComGetActiveInterfaceMaxTxLen
+                0x08001690       0x18 ..\obj\~#\~#\~#\source\com.o
+                0x08001690                ComGetActiveInterfaceMaxTxLen
  .text.ComIsConnected
-                0x08001490        0x8 ..\obj\~#\~#\~#\source\com.o
-                0x08001490                ComIsConnected
- .text.CopInit  0x08001498        0x8 ..\obj\~#\~#\~#\source\cop.o
-                0x08001498                CopInit
+                0x080016a8        0x8 ..\obj\~#\~#\~#\source\com.o
+                0x080016a8                ComIsConnected
+ .text.CopInit  0x080016b0        0x8 ..\obj\~#\~#\~#\source\cop.o
+                0x080016b0                CopInit
  .text.CopService
-                0x080014a0        0x8 ..\obj\~#\~#\~#\source\cop.o
-                0x080014a0                CopService
+                0x080016b8        0x8 ..\obj\~#\~#\~#\source\cop.o
+                0x080016b8                CopService
  .text.XcpComputeChecksum
-                0x080014a8       0x20 ..\obj\~#\~#\~#\source\xcp.o
+                0x080016c0       0x20 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpProtectResources
-                0x080014c8        0xc ..\obj\~#\~#\~#\source\xcp.o
+                0x080016e0        0xc ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpSetCtoError
-                0x080014d4       0x14 ..\obj\~#\~#\~#\source\xcp.o
+                0x080016ec       0x14 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdDisconnect
-                0x080014e8       0x1c ..\obj\~#\~#\~#\source\xcp.o
+                0x08001700       0x1c ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdGetStatus
-                0x08001504       0x20 ..\obj\~#\~#\~#\source\xcp.o
+                0x0800171c       0x20 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdSynch
-                0x08001524        0xc ..\obj\~#\~#\~#\source\xcp.o
+                0x0800173c        0xc ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdGetId
-                0x08001530       0x2c ..\obj\~#\~#\~#\source\xcp.o
+                0x08001748       0x2c ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdSetMta
-                0x0800155c       0x18 ..\obj\~#\~#\~#\source\xcp.o
+                0x08001774       0x18 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdBuildCheckSum
-                0x08001574       0x28 ..\obj\~#\~#\~#\source\xcp.o
+                0x0800178c       0x28 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdProgramPrepare
-                0x0800159c        0xc ..\obj\~#\~#\~#\source\xcp.o
+                0x080017b4        0xc ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdProgramStart
-                0x080015a8       0x28 ..\obj\~#\~#\~#\source\xcp.o
+                0x080017c0       0x28 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdConnect
-                0x080015d0       0x40 ..\obj\~#\~#\~#\source\xcp.o
+                0x080017e8       0x40 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdUpload
-                0x08001610       0x40 ..\obj\~#\~#\~#\source\xcp.o
+                0x08001828       0x40 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdShortUpload
-                0x08001650       0x40 ..\obj\~#\~#\~#\source\xcp.o
+                0x08001868       0x40 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdProgramMax
-                0x08001690       0x40 ..\obj\~#\~#\~#\source\xcp.o
+                0x080018a8       0x40 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdProgram
-                0x080016d0       0x5c ..\obj\~#\~#\~#\source\xcp.o
+                0x080018e8       0x5c ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdProgramClear
-                0x0800172c       0x28 ..\obj\~#\~#\~#\source\xcp.o
+                0x08001944       0x28 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpCmdProgramReset
-                0x08001754       0x18 ..\obj\~#\~#\~#\source\xcp.o
+                0x0800196c       0x18 ..\obj\~#\~#\~#\source\xcp.o
  .text.XcpTransmitPacket
-                0x0800176c        0xc ..\obj\~#\~#\~#\source\xcp.o
- .text.XcpInit  0x08001778       0x1c ..\obj\~#\~#\~#\source\xcp.o
-                0x08001778                XcpInit
+                0x08001984        0xc ..\obj\~#\~#\~#\source\xcp.o
+ .text.XcpInit  0x08001990       0x1c ..\obj\~#\~#\~#\source\xcp.o
+                0x08001990                XcpInit
  .text.XcpIsConnected
-                0x08001794       0x10 ..\obj\~#\~#\~#\source\xcp.o
-                0x08001794                XcpIsConnected
+                0x080019ac       0x10 ..\obj\~#\~#\~#\source\xcp.o
+                0x080019ac                XcpIsConnected
  .text.XcpPacketTransmitted
-                0x080017a4       0x10 ..\obj\~#\~#\~#\source\xcp.o
-                0x080017a4                XcpPacketTransmitted
+                0x080019bc       0x10 ..\obj\~#\~#\~#\source\xcp.o
+                0x080019bc                XcpPacketTransmitted
  .text.XcpPacketReceived
-                0x080017b4       0xe0 ..\obj\~#\~#\~#\source\xcp.o
-                0x080017b4                XcpPacketReceived
- .text.exit     0x08001894       0x28 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-exit.o)
-                0x08001894                exit
+                0x080019cc       0xe0 ..\obj\~#\~#\~#\source\xcp.o
+                0x080019cc                XcpPacketReceived
+ .text.exit     0x08001aac       0x28 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-exit.o)
+                0x08001aac                exit
  .text.__libc_init_array
-                0x080018bc       0x4c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-init.o)
-                0x080018bc                __libc_init_array
- .text.memset   0x08001908       0x10 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-memset.o)
-                0x08001908                memset
- .text._exit    0x08001918        0x2 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libnosys_s.a(_exit.o)
-                0x08001918                _exit
+                0x08001ad4       0x4c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-init.o)
+                0x08001ad4                __libc_init_array
+ .text.memset   0x08001b20       0x10 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-memset.o)
+                0x08001b20                memset
+ .text._exit    0x08001b30        0x2 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libnosys_s.a(_exit.o)
+                0x08001b30                _exit
  *(.init)
- *fill*         0x0800191a        0x2 
- .init          0x0800191c        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
-                0x0800191c                _init
- .init          0x08001920        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ *fill*         0x08001b32        0x2 
+ .init          0x08001b34        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+                0x08001b34                _init
+ .init          0x08001b38        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
  *(.fini)
- .fini          0x08001928        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
-                0x08001928                _fini
- .fini          0x0800192c        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+ .fini          0x08001b40        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
+                0x08001b40                _fini
+ .fini          0x08001b44        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
  *crtbegin.o(.ctors)
  *crtbegin?.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .ctors)
@@ -5204,64 +5260,64 @@ LOAD c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-
  *(.dtors)
  *(.rodata*)
  .rodata.str1.4
-                0x08001934       0x1e ..\obj\lib\xmclib\src\xmc4_gpio.o
- *fill*         0x08001952        0x2 
+                0x08001b4c       0x1e ..\obj\lib\xmclib\src\xmc4_gpio.o
+ *fill*         0x08001b6a        0x2 
  .rodata.clear_peripheral_gate.7779
-                0x08001954       0x10 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x08001b6c       0x10 ..\obj\lib\xmclib\src\xmc4_scu.o
  .rodata.clear_peripheral_reset.7658
-                0x08001964       0x10 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x08001b7c       0x10 ..\obj\lib\xmclib\src\xmc4_scu.o
  .rodata.str1.4
-                0x08001974       0x1d ..\obj\lib\xmclib\src\xmc_gpio.o
- *fill*         0x08001991        0x3 
+                0x08001b8c       0x1d ..\obj\lib\xmclib\src\xmc_gpio.o
+ *fill*         0x08001ba9        0x3 
  .rodata.str1.4
-                0x08001994       0x1d ..\obj\lib\xmclib\src\xmc_usic.o
- *fill*         0x080019b1        0x3 
+                0x08001bac       0x1d ..\obj\lib\xmclib\src\xmc_usic.o
+ *fill*         0x08001bc9        0x3 
  .rodata.flashLayout
-                0x080019b4       0x60 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x08001bcc       0xb4 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .rodata.str1.4
-                0x08001a14       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x08001c80       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
                                  0x26 (size before relaxing)
  .rodata.xcpStationId
-                0x08001a3c        0x8 ..\obj\~#\~#\~#\source\xcp.o
+                0x08001ca8        0x8 ..\obj\~#\~#\~#\source\xcp.o
  .rodata.str1.1
-                0x08001a44        0x2 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
- *fill*         0x08001a46        0x2 
+                0x08001cb0        0x2 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
+ *fill*         0x08001cb2        0x2 
  .rodata._global_impure_ptr
-                0x08001a48        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
-                0x08001a48                _global_impure_ptr
+                0x08001cb4        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
+                0x08001cb4                _global_impure_ptr
  *(.eh_frame*)
- .eh_frame      0x08001a4c        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
- .eh_frame      0x08001a4c        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .eh_frame      0x08001cb8        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+ .eh_frame      0x08001cb8        0x4 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
 
-.glue_7         0x08001a50        0x0
- .glue_7        0x08001a50        0x0 linker stubs
+.glue_7         0x08001cbc        0x0
+ .glue_7        0x08001cbc        0x0 linker stubs
 
-.glue_7t        0x08001a50        0x0
- .glue_7t       0x08001a50        0x0 linker stubs
+.glue_7t        0x08001cbc        0x0
+ .glue_7t       0x08001cbc        0x0 linker stubs
 
-.vfp11_veneer   0x08001a50        0x0
- .vfp11_veneer  0x08001a50        0x0 linker stubs
+.vfp11_veneer   0x08001cbc        0x0
+ .vfp11_veneer  0x08001cbc        0x0 linker stubs
 
-.v4_bx          0x08001a50        0x0
- .v4_bx         0x08001a50        0x0 linker stubs
+.v4_bx          0x08001cbc        0x0
+ .v4_bx         0x08001cbc        0x0 linker stubs
 
-.iplt           0x08001a50        0x0
- .iplt          0x08001a50        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+.iplt           0x08001cbc        0x0
+ .iplt          0x08001cbc        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x08001a50                __exidx_start = .
+                0x08001cbc                __exidx_start = .
 
-.ARM.exidx      0x08001a50        0x8
+.ARM.exidx      0x08001cbc        0x8
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
- .ARM.exidx     0x08001a50        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
-                0x08001a58                __exidx_end = .
-                0x08001a58                __etext = .
+ .ARM.exidx     0x08001cbc        0x8 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
+                0x08001cc4                __exidx_end = .
+                0x08001cc4                __etext = .
 
-.rel.dyn        0x08001a58        0x0
- .rel.iplt      0x08001a58        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
+.rel.dyn        0x08001cc4        0x0
+ .rel.iplt      0x08001cc4        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
 
-.data           0x20000000       0x6c load address 0x08001a58
+.data           0x20000000       0x6c load address 0x08001cc4
                 0x20000000                __data_start__ = .
  *(vtable)
  *(.data*)
@@ -5289,18 +5345,18 @@ LOAD c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-
                 0x2000006c                . = ALIGN (0x4)
                 0x2000006c                __data_end__ = .
 
-.jcr            0x2000006c        0x0 load address 0x08001ac4
+.jcr            0x2000006c        0x0 load address 0x08001d30
  .jcr           0x2000006c        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
 
-.igot.plt       0x2000006c        0x0 load address 0x08001ac4
+.igot.plt       0x2000006c        0x0 load address 0x08001d30
  .igot.plt      0x2000006c        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
 
-.no_init        0x2000006c       0x14 load address 0x08001ac4
+.no_init        0x2000006c       0x14 load address 0x08001d30
  .no_init       0x2000006c       0x14 ..\obj\lib\system_xmc4700.o
                 0x2000006c                SystemCoreClock
                 0x20000070                g_chipid
 
-.bss            0x20000080      0x510 load address 0x08001ad8
+.bss            0x20000080      0x910 load address 0x08001d44
                 0x20000080                __bss_start__ = .
  *(.bss*)
  .bss           0x20000080       0x1c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtbegin.o
@@ -5312,43 +5368,43 @@ LOAD c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-
                 0x200000a2        0x1 ..\obj\led.o
  *fill*         0x200000a3        0x1 
  .bss.bootBlockInfo
-                0x200000a4      0x204 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x200000a4      0x404 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .bss.blockInfo
-                0x200002a8      0x204 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x200004a8      0x404 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .bss.millisecond_counter
-                0x200004ac        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+                0x200008ac        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
  .bss.xcpCtoReqPacket.7652
-                0x200004b0       0x41 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x200008b0       0x41 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
  .bss.xcpCtoRxLength.7653
-                0x200004f1        0x1 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x200008f1        0x1 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
  .bss.xcpCtoRxInProgress.7654
-                0x200004f2        0x1 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
- *fill*         0x200004f3        0x1 
+                0x200008f2        0x1 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+ *fill*         0x200008f3        0x1 
  .bss.xcpCtoRxStartTime.7655
-                0x200004f4        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x200008f4        0x4 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
  .bss.assert_failure_line
-                0x200004f8        0x4 ..\obj\~#\~#\~#\source\assert.o
+                0x200008f8        0x4 ..\obj\~#\~#\~#\source\assert.o
  .bss.backdoorOpen
-                0x200004fc        0x1 ..\obj\~#\~#\~#\source\backdoor.o
- *fill*         0x200004fd        0x3 
+                0x200008fc        0x1 ..\obj\~#\~#\~#\source\backdoor.o
+ *fill*         0x200008fd        0x3 
  .bss.backdoorOpenTime
-                0x20000500        0x4 ..\obj\~#\~#\~#\source\backdoor.o
+                0x20000900        0x4 ..\obj\~#\~#\~#\source\backdoor.o
  .bss.xcpCtoReqPacket.4270
-                0x20000504       0x40 ..\obj\~#\~#\~#\source\com.o
- .bss.xcpInfo   0x20000544       0x4c ..\obj\~#\~#\~#\source\xcp.o
+                0x20000904       0x40 ..\obj\~#\~#\~#\source\com.o
+ .bss.xcpInfo   0x20000944       0x4c ..\obj\~#\~#\~#\source\xcp.o
  *(COMMON)
-                0x20000590                __bss_end__ = .
+                0x20000990                __bss_end__ = .
 
-.heap           0x20000590        0x0
-                0x20000590                __end__ = .
-                0x20000590                end = __end__
+.heap           0x20000990        0x0
+                0x20000990                __end__ = .
+                0x20000990                end = __end__
  *(.heap*)
- .heap          0x20000590        0x0 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
-                0x20000590                __HeapLimit = .
+ .heap          0x20000990        0x0 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
+                0x20000990                __HeapLimit = .
 
-.stack_dummy    0x20000590      0x800
+.stack_dummy    0x20000990      0x800
  *(.stack)
- .stack         0x20000590      0x800 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
+ .stack         0x20000990      0x800 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
                 0x20006000                __StackTop = (ORIGIN (RAM) + LENGTH (RAM))
                 0x20005800                __StackLimit = (__StackTop - SIZEOF (.stack_dummy))
                 0x20006000                PROVIDE (__stack, __StackTop)
@@ -5431,63 +5487,66 @@ OUTPUT(..\bin\openblt_xmc4700.elf elf32-littlearm)
  .ARM.attributes
                 0x000000e8       0x39 ..\obj\lib\system_xmc4700.o
  .ARM.attributes
-                0x00000121       0x39 ..\obj\lib\xmclib\src\xmc4_gpio.o
+                0x00000121       0x39 ..\obj\lib\xmclib\src\xmc4_flash.o
  .ARM.attributes
-                0x0000015a       0x39 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x0000015a       0x39 ..\obj\lib\xmclib\src\xmc4_gpio.o
  .ARM.attributes
-                0x00000193       0x39 ..\obj\lib\xmclib\src\xmc_gpio.o
+                0x00000193       0x39 ..\obj\lib\xmclib\src\xmc4_scu.o
  .ARM.attributes
-                0x000001cc       0x39 ..\obj\lib\xmclib\src\xmc_uart.o
+                0x000001cc       0x39 ..\obj\lib\xmclib\src\xmc_gpio.o
  .ARM.attributes
-                0x00000205       0x39 ..\obj\lib\xmclib\src\xmc_usic.o
+                0x00000205       0x39 ..\obj\lib\xmclib\src\xmc_uart.o
  .ARM.attributes
-                0x0000023e       0x39 ..\obj\main.o
+                0x0000023e       0x39 ..\obj\lib\xmclib\src\xmc_usic.o
  .ARM.attributes
-                0x00000277       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+                0x00000277       0x39 ..\obj\main.o
  .ARM.attributes
-                0x000002b0       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x000002b0       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
  .ARM.attributes
-                0x000002e9       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+                0x000002e9       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .ARM.attributes
-                0x00000322       0x1f ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
+                0x00000322       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
  .ARM.attributes
-                0x00000341       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+                0x0000035b       0x1f ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
  .ARM.attributes
-                0x0000037a       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+                0x0000037a       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
  .ARM.attributes
-                0x000003b3       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x000003b3       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
  .ARM.attributes
-                0x000003ec       0x39 ..\obj\~#\~#\~#\source\assert.o
+                0x000003ec       0x39 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
  .ARM.attributes
-                0x00000425       0x39 ..\obj\~#\~#\~#\source\backdoor.o
+                0x00000425       0x39 ..\obj\~#\~#\~#\source\assert.o
  .ARM.attributes
-                0x0000045e       0x39 ..\obj\~#\~#\~#\source\boot.o
+                0x0000045e       0x39 ..\obj\~#\~#\~#\source\backdoor.o
  .ARM.attributes
-                0x00000497       0x39 ..\obj\~#\~#\~#\source\com.o
+                0x00000497       0x39 ..\obj\~#\~#\~#\source\boot.o
  .ARM.attributes
-                0x000004d0       0x39 ..\obj\~#\~#\~#\source\cop.o
+                0x000004d0       0x39 ..\obj\~#\~#\~#\source\com.o
  .ARM.attributes
-                0x00000509       0x39 ..\obj\~#\~#\~#\source\xcp.o
+                0x00000509       0x39 ..\obj\~#\~#\~#\source\cop.o
  .ARM.attributes
-                0x00000542       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-exit.o)
+                0x00000542       0x39 ..\obj\~#\~#\~#\source\xcp.o
  .ARM.attributes
-                0x00000576       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
+                0x0000057b       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-exit.o)
  .ARM.attributes
-                0x000005aa       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-init.o)
+                0x000005af       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-impure.o)
  .ARM.attributes
-                0x000005de       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-memset.o)
+                0x000005e3       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-init.o)
  .ARM.attributes
-                0x00000612       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libnosys_s.a(_exit.o)
+                0x00000617       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-memset.o)
  .ARM.attributes
-                0x00000646       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+                0x0000064b       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libnosys_s.a(_exit.o)
  .ARM.attributes
-                0x0000067a       0x22 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
+                0x0000067f       0x34 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtend.o
+ .ARM.attributes
+                0x000006b3       0x22 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
 
 .comment        0x00000000       0x6e
  .comment       0x00000000       0x6e ..\obj\hooks.o
                                  0x6f (size before relaxing)
  .comment       0x0000006e       0x6f ..\obj\led.o
  .comment       0x0000006e       0x6f ..\obj\lib\system_xmc4700.o
+ .comment       0x0000006e       0x6f ..\obj\lib\xmclib\src\xmc4_flash.o
  .comment       0x0000006e       0x6f ..\obj\lib\xmclib\src\xmc4_gpio.o
  .comment       0x0000006e       0x6f ..\obj\lib\xmclib\src\xmc4_scu.o
  .comment       0x0000006e       0x6f ..\obj\lib\xmclib\src\xmc_gpio.o
@@ -5507,73 +5566,76 @@ OUTPUT(..\bin\openblt_xmc4700.elf elf32-littlearm)
  .comment       0x0000006e       0x6f ..\obj\~#\~#\~#\source\cop.o
  .comment       0x0000006e       0x6f ..\obj\~#\~#\~#\source\xcp.o
 
-.debug_info     0x00000000     0x8039
+.debug_info     0x00000000     0x8dc3
  .debug_info    0x00000000      0x318 ..\obj\hooks.o
  .debug_info    0x00000318      0x3db ..\obj\led.o
  .debug_info    0x000006f3      0x99a ..\obj\lib\system_xmc4700.o
- .debug_info    0x0000108d      0x4cf ..\obj\lib\xmclib\src\xmc4_gpio.o
- .debug_info    0x0000155c     0x22bb ..\obj\lib\xmclib\src\xmc4_scu.o
- .debug_info    0x00003817      0x44b ..\obj\lib\xmclib\src\xmc_gpio.o
- .debug_info    0x00003c62      0x8c2 ..\obj\lib\xmclib\src\xmc_uart.o
- .debug_info    0x00004524      0xe63 ..\obj\lib\xmclib\src\xmc_usic.o
- .debug_info    0x00005387      0x872 ..\obj\main.o
- .debug_info    0x00005bf9      0x211 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
- .debug_info    0x00005e0a      0x60f ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
- .debug_info    0x00006419       0x84 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
- .debug_info    0x0000649d       0xa4 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
- .debug_info    0x00006541      0x228 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
- .debug_info    0x00006769      0x11f ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
- .debug_info    0x00006888      0x987 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
- .debug_info    0x0000720f       0xf2 ..\obj\~#\~#\~#\source\assert.o
- .debug_info    0x00007301      0x114 ..\obj\~#\~#\~#\source\backdoor.o
- .debug_info    0x00007415      0x156 ..\obj\~#\~#\~#\source\boot.o
- .debug_info    0x0000756b      0x289 ..\obj\~#\~#\~#\source\com.o
- .debug_info    0x000077f4       0xb6 ..\obj\~#\~#\~#\source\cop.o
- .debug_info    0x000078aa      0x78f ..\obj\~#\~#\~#\source\xcp.o
+ .debug_info    0x0000108d      0xa00 ..\obj\lib\xmclib\src\xmc4_flash.o
+ .debug_info    0x00001a8d      0x4cf ..\obj\lib\xmclib\src\xmc4_gpio.o
+ .debug_info    0x00001f5c     0x22bb ..\obj\lib\xmclib\src\xmc4_scu.o
+ .debug_info    0x00004217      0x44b ..\obj\lib\xmclib\src\xmc_gpio.o
+ .debug_info    0x00004662      0x8c2 ..\obj\lib\xmclib\src\xmc_uart.o
+ .debug_info    0x00004f24      0xe63 ..\obj\lib\xmclib\src\xmc_usic.o
+ .debug_info    0x00005d87      0x872 ..\obj\main.o
+ .debug_info    0x000065f9      0x211 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+ .debug_info    0x0000680a      0x999 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_info    0x000071a3       0x84 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+ .debug_info    0x00007227       0xa4 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
+ .debug_info    0x000072cb      0x228 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+ .debug_info    0x000074f3      0x11f ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+ .debug_info    0x00007612      0x987 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+ .debug_info    0x00007f99       0xf2 ..\obj\~#\~#\~#\source\assert.o
+ .debug_info    0x0000808b      0x114 ..\obj\~#\~#\~#\source\backdoor.o
+ .debug_info    0x0000819f      0x156 ..\obj\~#\~#\~#\source\boot.o
+ .debug_info    0x000082f5      0x289 ..\obj\~#\~#\~#\source\com.o
+ .debug_info    0x0000857e       0xb6 ..\obj\~#\~#\~#\source\cop.o
+ .debug_info    0x00008634      0x78f ..\obj\~#\~#\~#\source\xcp.o
 
-.debug_abbrev   0x00000000     0x1e3a
+.debug_abbrev   0x00000000     0x2063
  .debug_abbrev  0x00000000      0x16d ..\obj\hooks.o
  .debug_abbrev  0x0000016d      0x188 ..\obj\led.o
  .debug_abbrev  0x000002f5      0x1c1 ..\obj\lib\system_xmc4700.o
- .debug_abbrev  0x000004b6      0x196 ..\obj\lib\xmclib\src\xmc4_gpio.o
- .debug_abbrev  0x0000064c      0x317 ..\obj\lib\xmclib\src\xmc4_scu.o
- .debug_abbrev  0x00000963      0x17e ..\obj\lib\xmclib\src\xmc_gpio.o
- .debug_abbrev  0x00000ae1      0x265 ..\obj\lib\xmclib\src\xmc_uart.o
- .debug_abbrev  0x00000d46      0x2bc ..\obj\lib\xmclib\src\xmc_usic.o
- .debug_abbrev  0x00001002      0x217 ..\obj\main.o
- .debug_abbrev  0x00001219       0xc8 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
- .debug_abbrev  0x000012e1      0x1e8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
- .debug_abbrev  0x000014c9       0x45 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
- .debug_abbrev  0x0000150e       0x14 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
- .debug_abbrev  0x00001522       0xca ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
- .debug_abbrev  0x000015ec       0xd4 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
- .debug_abbrev  0x000016c0      0x285 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
- .debug_abbrev  0x00001945       0xae ..\obj\~#\~#\~#\source\assert.o
- .debug_abbrev  0x000019f3       0x7f ..\obj\~#\~#\~#\source\backdoor.o
- .debug_abbrev  0x00001a72       0x63 ..\obj\~#\~#\~#\source\boot.o
- .debug_abbrev  0x00001ad5      0x144 ..\obj\~#\~#\~#\source\com.o
- .debug_abbrev  0x00001c19       0x63 ..\obj\~#\~#\~#\source\cop.o
- .debug_abbrev  0x00001c7c      0x1be ..\obj\~#\~#\~#\source\xcp.o
+ .debug_abbrev  0x000004b6      0x212 ..\obj\lib\xmclib\src\xmc4_flash.o
+ .debug_abbrev  0x000006c8      0x196 ..\obj\lib\xmclib\src\xmc4_gpio.o
+ .debug_abbrev  0x0000085e      0x317 ..\obj\lib\xmclib\src\xmc4_scu.o
+ .debug_abbrev  0x00000b75      0x17e ..\obj\lib\xmclib\src\xmc_gpio.o
+ .debug_abbrev  0x00000cf3      0x265 ..\obj\lib\xmclib\src\xmc_uart.o
+ .debug_abbrev  0x00000f58      0x2bc ..\obj\lib\xmclib\src\xmc_usic.o
+ .debug_abbrev  0x00001214      0x217 ..\obj\main.o
+ .debug_abbrev  0x0000142b       0xc8 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+ .debug_abbrev  0x000014f3      0x1ff ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_abbrev  0x000016f2       0x45 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+ .debug_abbrev  0x00001737       0x14 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
+ .debug_abbrev  0x0000174b       0xca ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+ .debug_abbrev  0x00001815       0xd4 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+ .debug_abbrev  0x000018e9      0x285 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+ .debug_abbrev  0x00001b6e       0xae ..\obj\~#\~#\~#\source\assert.o
+ .debug_abbrev  0x00001c1c       0x7f ..\obj\~#\~#\~#\source\backdoor.o
+ .debug_abbrev  0x00001c9b       0x63 ..\obj\~#\~#\~#\source\boot.o
+ .debug_abbrev  0x00001cfe      0x144 ..\obj\~#\~#\~#\source\com.o
+ .debug_abbrev  0x00001e42       0x63 ..\obj\~#\~#\~#\source\cop.o
+ .debug_abbrev  0x00001ea5      0x1be ..\obj\~#\~#\~#\source\xcp.o
 
-.debug_loc      0x00000000     0x2837
+.debug_loc      0x00000000     0x3119
  .debug_loc     0x00000000       0x2c ..\obj\hooks.o
  .debug_loc     0x0000002c       0xc4 ..\obj\led.o
  .debug_loc     0x000000f0       0xa8 ..\obj\lib\system_xmc4700.o
- .debug_loc     0x00000198      0x298 ..\obj\lib\xmclib\src\xmc4_gpio.o
- .debug_loc     0x00000430      0xe63 ..\obj\lib\xmclib\src\xmc4_scu.o
- .debug_loc     0x00001293       0xef ..\obj\lib\xmclib\src\xmc_gpio.o
- .debug_loc     0x00001382      0x24b ..\obj\lib\xmclib\src\xmc_uart.o
- .debug_loc     0x000015cd      0x580 ..\obj\lib\xmclib\src\xmc_usic.o
- .debug_loc     0x00001b4d       0x6c ..\obj\main.o
- .debug_loc     0x00001bb9       0xdb ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
- .debug_loc     0x00001c94      0x46c ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
- .debug_loc     0x00002100       0xa5 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
- .debug_loc     0x000021a5      0x1e6 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
- .debug_loc     0x0000238b       0x42 ..\obj\~#\~#\~#\source\assert.o
- .debug_loc     0x000023cd       0x42 ..\obj\~#\~#\~#\source\com.o
- .debug_loc     0x0000240f      0x428 ..\obj\~#\~#\~#\source\xcp.o
+ .debug_loc     0x00000198      0x627 ..\obj\lib\xmclib\src\xmc4_flash.o
+ .debug_loc     0x000007bf      0x298 ..\obj\lib\xmclib\src\xmc4_gpio.o
+ .debug_loc     0x00000a57      0xe63 ..\obj\lib\xmclib\src\xmc4_scu.o
+ .debug_loc     0x000018ba       0xef ..\obj\lib\xmclib\src\xmc_gpio.o
+ .debug_loc     0x000019a9      0x24b ..\obj\lib\xmclib\src\xmc_uart.o
+ .debug_loc     0x00001bf4      0x580 ..\obj\lib\xmclib\src\xmc_usic.o
+ .debug_loc     0x00002174       0x6c ..\obj\main.o
+ .debug_loc     0x000021e0       0xdb ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+ .debug_loc     0x000022bb      0x727 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_loc     0x000029e2       0xa5 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+ .debug_loc     0x00002a87      0x1e6 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+ .debug_loc     0x00002c6d       0x42 ..\obj\~#\~#\~#\source\assert.o
+ .debug_loc     0x00002caf       0x42 ..\obj\~#\~#\~#\source\com.o
+ .debug_loc     0x00002cf1      0x428 ..\obj\~#\~#\~#\source\xcp.o
 
-.debug_aranges  0x00000000      0x878
+.debug_aranges  0x00000000      0x968
  .debug_aranges
                 0x00000000       0x30 ..\obj\hooks.o
  .debug_aranges
@@ -5581,68 +5643,71 @@ OUTPUT(..\bin\openblt_xmc4700.elf elf32-littlearm)
  .debug_aranges
                 0x00000060       0x48 ..\obj\lib\system_xmc4700.o
  .debug_aranges
-                0x000000a8       0x28 ..\obj\lib\xmclib\src\xmc4_gpio.o
+                0x000000a8       0xe0 ..\obj\lib\xmclib\src\xmc4_flash.o
  .debug_aranges
-                0x000000d0      0x308 ..\obj\lib\xmclib\src\xmc4_scu.o
+                0x00000188       0x28 ..\obj\lib\xmclib\src\xmc4_gpio.o
  .debug_aranges
-                0x000003d8       0x28 ..\obj\lib\xmclib\src\xmc_gpio.o
+                0x000001b0      0x308 ..\obj\lib\xmclib\src\xmc4_scu.o
  .debug_aranges
-                0x00000400       0x50 ..\obj\lib\xmclib\src\xmc_uart.o
+                0x000004b8       0x28 ..\obj\lib\xmclib\src\xmc_gpio.o
  .debug_aranges
-                0x00000450       0x80 ..\obj\lib\xmclib\src\xmc_usic.o
+                0x000004e0       0x50 ..\obj\lib\xmclib\src\xmc_uart.o
  .debug_aranges
-                0x000004d0       0x30 ..\obj\main.o
+                0x00000530       0x80 ..\obj\lib\xmclib\src\xmc_usic.o
  .debug_aranges
-                0x00000500       0x38 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+                0x000005b0       0x30 ..\obj\main.o
  .debug_aranges
-                0x00000538       0x80 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                0x000005e0       0x38 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
  .debug_aranges
-                0x000005b8       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+                0x00000618       0x90 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
  .debug_aranges
-                0x000005e0       0x20 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
+                0x000006a8       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
  .debug_aranges
-                0x00000600       0x48 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+                0x000006d0       0x20 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
  .debug_aranges
-                0x00000648       0x38 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+                0x000006f0       0x48 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
  .debug_aranges
-                0x00000680       0x40 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                0x00000738       0x38 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
  .debug_aranges
-                0x000006c0       0x20 ..\obj\~#\~#\~#\source\assert.o
+                0x00000770       0x40 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
  .debug_aranges
-                0x000006e0       0x28 ..\obj\~#\~#\~#\source\backdoor.o
+                0x000007b0       0x20 ..\obj\~#\~#\~#\source\assert.o
  .debug_aranges
-                0x00000708       0x28 ..\obj\~#\~#\~#\source\boot.o
+                0x000007d0       0x28 ..\obj\~#\~#\~#\source\backdoor.o
  .debug_aranges
-                0x00000730       0x50 ..\obj\~#\~#\~#\source\com.o
+                0x000007f8       0x28 ..\obj\~#\~#\~#\source\boot.o
  .debug_aranges
-                0x00000780       0x28 ..\obj\~#\~#\~#\source\cop.o
+                0x00000820       0x50 ..\obj\~#\~#\~#\source\com.o
  .debug_aranges
-                0x000007a8       0xd0 ..\obj\~#\~#\~#\source\xcp.o
+                0x00000870       0x28 ..\obj\~#\~#\~#\source\cop.o
+ .debug_aranges
+                0x00000898       0xd0 ..\obj\~#\~#\~#\source\xcp.o
 
-.debug_ranges   0x00000000      0x708
+.debug_ranges   0x00000000      0x7e8
  .debug_ranges  0x00000000       0x20 ..\obj\hooks.o
  .debug_ranges  0x00000020       0x20 ..\obj\led.o
  .debug_ranges  0x00000040       0x38 ..\obj\lib\system_xmc4700.o
- .debug_ranges  0x00000078       0x18 ..\obj\lib\xmclib\src\xmc4_gpio.o
- .debug_ranges  0x00000090      0x2f8 ..\obj\lib\xmclib\src\xmc4_scu.o
- .debug_ranges  0x00000388       0x18 ..\obj\lib\xmclib\src\xmc_gpio.o
- .debug_ranges  0x000003a0       0x40 ..\obj\lib\xmclib\src\xmc_uart.o
- .debug_ranges  0x000003e0       0x70 ..\obj\lib\xmclib\src\xmc_usic.o
- .debug_ranges  0x00000450       0x20 ..\obj\main.o
- .debug_ranges  0x00000470       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
- .debug_ranges  0x00000498       0x70 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
- .debug_ranges  0x00000508       0x18 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
- .debug_ranges  0x00000520       0x38 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
- .debug_ranges  0x00000558       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
- .debug_ranges  0x00000580       0x30 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
- .debug_ranges  0x000005b0       0x10 ..\obj\~#\~#\~#\source\assert.o
- .debug_ranges  0x000005c0       0x18 ..\obj\~#\~#\~#\source\backdoor.o
- .debug_ranges  0x000005d8       0x18 ..\obj\~#\~#\~#\source\boot.o
- .debug_ranges  0x000005f0       0x40 ..\obj\~#\~#\~#\source\com.o
- .debug_ranges  0x00000630       0x18 ..\obj\~#\~#\~#\source\cop.o
- .debug_ranges  0x00000648       0xc0 ..\obj\~#\~#\~#\source\xcp.o
+ .debug_ranges  0x00000078       0xd0 ..\obj\lib\xmclib\src\xmc4_flash.o
+ .debug_ranges  0x00000148       0x18 ..\obj\lib\xmclib\src\xmc4_gpio.o
+ .debug_ranges  0x00000160      0x2f8 ..\obj\lib\xmclib\src\xmc4_scu.o
+ .debug_ranges  0x00000458       0x18 ..\obj\lib\xmclib\src\xmc_gpio.o
+ .debug_ranges  0x00000470       0x40 ..\obj\lib\xmclib\src\xmc_uart.o
+ .debug_ranges  0x000004b0       0x70 ..\obj\lib\xmclib\src\xmc_usic.o
+ .debug_ranges  0x00000520       0x20 ..\obj\main.o
+ .debug_ranges  0x00000540       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+ .debug_ranges  0x00000568       0x80 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_ranges  0x000005e8       0x18 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+ .debug_ranges  0x00000600       0x38 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+ .debug_ranges  0x00000638       0x28 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+ .debug_ranges  0x00000660       0x30 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+ .debug_ranges  0x00000690       0x10 ..\obj\~#\~#\~#\source\assert.o
+ .debug_ranges  0x000006a0       0x18 ..\obj\~#\~#\~#\source\backdoor.o
+ .debug_ranges  0x000006b8       0x18 ..\obj\~#\~#\~#\source\boot.o
+ .debug_ranges  0x000006d0       0x40 ..\obj\~#\~#\~#\source\com.o
+ .debug_ranges  0x00000710       0x18 ..\obj\~#\~#\~#\source\cop.o
+ .debug_ranges  0x00000728       0xc0 ..\obj\~#\~#\~#\source\xcp.o
 
-.debug_macro    0x00000000    0x1bddd
+.debug_macro    0x00000000    0x1c2a1
  .debug_macro   0x00000000      0x23f ..\obj\hooks.o
  .debug_macro   0x0000023f      0x892 ..\obj\hooks.o
  .debug_macro   0x00000ad1       0x1c ..\obj\hooks.o
@@ -5690,117 +5755,123 @@ OUTPUT(..\bin\openblt_xmc4700.elf elf32-littlearm)
  .debug_macro   0x0001a501       0x8d ..\obj\lib\system_xmc4700.o
  .debug_macro   0x0001a58e       0x4a ..\obj\lib\system_xmc4700.o
  .debug_macro   0x0001a5d8       0x35 ..\obj\lib\system_xmc4700.o
- .debug_macro   0x0001a60d      0x24c ..\obj\lib\xmclib\src\xmc4_gpio.o
- .debug_macro   0x0001a859      0x274 ..\obj\lib\xmclib\src\xmc4_scu.o
- .debug_macro   0x0001aacd      0x240 ..\obj\lib\xmclib\src\xmc_gpio.o
- .debug_macro   0x0001ad0d      0x25e ..\obj\lib\xmclib\src\xmc_uart.o
- .debug_macro   0x0001af6b       0x28 ..\obj\lib\xmclib\src\xmc_uart.o
- .debug_macro   0x0001af93      0x249 ..\obj\lib\xmclib\src\xmc_usic.o
- .debug_macro   0x0001b1dc      0x257 ..\obj\main.o
- .debug_macro   0x0001b433       0xa3 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
- .debug_macro   0x0001b4d6       0xb5 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
- .debug_macro   0x0001b58b       0x91 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
- .debug_macro   0x0001b61c       0x9b ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
- .debug_macro   0x0001b6b7       0xa9 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
- .debug_macro   0x0001b760      0x241 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
- .debug_macro   0x0001b9a1       0x91 ..\obj\~#\~#\~#\source\assert.o
- .debug_macro   0x0001ba32       0x97 ..\obj\~#\~#\~#\source\backdoor.o
- .debug_macro   0x0001bac9       0x91 ..\obj\~#\~#\~#\source\boot.o
- .debug_macro   0x0001bb5a       0x9b ..\obj\~#\~#\~#\source\com.o
- .debug_macro   0x0001bbf5       0x91 ..\obj\~#\~#\~#\source\cop.o
- .debug_macro   0x0001bc86      0x157 ..\obj\~#\~#\~#\source\xcp.o
+ .debug_macro   0x0001a60d      0x23d ..\obj\lib\xmclib\src\xmc4_flash.o
+ .debug_macro   0x0001a84a       0xda ..\obj\lib\xmclib\src\xmc4_flash.o
+ .debug_macro   0x0001a924      0x24c ..\obj\lib\xmclib\src\xmc4_gpio.o
+ .debug_macro   0x0001ab70      0x274 ..\obj\lib\xmclib\src\xmc4_scu.o
+ .debug_macro   0x0001ade4      0x240 ..\obj\lib\xmclib\src\xmc_gpio.o
+ .debug_macro   0x0001b024      0x25e ..\obj\lib\xmclib\src\xmc_uart.o
+ .debug_macro   0x0001b282       0x28 ..\obj\lib\xmclib\src\xmc_uart.o
+ .debug_macro   0x0001b2aa      0x249 ..\obj\lib\xmclib\src\xmc_usic.o
+ .debug_macro   0x0001b4f3      0x257 ..\obj\main.o
+ .debug_macro   0x0001b74a       0xa3 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+ .debug_macro   0x0001b7ed      0x262 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_macro   0x0001ba4f       0x91 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+ .debug_macro   0x0001bae0       0x9b ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+ .debug_macro   0x0001bb7b       0xa9 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+ .debug_macro   0x0001bc24      0x241 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+ .debug_macro   0x0001be65       0x91 ..\obj\~#\~#\~#\source\assert.o
+ .debug_macro   0x0001bef6       0x97 ..\obj\~#\~#\~#\source\backdoor.o
+ .debug_macro   0x0001bf8d       0x91 ..\obj\~#\~#\~#\source\boot.o
+ .debug_macro   0x0001c01e       0x9b ..\obj\~#\~#\~#\source\com.o
+ .debug_macro   0x0001c0b9       0x91 ..\obj\~#\~#\~#\source\cop.o
+ .debug_macro   0x0001c14a      0x157 ..\obj\~#\~#\~#\source\xcp.o
 
-.debug_line     0x00000000     0x499a
+.debug_line     0x00000000     0x53ef
  .debug_line    0x00000000      0x468 ..\obj\hooks.o
  .debug_line    0x00000468      0x473 ..\obj\led.o
  .debug_line    0x000008db      0x3f0 ..\obj\lib\system_xmc4700.o
- .debug_line    0x00000ccb      0x508 ..\obj\lib\xmclib\src\xmc4_gpio.o
- .debug_line    0x000011d3      0xcf3 ..\obj\lib\xmclib\src\xmc4_scu.o
- .debug_line    0x00001ec6      0x4fe ..\obj\lib\xmclib\src\xmc_gpio.o
- .debug_line    0x000023c4      0x518 ..\obj\lib\xmclib\src\xmc_uart.o
- .debug_line    0x000028dc      0x5ce ..\obj\lib\xmclib\src\xmc_usic.o
- .debug_line    0x00002eaa      0x49b ..\obj\main.o
- .debug_line    0x00003345      0x13f ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
- .debug_line    0x00003484      0x269 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
- .debug_line    0x000036ed      0x136 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
- .debug_line    0x00003823       0xf3 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
- .debug_line    0x00003916      0x16c ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
- .debug_line    0x00003a82      0x13a ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
- .debug_line    0x00003bbc      0x500 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
- .debug_line    0x000040bc      0x106 ..\obj\~#\~#\~#\source\assert.o
- .debug_line    0x000041c2      0x121 ..\obj\~#\~#\~#\source\backdoor.o
- .debug_line    0x000042e3      0x118 ..\obj\~#\~#\~#\source\boot.o
- .debug_line    0x000043fb      0x187 ..\obj\~#\~#\~#\source\com.o
- .debug_line    0x00004582      0x10e ..\obj\~#\~#\~#\source\cop.o
- .debug_line    0x00004690      0x30a ..\obj\~#\~#\~#\source\xcp.o
+ .debug_line    0x00000ccb      0x66f ..\obj\lib\xmclib\src\xmc4_flash.o
+ .debug_line    0x0000133a      0x508 ..\obj\lib\xmclib\src\xmc4_gpio.o
+ .debug_line    0x00001842      0xcf3 ..\obj\lib\xmclib\src\xmc4_scu.o
+ .debug_line    0x00002535      0x4fe ..\obj\lib\xmclib\src\xmc_gpio.o
+ .debug_line    0x00002a33      0x518 ..\obj\lib\xmclib\src\xmc_uart.o
+ .debug_line    0x00002f4b      0x5ce ..\obj\lib\xmclib\src\xmc_usic.o
+ .debug_line    0x00003519      0x49b ..\obj\main.o
+ .debug_line    0x000039b4      0x13f ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+ .debug_line    0x00003af3      0x64f ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_line    0x00004142      0x136 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+ .debug_line    0x00004278       0xf3 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cstart.o
+ .debug_line    0x0000436b      0x16c ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+ .debug_line    0x000044d7      0x13a ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+ .debug_line    0x00004611      0x500 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+ .debug_line    0x00004b11      0x106 ..\obj\~#\~#\~#\source\assert.o
+ .debug_line    0x00004c17      0x121 ..\obj\~#\~#\~#\source\backdoor.o
+ .debug_line    0x00004d38      0x118 ..\obj\~#\~#\~#\source\boot.o
+ .debug_line    0x00004e50      0x187 ..\obj\~#\~#\~#\source\com.o
+ .debug_line    0x00004fd7      0x10e ..\obj\~#\~#\~#\source\cop.o
+ .debug_line    0x000050e5      0x30a ..\obj\~#\~#\~#\source\xcp.o
 
-.debug_str      0x00000000    0x81a97
- .debug_str     0x00000000    0x7b1f5 ..\obj\hooks.o
-                              0x7b40f (size before relaxing)
- .debug_str     0x0007b1f5       0xd7 ..\obj\led.o
-                              0x7b49c (size before relaxing)
- .debug_str     0x0007b2cc      0xe64 ..\obj\lib\system_xmc4700.o
+.debug_str      0x00000000    0x82de4
+ .debug_str     0x00000000    0x7b1f7 ..\obj\hooks.o
+                              0x7b411 (size before relaxing)
+ .debug_str     0x0007b1f7       0xd7 ..\obj\led.o
+                              0x7b49e (size before relaxing)
+ .debug_str     0x0007b2ce      0xe64 ..\obj\lib\system_xmc4700.o
                               0x75a23 (size before relaxing)
- .debug_str     0x0007c130      0x4a9 ..\obj\lib\xmclib\src\xmc4_gpio.o
-                              0x7b917 (size before relaxing)
- .debug_str     0x0007c5d9     0x24ff ..\obj\lib\xmclib\src\xmc4_scu.o
-                              0x78170 (size before relaxing)
- .debug_str     0x0007ead8       0x8c ..\obj\lib\xmclib\src\xmc_gpio.o
-                              0x7b792 (size before relaxing)
- .debug_str     0x0007eb64     0x15bb ..\obj\lib\xmclib\src\xmc_uart.o
-                              0x77505 (size before relaxing)
- .debug_str     0x0008011f      0x975 ..\obj\lib\xmclib\src\xmc_usic.o
-                              0x77d6c (size before relaxing)
- .debug_str     0x00080a94       0x70 ..\obj\main.o
-                              0x7c774 (size before relaxing)
- .debug_str     0x00080b04      0x1c9 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
-                               0x2fb4 (size before relaxing)
- .debug_str     0x00080ccd      0x2a6 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
-                               0x30c5 (size before relaxing)
- .debug_str     0x00080f73       0x2e ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+ .debug_str     0x0007c132     0x1221 ..\obj\lib\xmclib\src\xmc4_flash.o
+                              0x76ba5 (size before relaxing)
+ .debug_str     0x0007d353      0x49b ..\obj\lib\xmclib\src\xmc4_gpio.o
+                              0x7b919 (size before relaxing)
+ .debug_str     0x0007d7ee     0x24ed ..\obj\lib\xmclib\src\xmc4_scu.o
+                              0x78172 (size before relaxing)
+ .debug_str     0x0007fcdb       0x8c ..\obj\lib\xmclib\src\xmc_gpio.o
+                              0x7b794 (size before relaxing)
+ .debug_str     0x0007fd67     0x15bb ..\obj\lib\xmclib\src\xmc_uart.o
+                              0x77507 (size before relaxing)
+ .debug_str     0x00081322      0x975 ..\obj\lib\xmclib\src\xmc_usic.o
+                              0x77d6e (size before relaxing)
+ .debug_str     0x00081c97       0x70 ..\obj\main.o
+                              0x7c776 (size before relaxing)
+ .debug_str     0x00081d07      0x1c9 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+                               0x2fb6 (size before relaxing)
+ .debug_str     0x00081ed0      0x3f9 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+                              0x76965 (size before relaxing)
+ .debug_str     0x000822c9       0x2e ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+                               0x2e08 (size before relaxing)
+ .debug_str     0x000822f7       0x47 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+                               0x2ed9 (size before relaxing)
+ .debug_str     0x0008233e      0x121 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+                               0x2f04 (size before relaxing)
+ .debug_str     0x0008245f      0x23a ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+                              0x76cb5 (size before relaxing)
+ .debug_str     0x00082699       0x4d ..\obj\~#\~#\~#\source\assert.o
+                               0x2e3a (size before relaxing)
+ .debug_str     0x000826e6       0x86 ..\obj\~#\~#\~#\source\backdoor.o
+                               0x2e76 (size before relaxing)
+ .debug_str     0x0008276c       0x32 ..\obj\~#\~#\~#\source\boot.o
+                               0x2e4f (size before relaxing)
+ .debug_str     0x0008279e      0x102 ..\obj\~#\~#\~#\source\com.o
+                               0x2f61 (size before relaxing)
+ .debug_str     0x000828a0       0x19 ..\obj\~#\~#\~#\source\cop.o
                                0x2e06 (size before relaxing)
- .debug_str     0x00080fa1       0x50 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
-                               0x2ed7 (size before relaxing)
- .debug_str     0x00080ff1      0x121 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
-                               0x2f02 (size before relaxing)
- .debug_str     0x00081112      0x23a ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
-                              0x76cb3 (size before relaxing)
- .debug_str     0x0008134c       0x4d ..\obj\~#\~#\~#\source\assert.o
-                               0x2e38 (size before relaxing)
- .debug_str     0x00081399       0x86 ..\obj\~#\~#\~#\source\backdoor.o
-                               0x2e74 (size before relaxing)
- .debug_str     0x0008141f       0x32 ..\obj\~#\~#\~#\source\boot.o
-                               0x2e4d (size before relaxing)
- .debug_str     0x00081451      0x102 ..\obj\~#\~#\~#\source\com.o
-                               0x2f5f (size before relaxing)
- .debug_str     0x00081553       0x19 ..\obj\~#\~#\~#\source\cop.o
-                               0x2e04 (size before relaxing)
- .debug_str     0x0008156c      0x52b ..\obj\~#\~#\~#\source\xcp.o
-                               0x33fa (size before relaxing)
+ .debug_str     0x000828b9      0x52b ..\obj\~#\~#\~#\source\xcp.o
+                               0x33fc (size before relaxing)
 
-.debug_frame    0x00000000     0x12c0
+.debug_frame    0x00000000     0x1588
  .debug_frame   0x00000000       0x58 ..\obj\hooks.o
  .debug_frame   0x00000058       0x48 ..\obj\led.o
  .debug_frame   0x000000a0       0x94 ..\obj\lib\system_xmc4700.o
- .debug_frame   0x00000134       0x4c ..\obj\lib\xmclib\src\xmc4_gpio.o
- .debug_frame   0x00000180      0x6ec ..\obj\lib\xmclib\src\xmc4_scu.o
- .debug_frame   0x0000086c       0x48 ..\obj\lib\xmclib\src\xmc_gpio.o
- .debug_frame   0x000008b4       0x98 ..\obj\lib\xmclib\src\xmc_uart.o
- .debug_frame   0x0000094c      0x158 ..\obj\lib\xmclib\src\xmc_usic.o
- .debug_frame   0x00000aa4       0x64 ..\obj\main.o
- .debug_frame   0x00000b08       0x74 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
- .debug_frame   0x00000b7c      0x144 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
- .debug_frame   0x00000cc0       0x30 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
- .debug_frame   0x00000cf0       0xa0 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
- .debug_frame   0x00000d90       0x60 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
- .debug_frame   0x00000df0       0xa0 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
- .debug_frame   0x00000e90       0x28 ..\obj\~#\~#\~#\source\assert.o
- .debug_frame   0x00000eb8       0x40 ..\obj\~#\~#\~#\source\backdoor.o
- .debug_frame   0x00000ef8       0x40 ..\obj\~#\~#\~#\source\boot.o
- .debug_frame   0x00000f38       0xa0 ..\obj\~#\~#\~#\source\com.o
- .debug_frame   0x00000fd8       0x40 ..\obj\~#\~#\~#\source\cop.o
- .debug_frame   0x00001018      0x214 ..\obj\~#\~#\~#\source\xcp.o
- .debug_frame   0x0000122c       0x28 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-exit.o)
- .debug_frame   0x00001254       0x2c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-init.o)
- .debug_frame   0x00001280       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-memset.o)
- .debug_frame   0x000012a0       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libnosys_s.a(_exit.o)
+ .debug_frame   0x00000134      0x264 ..\obj\lib\xmclib\src\xmc4_flash.o
+ .debug_frame   0x00000398       0x4c ..\obj\lib\xmclib\src\xmc4_gpio.o
+ .debug_frame   0x000003e4      0x6ec ..\obj\lib\xmclib\src\xmc4_scu.o
+ .debug_frame   0x00000ad0       0x48 ..\obj\lib\xmclib\src\xmc_gpio.o
+ .debug_frame   0x00000b18       0x98 ..\obj\lib\xmclib\src\xmc_uart.o
+ .debug_frame   0x00000bb0      0x158 ..\obj\lib\xmclib\src\xmc_usic.o
+ .debug_frame   0x00000d08       0x64 ..\obj\main.o
+ .debug_frame   0x00000d6c       0x74 ..\obj\~#\~#\~#\source\armcm4_xmc4\cpu.o
+ .debug_frame   0x00000de0      0x1a8 ..\obj\~#\~#\~#\source\armcm4_xmc4\flash.o
+ .debug_frame   0x00000f88       0x30 ..\obj\~#\~#\~#\source\armcm4_xmc4\gcc\cpu_comp.o
+ .debug_frame   0x00000fb8       0xa0 ..\obj\~#\~#\~#\source\armcm4_xmc4\nvm.o
+ .debug_frame   0x00001058       0x60 ..\obj\~#\~#\~#\source\armcm4_xmc4\timer.o
+ .debug_frame   0x000010b8       0xa0 ..\obj\~#\~#\~#\source\armcm4_xmc4\uart.o
+ .debug_frame   0x00001158       0x28 ..\obj\~#\~#\~#\source\assert.o
+ .debug_frame   0x00001180       0x40 ..\obj\~#\~#\~#\source\backdoor.o
+ .debug_frame   0x000011c0       0x40 ..\obj\~#\~#\~#\source\boot.o
+ .debug_frame   0x00001200       0xa0 ..\obj\~#\~#\~#\source\com.o
+ .debug_frame   0x000012a0       0x40 ..\obj\~#\~#\~#\source\cop.o
+ .debug_frame   0x000012e0      0x214 ..\obj\~#\~#\~#\source\xcp.o
+ .debug_frame   0x000014f4       0x28 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-exit.o)
+ .debug_frame   0x0000151c       0x2c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-init.o)
+ .debug_frame   0x00001548       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libg_n.a(lib_a-memset.o)
+ .debug_frame   0x00001568       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu\libnosys_s.a(_exit.o)

@@ -86,118 +86,119 @@ __isr_vector:
     .long    SysTick_Handler       /* SysTick Handler */
 
                 // External Interrupts
-    .long    SCU_0_IRQHandler            // Handler name for SR SCU_0     
-    .long    ERU0_0_IRQHandler           // Handler name for SR ERU0_0    
-    .long    ERU0_1_IRQHandler           // Handler name for SR ERU0_1    
-    .long    ERU0_2_IRQHandler           // Handler name for SR ERU0_2    
-    .long    ERU0_3_IRQHandler           // Handler name for SR ERU0_3     
-    .long    ERU1_0_IRQHandler           // Handler name for SR ERU1_0    
-    .long    ERU1_1_IRQHandler           // Handler name for SR ERU1_1    
-    .long    ERU1_2_IRQHandler           // Handler name for SR ERU1_2    
-    .long    ERU1_3_IRQHandler           // Handler name for SR ERU1_3    
+    .long    SCU_0_IRQHandler            // Handler name for SR SCU_0
+    .long    ERU0_0_IRQHandler           // Handler name for SR ERU0_0
+    .long    ERU0_1_IRQHandler           // Handler name for SR ERU0_1
+    .long    ERU0_2_IRQHandler           // Handler name for SR ERU0_2
+    .long    ERU0_3_IRQHandler           // Handler name for SR ERU0_3
+    .long    ERU1_0_IRQHandler           // Handler name for SR ERU1_0
+    .long    ERU1_1_IRQHandler           // Handler name for SR ERU1_1
+    .long    ERU1_2_IRQHandler           // Handler name for SR ERU1_2
+    .long    ERU1_3_IRQHandler           // Handler name for SR ERU1_3
+    .long    0                           // Not Available
+    .long    0                           // Not Available
+    .long    0                           // Not Available
+    .long    PMU0_0_IRQHandler           // Handler name for SR PMU0_0
+    .long    0                           // Not Available
+    .long    VADC0_C0_0_IRQHandler       // Handler name for SR VADC0_C0_0
+    .long    VADC0_C0_1_IRQHandler       // Handler name for SR VADC0_C0_1
+    .long    VADC0_C0_2_IRQHandler       // Handler name for SR VADC0_C0_1
+    .long    VADC0_C0_3_IRQHandler       // Handler name for SR VADC0_C0_3
+    .long    VADC0_G0_0_IRQHandler       // Handler name for SR VADC0_G0_0
+    .long    VADC0_G0_1_IRQHandler       // Handler name for SR VADC0_G0_1
+    .long    VADC0_G0_2_IRQHandler       // Handler name for SR VADC0_G0_2
+    .long    VADC0_G0_3_IRQHandler       // Handler name for SR VADC0_G0_3
+    .long    VADC0_G1_0_IRQHandler       // Handler name for SR VADC0_G1_0
+    .long    VADC0_G1_1_IRQHandler       // Handler name for SR VADC0_G1_1
+    .long    VADC0_G1_2_IRQHandler       // Handler name for SR VADC0_G1_2
+    .long    VADC0_G1_3_IRQHandler       // Handler name for SR VADC0_G1_3
+    .long    VADC0_G2_0_IRQHandler       // Handler name for SR VADC0_G2_0
+    .long    VADC0_G2_1_IRQHandler       // Handler name for SR VADC0_G2_1
+    .long    VADC0_G2_2_IRQHandler       // Handler name for SR VADC0_G2_2
+    .long    VADC0_G2_3_IRQHandler       // Handler name for SR VADC0_G2_3
+    .long    VADC0_G3_0_IRQHandler       // Handler name for SR VADC0_G3_0
+    .long    VADC0_G3_1_IRQHandler       // Handler name for SR VADC0_G3_1
+    .long    VADC0_G3_2_IRQHandler       // Handler name for SR VADC0_G3_2
+    .long    VADC0_G3_3_IRQHandler       // Handler name for SR VADC0_G3_3
+    .long    DSD0_0_IRQHandler           // Handler name for SR DSD0_0
+    .long    DSD0_1_IRQHandler           // Handler name for SR DSD0_1
+    .long    DSD0_2_IRQHandler           // Handler name for SR DSD0_2
+    .long    DSD0_3_IRQHandler           // Handler name for SR DSD0_3
+    .long    DSD0_4_IRQHandler           // Handler name for SR DSD0_4
+    .long    DSD0_5_IRQHandler           // Handler name for SR DSD0_5
+    .long    DSD0_6_IRQHandler           // Handler name for SR DSD0_6
+    .long    DSD0_7_IRQHandler           // Handler name for SR DSD0_7
+    .long    DAC0_0_IRQHandler           // Handler name for SR DAC0_0
+    .long    DAC0_1_IRQHandler           // Handler name for SR DAC0_0
+    .long    CCU40_0_IRQHandler          // Handler name for SR CCU40_0
+    .long    CCU40_1_IRQHandler          // Handler name for SR CCU40_1
+    .long    CCU40_2_IRQHandler          // Handler name for SR CCU40_2
+    .long    CCU40_3_IRQHandler          // Handler name for SR CCU40_3
+    .long    CCU41_0_IRQHandler          // Handler name for SR CCU41_0
+    .long    CCU41_1_IRQHandler          // Handler name for SR CCU41_1
+    .long    CCU41_2_IRQHandler          // Handler name for SR CCU41_2
+    .long    CCU41_3_IRQHandler          // Handler name for SR CCU41_3
+    .long    CCU42_0_IRQHandler          // Handler name for SR CCU42_0
+    .long    CCU42_1_IRQHandler          // Handler name for SR CCU42_1
+    .long    CCU42_2_IRQHandler          // Handler name for SR CCU42_2
+    .long    CCU42_3_IRQHandler          // Handler name for SR CCU42_3
+    .long    CCU43_0_IRQHandler          // Handler name for SR CCU43_0
+    .long    CCU43_1_IRQHandler          // Handler name for SR CCU43_1
+    .long    CCU43_2_IRQHandler          // Handler name for SR CCU43_2
+    .long    CCU43_3_IRQHandler          // Handler name for SR CCU43_3
+    .long    CCU80_0_IRQHandler          // Handler name for SR CCU80_0
+    .long    CCU80_1_IRQHandler          // Handler name for SR CCU80_1
+    .long    CCU80_2_IRQHandler          // Handler name for SR CCU80_2
+    .long    CCU80_3_IRQHandler          // Handler name for SR CCU80_3
+    .long    CCU81_0_IRQHandler          // Handler name for SR CCU81_0
+    .long    CCU81_1_IRQHandler          // Handler name for SR CCU81_1
+    .long    CCU81_2_IRQHandler          // Handler name for SR CCU81_2
+    .long    CCU81_3_IRQHandler          // Handler name for SR CCU81_3
+    .long    POSIF0_0_IRQHandler         // Handler name for SR POSIF0_0
+    .long    POSIF0_1_IRQHandler         // Handler name for SR POSIF0_1
+    .long    POSIF1_0_IRQHandler         // Handler name for SR POSIF1_0
+    .long    POSIF1_1_IRQHandler         // Handler name for SR POSIF1_1
+    .long    0                           // Not Available
+    .long    0                           // Not Available
+    .long    0                           // Not Available
+    .long    0                           // Not Available
+    .long    CAN0_0_IRQHandler           // Handler name for SR CAN0_0
+    .long    CAN0_1_IRQHandler           // Handler name for SR CAN0_1
+    .long    CAN0_2_IRQHandler           // Handler name for SR CAN0_2
+    .long    CAN0_3_IRQHandler           // Handler name for SR CAN0_3
+    .long    CAN0_4_IRQHandler           // Handler name for SR CAN0_4
+    .long    CAN0_5_IRQHandler           // Handler name for SR CAN0_5
+    .long    CAN0_6_IRQHandler           // Handler name for SR CAN0_6
+    .long    CAN0_7_IRQHandler           // Handler name for SR CAN0_7
+    .long    USIC0_0_IRQHandler          // Handler name for SR USIC0_0
+    .long    USIC0_1_IRQHandler          // Handler name for SR USIC0_1
+    .long    USIC0_2_IRQHandler          // Handler name for SR USIC0_2
+    .long    USIC0_3_IRQHandler          // Handler name for SR USIC0_3
+    .long    USIC0_4_IRQHandler          // Handler name for SR USIC0_4
+    .long    USIC0_5_IRQHandler          // Handler name for SR USIC0_5
+    .long    USIC1_0_IRQHandler          // Handler name for SR USIC1_0
+    .long    USIC1_1_IRQHandler          // Handler name for SR USIC1_1
+    .long    USIC1_2_IRQHandler          // Handler name for SR USIC1_2
+    .long    USIC1_3_IRQHandler          // Handler name for SR USIC1_3
+    .long    USIC1_4_IRQHandler          // Handler name for SR USIC1_4
+    .long    USIC1_5_IRQHandler          // Handler name for SR USIC1_5
+    .long    USIC2_0_IRQHandler          // Handler name for SR USIC2_0
+    .long    USIC2_1_IRQHandler          // Handler name for SR USIC2_1
+    .long    USIC2_2_IRQHandler          // Handler name for SR USIC2_2
+    .long    USIC2_3_IRQHandler          // Handler name for SR USIC2_3
+    .long    USIC2_4_IRQHandler          // Handler name for SR USIC2_4
+    .long    USIC2_5_IRQHandler          // Handler name for SR USIC2_5
+    .long    LEDTS0_0_IRQHandler         // Handler name for SR LEDTS0_0
+    .long    0                           // Not Available
+    .long    FCE0_0_IRQHandler           // Handler name for SR FCE0_0
+    .long    GPDMA0_0_IRQHandler         // Handler name for SR GPDMA0_0
+    .long    SDMMC0_0_IRQHandler         // Handler name for SR SDMMC0_0
+    .long    USB0_0_IRQHandler           // Handler name for SR USB0_0
+    .long    ETH0_0_IRQHandler           // Handler name for SR ETH0_0
+    .long    0                           // Not Available
+    .long    GPDMA1_0_IRQHandler         // Handler name for SR GPDMA1_0
     .long    0                           // Not Available                 
-    .long    0                           // Not Available                 
-    .long    0                           // Not Available                 
-    .long    PMU0_0_IRQHandler           // Handler name for SR PMU0_0    
-    .long    0                           // Not Available                 
-    .long    VADC0_C0_0_IRQHandler       // Handler name for SR VADC0_C0_0  
-    .long    VADC0_C0_1_IRQHandler       // Handler name for SR VADC0_C0_1  
-    .long    VADC0_C0_2_IRQHandler       // Handler name for SR VADC0_C0_1  
-    .long    VADC0_C0_3_IRQHandler       // Handler name for SR VADC0_C0_3  
-    .long    VADC0_G0_0_IRQHandler       // Handler name for SR VADC0_G0_0  
-    .long    VADC0_G0_1_IRQHandler       // Handler name for SR VADC0_G0_1  
-    .long    VADC0_G0_2_IRQHandler       // Handler name for SR VADC0_G0_2  
-    .long    VADC0_G0_3_IRQHandler       // Handler name for SR VADC0_G0_3  
-    .long    VADC0_G1_0_IRQHandler       // Handler name for SR VADC0_G1_0  
-    .long    VADC0_G1_1_IRQHandler       // Handler name for SR VADC0_G1_1  
-    .long    VADC0_G1_2_IRQHandler       // Handler name for SR VADC0_G1_2  
-    .long    VADC0_G1_3_IRQHandler       // Handler name for SR VADC0_G1_3  
-    .long    VADC0_G2_0_IRQHandler       // Handler name for SR VADC0_G2_0  
-    .long    VADC0_G2_1_IRQHandler       // Handler name for SR VADC0_G2_1  
-    .long    VADC0_G2_2_IRQHandler       // Handler name for SR VADC0_G2_2  
-    .long    VADC0_G2_3_IRQHandler       // Handler name for SR VADC0_G2_3  
-    .long    VADC0_G3_0_IRQHandler       // Handler name for SR VADC0_G3_0  
-    .long    VADC0_G3_1_IRQHandler       // Handler name for SR VADC0_G3_1  
-    .long    VADC0_G3_2_IRQHandler       // Handler name for SR VADC0_G3_2  
-    .long    VADC0_G3_3_IRQHandler       // Handler name for SR VADC0_G3_3  
-    .long    DSD0_0_IRQHandler           // Handler name for SR DSD0_0    
-    .long    DSD0_1_IRQHandler           // Handler name for SR DSD0_1    
-    .long    DSD0_2_IRQHandler           // Handler name for SR DSD0_2    
-    .long    DSD0_3_IRQHandler           // Handler name for SR DSD0_3    
-    .long    DSD0_4_IRQHandler           // Handler name for SR DSD0_4    
-    .long    DSD0_5_IRQHandler           // Handler name for SR DSD0_5    
-    .long    DSD0_6_IRQHandler           // Handler name for SR DSD0_6    
-    .long    DSD0_7_IRQHandler           // Handler name for SR DSD0_7    
-    .long    DAC0_0_IRQHandler           // Handler name for SR DAC0_0    
-    .long    DAC0_1_IRQHandler           // Handler name for SR DAC0_0    
-    .long    CCU40_0_IRQHandler          // Handler name for SR CCU40_0   
-    .long    CCU40_1_IRQHandler          // Handler name for SR CCU40_1   
-    .long    CCU40_2_IRQHandler          // Handler name for SR CCU40_2   
-    .long    CCU40_3_IRQHandler          // Handler name for SR CCU40_3   
-    .long    CCU41_0_IRQHandler          // Handler name for SR CCU41_0   
-    .long    CCU41_1_IRQHandler          // Handler name for SR CCU41_1   
-    .long    CCU41_2_IRQHandler          // Handler name for SR CCU41_2   
-    .long    CCU41_3_IRQHandler          // Handler name for SR CCU41_3   
-    .long    CCU42_0_IRQHandler          // Handler name for SR CCU42_0   
-    .long    CCU42_1_IRQHandler          // Handler name for SR CCU42_1   
-    .long    CCU42_2_IRQHandler          // Handler name for SR CCU42_2   
-    .long    CCU42_3_IRQHandler          // Handler name for SR CCU42_3   
-    .long    CCU43_0_IRQHandler          // Handler name for SR CCU43_0   
-    .long    CCU43_1_IRQHandler          // Handler name for SR CCU43_1   
-    .long    CCU43_2_IRQHandler          // Handler name for SR CCU43_2   
-    .long    CCU43_3_IRQHandler          // Handler name for SR CCU43_3   
-    .long    CCU80_0_IRQHandler          // Handler name for SR CCU80_0   
-    .long    CCU80_1_IRQHandler          // Handler name for SR CCU80_1   
-    .long    CCU80_2_IRQHandler          // Handler name for SR CCU80_2   
-    .long    CCU80_3_IRQHandler          // Handler name for SR CCU80_3   
-    .long    CCU81_0_IRQHandler          // Handler name for SR CCU81_0   
-    .long    CCU81_1_IRQHandler          // Handler name for SR CCU81_1   
-    .long    CCU81_2_IRQHandler          // Handler name for SR CCU81_2   
-    .long    CCU81_3_IRQHandler          // Handler name for SR CCU81_3   
-    .long    POSIF0_0_IRQHandler         // Handler name for SR POSIF0_0  
-    .long    POSIF0_1_IRQHandler         // Handler name for SR POSIF0_1  
-    .long    POSIF1_0_IRQHandler         // Handler name for SR POSIF1_0  
-    .long    POSIF1_1_IRQHandler         // Handler name for SR POSIF1_1  
-    .long    0                           // Not Available                 
-    .long    0                           // Not Available                 
-    .long    0                           // Not Available                 
-    .long    0                           // Not Available                 
-    .long    CAN0_0_IRQHandler           // Handler name for SR CAN0_0    
-    .long    CAN0_1_IRQHandler           // Handler name for SR CAN0_1    
-    .long    CAN0_2_IRQHandler           // Handler name for SR CAN0_2    
-    .long    CAN0_3_IRQHandler           // Handler name for SR CAN0_3    
-    .long    CAN0_4_IRQHandler           // Handler name for SR CAN0_4    
-    .long    CAN0_5_IRQHandler           // Handler name for SR CAN0_5    
-    .long    CAN0_6_IRQHandler           // Handler name for SR CAN0_6    
-    .long    CAN0_7_IRQHandler           // Handler name for SR CAN0_7    
-    .long    USIC0_0_IRQHandler          // Handler name for SR USIC0_0   
-    .long    USIC0_1_IRQHandler          // Handler name for SR USIC0_1   
-    .long    USIC0_2_IRQHandler          // Handler name for SR USIC0_2   
-    .long    USIC0_3_IRQHandler          // Handler name for SR USIC0_3   
-    .long    USIC0_4_IRQHandler          // Handler name for SR USIC0_4   
-    .long    USIC0_5_IRQHandler          // Handler name for SR USIC0_5   
-    .long    USIC1_0_IRQHandler          // Handler name for SR USIC1_0   
-    .long    USIC1_1_IRQHandler          // Handler name for SR USIC1_1   
-    .long    USIC1_2_IRQHandler          // Handler name for SR USIC1_2   
-    .long    USIC1_3_IRQHandler          // Handler name for SR USIC1_3   
-    .long    USIC1_4_IRQHandler          // Handler name for SR USIC1_4   
-    .long    USIC1_5_IRQHandler          // Handler name for SR USIC1_5   
-    .long    USIC2_0_IRQHandler          // Handler name for SR USIC2_0   
-    .long    USIC2_1_IRQHandler          // Handler name for SR USIC2_1   
-    .long    USIC2_2_IRQHandler          // Handler name for SR USIC2_2   
-    .long    USIC2_3_IRQHandler          // Handler name for SR USIC2_3   
-    .long    USIC2_4_IRQHandler          // Handler name for SR USIC2_4   
-    .long    USIC2_5_IRQHandler          // Handler name for SR USIC2_5   
-    .long    LEDTS0_0_IRQHandler         // Handler name for SR LEDTS0_0  
-    .long    0                           // Not Available                 
-    .long    FCE0_0_IRQHandler           // Handler name for SR FCE0_0    
-    .long    GPDMA0_0_IRQHandler         // Handler name for SR GPDMA0_0  
-    .long    SDMMC0_0_IRQHandler         // Handler name for SR SDMMC0_0  
-    .long    USB0_0_IRQHandler           // Handler name for SR USB0_0    
-    .long    ETH0_0_IRQHandler           // Handler name for SR ETH0_0    
-    .long    0                           // Not Available                 
-    .long    GPDMA1_0_IRQHandler         // Handler name for SR GPDMA1_0  
-    .long    0                           // Not Available                 
+    .long    0x55AA11EE                  // Reserved for OpenBLT checksum
 
     .size    __isr_vector, . - __isr_vector
 
@@ -211,7 +212,7 @@ Reset_Handler:
 /* Initialize the stackpointer. this is done automatically after a reset event, but
  * this program is started by the bootloader and not a reset event. */
     ldr    r1, =__StackTop
-    mov    sp, r1    
+    mov    sp, r1
 
 /*     Loop to copy data from read only memory to RAM. The ranges
  *      of copy from/to are specified by following symbols evaluated in

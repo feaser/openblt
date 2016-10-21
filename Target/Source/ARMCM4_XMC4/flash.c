@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "xmc_flash.h"                           /* Flash driver header                */
 
 
 /****************************************************************************************
@@ -39,8 +40,10 @@
 #define FLASH_INVALID_SECTOR            (0xff)
 /** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
-/** \brief Standard size of a flash block for writing. */
-#define FLASH_WRITE_BLOCK_SIZE          (512)
+/** \brief Standard size of a flash block for writing. It should be large enough so that
+ *         the OpenBLT checksum fits in the first (boot) block)
+ */
+#define FLASH_WRITE_BLOCK_SIZE          (1024)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 /** \brief Offset into the user program's vector table where the checksum is located.
@@ -54,6 +57,29 @@
 #define FLASH_VECTOR_TABLE_CS_OFFSET    (0x200)
 #endif
 
+/** \brief Minimum amount of bytes that can be programmed to flash at a time. It is
+ *         hardware dependent.
+ */
+#define FLASH_WRITE_PAGE_SIZE           (256)
+
+/** \brief Base address in the memory map for uncached flash. It is hardware dependent.
+ */
+#define FLASH_UNCACHED_BASE_ADDR        (0x0C000000U)
+
+/** \brief Base address in the memory map for cached flash. It is hardware dependent.
+ */
+#define FLASH_CACHED_BASE_ADDR          (0x08000000U)
+
+/** \brief Maximum time for a sector erase operation as specified by the XCM4xxx data-
+ *         sheet with an added 20% margin.
+ */
+#define FLASH_ERASE_TIME_MAX_MS         (6600)
+
+/** \brief Maximum time for a page program operation as specified by the XCM4xxx data-
+ *         sheet with an added 20% margin.
+ */
+#define FLASH_PROGRAM_TIME_MAX_MS       (13)
+
 
 /****************************************************************************************
 * Plausibility checks
@@ -64,6 +90,10 @@
 
 #ifndef BOOT_FLASH_CUSTOM_LAYOUT_ENABLE
 #define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (0u)
+#endif
+
+#if ((FLASH_WRITE_BLOCK_SIZE % FLASH_WRITE_PAGE_SIZE) != 0)
+#error "FLASH_WRITE_BLOCK_SIZE must be a multiple of FLASH_WRITE_PAGE_SIZE."
 #endif
 
 
@@ -102,6 +132,8 @@ static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
 static blt_int8u FlashGetSector(blt_addr address);
+static blt_addr  FlashGetSectorBaseAddr(blt_int8u sector);
+static blt_addr  FlashTranslateToNonCachedAddress(blt_addr address);
 
 
 /****************************************************************************************
@@ -120,6 +152,10 @@ static blt_int8u FlashGetSector(blt_addr address);
  *  \details Also controls what part of the flash memory is reserved for the bootloader.
  *           If the bootloader size changes, the reserved sectors for the bootloader
  *           might need adjustment to make sure the bootloader doesn't get overwritten.
+ *           Note that the table contains uncached addresses, because flash program/
+ *           erase operations need to be performed on uncached addresses. This flash
+ *           driver automatically translated cached to uncached addresses, so there
+ *           is no need for the user to adjust this when calling this driver's API.
  */
 static const tFlashSector flashLayout[] =
 {
@@ -128,27 +164,27 @@ static const tFlashSector flashLayout[] =
    * the bootloader fits in it. this is needed to protect the bootloader from being
    * overwritten during a firmware update.
    */
-  /* { 0x08000000, 0x04000,  0},           flash sector  0 - reserved for bootloader   */
-  { 0x08004000, 0x04000,  1},           /* flash sector  1 -  16kb                     */
-  { 0x08008000, 0x04000,  2},           /* flash sector  2 -  16kb                     */
-  { 0x0800c000, 0x04000,  3},           /* flash sector  3 -  16kb                     */
-  { 0x08010000, 0x04000,  4},           /* flash sector  4 -  16kb                     */
-  { 0x08014000, 0x04000,  5},           /* flash sector  5 -  16kb                     */
-  { 0x08018000, 0x04000,  6},           /* flash sector  6 -  16kb                     */
-  { 0x0801c000, 0x04000,  7},           /* flash sector  7 -  16kb                     */
-  { 0x08020000, 0x20000,  8},           /* flash sector  8 -  128kb                    */
+  /* { 0x0c000000, 0x04000,  0},           flash sector  0 - reserved for bootloader   */
+  { 0x0c004000, 0x04000,  1},           /* flash sector  1 -  16kb                     */
+  { 0x0c008000, 0x04000,  2},           /* flash sector  2 -  16kb                     */
+  { 0x0c00c000, 0x04000,  3},           /* flash sector  3 -  16kb                     */
+  { 0x0c010000, 0x04000,  4},           /* flash sector  4 -  16kb                     */
+  { 0x0c014000, 0x04000,  5},           /* flash sector  5 -  16kb                     */
+  { 0x0c018000, 0x04000,  6},           /* flash sector  6 -  16kb                     */
+  { 0x0c01c000, 0x04000,  7},           /* flash sector  7 -  16kb                     */
+  { 0x0c020000, 0x20000,  8},           /* flash sector  8 -  128kb                    */
 #if (BOOT_NVM_SIZE_KB > 256)
-  { 0x08040000, 0x40000,  9},           /* flash sector  9 -  256kb                    */
+  { 0x0c040000, 0x40000,  9},           /* flash sector  9 -  256kb                    */
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
-  { 0x08080000, 0x40000, 10},           /* flash sector 10 -  256kb                    */
-  { 0x080C0000, 0x40000, 11},           /* flash sector 11 -  256kb                    */
+  { 0x0c080000, 0x40000, 10},           /* flash sector 10 -  256kb                    */
+  { 0x0c0C0000, 0x40000, 11},           /* flash sector 11 -  256kb                    */
 #endif
 #if (BOOT_NVM_SIZE_KB > 1024)
-  { 0x08100000, 0x40000, 12},           /* flash sector 12 -  256kb                    */
-  { 0x08140000, 0x40000, 13},           /* flash sector 13 -  256kb                    */
-  { 0x08180000, 0x40000, 14},           /* flash sector 14 -  256kb                    */
-  { 0x081C0000, 0x40000, 15},           /* flash sector 15 -  256kb                    */
+  { 0x0c100000, 0x40000, 12},           /* flash sector 12 -  256kb                    */
+  { 0x0c140000, 0x40000, 13},           /* flash sector 13 -  256kb                    */
+  { 0x0c180000, 0x40000, 14},           /* flash sector 14 -  256kb                    */
+  { 0x0c1C0000, 0x40000, 15},           /* flash sector 15 -  256kb                    */
 #endif
 #if (BOOT_NVM_SIZE_KB > 2048)
 #error "BOOT_NVM_SIZE_KB > 2048 is currently not supported."
@@ -221,6 +257,9 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 {
   blt_addr base_addr;
 
+  /* automatically translate cached memory addresses to non-cached */
+  addr = FlashTranslateToNonCachedAddress(addr);
+
   /* make sure the addresses are within the flash device */
   if ((FlashGetSector(addr) == FLASH_INVALID_SECTOR) || \
       (FlashGetSector(addr+len-1) == FLASH_INVALID_SECTOR))
@@ -254,6 +293,9 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
   blt_int8u first_sector;
   blt_int8u last_sector;
 
+  /* automatically translate cached memory addresses to non-cached */
+  addr = FlashTranslateToNonCachedAddress(addr);
+
   /* obtain the first and last sector number */
   first_sector = FlashGetSector(addr);
   last_sector  = FlashGetSector(addr+len-1);
@@ -284,13 +326,13 @@ blt_bool FlashWriteChecksum(void)
    * sum of the first 7 exception addresses.
    *
    * Layout of the vector table:
-   *    0x08000000 Initial stack pointer
-   *    0x08000004 Reset Handler
-   *    0x08000008 NMI Handler
-   *    0x0800000C Hard Fault Handler
-   *    0x08000010 MPU Fault Handler
-   *    0x08000014 Bus Fault Handler
-   *    0x08000018 Usage Fault Handler
+   *    0x0c000000 Initial stack pointer
+   *    0x0c000004 Reset Handler
+   *    0x0c000008 NMI Handler
+   *    0x0c00000C Hard Fault Handler
+   *    0x0c000010 MPU Fault Handler
+   *    0x0c000014 Bus Fault Handler
+   *    0x0c000018 Usage Fault Handler
    *
    *    signature_checksum = One's complement of (SUM(exception address values))
    *
@@ -568,7 +610,65 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  /* ##Vg TODO implement flash block programming routine. */
+  blt_int32u page_cnt;
+  blt_addr   page_addr;
+  blt_int8u *page_data;
+  blt_int32u status;
+  blt_int32u timeoutTime;
+  blt_int32u byteIdx;
+
+  /* check that address is actually within flash */
+  if (FlashGetSector(block->base_addr) == FLASH_INVALID_SECTOR)
+  {
+    return BLT_FALSE;
+  }
+
+  /* program all pages in the block one by one */
+  for (page_cnt=0; page_cnt< (FLASH_WRITE_BLOCK_SIZE/FLASH_WRITE_PAGE_SIZE); page_cnt++)
+  {
+    /* keep the watchdog happy */
+    CopService();
+    /* set page base address and pointer to page data */
+    page_addr = block->base_addr + (page_cnt * FLASH_WRITE_PAGE_SIZE);
+    page_data = &(block->data[page_cnt * FLASH_WRITE_PAGE_SIZE]);
+    /* determine timeout time of the operation */
+    timeoutTime = TimerGet() + FLASH_PROGRAM_TIME_MAX_MS;
+    /* start erase operation */
+    XMC_FLASH_ProgramPage((uint32_t *)page_addr, (uint32_t *)page_data);
+    /* wait for the flash operation to complete */
+    while (XMC_FLASH_IsBusy() > 0)
+    {
+      /* check for operation timeout */
+      if (TimerGet() > timeoutTime)
+      {
+        /* timeout occurred. cannot continue */
+        return BLT_FALSE;
+      }
+      /* keep the watchdog happy */
+      CopService();
+    }
+    /* check the result */
+    status = XMC_FLASH_GetStatus();
+    /* reset the program finished flag */
+    status &= ~XMC_FLASH_STATUS_PROGRAMMING_STATE;
+    if (status != XMC_FLASH_STATUS_OK)
+    {
+      /* error occurred during flash erase, abort */
+      return BLT_FALSE;
+
+    }
+    /* verify that the data was correctly programmed */
+    for (byteIdx=0; byteIdx < FLASH_WRITE_PAGE_SIZE; byteIdx++)
+    {
+      if (*((volatile blt_int8u *)(page_addr+byteIdx)) != page_data[byteIdx])
+      {
+        /* program verification failed. abort */
+        return BLT_FALSE;
+      }
+    }
+  }
+
+  /* still here so all is okay */
   return BLT_TRUE;
 } /*** end of FlashWriteBlock ***/
 
@@ -582,7 +682,64 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 ****************************************************************************************/
 static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 {
-  /* ##vg TODO implement flash sector erase routine. */
+  blt_int8u sector_cnt;
+  blt_addr sectorBaseAddr;
+  blt_int32u status;
+  blt_int32u timeoutTime;
+
+  /* validate the sector numbers */
+  if (first_sector > last_sector)
+  {
+    return BLT_FALSE;
+  }
+  if ((first_sector < flashLayout[0].sector_num) || \
+      (last_sector > flashLayout[FLASH_TOTAL_SECTORS-1].sector_num))
+  {
+    return BLT_FALSE;
+  }
+
+  /* erase all sectors one by one */
+  for (sector_cnt=first_sector; sector_cnt<= last_sector; sector_cnt++)
+  {
+    /* keep the watchdog happy */
+    CopService();
+
+    /* submit the sector erase request by specifying its start address */
+    sectorBaseAddr = FlashGetSectorBaseAddr(sector_cnt);
+    if (sectorBaseAddr == FLASH_INVALID_ADDRESS)
+    {
+      /* not a valid sector address so abort */
+      return BLT_FALSE;
+    }
+    /* determine timeout time of the operation */
+    timeoutTime = TimerGet() + FLASH_ERASE_TIME_MAX_MS;
+    /* start erase operation */
+    XMC_FLASH_EraseSector((uint32_t *)sectorBaseAddr);
+    /* wait for the flash operation to complete */
+    while (XMC_FLASH_IsBusy() > 0)
+    {
+      /* check for operation timeout */
+      if (TimerGet() > timeoutTime)
+      {
+        /* timeout occurred. cannot continue */
+        return BLT_FALSE;
+      }
+      /* keep the watchdog happy */
+      CopService();
+    }
+    /* check the result */
+    status = XMC_FLASH_GetStatus();
+    /* reset the erase finished flag */
+    status &= ~XMC_FLASH_STATUS_ERASE_STATE;
+    if (status != XMC_FLASH_STATUS_OK)
+    {
+      /* error occurred during flash erase, abort */
+      return BLT_FALSE;
+
+    }
+  }
+
+  /* still here so all went okay */
   return BLT_TRUE;
 } /*** end of FlashEraseSectors ***/
 
@@ -614,6 +771,69 @@ static blt_int8u FlashGetSector(blt_addr address)
   /* still here so no valid sector found */
   return FLASH_INVALID_SECTOR;
 } /*** end of FlashGetSector ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the base address of the specified sector.
+** \param     sector Sector to get the base address of.
+** \return    Base Base address of the sector if found, FLASH_INVALID_ADDRESS otherwise.
+**
+****************************************************************************************/
+static blt_addr FlashGetSectorBaseAddr(blt_int8u sector)
+{
+  blt_int8u sectorIdx;
+  blt_addr baseAddr;
+
+  /* initialize base address to invalid */
+  baseAddr = FLASH_INVALID_ADDRESS;
+
+  /* search through the sectors to find the right one */
+  for (sectorIdx = 0; sectorIdx < FLASH_TOTAL_SECTORS; sectorIdx++)
+  {
+    /* keep the watchdog happy */
+    CopService();
+    /* is this the sector that was specified? */
+    if (flashLayout[sectorIdx].sector_num == sector)
+    {
+      /* read out its base address and stop the loop */
+      baseAddr = flashLayout[sectorIdx].sector_start;
+      break;
+    }
+  }
+  /* return the results */
+  return baseAddr;
+} /*** end of FlashGetSectorBaseAddr ***/
+
+
+/************************************************************************************//**
+** \brief     The XMC4xxx has its PFLASH accessible in the memory map in two regions.
+**            One is the non-cached region starting at FLASH_UNCACHED_BASE_ADDR and the
+**            other is the cached region starting at FLASH_CACHED_BASE_ADDR. Flash
+**            erase and programming operations need to operate on addresses in the
+**            non-cached region. It is possible that the caller of this driver's API
+**            functions, specifies memory addresses in the cached region. This function
+**            automatically translates the memory address from cached to non-cached.
+** \param     address Address to translate.
+** \return    Translated address.
+**
+****************************************************************************************/
+static blt_addr FlashTranslateToNonCachedAddress(blt_addr address)
+{
+  blt_addr translatedAddr;
+
+  /* initialize local */
+  translatedAddr = address;
+
+  /* determine is this address is in the cached region by looking at the address' MSB */
+  if ( ((address >> 24) & 0x000000ffu) == ((FLASH_CACHED_BASE_ADDR >> 24) & 0x000000ffu) )
+  {
+    /* translate address by adding offset to the non-cached region */
+    translatedAddr += (FLASH_UNCACHED_BASE_ADDR - FLASH_CACHED_BASE_ADDR);
+  }
+
+  /* give back the translated address */
+  return translatedAddr;
+} /*** end of FlashTranslateToNonCachedAddress ***/
 
 
 /*********************************** end of flash.c ************************************/
