@@ -30,12 +30,15 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "xmc_gpio.h"                            /* GPIO module                        */
+#include "xmc_uart.h"                            /* UART driver header                 */
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+static void PostInit(void);
 
 
 /************************************************************************************//**
@@ -50,6 +53,8 @@ int main(void)
   Init();
   /* initialize the bootloader */
   BootInit();
+  /* post initialization of the microcontroller */
+  PostInit();
 
   /* start the infinite program loop */
   while (1)
@@ -70,10 +75,42 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  /* ##Vg TODO initialize UART Tx/Rx pins. */
-  /* ##Vg TODO initialize pushbutton digital input. */
-  /* ##Vg TODO initialize LED digital output. */
+  /* initialize LED1 on P5.9 as digital output */
+  XMC_GPIO_SetMode(P5_9, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
+  /* initialize BUTTON1 as digital input. */
+  XMC_GPIO_SetMode(P15_13, XMC_GPIO_MODE_INPUT_TRISTATE);
+  XMC_GPIO_EnableDigitalInput(P15_13);
 } /*** end of Init ***/
 
+
+/************************************************************************************//**
+** \brief     Post initialization of the microcontroller. Contains all initialization
+**            code that should run after the bootloader's core was initialized.
+** \return    none.
+**
+****************************************************************************************/
+static void PostInit(void)
+{
+#if (BOOT_COM_UART_ENABLE > 0)
+  XMC_GPIO_CONFIG_t rx_config;
+  XMC_GPIO_CONFIG_t tx_config;
+
+  /* initialize UART Rx pin */
+  rx_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
+  rx_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
+  rx_config.output_strength  = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
+  XMC_GPIO_Init(P1_4, &rx_config);
+  /* initialize UART Tx pin */
+  tx_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT2;
+  tx_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
+  tx_config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
+  XMC_GPIO_Init(P1_5, &tx_config);
+  /* set input source path to DXnB to connect P1_4 to ASC Receive. note that this
+   * function must be called after XMC_UART_CH_Init(), which is called when initializing
+   * the bootloader core with BootInit().
+  */
+  XMC_USIC_CH_SetInputSource(XMC_UART0_CH0, XMC_USIC_CH_INPUT_DX0, 1U);
+#endif
+}
 
 /*********************************** end of main.c *************************************/

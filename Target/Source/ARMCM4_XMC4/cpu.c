@@ -42,6 +42,13 @@
 
 
 /****************************************************************************************
+* Register definitions
+****************************************************************************************/
+/** \brief Vector table offset register. */
+#define SCB_VTOR    (*((volatile blt_int32u *) 0xE000ED08))
+
+
+/****************************************************************************************
 * Hook functions
 ****************************************************************************************/
 #if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
@@ -63,8 +70,8 @@ extern void Reset_Handler(void);                      /* implemented in cstart.s
 void CpuInit(void)
 {
   /* bootloader runs in polling mode so disable the global interrupts. this is done for
-   * safety reasons. if the bootloader was started from a running user program, it could 
-   * be that the user program did not properly disable the interrupt generation of 
+   * safety reasons. if the bootloader was started from a running user program, it could
+   * be that the user program did not properly disable the interrupt generation of
    * peripherals. */
   CpuIrqDisable();
 } /*** end of CpuInit ***/
@@ -100,14 +107,15 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the timer */
   TimerReset();
-  /* ##Vg TODO remap user program's vector table */
+  /* remap user program's vector table */
+  SCB_VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of
    * the 2nd entry in the user program's vector table. this address points to the
    * user program's reset handler.
    */
   pProgResetHandler = (void(*)(void))(*((blt_addr *)CPU_USER_PROGRAM_STARTADDR_PTR));
   /* The Cortex-M4 core has interrupts enabled out of reset. the bootloader
-   * explicitly disables these for security reasons. Enable them here again, so it does 
+   * explicitly disables these for security reasons. Enable them here again, so it does
    * not have to be done by the user program.
    */
   CpuIrqEnable();

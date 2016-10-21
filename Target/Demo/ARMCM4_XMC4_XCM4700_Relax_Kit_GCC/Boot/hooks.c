@@ -20,7 +20,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* LED driver header                  */
+#include "xmc_gpio.h"                            /* GPIO module                        */
 
 
 /****************************************************************************************
@@ -80,7 +81,16 @@ blt_bool CpuUserProgramStartHook(void)
   /* clean up the LED driver */
   LedBlinkExit();
 
-  /* ##Vg TODO implement backdoor entry through pushbutton on the board. */
+  /* additional and optional backdoor entry through BUTTON1 on the board. to
+   * force the bootloader to stay active after reset, keep it pressed during reset.
+   */
+  if (XMC_GPIO_GetInput(P15_13) == 0)
+  {
+    /* pushbutton pressed, so do not start the user program and keep the
+     * bootloader active instead.
+     */
+    return BLT_FALSE;
+  }
 
   /*  okay to start the user program.*/
   return BLT_TRUE;

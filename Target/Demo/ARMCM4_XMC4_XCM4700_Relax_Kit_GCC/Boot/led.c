@@ -20,7 +20,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* module header                      */
+#include "xmc_gpio.h"                            /* GPIO module                        */
 
 
 /****************************************************************************************
@@ -69,13 +70,15 @@ void LedBlinkTask(void)
     /* toggle the LED state */
     if (ledOn == BLT_FALSE)
     {
+      /* turn the LED on */
       ledOn = BLT_TRUE;
-      /* ##Vg TODO turn the led on. */
+      XMC_GPIO_SetOutputLevel(P5_9, XMC_GPIO_OUTPUT_LEVEL_HIGH);
     }
     else
     {
+      /* turn the LED off */
       ledOn = BLT_FALSE;
-      /* ##Vg TODO turn the led off. */
+      XMC_GPIO_SetOutputLevel(P5_9, XMC_GPIO_OUTPUT_LEVEL_LOW);
     }
     /* schedule the next blink event */
     nextBlinkEvent = TimerGet() + ledBlinkIntervalMs;
@@ -91,7 +94,8 @@ void LedBlinkTask(void)
 ****************************************************************************************/
 void LedBlinkExit(void)
 {
-  /* ##Vg TODO turn the LED off */
+  /* turn the LED off */
+  XMC_GPIO_SetOutputLevel(P5_9, XMC_GPIO_OUTPUT_LEVEL_LOW);
 } /*** end of LedBlinkExit ***/
 
 

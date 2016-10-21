@@ -43,16 +43,15 @@
 #define FLASH_WRITE_BLOCK_SIZE          (512)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
-/** \brief Offset into the user program's vector table where the checksum is located. 
- *         For this target it is set to the end of the vector table. Note that the 
+/** \brief Offset into the user program's vector table where the checksum is located.
+ *         For this target it is set to the end of the vector table. Note that the
  *         value can be overriden in blt_conf.h, because the size of the vector table
  *         could vary. When changing this value, don't forget to update the location
  *         of the checksum in the user program accordingly. Otherwise the checksum
  *         verification will always fail.
  */
 #ifndef FLASH_VECTOR_TABLE_CS_OFFSET
-/* ##Vg TODO verify and update offset value to the checksum. */
-#define FLASH_VECTOR_TABLE_CS_OFFSET    (0x188)
+#define FLASH_VECTOR_TABLE_CS_OFFSET    (0x200)
 #endif
 
 
@@ -124,13 +123,14 @@ static blt_int8u FlashGetSector(blt_addr address);
  */
 static const tFlashSector flashLayout[] =
 {
-  /* space is reserved for a bootloader configuration with all supported communication
-   * interfaces enabled. when for example only UART is needed, than the space required
-   * for the bootloader can be made a lot smaller here.
+  /* the space reserved for the bootloader might need updating after changing the
+   * configuration. enough space should be reserved so that the entire ROM code of
+   * the bootloader fits in it. this is needed to protect the bootloader from being
+   * overwritten during a firmware update.
    */
   /* { 0x08000000, 0x04000,  0},           flash sector  0 - reserved for bootloader   */
-  /* { 0x08004000, 0x04000,  1},           flash sector  1 - reserved for bootloader   */
-  /* { 0x08008000, 0x04000,  2},           flash sector  2 - reserved for bootloader   */
+  { 0x08004000, 0x04000,  1},           /* flash sector  1 -  16kb                     */
+  { 0x08008000, 0x04000,  2},           /* flash sector  2 -  16kb                     */
   { 0x0800c000, 0x04000,  3},           /* flash sector  3 -  16kb                     */
   { 0x08010000, 0x04000,  4},           /* flash sector  4 -  16kb                     */
   { 0x08014000, 0x04000,  5},           /* flash sector  5 -  16kb                     */
@@ -280,7 +280,7 @@ blt_bool FlashWriteChecksum(void)
 {
   blt_int32u signature_checksum = 0;
 
-  /* for the XMC4 target we defined the checksum as the Two's complement value of the
+  /* for the XMC4 target we defined the checksum as the One's complement value of the
    * sum of the first 7 exception addresses.
    *
    * Layout of the vector table:
@@ -292,7 +292,7 @@ blt_bool FlashWriteChecksum(void)
    *    0x08000014 Bus Fault Handler
    *    0x08000018 Usage Fault Handler
    *
-   *    signature_checksum = Two's complement of (SUM(exception address values))
+   *    signature_checksum = One's complement of (SUM(exception address values))
    *
    *    the bootloader writes this 32-bit checksum value right after the vector table
    *    of the user program. note that this means one extra dummy entry must be added
@@ -320,7 +320,6 @@ blt_bool FlashWriteChecksum(void)
   signature_checksum += *((blt_int32u *)(&bootBlockInfo.data[0+0x14]));
   signature_checksum += *((blt_int32u *)(&bootBlockInfo.data[0+0x18]));
   signature_checksum  = ~signature_checksum; /* one's complement */
-  signature_checksum += 1; /* two's complement */
 
   /* write the checksum */
   return FlashWrite(flashLayout[0].sector_start+FLASH_VECTOR_TABLE_CS_OFFSET,
@@ -337,6 +336,7 @@ blt_bool FlashWriteChecksum(void)
 blt_bool FlashVerifyChecksum(void)
 {
   blt_int32u signature_checksum = 0;
+  blt_int32u signature_checksum_rom;
 
   /* verify the checksum based on how it was written by CpuWriteChecksum() */
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start));
@@ -346,9 +346,15 @@ blt_bool FlashVerifyChecksum(void)
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x10));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x14));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x18));
-  signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+FLASH_VECTOR_TABLE_CS_OFFSET));
-  /* sum should add up to an unsigned 32-bit value of 0 */
-  if (signature_checksum == 0)
+  signature_checksum = ~signature_checksum; /* one's complement */
+
+  /* read the checksum value from flash that was writtin by the bootloader at the end
+   * of the last firmware update
+   */
+  signature_checksum_rom = *((blt_int32u *)(flashLayout[0].sector_start+FLASH_VECTOR_TABLE_CS_OFFSET));
+
+  /* verify that they are both the same */
+  if (signature_checksum == signature_checksum_rom)
   {
     /* checksum okay */
     return BLT_TRUE;

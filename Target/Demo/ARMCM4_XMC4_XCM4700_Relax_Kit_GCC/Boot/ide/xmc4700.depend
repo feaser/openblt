@@ -1013,9 +1013,10 @@
 1452185952 source:c:\users\voorburg\documents\embedded\infineon\apps\xmc4700_relax_kit\xmc4700_emblocks_os\src\os\os.c
 	"os.h"
 
-1476977025 source:c:\work\software\openblt\target\demo\armcm4_xmc4_xcm4700_relax_kit_gcc\boot\hooks.c
+1477053335 source:c:\work\software\openblt\target\demo\armcm4_xmc4_xcm4700_relax_kit_gcc\boot\hooks.c
 	"boot.h"
 	"led.h"
+	"xmc_gpio.h"
 
 1469435448 c:\work\software\openblt\target\source\boot.h
 	"types.h"
@@ -1058,9 +1059,10 @@
 
 1476977037 c:\work\software\openblt\target\demo\armcm4_xmc4_xcm4700_relax_kit_gcc\boot\led.h
 
-1476977094 source:c:\work\software\openblt\target\demo\armcm4_xmc4_xcm4700_relax_kit_gcc\boot\led.c
+1477053331 source:c:\work\software\openblt\target\demo\armcm4_xmc4_xcm4700_relax_kit_gcc\boot\led.c
 	"boot.h"
 	"led.h"
+	"xmc_gpio.h"
 
 1476824725 source:c:\work\software\openblt\target\demo\armcm4_xmc4_xcm4700_relax_kit_gcc\boot\lib\system_xmc4700.c
 	<string.h>
@@ -1384,13 +1386,15 @@
 	"xmc_common.h"
 	"xmc_scu.h"
 
-1476977870 source:c:\work\software\openblt\target\demo\armcm4_xmc4_xcm4700_relax_kit_gcc\boot\main.c
+1477053301 source:c:\work\software\openblt\target\demo\armcm4_xmc4_xcm4700_relax_kit_gcc\boot\main.c
+	"boot.h"
+	"xmc_gpio.h"
+	"xmc_uart.h"
+
+1477053057 source:c:\work\software\openblt\target\source\armcm4_xmc4\cpu.c
 	"boot.h"
 
-1476975867 source:c:\work\software\openblt\target\source\armcm4_xmc4\cpu.c
-	"boot.h"
-
-1476975758 source:c:\work\software\openblt\target\source\armcm4_xmc4\flash.c
+1477053246 source:c:\work\software\openblt\target\source\armcm4_xmc4\flash.c
 	"boot.h"
 	"flash_layout.c"
 
@@ -1405,11 +1409,12 @@
 
 1476974104 c:\work\software\openblt\target\source\armcm4_xmc4\flash.h
 
-1476975970 source:c:\work\software\openblt\target\source\armcm4_xmc4\timer.c
+1477052921 source:c:\work\software\openblt\target\source\armcm4_xmc4\timer.c
 	"boot.h"
 
-1476976062 source:c:\work\software\openblt\target\source\armcm4_xmc4\uart.c
+1477052653 source:c:\work\software\openblt\target\source\armcm4_xmc4\uart.c
 	"boot.h"
+	"xmc_uart.h"
 
 1469435356 source:c:\work\software\openblt\target\source\assert.c
 	"boot.h"

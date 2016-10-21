@@ -33,12 +33,42 @@
 
 
 /****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Systick registers. */
+typedef struct
+{
+  volatile blt_int32u CTRL;                   /**< SysTick Control and Status Register */
+  volatile blt_int32u LOAD;                   /**< SysTick Reload Value Register       */
+  volatile blt_int32u VAL;                    /**< SysTick Current Value Register      */
+} tSysTickRegs;
+
+
+/****************************************************************************************
+* Macro definitions
+****************************************************************************************/
+/** \brief CLKSOURCE bit of the system tick. */
+#define SYSTICK_BIT_CLKSOURCE    ((blt_int32u)0x00000004)
+/** \brief ENABLE bit of the system tick. */
+#define SYSTICK_BIT_ENABLE       ((blt_int32u)0x00000001)
+/** \brief COUNTERFLAG bit of the system tick. */
+#define SYSTICK_BIT_COUNTERFLAG  ((blt_int32u)0x00010000)
+
+
+/****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
 /** \brief Local variable for storing the number of milliseconds that have elapsed since
  *         startup.
  */
 static blt_int32u millisecond_counter;
+
+
+/****************************************************************************************
+* Register definitions
+****************************************************************************************/
+/** \brief Macro to access the system tick registers. */
+#define SYSTICK          ((tSysTickRegs *) (blt_int32u)0xE000E010)
 
 
 /************************************************************************************//**
@@ -50,9 +80,12 @@ void TimerInit(void)
 {
   /* reset the timer configuration */
   TimerReset();
-
-  /* ##Vg TODO initialize systick peripheral for 1ms events polling */
-  
+  /* configure the systick frequency as a 1 ms event generator */
+  SYSTICK->LOAD = BOOT_CPU_SYSTEM_SPEED_KHZ - 1;
+  /* reset the current counter value */
+  SYSTICK->VAL = 0;
+  /* select core clock as source and enable the timer */
+  SYSTICK->CTRL = SYSTICK_BIT_CLKSOURCE | SYSTICK_BIT_ENABLE;
   /* reset the millisecond counter value */
   millisecond_counter = 0;
 } /*** end of TimerInit ***/
@@ -66,7 +99,8 @@ void TimerInit(void)
 ****************************************************************************************/
 void TimerReset(void)
 {
-  /* ##Vg TODO set the systick's status and control register back into the default reset value */
+  /* set the systick's status and control register back into the default reset value */
+  SYSTICK->CTRL = 0;
 } /* end of TimerReset */
 
 
@@ -77,8 +111,8 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* ##Vg TODO check if the millisecond event occurred */
-  if (0 != 0)
+  /* check if the millisecond event occurred */
+  if ((SYSTICK->CTRL & SYSTICK_BIT_COUNTERFLAG) != 0)
   {
     /* increment the millisecond counter */
     millisecond_counter++;

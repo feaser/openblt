@@ -34,7 +34,7 @@
 			<Add option="$device=cortex-m4" />
 			<Add option="$fpu=fpv4-sp-d16" />
 			<Add option="$lscript=./../../../../Source/ARMCM4_XMC4/GCC/memory.x" />
-			<Add option="$stack=0x0100" />
+			<Add option="$stack=0x0800" />
 			<Add option="$heap=0x0000" />
 		</Device>
 		<Compiler>
@@ -493,6 +493,15 @@
 				</target_debugging_settings>
 			</debugger>
 			<envvars />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
 		</Extensions>
 	</Project>
 </EmBitz_project_file>

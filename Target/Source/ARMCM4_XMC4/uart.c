@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "xmc_uart.h"                            /* UART driver header                 */
 
 
 #if (BOOT_COM_UART_ENABLE > 0)
@@ -40,6 +41,29 @@
  *         reception of the first packet byte.
  */
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+
+/** \brief Macro for accessing the UART channel handle in the format that is expected
+ *         by the XMClib UART driver.
+ */
+#define UART_CHANNEL ((XMC_USIC_CH_t * const)(uartChannelMap[BOOT_COM_UART_CHANNEL_INDEX]))
+
+
+/****************************************************************************************
+* Local constant declarations
+****************************************************************************************/
+/** \brief Helper array to quickly convert the channel index, as specific in the boot-
+ *         loader's configuration header, to the associated channel handle that the
+ *         XMClib's UART driver requires.
+ */
+static const XMC_USIC_CH_t *uartChannelMap[] =
+{
+  XMC_UART0_CH0, /* BOOT_COM_UART_CHANNEL_INDEX = 0 */
+  XMC_UART0_CH1, /* BOOT_COM_UART_CHANNEL_INDEX = 1 */
+  XMC_UART1_CH0, /* BOOT_COM_UART_CHANNEL_INDEX = 2 */
+  XMC_UART1_CH1, /* BOOT_COM_UART_CHANNEL_INDEX = 3 */
+  XMC_UART2_CH0, /* BOOT_COM_UART_CHANNEL_INDEX = 4 */
+  XMC_UART2_CH1  /* BOOT_COM_UART_CHANNEL_INDEX = 5 */
+};
 
 
 /****************************************************************************************
@@ -56,7 +80,21 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  /* ##Vg TODO initialize UART. */
+  XMC_UART_CH_CONFIG_t uart_config;
+
+  /* set configuration and initialize UART channel */
+  uart_config.baudrate = BOOT_COM_UART_BAUDRATE;
+  uart_config.data_bits = 8;
+  uart_config.frame_length = 8;
+  uart_config.stop_bits = 1;
+  uart_config.oversampling = 16;
+  uart_config.parity_mode = XMC_USIC_CH_PARITY_MODE_NONE;
+  XMC_UART_CH_Init(UART_CHANNEL, &uart_config);
+  /* configure small transmit and receive FIFO */
+  XMC_USIC_CH_TXFIFO_Configure(UART_CHANNEL, 16U, XMC_USIC_CH_FIFO_SIZE_16WORDS, 1U);
+  XMC_USIC_CH_RXFIFO_Configure(UART_CHANNEL,  0U, XMC_USIC_CH_FIFO_SIZE_16WORDS, 1U);
+  /* start UART */
+  XMC_UART_CH_Start(UART_CHANNEL);
 } /*** end of UartInit ***/
 
 
@@ -72,7 +110,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
   blt_int16u data_index;
   blt_bool result;
 
-  /* verify validity of the len-paramenter */
+  /* verify validity of the len-parameter */
   ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
@@ -165,7 +203,14 @@ blt_bool UartReceivePacket(blt_int8u *data)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
-  /* ##Vg TODO check if a byte was received and read it out if so. */
+  if (XMC_USIC_CH_RXFIFO_IsEmpty(UART_CHANNEL) == 0)
+  {
+    /* retrieve and store the newly received byte */
+    *data = (blt_int8u)XMC_UART_CH_GetReceivedData(UART_CHANNEL);
+    /* all done */
+    return BLT_TRUE;
+  }
+  /* still here to no new byte received */
   return BLT_FALSE;
 } /*** end of UartReceiveByte ***/
 
@@ -178,8 +223,23 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static blt_bool UartTransmitByte(blt_int8u data)
 {
-  /* ##Vg TODO transmit a byte polling mode. */
-  return BLT_FALSE;
+  /* check if tx fifo can accept new data */
+  if (XMC_USIC_CH_TXFIFO_IsFull(UART_CHANNEL) != 0)
+  {
+    /* tx fifo full. should not happen */
+    return BLT_FALSE;
+  }
+  /* submit data for transmission */
+  XMC_UART_CH_Transmit(UART_CHANNEL, data);
+  /* wait for transmission to be done */
+  while( (XMC_USIC_CH_TXFIFO_GetEvent(UART_CHANNEL) & XMC_USIC_CH_TXFIFO_EVENT_STANDARD) == 0)
+  {
+    ;
+  }
+  /* reset event */
+  XMC_USIC_CH_TXFIFO_ClearEvent(UART_CHANNEL, XMC_USIC_CH_TXFIFO_EVENT_STANDARD);
+  /* byte transmitted */
+  return BLT_TRUE;
 } /*** end of UartTransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
