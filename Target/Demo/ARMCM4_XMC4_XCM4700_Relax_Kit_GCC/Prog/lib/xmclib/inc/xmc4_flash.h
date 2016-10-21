@@ -1,12 +1,12 @@
 /**
  * @file xmc4_flash.h
- * @date 2015-10-27
+ * @date 2016-03-22
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -50,6 +50,12 @@
  *       4. XMC_FLASH_ResumeProtection
  *       5. XMC_FLASH_RepairPhysicalSector 
  *     - Added support for XMC4800/4700 devices
+ * 2015-12-07:
+ *     - Fix XMC_FLASH_READ_ACCESS_TIME for XMC43, 47 and 48 devices
+ * 2016-03-18:
+ *     - Fix implementation of XMC_PREFETCH_EnableInstructionBuffer and XMC_PREFETCH_DisableInstructionBuffer
+ * 2016-03-22:
+ *     - Fix implementation of XMC_PREFETCH_InvalidateInstructionBuffer
  * @endcond 
  *
  */
@@ -133,7 +139,7 @@
 #define XMC_FLASH_PHY_SECTOR_15    (uint32_t *)(XMC_FLASH_UNCACHED_BASE + 0x1C0000UL) /**<Starting address of non cached
                                                                                          physical sector15 */
 
-#if UC_SERIES == XMC45
+#if UC_SERIES == XMC45 || UC_SERIES == XMC43 || UC_SERIES == XMC47 || UC_SERIES == XMC48
 #define XMC_FLASH_READ_ACCESS_TIME (22E-9F) /* Flash read access time  */
 #else
 #define XMC_FLASH_READ_ACCESS_TIME (20E-9F)
@@ -448,7 +454,7 @@ __STATIC_INLINE void XMC_FLASH_SetWaitStates(uint32_t num_wait_states)
  */
 __STATIC_INLINE void XMC_PREFETCH_EnableInstructionBuffer(void)
 {
-	PREF->PCON |= PREF_PCON_IBYP_Msk;
+	PREF->PCON &= (uint32_t)~PREF_PCON_IBYP_Msk;
 }
 
 /**
@@ -465,7 +471,7 @@ __STATIC_INLINE void XMC_PREFETCH_EnableInstructionBuffer(void)
  */
 __STATIC_INLINE void XMC_PREFETCH_DisableInstructionBuffer(void)
 {
-	PREF->PCON &= (uint32_t)~PREF_PCON_IBYP_Msk;
+	PREF->PCON |= PREF_PCON_IBYP_Msk;
 }
 
 /**
@@ -487,6 +493,13 @@ __STATIC_INLINE void XMC_PREFETCH_DisableInstructionBuffer(void)
 __STATIC_INLINE void XMC_PREFETCH_InvalidateInstructionBuffer(void)
 {
   PREF->PCON |= PREF_PCON_IINV_Msk;
+  __DSB();
+  __ISB();
+
+  PREF->PCON &= ~PREF_PCON_IINV_Msk;
+  __DSB();
+  __ISB();
+
 }
 
 /**
@@ -548,10 +561,12 @@ void XMC_FLASH_ConfirmProtection(uint8_t user);
  * Verifies sector read protection is properly installed or not.\n\n Before entering into verify read protection
  * process, it clears the error status bits inside status register. It temporarily disables the protection with
  * passwords \a password0 and \a password1 respectively. It reads the FSR register and verifies the protection state.
+ * Resumption of read protection after disablement is achieved by XMC_FLASH_ResumeProtection or until next reset.
  *
  * \par<b>Related APIs:</b><BR>
  * XMC_FLASH_InstallProtection()<BR> 
  * XMC_FLASH_VerifyWriteProtection()<BR>
+ * XMC_FLASH_ResumeProtection()<BR>
  */
 bool XMC_FLASH_VerifyReadProtection(uint32_t password_0, uint32_t password_1);
 
@@ -571,10 +586,12 @@ bool XMC_FLASH_VerifyReadProtection(uint32_t password_0, uint32_t password_1);
  * process, it clears the error status bits inside status register. It temporarily disables the protection with
  * passwords \a password0 and \a password1 respectively for the intended sectors specified in \a protection_mask.
  * It reads the FSR register and verifies the write protection state.
+ * Resumption of write protection after disablement is achieved by XMC_FLASH_ResumeProtection or until next reset.
  *
  * \par<b>Related APIs:</b><BR>
  * XMC_FLASH_InstallProtection()<BR> 
  * XMC_FLASH_VerifyReadProtection()<BR>
+ * XMC_FLASH_ResumeProtection()<BR>
  */
 bool XMC_FLASH_VerifyWriteProtection(uint32_t user, 
                                      uint32_t protection_mask, 

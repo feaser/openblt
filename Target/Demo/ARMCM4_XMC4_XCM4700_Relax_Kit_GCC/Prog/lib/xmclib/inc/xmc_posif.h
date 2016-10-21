@@ -1,12 +1,12 @@
 /**
  * @file xmc_posif.h
- * @date 2015-10-27
+ * @date 2016-03-09
  *
  * @cond
  **********************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without           
@@ -54,6 +54,10 @@
  *
  * 2015-07-02:
  *     - Updated XMC_POSIF_QD_GetDirection API
+ *
+ * 2016-03-09:
+ *     - Optimization of write only registers
+ *
  * @endcond 
  *
  */
@@ -558,7 +562,7 @@ void XMC_POSIF_SelectInputSource(XMC_POSIF_t *const peripheral, const XMC_POSIF_
  */
 __STATIC_INLINE void XMC_POSIF_Start(XMC_POSIF_t *const peripheral)
 {
-  peripheral->PRUNS |= (uint32_t)POSIF_PRUNS_SRB_Msk;
+  peripheral->PRUNS = (uint32_t)POSIF_PRUNS_SRB_Msk;
 }
 
 /**
@@ -575,7 +579,7 @@ __STATIC_INLINE void XMC_POSIF_Start(XMC_POSIF_t *const peripheral)
  */
 __STATIC_INLINE void XMC_POSIF_Stop(XMC_POSIF_t *const peripheral)
 {
-  peripheral->PRUNC |= (uint32_t)(POSIF_PRUNC_CRB_Msk | POSIF_PRUNC_CSM_Msk);
+  peripheral->PRUNC = (uint32_t)(POSIF_PRUNC_CRB_Msk | POSIF_PRUNC_CSM_Msk);
 }
 
 /**
@@ -744,7 +748,7 @@ __STATIC_INLINE void XMC_POSIF_HSC_SetHallPatterns(XMC_POSIF_t *const peripheral
  */
 __STATIC_INLINE void XMC_POSIF_HSC_UpdateHallPattern(XMC_POSIF_t *const peripheral)
 {
-  peripheral->MCMS |= (uint32_t)POSIF_MCMS_STHR_Msk;
+  peripheral->MCMS = (uint32_t)POSIF_MCMS_STHR_Msk;
 }
 
 /**
@@ -976,7 +980,7 @@ __STATIC_INLINE void XMC_POSIF_DisableEvent(XMC_POSIF_t *const peripheral, const
  */
 __STATIC_INLINE void XMC_POSIF_SetEvent(XMC_POSIF_t *const peripheral, const XMC_POSIF_IRQ_EVENT_t event)
 {
-  peripheral->SPFLG |= (uint32_t)1 << (uint8_t)event;
+  peripheral->SPFLG = (uint32_t)1 << (uint8_t)event;
 }
 
 /**
@@ -993,7 +997,7 @@ __STATIC_INLINE void XMC_POSIF_SetEvent(XMC_POSIF_t *const peripheral, const XMC
  */
 __STATIC_INLINE void XMC_POSIF_ClearEvent(XMC_POSIF_t *const peripheral, const XMC_POSIF_IRQ_EVENT_t event)
 {
-  peripheral->RPFLG |= (uint32_t)1 << (uint8_t)event;
+  peripheral->RPFLG = (uint32_t)1 << (uint8_t)event;
 }
 
 /**

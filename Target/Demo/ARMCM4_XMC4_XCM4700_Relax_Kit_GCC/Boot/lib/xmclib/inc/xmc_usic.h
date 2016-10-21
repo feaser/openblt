@@ -1,12 +1,12 @@
 /**
  * @file xmc_usic.h
- * @date 2015-10-27
+ * @date 2016-04-10
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -66,6 +66,12 @@
  * 2015-08-28:
  *     - Added API for enabling the transfer trigger unit to set bit TCSR.TE if the trigger signal DX2T becomes active. Feature used for RS-232
  *       Clear to Send (CTS) signal: XMC_USIC_CH_EnableTBUFDataValidTrigger() and XMC_USIC_CH_DisableTBUFDataValidTrigger().
+ *
+ * 2016-03-09:
+ *     - Optimization of write only registers
+ *
+ * 2016-04-10:
+ *     - Added an API to put the data into FIFO when hardware port control is enabled: XMC_USIC_CH_TXFIFO_PutDataHPCMode() <br>
  *
  * @endcond
  *
@@ -1269,7 +1275,7 @@ __STATIC_INLINE void XMC_USIC_CH_DisableTBUFDataValidTrigger(XMC_USIC_CH_t *cons
  */
 __STATIC_INLINE void XMC_USIC_CH_TriggerServiceRequest(XMC_USIC_CH_t *const channel, const uint32_t service_request_line)
 {
-  channel->FMR |= (uint32_t)(USIC_CH_FMR_SIO0_Msk << service_request_line);
+  channel->FMR = (uint32_t)(USIC_CH_FMR_SIO0_Msk << service_request_line);
 }
 
 /**
@@ -1483,6 +1489,30 @@ __STATIC_INLINE void XMC_USIC_CH_TXFIFO_PutDataFLEMode(XMC_USIC_CH_t *const chan
 /**
  * @param channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n
  * 				   \b Range: @ref XMC_USIC0_CH0, @ref XMC_USIC0_CH1 to @ref XMC_USIC2_CH1 based on device support.
+ * @param data Data to be transmitted.
+ * @param frame_length Frame length to be configured while transmitting the data. \n
+ * 			\b Range: minimum= 0, maximum= 31. e.g: For a frame length of 16, set \a frame_length as 15.
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Writes data to the transmit FIFO in hardware port control mode. \n\n
+ * When hardware port control is enabled for dynamic update of frame length, this API can be used.
+ * \a frame_length represents the frame length to be updated by the peripheral. 
+ * \a frame_length is used as index for the IN[] register array.
+ * 
+ * \par<b>Related APIs:</b><BR>
+ * XMC_USIC_CH_EnableFrameLengthControl() \n\n\n
+ */
+__STATIC_INLINE void XMC_USIC_CH_TXFIFO_PutDataHPCMode(XMC_USIC_CH_t *const channel,
+                                                       const uint16_t data,
+                                                       const uint32_t frame_length)
+{
+  channel->IN[frame_length] = data;
+}
+
+/**
+ * @param channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n
+ * 				   \b Range: @ref XMC_USIC0_CH0, @ref XMC_USIC0_CH1 to @ref XMC_USIC2_CH1 based on device support.
  * @return None
  *
  * \par<b>Description</b><br>
@@ -1494,7 +1524,7 @@ __STATIC_INLINE void XMC_USIC_CH_TXFIFO_PutDataFLEMode(XMC_USIC_CH_t *const chan
  */
 __STATIC_INLINE void XMC_USIC_CH_TXFIFO_Flush(XMC_USIC_CH_t *const channel)
 {
-  channel->TRBSCR |= (uint32_t)USIC_CH_TRBSCR_FLUSHTB_Msk;
+  channel->TRBSCR = (uint32_t)USIC_CH_TRBSCR_FLUSHTB_Msk;
 }
 
 /**
@@ -1599,7 +1629,7 @@ __STATIC_INLINE uint32_t XMC_USIC_CH_TXFIFO_GetEvent(XMC_USIC_CH_t *const channe
 __STATIC_INLINE void XMC_USIC_CH_TXFIFO_ClearEvent(XMC_USIC_CH_t *const channel,
                                                    const uint32_t event)
 {
-  channel->TRBSCR |= event;
+  channel->TRBSCR = event;
 }
 
 /**
@@ -1760,7 +1790,7 @@ __STATIC_INLINE uint16_t XMC_USIC_CH_RXFIFO_GetData(XMC_USIC_CH_t *const channel
  */
 __STATIC_INLINE void XMC_USIC_CH_RXFIFO_Flush(XMC_USIC_CH_t *const channel)
 {
-  channel->TRBSCR |= (uint32_t)USIC_CH_TRBSCR_FLUSHRB_Msk;
+  channel->TRBSCR = (uint32_t)USIC_CH_TRBSCR_FLUSHRB_Msk;
 }
 
 /**
@@ -1870,7 +1900,7 @@ __STATIC_INLINE uint32_t XMC_USIC_CH_RXFIFO_GetEvent(XMC_USIC_CH_t *const channe
 __STATIC_INLINE void XMC_USIC_CH_RXFIFO_ClearEvent(XMC_USIC_CH_t *const channel,
                                                    const uint32_t event)
 {
-  channel->TRBSCR |= event;
+  channel->TRBSCR = event;
 }
 
 /**

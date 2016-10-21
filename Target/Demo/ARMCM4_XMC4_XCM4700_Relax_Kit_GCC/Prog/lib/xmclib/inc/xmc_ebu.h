@@ -1,12 +1,12 @@
 /**
  * @file xmc_ebu.h
- * @date 2015-10-27
+ * @date 2016-03-30
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -38,7 +38,10 @@
  *
  * 2015-06-20:
  *     - Initial
- *     - Description of changes 2
+ *
+ * 2016-03-30:
+ *     - Added ebu_data_hold_cycles_for_read_accesses to XMC_EBU_BUS_READ_CONFIG_t
+ *     - Added ebu_device_addressing_mode and ebu_data_hold_cycles_for_write_accesses to XMC_EBU_BUS_WRITE_CONFIG_t
  *      
  * @endcond 
  *
@@ -625,7 +628,10 @@ typedef struct XMC_EBU_BUS_READ_CONFIG
   	   * 11111B:  31 wait states                   <br>
        */
   	  uint32_t ebu_programmed_wait_states_for_read_accesses  : 5;
-  	  uint32_t                                               : 4;
+  	  /**
+  	   *
+  	   */
+  	  uint32_t ebu_data_hold_cycles_for_read_accesses: 4;
   	  /**
        * Frequency of external clock at pin BFCLKO
        */
@@ -688,7 +694,7 @@ typedef struct XMC_EBU_BUS_WRITE_CONFIG
 	    uint32_t                                               : 1;
 	    uint32_t ebu_wait_signal_polarity                      : 1;  /**< Reversed polarity at WAIT */
 	    uint32_t ebu_byte_control                              : 2;  /**< Byte control signal control */
-	    uint32_t                                               : 2;
+      uint32_t ebu_device_addressing_mode                    : 2; /**< Device addressing mode */
 	    uint32_t ebu_wait_control                              : 2;  /**< External wait control */
 	    uint32_t ebu_asynchronous_address_phase                : 1;  /**< Asynchronous address phase */
 	    uint32_t ebu_lock_chip_select                          : 1;  /**< Lock chip select */
@@ -731,7 +737,11 @@ typedef struct XMC_EBU_BUS_WRITE_CONFIG
  	     * 11111B:  31 wait states                    <br>
       */
  	    uint32_t ebu_programmed_wait_states_for_write_accesses : 5;
- 	    uint32_t                                               : 4;
+
+ 	    /**
+ 	     *
+ 	     */
+ 	    uint32_t ebu_data_hold_cycles_for_write_accesses : 4;
  	    /**<
        * Frequency of external clock at pin BFCLKO
        */

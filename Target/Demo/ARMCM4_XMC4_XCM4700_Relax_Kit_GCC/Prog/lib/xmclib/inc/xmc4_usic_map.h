@@ -1,12 +1,12 @@
 /**
  * @file xmc4_usic_map.h
- * @date 2015-10-27
+ * @date 2016-07-20
  *
  * @cond
 *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -42,6 +42,14 @@
  * 2015-08-25:
  *     - Added XMC4800
  *      
+ * 2015-12-07:
+ *     - Add XMC4300 support
+ *
+ * 2016-07-20:
+ *     - Add missing USIC2_C1_DX0_P4_6,USIC1_C0_DX0_P1_14, USIC2_C0_DX0_P6_5, USIC2_C0_DX0_P9_4, USIC2_C1_DX1_P9_9, USIC2_C1_DX2_P9_8  for XMC47/48 BGA196
+ *     - Add missing USIC2_C1_DX0_P4_6, USIC1_C0_DX0_P1_14 for XMC47/48 LQFP100
+ *     - Add missing USIC2_C1_DX0_P4_6, USIC1_C0_DX0_P1_14, USIC2_C0_DX0_P6_5 for XMC47/48 LQFP144
+ *
  * @endcond 
  *
  */
@@ -472,6 +480,67 @@
 #define USIC1_C1_DX0_P0_0   	3
 #define USIC1_C1_DX1_DX0INS 	5
 #define USIC1_C1_DX1_SCLKOUT	6
+#define USIC1_C1_DX2_SELO0  	6
+#define USIC1_C1_DX3_DOUT1  	6
+#define USIC1_C1_DX4_DOUT2  	6
+#define USIC1_C1_DX5_DOUT3  	6
+#endif
+
+
+#if (UC_DEVICE == XMC4300) && (UC_PACKAGE == LQFP100)
+#define USIC0_C0_DX0_DOUT0  	6
+#define USIC0_C0_DX0_P1_4   	1
+#define USIC0_C0_DX0_P1_5   	0
+#define USIC0_C0_DX0_P5_0   	3
+#define USIC0_C0_DX1_DX0INS 	5
+#define USIC0_C0_DX1_P0_8   	1
+#define USIC0_C0_DX1_P1_1   	0
+#define USIC0_C0_DX1_SCLKOUT	6
+#define USIC0_C0_DX2_CCU40_SR1	4
+#define USIC0_C0_DX2_CCU80_SR1	5
+#define USIC0_C0_DX2_P0_7   	1
+#define USIC0_C0_DX2_P1_0   	0
+#define USIC0_C0_DX2_SELO0  	6
+#define USIC0_C0_DX3_DOUT1  	6
+#define USIC0_C0_DX4_DOUT2  	6
+#define USIC0_C0_DX5_DOUT3  	6
+#define USIC0_C1_DX0_DOUT0  	6
+#define USIC0_C1_DX0_P2_2   	0
+#define USIC0_C1_DX0_P2_5   	1
+#define USIC0_C1_DX0_P4_0   	4
+#define USIC0_C1_DX1_DX0INS 	5
+#define USIC0_C1_DX1_P2_4   	0
+#define USIC0_C1_DX1_P3_0   	1
+#define USIC0_C1_DX1_SCLKOUT	6
+#define USIC0_C1_DX2_CCU80_SR1	5
+#define USIC0_C1_DX2_P2_3   	0
+#define USIC0_C1_DX2_P3_1   	1
+#define USIC0_C1_DX2_SELO0  	6
+#define USIC0_C1_DX3_DOUT1  	6
+#define USIC0_C1_DX4_DOUT2  	6
+#define USIC0_C1_DX5_DOUT3  	6
+#define USIC1_C0_DX0_DOUT0  	6
+#define USIC1_C0_DX0_P0_4   	0
+#define USIC1_C0_DX0_P0_5   	1
+#define USIC1_C0_DX0_P2_14  	3
+#define USIC1_C0_DX0_P2_15  	2
+#define USIC1_C0_DX1_DX0INS 	5
+#define USIC1_C0_DX1_P0_11  	0
+#define USIC1_C0_DX1_SCLKOUT	6
+#define USIC1_C0_DX2_CCU41_SR1	4
+#define USIC1_C0_DX2_P0_6   	0
+#define USIC1_C0_DX2_SELO0  	6
+#define USIC1_C0_DX3_DOUT1  	6
+#define USIC1_C0_DX4_DOUT2  	6
+#define USIC1_C0_DX5_DOUT3  	6
+#define USIC1_C1_DX0_DOUT0  	6
+#define USIC1_C1_DX0_P0_0   	3
+#define USIC1_C1_DX1_DX0INS 	5
+#define USIC1_C1_DX1_P0_10  	0
+#define USIC1_C1_DX1_P4_0   	2
+#define USIC1_C1_DX1_SCLKOUT	6
+#define USIC1_C1_DX2_P0_12  	1
+#define USIC1_C1_DX2_P0_9   	0
 #define USIC1_C1_DX2_SELO0  	6
 #define USIC1_C1_DX3_DOUT1  	6
 #define USIC1_C1_DX4_DOUT2  	6
@@ -1358,6 +1427,7 @@
 #define USIC1_C0_DX0_DOUT0  	6
 #define USIC1_C0_DX0_P0_4   	0
 #define USIC1_C0_DX0_P0_5   	1
+#define USIC1_C0_DX0_P1_14  	4
 #define USIC1_C0_DX0_P2_14  	3
 #define USIC1_C0_DX0_P2_15  	2
 #define USIC1_C0_DX1_DX0INS 	5
@@ -1394,6 +1464,8 @@
 #define USIC2_C0_DX0_P3_7   	2
 #define USIC2_C0_DX0_P5_0   	1
 #define USIC2_C0_DX0_P5_1   	0
+#define USIC2_C0_DX0_P6_5   	3
+#define USIC2_C0_DX0_P9_4   	4
 #define USIC2_C0_DX1_DX0INS 	5
 #define USIC2_C0_DX1_P5_2   	0
 #define USIC2_C0_DX1_P9_1   	2
@@ -1411,13 +1483,16 @@
 #define USIC2_C1_DX0_P3_4   	1
 #define USIC2_C1_DX0_P3_5   	0
 #define USIC2_C1_DX0_P4_0   	2
+#define USIC2_C1_DX0_P4_6   	4
 #define USIC2_C1_DX1_DX0INS 	5
 #define USIC2_C1_DX1_P3_6   	1
 #define USIC2_C1_DX1_P4_2   	0
+#define USIC2_C1_DX1_P9_9   	2
 #define USIC2_C1_DX1_SCLKOUT	6
 #define USIC2_C1_DX2_CCU43_SR1	4
 #define USIC2_C1_DX2_CCU81_SR1	5
 #define USIC2_C1_DX2_P4_1   	0
+#define USIC2_C1_DX2_P9_8   	2
 #define USIC2_C1_DX2_SELO0  	6
 #define USIC2_C1_DX3_DOUT1  	6
 #define USIC2_C1_DX4_DOUT2  	6
@@ -1461,6 +1536,7 @@
 #define USIC1_C0_DX0_DOUT0  	6
 #define USIC1_C0_DX0_P0_4   	0
 #define USIC1_C0_DX0_P0_5   	1
+#define USIC1_C0_DX0_P1_14  	4
 #define USIC1_C0_DX0_P2_14  	3
 #define USIC1_C0_DX0_P2_15  	2
 #define USIC1_C0_DX1_DX0INS 	5
@@ -1557,6 +1633,7 @@
 #define USIC1_C0_DX0_DOUT0  	6
 #define USIC1_C0_DX0_P0_4   	0
 #define USIC1_C0_DX0_P0_5   	1
+#define USIC1_C0_DX0_P1_14  	4
 #define USIC1_C0_DX0_P2_14  	3
 #define USIC1_C0_DX0_P2_15  	2
 #define USIC1_C0_DX1_DX0INS 	5
@@ -1593,6 +1670,7 @@
 #define USIC2_C0_DX0_P3_7   	2
 #define USIC2_C0_DX0_P5_0   	1
 #define USIC2_C0_DX0_P5_1   	0
+#define USIC2_C0_DX0_P6_5   	3
 #define USIC2_C0_DX1_DX0INS 	5
 #define USIC2_C0_DX1_P5_2   	0
 #define USIC2_C0_DX1_SCLKOUT	6
@@ -1608,6 +1686,7 @@
 #define USIC2_C1_DX0_P3_4   	1
 #define USIC2_C1_DX0_P3_5   	0
 #define USIC2_C1_DX0_P4_0   	2
+#define USIC2_C1_DX0_P4_6   	4
 #define USIC2_C1_DX1_DX0INS 	5
 #define USIC2_C1_DX1_P3_6   	1
 #define USIC2_C1_DX1_P4_2   	0
@@ -1666,6 +1745,7 @@
 #define USIC1_C0_DX0_DOUT0  	6
 #define USIC1_C0_DX0_P0_4   	0
 #define USIC1_C0_DX0_P0_5   	1
+#define USIC1_C0_DX0_P1_14  	4
 #define USIC1_C0_DX0_P2_14  	3
 #define USIC1_C0_DX0_P2_15  	2
 #define USIC1_C0_DX1_DX0INS 	5
@@ -1702,6 +1782,8 @@
 #define USIC2_C0_DX0_P3_7   	2
 #define USIC2_C0_DX0_P5_0   	1
 #define USIC2_C0_DX0_P5_1   	0
+#define USIC2_C0_DX0_P6_5   	3
+#define USIC2_C0_DX0_P9_4   	4
 #define USIC2_C0_DX1_DX0INS 	5
 #define USIC2_C0_DX1_P5_2   	0
 #define USIC2_C0_DX1_P9_1   	2
@@ -1719,13 +1801,16 @@
 #define USIC2_C1_DX0_P3_4   	1
 #define USIC2_C1_DX0_P3_5   	0
 #define USIC2_C1_DX0_P4_0   	2
+#define USIC2_C1_DX0_P4_6   	4
 #define USIC2_C1_DX1_DX0INS 	5
 #define USIC2_C1_DX1_P3_6   	1
 #define USIC2_C1_DX1_P4_2   	0
+#define USIC2_C1_DX1_P9_9   	2
 #define USIC2_C1_DX1_SCLKOUT	6
 #define USIC2_C1_DX2_CCU43_SR1	4
 #define USIC2_C1_DX2_CCU81_SR1	5
 #define USIC2_C1_DX2_P4_1   	0
+#define USIC2_C1_DX2_P9_8   	2
 #define USIC2_C1_DX2_SELO0  	6
 #define USIC2_C1_DX3_DOUT1  	6
 #define USIC2_C1_DX4_DOUT2  	6
@@ -1769,6 +1854,7 @@
 #define USIC1_C0_DX0_DOUT0  	6
 #define USIC1_C0_DX0_P0_4   	0
 #define USIC1_C0_DX0_P0_5   	1
+#define USIC1_C0_DX0_P1_14  	4
 #define USIC1_C0_DX0_P2_14  	3
 #define USIC1_C0_DX0_P2_15  	2
 #define USIC1_C0_DX1_DX0INS 	5
@@ -1865,6 +1951,7 @@
 #define USIC1_C0_DX0_DOUT0  	6
 #define USIC1_C0_DX0_P0_4   	0
 #define USIC1_C0_DX0_P0_5   	1
+#define USIC1_C0_DX0_P1_14  	4
 #define USIC1_C0_DX0_P2_14  	3
 #define USIC1_C0_DX0_P2_15  	2
 #define USIC1_C0_DX1_DX0INS 	5
@@ -1901,6 +1988,7 @@
 #define USIC2_C0_DX0_P3_7   	2
 #define USIC2_C0_DX0_P5_0   	1
 #define USIC2_C0_DX0_P5_1   	0
+#define USIC2_C0_DX0_P6_5   	3
 #define USIC2_C0_DX1_DX0INS 	5
 #define USIC2_C0_DX1_P5_2   	0
 #define USIC2_C0_DX1_SCLKOUT	6
@@ -1916,6 +2004,7 @@
 #define USIC2_C1_DX0_P3_4   	1
 #define USIC2_C1_DX0_P3_5   	0
 #define USIC2_C1_DX0_P4_0   	2
+#define USIC2_C1_DX0_P4_6   	4
 #define USIC2_C1_DX1_DX0INS 	5
 #define USIC2_C1_DX1_P3_6   	1
 #define USIC2_C1_DX1_P4_2   	0

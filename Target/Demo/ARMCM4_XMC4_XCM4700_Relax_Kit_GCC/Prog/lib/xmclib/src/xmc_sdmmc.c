@@ -1,13 +1,13 @@
 
 /**
  * @file xmc_sdmmc.c
- * @date 2015-10-27
+ * @date 2016-07-11
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -43,6 +43,12 @@
  *
  * 2015-06-20:
  *     - Removed definition of GetDriverVersion API <br>
+ *
+ * 2016-03-14:
+ *     - Values are directly assigned to the int status registers <br>
+ *
+ * 2016-07-11:
+ *     - XMC_SDMMC_SetDataTransferMode() shall not invoke SetDateLineTimeout() <br>
  *
  * @endcond
  */
@@ -257,8 +263,8 @@ void XMC_SDMMC_ClearEvent(XMC_SDMMC_t *const sdmmc, uint32_t event)
   XMC_ASSERT("XMC_SDMMC_ClearEvent: Invalid module pointer", XMC_SDMMC_CHECK_MODULE_PTR(sdmmc));
   XMC_ASSERT("XMC_SDMMC_ClearEvent: Invalid bit-field", !(event & XMC_SDMMC_TARGET_RESP_ERR));
 
-  sdmmc->INT_STATUS_NORM |= (uint16_t)event;
-  sdmmc->INT_STATUS_ERR |= (uint16_t)(event >> 16U);
+  sdmmc->INT_STATUS_NORM = (uint16_t)event;
+  sdmmc->INT_STATUS_ERR = (uint16_t)(event >> 16U);
 }
 
 /* Get the status of an SDMMC event */
@@ -309,9 +315,6 @@ void XMC_SDMMC_SetDataTransferMode(XMC_SDMMC_t *const sdmmc, XMC_SDMMC_TRANSFER_
   XMC_ASSERT("XMC_SDMMC_SetDataTransferMode: Invalid module pointer", XMC_SDMMC_CHECK_MODULE_PTR(sdmmc));
   XMC_ASSERT("XMC_SDMMC_SetDataTransferMode: Invalid transfer type", XMC_SDMMC_CHECK_TRANSFER_MODE(response->type));
   
-  /* Data line time-out */
-  XMC_SDMMC_SetDataLineTimeout(sdmmc, XMC_SDMMC_DAT_TIMEOUT_COUNTER_2_POW_27);
-
   /* Block size */
   sdmmc->BLOCK_SIZE = (uint16_t)(response->block_size);
   
@@ -319,7 +322,8 @@ void XMC_SDMMC_SetDataTransferMode(XMC_SDMMC_t *const sdmmc, XMC_SDMMC_TRANSFER_
   sdmmc->BLOCK_COUNT = (uint16_t)(response->num_blocks);
 
   /* Type of data transfer: single, infinite, multiple or stop multiple */
-  sdmmc->TRANSFER_MODE |= (uint16_t)response->type;
+  sdmmc->TRANSFER_MODE = (uint16_t)((sdmmc->TRANSFER_MODE & (uint16_t)~SDMMC_TRANSFER_MODE_MULTI_BLOCK_SELECT_Msk) |
+                                    ((uint16_t)response->type));
 
   /*
    * Clear block count enable bit; that's only valid for

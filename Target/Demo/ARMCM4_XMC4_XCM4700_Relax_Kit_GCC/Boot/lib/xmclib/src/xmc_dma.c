@@ -1,13 +1,13 @@
 
 /**
  * @file xmc_dma.c
- * @date 2015-10-27
+ * @date 2016-04-08
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -53,6 +53,15 @@
  *     - Updated XMC_DMA_CH_Init() to support scatter/gather functionality (only
  *       on advanced DMA channels) <br>
  *     - Updated XMC_DMA_CH_Disable() <br>
+ *
+ * 2016-03-09:
+ *     - Optimize write only registers
+ *
+ * 2016-04-08:
+ *     - Update XMC_DMA_CH_EnableEvent and XMC_DMA_CH_DisableEvent.
+ *       Write optimization of MASKCHEV 
+ *     - Fix XMC_DMA_IRQHandler, clear channel event status before processing the event handler.
+ *       It corrects event losses if the DMA triggered in the event handler finished before returning from handler.
  *
  * @endcond
  */
@@ -269,12 +278,12 @@ void XMC_DMA_ClearOverrunStatus(XMC_DMA_t *const dma, const uint8_t line)
   if (dma == XMC_DMA0)
   {
 #endif
-    DLR->OVRCLR |= (uint32_t)(0x1UL << line);
+    DLR->OVRCLR = (uint32_t)(0x1UL << line);
 #if defined(GPDMA1)
   }
   else
   {
-    DLR->OVRCLR |= (uint32_t)(0x100UL << line);
+    DLR->OVRCLR = (uint32_t)(0x100UL << line);
   }
 #endif
 }
@@ -469,7 +478,7 @@ void XMC_DMA_CH_EnableEvent(XMC_DMA_t *const dma, const uint8_t channel, const u
   {
     if (event & ((uint32_t)0x1UL << event_idx))
     {
-      dma->MASKCHEV[event_idx * 2UL] |= ((uint32_t)0x101UL << channel);
+      dma->MASKCHEV[event_idx * 2UL] = ((uint32_t)0x101UL << channel);
     }
   }
 }
@@ -483,7 +492,7 @@ void XMC_DMA_CH_DisableEvent(XMC_DMA_t *const dma, const uint8_t channel, const 
   {
     if (event & ((uint32_t)0x1UL << event_idx))
     {
-      dma->MASKCHEV[event_idx * 2UL] |= ((uint32_t)0x100UL << channel);
+      dma->MASKCHEV[event_idx * 2UL] = ((uint32_t)0x100UL << channel);
     }
   }
 }
@@ -672,16 +681,15 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
       mask = (uint32_t)1U << channel;
       if ((event & mask) != 0)
       {
-        event_handler = dma_event_handlers[channel];
+        XMC_DMA_CH_ClearEventStatus(dma, (uint8_t)channel, (uint32_t)XMC_DMA_CH_EVENT_ERROR);
 
         /* Call user callback to handle event */
+        event_handler = dma_event_handlers[channel];
         if (event_handler != NULL)
         {
           event_handler(XMC_DMA_CH_EVENT_ERROR);
         }
-
-        XMC_DMA_CH_ClearEventStatus(dma, (uint8_t)channel, (uint32_t)XMC_DMA_CH_EVENT_ERROR);
-        
+       
         break;
       }
       ++channel;
@@ -695,18 +703,17 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
       mask = (uint32_t)1U << channel;
       if (event & mask)
       {
-        event_handler = dma_event_handlers[channel];
-
-        /* Call user callback to handle event */
-        if (event_handler != NULL)
-        {
-          event_handler(XMC_DMA_CH_EVENT_TRANSFER_COMPLETE);
-        }
-
         XMC_DMA_CH_ClearEventStatus(dma, (uint8_t)channel, (uint32_t)((uint32_t)XMC_DMA_CH_EVENT_TRANSFER_COMPLETE | 
                                                                       (uint32_t)XMC_DMA_CH_EVENT_BLOCK_TRANSFER_COMPLETE | 
                                                                       (uint32_t)XMC_DMA_CH_EVENT_SRC_TRANSACTION_COMPLETE | 
                                                                       (uint32_t)XMC_DMA_CH_EVENT_DST_TRANSACTION_COMPLETE));
+
+        /* Call user callback to handle event */
+        event_handler = dma_event_handlers[channel];
+        if (event_handler != NULL)
+        {
+          event_handler(XMC_DMA_CH_EVENT_TRANSFER_COMPLETE);
+        }
 																	  
         break;
       }
@@ -721,17 +728,17 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
       mask = (uint32_t)1U << channel;
       if (event & mask)
       {
-        event_handler = dma_event_handlers[channel];
+        XMC_DMA_CH_ClearEventStatus(dma, (uint8_t)channel, (uint32_t)((uint32_t)XMC_DMA_CH_EVENT_BLOCK_TRANSFER_COMPLETE |
+                                                                      (uint32_t)XMC_DMA_CH_EVENT_SRC_TRANSACTION_COMPLETE | 
+                                                                      (uint32_t)XMC_DMA_CH_EVENT_DST_TRANSACTION_COMPLETE));
 
         /* Call user callback to handle event */
+        event_handler = dma_event_handlers[channel];
         if (event_handler != NULL)
         {
           event_handler(XMC_DMA_CH_EVENT_BLOCK_TRANSFER_COMPLETE);
         }
 
-        XMC_DMA_CH_ClearEventStatus(dma, (uint8_t)channel, (uint32_t)((uint32_t)XMC_DMA_CH_EVENT_BLOCK_TRANSFER_COMPLETE |
-                                                                      (uint32_t)XMC_DMA_CH_EVENT_SRC_TRANSACTION_COMPLETE | 
-                                                                      (uint32_t)XMC_DMA_CH_EVENT_DST_TRANSACTION_COMPLETE));
         break;
       }
       ++channel;
@@ -745,15 +752,14 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
       mask = (uint32_t)1U << channel;
       if (event & mask)
       {
-        event_handler = dma_event_handlers[channel];
+        XMC_DMA_CH_ClearEventStatus(dma, (uint8_t)channel, (uint32_t)XMC_DMA_CH_EVENT_SRC_TRANSACTION_COMPLETE);
 
         /* Call user callback to handle event */
+        event_handler = dma_event_handlers[channel];
         if (event_handler != NULL)
         {
           event_handler(XMC_DMA_CH_EVENT_SRC_TRANSACTION_COMPLETE);
         }
-
-        XMC_DMA_CH_ClearEventStatus(dma, (uint8_t)channel, (uint32_t)XMC_DMA_CH_EVENT_SRC_TRANSACTION_COMPLETE);
         
         break;
       }
@@ -768,15 +774,14 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
       mask = (uint32_t)1U << channel;
       if (event & mask)
       {
-        event_handler = dma_event_handlers[channel];
+        XMC_DMA_CH_ClearEventStatus(dma, (uint8_t)channel, (uint32_t)XMC_DMA_CH_EVENT_DST_TRANSACTION_COMPLETE);
 
         /* Call user callback to handle event */
+        event_handler = dma_event_handlers[channel];
         if (event_handler != NULL)
         {
           event_handler(XMC_DMA_CH_EVENT_DST_TRANSACTION_COMPLETE);
-        }
-        
-        XMC_DMA_CH_ClearEventStatus(dma, (uint8_t)channel, (uint32_t)XMC_DMA_CH_EVENT_DST_TRANSACTION_COMPLETE);
+        }      
 
         break;
       }

@@ -1,12 +1,12 @@
 /**
  * @file xmc_i2s.c
- * @date 2015-10-27
+ * @date 2015-06-30
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
@@ -49,6 +49,16 @@
  * 2015-09-28:
  *     - Fixed bugs in the XMC_I2S_CH_Init() and in the ASSERTs <br>
  *
+ * 2015-11-04: 
+ *     - Modified the check of XMC_USIC_CH_GetTransmitBufferStatus() in the XMC_I2S_CH_Transmit() API <br>
+ *
+ * 2016-06-30:
+ *     - Modified XMC_I2S_CH_Init:
+ *       + change default passive level to 0
+ *       + Call XMC_I2S_CH_SetSystemWordLength() to set the system frame length equal to the frame length.
+ *     - Modified XMC_I2S_CH_SetBaudrate:
+ *       + Optional Master clock output signal generated with a fixed phase relation to SCLK.
+ *
  * @endcond
  *
  */
@@ -67,7 +77,8 @@
 /*********************************************************************************************************************
  * MACROS
  ********************************************************************************************************************/
-#define XMC_I2S_CH_OVERSAMPLING (2UL)
+/* To take into account the SCLK divider by 2 and the PPPEN divider (see Divider Mode Counter figure in RM) */
+#define XMC_I2S_CH_OVERSAMPLING (4UL)
 
 /*********************************************************************************************************************
  * API IMPLEMENTATION
@@ -87,12 +98,10 @@ void XMC_I2S_CH_Init(XMC_USIC_CH_t *const channel, const XMC_I2S_CH_CONFIG_t *co
   }
   /* Configuration of USIC Shift Control */
   /* Transmission Mode (TRM) = 1  */
-  /* Passive Data Level (PDL) = 1 */
-  channel->SCTR = (uint32_t)(((uint32_t)(USIC_CH_SCTR_PDL_Msk | 
-                  (uint32_t)(0x3UL << USIC_CH_SCTR_TRM_Pos)) |
-                  (uint32_t)((uint32_t)((uint32_t)config->frame_length -1U) << USIC_CH_SCTR_FLE_Pos)) |
-                  (uint32_t)((uint32_t)((uint32_t)((uint32_t)config->data_bits -1U) << USIC_CH_SCTR_WLE_Pos) |
-                  (uint32_t)USIC_CH_SCTR_SDIR_Msk));
+  channel->SCTR = (uint32_t)(0x3UL << USIC_CH_SCTR_TRM_Pos) |
+                  (uint32_t)((config->frame_length -1U) << USIC_CH_SCTR_FLE_Pos) |
+                  (uint32_t)((config->data_bits - 1U) << USIC_CH_SCTR_WLE_Pos) |
+                  USIC_CH_SCTR_SDIR_Msk;
 
   /* Configuration of USIC Transmit Control/Status Register */
   /* TBUF Data Enable (TDEN) = 1 */
@@ -111,10 +120,14 @@ void XMC_I2S_CH_Init(XMC_USIC_CH_t *const channel, const XMC_I2S_CH_CONFIG_t *co
     /* Configuration of Protocol Control Register */
     channel->PCR_IISMode = (uint32_t)USIC_CH_PCR_IISMode_WAGEN_Msk;
   }
+
   /* Configuration of Protocol Control Register */
   channel->PCR_IISMode |= (uint32_t)(USIC_CH_PCR_IISMode_DTEN_Msk |
                           (uint32_t)config->wa_inversion) |
                           ((uint32_t)((uint32_t)config->data_delayed_sclk_periods - 1U) << USIC_CH_PCR_IISMode_TDEL_Pos);
+
+  XMC_I2S_CH_SetSystemWordLength(channel, config->frame_length);
+
   /* Clear protocol status */
   channel->PSCR = 0xFFFFFFFFUL;
 }
@@ -131,7 +144,8 @@ XMC_I2S_CH_STATUS_t XMC_I2S_CH_SetBaudrate(XMC_USIC_CH_t *const channel, const u
     if (XMC_USIC_CH_SetBaudrate(channel, rate, XMC_I2S_CH_OVERSAMPLING) == XMC_USIC_CH_STATUS_OK)
     {
       channel->BRG = (uint32_t)((channel->BRG & ~(USIC_CH_BRG_CTQSEL_Msk)) |
-                     (0x2UL << USIC_CH_BRG_CTQSEL_Pos));
+                     (0x2UL << USIC_CH_BRG_CTQSEL_Pos)) |
+                     USIC_CH_BRG_PPPEN_Msk;
 
       status = XMC_I2S_CH_STATUS_OK;
     }
@@ -192,7 +206,7 @@ void XMC_I2S_CH_Transmit(XMC_USIC_CH_t *const channel, const uint16_t data, cons
   /* Check FIFO size */
   if ((channel->TBCTR & USIC_CH_TBCTR_SIZE_Msk) == 0U)
   {
-    while((uint32_t)XMC_USIC_CH_GetTransmitBufferStatus(channel) & (uint32_t)XMC_USIC_CH_TBUF_STATUS_BUSY)
+    while((uint32_t)XMC_USIC_CH_GetTransmitBufferStatus(channel) == (uint32_t)XMC_USIC_CH_TBUF_STATUS_BUSY)
     {
     }
 

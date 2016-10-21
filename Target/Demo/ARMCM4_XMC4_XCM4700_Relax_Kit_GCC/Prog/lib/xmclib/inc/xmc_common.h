@@ -1,36 +1,36 @@
 /**
  * @file xmc_common.h
- * @date 2015-10-27
+ * @date 2016-05-30
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
- * following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
- * disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
- * disclaimer in the documentation and/or other materials provided with the distribution.
- *
- * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote
- * products derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with
- * Infineon Technologies AG dave@infineon.com).
+ * Copyright (c) 2015-2016, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
  *********************************************************************************************************************
  *
  * Change History
@@ -41,7 +41,13 @@
  *     - Brief section updated
  *     - Added XMC_LIB_VERSION macro
  *
- * @endcond
+ * 2016-02-26:
+ *     - Updated XMC_LIB_VERSION macro to v2.1.6
+ *      
+ * 2016-05-30:
+ *     - Updated XMC_LIB_VERSION macro to v2.1.8
+ *
+ * @endcond 
  *
  */
 
@@ -62,7 +68,7 @@
 
 /**
  * @addtogroup COMMON
- * @brief Common APIs to all peripherals for XMC microcontroller family
+ * @brief Common APIs to all peripherals for XMC microcontroller family 
  * @{
  */
 
@@ -70,9 +76,9 @@
  * MACROS
  *********************************************************************************************************************/
 #define XMC_LIB_MAJOR_VERSION	(2U)
-#define XMC_LIB_MINOR_VERSION	(0U)
-#define XMC_LIB_PATCH_VERSION	(2U)
-
+#define XMC_LIB_MINOR_VERSION	(1U)
+#define XMC_LIB_PATCH_VERSION	(8U)
+ 
 #define XMC_LIB_VERSION         ((XMC_LIB_MAJOR_VERSION << 16U) + (XMC_LIB_MINOR_VERSION << 8U) + XMC_LIB_PATCH_VERSION)
 
 /* Define WEAK attribute */
@@ -118,7 +124,7 @@ XMC_PRIOARRAY_t prioarray_def_##name = {(size), (prioarray_m_##name)};
 /*
  *
  */
-typedef struct XMC_DRIVER_VERSION
+typedef struct XMC_DRIVER_VERSION 
 {
   uint8_t major;
   uint8_t minor;

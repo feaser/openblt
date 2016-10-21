@@ -1,12 +1,12 @@
 /**
  * @file xmc_can_map.h
- * @date 2015-10-27
+ * @date 2015-10-20
  *
  * @cond
 *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
@@ -351,7 +351,17 @@
 #define CAN_NODE5_RXD_P8_0   	XMC_CAN_NODE_RECEIVE_INPUT_RXDCC
 #endif
 
-#if (UC_SERIES == XMC47) || (UC_SERIES == XMC48) || (UC_SERIES == XMC14)
+#if (UC_DEVICE == XMC4300) && (UC_PACKAGE == LQFP100)
+#define CAN_NODE0_RXD_P1_5   	XMC_CAN_NODE_RECEIVE_INPUT_RXDCA
+#define CAN_NODE0_RXD_P14_3   	XMC_CAN_NODE_RECEIVE_INPUT_RXDCB
+#define CAN_NODE0_RXD_P3_12   	XMC_CAN_NODE_RECEIVE_INPUT_RXDCC
+#define CAN_NODE1_RXD_P2_6   	XMC_CAN_NODE_RECEIVE_INPUT_RXDCA
+#define CAN_NODE1_RXD_P1_13   	XMC_CAN_NODE_RECEIVE_INPUT_RXDCC
+#define CAN_NODE1_RXD_P1_4      XMC_CAN_NODE_RECEIVE_INPUT_RXDCD
+#define CAN_NODE1_RXD_CAN0INS   XMC_CAN_NODE_RECEIVE_INPUT_RXDCF
+#endif
+
+#if (UC_SERIES == XMC47) || (UC_SERIES == XMC48) || (UC_SERIES == XMC43)|| (UC_SERIES == XMC14)
 #define CAN_MO0 ((CAN_MO_TypeDef *)&(CAN_MO->MO[0]))
 #define CAN_MO1 ((CAN_MO_TypeDef *)&(CAN_MO->MO[1]))
 #define CAN_MO2 ((CAN_MO_TypeDef *)&(CAN_MO->MO[2]))
@@ -387,7 +397,7 @@
 #endif
 
 
-#if (UC_SERIES == XMC47) || (UC_SERIES == XMC48)
+#if (UC_SERIES == XMC47) || (UC_SERIES == XMC48)|| (UC_SERIES == XMC43)
 #define CAN_MO32 ((CAN_MO_TypeDef *)&(CAN_MO->MO[32]))
 #define CAN_MO33 ((CAN_MO_TypeDef *)&(CAN_MO->MO[33]))
 #define CAN_MO34 ((CAN_MO_TypeDef *)&(CAN_MO->MO[34]))
@@ -420,6 +430,7 @@
 #define CAN_MO61 ((CAN_MO_TypeDef *)&(CAN_MO->MO[61]))
 #define CAN_MO62 ((CAN_MO_TypeDef *)&(CAN_MO->MO[62]))
 #define CAN_MO63 ((CAN_MO_TypeDef *)&(CAN_MO->MO[63]))
+#if (UC_SERIES != XMC43)
 #define CAN_MO64 ((CAN_MO_TypeDef *)&(CAN_MO->MO[64]))
 #define CAN_MO65 ((CAN_MO_TypeDef *)&(CAN_MO->MO[65]))
 #define CAN_MO66 ((CAN_MO_TypeDef *)&(CAN_MO->MO[66]))
@@ -612,6 +623,7 @@
 #define CAN_MO253 ((CAN_MO_TypeDef *)&(CAN_MO->MO[253]))
 #define CAN_MO254 ((CAN_MO_TypeDef *)&(CAN_MO->MO[254]))
 #define CAN_MO255 ((CAN_MO_TypeDef *)&(CAN_MO->MO[255]))
+#endif
 #endif
 
 #endif /* XMC_CAN_MAP_H*/

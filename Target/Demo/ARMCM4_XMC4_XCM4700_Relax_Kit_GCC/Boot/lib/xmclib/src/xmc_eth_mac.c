@@ -1,13 +1,13 @@
 
 /**
  * @file xmc_eth_mac.c
- * @date 2015-10-27
+ * @date 2016-08-30
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -37,12 +37,24 @@
  * Change History
  * --------------
  *
+ * 2015-06-20:
+ *     - Initial
+ *
  * 2015-09-01:
  *     - Add clock gating control in enable/disable APIs
  *     - Add transmit polling if run out of buffers
  *
- * 2015-06-20:
- *     - Initial
+ * 2015-11-30:
+ *     - Fix XMC_ETH_MAC_GetRxFrameSize return value in case of errors
+ *
+ * 2016-03-16:
+ *     - Fix XMC_ETH_MAC_DisableEvent
+ *
+ * 2016-05-19:
+ *     - Changed XMC_ETH_MAC_ReturnTxDescriptor and XMC_ETH_MAC_ReturnRxDescriptor
+ *
+ * 2016-08-30:
+ *     - Changed XMC_ETH_MAC_Init() to disable MMC interrupt events
  *
  * @endcond
  */
@@ -82,57 +94,6 @@
 #define XMC_ETH_MAC_MDC_DIVIDER_102 (4U << ETH_GMII_ADDRESS_CR_Pos) /**< MDC clock: ETH clock/102 */
 #define XMC_ETH_MAC_MDC_DIVIDER_124 (5U << ETH_GMII_ADDRESS_CR_Pos) /**< MDC clock: ETH clock/124 */
 
-/**
- * TDES0 Descriptor TX Packet Control/Status
- */
-#define ETH_MAC_DMA_TDES0_OWN  (0x80000000U) /**< Own bit 1=DMA, 0=CPU */
-#define ETH_MAC_DMA_TDES0_IC   (0x40000000U) /**< Interrupt on competition */
-#define ETH_MAC_DMA_TDES0_LS   (0x20000000U) /**< Last segment */
-#define ETH_MAC_DMA_TDES0_FS   (0x10000000U) /**< First segment */
-#define ETH_MAC_DMA_TDES0_DC   (0x08000000U) /**< Disable CRC */
-#define ETH_MAC_DMA_TDES0_DP   (0x04000000U) /**< Disable pad */
-#define ETH_MAC_DMA_TDES0_TTSE (0x02000000U) /**< Transmit time stamp enable */
-#define ETH_MAC_DMA_TDES0_CIC  (0x00C00000U) /**< Checksum insertion control */
-#define ETH_MAC_DMA_TDES0_TER  (0x00200000U) /**< Transmit end of ring */
-#define ETH_MAC_DMA_TDES0_TCH  (0x00100000U) /**< Second address chained */
-#define ETH_MAC_DMA_TDES0_TTSS (0x00020000U) /**< Transmit time stamp status */
-#define ETH_MAC_DMA_TDES0_IHE  (0x00010000U) /**< IP header error */
-#define ETH_MAC_DMA_TDES0_ES   (0x00008000U) /**< Error summary */
-#define ETH_MAC_DMA_TDES0_JT   (0x00004000U) /**< Jabber timeout */
-#define ETH_MAC_DMA_TDES0_FF   (0x00002000U) /**< Frame flushed */
-#define ETH_MAC_DMA_TDES0_IPE  (0x00001000U) /**< IP payload error */
-#define ETH_MAC_DMA_TDES0_LOC  (0x00000800U) /**< Loss of carrier */
-#define ETH_MAC_DMA_TDES0_NC   (0x00000400U) /**< No carrier */
-#define ETH_MAC_DMA_TDES0_LC   (0x00000200U) /**< Late collision */
-#define ETH_MAC_DMA_TDES0_EC   (0x00000100U) /**< Excessive collision */
-#define ETH_MAC_DMA_TDES0_VF   (0x00000080U) /**< VLAN frame */
-#define ETH_MAC_DMA_TDES0_CC   (0x00000078U) /**< Collision count */
-#define ETH_MAC_DMA_TDES0_ED   (0x00000004U) /**< Excessive deferral */
-#define ETH_MAC_DMA_TDES0_UF   (0x00000002U) /**< Underflow error */
-#define ETH_MAC_DMA_TDES0_DB   (0x00000001U) /**< Deferred bit */
-
-/**
- * RDES0 Descriptor RX Packet Status
- */
-#define ETH_MAC_DMA_RDES0_OWN  (0x80000000U) /**< Own bit 1=DMA, 0=CPU */
-#define ETH_MAC_DMA_RDES0_AFM  (0x40000000U) /**< Destination address filter fail */
-#define ETH_MAC_DMA_RDES0_FL   (0x3FFF0000U) /**< Frame length mask */
-#define ETH_MAC_DMA_RDES0_ES   (0x00008000U) /**< Error summary */
-#define ETH_MAC_DMA_RDES0_DE   (0x00004000U) /**< Descriptor error */
-#define ETH_MAC_DMA_RDES0_SAF  (0x00002000U) /**< Source address filter fail */
-#define ETH_MAC_DMA_RDES0_LE   (0x00001000U) /**< Length error */
-#define ETH_MAC_DMA_RDES0_OE   (0x00000800U) /**< Overflow error */
-#define ETH_MAC_DMA_RDES0_VLAN (0x00000400U) /**< VLAN tag */
-#define ETH_MAC_DMA_RDES0_FS   (0x00000200U) /**< First descriptor */
-#define ETH_MAC_DMA_RDES0_LS   (0x00000100U) /**< Last descriptor */
-#define ETH_MAC_DMA_RDES0_TSA  (0x00000080U) /**< Timestamp available */
-#define ETH_MAC_DMA_RDES0_LC   (0x00000040U) /**< Late collision */
-#define ETH_MAC_DMA_RDES0_FT   (0x00000020U) /**< Frame type */
-#define ETH_MAC_DMA_RDES0_RWT  (0x00000010U) /**< Receive watchdog timeout */
-#define ETH_MAC_DMA_RDES0_RE   (0x00000008U) /**< Receive error */
-#define ETH_MAC_DMA_RDES0_DBE  (0x00000004U) /**< Dribble bit error */
-#define ETH_MAC_DMA_RDES0_CE   (0x00000002U) /**< CRC error */
-#define ETH_MAC_DMA_RDES0_ESA  (0x00000001U) /**< Extended Status/Rx MAC address */
 
 /**
  * RDES1 Descriptor RX Packet Control
@@ -141,6 +102,7 @@
 #define ETH_MAC_DMA_RDES1_RER  (0x00008000U) /**< Receive end of ring */
 #define ETH_MAC_DMA_RDES1_RCH  (0x00004000U) /**< Second address chained */
 #define ETH_MAC_DMA_RDES1_RBS1 (0x00001FFFU) /**< Receive buffer 1 size */
+#define ETH_MAC_MMC_INTERRUPT_MSK  (0x03ffffffU) /**< Bit mask to disable MMMC transmit and receive interrupts*/
 
 /**
  * Normal MAC events
@@ -237,6 +199,10 @@ XMC_ETH_MAC_STATUS_t XMC_ETH_MAC_Init(XMC_ETH_MAC_t *const eth_mac)
   /* Clear interrupts */
   eth_mac->regs->STATUS = 0xFFFFFFFFUL;
 
+  /* Disable MMC interrupt events */
+  eth_mac->regs->MMC_TRANSMIT_INTERRUPT_MASK = ETH_MAC_MMC_INTERRUPT_MSK;
+  eth_mac->regs->MMC_RECEIVE_INTERRUPT_MASK = ETH_MAC_MMC_INTERRUPT_MSK;
+
   eth_mac->frame_end = NULL;
 
   return status;
@@ -325,7 +291,7 @@ XMC_ETH_MAC_STATUS_t XMC_ETH_MAC_SendFrame(XMC_ETH_MAC_t *const eth_mac, const u
   uint32_t ctrl;
 
   XMC_ASSERT("XMC_ETH_MAC_SendFrame:", eth_mac != NULL);
-  XMC_ASSERT("XMC_ETH_MAC_SendFrame:", eth_mac->regs != ETH0);
+  XMC_ASSERT("XMC_ETH_MAC_SendFrame:", eth_mac->regs == ETH0);
   XMC_ASSERT("XMC_ETH_MAC_SendFrame:", (frame != NULL) && (len > 0));
 
   dst = eth_mac->frame_end;
@@ -405,7 +371,7 @@ uint32_t XMC_ETH_MAC_ReadFrame(XMC_ETH_MAC_t *const eth_mac, uint8_t *frame, uin
   uint8_t const *src;
 
   XMC_ASSERT("XMC_ETH_MAC_ReadFrame:", eth_mac != NULL);
-  XMC_ASSERT("XMC_ETH_MAC_ReadFrame:", eth_mac->regs != ETH0);
+  XMC_ASSERT("XMC_ETH_MAC_ReadFrame:", eth_mac->regs == ETH0);
   XMC_ASSERT("XMC_ETH_MAC_ReadFrame:", (frame != NULL) && (len > 0));
 
   /* Fast-copy data to packet buffer */
@@ -445,16 +411,18 @@ uint32_t XMC_ETH_MAC_GetRxFrameSize(XMC_ETH_MAC_t *const eth_mac)
     /* Owned by DMA */
     len = 0U;
   }
-
-  if (((status & ETH_MAC_DMA_RDES0_ES) != 0U) ||
-      ((status & ETH_MAC_DMA_RDES0_FS) == 0U) ||
-      ((status & ETH_MAC_DMA_RDES0_LS) == 0U)) {
+  else if (((status & ETH_MAC_DMA_RDES0_ES) != 0U) ||
+           ((status & ETH_MAC_DMA_RDES0_FS) == 0U) ||
+           ((status & ETH_MAC_DMA_RDES0_LS) == 0U)) 
+  {
     /* Error, this block is invalid */
     len = 0xFFFFFFFFU;
   }
-
-  /* Subtract CRC */
-  len = ((status & ETH_MAC_DMA_RDES0_FL) >> 16U) - 4U;
+  else 
+  {
+    /* Subtract CRC */
+    len = ((status & ETH_MAC_DMA_RDES0_FL) >> 16U) - 4U;
+  }
 
   return len;
 }
@@ -633,7 +601,7 @@ void XMC_ETH_MAC_DisableEvent(XMC_ETH_MAC_t *const eth_mac, uint32_t event)
 
   eth_mac->regs->INTERRUPT_MASK |= event >> 16U;
 
-  event &= (uint16_t)~0xffffU;
+  event &= 0x7fffU;
   eth_mac->regs->INTERRUPT_ENABLE &= ~event;
 }
 
@@ -671,18 +639,26 @@ uint32_t XMC_ETH_MAC_GetEventStatus(const XMC_ETH_MAC_t *const eth_mac)
 void XMC_ETH_MAC_ReturnRxDescriptor(XMC_ETH_MAC_t *const eth_mac)
 {
   eth_mac->rx_desc[eth_mac->rx_index].status |= ETH_MAC_DMA_RDES0_OWN;
+  eth_mac->rx_index++;
+  if (eth_mac->rx_index == eth_mac->num_rx_buf)
+  {
+    eth_mac->rx_index = 0U;
+  } 
 }
 
 /* Return TX descriptor */
 void XMC_ETH_MAC_ReturnTxDescriptor(XMC_ETH_MAC_t *const eth_mac)
 {
-  eth_mac->tx_desc[eth_mac->tx_index].status |= ETH_MAC_DMA_TDES0_OWN;
-}
+  eth_mac->tx_ts_index = eth_mac->tx_index;
 
-/* Is TX descriptor owned by DMA? */
-bool XMC_ETH_MAC_IsTxDescriptorOwnedByDma(XMC_ETH_MAC_t *const eth_mac)
-{
-  return ((eth_mac->tx_desc[eth_mac->tx_index].status & ETH_MAC_DMA_TDES0_OWN) != 0U);
+  eth_mac->tx_desc[eth_mac->tx_index].status |= ETH_MAC_DMA_TDES0_CIC |ETH_MAC_DMA_TDES0_OWN;
+  eth_mac->tx_index++;
+  if (eth_mac->tx_index == eth_mac->num_tx_buf)
+  {
+    eth_mac->tx_index = 0U;
+  } 
+
+  eth_mac->frame_end = NULL;
 }
 
 /* Set VLAN tag */

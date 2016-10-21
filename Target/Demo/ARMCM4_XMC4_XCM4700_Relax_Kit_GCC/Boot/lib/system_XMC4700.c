@@ -1,34 +1,49 @@
-/******************************************************************************
+/*********************************************************************************************************************
  * @file     system_XMC4700.c
- * @brief    CMSIS Cortex-M4 Device Peripheral Access Layer Header File
- *           for the Infineon XMC4700 Device Series
- * @version  V1.0.0
- * @date     03. Sep 2015
+ * @brief    CMSIS Cortex-M4 Device Peripheral Access Layer Header File for the Infineon XMC4700 Device Series
+ * @version  V1.0.2
+ * @date     01. Jun 2016
  *
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+ * @cond
+ *********************************************************************************************************************
+ * Copyright (c) 2015-2016, Infineon Technologies AG
+ * All rights reserved.
  *
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
+ * following conditions are met:
  *
- * @par
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.  This file can be freely distributed
- * within development tools that are supporting such microcontrollers.
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+ * disclaimer.
  *
- * @par
- * THIS SOFTWARE IS PROVIDED AS IS.  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
- * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the distribution.
  *
- ******************************************************************************/
-
-/********************** Version History ***************************************
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote
+ * products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with
+ * Infineon Technologies AG dave@infineon.com).
+ *********************************************************************************************************************
+ *
+ ********************** Version History ***************************************
  * V1.0.0, 03. Sep 2015, Initial version
- ******************************************************************************/
+ * V1.0.1, 26. Jan 2016, Disable trap generation from clock unit
+ * V1.0.2, 01. Jun 2016, Fix masking of OSCHPCTRL value 
+ ******************************************************************************
+ * @endcond
+ */
 
 /*******************************************************************************
  * Default clock initialization
- * fPLL = 288MHz => fSYS = 288MHz => fCPU = 144MHz
+ * fPLL = 288MHz => fSYS = 144MHz => fCPU = 144MHz
  *                                => fPB  = 144MHz
  *                                => fCCU = 144MHz
  *                                => fETH = 72MHz
@@ -299,13 +314,13 @@
 
 #define ENABLE_USBPLL \
      (((__CLKSET & SCU_CLK_CLKSET_USBCEN_Msk) != 0) && ((__USBCLKCR & SCU_CLK_USBCLKCR_USBSEL_Msk) == SCU_CLK_USBCLKCR_USBSEL_USBPLL))
-
+                     
 #if ((__USBCLKCR & SCU_CLK_USBCLKCR_USBSEL_Msk) == SCU_CLK_USBCLKCR_USBSEL_USBPLL)
 #define USB_DIV (3U)
 #else
 #define USB_DIV (5U)
 #endif
-
+    
 /*******************************************************************************
  * GLOBAL VARIABLES
  *******************************************************************************/
@@ -317,24 +332,24 @@ uint8_t g_chipid[16] __attribute__((at(0x2003FFC4)));
 uint32_t SystemCoreClock __attribute__((at(0x2002CFC0)));
 uint8_t g_chipid[16] __attribute__((at(0x2002CFC4)));
 #else
-#error "system_XMC4700.c: device not supported"
-#endif
+#error "system_XMC4700.c: device not supported" 
+#endif    
 #elif defined ( __ICCARM__ )
 #if defined(XMC4700_E196x2048) || defined(XMC4700_F144x2048) || defined(XMC4700_F100x2048) || \
     defined(XMC4700_E196x1536) || defined(XMC4700_F144x1536) || defined(XMC4700_F100x1536)
 __no_init uint32_t SystemCoreClock;
 __no_init uint8_t g_chipid[16];
 #else
-#error "system_XMC4700.c: device not supported"
-#endif
+#error "system_XMC4700.c: device not supported" 
+#endif    
 #elif defined ( __GNUC__ )
 #if defined(XMC4700_E196x2048) || defined(XMC4700_F144x2048) || defined(XMC4700_F100x2048) || \
     defined(XMC4700_E196x1536) || defined(XMC4700_F144x1536) || defined(XMC4700_F100x1536)
 uint32_t SystemCoreClock __attribute__((section(".no_init")));
 uint8_t g_chipid[16] __attribute__((section(".no_init")));
 #else
-#error "system_XMC4700.c: device not supported"
-#endif
+#error "system_XMC4700.c: device not supported" 
+#endif    
 #elif defined ( __TASKING__ )
 #if defined(XMC4700_E196x2048) || defined(XMC4700_F144x2048) || defined(XMC4700_F100x2048)
 uint32_t SystemCoreClock __at( 0x2003FFC0 );
@@ -343,11 +358,11 @@ uint8_t g_chipid[16] __at( 0x2003FFC4 );
 uint32_t SystemCoreClock __at( 0x2002CFC0 );
 uint8_t g_chipid[16] __at( 0x2002CFC4 );
 #else
-#error "system_XMC4700.c: device not supported"
-#endif
+#error "system_XMC4700.c: device not supported" 
+#endif    
 #else
-#error "system_XMC4700.c: compiler not supported"
-#endif
+#error "system_XMC4700.c: compiler not supported" 
+#endif    
 
 extern uint32_t __isr_vector;
 
@@ -371,21 +386,21 @@ static void delay(uint32_t cycles)
 __WEAK void SystemInit(void)
 {
   memcpy(g_chipid, CHIPID_LOC, 16);
-
+  
   SystemCoreSetup();
-  SystemCoreClockSetup();
+  SystemCoreClockSetup(); 
 }
 
 __WEAK void SystemCoreSetup(void)
 {
   uint32_t temp;
-
+	
   /* relocate vector table */
   __disable_irq();
   SCB->VTOR = (uint32_t)(&__isr_vector);
   __DSB();
   __enable_irq();
-
+    
 #if ((__FPU_PRESENT == 1) && (__FPU_USED == 1))
   SCB->CPACR |= ((3UL << 10*2) |                 /* set CP10 Full Access */
                  (3UL << 11*2)  );               /* set CP11 Full Access */
@@ -402,16 +417,6 @@ __WEAK void SystemCoreSetup(void)
 
 __WEAK void SystemCoreClockSetup(void)
 {
-    SCU_TRAP->TRAPDIS |= SCU_TRAP_TRAPCLR_SOSCWDGT_Msk |
-                         SCU_TRAP_TRAPCLR_ULPWDGT_Msk |
-                         SCU_TRAP_TRAPCLR_SVCOLCKT_Msk |
-                         SCU_TRAP_TRAPCLR_UVCOLCKT_Msk;
-
-    SCU_TRAP->TRAPCLR = SCU_TRAP_TRAPCLR_SOSCWDGT_Msk |
-                        SCU_TRAP_TRAPCLR_ULPWDGT_Msk |
-                        SCU_TRAP_TRAPCLR_SVCOLCKT_Msk |
-                        SCU_TRAP_TRAPCLR_UVCOLCKT_Msk;
-
 #if FOFI_CALIBRATION_MODE == FOFI_CALIBRATION_MODE_FACTORY
   /* Enable factory calibration */
   SCU_PLL->PLLCON0 |= SCU_PLL_PLLCON0_FOTR_Msk;
@@ -436,7 +441,7 @@ __WEAK void SystemCoreClockSetup(void)
     SCU_RESET->RSTCLR |= SCU_RESET_RSTCLR_HIBRS_Msk;
     delay(DELAY_CNT_150US_50MHZ);
   }
-
+  
 #if STDBY_CLOCK_SRC == STDBY_CLOCK_SRC_OSCULP
   /* Enable OSC_ULP */
   if ((SCU_HIBERNATE->OSCULCTRL & SCU_HIBERNATE_OSCULCTRL_MODE_Msk) != 0UL)
@@ -477,9 +482,6 @@ __WEAK void SystemCoreClockSetup(void)
     /* check SCU_MIRRSTS to ensure that no transfer over serial interface is pending */
   }
   SCU_HIBERNATE->HDCR |= SCU_HIBERNATE_HDCR_RCS_Msk | SCU_HIBERNATE_HDCR_STDBYSEL_Msk;
-
-  SCU_TRAP->TRAPDIS &= ~SCU_TRAP_TRAPDIS_ULPWDT_Msk;
-
 #endif /* STDBY_CLOCK_SRC == STDBY_CLOCK_SRC_OSCULP */
 
   /* Enable automatic calibration of internal fast oscillator */
@@ -497,7 +499,7 @@ __WEAK void SystemCoreClockSetup(void)
   /* enable OSC_HP */
   if ((SCU_OSC->OSCHPCTRL & SCU_OSC_OSCHPCTRL_MODE_Msk) != 0U)
   {
-    SCU_OSC->OSCHPCTRL &= ~(SCU_OSC_OSCHPCTRL_MODE_Msk | SCU_OSC_OSCHPCTRL_OSCVAL_Pos);
+    SCU_OSC->OSCHPCTRL &= ~(SCU_OSC_OSCHPCTRL_MODE_Msk | SCU_OSC_OSCHPCTRL_OSCVAL_Msk);
     SCU_OSC->OSCHPCTRL |= ((OSCHP_GetFrequency() / FOSCREF) - 1UL) << SCU_OSC_OSCHPCTRL_OSCVAL_Pos;
 
     /* select OSC_HP clock as PLL input */
@@ -509,9 +511,7 @@ __WEAK void SystemCoreClockSetup(void)
     while ((SCU_PLL->PLLSTAT & SCU_PLL_PLLSTAT_OSC_USABLE) != SCU_PLL_PLLSTAT_OSC_USABLE)
     {
       /* wait till OSC_HP output frequency is usable */
-    }
-
-    SCU_TRAP->TRAPDIS &= ~SCU_TRAP_TRAPDIS_SOSCWDGT_Msk;
+    }   
   }
 #else /* PLL_CLOCK_SRC != PLL_CLOCK_SRC_OFI */
 
@@ -549,9 +549,7 @@ __WEAK void SystemCoreClockSetup(void)
   while ((SCU_PLL->PLLSTAT & SCU_PLL_PLLSTAT_VCOBYST_Msk) != 0U)
   {
     /* wait for normal mode */
-  }
-
-  SCU_TRAP->TRAPDIS &= ~SCU_TRAP_TRAPDIS_SVCOLCKT_Msk;
+  } 
 #endif /* ENABLE_PLL */
 
   /* Before scaling to final frequency we need to setup the clock dividers */
@@ -568,7 +566,7 @@ __WEAK void SystemCoreClockSetup(void)
   /* PLL frequency stepping...*/
   /* Reset OSCDISCDIS */
   SCU_PLL->PLLCON0 &= ~SCU_PLL_PLLCON0_OSCDISCDIS_Msk;
-
+  
   SCU_PLL->PLLCON1 = ((PLL_NDIV << SCU_PLL_PLLCON1_NDIV_Pos) |
 	                  (PLL_K2DIV_48MHZ << SCU_PLL_PLLCON1_K2DIV_Pos) |
 	                  (PLL_PDIV << SCU_PLL_PLLCON1_PDIV_Pos));
@@ -598,7 +596,7 @@ __WEAK void SystemCoreClockSetup(void)
 	                  (PLL_PDIV << SCU_PLL_PLLCON1_PDIV_Pos));
 
   delay(DELAY_CNT_50US_144MHZ);
-
+  
 #endif /* ENABLE_PLL */
 
 #if ENABLE_USBPLL
@@ -616,7 +614,7 @@ __WEAK void SystemCoreClockSetup(void)
       SCU_PLL->PLLCON0 &= ~(SCU_PLL_PLLCON0_VCOPWD_Msk | SCU_PLL_PLLCON0_PLLPWD_Msk);
     }
 
-    SCU_OSC->OSCHPCTRL &= ~(SCU_OSC_OSCHPCTRL_MODE_Msk | SCU_OSC_OSCHPCTRL_OSCVAL_Pos);
+    SCU_OSC->OSCHPCTRL &= ~(SCU_OSC_OSCHPCTRL_MODE_Msk | SCU_OSC_OSCHPCTRL_OSCVAL_Msk);
     SCU_OSC->OSCHPCTRL |= ((OSCHP_GetFrequency() / FOSCREF) - 1UL) << SCU_OSC_OSCHPCTRL_OSCVAL_Pos;
 
     /* restart OSC Watchdog */
@@ -652,9 +650,7 @@ __WEAK void SystemCoreClockSetup(void)
   while ((SCU_PLL->USBPLLSTAT & SCU_PLL_USBPLLSTAT_VCOLOCK_Msk) == 0U)
   {
     /* wait for PLL Lock */
-  }
-
-  SCU_TRAP->TRAPDIS &= ~SCU_TRAP_TRAPDIS_UVCOLCKT_Msk;
+  }  
 #endif
 
 
@@ -714,13 +710,13 @@ __WEAK void SystemCoreClockUpdate(void)
       /* PLL prescalar mode */
       /* read back divider settings */
       kdiv  = ((SCU_PLL->PLLCON1 & SCU_PLL_PLLCON1_K1DIV_Msk) >> SCU_PLL_PLLCON1_K1DIV_Pos) + 1;
-
+      
       temp = (temp / kdiv);
     }
   }
   else
   {
-    /* fOFI is clock source for fSYS */
+    /* fOFI is clock source for fSYS */    
     temp = OFI_FREQUENCY;
   }
 

@@ -1,12 +1,12 @@
 /**
  * @file xmc4_ccu8_map.h
- * @date 2015-10-27
+ * @date 2015-12-07
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -38,6 +38,9 @@
  *
  * 2015-08-25:
  *     - Initial version
+ *
+ * 2015-12-07:
+ *     - Add XMC4300 support
  *
  * @endcond
  */
@@ -521,6 +524,57 @@
 #define CCU80_IN3_VADC0_G0BFL3             	8
 #endif
 
+#if (UC_DEVICE == XMC4300) && (UC_PACKAGE == LQFP100)
+#define CCU80_IN0_CCU40_SR3                	10
+#define CCU80_IN0_CCU80_ST0                	12
+#define CCU80_IN0_CCU80_ST1                	13
+#define CCU80_IN0_CCU80_ST2                	14
+#define CCU80_IN0_CCU80_ST3                	15
+#define CCU80_IN0_ERU1_PDOUT0              	9
+#define CCU80_IN0_P0_7                     	0
+#define CCU80_IN0_P3_2                     	2
+#define CCU80_IN0_P3_4                     	1
+#define CCU80_IN0_SCU_ERU1_IOUT0           	6
+#define CCU80_IN0_SCU_GSC80                	7
+#define CCU80_IN0_VADC0_G0BFL0             	8
+#define CCU80_IN0_VADC0_G0SR3              	5
+#define CCU80_IN1_CCU41_SR3                	10
+#define CCU80_IN1_CCU80_ST0                	12
+#define CCU80_IN1_CCU80_ST1                	13
+#define CCU80_IN1_CCU80_ST2                	14
+#define CCU80_IN1_CCU80_ST3                	15
+#define CCU80_IN1_ERU1_PDOUT0              	9
+#define CCU80_IN1_ERU1_PDOUT1              	5
+#define CCU80_IN1_P0_7                     	0
+#define CCU80_IN1_P0_8                     	1
+#define CCU80_IN1_P3_1                     	2
+#define CCU80_IN1_SCU_ERU1_IOUT1           	6
+#define CCU80_IN1_SCU_GSC80                	7
+#define CCU80_IN1_VADC0_G0BFL1             	8
+#define CCU80_IN2_CCU80_ST0                	12
+#define CCU80_IN2_CCU80_ST1                	13
+#define CCU80_IN2_CCU80_ST2                	14
+#define CCU80_IN2_CCU80_ST3                	15
+#define CCU80_IN2_ERU1_PDOUT0              	9
+#define CCU80_IN2_ERU1_PDOUT2              	5
+#define CCU80_IN2_P0_6                     	1
+#define CCU80_IN2_P0_7                     	0
+#define CCU80_IN2_P3_0                     	2
+#define CCU80_IN2_SCU_ERU1_IOUT2           	6
+#define CCU80_IN2_SCU_GSC80                	7
+#define CCU80_IN2_VADC0_G0BFL2             	8
+#define CCU80_IN3_CCU80_ST0                	12
+#define CCU80_IN3_CCU80_ST1                	13
+#define CCU80_IN3_CCU80_ST2                	14
+#define CCU80_IN3_CCU80_ST3                	15
+#define CCU80_IN3_ERU1_PDOUT0              	9
+#define CCU80_IN3_ERU1_PDOUT3              	5
+#define CCU80_IN3_P0_7                     	0
+#define CCU80_IN3_P3_3                     	1
+#define CCU80_IN3_SCU_ERU1_IOUT3           	6
+#define CCU80_IN3_SCU_GSC80                	7
+#define CCU80_IN3_VADC0_G0BFL3             	8
+#endif
 
 #if (UC_DEVICE == XMC4400) && (UC_PACKAGE == LQFP100)
 #define CCU80_IN0_CCU40_SR3                	10

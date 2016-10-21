@@ -1,12 +1,12 @@
 /**
  * @file xmc4_rtc.c
- * @date 2015-10-27
+ * @date 2016-03-09
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -38,6 +38,9 @@
  *
  * 2015-02-20:
  *     - Initial <br>
+ *      
+ * 2016-03-09:
+ *     - Optimize write only registers
  *      
  * @endcond 
  *
@@ -161,7 +164,7 @@ void XMC_RTC_ClearEvent(const uint32_t event)
   {
     /* check SCU_MIRRSTS to ensure that no transfer over serial interface is pending */
   }
-  RTC->CLRSR |= event;
+  RTC->CLRSR = event;
 }
 
 #endif /* UC_FAMILY == XMC4 */

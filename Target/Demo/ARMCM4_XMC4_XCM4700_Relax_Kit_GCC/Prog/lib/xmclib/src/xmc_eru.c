@@ -1,12 +1,12 @@
 /**
  * @file xmc_eru.c
- * @date 2015-10-27
+ * @date 2016-03-10
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -41,6 +41,9 @@
  *
  * 2015-06-20:
  *     - Removed definition of GetDriverVersion API <br>
+ *
+ * 2016-03-10:
+ *     - XMC_ERU_ETL_GetEdgeDetection() API is added to get the configured edge for event generation. <br>
  *
  * @endcond
  */
@@ -188,6 +191,14 @@ void XMC_ERU_ETL_SetEdgeDetection(XMC_ERU_t *const eru,
   XMC_ASSERT("XMC_ERU_ETL_SetEdgeDetection:Invalid Trigger Edge", XMC_ERU_ETL_CHECK_TRIGGER_EDGE(edge_detection));
 
   eru->EXICON_b[channel].ED = (uint8_t)edge_detection;
+}
+
+/* Returns the configured event trigger edge/s by reading (RE, FE) bits of EXICONx(x = [0 to 3]) register. */
+XMC_ERU_ETL_EDGE_DETECTION_t XMC_ERU_ETL_GetEdgeDetection(XMC_ERU_t *const eru, const uint8_t channel)
+{
+  XMC_ASSERT("XMC_ERU_ETL_GetEdgeDetection:Invalid Module Pointer", XMC_ERU_CHECK_MODULE_PTR(eru));
+  XMC_ASSERT("XMC_ERU_ETL_GetEdgeDetection:Invalid Channel Number", (channel < 4U));
+  return ((XMC_ERU_ETL_EDGE_DETECTION_t)(eru->EXICON_b[channel].ED));
 }
 
 /* Set the status flag bit(FL) in EXICONx(x = [0 to 3]). */

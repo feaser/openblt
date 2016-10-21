@@ -1,12 +1,12 @@
 /**
  * @file xmc4_ccu4_map.h
- * @date 2015-10-27
+ * @date 2015-12-07
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -38,6 +38,9 @@
  *
  * 2015-08-25:
  *     - Initial version
+ *
+ * 2015-12-07:
+ *     - Add XMC4300 support
  *
  * @endcond
  */
@@ -937,6 +940,107 @@
 #define CCU41_IN3_VADC0_G1ARBCNT           	6
 #endif
 
+#if (UC_DEVICE == XMC4300) && (UC_PACKAGE == LQFP100)
+#define CCU40_IN0_CAN0_SR7                 	7
+#define CCU40_IN0_CCU40_ST0                	12
+#define CCU40_IN0_CCU40_ST1                	13
+#define CCU40_IN0_CCU40_ST2                	14
+#define CCU40_IN0_CCU40_ST3                	15
+#define CCU40_IN0_ERU1_PDOUT0              	9
+#define CCU40_IN0_ERU1_PDOUT1              	3
+#define CCU40_IN0_P1_3                     	0
+#define CCU40_IN0_P2_1                     	2
+#define CCU40_IN0_P2_8                     	1
+#define CCU40_IN0_SCU_ERU1_IOUT0           	10
+#define CCU40_IN0_SCU_GSC40                	8
+#define CCU40_IN0_U0C0_DX2INS              	11
+#define CCU40_IN1_CCU40_ST0                	12
+#define CCU40_IN1_CCU40_ST1                	13
+#define CCU40_IN1_CCU40_ST2                	14
+#define CCU40_IN1_CCU40_ST3                	15
+#define CCU40_IN1_ERU1_PDOUT0              	3
+#define CCU40_IN1_ERU1_PDOUT1              	9
+#define CCU40_IN1_P1_2                     	0
+#define CCU40_IN1_P2_0                     	2
+#define CCU40_IN1_P2_8                     	1
+#define CCU40_IN1_SCU_ERU1_IOUT1           	10
+#define CCU40_IN1_SCU_GSC40                	8
+#define CCU40_IN2_CCU40_ST0                	12
+#define CCU40_IN2_CCU40_ST1                	13
+#define CCU40_IN2_CCU40_ST2                	14
+#define CCU40_IN2_CCU40_ST3                	15
+#define CCU40_IN2_ERU1_PDOUT0              	3
+#define CCU40_IN2_ERU1_PDOUT2              	9
+#define CCU40_IN2_P1_1                     	0
+#define CCU40_IN2_P2_7                     	2
+#define CCU40_IN2_P2_8                     	1
+#define CCU40_IN2_SCU_ERU1_IOUT2           	10
+#define CCU40_IN2_SCU_GSC40                	8
+#define CCU40_IN2_U0C1_DX2INS              	11
+#define CCU40_IN3_CCU40_ST0                	12
+#define CCU40_IN3_CCU40_ST1                	13
+#define CCU40_IN3_CCU40_ST2                	14
+#define CCU40_IN3_CCU40_ST3                	15
+#define CCU40_IN3_CCU80_IGBTO              	7
+#define CCU40_IN3_ERU1_PDOUT0              	3
+#define CCU40_IN3_ERU1_PDOUT3              	9
+#define CCU40_IN3_P1_0                     	0
+#define CCU40_IN3_P2_6                     	2
+#define CCU40_IN3_P2_8                     	1
+#define CCU40_IN3_SCU_ERU1_IOUT3           	10
+#define CCU40_IN3_SCU_GSC40                	8
+#define CCU40_IN3_U1C0_DX2INS              	11
+#define CCU40_IN3_VADC0_G0ARBCNT           	6
+#define CCU41_IN0_CAN0_SR7                 	7
+#define CCU41_IN0_CCU41_ST0                	12
+#define CCU41_IN0_CCU41_ST1                	13
+#define CCU41_IN0_CCU41_ST2                	14
+#define CCU41_IN0_CCU41_ST3                	15
+#define CCU41_IN0_ERU1_PDOUT0              	9
+#define CCU41_IN0_ERU1_PDOUT1              	3
+#define CCU41_IN0_P1_4                     	2
+#define CCU41_IN0_P2_5                     	0
+#define CCU41_IN0_P2_9                     	1
+#define CCU41_IN0_SCU_ERU1_IOUT0           	10
+#define CCU41_IN0_SCU_GSC41                	8
+#define CCU41_IN0_VADC0_G0BFL0             	11
+#define CCU41_IN1_CCU41_ST0                	12
+#define CCU41_IN1_CCU41_ST1                	13
+#define CCU41_IN1_CCU41_ST2                	14
+#define CCU41_IN1_CCU41_ST3                	15
+#define CCU41_IN1_ERU1_PDOUT0              	3
+#define CCU41_IN1_ERU1_PDOUT1              	9
+#define CCU41_IN1_P1_5                     	2
+#define CCU41_IN1_P2_4                     	0
+#define CCU41_IN1_P2_9                     	1
+#define CCU41_IN1_SCU_ERU1_IOUT1           	10
+#define CCU41_IN1_SCU_GSC41                	8
+#define CCU41_IN2_CCU41_ST0                	12
+#define CCU41_IN2_CCU41_ST1                	13
+#define CCU41_IN2_CCU41_ST2                	14
+#define CCU41_IN2_CCU41_ST3                	15
+#define CCU41_IN2_ERU1_PDOUT0              	3
+#define CCU41_IN2_ERU1_PDOUT2              	9
+#define CCU41_IN2_P1_10                    	2
+#define CCU41_IN2_P2_3                     	0
+#define CCU41_IN2_P2_9                     	1
+#define CCU41_IN2_SCU_ERU1_IOUT2           	10
+#define CCU41_IN2_SCU_GSC41                	8
+#define CCU41_IN2_VADC0_G0BFL1             	11
+#define CCU41_IN3_CCU41_ST0                	12
+#define CCU41_IN3_CCU41_ST1                	13
+#define CCU41_IN3_CCU41_ST2                	14
+#define CCU41_IN3_CCU41_ST3                	15
+#define CCU41_IN3_ERU1_PDOUT0              	3
+#define CCU41_IN3_ERU1_PDOUT3              	9
+#define CCU41_IN3_P1_11                    	2
+#define CCU41_IN3_P2_2                     	0
+#define CCU41_IN3_P2_9                     	1
+#define CCU41_IN3_SCU_ERU1_IOUT3           	10
+#define CCU41_IN3_SCU_GSC41                	8
+#define CCU41_IN3_VADC0_G0BFL2             	11
+#define CCU41_IN3_VADC0_G1ARBCNT           	6
+#endif
 
 #if (UC_DEVICE == XMC4400) && (UC_PACKAGE == LQFP100)
 #define CCU40_IN0_CAN0_SR7                 	7

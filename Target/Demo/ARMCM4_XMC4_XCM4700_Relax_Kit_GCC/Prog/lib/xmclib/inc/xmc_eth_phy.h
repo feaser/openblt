@@ -1,12 +1,12 @@
 /**
  * @file xmc_eth_phy.h
- * @date 2015-10-27
+ * @date 2015-12-15
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -37,7 +37,10 @@
  * --------------
  *
  * 2015-06-20:
- *     - Initial <br>
+ *     - Initial
+ *
+ * 2015-12-15:
+ *     - Added XMC_ETH_PHY_ExitPowerDown and XMC_ETH_PHY_Reset
  *
  * @endcond
  */
@@ -95,7 +98,7 @@ extern "C" {
  * @param eth_mac A constant pointer to XMC_ETH_MAC_t, pointing to the ETH MAC base address
  * @param phy_addr Physical address
  * @param config A constant pointer to XMC_ETH_PHY_CONFIG_t, pointing to a physical layer config
- * @return int32_t ETH physical layer initialization status
+ * @return int32_t return status XMC_ETH_PHY_STATUS_t
  *
  * \par<b>Description: </b><br>
  * Initialize the ETH physical layer interface <br>
@@ -109,16 +112,35 @@ int32_t XMC_ETH_PHY_Init(XMC_ETH_MAC_t *const eth_mac, uint8_t phy_addr, const X
 /**
  * @param eth_mac A constant pointer to XMC_ETH_MAC_t, pointing to the ETH MAC base address
  * @param phy_addr Physical address
- * @return int32_t ETH MAC return status
+ * @return int32_t return status XMC_ETH_PHY_STATUS_t
  *
  * \par<b>Description: </b><br>
- * Enable power down mode <br>
+ * Enter power down mode <br>
  *
- * \par
- * Power-down mode is used to power down the KSZ8021/31RNL device (on the XMC4500 relax kit)
- * when it is not in use after power-up. It is enabled by writing a 1 to register 0h, bit [11].  
  */
 int32_t XMC_ETH_PHY_PowerDown(XMC_ETH_MAC_t *const eth_mac, uint8_t phy_addr);
+
+/**
+ * @param eth_mac A constant pointer to XMC_ETH_MAC_t, pointing to the ETH MAC base address
+ * @param phy_addr Physical address
+ * @return int32_t return status XMC_ETH_PHY_STATUS_t
+ *
+ * \par<b>Description: </b><br>
+ * Exit power down mode <br>
+ *
+ */
+int32_t XMC_ETH_PHY_ExitPowerDown(XMC_ETH_MAC_t *const eth_mac, uint8_t phy_addr);
+
+/**
+ * @param eth_mac A constant pointer to XMC_ETH_MAC_t, pointing to the ETH MAC base address
+ * @param phy_addr Physical address
+ * @return int32_t return status XMC_ETH_PHY_STATUS_t
+ *
+ * \par<b>Description: </b><br>
+ * Reset transciver <br>
+ *
+ */
+int32_t XMC_ETH_PHY_Reset(XMC_ETH_MAC_t *const eth_mac, uint8_t phy_addr);
 
 /**
  * @param eth_mac A constant pointer to XMC_ETH_MAC_t, pointing to the ETH MAC base address
@@ -161,6 +183,16 @@ XMC_ETH_LINK_SPEED_t XMC_ETH_PHY_GetLinkSpeed(XMC_ETH_MAC_t *const eth_mac, uint
  * It returns either ::XMC_ETH_LINK_DUPLEX_FULL or ::XMC_ETH_LINK_DUPLEX_HALF.
  */
 XMC_ETH_LINK_DUPLEX_t XMC_ETH_PHY_GetLinkDuplex(XMC_ETH_MAC_t *const eth_mac, uint8_t phy_addr);
+
+/**
+ * @param eth_mac A constant pointer to XMC_ETH_MAC_t, pointing to the ETH MAC base address
+ * @param phy_addr Physical address
+ * @return bool True if autonegotiation process is finished otherwise false
+ *
+ * \par<b>Description: </b><br>
+ * Get status of autonegotiation <br>
+ */
+bool XMC_ETH_PHY_IsAutonegotiationCompleted(XMC_ETH_MAC_t *const eth_mac, uint8_t phy_addr);
 
 #ifdef __cplusplus
 }

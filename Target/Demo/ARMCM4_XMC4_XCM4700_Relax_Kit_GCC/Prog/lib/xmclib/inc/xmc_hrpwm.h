@@ -1,13 +1,13 @@
 
 /**
  * @file xmc_hrpwm.h
- * @date 2015-10-27
+ * @date 2015-06-20
  *
  * @cond
  **********************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without           

@@ -1,12 +1,12 @@
 /**
  * @file xmc4_flash.c
- * @date 2015-10-27
+ * @date 2016-01-08
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -49,6 +49,17 @@
  *       3. XMC_FLASH_EraseUCB
  *       4. XMC_FLASH_ResumeProtection
  *       5. XMC_FLASH_RepairPhysicalSector
+ *
+ * 2016-01-08: 
+ *     - Wait until operation is finished for the next functions:
+ *       1. XMC_FLASH_InstallProtection
+ *       2. XMC_FLASH_ConfirmProtection
+ *       3. XMC_FLASH_ProgramPage
+ *       4. XMC_FLASH_EraseSector
+ *       5. XMC_FLASH_ErasePhysicalSector
+ *       6. XMC_FLASH_EraseUCB
+ *     - Fix XMC_FLASH_VerifyReadProtection and XMC_FLASH_VerifyWriteProtection
+ *
  * @endcond 
  *
  */
@@ -63,13 +74,23 @@
 
 #define XMC_FLASH_PROTECTION_CONFIGURATION_WORDS (8UL) /* Used to upadte the assembly buffer during protection 
                                                           configuration */
-#define XMC_FLASH_PROTECTION_CONFIRMATION_OFFSET (512UL) /* Offset address for UCB page */
-#define XMC_FLASH_PROTECTION_CONFIRMATION_WORDS  (4UL)
-#define XMC_FLASH_PROTECTION_CONFIRMATION_CODE   (0x8AFE15C3UL)
+#define XMC_FLASH_PROT_CONFIRM_OFFSET (512UL) /* Offset address for UCB page */
+#define XMC_FLASH_PROT_CONFIRM_WORDS  (4UL)
+#define XMC_FLASH_PROT_CONFIRM_CODE   (0x8AFE15C3UL)
 
 /*********************************************************************************************************************
  * LOCAL FUNCTIONS
  ********************************************************************************************************************/
+void XMC_FLASH_lEnterPageModeCommand(void);
+void XMC_FLASH_lLoadPageCommand(uint32_t low_word, uint32_t high_word);
+void XMC_FLASH_lWritePageCommand(uint32_t *page_start_address);
+void XMC_FLASH_lWriteUCBPageCommand(uint32_t *page_start_address);
+void XMC_FLASH_lEraseSectorCommand(uint32_t *sector_start_address);
+void XMC_FLASH_lDisableSectorWriteProtectionCommand(uint32_t user, uint32_t password_0, uint32_t password_1);
+void XMC_FLASH_lDisableReadProtectionCommand(uint32_t password_0, uint32_t password_1);
+void XMC_FLASH_lRepairPhysicalSectorCommand(void);
+void XMC_FLASH_lErasePhysicalSectorCommand(uint32_t *sector_start_address);
+void XMC_FLASH_lClearStatusCommand(void);
 
 /*
  * Command to program the PFLASH in to page mode, so that assembly buffer is used 
@@ -79,7 +100,7 @@ void XMC_FLASH_lEnterPageModeCommand(void)
   volatile uint32_t *address;
 
   address = (uint32_t *)(XMC_FLASH_UNCACHED_BASE + 0x5554U);
-  *address = 0x50;
+  *address = (uint32_t)0x50U;
 }
 
 /*
@@ -247,17 +268,20 @@ void XMC_FLASH_DisableEvent(const uint32_t event_msk)
  */
 void XMC_FLASH_ProgramPage(uint32_t *address, const uint32_t *data)
 {
-  uint32_t index;
+  uint32_t idx;
 
   XMC_FLASH_lClearStatusCommand();  
   XMC_FLASH_lEnterPageModeCommand();
 
-  for (index = 0; index < XMC_FLASH_WORDS_PER_PAGE; index += 2)
+  for (idx = 0U; idx < XMC_FLASH_WORDS_PER_PAGE; idx += 2U)
   {
-    XMC_FLASH_lLoadPageCommand(data[index], data[index + 1]);
+    XMC_FLASH_lLoadPageCommand(data[idx], data[idx + 1U]);
   }
 
   XMC_FLASH_lWritePageCommand(address);    
+
+  /* wait until the operation is completed */
+  while ((FLASH0->FSR & (uint32_t)FLASH_FSR_PBUSY_Msk) != 0U){}
 }
 
 /*
@@ -267,6 +291,9 @@ void XMC_FLASH_EraseSector(uint32_t *address)
 {
   XMC_FLASH_lClearStatusCommand();
   XMC_FLASH_lEraseSectorCommand(address);
+
+  /* wait until the operation is completed */
+  while ((FLASH0->FSR & (uint32_t)FLASH_FSR_PBUSY_Msk) != 0U){}
 }
 
 /*
@@ -319,6 +346,9 @@ void XMC_FLASH_ErasePhysicalSector(uint32_t *address)
 {
   XMC_FLASH_lClearStatusCommand();
   XMC_FLASH_lErasePhysicalSectorCommand(address);
+
+  /* wait until the operation is completed */
+  while ((FLASH0->FSR & (uint32_t)FLASH_FSR_PBUSY_Msk) != 0U){}
 }
 
 /*
@@ -349,6 +379,9 @@ void XMC_FLASH_EraseUCB(uint32_t *ucb_sector_start_address)
   *address = 0x55U;
   address = ucb_sector_start_address;
   *address = 0xc0U;
+
+  /* wait until the operation is completed */
+  while ((FLASH0->FSR & (uint32_t)FLASH_FSR_PBUSY_Msk) != 0U){}
 }
 
 /*
@@ -370,9 +403,9 @@ void XMC_FLASH_InstallProtection(uint8_t user,
 	                             uint32_t password_0,
                                  uint32_t password_1)
 {
-  uint32_t index; 
+  uint32_t idx;
   
-  XMC_ASSERT(" XMC_FLASH_ConfigureProtection: User level out of range", (user < 3U));
+  XMC_ASSERT(" XMC_FLASH_ConfigureProtection: User level out of range", (user < 3U))
 
   XMC_FLASH_lEnterPageModeCommand();
 
@@ -381,12 +414,15 @@ void XMC_FLASH_InstallProtection(uint8_t user,
   XMC_FLASH_lLoadPageCommand(password_0, password_1);
   XMC_FLASH_lLoadPageCommand(password_0, password_1);
   
-  for (index = 0; index < (XMC_FLASH_WORDS_PER_PAGE - XMC_FLASH_PROTECTION_CONFIGURATION_WORDS); index += 2)
+  for (idx = 0U; idx < (XMC_FLASH_WORDS_PER_PAGE - XMC_FLASH_PROTECTION_CONFIGURATION_WORDS); idx += 2U)
   {
     XMC_FLASH_lLoadPageCommand(0UL, 0UL);
   }
 
   XMC_FLASH_lWriteUCBPageCommand((uint32_t *)((uint32_t)XMC_FLASH_UCB0 + (user * XMC_FLASH_BYTES_PER_UCB)));
+
+  /* wait until the operation is completed */
+  while ((FLASH0->FSR & (uint32_t)FLASH_FSR_PBUSY_Msk) != 0U){}
 }
 
 /*
@@ -394,23 +430,26 @@ void XMC_FLASH_InstallProtection(uint8_t user,
  */
 void XMC_FLASH_ConfirmProtection(uint8_t user)
 {
-  uint32_t index;
+  uint32_t idx;
 
-  XMC_ASSERT(" XMC_FLASH_ConfirmProtection: User level out of range", (user < 3U));
+  XMC_ASSERT(" XMC_FLASH_ConfirmProtection: User level out of range", (user < 3U))
 
   XMC_FLASH_lEnterPageModeCommand();
 
-  XMC_FLASH_lLoadPageCommand(XMC_FLASH_PROTECTION_CONFIRMATION_CODE, 0U);
-  XMC_FLASH_lLoadPageCommand(XMC_FLASH_PROTECTION_CONFIRMATION_CODE, 0U);
+  XMC_FLASH_lLoadPageCommand(XMC_FLASH_PROT_CONFIRM_CODE, 0U);
+  XMC_FLASH_lLoadPageCommand(XMC_FLASH_PROT_CONFIRM_CODE, 0U);
 
   /* Fill the rest of page buffer with zeros*/
-  for (index = 0UL; index < (XMC_FLASH_WORDS_PER_PAGE - XMC_FLASH_PROTECTION_CONFIRMATION_WORDS); index += 2)
+  for (idx = 0UL; idx < (XMC_FLASH_WORDS_PER_PAGE - XMC_FLASH_PROT_CONFIRM_WORDS); idx += 2U)
   {
     XMC_FLASH_lLoadPageCommand(0UL, 0UL);
   }
 
   XMC_FLASH_lWriteUCBPageCommand((uint32_t *)((uint32_t)XMC_FLASH_UCB0 + 
-                                 (user * XMC_FLASH_BYTES_PER_UCB) + XMC_FLASH_PROTECTION_CONFIRMATION_OFFSET));
+                                 (user * XMC_FLASH_BYTES_PER_UCB) + XMC_FLASH_PROT_CONFIRM_OFFSET));
+
+  /* wait until the operation is completed */
+  while ((FLASH0->FSR & (uint32_t)FLASH_FSR_PBUSY_Msk) != 0U){}
 }
 
 /*
@@ -418,11 +457,18 @@ void XMC_FLASH_ConfirmProtection(uint8_t user)
  */
 bool XMC_FLASH_VerifyReadProtection(uint32_t password_0, uint32_t password_1)
 {
-  XMC_FLASH_lClearStatusCommand();
-  XMC_FLASH_lDisableReadProtectionCommand(password_0, password_1);
+  bool status = false;
+  
+  /* Check if read protection is installed */
+  if ((XMC_FLASH_GetStatus() & (uint32_t)XMC_FLASH_STATUS_READ_PROTECTION_INSTALLED) != 0U)
+  {  
+    XMC_FLASH_lClearStatusCommand();
+    XMC_FLASH_lDisableReadProtectionCommand(password_0, password_1);
 
-  return (bool)((XMC_FLASH_GetStatus() & XMC_FLASH_STATUS_READ_PROTECTION_INSTALLED) && 
-                (FLASH0->PROCON0 & XMC_FLASH_PROTECTION_READ_GLOBAL));
+    status = (bool)(XMC_FLASH_GetStatus() & (uint32_t)XMC_FLASH_STATUS_READ_PROTECTION_DISABLED_STATE);
+  }
+
+  return status;
 }
 
 /*
@@ -434,17 +480,22 @@ bool XMC_FLASH_VerifyWriteProtection(uint32_t user,
                                      uint32_t password_0, 
                                      uint32_t password_1)
 {
-  uint32_t *flash_procon_ptr;
+  bool status = false;
+  uint32_t *flash_procon_ptr = (uint32_t *)(void*)(&(FLASH0->PROCON0) + user);
 
-  XMC_ASSERT(" XMC_FLASH_VerifyWriteProtection: User level out of range", (user < 3U));
+  XMC_ASSERT(" XMC_FLASH_VerifyWriteProtection: User level out of range", (user < 2U))
 
-  flash_procon_ptr = (uint32_t *)(&(FLASH0->PROCON0) + user);
+  /* Check if write protection for selected user is installed */
+  if ((XMC_FLASH_GetStatus() & (uint32_t)((uint32_t)1U << (uint32_t)((uint32_t)FLASH_FSR_WPROIN0_Pos + user))) != 0U)
+  {  
+    XMC_FLASH_lClearStatusCommand();
+    XMC_FLASH_lDisableSectorWriteProtectionCommand(user, password_0, password_1);
+    
+    status = (bool)((XMC_FLASH_GetStatus() & (uint32_t)((uint32_t)1U << (uint32_t)((uint32_t)FLASH_FSR_WPRODIS0_Pos + user)))) &&
+             (*flash_procon_ptr == (protection_mask & (uint32_t)(~(uint32_t)XMC_FLASH_PROTECTION_READ_GLOBAL)));
+  }
 
-  XMC_FLASH_lClearStatusCommand();
-  XMC_FLASH_lDisableSectorWriteProtectionCommand(user, password_0, password_1);
-
-  return (bool)((XMC_FLASH_GetStatus() & (1U << (FLASH_FSR_WPRODIS0_Pos + user))) && 
-                 (*flash_procon_ptr == (protection_mask & ~XMC_FLASH_PROTECTION_READ_GLOBAL)));
+  return status;
 }
 
 /*

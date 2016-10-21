@@ -1,12 +1,12 @@
 /**
  * @file xmc_eru.h
- * @date 2015-10-27
+ * @date 2016-03-10
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -45,6 +45,9 @@
  * 
  * 2015-10-07:
  *     - Doc update for XMC_ERU_ETL_CONFIG_t field  <br>
+ *
+ * 2016-03-10:
+ *     - XMC_ERU_ETL_GetEdgeDetection() API is added to get the configured edge for event generation. <br>
  *
  * @endcond
  */
@@ -564,6 +567,20 @@ void XMC_ERU_ETL_SetEdgeDetection(XMC_ERU_t *const eru,
                                   const uint8_t channel,
                                   const XMC_ERU_ETL_EDGE_DETECTION_t edge_detection);
 
+/**
+ * @param eru A constant pointer to XMC_ERU_t, pointing to the ERU base address.
+ * @param channel ERU_ETLx(Event trigger logic unit) channel.
+ *                Range : [0 to 3]
+ *
+ * @return XMC_ERU_ETL_EDGE_DETECTION_t indicate which egde/s is configured for event generation
+ *
+ * \par<b>Description:</b><br>
+ * Return event trigger edge/s by reading (RE, FE) bits of EXICONx(x = [0 to 3]) register.<br>
+ * \par
+ * Rising edge, falling edge or either edges can be selected to generate the event.
+ * Call this to get the configured trigger edge. */								  
+XMC_ERU_ETL_EDGE_DETECTION_t XMC_ERU_ETL_GetEdgeDetection(XMC_ERU_t *const eru,
+                                                          const uint8_t channel);
 /**
  * @param eru A constant pointer to XMC_ERU_t, pointing to the ERU base address.
  * @param channel ERU_ETLx(Event trigger logic unit) channel.

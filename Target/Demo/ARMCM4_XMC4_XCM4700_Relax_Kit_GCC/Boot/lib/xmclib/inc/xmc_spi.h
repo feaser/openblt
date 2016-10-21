@@ -1,12 +1,12 @@
 /**
  * @file xmc_spi.h
- * @date 2015-10-27
+ * @date 2016-05-20
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -62,6 +62,13 @@
  *
  * 2015-09-08:
  *     - Adding API for configuring the receiving clock phase in the slave:XMC_SPI_CH_DataLatchedInTrailingEdge() and XMC_SPI_CH_DataLatchedInLeadingEdge() <br>
+ *
+ * 2016-04-10:
+ *     - Added an API for configuring the transmit mode:XMC_SPI_CH_SetTransmitMode() <br>
+ *
+ * 2016-05-20:
+ *     - Added XMC_SPI_CH_EnableDataTransmission() and XMC_SPI_CH_DisableDataTransmission()
+ * 
  * @endcond 
  *
  */
@@ -437,6 +444,27 @@ void XMC_SPI_CH_EnableSlaveSelect(XMC_USIC_CH_t *const channel, const XMC_SPI_CH
  * XMC_SPI_CH_EnableSlaveSelect()
  */
 void XMC_SPI_CH_DisableSlaveSelect(XMC_USIC_CH_t *const channel);
+
+/**
+ * @param channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.
+ * @param mode Communication mode of the SPI, based on this mode TCI(Transmit control information)is updated.\n
+ *             Refer @ref XMC_SPI_CH_MODE_t for valid values.
+ *
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * In Dual and Quad modes,  hardware port control(CCR.HPCEN) mode is enabled. \n\n
+ * By enabling this the direction of the data pin is updated by hardware itself. Before transmitting the data set the 
+ * mode to ensure the proper communication.
+ * 
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SPI_CH_Transmit()
+ */
+__STATIC_INLINE void XMC_SPI_CH_SetTransmitMode(XMC_USIC_CH_t *const channel, const XMC_SPI_CH_MODE_t mode)
+{
+  channel->CCR = (channel->CCR & (uint32_t)(~USIC_CH_CCR_HPCEN_Msk)) |
+                  (((uint32_t) mode << USIC_CH_CCR_HPCEN_Pos) & (uint32_t)USIC_CH_CCR_HPCEN_Msk);
+}
 
 /**
  * @param channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.
@@ -1168,6 +1196,72 @@ __STATIC_INLINE void XMC_SPI_CH_ConfigExternalInputSignalToBRG(XMC_USIC_CH_t *co
 												               const XMC_USIC_CH_INPUT_COMBINATION_MODE_t combination_mode)
 {
   XMC_USIC_CH_ConfigExternalInputSignalToBRG(channel,pdiv,2U,combination_mode);
+}
+
+/**
+ * @param  channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * The SELOx lines (with x = 1-7) can be used as addresses for an external address
+ * decoder to increase the number of external slave devices.
+ */
+__STATIC_INLINE void XMC_SPI_CH_EnableSlaveSelectCodedMode(XMC_USIC_CH_t *const channel)
+{
+  /* Configuration of Protocol Control Register */
+  channel->PCR_SSCMode = (uint32_t)(channel->PCR_SSCMode & (~USIC_CH_PCR_SSCMode_SELCTR_Msk));
+}
+
+/**
+ * @param  channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Each SELOx line (with x = 0-7) can be directly connected to an external slave device.
+ */
+__STATIC_INLINE void XMC_SPI_CH_DisableSlaveSelectCodedMode(XMC_USIC_CH_t *const channel)
+{
+  /* Configuration of Protocol Control Register */
+  channel->PCR_SSCMode |= (uint32_t)USIC_CH_PCR_SSCMode_SELCTR_Msk;
+}
+
+/**
+ * @param channel Constant pointer to USIC channel handle of type @ref XMC_USIC_CH_t \n
+ *          \b Range: @ref XMC_SPI0_CH0, @ref XMC_SPI0_CH1,@ref XMC_SPI1_CH0,@ref XMC_SPI1_CH1,@ref XMC_SPI2_CH0,@ref XMC_SPI2_CH1 @note Availability of SPI1 and SPI2 depends on device selection
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Enable data transmission.\n\n
+ * Use this function in combination with XMC_SPI_CH_DisableDataTransmission() to fill the FIFO and send the FIFO content without gaps in the transmission.
+ * FIFO is filled using XMC_USIC_CH_TXFIFO_PutData().
+ * @note If you need more control over the start of transmission use XMC_USIC_CH_SetStartTransmisionMode()
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SPI_CH_DisableDataTransmission()\n\n\n
+ */
+__STATIC_INLINE void XMC_SPI_CH_EnableDataTransmission(XMC_USIC_CH_t *const channel)
+{
+  XMC_USIC_CH_SetStartTransmisionMode(channel, XMC_USIC_CH_START_TRANSMISION_ON_TDV);
+}
+
+/**
+ * @param channel Constant pointer to USIC channel handle of type @ref XMC_USIC_CH_t \n
+ *          \b Range: @ref XMC_SPI0_CH0, @ref XMC_SPI0_CH1,@ref XMC_SPI1_CH0,@ref XMC_SPI1_CH1,@ref XMC_SPI2_CH0,@ref XMC_SPI2_CH1 @note Availability of SPI1 and SPI2 depends on device selection
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Disable data transmission.\n\n
+ * Use this function in combination with XMC_SPI_CH_EnableDataTransmission() to fill the FIFO and send the FIFO content without gaps in the transmission.
+ * FIFO is filled using XMC_USIC_CH_TXFIFO_PutData().
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SPI_CH_EnableDataTransmission()\n\n\n
+ */
+__STATIC_INLINE void XMC_SPI_CH_DisableDataTransmission(XMC_USIC_CH_t *const channel)
+{
+  XMC_USIC_CH_SetStartTransmisionMode(channel, XMC_USIC_CH_START_TRANSMISION_DISABLED); 
 }
 
 #ifdef __cplusplus

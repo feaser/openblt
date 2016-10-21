@@ -1,12 +1,12 @@
 /**
  * @file xmc_ccu4.h
- * @date 2015-10-27
+ * @date 2016-05-20
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -60,7 +60,14 @@
  *     - XMC_CCU4_SLICE_MULTI_IRQ_ID_t is added to support the XMC_CCU4_SLICE_EnableMultipleEvents() and 
  *       XMC_CCU4_SLICE_DisableMultipleEvents() APIs.
  *     - DOC updates for the newly added APIs.
- * 
+ *
+ * 2016-03-09:
+ *     - Optimization of write only registers 
+ *
+ * 2016-05-20:
+ *     - Added XMC_CCU4_SLICE_StopClearTimer()
+ *     - Changed implementation of XMC_CCU4_SLICE_StopTimer() and XMC_CCU4_SLICE_ClearTimer() to avoid RMW access
+ *
  * @endcond
  */
 
@@ -1443,7 +1450,7 @@ __STATIC_INLINE void XMC_CCU4_SLICE_StartTimer(XMC_CCU4_SLICE_t *const slice)
 __STATIC_INLINE void XMC_CCU4_SLICE_StopTimer(XMC_CCU4_SLICE_t *const slice)
 {
   XMC_ASSERT("XMC_CCU4_SLICE_StopTimer:Invalid Slice Pointer", XMC_CCU4_IsValidSlice(slice));
-  slice->TCCLR |= (uint32_t) CCU4_CC4_TCCLR_TRBC_Msk;
+  slice->TCCLR = (uint32_t) CCU4_CC4_TCCLR_TRBC_Msk;
 }
 
 /**
@@ -1462,7 +1469,24 @@ __STATIC_INLINE void XMC_CCU4_SLICE_StopTimer(XMC_CCU4_SLICE_t *const slice)
 __STATIC_INLINE void XMC_CCU4_SLICE_ClearTimer(XMC_CCU4_SLICE_t *const slice)
 {
   XMC_ASSERT("XMC_CCU4_SLICE_ClearTimer:Invalid Slice Pointer", XMC_CCU4_IsValidSlice(slice));
-  slice->TCCLR |= (uint32_t) CCU4_CC4_TCCLR_TCC_Msk;
+  slice->TCCLR = (uint32_t) CCU4_CC4_TCCLR_TCC_Msk;
+}
+
+/**
+ * @param slice Constant pointer to CC4 Slice
+ * @return <BR>
+ *    None<BR>
+ *
+ * \par<b>Description:</b><br>
+ * Stops and resets the timer count to zero, by setting CC4yTCCLR.TCC and CC4yTCCLR.TRBC bit.\n\n
+ *
+ * \par<b>Related APIs:</b><br>
+ *  XMC_CCU4_SLICE_StartTimer().
+ */
+__STATIC_INLINE void XMC_CCU4_SLICE_StopClearTimer(XMC_CCU4_SLICE_t *const slice)
+{
+  XMC_ASSERT("XMC_CCU4_SLICE_StopClearTimer:Invalid Slice Pointer", XMC_CCU4_IsValidSlice(slice));
+  slice->TCCLR = CCU4_CC4_TCCLR_TRBC_Msk | CCU4_CC4_TCCLR_TCC_Msk;
 }
 
 /**
@@ -1682,7 +1706,7 @@ __STATIC_INLINE uint16_t XMC_CCU4_SLICE_GetTimerCompareMatch(const XMC_CCU4_SLIC
 __STATIC_INLINE void XMC_CCU4_EnableShadowTransfer(XMC_CCU4_MODULE_t *const module, const uint32_t shadow_transfer_msk)
 {
   XMC_ASSERT("XMC_CCU4_EnableShadowTransfer:Invalid Slice Pointer", XMC_CCU4_IsValidModule(module));
-  module->GCSS |= (uint32_t)shadow_transfer_msk;  
+  module->GCSS = (uint32_t)shadow_transfer_msk;  
 }
 
 /**

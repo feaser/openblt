@@ -1,12 +1,12 @@
 /**
  * @file xmc_flash.h
- * @date 2015-10-27
+ * @date 2015-06-20
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -191,7 +191,7 @@ void XMC_FLASH_DisableEvent(const uint32_t event_msk);
  * Programs a single flash page associated with the specified \a address.\n\n XMC1000 Flash can be programmed with one
  * page (256 bytes) using this API. It calls the Flash Firmware routine \a XMC1000_NvmProgVerify(unsigned long pageAddr)
  * to perform the programming. Refer XMC1000 reference manual of for more details on flash firmware routines
- * (Section 25.3). Call XMC_FLASH_GetStatus() API after calling this API, to verify the erase operation.
+ * (Section 25.3). Call XMC_FLASH_GetStatus() API after calling this API, to verify the programming operation.
  * \endif
  * \if XMC4
  * Programs a single flash page associated with the specified \a address.\n\n  XMC4000 flash can be programmed with a
@@ -199,7 +199,7 @@ void XMC_FLASH_DisableEvent(const uint32_t event_msk);
  * bits inside status register. It starts the write process by issuing the page mode command followed by the load page
  * command which loads the targeted \a data blocks into internal assembly buffer. Finally, it issues the write page
  * command which programs the \a data into flash. Call XMC_FLASH_GetStatus() API after calling this API, to verify the
- * erase operation.\n
+ * programming operation.\n
  * \endif
  *
  * \par<b>Note:</b><br>

@@ -1,12 +1,12 @@
 /**
  * @file xmc_device.h
- * @date 2015-10-27
+ * @date 2016-07-21
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -42,6 +42,17 @@
  * 2015-09-23:
  *     - Added XMC14 and XMC48/47
  *
+ * 2015-11-19:
+ *     - Added XMC43
+ *
+ * 2016-02-26:
+ *     - Fixed CCU8 version for XMC43/47/48
+ *
+ * 2016-06-14:
+ *     - Added XMC1201_T028x0016, XMC1202_T016x0064, XMC1301_T016x0032, XMC1302_Q040x0200, 
+ *             XMC1302_T028x0016, XMC1402_T038x0032, XMC1402_T038x0064, XMC1402_T038x0128, 
+ *             XMC1403_Q040x0064, XMC1403_Q040x0128, XMC1403_Q040x0200, XMC1402_T038x0200
+ *             XMC1402_Q040x0200, XMC1402_Q048x0200, XMC1201_T028x0032
  * @endcond 
  *
  */
@@ -58,6 +69,7 @@
 #define    XMC47      (47)
 #define    XMC45      (45)
 #define    XMC44      (44)
+#define    XMC43      (43)
 #define    XMC42      (42)
 #define    XMC41      (41)
 #define    XMC14      (14)
@@ -73,6 +85,7 @@
 #define    XMC4504    (4504)
 #define    XMC4400    (4400)
 #define    XMC4402    (4402)
+#define    XMC4300    (4300)
 #define    XMC4200    (4200)
 #define    XMC4100    (4100)
 #define    XMC4104    (4104)
@@ -113,7 +126,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F144x2048)
 #define UC_FAMILY    XMC4
@@ -123,7 +136,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F100x2048)
 #define UC_FAMILY    XMC4
@@ -133,7 +146,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_E196x1536)
 #define UC_FAMILY    XMC4
@@ -143,7 +156,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F144x1536)
 #define UC_FAMILY    XMC4
@@ -153,7 +166,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F100x1536)
 #define UC_FAMILY    XMC4
@@ -163,7 +176,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_E196x1024)
 #define UC_FAMILY    XMC4
@@ -173,7 +186,7 @@
 #define UC_FLASH     (1024UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F144x1024)
 #define UC_FAMILY    XMC4
@@ -183,7 +196,7 @@
 #define UC_FLASH     (1024UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F100x1024)
 #define UC_FAMILY    XMC4
@@ -193,7 +206,7 @@
 #define UC_FLASH     (1024UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_E196x2048)
 #define UC_FAMILY    XMC4
@@ -203,7 +216,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_F144x2048)
 #define UC_FAMILY    XMC4
@@ -213,7 +226,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_F100x2048)
 #define UC_FAMILY    XMC4
@@ -223,7 +236,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_E196x1536)
 #define UC_FAMILY    XMC4
@@ -233,7 +246,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_F144x1536)
 #define UC_FAMILY    XMC4
@@ -243,7 +256,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_F100x1536)
 #define UC_FAMILY    XMC4
@@ -253,7 +266,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4500_E144x1024)
 #define UC_FAMILY    XMC4
@@ -380,6 +393,16 @@
 #define UC_FLASH     (256UL)
 #define CCU4V1
 #define CCU8V1
+
+#elif defined(XMC4300_F100x256)	
+#define UC_FAMILY    XMC4
+#define UC_SERIES    XMC43
+#define UC_DEVICE    XMC4300
+#define UC_PACKAGE   LQFP100
+#define UC_FLASH     (256UL)
+#define MULTICAN_PLUS
+#define CCU4V2
+#define CCU8V2
 
 #elif defined(XMC4200_E64x256) 	
 #define UC_FAMILY    XMC4
@@ -699,6 +722,22 @@
 #define UC_FLASH     (200UL)
 #define CCU4V2
 
+#elif defined(XMC1201_T028x0032)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC12
+#define UC_DEVICE    XMC1201
+#define UC_PACKAGE   TSSOP28
+#define UC_FLASH     (32UL)
+#define CCU4V2
+
+#elif defined(XMC1201_T028x0016)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC12
+#define UC_DEVICE    XMC1201
+#define UC_PACKAGE   TSSOP28
+#define UC_FLASH     (16UL)
+#define CCU4V2
+
 #elif defined(XMC1202_Q024x0016)
 #define UC_FAMILY    XMC1
 #define UC_SERIES    XMC12
@@ -745,6 +784,14 @@
 #define UC_DEVICE    XMC1202
 #define UC_PACKAGE   TSSOP16
 #define UC_FLASH     (32UL)
+#define CCU4V2
+
+#elif defined(XMC1202_T016x0064)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC12
+#define UC_DEVICE    XMC1202
+#define UC_PACKAGE   TSSOP16
+#define UC_FLASH     (64UL)
 #define CCU4V2
 
 #elif defined(XMC1202_T028x0016)
@@ -839,6 +886,15 @@
 #define UC_DEVICE    XMC1301
 #define UC_PACKAGE   TSSOP16
 #define UC_FLASH     (16UL)
+#define CCU4V2
+#define CCU8V2
+
+#elif defined(XMC1301_T016x0032)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC13
+#define UC_DEVICE    XMC1301
+#define UC_PACKAGE   TSSOP16
+#define UC_FLASH     (32UL)
 #define CCU4V2
 #define CCU8V2
 
@@ -939,6 +995,15 @@
 #define CCU4V2
 #define CCU8V2
 
+#elif defined(XMC1302_Q040x0200)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC13
+#define UC_DEVICE    XMC1302
+#define UC_PACKAGE   VQFN40
+#define UC_FLASH     (200UL)
+#define CCU4V2
+#define CCU8V2
+
 #elif defined(XMC1302_T038x0016)
 #define UC_FAMILY    XMC1
 #define UC_SERIES    XMC13
@@ -981,6 +1046,15 @@
 #define UC_DEVICE    XMC1302
 #define UC_PACKAGE   TSSOP38
 #define UC_FLASH     (200UL)
+#define CCU4V2
+#define CCU8V2
+
+#elif defined(XMC1302_T028x0016)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC13
+#define UC_DEVICE    XMC1302
+#define UC_PACKAGE   TSSOP28
+#define UC_FLASH     (16UL)
 #define CCU4V2
 #define CCU8V2
 
@@ -1043,6 +1117,42 @@
 #define UC_FLASH     (128UL)
 #define CCU4V3
 
+#elif defined(XMC1402_T038x0032)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC14
+#define UC_DEVICE    XMC1402
+#define UC_PACKAGE   TSSOP38
+#define UC_FLASH     (32UL)
+#define CCU4V3
+#define CCU8V3
+
+#elif defined(XMC1402_T038x0064)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC14
+#define UC_DEVICE    XMC1402
+#define UC_PACKAGE   TSSOP38
+#define UC_FLASH     (64UL)
+#define CCU4V3
+#define CCU8V3
+
+#elif defined(XMC1402_T038x0128)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC14
+#define UC_DEVICE    XMC1402
+#define UC_PACKAGE   TSSOP38
+#define UC_FLASH     (128UL)
+#define CCU4V3
+#define CCU8V3
+
+#elif defined(XMC1402_T038x0200)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC14
+#define UC_DEVICE    XMC1402
+#define UC_PACKAGE   TSSOP38
+#define UC_FLASH     (200UL)
+#define CCU4V3
+#define CCU8V3
+
 #elif defined(XMC1402_Q040x0032)
 #define UC_FAMILY    XMC1
 #define UC_SERIES    XMC14
@@ -1070,6 +1180,15 @@
 #define CCU4V3
 #define CCU8V3
 
+#elif defined(XMC1402_Q040x0200)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC14
+#define UC_DEVICE    XMC1402
+#define UC_PACKAGE   VQFN40
+#define UC_FLASH     (200UL)
+#define CCU4V3
+#define CCU8V3
+
 #elif defined(XMC1402_Q048x0032)
 #define UC_FAMILY    XMC1
 #define UC_SERIES    XMC14
@@ -1094,6 +1213,15 @@
 #define UC_DEVICE    XMC1402
 #define UC_PACKAGE   VQFN48
 #define UC_FLASH     (128UL)
+#define CCU4V3
+#define CCU8V3
+
+#elif defined(XMC1402_Q048x0200)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC14
+#define UC_DEVICE    XMC1402
+#define UC_PACKAGE   VQFN48
+#define UC_FLASH     (200UL)
 #define CCU4V3
 #define CCU8V3
 
@@ -1175,6 +1303,33 @@
 #define UC_SERIES    XMC14
 #define UC_DEVICE    XMC1403
 #define UC_PACKAGE   VQFN48
+#define UC_FLASH     (200UL)
+#define MULTICAN_PLUS
+#define CCU4V3
+
+#elif defined(XMC1403_Q040x0064)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC14
+#define UC_DEVICE    XMC1403
+#define UC_PACKAGE   VQFN40
+#define UC_FLASH     (64UL)
+#define MULTICAN_PLUS
+#define CCU4V3
+
+#elif defined(XMC1403_Q040x0128)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC14
+#define UC_DEVICE    XMC1403
+#define UC_PACKAGE   VQFN40
+#define UC_FLASH     (128UL)
+#define MULTICAN_PLUS
+#define CCU4V3
+
+#elif defined(XMC1403_Q040x0200)
+#define UC_FAMILY    XMC1
+#define UC_SERIES    XMC14
+#define UC_DEVICE    XMC1403
+#define UC_PACKAGE   VQFN40
 #define UC_FLASH     (200UL)
 #define MULTICAN_PLUS
 #define CCU4V3
@@ -1303,11 +1458,19 @@
 #if UC_SERIES == XMC45
 #include "XMC4500.h"
 #define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
 
 #elif UC_SERIES == XMC44
 #include "XMC4400.h"
 #define CLOCK_GATING_SUPPORTED
 #define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
+
+#elif UC_SERIES == XMC43
+#include "XMC4300.h"
+#define CLOCK_GATING_SUPPORTED
+#define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
 
 #elif UC_SERIES == XMC42
 #include "XMC4200.h"
@@ -1323,11 +1486,13 @@
 #include "XMC4700.h"
 #define CLOCK_GATING_SUPPORTED
 #define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
 
 #elif UC_SERIES == XMC48
 #include "XMC4800.h"
 #define CLOCK_GATING_SUPPORTED
 #define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
 
 #elif UC_SERIES == XMC11
 #include "XMC1100.h"

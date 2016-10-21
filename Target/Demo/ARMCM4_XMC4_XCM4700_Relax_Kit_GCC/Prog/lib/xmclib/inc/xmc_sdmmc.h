@@ -1,13 +1,13 @@
 
 /**
  * @file xmc_sdmmc.h
- * @date 2015-10-27
+ * @date 2016-07-11
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -43,6 +43,23 @@
  *
  * 2015-06-20:
  *     - Removed version macros and declaration of GetDriverVersion API <br>
+ *
+ * 2016-01-16:
+ *     - Added the following APIs to the XMC_SDMMC low level driver <br>
+ *         1) XMC_SDMMC_EnableDelayCmdDatLines <br>
+ *         2) XMC_SDMMC_DisableDelayCmdDatLines <br>
+ *         3) XMC_SDMMC_SetDelay <br>
+ *         4) XMC_SDMMC_EnableHighSpeed <br>
+ *         5) XMC_SDMMC_DisableHighSpeed <br>
+ *
+ * 2016-04-07:
+ *     - Added XMC_SDMMC_COMMAND_RESPONSE_t <br>
+ *
+ * 2016-07-11:
+ *     - Adjust masks for the following functions: <br>
+ *       1) XMC_SDMMC_SetBusVoltage <br>
+ *       2) XMC_SDMMC_SetDataLineTimeout <br>
+ *       3) XMC_SDMMC_SDClockFreqSelect <br>
  *
  * @endcond
  */
@@ -178,6 +195,14 @@
   ((d == XMC_SDMMC_DATA_TRANSFER_HOST_TO_CARD)   ||\
    (d == XMC_SDMMC_DATA_TRANSFER_CARD_TO_HOST))
 
+/*
+ * Min and max number of delay elements <br>
+ *
+ * This macro is used in the LLD for assertion checks (XMC_ASSERT).
+ */
+#define XMC_SDMMC_MIN_DELAY_ELEMENTS (0U)
+#define XMC_SDMMC_MAX_DELAY_ELEMENTS (15U)
+
 /*******************************************************************************
  * ENUMS
  *******************************************************************************/
@@ -290,6 +315,17 @@ typedef enum
   XMC_SDMMC_RESPONSE_TYPE_R6,               /**< Response type: R6 */
   XMC_SDMMC_RESPONSE_TYPE_R7                /**< Response type: R7 */
 } XMC_SDMMC_RESPONSE_TYPE_t;
+
+/**
+* Command response selection
+*/
+typedef enum XMC_SDMMC_COMMAND_RESPONSE
+{
+  XMC_SDMMC_COMMAND_RESPONSE_NONE = 0, /**< No Response */
+  XMC_SDMMC_COMMAND_RESPONSE_LONG = 1, /**< Response length 136 */
+  XMC_SDMMC_COMMAND_RESPONSE_SHORT = 2, /**< Response length 48 */
+  XMC_SDMMC_COMMAND_RESPONSE_SHORT_BUSY = 3, /**< Response length 48 check Busy after response */
+} XMC_SDMMC_COMMAND_RESPONSE_t;
 
 /**
  * Types of SDMMC commands
@@ -474,14 +510,14 @@ typedef union
 {
   struct
   {
-    uint16_t response_type_sel : 2; /**< Response type select */
-    uint16_t                   : 1; /**< Reserved bit */
+    uint16_t response_type_sel : 2; /**< Response type select ::XMC_SDMMC_COMMAND_RESPONSE_t */
+    uint16_t                   : 1;
     uint16_t crc_check_en      : 1; /**< Command CRC check enable */
     uint16_t index_check_en    : 1; /**< Command index check enable */
     uint16_t dat_present_sel   : 1; /**< Data present select */
-    uint16_t cmd_type          : 2; /**< Command type */
+    uint16_t cmd_type          : 2; /**< Command type ::XMC_SDMMC_COMMAND_TYPE_t */
     uint16_t cmd_index         : 6; /**< Command index */
-    uint16_t                   : 2; /**< Reserved bits */
+    uint16_t                   : 2;
   };
   uint16_t cmd;
 } XMC_SDMMC_COMMAND_t;
@@ -1366,8 +1402,8 @@ __STATIC_INLINE void XMC_SDMMC_SDClockFreqSelect(XMC_SDMMC_t *const sdmmc, XMC_S
   XMC_ASSERT("XMC_SDMMC_SDClockFreqSelect: Invalid module pointer", XMC_SDMMC_CHECK_MODULE_PTR(sdmmc));
   XMC_ASSERT("XMC_SDMMC_SDClockFreqSelect: Invalid clock frequency selection", XMC_SDMMC_CHECK_SDCLK_FREQ(clk));
 
-  sdmmc->CLOCK_CTRL |= (uint16_t)((uint32_t)SDMMC_CLOCK_CTRL_SDCLK_FREQ_SEL_Msk &
-                                  (uint32_t)((uint32_t)clk << SDMMC_CLOCK_CTRL_SDCLK_FREQ_SEL_Pos));
+  sdmmc->CLOCK_CTRL = (uint16_t)((sdmmc->CLOCK_CTRL & (uint32_t)~SDMMC_CLOCK_CTRL_SDCLK_FREQ_SEL_Msk) |
+                                 (uint32_t)(clk << SDMMC_CLOCK_CTRL_SDCLK_FREQ_SEL_Pos));
 }
 
 /**
@@ -1388,7 +1424,8 @@ __STATIC_INLINE void XMC_SDMMC_SetBusVoltage(XMC_SDMMC_t *const sdmmc, XMC_SDMMC
   XMC_ASSERT("XMC_SDMMC_SetBusVoltage: Invalid module pointer", XMC_SDMMC_CHECK_MODULE_PTR(sdmmc));
   XMC_ASSERT("XMC_SDMMC_SetBusVoltage: Invalid bus voltage", XMC_SDMMC_CHECK_BUS_VOLTAGE(bus_voltage));
 
-  sdmmc->POWER_CTRL |= (uint8_t)((uint32_t)bus_voltage << SDMMC_POWER_CTRL_SD_BUS_VOLTAGE_SEL_Pos);
+  sdmmc->POWER_CTRL = (uint8_t)((sdmmc->POWER_CTRL & (uint32_t)~SDMMC_POWER_CTRL_SD_BUS_VOLTAGE_SEL_Msk) |
+                                (uint32_t)(bus_voltage << SDMMC_POWER_CTRL_SD_BUS_VOLTAGE_SEL_Pos));
 }
 
 /**
@@ -1409,8 +1446,8 @@ __STATIC_INLINE void XMC_SDMMC_SetDataLineTimeout(XMC_SDMMC_t *const sdmmc, XMC_
   XMC_ASSERT("XMC_SDMMC_SetDataLineTimeout: Invalid module pointer", XMC_SDMMC_CHECK_MODULE_PTR(sdmmc));
   XMC_ASSERT("XMC_SDMMC_SetDataLineTimeout: Invalid timeout", XMC_SDMMC_CHECK_DAT_TIMEOUT_COUNTER(timeout));
 
-  sdmmc->TIMEOUT_CTRL |= (uint8_t)(((uint32_t)timeout << SDMMC_TIMEOUT_CTRL_DAT_TIMEOUT_CNT_VAL_Pos) &
-                                   (uint32_t)SDMMC_TIMEOUT_CTRL_DAT_TIMEOUT_CNT_VAL_Msk);
+  sdmmc->TIMEOUT_CTRL = (uint8_t)((sdmmc->TIMEOUT_CTRL & (uint32_t)~SDMMC_TIMEOUT_CTRL_DAT_TIMEOUT_CNT_VAL_Msk) |
+                                  (uint32_t)(timeout << SDMMC_TIMEOUT_CTRL_DAT_TIMEOUT_CNT_VAL_Pos));
 }
 
 /**
@@ -1455,6 +1492,94 @@ __STATIC_INLINE void XMC_SDMMC_SetDataTransferDirection(XMC_SDMMC_t *const sdmmc
 
   sdmmc->TRANSFER_MODE = (uint16_t)((sdmmc->TRANSFER_MODE & (uint16_t)~SDMMC_TRANSFER_MODE_TX_DIR_SELECT_Msk) |
 	                                (uint16_t)((uint16_t)dir << SDMMC_TRANSFER_MODE_TX_DIR_SELECT_Pos));
+}
+
+/**
+ * @param None
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * Enable delay on the command/data out lines <br>
+ *
+ * \par
+ * Use the function to enable delay on the command/data out lines. Invoke this function
+ * before selecting the number of delay elements.
+ */
+__STATIC_INLINE void XMC_SDMMC_EnableDelayCmdDatLines(void)
+{
+  SCU_GENERAL->SDMMCDEL |= (uint32_t)SCU_GENERAL_SDMMCDEL_TAPEN_Msk;
+}
+
+/**
+ * @param None
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * Disable delay on the command/data out lines <br>
+ *
+ * \par
+ * Use the function to disable delay on the command/data out lines.
+ */
+__STATIC_INLINE void XMC_SDMMC_DisableDelayCmdDatLines(void)
+{
+  SCU_GENERAL->SDMMCDEL &= (uint32_t)~SCU_GENERAL_SDMMCDEL_TAPEN_Msk;
+}
+
+/**
+ * @param tapdel Number of delay elements to select
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * Set number of delay elements on the command/data out lines <br>
+ *
+ * \par
+ * Use the function to set the number of delay elements on the command/data out lines.
+ * The function writes the delay value to the SDMMC delay control register (SDMMCDEL)
+ * within the realm of the SCU peripheral. A delay of tapdel + 1 is considered as the
+ * final selected number of delay elements.
+ */
+__STATIC_INLINE void XMC_SDMMC_SetDelay(uint8_t tapdel)
+{
+  SCU_GENERAL->SDMMCDEL = (uint32_t)((SCU_GENERAL->SDMMCDEL & (uint32_t)~SCU_GENERAL_SDMMCDEL_TAPDEL_Msk) |
+	                                (uint32_t)(tapdel << SCU_GENERAL_SDMMCDEL_TAPDEL_Pos));
+}
+
+/**
+ * @param None
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * High speed enable <br>
+ *
+ * \par
+ * Use the function to enable high speed operation. The default is a normal speed operation.
+ * Once enabled, the host controller outputs command and data lines at the rising edge of the
+ * SD clock (up to 50 MHz for SD).
+ */
+__STATIC_INLINE void XMC_SDMMC_EnableHighSpeed(XMC_SDMMC_t *const sdmmc)
+{
+  XMC_ASSERT("XMC_SDMMC_EnableHighSpeed: Invalid module pointer", XMC_SDMMC_CHECK_MODULE_PTR(sdmmc));
+
+  sdmmc->HOST_CTRL |= (uint8_t)SDMMC_HOST_CTRL_HIGH_SPEED_EN_Msk;
+}
+
+/**
+ * @param None
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * High speed disable <br>
+ *
+ * \par
+ * Use the function to disable high speed operation. The host controller will switch back
+ * to a normal speed mode. In this mode, the host controller outputs command and data lines
+ * at 25 MHz for SD.
+ */
+__STATIC_INLINE void XMC_SDMMC_DisableHighSpeed(XMC_SDMMC_t *const sdmmc)
+{
+  XMC_ASSERT("XMC_SDMMC_DisableHighSpeed: Invalid module pointer", XMC_SDMMC_CHECK_MODULE_PTR(sdmmc));
+
+  sdmmc->HOST_CTRL &= (uint8_t)~SDMMC_HOST_CTRL_HIGH_SPEED_EN_Msk;
 }
 
 #ifdef __cplusplus
