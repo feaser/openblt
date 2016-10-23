@@ -32,6 +32,7 @@
 #include "boot.h"                                /* bootloader generic header          */
 #include "xmc_gpio.h"                            /* GPIO module                        */
 #include "xmc_uart.h"                            /* UART driver header                 */
+#include "xmc_can.h"                             /* CAN driver header                  */
 
 
 /****************************************************************************************
@@ -92,24 +93,45 @@ static void Init(void)
 static void PostInit(void)
 {
 #if (BOOT_COM_UART_ENABLE > 0)
-  XMC_GPIO_CONFIG_t rx_config;
-  XMC_GPIO_CONFIG_t tx_config;
+  XMC_GPIO_CONFIG_t rx_uart_config;
+  XMC_GPIO_CONFIG_t tx_uart_config;
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  XMC_GPIO_CONFIG_t rx_can_config;
+  XMC_GPIO_CONFIG_t tx_can_config;
+#endif
 
+#if (BOOT_COM_UART_ENABLE > 0)
   /* initialize UART Rx pin */
-  rx_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
-  rx_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
-  rx_config.output_strength  = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
-  XMC_GPIO_Init(P1_4, &rx_config);
+  rx_uart_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
+  rx_uart_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
+  rx_uart_config.output_strength  = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
+  XMC_GPIO_Init(P1_4, &rx_uart_config);
   /* initialize UART Tx pin */
-  tx_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT2;
-  tx_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
-  tx_config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
-  XMC_GPIO_Init(P1_5, &tx_config);
+  tx_uart_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT2;
+  tx_uart_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
+  tx_uart_config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
+  XMC_GPIO_Init(P1_5, &tx_uart_config);
   /* set input source path to DXnB to connect P1_4 to ASC Receive. note that this
    * function must be called after XMC_UART_CH_Init(), which is called when initializing
    * the bootloader core with BootInit().
   */
   XMC_USIC_CH_SetInputSource(XMC_UART0_CH0, XMC_USIC_CH_INPUT_DX0, 1U);
+#endif
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* configure CAN receive pin */
+  rx_can_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
+  XMC_GPIO_Init(P1_13, &rx_can_config);
+  /* configure CAN transmit pin */
+  tx_can_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT2;
+  tx_can_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
+  tx_can_config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
+  XMC_GPIO_Init(P1_12, &tx_can_config);
+  /* select CAN Receive Input C (N1_RXDC) to map P1_13 to CAN_NODE1 */
+  XMC_CAN_NODE_EnableConfigurationChange(CAN_NODE1);
+  XMC_CAN_NODE_SetReceiveInput(CAN_NODE1, XMC_CAN_NODE_RECEIVE_INPUT_RXDCC);
+  XMC_CAN_NODE_DisableConfigurationChange(CAN_NODE1);
 #endif
 }
 

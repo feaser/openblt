@@ -82,6 +82,11 @@ void UartInit(void)
 {
   XMC_UART_CH_CONFIG_t uart_config;
 
+  /* the current implementation supports XMC_UART0_CH0 to XMC_UART2_CH1. throw an
+   * assertion error in case a different CAN channel is configured.
+   */
+  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX >= 0) && (BOOT_COM_UART_CHANNEL_INDEX <= 5));
+
   /* set configuration and initialize UART channel */
   uart_config.baudrate = BOOT_COM_UART_BAUDRATE;
   uart_config.data_bits = 8;
