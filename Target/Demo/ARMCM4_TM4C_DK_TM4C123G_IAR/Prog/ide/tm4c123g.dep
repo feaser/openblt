@@ -80,14 +80,14 @@
       <file>$PROJ_DIR$\..\boot.h</file>
       <file>$PROJ_DIR$\..\cstart.s</file>
       <file>$PROJ_DIR$\..\header.h</file>
-      <file>$PROJ_DIR$\..\irq.c</file>
-      <file>$PROJ_DIR$\..\irq.h</file>
       <file>$PROJ_DIR$\..\led.c</file>
       <file>$PROJ_DIR$\..\led.h</file>
       <file>$PROJ_DIR$\..\main.c</file>
       <file>$PROJ_DIR$\..\time.c</file>
       <file>$PROJ_DIR$\..\time.h</file>
       <file>$PROJ_DIR$\..\vectors.c</file>
+      <file>$PROJ_DIR$\..\irq.c</file>
+      <file>$PROJ_DIR$\..\irq.h</file>
       <file>$PROJ_DIR$\..\obj\usb_serial_structs.o</file>
       <file>$PROJ_DIR$\..\obj\uartstdio.o</file>
       <file>$PROJ_DIR$\..\obj\vectors.o</file>
@@ -169,8 +169,8 @@
       <file>$PROJ_DIR$\acquire.c</file>
       <file>$PROJ_DIR$\..\memory.x</file>
       <file>$PROJ_DIR$\..\obj\eeprom.o</file>
-      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\port\fat_usbmsc.c</file>
       <file>$PROJ_DIR$\..\obj\images.pbi</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\port\fat_usbmsc.c</file>
       <file>$PROJ_DIR$\..\obj\qei.pbi</file>
       <file>$PROJ_DIR$\..\obj\fat_usbmsc.pbi</file>
       <file>$PROJ_DIR$\..\obj\slidemenuwidget.pbi</file>
@@ -404,6 +404,10 @@
           <name>ICCARM</name>
           <file> 145 142 138 149 140 141 147 139 146 53 56 57 62 65 8 16 22</file>
         </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 145 142 138 149 140 141 147 139 146 53 56 57 62 65 8 16 22</file>
+        </tool>
       </inputs>
     </file>
     <file>
@@ -421,11 +425,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 145 142 138 149 140 141 147 139 146 80 54 56 62 65 8 18 22 34</file>
+          <file> 145 142 138 149 140 141 147 139 146 78 54 56 62 65 8 18 22 34</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 145 142 138 149 140 141 147 139 146 80 54 56 62 65 8 18 22 34</file>
+          <file> 145 142 138 149 140 141 147 139 146 78 54 56 62 65 8 18 22 34</file>
         </tool>
       </inputs>
     </file>
@@ -798,11 +802,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
       </inputs>
     </file>
@@ -814,29 +818,6 @@
           <file> 137</file>
         </tool>
       </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\irq.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 148</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 92</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
-        </tool>
-      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\..\led.c</name>
@@ -853,11 +834,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
       </inputs>
     </file>
@@ -876,11 +857,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
       </inputs>
     </file>
@@ -899,11 +880,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
       </inputs>
     </file>
@@ -922,11 +903,34 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 199 71 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 73 199 71 75 77 80 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+          <file> 73 199 71 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\irq.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 148</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 92</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 73 199 71 81 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 199 71 81 75 78 145 142 138 149 140 141 147 139 146 56 57 58 62 65 34 16 41 14 22 37</file>
         </tool>
       </inputs>
     </file>
@@ -1075,7 +1079,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 164</file>
+          <file> 163</file>
         </tool>
       </outputs>
     </file>

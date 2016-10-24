@@ -93,13 +93,6 @@ static void Init(void)
 ****************************************************************************************/
 void __error__(char *pcFilename, unsigned long ulLine)
 {
-  static volatile char *assert_failure_file;
-  static volatile unsigned long assert_failure_line;
-
-  /* store the file string and line number so that it can be read on a breakpoint*/
-  assert_failure_file = pcFilename;
-  assert_failure_line = ulLine;
-
   /* hang the software so that it requires a hard reset */
   for(;;) 
   { 
