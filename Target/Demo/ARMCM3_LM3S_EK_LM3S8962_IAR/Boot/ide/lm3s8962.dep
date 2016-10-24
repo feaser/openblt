@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>1924476846</fileChecksum>
+  <fileChecksum>3421079328</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
@@ -65,13 +65,13 @@
       <file>$PROJ_DIR$\..\obj\flashlib.o</file>
       <file>$PROJ_DIR$\..\obj\timer.o</file>
       <file>$PROJ_DIR$\..\obj\cpulib.pbi</file>
-      <file>$PROJ_DIR$\..\obj\gpio.o</file>
-      <file>$PROJ_DIR$\..\obj\uartlib.o</file>
-      <file>$PROJ_DIR$\..\obj\interrupt.o</file>
-      <file>$PROJ_DIR$\..\obj\uartlib.pbi</file>
       <file>$PROJ_DIR$\..\obj\uart.o</file>
-      <file>$PROJ_DIR$\..\obj\sysctl.o</file>
       <file>$PROJ_DIR$\..\obj\flashlib.pbi</file>
+      <file>$PROJ_DIR$\..\obj\sysctl.o</file>
+      <file>$PROJ_DIR$\..\obj\uartlib.pbi</file>
+      <file>$PROJ_DIR$\..\obj\interrupt.o</file>
+      <file>$PROJ_DIR$\..\obj\uartlib.o</file>
+      <file>$PROJ_DIR$\..\obj\gpio.o</file>
       <file>$PROJ_DIR$\..\obj\gpio.pbi</file>
       <file>$PROJ_DIR$\..\obj\flash.pbi</file>
       <file>$PROJ_DIR$\..\obj\cpu.pbi</file>
@@ -84,8 +84,8 @@
       <file>$PROJ_DIR$\..\obj\main.lst</file>
       <file>$PROJ_DIR$\..\obj\vectors.lst</file>
       <file>$PROJ_DIR$\..\obj\vectors.pbi</file>
-      <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR\memory.x</file>
       <file>$PROJ_DIR$\..\obj\timer.pbi</file>
+      <file>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR\memory.x</file>
       <file>$PROJ_DIR$\..\obj\main.pbi</file>
       <file>$PROJ_DIR$\..\obj\boot.pbi</file>
       <file>$PROJ_DIR$\..\bin\openbtl_ek_lm3s6965.out</file>
@@ -147,6 +147,9 @@
       <file>$PROJ_DIR$\..\obj\cpu_comp.pbi</file>
       <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
       <file>$PROJ_DIR$\..\obj\cpu_comp.lst</file>
+      <file>$PROJ_DIR$\..\bin\openblt_ek_lm3s8962.out</file>
+      <file>$PROJ_DIR$\..\bin\openblt_ek_lm3s8962.srec</file>
+      <file>$PROJ_DIR$\..\obj\openblt_ek_lm3s8962.map</file>
     </outputs>
     <file>
       <name>$PROJ_DIR$\..\lib\driverlib\canlib.c</name>
@@ -203,7 +206,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 65</file>
+          <file> 60</file>
         </tool>
       </outputs>
       <inputs>
@@ -222,7 +225,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 128 59</file>
+          <file> 128 65</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -245,7 +248,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 131 61</file>
+          <file> 131 63</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -268,7 +271,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 132 64</file>
+          <file> 132 61</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -291,7 +294,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 115 60</file>
+          <file> 115 64</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -314,7 +317,7 @@
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 104 103</file>
+          <file> 141 143</file>
         </tool>
       </outputs>
     </file>
@@ -379,10 +382,6 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 43 37 39 24 51 49 48 50 52 41 110 46 55 137 139</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
           <file> 43 37 39 24 51 49 48 50 52 41 110 46 55 137 139</file>
         </tool>
       </inputs>
@@ -543,7 +542,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 79</file>
+          <file> 78</file>
         </tool>
       </outputs>
       <inputs>
@@ -562,7 +561,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 95 63</file>
+          <file> 95 59</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -700,7 +699,7 @@
       <inputs>
         <tool>
           <name>BILINK</name>
-          <file> 116 117 81 113 120 68 58 67 65 66 90 111 80 69 112 79 70 62 77 121</file>
+          <file> 116 117 81 113 120 68 58 67 60 66 90 111 80 69 112 78 70 62 77 121</file>
         </tool>
       </inputs>
     </file>
@@ -715,17 +714,13 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 78 84 119 91 92 118 126 114 72 127 56 59 93 61 88 125 64 57 63 60 73 122 87 99 134 98</file>
+          <file> 79 84 119 91 92 118 126 114 72 127 56 65 93 63 88 125 61 57 59 64 73 122 87 99 134 98</file>
         </tool>
       </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\..\bin\openbtl_ek_lm3s8962.out</name>
       <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 103</file>
-        </tool>
         <tool>
           <name>OBJCOPY</name>
           <file> 105</file>
@@ -734,7 +729,26 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 78 84 119 91 101 102 92 118 126 136 114 72 127 56 59 93 61 88 125 64 57 63 60 73 122 87 99 134 98</file>
+          <file> 79 84 119 91 101 102 92 118 126 136 114 72 127 56 65 93 63 88 125 61 57 59 64 73 122 87 99 134 98</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\bin\openblt_ek_lm3s8962.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 143</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 142</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 79 84 119 91 101 102 92 118 126 136 114 72 127 56 65 93 63 88 125 61 57 59 64 73 122 87 99 134 98</file>
         </tool>
       </inputs>
     </file>
