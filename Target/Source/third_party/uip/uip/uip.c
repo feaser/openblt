@@ -116,6 +116,7 @@ const uip_ipaddr_t uip_netmask =
 uip_ipaddr_t uip_hostaddr, uip_draddr, uip_netmask;
 #endif /* UIP_FIXEDADDR */
 
+#if UIP_UDP
 static const uip_ipaddr_t all_ones_addr =
 #if UIP_CONF_IPV6
 {0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff};
@@ -124,7 +125,8 @@ static const uip_ipaddr_t all_ones_addr =
     0xffff,0xffff
   };
 #endif /* UIP_CONF_IPV6 */
-static const uip_ipaddr_t all_zeroes_addr =
+#endif /* UIP_UDP */
+  static const uip_ipaddr_t all_zeroes_addr =
 #if UIP_CONF_IPV6
 {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000};
 #else /* UIP_CONF_IPV6 */
@@ -1235,7 +1237,7 @@ udp_input:
      UDP/IP headers, but let the UDP application do all the hard
      work. If the application sets uip_slen, it has a packet to
      send. */
-#if UIP_UDP_CHECKSUMS
+#if UIP_UDP_CHECKSUMS 
   uip_len = uip_len - UIP_IPUDPH_LEN;
   uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN];
   if (UDPBUF->udpchksum != 0 && uip_udpchksum() != 0xffff)
@@ -2088,8 +2090,10 @@ tcp_send_noconn:
   BUF->tcpchksum = ~(uip_tcpchksum());
 #endif /* UIP_TCP */
 
+#if UIP_UDP
 ip_send_nolen:
-
+#endif
+  
 #if UIP_CONF_IPV6
   BUF->vtc = 0x60;
   BUF->tcflow = 0x00;

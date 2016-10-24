@@ -2076,6 +2076,7 @@ FRESULT create_name(
   WCHAR w, *lfn;
   UINT i, ni, si, di;
   const TCHAR *p;
+  FRESULT result = FR_OK;
 
   /* Create LFN in Unicode */
   for (p = *path; *p == '/' || *p == '\\'; p++) ;	/* Strip duplicated separator */
@@ -2099,9 +2100,13 @@ FRESULT create_name(
       b = (BYTE)p[si++];			/* Get 2nd byte */
       if (!IsDBCS2(b))
       {
-        return FR_INVALID_NAME;  /* Reject invalid sequence */
+        result = FR_INVALID_NAME;  /* Reject invalid sequence */
       }
       w = (w << 8) + b;			/* Create a DBC */
+      if (result == FR_INVALID_NAME)
+      {
+        return result;
+      }
     }
     w = ff_convert(w, 1);			/* Convert ANSI/OEM to Unicode */
     if (!w)
