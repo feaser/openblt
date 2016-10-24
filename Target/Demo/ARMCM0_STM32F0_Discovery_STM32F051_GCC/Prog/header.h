@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\timer.h
-* \brief        Timer driver header file.
-* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
+* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Prog\header.h
+* \brief        Generic header file.
+* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,16 +25,18 @@
 *
 * \endinternal
 ****************************************************************************************/
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef HEADER_H
+#define HEADER_H
 
 /****************************************************************************************
-* Function prototypes
+* Include files
 ****************************************************************************************/
-void          TimerInit(void);
-void          TimerDeinit(void);
-void          TimerSet(unsigned long timer_value);
-unsigned long TimerGet(void);
+#include "../Boot/blt_conf.h"                    /* bootloader configuration           */
+#include "stm32f0xx.h"                           /* for STM32F0 registers and drivers  */
+#include "boot.h"                                /* bootloader interface driver        */
+#include "led.h"                                 /* LED driver                         */
+#include "timer.h"                               /* Timer driver                       */
 
-#endif /* TIMER_H */
-/*********************************** end of timer.h ************************************/
+
+#endif /* HEADER_H */
+/*********************************** end of header.h ***********************************/

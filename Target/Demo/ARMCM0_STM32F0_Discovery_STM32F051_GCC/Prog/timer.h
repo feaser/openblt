@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\timer.h
+* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Prog\timer.h
 * \brief        Timer driver header file.
-* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
+* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

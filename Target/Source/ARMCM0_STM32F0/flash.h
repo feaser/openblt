@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\timer.h
-* \brief        Timer driver header file.
-* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
+* \file         Source\ARMCM0_STM32F0\flash.h
+* \brief        Bootloader flash driver header file.
+* \ingroup      Target_ARMCM0_STM32F0
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -20,21 +20,25 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
 ****************************************************************************************/
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef FLASH_H
+#define FLASH_H
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void          TimerInit(void);
-void          TimerDeinit(void);
-void          TimerSet(unsigned long timer_value);
-unsigned long TimerGet(void);
+void     FlashInit(void);
+blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data);
+blt_bool FlashErase(blt_addr addr, blt_int32u len);
+blt_bool FlashWriteChecksum(void);
+blt_bool FlashVerifyChecksum(void);
+blt_bool FlashDone(void);
+blt_addr FlashGetUserProgBaseAddress(void);
 
-#endif /* TIMER_H */
-/*********************************** end of timer.h ************************************/
+
+#endif /* FLASH_H */
+/*********************************** end of flash.h ************************************/

@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\timer.c
-* \brief        Timer driver source file.
-* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
+* \file         Source\ARMCM0_STM32F0\timer.c
+* \brief        Bootloader timer driver source file.
+* \ingroup      Target_ARMCM0_STM32F0
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -20,7 +20,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
@@ -29,7 +29,8 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "header.h"                                    /* generic header               */
+#include "boot.h"                                /* bootloader generic header          */
+#include "stm32f0xx.h"                           /* for STM32F0 registers and drivers  */
 
 
 /****************************************************************************************
@@ -38,45 +39,56 @@
 /** \brief Local variable for storing the number of milliseconds that have elapsed since
  *         startup.
  */
-static unsigned long millisecond_counter;
+static blt_int32u millisecond_counter;
 
 
 /************************************************************************************//**
-** \brief     Initializes the timer.
+** \brief     Initializes the polling based millisecond timer driver.
 ** \return    none.
 **
 ****************************************************************************************/
 void TimerInit(void)
 {
-  /* configure the SysTick timer for 1 ms period */
-  SysTick_Config(SystemCoreClock / 1000);
-  /* reset the millisecond counter */
-  TimerSet(0);
+  /* reset the timer configuration */
+  TimerReset();
+  /* configure the systick frequency as a 1 ms event generator */
+  SysTick->LOAD = BOOT_CPU_SYSTEM_SPEED_KHZ - 1;
+  /* reset the current counter value */
+  SysTick->VAL = 0;
+  /* select core clock as source and enable the timer */
+  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
+  /* reset the millisecond counter value */
+  millisecond_counter = 0;
 } /*** end of TimerInit ***/
 
 
 /************************************************************************************//**
-** \brief     Stops and disables the timer.
+** \brief     Reset the timer by placing the timer back into it's default reset
+**            configuration.
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerDeinit(void)
+void TimerReset(void)
 {
+  /* set the systick's status and control register back into the default reset value */
   SysTick->CTRL = 0;
-} /*** end of TimerDeinit ***/
+} /* end of TimerReset */
 
 
 /************************************************************************************//**
-** \brief     Sets the initial counter value of the millisecond timer.
-** \param     timer_value initialize value of the millisecond timer.
+** \brief     Updates the millisecond timer.
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerSet(unsigned long timer_value)
+void TimerUpdate(void)
 {
-  /* set the millisecond counter */
-  millisecond_counter = timer_value;
-} /*** end of TimerSet ***/
+  /* check if the millisecond event occurred */
+  if ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) != 0)
+  {
+    /* increment the millisecond counter */
+    millisecond_counter++;
+  }
+} /*** end of TimerUpdate ***/
 
 
 /************************************************************************************//**
@@ -84,23 +96,15 @@ void TimerSet(unsigned long timer_value)
 ** \return    Current value of the millisecond timer.
 **
 ****************************************************************************************/
-unsigned long TimerGet(void)
+blt_int32u TimerGet(void)
 {
-  /* read and return the millisecond counter value */
+  /* updating timer here allows this function to be called in a loop with timeout
+   * detection.
+   */
+  TimerUpdate();
+  /* read and return the amount of milliseconds that passed since initialization */
   return millisecond_counter;
 } /*** end of TimerGet ***/
-
-
-/************************************************************************************//**
-** \brief     Interrupt service routine of the timer.
-** \return    none.
-**
-****************************************************************************************/
-void SysTick_Handler(void)
-{
-  /* increment the millisecond counter */
-  millisecond_counter++;
-} /*** end of SysTick_Handler ***/
 
 
 /*********************************** end of timer.c ************************************/

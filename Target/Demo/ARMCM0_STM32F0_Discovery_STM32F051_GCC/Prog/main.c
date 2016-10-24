@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\timer.c
-* \brief        Timer driver source file.
-* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
+* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Prog\main.c
+* \brief        Demo program application source file.
+* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -33,74 +33,49 @@
 
 
 /****************************************************************************************
-* Local data declarations
+* Function prototypes
 ****************************************************************************************/
-/** \brief Local variable for storing the number of milliseconds that have elapsed since
- *         startup.
- */
-static unsigned long millisecond_counter;
+static void Init(void);
 
 
 /************************************************************************************//**
-** \brief     Initializes the timer.
+** \brief     This is the entry point for the bootloader application and is called
+**            by the reset interrupt vector after the C-startup routines executed.
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerInit(void)
+int main(void)
 {
-  /* configure the SysTick timer for 1 ms period */
-  SysTick_Config(SystemCoreClock / 1000);
-  /* reset the millisecond counter */
-  TimerSet(0);
-} /*** end of TimerInit ***/
+  /* initialize the microcontroller */
+  Init();
+  /* initialize the bootloader interface */
+  BootComInit();
+
+  /* start the infinite program loop */
+  while (1)
+  {
+    /* toggle LED with a fixed frequency */
+    LedToggle();
+    /* check for bootloader activation request */
+    BootComCheckActivationRequest();
+  }
+  /* set program exit code. note that the program should never get here */
+  return 0;
+} /*** end of main ***/
 
 
 /************************************************************************************//**
-** \brief     Stops and disables the timer.
+** \brief     Initializes the microcontroller.
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerDeinit(void)
+static void Init(void)
 {
-  SysTick->CTRL = 0;
-} /*** end of TimerDeinit ***/
+  /* init the led driver */
+  LedInit();
+  /* init the timer driver */
+  TimerInit();
+} /*** end of Init ***/
 
 
-/************************************************************************************//**
-** \brief     Sets the initial counter value of the millisecond timer.
-** \param     timer_value initialize value of the millisecond timer.
-** \return    none.
-**
-****************************************************************************************/
-void TimerSet(unsigned long timer_value)
-{
-  /* set the millisecond counter */
-  millisecond_counter = timer_value;
-} /*** end of TimerSet ***/
-
-
-/************************************************************************************//**
-** \brief     Obtains the counter value of the millisecond timer.
-** \return    Current value of the millisecond timer.
-**
-****************************************************************************************/
-unsigned long TimerGet(void)
-{
-  /* read and return the millisecond counter value */
-  return millisecond_counter;
-} /*** end of TimerGet ***/
-
-
-/************************************************************************************//**
-** \brief     Interrupt service routine of the timer.
-** \return    none.
-**
-****************************************************************************************/
-void SysTick_Handler(void)
-{
-  /* increment the millisecond counter */
-  millisecond_counter++;
-} /*** end of SysTick_Handler ***/
-
-
-/*********************************** end of timer.c ************************************/
+/*********************************** end of main.c *************************************/

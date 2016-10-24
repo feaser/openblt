@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32_Discovery_STM32F051_IAR\Boot\led.c
+* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Boot\led.c
 * \brief        LED driver source file.
-* \ingroup      Boot_ARMCM0_STM32_Discovery_STM32F051_IAR
+* \ingroup      Boot_ARMCM0_STM32F0_Discovery_STM32F051_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

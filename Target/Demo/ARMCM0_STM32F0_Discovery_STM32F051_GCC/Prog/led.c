@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\timer.c
-* \brief        Timer driver source file.
-* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
+* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Prog\led.c
+* \brief        LED driver source file.
+* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -33,74 +33,71 @@
 
 
 /****************************************************************************************
-* Local data declarations
+* Macro definitions
 ****************************************************************************************/
-/** \brief Local variable for storing the number of milliseconds that have elapsed since
- *         startup.
- */
-static unsigned long millisecond_counter;
+/** \brief Toggle interval time in milliseconds. */
+#define LED_TOGGLE_MS  (500)
 
 
 /************************************************************************************//**
-** \brief     Initializes the timer.
+** \brief     Initializes the LED. The board doesn't have a dedicted LED so an
+**            indicator on the LCD is used instead.
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerInit(void)
+void LedInit(void)
 {
-  /* configure the SysTick timer for 1 ms period */
-  SysTick_Config(SystemCoreClock / 1000);
-  /* reset the millisecond counter */
-  TimerSet(0);
-} /*** end of TimerInit ***/
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  /* enable the GPIO_LED Clock */
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+  /* configure the GPIO_LED pin */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  GPIO_ResetBits(GPIOC, GPIO_Pin_9);
+} /*** end of LedInit ***/
 
 
 /************************************************************************************//**
-** \brief     Stops and disables the timer.
+** \brief     Toggles the LED at a fixed time interval.
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerDeinit(void)
+void LedToggle(void)
 {
-  SysTick->CTRL = 0;
-} /*** end of TimerDeinit ***/
+  static unsigned char led_toggle_state = 0;
+  static unsigned long timer_counter_last = 0;
+  unsigned long timer_counter_now;
+
+  /* check if toggle interval time passed */
+  timer_counter_now = TimerGet();
+  if ( (timer_counter_now - timer_counter_last) < LED_TOGGLE_MS)
+  {
+    /* not yet time to toggle */
+    return;
+  }
+
+  /* determine toggle action */
+  if (led_toggle_state == 0)
+  {
+    led_toggle_state = 1;
+    /* turn the LED on */
+    GPIO_SetBits(GPIOC, GPIO_Pin_9);
+  }
+  else
+  {
+    led_toggle_state = 0;
+    /* turn the LED off */
+    GPIO_ResetBits(GPIOC, GPIO_Pin_9);
+  }
+
+  /* store toggle time to determine next toggle interval */
+  timer_counter_last = timer_counter_now;
+} /*** end of LedToggle ***/
 
 
-/************************************************************************************//**
-** \brief     Sets the initial counter value of the millisecond timer.
-** \param     timer_value initialize value of the millisecond timer.
-** \return    none.
-**
-****************************************************************************************/
-void TimerSet(unsigned long timer_value)
-{
-  /* set the millisecond counter */
-  millisecond_counter = timer_value;
-} /*** end of TimerSet ***/
-
-
-/************************************************************************************//**
-** \brief     Obtains the counter value of the millisecond timer.
-** \return    Current value of the millisecond timer.
-**
-****************************************************************************************/
-unsigned long TimerGet(void)
-{
-  /* read and return the millisecond counter value */
-  return millisecond_counter;
-} /*** end of TimerGet ***/
-
-
-/************************************************************************************//**
-** \brief     Interrupt service routine of the timer.
-** \return    none.
-**
-****************************************************************************************/
-void SysTick_Handler(void)
-{
-  /* increment the millisecond counter */
-  millisecond_counter++;
-} /*** end of SysTick_Handler ***/
-
-
-/*********************************** end of timer.c ************************************/
+/*********************************** end of led.c **************************************/

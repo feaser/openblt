@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Boot\main.c
+* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Boot\main.c
 * \brief        Bootloader application source file.
-* \ingroup      Boot_ARMCM0_STM32F0_Discovery_STM32F051_IAR
+* \ingroup      Boot_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -42,10 +42,10 @@ static void Init(void);
 /************************************************************************************//**
 ** \brief     This is the entry point for the bootloader application and is called
 **            by the reset interrupt vector after the C-startup routines executed.
-** \return    None.
+** \return    Program return code.
 **
 ****************************************************************************************/
-void main(void)
+int main(void)
 {
   /* initialize the microcontroller */
   Init();
@@ -58,6 +58,9 @@ void main(void)
     /* run the bootloader task */
     BootTask();
   }
+
+  /* program should never get here */
+  return 0;
 } /*** end of main ***/
 
 

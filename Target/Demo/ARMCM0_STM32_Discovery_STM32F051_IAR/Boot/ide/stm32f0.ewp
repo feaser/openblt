@@ -304,7 +304,7 @@
           <state>$PROJ_DIR$\..\lib\cmsis</state>
           <state>$PROJ_DIR$\..\lib\SPL\inc</state>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0</state>
           <state>$PROJ_DIR$\..\</state>
         </option>
         <option>
@@ -698,7 +698,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\IAR\memory.x</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\IAR\memory.x</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1123,6 +1123,9 @@
         <name>$PROJ_DIR$\..\..\..\..\Source\boot.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\can.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\com.c</name>
       </file>
       <file>
@@ -1135,25 +1138,37 @@
         <name>$PROJ_DIR$\..\..\..\..\Source\cop.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\cpu.c</name>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\cpu.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\cpu.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\IAR\cpu_comp.c</name>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\IAR\cpu_comp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\IAR\cstart.s</name>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\IAR\cstart.s</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\flash.c</name>
+        <name>$PROJ_DIR$\..\..\..\..\Source\file.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\flash.h</name>
+        <name>$PROJ_DIR$\..\..\..\..\Source\file.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\nvm.c</name>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\flash.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\flash.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\net.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\net.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\nvm.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\nvm.h</name>
@@ -1162,19 +1177,22 @@
         <name>$PROJ_DIR$\..\..\..\..\Source\plausibility.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\timer.c</name>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\timer.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\timer.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\types.h</name>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\types.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32\uart.c</name>
+        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\uart.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\uart.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\Source\usb.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\xcp.c</name>

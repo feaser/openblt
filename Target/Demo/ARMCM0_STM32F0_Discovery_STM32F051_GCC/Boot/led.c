@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\timer.c
-* \brief        Timer driver source file.
-* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
+* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Boot\led.c
+* \brief        LED driver source file.
+* \ingroup      Boot_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -29,78 +29,72 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "header.h"                                    /* generic header               */
+#include "boot.h"                                /* bootloader generic header          */
+#include "led.h"                                 /* module header                      */
+#include "stm32f0xx.h"                           /* for STM32F0 registers and drivers  */
 
 
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
-/** \brief Local variable for storing the number of milliseconds that have elapsed since
- *         startup.
- */
-static unsigned long millisecond_counter;
+/** \brief Holds the desired LED blink interval time. */
+static blt_int16u ledBlinkIntervalMs;
 
 
 /************************************************************************************//**
-** \brief     Initializes the timer.
+** \brief     Initializes the LED blink driver.
+** \param     interval_ms Specifies the desired LED blink interval time in milliseconds.
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerInit(void)
+void LedBlinkInit(blt_int16u interval_ms)
 {
-  /* configure the SysTick timer for 1 ms period */
-  SysTick_Config(SystemCoreClock / 1000);
-  /* reset the millisecond counter */
-  TimerSet(0);
-} /*** end of TimerInit ***/
+  /* store the interval time between LED toggles */
+  ledBlinkIntervalMs = interval_ms;
+} /*** end of LedBlinkInit ***/
 
 
 /************************************************************************************//**
-** \brief     Stops and disables the timer.
+** \brief     Task function for blinking the LED as a fixed timer interval.
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerDeinit(void)
+void LedBlinkTask(void)
 {
-  SysTick->CTRL = 0;
-} /*** end of TimerDeinit ***/
+  static blt_bool ledOn = BLT_FALSE;
+  static blt_int32u nextBlinkEvent = 0;
+
+  /* check for blink event */
+  if (TimerGet() >= nextBlinkEvent)
+  {
+    /* toggle the LED state */
+    if (ledOn == BLT_FALSE)
+    {
+      ledOn = BLT_TRUE;
+      GPIO_SetBits(GPIOC, GPIO_Pin_8);
+    }
+    else
+    {
+      ledOn = BLT_FALSE;
+      GPIO_ResetBits(GPIOC, GPIO_Pin_8);
+    }
+    /* schedule the next blink event */
+    nextBlinkEvent = TimerGet() + ledBlinkIntervalMs;
+  }
+} /*** end of LedBlinkTask ***/
 
 
 /************************************************************************************//**
-** \brief     Sets the initial counter value of the millisecond timer.
-** \param     timer_value initialize value of the millisecond timer.
+** \brief     Cleans up the LED blink driver. This is intended to be used upon program
+**            exit.
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerSet(unsigned long timer_value)
+void LedBlinkExit(void)
 {
-  /* set the millisecond counter */
-  millisecond_counter = timer_value;
-} /*** end of TimerSet ***/
+  /* turn the LED off */
+  GPIO_ResetBits(GPIOC, GPIO_Pin_8);
+} /*** end of LedBlinkExit ***/
 
 
-/************************************************************************************//**
-** \brief     Obtains the counter value of the millisecond timer.
-** \return    Current value of the millisecond timer.
-**
-****************************************************************************************/
-unsigned long TimerGet(void)
-{
-  /* read and return the millisecond counter value */
-  return millisecond_counter;
-} /*** end of TimerGet ***/
-
-
-/************************************************************************************//**
-** \brief     Interrupt service routine of the timer.
-** \return    none.
-**
-****************************************************************************************/
-void SysTick_Handler(void)
-{
-  /* increment the millisecond counter */
-  millisecond_counter++;
-} /*** end of SysTick_Handler ***/
-
-
-/*********************************** end of timer.c ************************************/
+/*********************************** end of led.c **************************************/

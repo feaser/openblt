@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\timer.h
-* \brief        Timer driver header file.
-* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
+* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Prog\boot.h
+* \brief        Demo program bootloader interface header file.
+* \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -22,19 +22,19 @@
 *
 * You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-*
+* 
 * \endinternal
 ****************************************************************************************/
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef BOOT_H
+#define BOOT_H
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void          TimerInit(void);
-void          TimerDeinit(void);
-void          TimerSet(unsigned long timer_value);
-unsigned long TimerGet(void);
+void BootComInit(void);
+void BootComCheckActivationRequest(void);
+void BootActivate(void);
 
-#endif /* TIMER_H */
-/*********************************** end of timer.h ************************************/
+
+#endif /* BOOT_H */
+/*********************************** end of boot.h *************************************/

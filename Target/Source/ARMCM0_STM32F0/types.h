@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source\assert.c
-* \brief        Bootloader assertion module source file.
-* \ingroup      Core
+* \file         Source\ARMCM0_STM32F0\types.h
+* \brief        Bootloader types header file.
+* \ingroup      Target_ARMCM0_STM32F0
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -25,32 +25,34 @@
 *
 * \endinternal
 ****************************************************************************************/
+#ifndef TYPES_H
+#define TYPES_H
+
 
 /****************************************************************************************
-* Include files
+* Macro definitions
 ****************************************************************************************/
-#include "boot.h"                                /* bootloader generic header          */
+/** \brief Boolean true value. */
+#define BLT_TRUE       (1)
+/** \brief Boolean false value. */
+#define BLT_FALSE      (0)
+/** \brief NULL pointer value. */
+#define BLT_NULL       ((void *)0)
 
 
-#ifndef NDEBUG
-/************************************************************************************//**
-** \brief     Called when a runtime assertion failed. It stores information about where
-**            the assertion occurred and halts the software program.
-** \param     file   Name of the source file where the assertion occurred.
-** \param     line   Linenumber in the source file where the assertion occurred.
-** \return    none
-**
+/****************************************************************************************
+* Type definitions
 ****************************************************************************************/
-void AssertFailure(blt_char *file, blt_int32u line)
-{
-  /* hang the software so that it requires a hard reset */
-  for (;;)
-  {
-    /* keep servicing the watchdog so that this one does not cause a reset */
-    CopService();
-  }
-} /*** end of AssertFailure ***/
-#endif /* !NDEBUG */
+typedef unsigned char   blt_bool;                     /**<  boolean type               */
+typedef char            blt_char;                     /**<  character type             */
+typedef unsigned long   blt_addr;                     /**<  memory address type        */
+typedef unsigned char   blt_int8u;                    /**<  8-bit unsigned integer     */
+typedef signed char     blt_int8s;                    /**<  8-bit   signed integer     */
+typedef unsigned short  blt_int16u;                   /**< 16-bit unsigned integer     */
+typedef signed short    blt_int16s;                   /**< 16-bit   signed integer     */
+typedef unsigned int    blt_int32u;                   /**< 32-bit unsigned integer     */
+typedef signed int      blt_int32s;                   /**< 32-bit   signed integer     */
 
 
-/*********************************** end of assert.c ***********************************/
+#endif /* TYPES_H */
+/*********************************** end of types.h ************************************/
