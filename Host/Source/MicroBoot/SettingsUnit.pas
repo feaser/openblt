@@ -29,6 +29,7 @@ unit SettingsUnit;
 // You have received a copy of the GNU General Public License along with OpenBLT. It 
 // should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 //
+//***************************************************************************************
 interface
 
 
