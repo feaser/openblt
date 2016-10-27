@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<EmBitz_project_file>
+	<EmBitzVersion release="1.00" revision="0" />
+	<FileVersion major="1" minor="0" />
+	<Project>
+		<Option title="olimexino" />
+		<Option pch_mode="2" />
+		<Option compiler="armgcc_eb" />
+		<Option virtualFolders="Libs\;Srcs\;Libs\cmsis\;Libs\SPL\;Srcs\Core\;Srcs\Core\ARMCM3_STM32F1\;Srcs\Core\ARMCM3_STM32F1\GCC\;Libs\USB\;Libs\USB\Device\;Srcs\Core\third_party\;Srcs\Core\third_party\fatfs\;Libs\fatfs\;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\bin\openblt_olimexino_stm32.elf" />
+				<Option object_output="..\obj" />
+				<Option type="0" />
+				<Option compiler="armgcc_eb" />
+				<Option projectDeviceOptionsRelation="0" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-fdata-sections" />
+					<Add option="-ffunction-sections" />
+					<Add option="-O2" />
+					<Add option="-g3" />
+				</Compiler>
+				<Assembler>
+					<Add option="-Wa,--gdwarf-2" />
+				</Assembler>
+				<Linker>
+					<Add option="-Wl,--gc-sections" />
+				</Linker>
+			</Target>
+		</Build>
+		<Device>
+			<Add option="$device=cortex-m3" />
+			<Add option="$lscript=./../cfg/stm32f103rb_flash.ld" />
+			<Add option="$stack=0x0400" />
+			<Add option="$heap=0x0000" />
+		</Device>
+		<Compiler>
+			<Add option="-mfloat-abi=soft" />
+			<Add option="-fno-strict-aliasing" />
+			<Add symbol="STM32F103RB" />
+			<Add symbol="STM32F10X_MD" />
+			<Add symbol="USE_STDPERIPH_DRIVER" />
+			<Add symbol="__NO_SYSTEM_INIT" />
+			<Add directory="..\lib" />
+			<Add directory="..\lib\cmsis" />
+			<Add directory="..\lib\SPL\inc" />
+			<Add directory="..\lib\USB_FS_DEVICE\inc" />
+			<Add directory="..\lib\fatfs" />
+			<Add directory="..\..\..\..\Source" />
+			<Add directory="..\..\..\..\Source\ARMCM3_STM32F1" />
+			<Add directory="..\..\..\..\Source\ARMCM3_STM32F1\GCC" />
+			<Add directory="..\..\..\..\Source\third_party\fatfs\src" />
+			<Add directory="..\..\..\..\Source\third_party\fatfs\src\option" />
+			<Add directory="..\..\Boot" />
+		</Compiler>
+		<Assembler>
+			<Add option="--defsym,__NO_SYSTEM_INIT" />
+		</Assembler>
+		<Linker>
+			<Add option="-eb_lib=n" />
+			<Add option="-eb_start_files" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="arm-none-eabi-objcopy -O srec $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).elf $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).srec" />
+			<Mode before="0" />
+			<Mode after="1" />
+		</ExtraCommands>
+		<Unit filename="..\blt_conf.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\hooks.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\led.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\led.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\lib\cmsis\core_cm3.h">
+			<Option virtualFolder="Libs\cmsis\" />
+		</Unit>
+		<Unit filename="..\lib\cmsis\core_cmFunc.h">
+			<Option virtualFolder="Libs\cmsis\" />
+		</Unit>
+		<Unit filename="..\lib\cmsis\core_cmInstr.h">
+			<Option virtualFolder="Libs\cmsis\" />
+		</Unit>
+		<Unit filename="..\lib\fatfs\ffconf.h">
+			<Option virtualFolder="Libs\fatfs\" />
+		</Unit>
+		<Unit filename="..\lib\fatfs\mmc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\fatfs\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\misc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_adc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_bkp.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_can.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_cec.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_crc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_dac.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_dbgmcu.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_dma.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_exti.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_flash.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_fsmc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_gpio.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_i2c.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_iwdg.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_pwr.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_rcc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_rtc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_sdio.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_spi.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_tim.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_usart.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f10x_wwdg.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\misc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_adc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_bkp.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_can.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_cec.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_crc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_dac.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_dbgmcu.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_dma.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_exti.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_flash.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_fsmc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_gpio.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_i2c.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_iwdg.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_pwr.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_rcc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_rtc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_sdio.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_spi.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_tim.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_usart.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f10x_wwdg.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\stm32f10x.h">
+			<Option virtualFolder="Libs\" />
+		</Unit>
+		<Unit filename="..\lib\stm32f10x_conf.h">
+			<Option virtualFolder="Libs\" />
+		</Unit>
+		<Unit filename="..\lib\system_stm32f10x.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\" />
+		</Unit>
+		<Unit filename="..\lib\system_stm32f10x.h">
+			<Option virtualFolder="Libs\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\inc\usb_core.h">
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\inc\usb_def.h">
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\inc\usb_init.h">
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\inc\usb_int.h">
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\inc\usb_lib.h">
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\inc\usb_mem.h">
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\inc\usb_regs.h">
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\inc\usb_sil.h">
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\inc\usb_type.h">
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\src\usb_core.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\src\usb_init.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\src\usb_int.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\src\usb_mem.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\src\usb_regs.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\lib\USB_FS_DEVICE\src\usb_sil.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\USB\Device\" />
+		</Unit>
+		<Unit filename="..\main.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\startup_stm32f10x_md.S">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_conf.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_desc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_desc.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_endp.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_istr.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_istr.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_prop.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_prop.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_pwr.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\usb_pwr.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\can.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\cpu.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\flash.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\flash.h">
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\GCC\cpu_comp.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\GCC\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\nvm.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\timer.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\types.h">
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\uart.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\ARMCM3_STM32F1\usb.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\ARMCM3_STM32F1\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\assert.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\assert.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\backdoor.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\backdoor.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\boot.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\boot.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\can.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\com.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\com.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\cop.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\cop.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\cpu.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\file.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\file.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\net.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\net.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\nvm.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\plausibility.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\third_party\fatfs\src\diskio.h">
+			<Option virtualFolder="Srcs\Core\third_party\fatfs\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\third_party\fatfs\src\ff.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\third_party\fatfs\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\third_party\fatfs\src\ff.h">
+			<Option virtualFolder="Srcs\Core\third_party\fatfs\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\third_party\fatfs\src\integer.h">
+			<Option virtualFolder="Srcs\Core\third_party\fatfs\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\third_party\fatfs\src\option\unicode.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\third_party\fatfs\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\timer.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\uart.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\usb.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\xcp.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Unit filename="..\..\..\..\Source\xcp.h">
+			<Option virtualFolder="Srcs\Core\" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger>
+				<target_debugging_settings target="Debug" active_interface="J-link">
+					<debug_interface interface_id="J-link" ip_address="localhost" ip_port="2331" path="%Software\SEGGER\J-Link:InstallPath%" executable="JLinkGDBServer.exe" description="..\cfg\STM32F103xx.svd" dont_start_server="false" backoff_time="2000" options="2" reg_filter="0" active_family="Generic" gdb_before_conn="" gdb_after_conn="">
+						<family_options family_id="Generic">
+							<option opt_id="ID_CMD_BEFORE" opt_value="" />
+							<option opt_id="ID_GDB_SERVER_CL" opt_value="-select USB=0 -device STM32F103RB -if SWD -speed 1000 -endian little" />
+							<option opt_id="ID_CMD_RESET" opt_value="monitor reset&#x0A;monitor speed 1000&#x0A;" />
+							<option opt_id="ID_CMD_AFTER" opt_value="monitor flash download = 1&#x0A;monitor flash breakpoints = 1&#x0A;load" />
+						</family_options>
+					</debug_interface>
+				</target_debugging_settings>
+			</debugger>
+			<envvars />
+		</Extensions>
+	</Project>
+</EmBitz_project_file>
