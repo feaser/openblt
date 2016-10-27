@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<EmBitz_project_file>
+	<EmBitzVersion release="1.00" revision="0" />
+	<FileVersion major="1" minor="0" />
+	<Project>
+		<Option title="STM32P405" />
+		<Option pch_mode="2" />
+		<Option compiler="armgcc_eb" />
+		<Option virtualFolders="Libs\;Srcs\;Libs\cmsis\;Libs\SPL\;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\bin\demoprog_olimex_stm32p405.elf" />
+				<Option object_output="..\obj\" />
+				<Option type="0" />
+				<Option compiler="armgcc_eb" />
+				<Option projectDeviceOptionsRelation="0" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-fdata-sections" />
+					<Add option="-ffunction-sections" />
+					<Add option="-O0" />
+					<Add option="-g3" />
+					<Add option="-Og" />
+				</Compiler>
+				<Assembler>
+					<Add option="-Wa,--gdwarf-2" />
+				</Assembler>
+				<Linker>
+					<Add option="-Wl,--gc-sections" />
+				</Linker>
+			</Target>
+		</Build>
+		<Device>
+			<Add option="$device=cortex-m4" />
+			<Add option="$fpu=fpv4-sp-d16" />
+			<Add option="$lscript=../cfg/stm32f405rg_flash.ld" />
+			<Add option="$stack=0x0400" />
+			<Add option="$heap=0x0000" />
+		</Device>
+		<Compiler>
+			<Add option="-mfloat-abi=hard" />
+			<Add option="-fno-strict-aliasing" />
+			<Add symbol="ARM_MATH_CM4" />
+			<Add symbol="__FPU_USED" />
+			<Add symbol="STM32F405RG" />
+			<Add symbol="STM32F4XX" />
+			<Add symbol="USE_STDPERIPH_DRIVER" />
+			<Add symbol="HSE_VALUE=8000000" />
+			<Add directory="..\lib" />
+			<Add directory="..\lib\cmsis" />
+			<Add directory="..\lib\SPL\inc" />
+			<Add directory="..\..\Prog" />
+		</Compiler>
+		<Linker>
+			<Add option="-eb_lib=n" />
+			<Add option="-eb_start_files" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="arm-none-eabi-objcopy -O srec $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).elf $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).srec" />
+			<Mode before="0" />
+			<Mode after="1" />
+		</ExtraCommands>
+		<Unit filename="..\boot.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\boot.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\header.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\led.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\led.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\lib\cmsis\core_cm4.h">
+			<Option virtualFolder="Libs\cmsis\" />
+		</Unit>
+		<Unit filename="..\lib\cmsis\core_cm4_simd.h">
+			<Option virtualFolder="Libs\cmsis\" />
+		</Unit>
+		<Unit filename="..\lib\cmsis\core_cmFunc.h">
+			<Option virtualFolder="Libs\cmsis\" />
+		</Unit>
+		<Unit filename="..\lib\cmsis\core_cmInstr.h">
+			<Option virtualFolder="Libs\cmsis\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\misc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_adc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_can.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_crc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_cryp.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_dac.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_dbgmcu.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_dcmi.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_dma.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_exti.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_flash.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_fsmc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_gpio.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_hash.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_i2c.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_iwdg.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_pwr.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_rcc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_rng.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_rtc.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_sdio.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_spi.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_syscfg.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_tim.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_usart.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\inc\stm32f4xx_wwdg.h">
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\misc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_adc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_can.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_crc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_cryp.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_cryp_aes.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_cryp_des.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_cryp_tdes.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_dac.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_dbgmcu.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_dcmi.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_dma.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_exti.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_flash.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_fsmc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_gpio.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_hash.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_hash_md5.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_hash_sha1.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_i2c.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_iwdg.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_pwr.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_rcc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_rng.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_rtc.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_sdio.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_spi.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_syscfg.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_tim.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_usart.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\SPL\src\stm32f4xx_wwdg.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\SPL\" />
+		</Unit>
+		<Unit filename="..\lib\stm32f4xx.h">
+			<Option virtualFolder="Libs\" />
+		</Unit>
+		<Unit filename="..\lib\stm32f4xx_conf.h">
+			<Option virtualFolder="Libs\" />
+		</Unit>
+		<Unit filename="..\lib\system_stm32f4xx.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Libs\" />
+		</Unit>
+		<Unit filename="..\lib\system_stm32f4xx.h">
+			<Option virtualFolder="Libs\" />
+		</Unit>
+		<Unit filename="..\main.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\startup_stm32f4xx.S">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\timer.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Unit filename="..\timer.h">
+			<Option virtualFolder="Srcs\" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger>
+				<target_debugging_settings target="Debug" active_interface="J-link">
+					<debug_interface interface_id="J-link" ip_address="localhost" ip_port="2331" path="%Software\SEGGER\J-Link:InstallPath%" executable="JLinkGDBServer.exe" description="" dont_start_server="false" backoff_time="2000" options="2" reg_filter="0" active_family="STMicroelectronics" gdb_before_conn="" gdb_after_conn="">
+						<family_options family_id="Energy Micro" />
+						<family_options family_id="STMicroelectronics">
+							<option opt_id="ID_DEVICE" opt_value="STM32F405RG" />
+							<option opt_id="ID_JTAG_SWD" opt_value="jtag" />
+							<option opt_id="ID_SPEED" opt_value="1000" />
+							<option opt_id="ID_AUTO_SPEED" opt_value="1" />
+							<option opt_id="ID_ENDIANNESS" opt_value="little" />
+							<option opt_id="ID_RESET_TYPE" opt_value="0" />
+							<option opt_id="ID_VECTOR_START" opt_value="0x08000000" />
+							<option opt_id="ID_LOAD_PROGRAM" opt_value="1" />
+							<option opt_id="ID_FLASH_DOWNLOAD" opt_value="1" />
+							<option opt_id="ID_FLASH_BREAK" opt_value="1" />
+							<option opt_id="ID_RAM_EXEC" opt_value="0" />
+							<option opt_id="ID_VEC_TABLE" opt_value="1" />
+							<option opt_id="ID_NCACHE_CHECK" opt_value="0" />
+							<option opt_id="ID_NCACHE_BASE" opt_value="" />
+							<option opt_id="ID_NCACHE_LENGTH" opt_value="" />
+							<option opt_id="ID_SEMIHOST_CHECK" opt_value="0" />
+							<option opt_id="ID_ARM_SWI" opt_value="" />
+							<option opt_id="ID_THUMB_SWI" opt_value="" />
+						</family_options>
+					</debug_interface>
+				</target_debugging_settings>
+			</debugger>
+			<envvars />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+		</Extensions>
+	</Project>
+</EmBitz_project_file>
