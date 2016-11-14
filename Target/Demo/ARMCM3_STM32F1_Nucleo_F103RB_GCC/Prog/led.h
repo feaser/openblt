@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Nucleo_STM32F103RB_GNU_ARM_GCC\Prog\timer.h
-* \brief        Timer driver header file.
-* \ingroup      Prog_ARMCM3_STM32F1_Nucleo_STM32F103RB_GNU_ARM_GCC
+* \file         Demo\ARMCM3_STM32F1_Nucleo_F103RB_GCC\Prog\led.h
+* \brief        LED driver header file.
+* \ingroup      Prog_ARMCM3_STM32F1_Nucleo_F103RB_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,17 +25,15 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef LED_H
+#define LED_H
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void          TimerInit(void);
-void          TimerDeinit(void);
-void          TimerSet(unsigned long timer_value);
-unsigned long TimerGet(void);
-void          TimerISRHandler(void);
+void LedInit(void);
+void LedToggle(void);
 
-#endif /* TIMER_H */
-/*********************************** end of timer.h ************************************/
+
+#endif /* LED_H */
+/*********************************** end of led.h **************************************/

@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Nucleo_STM32F103RB_GNU_ARM_GCC\Prog\header.h
+* \file         Demo\ARMCM3_STM32F1_Nucleo_F103RB_GCC\Prog\header.h
 * \brief        Generic header file.
-* \ingroup      Prog_ARMCM3_STM32F1_Nucleo_STM32F103RB_GNU_ARM_GCC
+* \ingroup      Prog_ARMCM3_STM32F1_Nucleo_F103RB_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
