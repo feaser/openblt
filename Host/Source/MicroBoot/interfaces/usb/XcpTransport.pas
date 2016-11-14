@@ -188,9 +188,6 @@ begin
   // compute timeout time
   dwEnd := GetTickCount + timeOutms;
 
-  // configure timeout for first byte
-  //sciDriver.InputTimeout := timeOutms;
-
   // receive the first byte which holds the packet length
   if UblReceive(Addr(resLen), 1, timeOutms) = UBL_OKAY then
   begin

@@ -195,6 +195,8 @@ var
   msgData : array of Byte;
   resLen  : byte;
   cnt     : byte;
+  rxCnt   : byte;
+  dwEnd   : DWord;
 begin
   // init the return value
   result := false;
@@ -228,15 +230,42 @@ begin
     Exit;
   end;
 
-  // configure reception timeout. timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
+  // give application the opportunity to process the messages
+  Application.ProcessMessages;
+
+  // confgure the reception timeout. timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
   sciDriver.Timeouts.ReadTotalConstant := timeOutms;
   sciDriver.Timeouts.ReadTotalMultiplier := 0;
+
+  // compute timeout time for receiving the response
+  dwEnd := GetTickCount + timeOutms;
 
   // receive the first byte which should hold the packet length
   if sciDriver.Read(resLen, 1) = 1 then
   begin
-    // receive the actual packet data
-    if sciDriver.Read(packetData[0], resLen) = resLen then
+    // init the number of received bytes to 0
+    rxCnt := 0;
+    packetLen := 0;
+
+    // re-confgure the reception timeout now that the total packet length is known.
+    // timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
+    sciDriver.Timeouts.ReadTotalConstant := 0;
+    sciDriver.Timeouts.ReadTotalMultiplier := timeOutms div resLen;
+
+    // attempt to receive the bytes of the response packet one by one
+    while (rxCnt < resLen) and (GetTickCount < dwEnd) do
+    begin
+      // receive the next byte
+      if sciDriver.Read(packetData[rxCnt], 1) = 1 then
+      begin
+        // increment counter
+        rxCnt := rxCnt + 1;
+      end;
+    end;
+
+    // check to see if all bytes were received. if not, then a timeout must have
+    // happened.
+    if rxCnt = resLen then
     begin
       packetLen := resLen;
       result := true;
