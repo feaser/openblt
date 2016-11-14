@@ -7,20 +7,18 @@ start address 0x08000000
 
 Program Header:
     LOAD off    0x00008000 vaddr 0x08000000 paddr 0x08000000 align 2**15
-         filesz 0x0000a07c memsz 0x0000a07c flags r-x
-    LOAD off    0x00018000 vaddr 0x20000000 paddr 0x0800a07c align 2**15
-         filesz 0x000000ec memsz 0x000000ec flags rw-
-    LOAD off    0x00018100 vaddr 0x20000100 paddr 0x0800a180 align 2**15
-         filesz 0x00000000 memsz 0x00003564 flags rw-
+         filesz 0x0000a080 memsz 0x0000a080 flags r-x
+    LOAD off    0x00018000 vaddr 0x20000000 paddr 0x0800a080 align 2**15
+         filesz 0x000000ec memsz 0x00003664 flags rw-
 private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         0000a07c  08000000  08000000  00008000  2**2
+  0 .text         0000a080  08000000  08000000  00008000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         000000ec  20000000  0800a07c  00018000  2**2
+  1 .data         000000ec  20000000  0800a080  00018000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00003564  20000100  0800a180  00018100  2**7
+  2 .bss          00003564  20000100  0800a180  000180ec  2**7
                   ALLOC
   3 .debug_info   0001fc79  00000000  00000000  000180ec  2**0
                   CONTENTS, READONLY, DEBUGGING
@@ -58,7 +56,7 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 hooks.c
-08009644 l     O .text	00000020 firmwareFilename
+08009648 l     O .text	00000020 firmwareFilename
 20000100 l     O .bss	00000228 logfile
 00000000 l    df *ABS*	00000000 main.c
 00000000 l    df *ABS*	00000000 usbd_bulk.c
@@ -141,13 +139,13 @@ SYMBOL TABLE:
 08005534 l     F .text	00000236 dir_register
 20000408 l     O .bss	00000200 LfnBuf
 20000608 l     O .bss	00000002 Fsid
-080096f0 l     O .text	00000080 ExCvt
-08009770 l     O .text	0000000d LfnOfs
+080096f4 l     O .text	00000080 ExCvt
+08009774 l     O .text	0000000d LfnOfs
 2000060c l     O .bss	00000004 FatFs
 00000000 l    df *ABS*	00000000 unicode.c
-08009780 l     O .text	000001e0 tbl_lower.4259
-08009960 l     O .text	00000100 Tbl
-08009a60 l     O .text	000001e0 tbl_upper.4260
+08009784 l     O .text	000001e0 tbl_lower.4259
+08009964 l     O .text	00000100 Tbl
+08009a64 l     O .text	000001e0 tbl_upper.4260
 00000000 l    df *ABS*	00000000 uip.c
 08006110 l     F .text	0000004c chksum
 0800615c l     F .text	00000042 upper_layer_chksum
@@ -163,7 +161,7 @@ SYMBOL TABLE:
 20000626 l     O .bss	00000001 i
 20000627 l     O .bss	00000001 tmpage
 20000628 l     O .bss	00000060 arp_table
-08009c40 l     O .text	00000006 broadcast_ethaddr
+08009c44 l     O .text	00000006 broadcast_ethaddr
 20000688 l     O .bss	00000001 c
 20000689 l     O .bss	00000001 arptime
 2000068c l     O .bss	00000004 ipaddr
@@ -176,7 +174,7 @@ SYMBOL TABLE:
 200006d4 l     O .bss	00000004 periodicTimerTimeOut
 00000000 l    df *ABS*	00000000 xcp.c
 08007a9c l     F .text	00000016 XcpSetCtoError
-08009c48 l     O .text	00000008 xcpStationId
+08009c4c l     O .text	00000008 xcpStationId
 200006d8 l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 backdoor.c
 20000724 l     O .bss	00000001 backdoorOpen
@@ -194,15 +192,15 @@ SYMBOL TABLE:
 20000bd0 l     O .bss	00000184 lineParseObject
 00000000 l    df *ABS*	00000000 assert.c
 00000000 l    df *ABS*	00000000 can.c
-08009e38 l     O .text	00000024 canTiming
+08009e3c l     O .text	00000024 canTiming
 00000000 l    df *ABS*	00000000 cpu.c
 00000000 l    df *ABS*	00000000 flash.c
 080089ec l     F .text	00000044 FlashGetSector
 08008a30 l     F .text	00000078 FlashWriteBlock
 08008aa8 l     F .text	00000062 FlashSwitchBlock
 08008b0c l     F .text	00000084 FlashAddToBlock
-08009e5c l     O .text	00000030 flashSectorNumToMask
-08009e8c l     O .text	0000006c flashLayout
+08009e60 l     O .text	00000030 flashSectorNumToMask
+08009e90 l     O .text	0000006c flashLayout
 20000d54 l     O .bss	00000204 bootBlockInfo
 20000f58 l     O .bss	00000204 blockInfo
 00000000 l    df *ABS*	00000000 uart.c
@@ -229,7 +227,7 @@ SYMBOL TABLE:
 200018dc l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 cpu_comp.c
 00000000 l    df *ABS*	00000000 cstart.c
-080094de l     F .text	00000000 zero_loop
+080094e0 l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 memcpy-stub.c
 00000000 l    df *ABS*	00000000 memset.c
 00000000 l    df *ABS*	00000000 ctype_.c
@@ -277,7 +275,7 @@ SYMBOL TABLE:
 08003e10 g     F .text	00000024 RCC_AHB1PeriphResetCmd
 080040b0 g     F .text	0000000c USART_GetFlagStatus
 08007ef0 g     F .text	00000002 CopService
-0800a07c g       .text	00000000 _etext
+0800a080 g       .text	00000000 _etext
 20000330 g     O .bss	00000004 USBD_ep_status
 08009494 g     F .text	00000004 CpuIrqDisable
 08002e40 g     F .text	0000019a SD_WriteBlock
@@ -289,7 +287,7 @@ SYMBOL TABLE:
 08008d94 g     F .text	0000000a FlashGetUserProgBaseAddress
 080005a0 g     F .text	00000008 USBD_USR_DeviceSuspended
 08003214 g     F .text	00000018 ETH_DeInit
-080094fc g     F .text	000000a6 memcpy
+08009500 g     F .text	000000a6 memcpy
 08008270 g     F .text	00000478 FileTask
 08000dc4 g     F .text	00000138 USBD_StdEPReq
 08009438 g     F .text	0000000e TimerReset
@@ -414,7 +412,7 @@ SYMBOL TABLE:
 0800915c g     F .text	00000016 UsbFree
 08008bfc g     F .text	0000008a FlashErase
 080004d4 g     F .text	0000000e USBD_USR_DeviceDescriptor
-080095a4 g     F .text	0000009e memset
+080095a8 g     F .text	0000009e memset
 08000280 g     F .text	00000020 FileFirmwareUpdateErrorHook
 08000300 g     F .text	000000dc main
 08003b30 g     F .text	0000006e FLASH_EraseSector
@@ -487,7 +485,7 @@ SYMBOL TABLE:
 08007860 g     F .text	00000008 ComIsConnected
 08001404 g     F .text	0000002a USB_OTG_EP0Activate
 08000fe8 g     F .text	00000026 USB_OTG_ReadPacket
-08009f78 g     O .text	00000101 _ctype_
+08009f7c g     O .text	00000101 _ctype_
 080036ec g     F .text	00000026 ETH_DMATransmissionCmd
 08003e70 g     F .text	00000034 SDIO_Init
 080001ac g     F .text	00000044 FileIsFirmwareUpdateRequestedHook

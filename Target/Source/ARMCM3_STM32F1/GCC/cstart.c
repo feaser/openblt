@@ -60,6 +60,9 @@ void reset_handler(void)
 {
   blt_int32u *pSrc, *pDest;
 
+  /* initialize stack pointer */
+  __asm("    ldr r1, =_estack\n"
+        "    mov sp, r1");
   /* copy the data segment initializers from flash to SRAM */
   pSrc = &_etext;
   for (pDest = &_data; pDest < &_edata;)
