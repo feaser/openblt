@@ -247,31 +247,32 @@ begin
     rxCnt := 0;
     packetLen := 0;
 
-    // re-confgure the reception timeout now that the total packet length is known.
-    // timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
-    sciDriver.Timeouts.ReadTotalConstant := 0;
-    if timeOutms > 0 then
-      sciDriver.Timeouts.ReadTotalMultiplier := timeOutms div resLen
-    else
-      sciDriver.Timeouts.ReadTotalMultiplier := timeOutms;
-
-    // attempt to receive the bytes of the response packet one by one
-    while (rxCnt < resLen) and (GetTickCount < dwEnd) do
+    // only attempt to receive the remainder of the packet if its length is valid
+    if resLen > 0 then
     begin
-      // receive the next byte
-      if sciDriver.Read(packetData[rxCnt], 1) = 1 then
+      // re-confgure the reception timeout now that the total packet length is known.
+      // timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
+      sciDriver.Timeouts.ReadTotalConstant := 0;
+      sciDriver.Timeouts.ReadTotalMultiplier := timeOutms div resLen;
+
+      // attempt to receive the bytes of the response packet one by one
+      while (rxCnt < resLen) and (GetTickCount < dwEnd) do
       begin
-        // increment counter
-        rxCnt := rxCnt + 1;
+        // receive the next byte
+        if sciDriver.Read(packetData[rxCnt], 1) = 1 then
+        begin
+          // increment counter
+          rxCnt := rxCnt + 1;
+        end;
       end;
-    end;
 
-    // check to see if all bytes were received. if not, then a timeout must have
-    // happened.
-    if rxCnt = resLen then
-    begin
-      packetLen := resLen;
-      result := true;
+      // check to see if all bytes were received. if not, then a timeout must have
+      // happened.
+      if rxCnt = resLen then
+      begin
+        packetLen := resLen;
+        result := true;
+      end;
     end;
   end;
 end; //*** end of SendPacket ***
