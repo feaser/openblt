@@ -250,7 +250,10 @@ begin
     // re-confgure the reception timeout now that the total packet length is known.
     // timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
     sciDriver.Timeouts.ReadTotalConstant := 0;
-    sciDriver.Timeouts.ReadTotalMultiplier := timeOutms div resLen;
+    if timeOutms > 0 then
+      sciDriver.Timeouts.ReadTotalMultiplier := timeOutms div resLen
+    else
+      sciDriver.Timeouts.ReadTotalMultiplier := timeOutms;
 
     // attempt to receive the bytes of the response packet one by one
     while (rxCnt < resLen) and (GetTickCount < dwEnd) do
