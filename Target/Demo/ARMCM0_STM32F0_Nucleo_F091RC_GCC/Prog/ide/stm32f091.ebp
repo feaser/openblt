@@ -3,13 +3,13 @@
 	<EmBitzVersion release="1.00" revision="0" />
 	<FileVersion major="1" minor="0" />
 	<Project>
-		<Option title="stm32f303" />
+		<Option title="stm32f091" />
 		<Option pch_mode="2" />
 		<Option compiler="armgcc_eb" />
 		<Option virtualFolders="Libs\;Libs\cmsis\;Libs\SPL\;Srcs\;" />
 		<Build>
 			<Target title="Debug">
-				<Option output="..\bin\demoprog_stm32f303.elf" />
+				<Option output="..\bin\demoprog_stm32f091.elf" />
 				<Option object_output="..\obj\" />
 				<Option type="0" />
 				<Option compiler="armgcc_eb" />
@@ -31,16 +31,15 @@
 			</Target>
 		</Build>
 		<Device>
-			<Add option="$device=cortex-m4" />
-			<Add option="$lscript=./../cfg/stm32f303k8_flash.ld" />
+			<Add option="$device=cortex-m0" />
+			<Add option="$lscript=./../cfg/stm32f091rc_flash.ld" />
 			<Add option="$stack=0x0100" />
 			<Add option="$heap=0x0000" />
 		</Device>
 		<Compiler>
 			<Add option="-mfloat-abi=soft" />
 			<Add option="-fno-strict-aliasing" />
-			<Add symbol="STM32F303K8" />
-			<Add symbol="STM32F334x8" />
+			<Add symbol="STM32F091" />
 			<Add symbol="USE_STDPERIPH_DRIVER" />
 			<Add directory="..\lib" />
 			<Add directory="..\lib\cmsis" />
@@ -82,7 +81,7 @@
 		<Unit filename="..\lib\cmsis\arm_math.h">
 			<Option virtualFolder="Libs\cmsis\" />
 		</Unit>
-		<Unit filename="..\lib\cmsis\core_cm4.h">
+		<Unit filename="..\lib\cmsis\core_cm0.h">
 			<Option virtualFolder="Libs\cmsis\" />
 		</Unit>
 		<Unit filename="..\lib\cmsis\core_cmFunc.h">
@@ -91,195 +90,185 @@
 		<Unit filename="..\lib\cmsis\core_cmInstr.h">
 			<Option virtualFolder="Libs\cmsis\" />
 		</Unit>
-		<Unit filename="..\lib\cmsis\core_cmSimd.h">
-			<Option virtualFolder="Libs\cmsis\" />
-		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_adc.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_adc.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_can.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_can.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_comp.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_cec.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_crc.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_comp.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_dac.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_crc.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_dbgmcu.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_crs.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_dma.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_dac.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_exti.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_dbgmcu.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_flash.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_dma.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_fmc.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_exti.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_gpio.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_flash.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_hrtim.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_gpio.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_i2c.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_i2c.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_iwdg.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_iwdg.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_misc.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_misc.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_opamp.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_pwr.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_pwr.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_rcc.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_rcc.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_rtc.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_rtc.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_spi.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_spi.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_syscfg.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_syscfg.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_tim.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_tim.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_usart.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_usart.h">
+		<Unit filename="..\lib\SPL\inc\stm32f0xx_wwdg.h">
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\inc\stm32f30x_wwdg.h">
-			<Option virtualFolder="Libs\SPL\" />
-		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_adc.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_adc.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_can.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_can.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_comp.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_cec.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_crc.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_comp.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_dac.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_crc.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_dbgmcu.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_crs.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_dma.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_dac.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_exti.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_dbgmcu.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_flash.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_dma.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_fmc.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_exti.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_gpio.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_flash.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_hrtim.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_gpio.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_i2c.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_i2c.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_iwdg.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_iwdg.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_misc.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_misc.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_opamp.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_pwr.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_pwr.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_rcc.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_rcc.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_rtc.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_rtc.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_spi.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_spi.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_syscfg.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_syscfg.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_tim.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_tim.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_usart.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_usart.c">
+		<Unit filename="..\lib\SPL\src\stm32f0xx_wwdg.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\SPL\" />
 		</Unit>
-		<Unit filename="..\lib\SPL\src\stm32f30x_wwdg.c">
-			<Option compilerVar="CC" />
-			<Option virtualFolder="Libs\SPL\" />
-		</Unit>
-		<Unit filename="..\lib\stm32f30x.h">
+		<Unit filename="..\lib\stm32f0xx.h">
 			<Option virtualFolder="Libs\" />
 		</Unit>
-		<Unit filename="..\lib\stm32f30x_conf.h">
+		<Unit filename="..\lib\stm32f0xx_conf.h">
 			<Option virtualFolder="Libs\" />
 		</Unit>
-		<Unit filename="..\lib\system_stm32f30x.c">
+		<Unit filename="..\lib\system_stm32f0xx.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Libs\" />
 		</Unit>
-		<Unit filename="..\lib\system_stm32f30x.h">
+		<Unit filename="..\lib\system_stm32f0xx.h">
 			<Option virtualFolder="Libs\" />
 		</Unit>
 		<Unit filename="..\main.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Srcs\" />
 		</Unit>
-		<Unit filename="..\startup_stm32f30x.S">
+		<Unit filename="..\startup_stm32f0xx.S">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Srcs\" />
 		</Unit>
@@ -294,7 +283,8 @@
 			<code_completion />
 			<debugger>
 				<target_debugging_settings target="Debug" active_interface="ST-link">
-					<debug_interface interface_id="ST-link" ip_address="localhost" ip_port="4242" path="${EMBITZ}\share\contrib" executable="STLinkGDB.exe" description="..\cfg\STM32F303x.svd" dont_start_server="false" backoff_time="1000" options="2" reg_filter="0" active_family="STMicroelectronics" gdb_before_conn="" gdb_after_conn="">
+					<debug_interface interface_id="OpenOCD" ip_address="" ip_port="" path="" executable="" description="" dont_start_server="false" backoff_time="" options="0" reg_filter="0" active_family="" gdb_before_conn="" gdb_after_conn="" />
+					<debug_interface interface_id="ST-link" ip_address="localhost" ip_port="4242" path="${EMBITZ}\share\contrib" executable="STLinkGDB.exe" description="..\cfg\STM32F091x.svd" dont_start_server="false" backoff_time="1000" options="2" reg_filter="0" active_family="STMicroelectronics" gdb_before_conn="" gdb_after_conn="">
 						<family_options family_id="STMicroelectronics">
 							<option opt_id="ID_JTAG_SWD" opt_value="swd" />
 							<option opt_id="ID_VECTOR_START" opt_value="0x08000000" />

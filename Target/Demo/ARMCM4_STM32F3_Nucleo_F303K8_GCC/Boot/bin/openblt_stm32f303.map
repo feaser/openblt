@@ -4343,7 +4343,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x10 ..\obj\~#\~#\~#\source\file.o
  .debug_macro   0x00000000       0x35 ..\obj\~#\~#\~#\source\file.o
  .debug_macro   0x00000000       0xac ..\obj\~#\~#\~#\source\file.o
- .debug_line    0x00000000      0x2ff ..\obj\~#\~#\~#\source\file.o
+ .debug_line    0x00000000      0x303 ..\obj\~#\~#\~#\source\file.o
  .debug_str     0x00000000     0x602f ..\obj\~#\~#\~#\source\file.o
  .comment       0x00000000       0x6f ..\obj\~#\~#\~#\source\file.o
  .ARM.attributes
@@ -4374,7 +4374,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x1c ..\obj\~#\~#\~#\source\net.o
  .debug_macro   0x00000000       0x9f ..\obj\~#\~#\~#\source\net.o
  .debug_macro   0x00000000       0x40 ..\obj\~#\~#\~#\source\net.o
- .debug_line    0x00000000       0xf3 ..\obj\~#\~#\~#\source\net.o
+ .debug_line    0x00000000       0xf7 ..\obj\~#\~#\~#\source\net.o
  .debug_str     0x00000000     0x2e95 ..\obj\~#\~#\~#\source\net.o
  .comment       0x00000000       0x6f ..\obj\~#\~#\~#\source\net.o
  .ARM.attributes
@@ -5272,29 +5272,29 @@ OUTPUT(..\bin\openblt_stm32f303.elf elf32-littlearm)
  .debug_macro   0x00014701       0x91 ..\obj\~#\~#\~#\source\cop.o
  .debug_macro   0x00014792      0x157 ..\obj\~#\~#\~#\source\xcp.o
 
-.debug_line     0x00000000     0x542e
- .debug_line    0x00000000      0x55d ..\obj\hooks.o
- .debug_line    0x0000055d      0x55b ..\obj\led.o
- .debug_line    0x00000ab8      0x71a ..\obj\lib\spl\src\stm32f30x_flash.o
- .debug_line    0x000011d2      0x58f ..\obj\lib\spl\src\stm32f30x_gpio.o
- .debug_line    0x00001761      0x84b ..\obj\lib\spl\src\stm32f30x_rcc.o
- .debug_line    0x00001fac      0x848 ..\obj\lib\spl\src\stm32f30x_usart.o
- .debug_line    0x000027f4      0x4c3 ..\obj\lib\system_stm32f30x.o
- .debug_line    0x00002cb7      0x565 ..\obj\main.o
- .debug_line    0x0000321c      0x1d4 ..\obj\~#\~#\~#\source\armcm4_stm32f3\can.o
- .debug_line    0x000033f0      0x168 ..\obj\~#\~#\~#\source\armcm4_stm32f3\cpu.o
- .debug_line    0x00003558      0x6c1 ..\obj\~#\~#\~#\source\armcm4_stm32f3\flash.o
- .debug_line    0x00003c19      0x140 ..\obj\~#\~#\~#\source\armcm4_stm32f3\gcc\cpu_comp.o
- .debug_line    0x00003d59       0xc2 ..\obj\~#\~#\~#\source\armcm4_stm32f3\gcc\cstart.o
- .debug_line    0x00003e1b      0x195 ..\obj\~#\~#\~#\source\armcm4_stm32f3\nvm.o
- .debug_line    0x00003fb0      0x583 ..\obj\~#\~#\~#\source\armcm4_stm32f3\timer.o
- .debug_line    0x00004533      0x5ea ..\obj\~#\~#\~#\source\armcm4_stm32f3\uart.o
- .debug_line    0x00004b1d      0x10a ..\obj\~#\~#\~#\source\assert.o
- .debug_line    0x00004c27      0x126 ..\obj\~#\~#\~#\source\backdoor.o
- .debug_line    0x00004d4d      0x11d ..\obj\~#\~#\~#\source\boot.o
- .debug_line    0x00004e6a      0x1a2 ..\obj\~#\~#\~#\source\com.o
- .debug_line    0x0000500c      0x113 ..\obj\~#\~#\~#\source\cop.o
- .debug_line    0x0000511f      0x30f ..\obj\~#\~#\~#\source\xcp.o
+.debug_line     0x00000000     0x538e
+ .debug_line    0x00000000      0x55f ..\obj\hooks.o
+ .debug_line    0x0000055f      0x55d ..\obj\led.o
+ .debug_line    0x00000abc      0x71a ..\obj\lib\spl\src\stm32f30x_flash.o
+ .debug_line    0x000011d6      0x58f ..\obj\lib\spl\src\stm32f30x_gpio.o
+ .debug_line    0x00001765      0x84b ..\obj\lib\spl\src\stm32f30x_rcc.o
+ .debug_line    0x00001fb0      0x848 ..\obj\lib\spl\src\stm32f30x_usart.o
+ .debug_line    0x000027f8      0x4c3 ..\obj\lib\system_stm32f30x.o
+ .debug_line    0x00002cbb      0x567 ..\obj\main.o
+ .debug_line    0x00003222      0x1b4 ..\obj\~#\~#\~#\source\armcm4_stm32f3\can.o
+ .debug_line    0x000033d6      0x148 ..\obj\~#\~#\~#\source\armcm4_stm32f3\cpu.o
+ .debug_line    0x0000351e      0x6a1 ..\obj\~#\~#\~#\source\armcm4_stm32f3\flash.o
+ .debug_line    0x00003bbf      0x142 ..\obj\~#\~#\~#\source\armcm4_stm32f3\gcc\cpu_comp.o
+ .debug_line    0x00003d01       0xc2 ..\obj\~#\~#\~#\source\armcm4_stm32f3\gcc\cstart.o
+ .debug_line    0x00003dc3      0x175 ..\obj\~#\~#\~#\source\armcm4_stm32f3\nvm.o
+ .debug_line    0x00003f38      0x563 ..\obj\~#\~#\~#\source\armcm4_stm32f3\timer.o
+ .debug_line    0x0000449b      0x5ca ..\obj\~#\~#\~#\source\armcm4_stm32f3\uart.o
+ .debug_line    0x00004a65      0x10e ..\obj\~#\~#\~#\source\assert.o
+ .debug_line    0x00004b73      0x12a ..\obj\~#\~#\~#\source\backdoor.o
+ .debug_line    0x00004c9d      0x121 ..\obj\~#\~#\~#\source\boot.o
+ .debug_line    0x00004dbe      0x1a6 ..\obj\~#\~#\~#\source\com.o
+ .debug_line    0x00004f64      0x117 ..\obj\~#\~#\~#\source\cop.o
+ .debug_line    0x0000507b      0x313 ..\obj\~#\~#\~#\source\xcp.o
 
 .debug_str      0x00000000    0x7ebab
  .debug_str     0x00000000    0x7bf27 ..\obj\hooks.o
