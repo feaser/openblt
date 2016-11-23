@@ -35,8 +35,8 @@
 #define BOOT_VERSION_CORE_MAIN     (1u)
 /** \brief Minor version of the bootloader core. */
 #define BOOT_VERSION_CORE_MINOR    (2u)
-/** \brief Bufgix version of the bootloader core. */
-#define BOOT_VERSION_CORE_BUGFIX   (4u)
+/** \brief Build version of the bootloader core. */
+#define BOOT_VERSION_CORE_BUILD    (4u)
 
 
 /****************************************************************************************
