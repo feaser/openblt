@@ -73,7 +73,8 @@ type
   TFirmwareFileType =
   (
     FFT_UNKNOWN,
-    FFT_SRECORD
+    FFT_SRECORD,
+    FFT_BINARY
   );
 
 
@@ -106,6 +107,15 @@ type
     function Save(firmwareFile: String; segments: TObjectList<TDataSegment>): Boolean; override;
     class function IsSRecordFile(firmwareFile: String): Boolean; static;
     property DataBytesPerLineOnSave: Integer read FDataBytesPerLineOnSave write FDataBytesPerLineOnSave;
+  end;
+
+  //---------------------------------- TBinaryFileHandler -------------------------------
+  TBinaryFileHandler = class(TFirmwareFileHandler)
+  private
+  public
+    constructor Create; override;
+    function Load(firmwareFile: String): Boolean; override;
+    function Save(firmwareFile: String; segments: TObjectList<TDataSegment>): Boolean; override;
   end;
 
   //---------------------------------- TFirmwareData ------------------------------------
@@ -933,6 +943,113 @@ begin
   Result := Result + Format('%.2X', [checksumCalc]);
 end; //*** end of ConstructLine ***/
 
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TBinaryFileHandler -----------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor
+//
+//***************************************************************************************
+constructor TBinaryFileHandler.Create;
+begin
+  // call inherited constructor
+  inherited Create;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Load
+// PARAMETER:      firmwareFile Filename with path of the file to load.
+// RETURN VALUE:   True is successful, False otherwise.
+// DESCRIPTION:    Loads the data in the specified firmware file. The OnDataRead event
+//                 handler is called each time a chunk of data was read from the file.
+//
+//***************************************************************************************
+function TBinaryFileHandler.Load(firmwareFile: String): Boolean;
+begin
+  // loading from a binary file is not yet supported
+  Result := False;
+end; //*** end of Load ***
+
+
+//***************************************************************************************
+// NAME:           Save
+// PARAMETER:      firmwareFile Filename with path of the file to save.
+//                 segments List with data segments that need to be saved.
+// RETURN VALUE:   True is successful, False otherwise.
+// DESCRIPTION:    Saves the firmware data to the specified firmware file.
+//
+//***************************************************************************************
+function TBinaryFileHandler.Save(firmwareFile: String; segments: TObjectList<TDataSegment>): Boolean;
+var
+  startAddr: Longword;
+  endAddr: Longword;
+  segmentIdx: Integer;
+  progData: array of Byte;
+  progLen: Longword;
+  byteIdx: Longword;
+  binaryFile: File;
+begin
+  // init result and locals
+  Result := False;
+  startAddr := $FFFFFFFF;
+  endAddr := 0;
+
+  // first need to determine the start and end addresses for the firmware data
+  for segmentIdx := 0 to (segments.Count - 1) do
+  begin
+    if segments[segmentIdx].BaseAddress < startAddr then
+      startAddr := segments[segmentIdx].BaseAddress;
+    if segments[segmentIdx].LastAddress > endAddr then
+      endAddr := segments[segmentIdx].LastAddress;
+  end;
+
+  // plausibility check
+  if startAddr > endAddr then
+    Exit;
+
+  // calculate program length
+  progLen := endAddr - startAddr + 1;
+
+  // init array size such that it can hold all program data, including filler bytes
+  // for possible
+  SetLength(progData, progLen);
+  // fill it completely with filler bytes
+  for byteIdx := 0 to (progLen - 1) do
+    progData[byteIdx] := $FF;
+
+  // add the segment data to the program data array
+  for segmentIdx := 0 to (segments.Count - 1) do
+  begin
+    // loop through segment data bytes one-by-one
+    for byteIdx := 0 to (segments[segmentIdx].Size - 1) do
+    begin
+      // at the byte at the correct index
+      progData[(segments[segmentIdx].BaseAddress - startAddr) + byteIdx] := segments[segmentIdx].Data[byteIdx];
+    end;
+  end;
+
+  // open the firmware file for writing
+  AssignFile(binaryFile, firmwareFile);
+  // define a record to be of size 1 byte.
+  ReWrite(binaryFile, 1);
+
+  // write all program bytes one-by-one to the file
+  for byteIdx := 0 to (progLen - 1) do
+  begin
+    BlockWrite(binaryFile, progData[byteIdx], 1);
+  end;
+
+  // clean up
+  CloseFile(binaryFile);
+  Result := True;
+end; //*** end of Save ***
+
+
 //---------------------------------------------------------------------------------------
 //-------------------------------- TFirmwareData ----------------------------------------
 //---------------------------------------------------------------------------------------
@@ -1482,11 +1599,21 @@ begin
   // init result
   Result := False;
 
-  // check if the file type is an S-record and if so, load it
+  // check if the file type is an S-record and if so, save it
   if firmwareFileType = FFT_SRECORD then
   begin
     // create instance of the firmware file handler
     firmwareFileHandler := TSRecordFileHandler.Create;
+    // perform firmware file save operation
+    Result := firmwareFileHandler.Save(firmwareFile, FSegmentList);
+    // release the firmware file handler
+    firmwareFileHandler.Free;
+  end
+  // check if the file type is a binary file and if so, save it
+  else if firmwareFileType = FFT_BINARY then
+  begin
+    // create instance of the firmware file handler
+    firmwareFileHandler := TBinaryFileHandler.Create;
     // perform firmware file save operation
     Result := firmwareFileHandler.Save(firmwareFile, FSegmentList);
     // release the firmware file handler
