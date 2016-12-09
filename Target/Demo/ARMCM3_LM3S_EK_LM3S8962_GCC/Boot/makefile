@@ -128,7 +128,7 @@ LIB_PATH  = -L../../../Source/ARMCM3_LM3S/GCC/
 #|---------------------------------------------------------------------------------------|
 #| Options for compiler binaries                                                         |
 #|---------------------------------------------------------------------------------------|
-CFLAGS   = -g -D inline= -mthumb -mcpu=cortex-m3 -Os -T memory.x
+CFLAGS   = -g -mthumb -mcpu=cortex-m3 -Os -T memory.x
 CFLAGS  += -D PACK_STRUCT_END=__attribute\(\(packed\)\) -Wno-main
 CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) 
 CFLAGS  += -ffunction-sections -fdata-sections $(INC_PATH) -D DEBUG -D gcc
