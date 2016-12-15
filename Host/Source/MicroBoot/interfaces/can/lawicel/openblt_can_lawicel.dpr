@@ -325,6 +325,10 @@ begin
       // check if the user cancelled
       if stopRequest then
       begin
+        // disconnect the transport layer
+        MbiCallbackOnLog('Disconnecting the transport layer. t='+ShortString(TimeToStr(Time)));
+        loader.Disconnect;
+        MbiCallbackOnLog('Programming session cancelled by user. t='+ShortString(TimeToStr(Time)));
         MbiCallbackOnError('Programming session cancelled by user.');
         Exit;
       end;
@@ -354,6 +358,17 @@ begin
 
   for regionCnt := 0 to datafile.GetRegionCnt-1 do
   begin
+    // check if the user cancelled
+    if stopRequest then
+    begin
+      // disconnect the transport layer
+      MbiCallbackOnLog('Disconnecting the transport layer. t='+ShortString(TimeToStr(Time)));
+      loader.Disconnect;
+      MbiCallbackOnLog('Programming session cancelled by user. t='+ShortString(TimeToStr(Time)));
+      MbiCallbackOnError('Programming session cancelled by user.');
+      Exit;
+    end;
+
     // obtain the region info
     datafile.GetRegionInfo(regionCnt, addr, len);
 
@@ -386,6 +401,17 @@ begin
     bufferOffset := 0;
   	while len > 0 do
   	begin
+      // check if the user cancelled
+      if stopRequest then
+      begin
+        // disconnect the transport layer
+        MbiCallbackOnLog('Disconnecting the transport layer. t='+ShortString(TimeToStr(Time)));
+        loader.Disconnect;
+        MbiCallbackOnLog('Programming session cancelled by user. t='+ShortString(TimeToStr(Time)));
+        MbiCallbackOnError('Programming session cancelled by user.');
+        Exit;
+      end;
+
 	  	// set the current write length taking into account kMaxProgLen
 		  currentWriteCnt := len mod kMaxProgLen;
   		if currentWriteCnt = 0 then currentWriteCnt := kMaxProgLen;
@@ -437,7 +463,6 @@ begin
   MbiCallbackOnProgress(progress);
   MbiCallbackOnLog('File successfully downloaded t='+ShortString(TimeToStr(Time)));
   MbiCallbackOnDone;
-
 end; //*** end of OnTimeout ***
 
 
@@ -515,10 +540,6 @@ procedure MbiStop; stdcall;
 begin
   // set stop request
   stopRequest := true;
-
-  // disconnect the transport layer
-  MbiCallbackOnLog('Disconnecting the transport layer. t='+ShortString(TimeToStr(Time)));
-  loader.Disconnect;
 end; //*** end of MbiStop ***
 
 
