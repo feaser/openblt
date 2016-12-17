@@ -190,6 +190,8 @@ void FileTask(void)
   /* ------------------------------- starting ---------------------------------------- */
   else if (firmwareUpdateState == FIRMWARE_UPDATE_STATE_STARTING)
   {
+    /* reinit the NVM driver because a new firmware update is about the start */
+    NvmInit();
 #if (BOOT_FILE_STARTED_HOOK_ENABLE > 0)
     /* inform application about update started event via hook function */
     FileFirmwareUpdateStartedHook();

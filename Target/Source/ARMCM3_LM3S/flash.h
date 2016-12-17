@@ -31,13 +31,14 @@
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void       FlashInit(void);
-blt_bool   FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data);
-blt_bool   FlashErase(blt_addr addr, blt_int32u len);
-blt_bool   FlashWriteChecksum(void);
-blt_bool   FlashVerifyChecksum(void);
-blt_bool   FlashDone(void);
-blt_addr   FlashGetUserProgBaseAddress(void);
+void     FlashInit(void);
+void     FlashReinit(void);
+blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data);
+blt_bool FlashErase(blt_addr addr, blt_int32u len);
+blt_bool FlashWriteChecksum(void);
+blt_bool FlashVerifyChecksum(void);
+blt_bool FlashDone(void);
+blt_addr FlashGetUserProgBaseAddress(void);
 
 
 #endif /* FLASH_H */

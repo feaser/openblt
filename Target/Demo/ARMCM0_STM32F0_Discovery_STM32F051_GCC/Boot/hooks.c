@@ -154,6 +154,17 @@ void NvmInitHook(void)
 
 
 /************************************************************************************//**
+** \brief     Callback that gets called at the start of a firmware update to reinitialize
+**            the NVM driver.
+** \return    none.
+**
+****************************************************************************************/
+void NvmReinitHook(void)
+{
+} /*** end of NvmReinitHook ***/
+
+
+/************************************************************************************//**
 ** \brief     Callback that gets called at the start of the NVM driver write
 **            routine. It allows additional memory to be operated on. If the address
 **            is not within the range of the additional memory, then

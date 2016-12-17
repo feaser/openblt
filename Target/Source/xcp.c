@@ -610,6 +610,8 @@ static void XcpCmdConnect(blt_int8u *data)
   /* set packet length */
   xcpInfo.ctoLen = 8;
 
+  /* reinit the NVM driver because a new firmware update is about the start */
+  NvmInit();
 } /*** end of XcpCmdConnect ***/
 
 

@@ -32,6 +32,7 @@
 * Function prototypes
 ****************************************************************************************/
 void     FlashInit(void);
+void     FlashReinit(void);
 blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data);
 blt_bool FlashErase(blt_addr addr, blt_int32u len);
 blt_bool FlashWriteChecksum(void);

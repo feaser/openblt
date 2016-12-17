@@ -7,40 +7,40 @@ start address 0x00000000
 
 Program Header:
     LOAD off    0x00008000 vaddr 0x00000000 paddr 0x00000000 align 2**15
-         filesz 0x00001894 memsz 0x00001894 flags r-x
-    LOAD off    0x00010200 vaddr 0x40000200 paddr 0x00001894 align 2**15
+         filesz 0x000018c0 memsz 0x000018c0 flags r-x
+    LOAD off    0x00010200 vaddr 0x40000200 paddr 0x000018c0 align 2**15
          filesz 0x00000001 memsz 0x00000001 flags rw-
-    LOAD off    0x00010204 vaddr 0x40000204 paddr 0x00001895 align 2**15
+    LOAD off    0x00010204 vaddr 0x40000204 paddr 0x000018c1 align 2**15
          filesz 0x00000000 memsz 0x000004f4 flags rw-
 private flags = 5000200: [Version5 EABI] [soft-float ABI]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00001894  00000000  00000000  00008000  2**2
+  0 .text         000018c0  00000000  00000000  00008000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000001  40000200  00001894  00010200  2**0
+  1 .data         00000001  40000200  000018c0  00010200  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          000004f4  40000204  00001895  00010204  2**2
+  2 .bss          000004f4  40000204  000018c1  00010204  2**2
                   ALLOC
   3 .ARM.attributes 0000002e  00000000  00000000  00010201  2**0
                   CONTENTS, READONLY
   4 .comment      00000030  00000000  00000000  0001022f  2**0
                   CONTENTS, READONLY
-  5 .debug_info   0000258f  00000000  00000000  0001025f  2**0
+  5 .debug_info   000025da  00000000  00000000  0001025f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000010f3  00000000  00000000  000127ee  2**0
+  6 .debug_abbrev 000010b9  00000000  00000000  00012839  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_aranges 00000210  00000000  00000000  000138e1  2**0
+  7 .debug_aranges 00000210  00000000  00000000  000138f2  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000b9f  00000000  00000000  00013af1  2**0
+  8 .debug_line   00000bac  00000000  00000000  00013b02  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000aae  00000000  00000000  00014690  2**0
+  9 .debug_str    00000ac4  00000000  00000000  000146ae  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  000006e8  00000000  00000000  00015140  2**2
+ 10 .debug_frame  00000714  00000000  00000000  00015174  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000e69  00000000  00000000  00015828  2**0
+ 11 .debug_loc    00000e72  00000000  00000000  00015888  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000038  00000000  00000000  00016691  2**0
+ 12 .debug_ranges 00000038  00000000  00000000  000166fa  2**0
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00000000 l    d  .text	00000000 .text
@@ -85,10 +85,10 @@ e01fc040 l       *ABS*	00000000 MEMMAP
 00000000 l    df *ABS*	00000000 boot.c
 00000000 l    df *ABS*	00000000 com.c
 40000200 l     O .data	00000001 comActiveInterface
-40000204 l     O .bss	00000040 xcpCtoReqPacket.4167
+40000204 l     O .bss	00000040 xcpCtoReqPacket.4169
 00000000 l    df *ABS*	00000000 xcp.c
 00000320 l     F .text	00000020 XcpSetCtoError
-00001734 l     O .text	00000008 xcpStationId
+00001760 l     O .text	00000008 xcpStationId
 40000244 l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 backdoor.c
 40000290 l     O .bss	00000001 backdoorOpen
@@ -97,96 +97,98 @@ e01fc040 l       *ABS*	00000000 MEMMAP
 00000000 l    df *ABS*	00000000 assert.c
 00000000 l    df *ABS*	00000000 cpu.c
 00000000 l    df *ABS*	00000000 can.c
-0000173c l     O .text	00000024 canTiming
+00001768 l     O .text	00000024 canTiming
 00000000 l    df *ABS*	00000000 uart.c
-00000c70 l     F .text	0000005c UartTransmitByte
-40000298 l     O .bss	00000001 xcpCtoRxInProgress.4174
-4000029c l     O .bss	00000041 xcpCtoReqPacket.4172
-400002e0 l     O .bss	00000004 xcpCtoRxStartTime.4175
-400002e4 l     O .bss	00000001 xcpCtoRxLength.4173
+00000c74 l     F .text	0000005c UartTransmitByte
+40000298 l     O .bss	00000001 xcpCtoRxInProgress.4176
+4000029c l     O .bss	00000041 xcpCtoReqPacket.4174
+400002e0 l     O .bss	00000004 xcpCtoRxStartTime.4177
+400002e4 l     O .bss	00000001 xcpCtoRxLength.4175
 00000000 l    df *ABS*	00000000 nvm.c
 00000000 l    df *ABS*	00000000 timer.c
 400002e8 l     O .bss	00000004 free_running_counter_last
 400002ec l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 flash.c
-00000fb8 l     F .text	0000006c FlashGetSector
-00001024 l     F .text	00000114 FlashWriteBlock
-00001138 l     F .text	00000088 FlashSwitchBlock
-000011c0 l     F .text	000000cc FlashAddToBlock
-00001760 l     O .text	000000c0 flashLayout
+00000fcc l     F .text	0000006c FlashGetSector
+00001038 l     F .text	00000114 FlashWriteBlock
+0000114c l     F .text	00000088 FlashSwitchBlock
+000011d4 l     F .text	000000cc FlashAddToBlock
+0000178c l     O .text	000000c0 flashLayout
 400002f0 l     O .bss	00000204 blockInfo
 400004f4 l     O .bss	00000204 bootBlockInfo
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 cpu_comp.c
 00000000 l    df *ABS*	00000000 _divsi3.o
-000015f0 l       .text	00000000 .divsi3_skip_div0_test
+0000161c l       .text	00000000 .divsi3_skip_div0_test
 00000000 l    df *ABS*	00000000 _dvmd_tls.o
 00000000 l    df *ABS*	00000000 
 000001c0 g     F .text	00000030 ComInit
-000012a4 g     F .text	0000006c FlashWrite
-00000950 g     F .text	0000000c AssertFailure
-00000bc8 g     F .text	000000a8 CanReceivePacket
-00001594 g     F .text	0000001c IRQ_ISR
-00000f6c g     F .text	00000030 TimerUpdate
+000012d0 g     F .text	0000006c FlashWrite
+00000954 g     F .text	0000000c AssertFailure
+00000bcc g     F .text	000000a8 CanReceivePacket
+000015c0 g     F .text	0000001c IRQ_ISR
+00000f80 g     F .text	00000030 TimerUpdate
 00000380 g     F .text	00000014 XcpPacketTransmitted
 000001f0 g     F .text	0000005c ComTask
 00000180 g     F .text	00000024 BootInit
-00000920 g     F .text	00000028 BackDoorInit
-0000094c g     F .text	00000004 CopService
-00001894 g       .text	00000000 _etext
-000015c8 g     F .text	00000010 CpuIrqDisable
-00001570 g     F .text	00000008 FlashGetUserProgBaseAddress
-00000f4c g     F .text	00000020 TimerReset
+00000924 g     F .text	00000028 BackDoorInit
+00000950 g     F .text	00000004 CopService
+000018c0 g       .text	00000000 _etext
+000015f4 g     F .text	00000010 CpuIrqDisable
+0000159c g     F .text	00000008 FlashGetUserProgBaseAddress
+000012b8 g     F .text	00000018 FlashReinit
+00000f60 g     F .text	00000020 TimerReset
 000001a4 g     F .text	0000001c BootTask
-00001444 g     F .text	00000084 FlashWriteChecksum
+00001470 g     F .text	00000084 FlashWriteChecksum
 40000204 g       .bss	00000000 _bss_start
 00000250 g     F .text	00000048 ComTransmitPacket
 00000000 g       .text	00000000 _startup
 00000368 g     F .text	00000018 XcpIsConnected
-00000e98 g     F .text	00000010 NvmInit
-0000128c g     F .text	00000018 FlashInit
-00000ed8 g     F .text	00000010 NvmGetUserProgBaseAddress
+00000e9c g     F .text	00000010 NvmInit
+000012a0 g     F .text	00000018 FlashInit
+00000eec g     F .text	00000010 NvmGetUserProgBaseAddress
 400006f8 g       .bss	00000000 _bss_end
 0000003c g       .text	00000000 Reset_Handler
+00000eac g     F .text	00000010 NvmReinit
 0000024c g     F .text	00000004 ComFree
-000015e8 g     F .text	00000000 .hidden __aeabi_idiv
-00000ccc g     F .text	00000040 UartInit
-00000eb8 g     F .text	00000010 NvmErase
-00000394 g     F .text	0000053c XcpPacketReceived
-0000095c g     F .text	00000010 CpuInit
-00001510 g     F .text	00000060 FlashDone
-00000b0c g     F .text	000000bc CanTransmitPacket
-00001730  w    F .text	00000004 .hidden __aeabi_ldiv0
+00001614 g     F .text	00000000 .hidden __aeabi_idiv
+00000cd0 g     F .text	00000040 UartInit
+00000ecc g     F .text	00000010 NvmErase
+00000394 g     F .text	00000540 XcpPacketReceived
+00000960 g     F .text	00000010 CpuInit
+0000153c g     F .text	00000060 FlashDone
+00000b10 g     F .text	000000bc CanTransmitPacket
+0000175c  w    F .text	00000004 .hidden __aeabi_ldiv0
 00000340 g     F .text	00000028 XcpInit
-00001310 g     F .text	00000134 FlashErase
+0000133c g     F .text	00000134 FlashErase
 000000dc g     F .text	000000a4 main
-00000ee8 g     F .text	00000024 NvmDone
-00000d0c g     F .text	00000084 UartTransmitPacket
-00000ec8 g     F .text	00000010 NvmVerifyChecksum
-0000096c g     F .text	00000040 CpuMemCopy
+00000efc g     F .text	00000024 NvmDone
+00000d10 g     F .text	00000084 UartTransmitPacket
+00000edc g     F .text	00000010 NvmVerifyChecksum
+00000970 g     F .text	00000040 CpuMemCopy
 40001edc g       *ABS*	00000000 _stack_end
-000015e8 g     F .text	00000128 .hidden __divsi3
-00001578 g     F .text	0000001c FIQ_ISR
+00001614 g     F .text	00000128 .hidden __divsi3
+000015a4 g     F .text	0000001c FIQ_ISR
 000002d4 g     F .text	0000003c ComGetActiveInterfaceMaxTxLen
-00000d90 g     F .text	00000108 UartReceivePacket
-000015d8 g     F .text	00000010 CpuIrqEnable
+00000d94 g     F .text	00000108 UartReceivePacket
+00001604 g     F .text	00000010 CpuIrqEnable
 40000200 g       .data	00000000 _data
-00000948 g     F .text	00000004 CopInit
-000009fc g     F .text	00000010 CpuReset
+0000094c g     F .text	00000004 CopInit
+00000a00 g     F .text	00000010 CpuReset
 0000008c g       .text	00000000 SetupRAM
-00000a0c g     F .text	00000100 CanInit
-00000ea8 g     F .text	00000010 NvmWrite
-000009ac g     F .text	00000050 CpuStartUserProgram
-000014c8 g     F .text	00000048 FlashVerifyChecksum
+00000a10 g     F .text	00000100 CanInit
+00000ebc g     F .text	00000010 NvmWrite
+000009b0 g     F .text	00000050 CpuStartUserProgram
+000014f4 g     F .text	00000048 FlashVerifyChecksum
 40000201 g       .data	00000000 _edata
 400006f8 g       .bss	00000000 _end
-000015b0 g     F .text	00000018 UNDEF_ISR
+000015dc g     F .text	00000018 UNDEF_ISR
 00000310 g     F .text	00000010 ComIsConnected
-00001730  w    F .text	00000004 .hidden __aeabi_idiv0
+0000175c  w    F .text	00000004 .hidden __aeabi_idiv0
 00000298 g     F .text	0000003c ComGetActiveInterfaceMaxRxLen
-000008d0 g     F .text	00000050 BackDoorCheck
-00000f9c g     F .text	0000001c TimerGet
-00001710 g     F .text	00000020 .hidden __aeabi_idivmod
-00000f0c g     F .text	00000040 TimerInit
+000008d4 g     F .text	00000050 BackDoorCheck
+00000fb0 g     F .text	0000001c TimerGet
+0000173c g     F .text	00000020 .hidden __aeabi_idivmod
+00000f20 g     F .text	00000040 TimerInit
 
 

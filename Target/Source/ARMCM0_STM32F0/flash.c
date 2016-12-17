@@ -51,8 +51,8 @@
 /** \brief Number of bytes to erase per erase operation. */
 #define FLASH_ERASE_BLOCK_SIZE          (0x400)
 #endif
-/** \brief Offset into the user program's vector table where the checksum is located. 
- *         For this target it is set to the end of the vector table. Note that the 
+/** \brief Offset into the user program's vector table where the checksum is located.
+ *         For this target it is set to the end of the vector table. Note that the
  *         value can be overriden in blt_conf.h, because the size of the vector table
  *         could vary. When changing this value, don't forget to update the location
  *         of the checksum in the user program accordingly. Otherwise the checksum
@@ -232,6 +232,19 @@ void FlashInit(void)
   blockInfo.base_addr = FLASH_INVALID_ADDRESS;
   bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
 } /*** end of FlashInit ***/
+
+
+/************************************************************************************//**
+** \brief     Reinitializes the flash driver.
+** \return    none.
+**
+****************************************************************************************/
+void FlashReinit(void)
+{
+  /* init the flash block info structs by setting the address to an invalid address */
+  blockInfo.base_addr = FLASH_INVALID_ADDRESS;
+  bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
+} /*** end of FlashReinit ***/
 
 
 /************************************************************************************//**
