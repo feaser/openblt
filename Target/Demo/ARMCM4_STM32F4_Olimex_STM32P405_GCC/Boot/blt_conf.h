@@ -129,7 +129,7 @@
  * for the bootloader to stay active. Refer to CpuUserProgramStartHook() to determine
  * the digital input to use for this.
  */
-#define BACKDOOR_ENTRY_TIMEOUT_MS  (2000)
+#define BOOT_BACKDOOR_ENTRY_TIMEOUT_MS  (2000)
 #endif
 
 /****************************************************************************************

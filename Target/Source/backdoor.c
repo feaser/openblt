@@ -36,7 +36,7 @@
 * Macro definitions
 ****************************************************************************************/
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
-#ifndef BACKDOOR_ENTRY_TIMEOUT_MS
+#ifndef BOOT_BACKDOOR_ENTRY_TIMEOUT_MS
 /** \brief Sets the time in milliseconds that the backdoor is open, but allow an
  *         override for this time. note that this time should be at least 2.5 times
  *         as long as the time that is configured in Microboot's XCP settings for the
@@ -46,13 +46,13 @@
  *         network latency. The default value was chosen safely for compatibility
  *         reasons with all supported communication interfaces. It could be made
  *         shorter your bootloader. To change this value, simply add the macro
- *         BACKDOOR_ENTRY_TIMEOUT_MS to blt_conf.h with your desired backdoor open time
- *         in milliseconds.
+ *         BOOT_BACKDOOR_ENTRY_TIMEOUT_MS to blt_conf.h with your desired backdoor 
+ *         open time in milliseconds.
  */
 #if (BOOT_COM_NET_ENABLE == 1)
-#define BACKDOOR_ENTRY_TIMEOUT_MS  (750)
+#define BOOT_BACKDOOR_ENTRY_TIMEOUT_MS  (750)
 #else
-#define BACKDOOR_ENTRY_TIMEOUT_MS  (500)
+#define BOOT_BACKDOOR_ENTRY_TIMEOUT_MS  (500)
 #endif
 #endif
 #endif
@@ -148,7 +148,7 @@ void BackDoorCheck(void)
   if (backdoorOpen == BLT_TRUE)
   {
     /* check if the backdoor entry time window elapsed */
-    if (TimerGet() >= (BACKDOOR_ENTRY_TIMEOUT_MS + backdoorOpenTime))
+    if (TimerGet() >= (BOOT_BACKDOOR_ENTRY_TIMEOUT_MS + backdoorOpenTime))
     {
       /* close the backdoor */
       backdoorOpen = BLT_FALSE;

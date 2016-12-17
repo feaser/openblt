@@ -185,7 +185,7 @@
  * shorten/lengthen this time for finetuning. the only downside of a long backdoor open 
  * time is that the starting of the user program will also be delayed for this time.
  */
-#define BACKDOOR_ENTRY_TIMEOUT_MS  (10000)
+#define BOOT_BACKDOOR_ENTRY_TIMEOUT_MS  (10000)
 #endif
 
 
