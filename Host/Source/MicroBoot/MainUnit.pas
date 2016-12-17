@@ -82,6 +82,7 @@ type
     StopWatch     : TStopWatch;
     StayOpen      : Boolean;
     FormCaption   : string;
+    DownloadInProgress: Boolean;
     procedure OnMbiStarted(length: Longword);
     procedure OnMbiProgress(progress: Longword);
     procedure OnMbiDone;
@@ -90,6 +91,7 @@ type
     procedure OnMbiInfo(info:  ShortString);
     procedure StartFileDownload(fileName : ShortString);
     procedure UpdateInterfaceLabel;
+    procedure ResetUserInterface;
   public
     { Public declarations }
     function  IsMbiInterface(libFile : string) : Boolean;
@@ -156,15 +158,13 @@ end; //*** end of OnMbiProgress ***
 //***************************************************************************************
 procedure TmainForm.OnMbiDone;
 begin
+  DownloadInProgress := False; // reset flag
   Timer.Enabled := false; // stop the timer
   StopWatch.Stop; // stop the stopwatch
   mainForm.Caption := FormCaption; // restore caption
 
   if StayOpen then
-  begin
-    NtbPages.PageIndex := 0; // go to the next page
-    btnSettings.Enabled := true; // settings can't be changed anymore
-  end
+    ResetUserInterface // reset the user interface to allow a new download to be started
   else
     Close; // done so close the application
 end; //*** end of OnMbiDone ***
@@ -180,18 +180,12 @@ end; //*** end of OnMbiDone ***
 //***************************************************************************************
 procedure TmainForm.OnMbiError(error: ShortString);
 begin
+  DownloadInProgress := False; // reset flag
   ShowMessage(String(error)); // display error
   Timer.Enabled := false; // stop the timer
   StopWatch.Stop; // stop the stopwatch
   mainForm.Caption := FormCaption; // restore caption
-
-  if StayOpen then
-  begin
-    NtbPages.PageIndex := 0; // go to the next page
-    btnSettings.Enabled := true; // settings can't be changed anymore
-  end
-  else
-    Close; // can't continue so close the application
+  ResetUserInterface; // download failed so reset user interface for retry
 end; //*** end of OnMbiError ***
 
 
@@ -411,12 +405,13 @@ procedure TmainForm.StartFileDownload(fileName : ShortString);
 begin
   if FileExists(String(fileName)) and (MbiInterfaced = True) then
   begin
-    FormCaption := mainForm.Caption; // backup original caption
     mainForm.Caption := FormCaption + ' - Downloading ' +
                         ExtractFileName(String(fileName)) + '...';
     prgDownload.Position := 0; // reset the progress bar
     NtbPages.PageIndex := 1; // go to the next page
     btnSettings.Enabled := false; // settings can't be changed anymore
+    btnCancel.Caption := 'Cancel';   // change caption to cancel download
+    DownloadInProgress := True; // set flag
     MbiInterface.Download(fileName);
   end;
 end; //*** end of StartFileDownload ***
@@ -445,6 +440,35 @@ end; //*** end of UpdateInterfaceLabel ***
 
 
 //***************************************************************************************
+// NAME:
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Resets the user interface to the default state, which is the state
+//                 when the program is started for the first time.
+//
+//***************************************************************************************
+procedure TmainForm.ResetUserInterface;
+begin
+  // stop the timer
+  Timer.Enabled := False;
+  // stop the stopwatch
+  StopWatch.Stop;
+  // restore form caption
+  mainForm.Caption := FormCaption;
+  // clear download file
+  edtDownloadFile.Text := '';
+  // go to the default page
+  NtbPages.PageIndex := 0;
+  // enable settings button
+  btnSettings.Enabled := True;
+  // change caption to exit program
+  btnCancel.Caption := 'Exit';
+  // empty elapsted time label
+  lblElapsedTime.Caption := '';
+end; //*** end of ResetUserInterface ***
+
+
+//***************************************************************************************
 // NAME:           btnCancelClick
 // PARAMETER:      none
 // RETURN VALUE:   none
@@ -459,7 +483,11 @@ begin
     MbiInterface.Cancel;
   end;
 
-  Close;
+  // no download in progress so just close the program
+  if not DownloadInProgress then
+  begin
+    Close;
+  end
 end; //*** end of btnCancelClick ***
 
 
@@ -479,6 +507,9 @@ var
   winRegistry    : TRegistry;
   libFileList    : TStrings;
 begin
+  btnCancel.Caption := 'Exit';   // change caption to exit program
+  DownloadInProgress := False; // init flag
+  FormCaption := mainForm.Caption; // backup original caption
   LogLines := TStringList.Create;
   StayOpen := false;
   MbiLogging := false;
@@ -502,20 +533,19 @@ begin
     end;
   end;
 
-  // this feature is unstable so do not yet support it in a release version
   // determine if tool should stay open after a download completion
-  //if (ParamCount > 0) then
-  //begin
-  //  // no options will be in Param 0
-  //  for cnt := 1 to ParamCount do
-  //  begin
-  //    // look for -l option
-  //    if System.Pos('-s', ParamStr(cnt)) > 0 then
-  //    begin
-  //      StayOpen := True;
-  //    end;
-  //  end;
-  //end;
+  if (ParamCount > 0) then
+  begin
+    // no options will be in Param 0
+    for cnt := 1 to ParamCount do
+    begin
+      // look for -s option
+      if System.Pos('-s', ParamStr(cnt)) > 0 then
+      begin
+        StayOpen := True;
+      end;
+    end;
+  end;
 
   // determine what interface library to use on startup
   // 1) -------- From commandline parameter ---------------
@@ -648,7 +678,7 @@ begin
     // no options will be in Param 0
     for cnt := 1 to ParamCount do
     begin
-      // look for -i option
+      // look for -p option
       if System.Pos('-p', ParamStr(cnt)) > 0 then
       begin
         if OpenDialog.Execute then
@@ -726,6 +756,12 @@ begin
   if MbiLogging = True then
   begin
     LogLines.SaveToFile(ExePath + 'log.txt');
+  end;
+
+  // pass on cancel request to the library if a download is in progress
+  if MbiInterfaced = True then
+  begin
+    MbiInterface.Cancel;
   end;
 end; //*** end of FormClose ***
 
