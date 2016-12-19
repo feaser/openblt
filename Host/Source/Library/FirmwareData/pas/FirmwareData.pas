@@ -1093,7 +1093,7 @@ end; //*** end of Destroy ***
 // DESCRIPTION:    Getter for the count of data segments with firmware data.
 //
 //***************************************************************************************
-function TFirmwareData.GetSegmentCount;
+function TFirmwareData.GetSegmentCount: Integer;
 begin
   Result := FSegmentList.Count;
 end; //*** end of GetSegmentCount ***
