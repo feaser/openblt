@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XCM4700_Relax_Kit_GCC\Prog\timer.h
-* \brief        Timer driver header file.
-* \ingroup      Prog_ARMCM4_XMC4_XCM4700_Relax_Kit_GCC
+* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_GCC\Prog\led.h
+* \brief        LED driver header file.
+* \ingroup      Prog_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,16 +25,15 @@
 *
 * \endinternal
 ****************************************************************************************/
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef LED_H
+#define LED_H
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void          TimerInit(void);
-void          TimerDeinit(void);
-void          TimerSet(unsigned long timer_value);
-unsigned long TimerGet(void);
+void LedInit(void);
+void LedToggle(void);
 
-#endif /* TIMER_H */
-/*********************************** end of timer.h ************************************/
+
+#endif /* LED_H */
+/*********************************** end of led.h **************************************/

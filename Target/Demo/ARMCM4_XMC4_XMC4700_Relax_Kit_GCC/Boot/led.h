@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XCM4700_Relax_Kit_GCC\Prog\boot.h
-* \brief        Demo program bootloader interface header file.
-* \ingroup      Prog_ARMCM4_XMC4_XCM4700_Relax_Kit_GCC
+* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_GCC\Boot\led.h
+* \brief        LED driver header file.
+* \ingroup      Boot_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -22,19 +22,19 @@
 *
 * You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
-#ifndef BOOT_H
-#define BOOT_H
+#ifndef LED_H
+#define LED_H
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void BootComInit(void);
-void BootComCheckActivationRequest(void);
-void BootActivate(void);
+void LedBlinkInit(blt_int16u interval_ms);
+void LedBlinkTask(void);
+void LedBlinkExit(void);
 
 
-#endif /* BOOT_H */
-/*********************************** end of boot.h *************************************/
+#endif /* LED_H */
+/*********************************** end of led.h **************************************/

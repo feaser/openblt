@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XCM4700_Relax_Kit_GCC\Boot\led.h
-* \brief        LED driver header file.
-* \ingroup      Boot_ARMCM4_XMC4_XCM4700_Relax_Kit_GCC
+* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_GCC\Prog\header.h
+* \brief        Generic header file.
+* \ingroup      Prog_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,16 +25,18 @@
 *
 * \endinternal
 ****************************************************************************************/
-#ifndef LED_H
-#define LED_H
+#ifndef HEADER_H
+#define HEADER_H
 
 /****************************************************************************************
-* Function prototypes
+* Include files
 ****************************************************************************************/
-void LedBlinkInit(blt_int16u interval_ms);
-void LedBlinkTask(void);
-void LedBlinkExit(void);
+#include "../Boot/blt_conf.h"                    /* bootloader configuration           */
+#include "XMC4700.h"                             /* XMC4700 peripheral access          */
+#include "boot.h"                                /* bootloader interface driver        */
+#include "led.h"                                 /* LED driver                         */
+#include "timer.h"                               /* Timer driver                       */
 
 
-#endif /* LED_H */
-/*********************************** end of led.h **************************************/
+#endif /* HEADER_H */
+/*********************************** end of header.h ***********************************/

@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XCM4700_Relax_Kit_GCC\Boot\blt_conf.h
+* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_GCC\Boot\blt_conf.h
 * \brief        Bootloader configuration header file.
-* \ingroup      Boot_ARMCM4_XMC4_XCM4700_Relax_Kit_GCC
+* \ingroup      Boot_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

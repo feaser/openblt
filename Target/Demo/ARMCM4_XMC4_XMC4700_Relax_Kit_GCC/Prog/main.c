@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XCM4700_Relax_Kit_GCC\Prog\led.c
-* \brief        LED driver source file.
-* \ingroup      Prog_ARMCM4_XMC4_XCM4700_Relax_Kit_GCC
+* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_GCC\Prog\main.c
+* \brief        Demo program application source file.
+* \ingroup      Prog_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -20,7 +20,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It
+* You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
@@ -30,67 +30,54 @@
 * Include files
 ****************************************************************************************/
 #include "header.h"                                    /* generic header               */
-#include "xmc_gpio.h"                                  /* GPIO module                  */
 
 
 /****************************************************************************************
-* Macro definitions
+* Function prototypes
 ****************************************************************************************/
-/** \brief Toggle interval time in milliseconds. */
-#define LED_TOGGLE_MS  (500)
+static void Init(void);
 
 
 /************************************************************************************//**
-** \brief     Initializes the LED. The board doesn't have a dedicted LED so an
-**            indicator on the LCD is used instead.
+** \brief     This is the entry point for the bootloader application and is called
+**            by the reset interrupt vector after the C-startup routines executed.
 ** \return    none.
 **
 ****************************************************************************************/
-void LedInit(void)
+int main(void)
 {
-  /* initialize LED2 on P5.8 as digital output */
-  XMC_GPIO_SetMode(P5_8, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
-  /* turn off LED2 */
-  XMC_GPIO_SetOutputLevel(P5_8, XMC_GPIO_OUTPUT_LEVEL_LOW);
-} /*** end of LedInit ***/
+  /* initialize the microcontroller */
+  Init();
+  /* initialize the bootloader interface */
+  BootComInit();
+
+  /* start the infinite program loop */
+  while (1)
+  {
+    /* toggle LED with a fixed frequency */
+    LedToggle();
+    /* check for bootloader activation request */
+    BootComCheckActivationRequest();
+  }
+  /* set program exit code. note that the program should never get here */
+  return 0;
+} /*** end of main ***/
 
 
 /************************************************************************************//**
-** \brief     Toggles the LED at a fixed time interval.
+** \brief     Initializes the microcontroller.
 ** \return    none.
 **
 ****************************************************************************************/
-void LedToggle(void)
+static void Init(void)
 {
-  static unsigned char led_toggle_state = 0;
-  static unsigned long timer_counter_last = 0;
-  unsigned long timer_counter_now;
-
-  /* check if toggle interval time passed */
-  timer_counter_now = TimerGet();
-  if ( (timer_counter_now - timer_counter_last) < LED_TOGGLE_MS)
-  {
-    /* not yet time to toggle */
-    return;
-  }
-
-  /* determine toggle action */
-  if (led_toggle_state == 0)
-  {
-    led_toggle_state = 1;
-    /* turn the LED on */
-    XMC_GPIO_SetOutputLevel(P5_8, XMC_GPIO_OUTPUT_LEVEL_HIGH);
-  }
-  else
-  {
-    led_toggle_state = 0;
-    /* turn the LED off */
-    XMC_GPIO_SetOutputLevel(P5_8, XMC_GPIO_OUTPUT_LEVEL_LOW);
-  }
-
-  /* store toggle time to determine next toggle interval */
-  timer_counter_last = timer_counter_now;
-} /*** end of LedToggle ***/
+  /* ensure that SystemCoreClock variable is set */
+  SystemCoreClockUpdate();
+  /* init the led driver */
+  LedInit();
+  /* init the timer driver */
+  TimerInit();
+} /*** end of Init ***/
 
 
-/*********************************** end of led.c **************************************/
+/*********************************** end of main.c *************************************/

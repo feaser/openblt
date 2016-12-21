@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XCM4700_Relax_Kit_GCC\Boot\main.c
+* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_GCC\Boot\main.c
 * \brief        Bootloader application source file.
-* \ingroup      Boot_ARMCM4_XMC4_XCM4700_Relax_Kit_GCC
+* \ingroup      Boot_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
