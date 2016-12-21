@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XCM4700_Relax_Kit_GCC\Boot\main.c
+* \file         Demo\ARMCM0_XMC1_XMC1400_Boot_Kit_IAR\Boot\main.c
 * \brief        Bootloader application source file.
-* \ingroup      Boot_ARMCM4_XMC4_XCM4700_Relax_Kit_GCC
+* \ingroup      Boot_ARMCM0_XMC1_XMC1400_Boot_Kit_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -45,10 +45,10 @@ static void PostInit(void);
 /************************************************************************************//**
 ** \brief     This is the entry point for the bootloader application and is called
 **            by the reset interrupt vector after the C-startup routines executed.
-** \return    Program return code.
+** \return    None.
 **
 ****************************************************************************************/
-int main(void)
+void main(void)
 {
   /* initialize the microcontroller */
   Init();
@@ -56,16 +56,13 @@ int main(void)
   BootInit();
   /* post initialization of the microcontroller */
   PostInit();
-
+  
   /* start the infinite program loop */
   while (1)
   {
     /* run the bootloader task */
     BootTask();
   }
-
-  /* program should never get here */
-  return 0;
 } /*** end of main ***/
 
 
@@ -76,11 +73,6 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  /* initialize LED1 on P5.9 as digital output */
-  XMC_GPIO_SetMode(P5_9, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
-  /* initialize BUTTON1 as digital input. */
-  XMC_GPIO_SetMode(P15_13, XMC_GPIO_MODE_INPUT_TRISTATE);
-  XMC_GPIO_EnableDigitalInput(P15_13);
 } /*** end of Init ***/
 
 
@@ -100,39 +92,34 @@ static void PostInit(void)
   XMC_GPIO_CONFIG_t rx_can_config;
   XMC_GPIO_CONFIG_t tx_can_config;
 #endif
-
+  
 #if (BOOT_COM_UART_ENABLE > 0)
   /* initialize UART Rx pin */
   rx_uart_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
-  rx_uart_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
-  rx_uart_config.output_strength  = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
-  XMC_GPIO_Init(P1_4, &rx_uart_config);
+  XMC_GPIO_Init(P1_3, &rx_uart_config);
   /* initialize UART Tx pin */
-  tx_uart_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT2;
-  tx_uart_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
-  tx_uart_config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
-  XMC_GPIO_Init(P1_5, &tx_uart_config);
-  /* set input source path to DXnB to connect P1_4 to ASC Receive. note that this
+  tx_uart_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT7;
+  XMC_GPIO_Init(P1_2, &tx_uart_config);
+  /* set input source path to DXnA to connect P1_3 to ASC Receive. note that this
    * function must be called after XMC_UART_CH_Init(), which is called when initializing
    * the bootloader core with BootInit().
   */
-  XMC_USIC_CH_SetInputSource(XMC_UART0_CH0, XMC_USIC_CH_INPUT_DX0, 1U);
+  XMC_UART_CH_SetInputSource(XMC_UART0_CH1, XMC_UART_CH_INPUT_RXD, USIC0_C1_DX0_P1_3);
 #endif
-
+  
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* configure CAN receive pin */
   rx_can_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
-  XMC_GPIO_Init(P1_13, &rx_can_config);
+  XMC_GPIO_Init(P4_8, &rx_can_config);
   /* configure CAN transmit pin */
-  tx_can_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT2;
-  tx_can_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
-  tx_can_config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
-  XMC_GPIO_Init(P1_12, &tx_can_config);
-  /* select CAN Receive Input C (N1_RXDC) to map P1_13 to CAN_NODE1 */
+  tx_can_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT9;
+  XMC_GPIO_Init(P4_9, &tx_can_config);
+  /* select CAN Receive Input C (N1_RXDC) to map P4_8 to CAN_NODE1 */
   XMC_CAN_NODE_EnableConfigurationChange(CAN_NODE1);
   XMC_CAN_NODE_SetReceiveInput(CAN_NODE1, XMC_CAN_NODE_RECEIVE_INPUT_RXDCC);
   XMC_CAN_NODE_DisableConfigurationChange(CAN_NODE1);
 #endif
 } /*** end of PostInit ***/
+
 
 /*********************************** end of main.c *************************************/
