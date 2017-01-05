@@ -29,6 +29,10 @@ unit FirmwareData;
 // should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 //
 //***************************************************************************************
+{$IFDEF FPC}
+{$mode objfpc}
+{$ENDIF}
+
 interface
 
 
@@ -36,7 +40,7 @@ interface
 // Includes
 //***************************************************************************************
 uses
-  Windows, Messages, SysUtils, Classes, Math, Generics.Collections, Generics.Defaults;
+  SysUtils, Classes;
 
 
 //***************************************************************************************
@@ -69,6 +73,21 @@ type
     property LastAddress: Longword read GetLastAddress;
   end;
 
+  //---------------------------------- TDataSegmentList ---------------------------------
+  TDataSegmentList=class(TList)
+  private
+    function Get(Index: Integer): TDataSegment;
+  protected
+    { Protected declarations }
+  public
+    { Public declarations }
+    constructor Create;
+    destructor Destroy; override;
+    function Add(segment: TDataSegment): Integer;
+    procedure Delete(Index: Integer);
+    property Items[Index: Integer]: TDataSegment read Get; default;
+end;
+
   //---------------------------------- TFirmwareFileType --------------------------------
   TFirmwareFileType =
   (
@@ -88,7 +107,7 @@ type
   public
     constructor Create; virtual;
     function Load(firmwareFile: String): Boolean; virtual; abstract;
-    function Save(firmwareFile: String; segments: TObjectList<TDataSegment>): Boolean; virtual; abstract;
+    function Save(firmwareFile: String; segments: TDataSegmentList): Boolean; virtual; abstract;
     property OnDataRead: TFirmwareFileDataReadEvent read FOnDataRead write FOnDataRead;
   end;
 
@@ -104,7 +123,7 @@ type
   public
     constructor Create; override;
     function Load(firmwareFile: String): Boolean; override;
-    function Save(firmwareFile: String; segments: TObjectList<TDataSegment>): Boolean; override;
+    function Save(firmwareFile: String; segments: TDataSegmentList): Boolean; override;
     class function IsSRecordFile(firmwareFile: String): Boolean; static;
     property DataBytesPerLineOnSave: Integer read FDataBytesPerLineOnSave write FDataBytesPerLineOnSave;
   end;
@@ -115,14 +134,14 @@ type
   public
     constructor Create; override;
     function Load(firmwareFile: String): Boolean; override;
-    function Save(firmwareFile: String; segments: TObjectList<TDataSegment>): Boolean; override;
+    function Save(firmwareFile: String; segments: TDataSegmentList): Boolean; override;
   end;
 
   //---------------------------------- TFirmwareData ------------------------------------
   TFirmwareData = class(TObject)
   private
     // list with data segments of the firmware
-    FSegmentList: TObjectList<TDataSegment>;
+    FSegmentList: TDataSegmentList;
     function    GetSegmentCount: Integer;
     function    GetSegment(index: Integer): TDataSegment;
     procedure   SortSegments;
@@ -469,9 +488,11 @@ end; //*** end of Remove ***
 //
 //***************************************************************************************
 procedure TDataSegment.Dump;
+{$IFDEF DEBUG}
 var
   line: String;
   byteCnt: Integer;
+{$ENDIF}
 begin
   {$IFDEF DEBUG}
   // output address and size
@@ -492,6 +513,98 @@ begin
   Writeln(line);
   {$ENDIF}
 end; //*** end of Dump
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TDataSegmentList -------------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Object constructor. Calls TObject's constructor and initializes
+//                 the private property variables to their default values.
+//
+//***************************************************************************************
+constructor TDataSegmentList.Create;
+begin
+  // call inherited constructor
+  inherited Create;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Destroy
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Component destructor.
+//
+//***************************************************************************************
+destructor TDataSegmentList.Destroy;
+var
+  idx: Integer;
+begin
+  // release allocated heap memory
+  for idx := 0 to Count - 1 do
+    TDataSegment(Items[idx]).Free;
+  inherited;
+end; //*** end of Destroy ***
+
+
+//***************************************************************************************
+// NAME:           Get
+// PARAMETER:      Index Index in the list
+// RETURN VALUE:   List item.
+// DESCRIPTION:    Obtains an element from the list.
+//
+//***************************************************************************************
+function TDataSegmentList.Get(Index: Integer): TDataSegment;
+begin
+  Result := TDataSegment(inherited Get(Index));
+end; //*** end of Get ***
+
+
+//***************************************************************************************
+// NAME:           Add
+// PARAMETER:      segment The data segment to add.
+// RETURN VALUE:   Index of the newly added segment in the list if successful, -1
+//                 otherwise.
+// DESCRIPTION:    Adds an element to the list.
+//
+//***************************************************************************************
+function TDataSegmentList.Add(segment: TDataSegment): Integer;
+begin
+  // add the entry to the list
+  Result := inherited Add(segment);
+  // set correct value for error situation
+  if Result < 0 then
+    Result := -1;
+end; //*** end of Add ***
+
+
+//***************************************************************************************
+// NAME:           Delete
+// PARAMETER:      Index Index in the list.
+// RETURN VALUE:   none
+// DESCRIPTION:    Remove an element to the list as the specified index. It is automa-
+//                 tically freed as well.
+//
+//***************************************************************************************
+procedure TDataSegmentList.Delete(Index: Integer);
+var
+  segment: TDataSegment;
+begin
+  // only continue if the index is valid
+  if (Index >= 0) and (Index < Count) then
+  begin
+    // obtain object first so we can free it afterwards
+    segment := Get(Index);
+    // delete it from the list
+    inherited Delete(Index);
+    // now free it
+    segment.Free
+  end;
+end; //*** end of Delete ***
 
 
 //---------------------------------------------------------------------------------------
@@ -598,7 +711,7 @@ end; //*** end of Load ***
 // DESCRIPTION:    Saves the firmware data to the specified firmware file.
 //
 //***************************************************************************************
-function TSRecordFileHandler.Save(firmwareFile: String; segments: TObjectList<TDataSegment>): Boolean;
+function TSRecordFileHandler.Save(firmwareFile: String; segments: TDataSegmentList): Boolean;
 var
   srecordFile: TextFile;
   segmentIdx: Integer;
@@ -611,6 +724,7 @@ var
   headerByteCount: Integer;
   checksumCalc: Byte;
   addrByteCnt: Integer;
+  charIdx: Integer;
 begin
   // init result
   Result := True;
@@ -628,7 +742,9 @@ begin
   ReWrite(srecordFile);
 
   // ---- add the S0 header line that contains the filename ----
-  firmwareFileBytes := TEncoding.UTF8.GetBytes(firmwareFile);
+  SetLength(firmwareFileBytes, Length(firmwareFile));
+  for charIdx := 1 to Length(firmwareFile) do
+    firmwareFileBytes[charIdx - 1] := Ord(firmwareFile[charIdx]);
   headerByteCount := 3 + Length(firmwareFileBytes);
   line := 'S0' + Format('%.2X', [headerByteCount]) + '0000';
   for byteIdx := 0 to (Length(firmwareFileBytes) - 1) do
@@ -984,7 +1100,7 @@ end; //*** end of Load ***
 // DESCRIPTION:    Saves the firmware data to the specified firmware file.
 //
 //***************************************************************************************
-function TBinaryFileHandler.Save(firmwareFile: String; segments: TObjectList<TDataSegment>): Boolean;
+function TBinaryFileHandler.Save(firmwareFile: String; segments: TDataSegmentList): Boolean;
 var
   startAddr: Longword;
   endAddr: Longword;
@@ -1064,9 +1180,8 @@ constructor TFirmwareData.Create;
 begin
   // call inherited constructor
   inherited Create;
-  // create empty data segments list and set it to own the segments for automatic freeing
-  FSegmentList := TObjectList<TDataSegment>.Create();
-  FSegmentList.OwnsObjects := True;
+  // create empty data segments list
+  FSegmentList := TDataSegmentList.Create();
 end; //*** end of Create ***
 
 
@@ -1115,6 +1230,21 @@ end; //*** end of GetSegment ***
 
 
 //***************************************************************************************
+// NAME:           FirmwareDataCompareSegments
+// PARAMETER:      Item1 First item for the comparison.
+//                 Item2 Second item for the comparison.
+// RETURN VALUE:   1 if Item1's identifier is larger, -1 if Item1's identifier is
+//                 smaller, 0 if the identifiers are equal.
+// DESCRIPTION:    Custom sorting routine for the entries in filter.
+//
+//***************************************************************************************
+function FirmwareDataCompareSegments(Item1, Item2: Pointer): Integer;
+begin
+  Result := TDataSegment(Item1).BaseAddress - TDataSegment(Item2).BaseAddress;
+end; //*** end of FirmwareDataCompareSegments ***
+
+
+//***************************************************************************************
 // NAME:           SortSegments
 // PARAMETER:      none
 // RETURN VALUE:   none
@@ -1123,12 +1253,7 @@ end; //*** end of GetSegment ***
 //***************************************************************************************
 procedure TFirmwareData.SortSegments;
 begin
-  FSegmentList.Sort(TComparer<TDataSegment>.Construct(
-   function (const L, R: TDataSegment): integer
-   begin
-     result := L.BaseAddress - R.BaseAddress;
-   end
-  ));
+  FSegmentList.Sort(@FirmwareDataCompareSegments);
 end; //*** end of SortSegments ***
 
 
@@ -1574,7 +1699,11 @@ begin
     end;
 
     // set onload handler which does the actual data processing
+    {$IFDEF FPC}
+    firmwareFileHandler.OnDataRead := @FirmwareFileDataRead;
+    {$ELSE}
     firmwareFileHandler.OnDataRead := FirmwareFileDataRead;
+    {$ENDIF}
     // load data from the file
     Result := firmwareFileHandler.Load(firmwareFile);
 
@@ -1631,8 +1760,10 @@ end; //*** end of SaveToFile ***
 //
 //***************************************************************************************
 procedure TFirmwareData.Dump;
+{$IFDEF DEBUG}
 var
   segmentIdx: Integer;
+{$ENDIF}
 begin
   {$IFDEF DEBUG}
   for segmentIdx := 0 to (SegmentCount - 1) do
