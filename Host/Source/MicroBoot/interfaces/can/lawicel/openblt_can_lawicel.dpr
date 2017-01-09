@@ -46,11 +46,10 @@ uses
   Classes,
   Extctrls,
   XcpProtection in '..\..\XcpProtection.pas',
-  SRecReader in '..\..\SRecReader.pas',
-  XcpDataFile in '..\..\XcpDataFile.pas',
   XcpLoader in '..\..\XcpLoader.pas',
   XcpTransport in 'XcpTransport.pas',
-  XcpSettings in 'XcpSettings.pas' {XcpSettingsForm};
+  XcpSettings in 'XcpSettings.pas' {XcpSettingsForm},
+  FirmwareData in '..\..\..\..\Library\FirmwareData\pas\FirmwareData.pas';
 
 //***************************************************************************************
 // Global Constants
@@ -90,7 +89,7 @@ var
   timer         : TTimer;
   events        : TEventHandlers;
   loader        : TXcpLoader;
-  datafile      : TXcpDataFile;
+  datafile      : TFirmwareData;
   progdata      : array of Byte;
   progfile      : string;
   stopRequest   : boolean;
@@ -244,13 +243,15 @@ procedure TEventHandlers.OnTimeout(Sender: TObject);
 var
   errorInfo       : string;
   progress        : longword;
-  regionCnt       : longword;
+  segmentCnt      : longword;
+  byteCnt         : longword;
   currentWriteCnt : word;
   sessionStartResult : byte;
   bufferOffset    : longword;
   addr            : longword;
   len             : longword;
   dataSizeKB      : real;
+  dataSizeBytes   : integer;
 begin
   timer.Enabled := False;
 
@@ -338,25 +339,41 @@ begin
   // still here so programming session was started
   MbiCallbackOnLog('Programming session started. t='+ShortString(TimeToStr(Time)));
 
-  // create the datafile object
-  datafile := TXcpDataFile.Create(progfile);
+  // read the firmware file
+  MbiCallbackOnInfo('Reading firmware file.');
+  MbiCallbackOnLog('Reading firmware file. t='+ShortString(TimeToStr(Time)));
+  // create the datafile object and load the file contents
+  datafile := TFirmwareData.Create;
+  if not datafile.LoadFromFile(progfile, False) then
+  begin
+    MbiCallbackOnLog('Could not read firmware file (' + ShortString(ExtractFilename(progfile)) +'). t='+ShortString(TimeToStr(Time)));
+    MbiCallbackOnError('Could not read firmware file (' + ShortString(ExtractFilename(progfile)) +').');
+    datafile.Free;
+    Exit;
+  end;
 
   // compute the size in kbytes
-  dataSizeKB := datafile.GetDataCnt / 1024;
+  dataSizeBytes := 0;
+  // loop through all segment to get the total byte count
+  for segmentCnt := 0 to (datafile.SegmentCount - 1) do
+  begin
+    dataSizeBytes := dataSizeBytes + datafile.Segment[segmentCnt].Size;
+  end;
+  // convert bytes to kilobytes
+  dataSizeKB := dataSizeBytes / 1024;
 
   // Call application callback when we start the actual download
-  MbiCallbackOnStarted(datafile.GetDataCnt);
+  MbiCallbackOnStarted(dataSizeBytes);
 
   // Init progress to 0 progress
   progress := 0;
   MbiCallbackOnProgress(progress);
 
   //---------------- next clear the memory regions --------------------------------------
-
   // update the user info
   MbiCallbackOnInfo('Erasing memory...');
 
-  for regionCnt := 0 to datafile.GetRegionCnt-1 do
+  for segmentCnt := 0 to (datafile.SegmentCount - 1) do
   begin
     // check if the user cancelled
     if stopRequest then
@@ -366,11 +383,13 @@ begin
       loader.Disconnect;
       MbiCallbackOnLog('Programming session cancelled by user. t='+ShortString(TimeToStr(Time)));
       MbiCallbackOnError('Programming session cancelled by user.');
+      datafile.Free;
       Exit;
     end;
 
     // obtain the region info
-    datafile.GetRegionInfo(regionCnt, addr, len);
+    addr := datafile.Segment[segmentCnt].BaseAddress;
+    len := datafile.Segment[segmentCnt].Size;
 
     // erase the memory
     MbiCallbackOnLog('Clearing Memory '+ShortString(Format('addr:0x%x,len:0x%x',[addr,len]))+'. t='+ShortString(TimeToStr(Time)));
@@ -386,17 +405,19 @@ begin
   end;
 
   //---------------- next program the memory regions ------------------------------------
-  for regionCnt := 0 to datafile.GetRegionCnt-1 do
+  for segmentCnt := 0 to (datafile.SegmentCount - 1) do
   begin
     // update the user info
     MbiCallbackOnInfo('Reading file...');
 
     // obtain the region info
-    datafile.GetRegionInfo(regionCnt, addr, len);
-    // dynamically allocated buffer memory
+    addr := datafile.Segment[segmentCnt].BaseAddress;
+    len := datafile.Segment[segmentCnt].Size;
     SetLength(progdata, len);
-    // obtain the regiond data
-    datafile.GetRegionData(regionCnt, progdata);
+    for byteCnt := 0 to (len - 1) do
+    begin
+      progdata[byteCnt] := datafile.Segment[segmentCnt].Data[byteCnt];
+    end;
 
     bufferOffset := 0;
   	while len > 0 do
@@ -409,6 +430,7 @@ begin
         loader.Disconnect;
         MbiCallbackOnLog('Programming session cancelled by user. t='+ShortString(TimeToStr(Time)));
         MbiCallbackOnError('Programming session cancelled by user.');
+        datafile.Free;
         Exit;
       end;
 
@@ -458,7 +480,7 @@ begin
   MbiCallbackOnLog('Programming session stopped. t='+ShortString(TimeToStr(Time)));
 
   // all done so set progress to 100% and finish up
-  progress := datafile.GetDataCnt;
+  progress := dataSizeBytes;
   datafile.Free;
   MbiCallbackOnProgress(progress);
   MbiCallbackOnLog('File successfully downloaded t='+ShortString(TimeToStr(Time)));
@@ -607,7 +629,7 @@ end; //*** end of MbiDescription ***
 //***************************************************************************************
 function MbiVersion : Longword; stdcall;
 begin
-  Result := 10000; // v1.00.00
+  Result := 10100; // v1.01.00
 end; //*** end of MbiVersion ***
 
 
