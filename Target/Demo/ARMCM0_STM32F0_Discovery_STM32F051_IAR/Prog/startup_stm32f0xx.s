@@ -116,7 +116,6 @@ __vector_table
 ;;
         THUMB
 
-        PUBWEAK Reset_Handler
         SECTION .text:CODE:REORDER(2)
 Reset_Handler
 ;; Initialize the stackpointer. This is done automatically after a reset event, but

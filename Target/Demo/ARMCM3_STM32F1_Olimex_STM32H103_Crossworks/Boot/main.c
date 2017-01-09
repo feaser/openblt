@@ -144,6 +144,15 @@ static void Init(void)
   while ((RCC->CFGR & (blt_int32u)RCC_CFGR_SWS) != (blt_int32u)0x08)
   {
   }
+  
+  /* enable clock for PA0 pin peripheral (GPIOA) */
+  RCC->APB2ENR |= (blt_int32u)(0x00000004);
+  /* configure BUT (GPIOA0) as floating digital input */
+  /* first reset the configuration */
+  GPIOA->CRL &= ~(blt_int32u)((blt_int32u)0xf << 0);
+  /* CNF0[1:0] = %01 and MODE0[1:0] = %00 */
+  GPIOA->CRL |= (blt_int32u)((blt_int32u)0x4 << 0);
+  
 #if (BOOT_COM_UART_ENABLE > 0)
   /* enable clock for USART2 peripheral */
   RCC->APB1ENR |= (blt_int32u)0x00020000;

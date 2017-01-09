@@ -116,13 +116,6 @@ void UsbLeaveLowPowerModeHook(void)
 ****************************************************************************************/
 void BackDoorInitHook(void)
 {
-  /* enable clock for PA0 pin peripheral (GPIOA) */
-  RCC->APB2ENR |= (blt_int32u)(0x00000004);
-  /* configure BUT (GPIOA0) as floating digital input */
-  /* first reset the configuration */
-  GPIOA->CRL &= ~(blt_int32u)((blt_int32u)0xf << 0);
-  /* CNF0[1:0] = %01 and MODE0[1:0] = %00 */
-  GPIOA->CRL |= (blt_int32u)((blt_int32u)0x4 << 0);
 } /*** end of BackDoorInitHook ***/
 
 
@@ -133,14 +126,8 @@ void BackDoorInitHook(void)
 ****************************************************************************************/
 blt_bool BackDoorEntryHook(void)
 {
-  /* button PA0 has a pullup, so will read high by default. enter backdoor only when
-   * this button is pressed. this is the case when it reads low */
-
-  if ((GPIOA->IDR & ((blt_int32u)0x01)) == 0)
-  {
-    return BLT_TRUE;
-  }
-  return BLT_FALSE;
+  /* default implementation always activates the bootloader after a reset */
+  return BLT_TRUE;
 } /*** end of BackDoorEntryHook ***/
 #endif /* BOOT_BACKDOOR_HOOKS_ENABLE > 0 */
 
@@ -161,6 +148,11 @@ blt_bool BackDoorEntryHook(void)
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
+  /* do not start the user program if the pushbutton is pressed */
+  if ((GPIOA->IDR & ((blt_int32u)0x01)) == 0)
+  {
+    return BLT_FALSE;
+  }
   /* okay to start the user program */
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/
