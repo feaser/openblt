@@ -717,6 +717,15 @@ static blt_bool FlashInitBlock(tFlashBlockInfo *block, blt_addr address)
 ****************************************************************************************/
 static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_addr)
 {
+  blt_addr last_block_base_addr;
+
+  /* get base address of the last write block. this is the base address of the boot
+   * block on this target.
+   */
+  last_block_base_addr = flashLayout[FLASH_LAST_SECTOR_IDX].sector_start + \
+                         flashLayout[FLASH_LAST_SECTOR_IDX].sector_size -  \
+                         FLASH_WRITE_BLOCK_SIZE;
+
   /* check if a switch needs to be made away from the boot block. in this case the boot
    * block shouldn't be written yet, because this is done at the end of the programming
    * session by FlashDone(), this is right after the checksum was written.
@@ -729,11 +738,10 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
   /* check if a switch back into the bootblock is needed. in this case the generic block
    * doesn't need to be written here yet.
    */
-  else if (base_addr == flashLayout[FLASH_LAST_SECTOR_IDX].sector_start)
+  else if (base_addr == last_block_base_addr)
   {
     /* switch from the generic block to the boot block info structure */
     block = &bootBlockInfo;
-    base_addr = flashLayout[FLASH_LAST_SECTOR_IDX].sector_start;
   }
   else
   {

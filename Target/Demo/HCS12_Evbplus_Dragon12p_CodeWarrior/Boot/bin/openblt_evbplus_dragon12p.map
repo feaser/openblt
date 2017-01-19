@@ -39,7 +39,7 @@ _startupData is allocated at 0xE82E and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
   _Range   pZeroOut       0x3900     1275
-  _Copy    *toCopyDownBeg 0xFBEB
+  _Copy    *toCopyDownBeg 0xFBFF
 } _startupData;
 
 *********************************************************************************************
@@ -50,8 +50,8 @@ Section Name                    Size  Type     From       To       Segment
 .startData                        10     R     0xE82E     0xE837   ROM_C000
 .rodata                          226     R     0xE838     0xE919   ROM_C000
 .rodata1                         241     R     0xE91A     0xEA0A   ROM_C000
-.text                           4268     R     0xEA0B     0xFAB6   ROM_C000
-.copy                              7     R     0xFBEB     0xFBF1   ROM_C000
+.text                           4288     R     0xEA0B     0xFACA   ROM_C000
+.copy                              7     R     0xFBFF     0xFC05   ROM_C000
 .stack                           256   R/W     0x3800     0x38FF   RAM
 .data                              2   R/W     0x3900     0x3901   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
@@ -397,10 +397,10 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_2be                   2   N/I      0x2BE      0x2BF   .absSeg340
 .abs_section_ff80                128     R     0xFF80     0xFFFF   .absSeg341
 .bss                            1273   R/W     0x3902     0x3DFA   RAM
-RUNTIME                          308     R     0xFAB7     0xFBEA   ROM_C000
+RUNTIME                          308     R     0xFACB     0xFBFE   ROM_C000
 
 Summary of section sizes per section type:
-READ_ONLY (R):        1472 (dec:     5234)
+READ_ONLY (R):        1486 (dec:     5254)
 READ_WRITE (R/W):      5FB (dec:     1531)
 NO_INIT (N/I):         190 (dec:      400)
 
@@ -415,16 +415,16 @@ OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 MODULE:                 -- rtshc12.c.o (ansisi.lib) --
 - PROCEDURES:
-     _LSHL                                     FAB7      11      17       3   RUNTIME     
-     _LSHRU                                    FAC8      11      17       6   RUNTIME     
-     _LCMP                                     FAD9      19      25       5   RUNTIME     
-     _LINC                                     FAF2       5       5       4   RUNTIME     
-     _LDEC                                     FAF7       8       8       6   RUNTIME     
-     _lDivMod                                  FAFF      BE     190       1   RUNTIME     
-     _LDIVU                                    FBBD       E      14       1   RUNTIME     
-     _ILSEXT                                   FBCB       7       7       1   RUNTIME     
-     _CASE_DIRECT_BYTE                         FBD2       5       5       3   RUNTIME     
-     _CASE_CHECKED_BYTE                        FBD7      14      20       2   RUNTIME     
+     _LSHL                                     FACB      11      17       3   RUNTIME     
+     _LSHRU                                    FADC      11      17       6   RUNTIME     
+     _LCMP                                     FAED      19      25       5   RUNTIME     
+     _LINC                                     FB06       5       5       4   RUNTIME     
+     _LDEC                                     FB0B       8       8       6   RUNTIME     
+     _lDivMod                                  FB13      BE     190       1   RUNTIME     
+     _LDIVU                                    FBD1       E      14       1   RUNTIME     
+     _ILSEXT                                   FBDF       7       7       1   RUNTIME     
+     _CASE_DIRECT_BYTE                         FBE6       5       5       3   RUNTIME     
+     _CASE_CHECKED_BYTE                        FBEB      14      20       2   RUNTIME     
 - VARIABLES:
 MODULE:                 -- mc9s12dg256.c.o --
 - PROCEDURES:
@@ -849,16 +849,16 @@ MODULE:                 -- flash.c.o --
      FlashDone                                 F2BB      3C      60       1   .text       
      FlashGetUserProgBaseAddress               F2F7      25      37       1   .text       
      FlashInitBlock                            F31C      51      81       2   .text       
-     FlashSwitchBlock                          F36D      4E      78       2   .text       
-     FlashAddToBlock                           F3BB      BD     189       1   .text       
-     FlashWriteBlock                           F478      78     120       3   .text       
-     FlashGetLinearAddrByte                    F4F0      1D      29       5   .text       
-     FlashGetPhysPage                          F50D       C      12       3   .text       
-     FlashGetPhysAddr                          F519       6       6       4   .text       
-     FlashExecuteCommand                       F51F      1F      31       1   .text       
-     FlashOperate                              F53E      54      84       2   .text       
+     FlashSwitchBlock                          F36D      62      98       2   .text       
+     FlashAddToBlock                           F3CF      BD     189       1   .text       
+     FlashWriteBlock                           F48C      78     120       3   .text       
+     FlashGetLinearAddrByte                    F504      1D      29       5   .text       
+     FlashGetPhysPage                          F521       C      12       3   .text       
+     FlashGetPhysAddr                          F52D       6       6       4   .text       
+     FlashExecuteCommand                       F533      1F      31       1   .text       
+     FlashOperate                              F552      54      84       2   .text       
 - VARIABLES:
-     flashLayout                               E840      A0     160      44   .rodata     
+     flashLayout                               E840      A0     160      45   .rodata     
      flashExecCmd                              E8E0      16      22       1   .rodata     
      STRING.C..Work.software.Ope.1             E96F      35      53       1   .rodata1    
      blockInfo                                 3991     204     516       7   .bss        
@@ -867,28 +867,28 @@ MODULE:                 -- flash.c.o --
      flashMaxNrBlocks                          3DAF       1       1       1   .bss        
 MODULE:                 -- nvm.c.o --
 - PROCEDURES:
-     NvmInit                                   F592       3       3       2   .text       
-     NvmWrite                                  F595      16      22       2   .text       
-     NvmErase                                  F5AB      12      18       1   .text       
-     NvmVerifyChecksum                         F5BD       4       4       1   .text       
-     NvmGetUserProgBaseAddress                 F5C1       4       4       1   .text       
-     NvmDone                                   F5C5       B      11       1   .text       
+     NvmInit                                   F5A6       3       3       2   .text       
+     NvmWrite                                  F5A9      16      22       2   .text       
+     NvmErase                                  F5BF      12      18       1   .text       
+     NvmVerifyChecksum                         F5D1       4       4       1   .text       
+     NvmGetUserProgBaseAddress                 F5D5       4       4       1   .text       
+     NvmDone                                   F5D9       B      11       1   .text       
 - VARIABLES:
 MODULE:                 -- timer.c.o --
 - PROCEDURES:
-     TimerInit                                 F5D0      1D      29       1   .text       
-     TimerReset                                F5ED      1C      28       2   .text       
-     TimerUpdate                               F609      1F      31       2   .text       
-     TimerGet                                  F628       9       9       4   .text       
+     TimerInit                                 F5E4      1D      29       1   .text       
+     TimerReset                                F601      1C      28       2   .text       
+     TimerUpdate                               F61D      1F      31       2   .text       
+     TimerGet                                  F63C       9       9       4   .text       
 - VARIABLES:
      millisecond_counter                       3DB0       4       4       8   .bss        
 MODULE:                 -- uart.c.o --
 - PROCEDURES:
-     UartInit                                  F631      19      25       1   .text       
-     UartTransmitPacket                        F64A      5E      94       1   .text       
-     UartReceivePacket                         F6A8      81     129       1   .text       
-     UartReceiveByte                           F729      11      17       2   .text       
-     UartTransmitByte                          F73A      14      20       2   .text       
+     UartInit                                  F645      19      25       1   .text       
+     UartTransmitPacket                        F65E      5E      94       1   .text       
+     UartReceivePacket                         F6BC      81     129       1   .text       
+     UartReceiveByte                           F73D      11      17       2   .text       
+     UartTransmitByte                          F74E      14      20       2   .text       
 - VARIABLES:
      STRING.C..Work.software.Ope.1             E9A4      34      52       3   .rodata1    
      xcpCtoRxInProgress.4                      3DB4       1       1       4   .bss        
@@ -897,89 +897,89 @@ MODULE:                 -- uart.c.o --
      xcpCtoRxLength.3                          3DFA       1       1       5   .bss        
 MODULE:                 -- vectors.c.o --
 - PROCEDURES:
-     reset_handler                             F74E      13      19       2   .text       
-     Vector0_handler                           F761       6       6       1   .text       
-     Vector1_handler                           F767       6       6       1   .text       
-     Vector2_handler                           F76D       6       6       1   .text       
-     Vector3_handler                           F773       6       6       1   .text       
-     Vector4_handler                           F779       6       6       1   .text       
-     Vector5_handler                           F77F       6       6       1   .text       
-     Vector6_handler                           F785       6       6       1   .text       
-     Vector7_handler                           F78B       6       6       1   .text       
-     Vector8_handler                           F791       6       6       1   .text       
-     Vector9_handler                           F797       6       6       1   .text       
-     Vector10_handler                          F79D       6       6       1   .text       
-     Vector11_handler                          F7A3       6       6       1   .text       
-     Vector12_handler                          F7A9       6       6       1   .text       
-     Vector13_handler                          F7AF       6       6       1   .text       
-     Vector14_handler                          F7B5       6       6       1   .text       
-     Vector15_handler                          F7BB       6       6       1   .text       
-     Vector16_handler                          F7C1       6       6       1   .text       
-     Vector17_handler                          F7C7       6       6       1   .text       
-     Vector18_handler                          F7CD       6       6       1   .text       
-     Vector19_handler                          F7D3       6       6       1   .text       
-     Vector20_handler                          F7D9       6       6       1   .text       
-     Vector21_handler                          F7DF       6       6       1   .text       
-     Vector22_handler                          F7E5       6       6       1   .text       
-     Vector23_handler                          F7EB       6       6       1   .text       
-     Vector24_handler                          F7F1       6       6       1   .text       
-     Vector25_handler                          F7F7       6       6       1   .text       
-     Vector26_handler                          F7FD       6       6       1   .text       
-     Vector27_handler                          F803       6       6       1   .text       
-     Vector28_handler                          F809       6       6       1   .text       
-     Vector29_handler                          F80F       6       6       1   .text       
-     Vector30_handler                          F815       6       6       1   .text       
-     Vector31_handler                          F81B       6       6       1   .text       
-     Vector32_handler                          F821       6       6       1   .text       
-     Vector33_handler                          F827       6       6       1   .text       
-     Vector34_handler                          F82D       6       6       1   .text       
-     Vector35_handler                          F833       6       6       1   .text       
-     Vector36_handler                          F839       6       6       1   .text       
-     Vector37_handler                          F83F       6       6       1   .text       
-     Vector38_handler                          F845       6       6       1   .text       
-     Vector39_handler                          F84B       6       6       1   .text       
-     Vector40_handler                          F851       6       6       1   .text       
-     Vector41_handler                          F857       6       6       1   .text       
-     Vector42_handler                          F85D       6       6       1   .text       
-     Vector43_handler                          F863       6       6       1   .text       
-     Vector44_handler                          F869       6       6       1   .text       
-     Vector45_handler                          F86F       6       6       1   .text       
-     Vector46_handler                          F875       6       6       1   .text       
-     Vector47_handler                          F87B       6       6       1   .text       
-     Vector48_handler                          F881       6       6       1   .text       
-     Vector49_handler                          F887       6       6       1   .text       
-     Vector50_handler                          F88D       6       6       1   .text       
-     Vector51_handler                          F893       6       6       1   .text       
-     Vector52_handler                          F899       6       6       1   .text       
-     Vector53_handler                          F89F       6       6       1   .text       
-     Vector54_handler                          F8A5       6       6       1   .text       
-     Vector55_handler                          F8AB       6       6       1   .text       
-     Vector56_handler                          F8B1       6       6       1   .text       
-     Vector57_handler                          F8B7       6       6       1   .text       
-     Vector58_handler                          F8BD       6       6       1   .text       
-     Vector59_handler                          F8C3       6       6       1   .text       
-     Vector60_handler                          F8C9       6       6       1   .text       
-     Vector62_handler                          F8CF       6       6       1   .text       
+     reset_handler                             F762      13      19       2   .text       
+     Vector0_handler                           F775       6       6       1   .text       
+     Vector1_handler                           F77B       6       6       1   .text       
+     Vector2_handler                           F781       6       6       1   .text       
+     Vector3_handler                           F787       6       6       1   .text       
+     Vector4_handler                           F78D       6       6       1   .text       
+     Vector5_handler                           F793       6       6       1   .text       
+     Vector6_handler                           F799       6       6       1   .text       
+     Vector7_handler                           F79F       6       6       1   .text       
+     Vector8_handler                           F7A5       6       6       1   .text       
+     Vector9_handler                           F7AB       6       6       1   .text       
+     Vector10_handler                          F7B1       6       6       1   .text       
+     Vector11_handler                          F7B7       6       6       1   .text       
+     Vector12_handler                          F7BD       6       6       1   .text       
+     Vector13_handler                          F7C3       6       6       1   .text       
+     Vector14_handler                          F7C9       6       6       1   .text       
+     Vector15_handler                          F7CF       6       6       1   .text       
+     Vector16_handler                          F7D5       6       6       1   .text       
+     Vector17_handler                          F7DB       6       6       1   .text       
+     Vector18_handler                          F7E1       6       6       1   .text       
+     Vector19_handler                          F7E7       6       6       1   .text       
+     Vector20_handler                          F7ED       6       6       1   .text       
+     Vector21_handler                          F7F3       6       6       1   .text       
+     Vector22_handler                          F7F9       6       6       1   .text       
+     Vector23_handler                          F7FF       6       6       1   .text       
+     Vector24_handler                          F805       6       6       1   .text       
+     Vector25_handler                          F80B       6       6       1   .text       
+     Vector26_handler                          F811       6       6       1   .text       
+     Vector27_handler                          F817       6       6       1   .text       
+     Vector28_handler                          F81D       6       6       1   .text       
+     Vector29_handler                          F823       6       6       1   .text       
+     Vector30_handler                          F829       6       6       1   .text       
+     Vector31_handler                          F82F       6       6       1   .text       
+     Vector32_handler                          F835       6       6       1   .text       
+     Vector33_handler                          F83B       6       6       1   .text       
+     Vector34_handler                          F841       6       6       1   .text       
+     Vector35_handler                          F847       6       6       1   .text       
+     Vector36_handler                          F84D       6       6       1   .text       
+     Vector37_handler                          F853       6       6       1   .text       
+     Vector38_handler                          F859       6       6       1   .text       
+     Vector39_handler                          F85F       6       6       1   .text       
+     Vector40_handler                          F865       6       6       1   .text       
+     Vector41_handler                          F86B       6       6       1   .text       
+     Vector42_handler                          F871       6       6       1   .text       
+     Vector43_handler                          F877       6       6       1   .text       
+     Vector44_handler                          F87D       6       6       1   .text       
+     Vector45_handler                          F883       6       6       1   .text       
+     Vector46_handler                          F889       6       6       1   .text       
+     Vector47_handler                          F88F       6       6       1   .text       
+     Vector48_handler                          F895       6       6       1   .text       
+     Vector49_handler                          F89B       6       6       1   .text       
+     Vector50_handler                          F8A1       6       6       1   .text       
+     Vector51_handler                          F8A7       6       6       1   .text       
+     Vector52_handler                          F8AD       6       6       1   .text       
+     Vector53_handler                          F8B3       6       6       1   .text       
+     Vector54_handler                          F8B9       6       6       1   .text       
+     Vector55_handler                          F8BF       6       6       1   .text       
+     Vector56_handler                          F8C5       6       6       1   .text       
+     Vector57_handler                          F8CB       6       6       1   .text       
+     Vector58_handler                          F8D1       6       6       1   .text       
+     Vector59_handler                          F8D7       6       6       1   .text       
+     Vector60_handler                          F8DD       6       6       1   .text       
+     Vector62_handler                          F8E3       6       6       1   .text       
 - VARIABLES:
      _vectab                                   FF80      80     128       0   .abs_section_ff80
 - LABELS:
      __SEG_END_SSTACK                          3900       0       0       1               
 MODULE:                 -- assert.c.o --
 - PROCEDURES:
-     AssertFailure                             F8D5       5       5       7   .text       
+     AssertFailure                             F8E9       5       5       7   .text       
 - VARIABLES:
 MODULE:                 -- can.c.o --
 - PROCEDURES:
-     CanInit                                   F8DA      9C     156       1   .text       
-     CanTransmitPacket                         F976      51      81       1   .text       
-     CanReceivePacket                          F9C7      84     132       1   .text       
-     CanGetSpeedConfig                         FA4B      69     105       1   .text       
+     CanInit                                   F8EE      9C     156       1   .text       
+     CanTransmitPacket                         F98A      51      81       1   .text       
+     CanReceivePacket                          F9DB      84     132       1   .text       
+     CanGetSpeedConfig                         FA5F      69     105       1   .text       
 - VARIABLES:
      canTiming                                 E8F6      24      36       4   .rodata     
      STRING.C..Work.software.Ope.1             E9D8      33      51       2   .rodata1    
 MODULE:                 -- cpu_comp.c.o --
 - PROCEDURES:
-     CpuIrqDisable                             FAB4       3       3       1   .text       
+     CpuIrqDisable                             FAC8       3       3       1   .text       
 - VARIABLES:
 MODULE:                 -- cstartup.c.o --
 - PROCEDURES:
@@ -1001,7 +1001,7 @@ MODULE STATISTIC
   cop.c.o                                      0      2      0
   xcp.c.o                                     74   1020      8
   cpu.c.o                                      0     73      0
-  flash.c.o                                 1055   1487    235
+  flash.c.o                                 1055   1507    235
   nvm.c.o                                      0     62      0
   timer.c.o                                    4     97      0
   uart.c.o                                    71    285     52
@@ -2112,7 +2112,7 @@ OBJECT LIST SORTED BY ADDRESS
      Init                                      E800      29      41       1   .init       
      _Startup                                  E829       5       5       1   .init       
      xcpStationId                              E838       8       8       1   .rodata     
-     flashLayout                               E840      A0     160      44   .rodata     
+     flashLayout                               E840      A0     160      45   .rodata     
      flashExecCmd                              E8E0      16      22       1   .rodata     
      canTiming                                 E8F6      24      36       4   .rodata     
      STRING.C..Work.software.Ope.1             E91A      55      85       1   .rodata1    
@@ -2168,108 +2168,108 @@ OBJECT LIST SORTED BY ADDRESS
      FlashDone                                 F2BB      3C      60       1   .text       
      FlashGetUserProgBaseAddress               F2F7      25      37       1   .text       
      FlashInitBlock                            F31C      51      81       2   .text       
-     FlashSwitchBlock                          F36D      4E      78       2   .text       
-     FlashAddToBlock                           F3BB      BD     189       1   .text       
-     FlashWriteBlock                           F478      78     120       3   .text       
-     FlashGetLinearAddrByte                    F4F0      1D      29       5   .text       
-     FlashGetPhysPage                          F50D       C      12       3   .text       
-     FlashGetPhysAddr                          F519       6       6       4   .text       
-     FlashExecuteCommand                       F51F      1F      31       1   .text       
-     FlashOperate                              F53E      54      84       2   .text       
-     NvmInit                                   F592       3       3       2   .text       
-     NvmWrite                                  F595      16      22       2   .text       
-     NvmErase                                  F5AB      12      18       1   .text       
-     NvmVerifyChecksum                         F5BD       4       4       1   .text       
-     NvmGetUserProgBaseAddress                 F5C1       4       4       1   .text       
-     NvmDone                                   F5C5       B      11       1   .text       
-     TimerInit                                 F5D0      1D      29       1   .text       
-     TimerReset                                F5ED      1C      28       2   .text       
-     TimerUpdate                               F609      1F      31       2   .text       
-     TimerGet                                  F628       9       9       4   .text       
-     UartInit                                  F631      19      25       1   .text       
-     UartTransmitPacket                        F64A      5E      94       1   .text       
-     UartReceivePacket                         F6A8      81     129       1   .text       
-     UartReceiveByte                           F729      11      17       2   .text       
-     UartTransmitByte                          F73A      14      20       2   .text       
-     reset_handler                             F74E      13      19       2   .text       
-     Vector0_handler                           F761       6       6       1   .text       
-     Vector1_handler                           F767       6       6       1   .text       
-     Vector2_handler                           F76D       6       6       1   .text       
-     Vector3_handler                           F773       6       6       1   .text       
-     Vector4_handler                           F779       6       6       1   .text       
-     Vector5_handler                           F77F       6       6       1   .text       
-     Vector6_handler                           F785       6       6       1   .text       
-     Vector7_handler                           F78B       6       6       1   .text       
-     Vector8_handler                           F791       6       6       1   .text       
-     Vector9_handler                           F797       6       6       1   .text       
-     Vector10_handler                          F79D       6       6       1   .text       
-     Vector11_handler                          F7A3       6       6       1   .text       
-     Vector12_handler                          F7A9       6       6       1   .text       
-     Vector13_handler                          F7AF       6       6       1   .text       
-     Vector14_handler                          F7B5       6       6       1   .text       
-     Vector15_handler                          F7BB       6       6       1   .text       
-     Vector16_handler                          F7C1       6       6       1   .text       
-     Vector17_handler                          F7C7       6       6       1   .text       
-     Vector18_handler                          F7CD       6       6       1   .text       
-     Vector19_handler                          F7D3       6       6       1   .text       
-     Vector20_handler                          F7D9       6       6       1   .text       
-     Vector21_handler                          F7DF       6       6       1   .text       
-     Vector22_handler                          F7E5       6       6       1   .text       
-     Vector23_handler                          F7EB       6       6       1   .text       
-     Vector24_handler                          F7F1       6       6       1   .text       
-     Vector25_handler                          F7F7       6       6       1   .text       
-     Vector26_handler                          F7FD       6       6       1   .text       
-     Vector27_handler                          F803       6       6       1   .text       
-     Vector28_handler                          F809       6       6       1   .text       
-     Vector29_handler                          F80F       6       6       1   .text       
-     Vector30_handler                          F815       6       6       1   .text       
-     Vector31_handler                          F81B       6       6       1   .text       
-     Vector32_handler                          F821       6       6       1   .text       
-     Vector33_handler                          F827       6       6       1   .text       
-     Vector34_handler                          F82D       6       6       1   .text       
-     Vector35_handler                          F833       6       6       1   .text       
-     Vector36_handler                          F839       6       6       1   .text       
-     Vector37_handler                          F83F       6       6       1   .text       
-     Vector38_handler                          F845       6       6       1   .text       
-     Vector39_handler                          F84B       6       6       1   .text       
-     Vector40_handler                          F851       6       6       1   .text       
-     Vector41_handler                          F857       6       6       1   .text       
-     Vector42_handler                          F85D       6       6       1   .text       
-     Vector43_handler                          F863       6       6       1   .text       
-     Vector44_handler                          F869       6       6       1   .text       
-     Vector45_handler                          F86F       6       6       1   .text       
-     Vector46_handler                          F875       6       6       1   .text       
-     Vector47_handler                          F87B       6       6       1   .text       
-     Vector48_handler                          F881       6       6       1   .text       
-     Vector49_handler                          F887       6       6       1   .text       
-     Vector50_handler                          F88D       6       6       1   .text       
-     Vector51_handler                          F893       6       6       1   .text       
-     Vector52_handler                          F899       6       6       1   .text       
-     Vector53_handler                          F89F       6       6       1   .text       
-     Vector54_handler                          F8A5       6       6       1   .text       
-     Vector55_handler                          F8AB       6       6       1   .text       
-     Vector56_handler                          F8B1       6       6       1   .text       
-     Vector57_handler                          F8B7       6       6       1   .text       
-     Vector58_handler                          F8BD       6       6       1   .text       
-     Vector59_handler                          F8C3       6       6       1   .text       
-     Vector60_handler                          F8C9       6       6       1   .text       
-     Vector62_handler                          F8CF       6       6       1   .text       
-     AssertFailure                             F8D5       5       5       7   .text       
-     CanInit                                   F8DA      9C     156       1   .text       
-     CanTransmitPacket                         F976      51      81       1   .text       
-     CanReceivePacket                          F9C7      84     132       1   .text       
-     CanGetSpeedConfig                         FA4B      69     105       1   .text       
-     CpuIrqDisable                             FAB4       3       3       1   .text       
-     _LSHL                                     FAB7      11      17       3   RUNTIME     
-     _LSHRU                                    FAC8      11      17       6   RUNTIME     
-     _LCMP                                     FAD9      19      25       5   RUNTIME     
-     _LINC                                     FAF2       5       5       4   RUNTIME     
-     _LDEC                                     FAF7       8       8       6   RUNTIME     
-     _lDivMod                                  FAFF      BE     190       1   RUNTIME     
-     _LDIVU                                    FBBD       E      14       1   RUNTIME     
-     _ILSEXT                                   FBCB       7       7       1   RUNTIME     
-     _CASE_DIRECT_BYTE                         FBD2       5       5       3   RUNTIME     
-     _CASE_CHECKED_BYTE                        FBD7      14      20       2   RUNTIME     
+     FlashSwitchBlock                          F36D      62      98       2   .text       
+     FlashAddToBlock                           F3CF      BD     189       1   .text       
+     FlashWriteBlock                           F48C      78     120       3   .text       
+     FlashGetLinearAddrByte                    F504      1D      29       5   .text       
+     FlashGetPhysPage                          F521       C      12       3   .text       
+     FlashGetPhysAddr                          F52D       6       6       4   .text       
+     FlashExecuteCommand                       F533      1F      31       1   .text       
+     FlashOperate                              F552      54      84       2   .text       
+     NvmInit                                   F5A6       3       3       2   .text       
+     NvmWrite                                  F5A9      16      22       2   .text       
+     NvmErase                                  F5BF      12      18       1   .text       
+     NvmVerifyChecksum                         F5D1       4       4       1   .text       
+     NvmGetUserProgBaseAddress                 F5D5       4       4       1   .text       
+     NvmDone                                   F5D9       B      11       1   .text       
+     TimerInit                                 F5E4      1D      29       1   .text       
+     TimerReset                                F601      1C      28       2   .text       
+     TimerUpdate                               F61D      1F      31       2   .text       
+     TimerGet                                  F63C       9       9       4   .text       
+     UartInit                                  F645      19      25       1   .text       
+     UartTransmitPacket                        F65E      5E      94       1   .text       
+     UartReceivePacket                         F6BC      81     129       1   .text       
+     UartReceiveByte                           F73D      11      17       2   .text       
+     UartTransmitByte                          F74E      14      20       2   .text       
+     reset_handler                             F762      13      19       2   .text       
+     Vector0_handler                           F775       6       6       1   .text       
+     Vector1_handler                           F77B       6       6       1   .text       
+     Vector2_handler                           F781       6       6       1   .text       
+     Vector3_handler                           F787       6       6       1   .text       
+     Vector4_handler                           F78D       6       6       1   .text       
+     Vector5_handler                           F793       6       6       1   .text       
+     Vector6_handler                           F799       6       6       1   .text       
+     Vector7_handler                           F79F       6       6       1   .text       
+     Vector8_handler                           F7A5       6       6       1   .text       
+     Vector9_handler                           F7AB       6       6       1   .text       
+     Vector10_handler                          F7B1       6       6       1   .text       
+     Vector11_handler                          F7B7       6       6       1   .text       
+     Vector12_handler                          F7BD       6       6       1   .text       
+     Vector13_handler                          F7C3       6       6       1   .text       
+     Vector14_handler                          F7C9       6       6       1   .text       
+     Vector15_handler                          F7CF       6       6       1   .text       
+     Vector16_handler                          F7D5       6       6       1   .text       
+     Vector17_handler                          F7DB       6       6       1   .text       
+     Vector18_handler                          F7E1       6       6       1   .text       
+     Vector19_handler                          F7E7       6       6       1   .text       
+     Vector20_handler                          F7ED       6       6       1   .text       
+     Vector21_handler                          F7F3       6       6       1   .text       
+     Vector22_handler                          F7F9       6       6       1   .text       
+     Vector23_handler                          F7FF       6       6       1   .text       
+     Vector24_handler                          F805       6       6       1   .text       
+     Vector25_handler                          F80B       6       6       1   .text       
+     Vector26_handler                          F811       6       6       1   .text       
+     Vector27_handler                          F817       6       6       1   .text       
+     Vector28_handler                          F81D       6       6       1   .text       
+     Vector29_handler                          F823       6       6       1   .text       
+     Vector30_handler                          F829       6       6       1   .text       
+     Vector31_handler                          F82F       6       6       1   .text       
+     Vector32_handler                          F835       6       6       1   .text       
+     Vector33_handler                          F83B       6       6       1   .text       
+     Vector34_handler                          F841       6       6       1   .text       
+     Vector35_handler                          F847       6       6       1   .text       
+     Vector36_handler                          F84D       6       6       1   .text       
+     Vector37_handler                          F853       6       6       1   .text       
+     Vector38_handler                          F859       6       6       1   .text       
+     Vector39_handler                          F85F       6       6       1   .text       
+     Vector40_handler                          F865       6       6       1   .text       
+     Vector41_handler                          F86B       6       6       1   .text       
+     Vector42_handler                          F871       6       6       1   .text       
+     Vector43_handler                          F877       6       6       1   .text       
+     Vector44_handler                          F87D       6       6       1   .text       
+     Vector45_handler                          F883       6       6       1   .text       
+     Vector46_handler                          F889       6       6       1   .text       
+     Vector47_handler                          F88F       6       6       1   .text       
+     Vector48_handler                          F895       6       6       1   .text       
+     Vector49_handler                          F89B       6       6       1   .text       
+     Vector50_handler                          F8A1       6       6       1   .text       
+     Vector51_handler                          F8A7       6       6       1   .text       
+     Vector52_handler                          F8AD       6       6       1   .text       
+     Vector53_handler                          F8B3       6       6       1   .text       
+     Vector54_handler                          F8B9       6       6       1   .text       
+     Vector55_handler                          F8BF       6       6       1   .text       
+     Vector56_handler                          F8C5       6       6       1   .text       
+     Vector57_handler                          F8CB       6       6       1   .text       
+     Vector58_handler                          F8D1       6       6       1   .text       
+     Vector59_handler                          F8D7       6       6       1   .text       
+     Vector60_handler                          F8DD       6       6       1   .text       
+     Vector62_handler                          F8E3       6       6       1   .text       
+     AssertFailure                             F8E9       5       5       7   .text       
+     CanInit                                   F8EE      9C     156       1   .text       
+     CanTransmitPacket                         F98A      51      81       1   .text       
+     CanReceivePacket                          F9DB      84     132       1   .text       
+     CanGetSpeedConfig                         FA5F      69     105       1   .text       
+     CpuIrqDisable                             FAC8       3       3       1   .text       
+     _LSHL                                     FACB      11      17       3   RUNTIME     
+     _LSHRU                                    FADC      11      17       6   RUNTIME     
+     _LCMP                                     FAED      19      25       5   RUNTIME     
+     _LINC                                     FB06       5       5       4   RUNTIME     
+     _LDEC                                     FB0B       8       8       6   RUNTIME     
+     _lDivMod                                  FB13      BE     190       1   RUNTIME     
+     _LDIVU                                    FBD1       E      14       1   RUNTIME     
+     _ILSEXT                                   FBDF       7       7       1   RUNTIME     
+     _CASE_DIRECT_BYTE                         FBE6       5       5       3   RUNTIME     
+     _CASE_CHECKED_BYTE                        FBEB      14      20       2   RUNTIME     
      _vectab                                   FF80      80     128       0   .abs_section_ff80
 
 *********************************************************************************************
@@ -2299,13 +2299,13 @@ rtshc12.c.o (ansisi.lib):
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xFBEB ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xFBFF ---- SIZE       4 ---
 Filling bytes inserted
  00013901
-------- ROM-ADDRESS: 0xFBEF ---- RAM-ADDRESS: 0x3901 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xFC03 ---- RAM-ADDRESS: 0x3901 ---- SIZE       1 ---
 Name of initialized Object : comActiveInterface:1
  04
-------- ROM-ADDRESS: 0xFBF0 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xFC04 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -2381,7 +2381,7 @@ FlashDone                 USES bootBlockInfo FlashWriteBlock blockInfo
                                 flashExecCmdRam 
 FlashGetUserProgBaseAddress USES flashLayout FlashGetPhysAddr 
 FlashInitBlock            USES FlashGetPhysPage FlashGetPhysAddr CpuMemCopy 
-FlashSwitchBlock          USES bootBlockInfo blockInfo flashLayout 
+FlashSwitchBlock          USES flashLayout bootBlockInfo blockInfo 
                                 FlashWriteBlock FlashInitBlock 
 FlashAddToBlock           USES _LSHRU _LSHL FlashInitBlock FlashSwitchBlock 
                                 CopService _LDEC 
@@ -2892,5 +2892,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 6
-Total size of all blocks to be downloaded: 5234
+Total size of all blocks to be downloaded: 5254
 
