@@ -37,6 +37,7 @@
 #include <fcntl.h>                                    /* file control definitions      */
 #include <errno.h>                                    /* error number definitions      */
 #include <termios.h>                                  /* POSIX terminal control        */
+#include <sys/ioctl.h>                                /* system I/O control            */
 #include "xcpmaster.h"                                /* XCP master protocol module    */
 #include "timeutil.h"                                 /* time utility module           */
 
@@ -79,6 +80,7 @@ static sb_int32 hUart = UART_INVALID_HANDLE;
 sb_uint8 XcpTransportInit(sb_char *device, sb_uint32 baudrate)
 {
   struct termios options;
+  int iFlags;
 
   /* open the port */
   hUart = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
@@ -132,6 +134,9 @@ sb_uint8 XcpTransportInit(sb_char *device, sb_uint32 baudrate)
     XcpTransportClose();
     return SB_FALSE;
   }
+  /* turn on DTR */
+  iFlags = TIOCM_DTR;
+  ioctl(hUart, TIOCMBIS, &iFlags);
   /* success */
   return SB_TRUE;
 } /*** end of XcpTransportInit ***/
@@ -183,16 +188,21 @@ sb_uint8 XcpTransportSendPacket(sb_uint8 *data, sb_uint8 len, sb_uint16 timeOutM
 
   /* read the first byte, which contains the length of the xcp packet that follows */
   bytesToRead = 1;
-  uartReadDataPtr = &responsePacket.len;
+  responsePacket.len = 0;
   while(bytesToRead > 0)
   {
-    result = read(hUart, uartReadDataPtr, bytesToRead);
+    result = read(hUart, &responsePacket.len, bytesToRead);
     if (result != -1)
     {
       bytesRead = result;
-      /* update the bytes that were already read */
-      uartReadDataPtr += bytesRead;
-      bytesToRead -= bytesRead;
+      /* one byte should be read and it should contain the packet length, which cannot be 0 */
+      if ((bytesRead == bytesToRead) && (responsePacket.len > 0))
+      {
+        /* valid packet length received so stop this loop to continue with the reception 
+         * remaining packet bytes
+         */
+        bytesToRead = 0;
+      }
     }
     /* check for timeout if not yet done */
     if ( (bytesToRead > 0) && (TimeUtilGetSystemTimeMs() >= timeoutTime) )

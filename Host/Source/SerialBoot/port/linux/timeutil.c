@@ -33,7 +33,7 @@
 #include <sb_types.h>                                 /* C types                       */
 #include <unistd.h>                                   /* UNIX standard functions       */
 #include <fcntl.h>                                    /* file control definitions      */
-#include <time.h>                                     /* time definitions              */
+#include <sys/time.h>                                 /* time definitions              */
 
 
 /************************************************************************************//**

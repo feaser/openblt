@@ -47,9 +47,6 @@
 #define XCP_MASTER_UART_MAX_DATA ((XCP_MASTER_TX_MAX_DATA>XCP_MASTER_RX_MAX_DATA) ? \
                                    (XCP_MASTER_TX_MAX_DATA+1) : (XCP_MASTER_RX_MAX_DATA+1))
 
-/** \brief The smallest time in millisecond that the UART is configured for. */
-#define UART_RX_TIMEOUT_MIN_MS   (5)
-
 
 /****************************************************************************************
 * Local data declarations
@@ -97,6 +94,11 @@ sb_uint8 XcpTransportInit(sb_char *device, sb_uint32 baudrate)
   dcbSerialParams.ByteSize = 8;
   dcbSerialParams.StopBits = ONESTOPBIT;
   dcbSerialParams.Parity = NOPARITY;
+  dcbSerialParams.fOutX = FALSE;
+  dcbSerialParams.fInX = FALSE;
+  dcbSerialParams.fRtsControl = RTS_CONTROL_DISABLE;
+  dcbSerialParams.fDtrControl = DTR_CONTROL_ENABLE;
+
   if (!SetCommState(hUart, &dcbSerialParams))
   {
     XcpTransportClose();
@@ -104,11 +106,12 @@ sb_uint8 XcpTransportInit(sb_char *device, sb_uint32 baudrate)
   }
 
   /* set communication timeout parameters */
-  timeouts.ReadIntervalTimeout = UART_RX_TIMEOUT_MIN_MS;
-  timeouts.ReadTotalTimeoutConstant = UART_RX_TIMEOUT_MIN_MS;
-  timeouts.ReadTotalTimeoutMultiplier = 1;
-  timeouts.WriteTotalTimeoutConstant = UART_RX_TIMEOUT_MIN_MS;
-  timeouts.WriteTotalTimeoutMultiplier = 1;
+  timeouts.ReadIntervalTimeout = 0;
+  timeouts.ReadTotalTimeoutConstant = 0;
+  timeouts.ReadTotalTimeoutMultiplier = 100;
+  timeouts.WriteTotalTimeoutConstant = 0;
+  timeouts.WriteTotalTimeoutMultiplier = 100;
+
   if (!SetCommTimeouts(hUart, &timeouts))
   {
     XcpTransportClose();
@@ -177,19 +180,24 @@ sb_uint8 XcpTransportSendPacket(sb_uint8 *data, sb_uint8 len, sb_uint16 timeOutM
 
   /* ------------------------ XCP packet reception ----------------------------------- */
   /* determine timeout time */
-  timeoutTime = TimeUtilGetSystemTimeMs() + timeOutMs + UART_RX_TIMEOUT_MIN_MS;
+  timeoutTime = TimeUtilGetSystemTimeMs() + timeOutMs + 100;
 
   /* read the first byte, which contains the length of the xcp packet that follows */
   dwToRead = 1;
-  uartReadDataPtr = &responsePacket.len;
+  responsePacket.len = 0;
   while(dwToRead > 0)
   {
     dwRead = 0;
-    if (ReadFile(hUart, uartReadDataPtr, dwToRead, &dwRead, NULL))
+    if (ReadFile(hUart, &responsePacket.len, dwToRead, &dwRead, NULL))
     {
-      /* update the bytes that were already read */
-      uartReadDataPtr += dwRead;
-      dwToRead -= dwRead;
+      /* one byte should be read and it should contain the packet length, which cannot be 0 */
+      if ((dwRead == dwToRead) && (responsePacket.len > 0))
+      {
+        /* valid packet length received so stop this loop to continue with the reception 
+         * remaining packet bytes
+         */
+        dwToRead = 0;
+      }
     }
     /* check for timeout if not yet done */
     if ( (dwToRead > 0) && (TimeUtilGetSystemTimeMs() >= timeoutTime) )

@@ -86,6 +86,10 @@ begin
   sciDriver.DataBits := dbEight;
   sciDriver.StopBits := sbOneStopBit;
   sciDriver.Parity.Bits := prNone;
+  sciDriver.FlowControl.XonXoffOut := false;
+  sciDriver.FlowControl.XonXoffIn := false;
+  sciDriver.FlowControl.ControlRTS := rtsDisable;
+  sciDriver.FlowControl.ControlDTR := dtrEnable;
 
   // reset packet length
   packetLen := 0;
