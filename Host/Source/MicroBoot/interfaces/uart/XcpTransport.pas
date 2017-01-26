@@ -79,20 +79,24 @@ begin
   // call inherited constructor
   inherited Create;
 
+  // reset packet length
+  packetLen := 0;
+
   // create a sci driver instance
   sciDriver := TComPort.Create(nil);
 
   // init sci settings
-  sciDriver.DataBits := dbEight;
-  sciDriver.StopBits := sbOneStopBit;
-  sciDriver.Parity.Bits := prNone;
-  sciDriver.FlowControl.XonXoffOut := false;
-  sciDriver.FlowControl.XonXoffIn := false;
-  sciDriver.FlowControl.ControlRTS := rtsDisable;
-  sciDriver.FlowControl.ControlDTR := dtrEnable;
-
-  // reset packet length
-  packetLen := 0;
+  try
+    sciDriver.DataBits := dbEight;
+    sciDriver.StopBits := sbOneStopBit;
+    sciDriver.Parity.Bits := prNone;
+    sciDriver.FlowControl.XonXoffOut := false;
+    sciDriver.FlowControl.XonXoffIn := false;
+    sciDriver.FlowControl.ControlRTS := rtsDisable;
+    sciDriver.FlowControl.ControlDTR := dtrEnable;
+  except
+    Exit;
+  end;
 end; //*** end of Create ***
 
 
@@ -107,7 +111,6 @@ destructor TXcpTransport.Destroy;
 begin
   // release sci driver instance
   sciDriver.Free;
-
   // call inherited destructor
   inherited;
 end; //*** end of Destroy ***
@@ -124,6 +127,7 @@ procedure TXcpTransport.Configure(iniFile : string);
 var
   settingsIni : TIniFile;
   configIndex : integer;
+  baudrateValue: TBaudRate;
 begin
 	// read XCP configuration from INI
   if FileExists(iniFile) then
@@ -131,30 +135,38 @@ begin
     // create ini file object
     settingsIni := TIniFile.Create(iniFile);
 
-    // configure baudrate
+    // read baudrate
     configIndex := settingsIni.ReadInteger('sci', 'baudrate', 6);
-    sciDriver.BaudRate := br38400; // init to default value
+    // init to default baudrate value
+    baudrateValue := br38400;
     case configIndex of
-      0 : sciDriver.BaudRate := br1200;
-      1 : sciDriver.BaudRate := br2400;
-      2 : sciDriver.BaudRate := br4800;
-      3 : sciDriver.BaudRate := br9600;
-      4 : sciDriver.BaudRate := br14400;
-      5 : sciDriver.BaudRate := br19200;
-      6 : sciDriver.BaudRate := br38400;
-      7 : sciDriver.BaudRate := br56000;
-      8 : sciDriver.BaudRate := br57600;
-      9 : sciDriver.BaudRate := br115200;
-      10: sciDriver.BaudRate := br128000;
-      11: sciDriver.BaudRate := br256000;
+      0 : baudrateValue := br1200;
+      1 : baudrateValue := br2400;
+      2 : baudrateValue := br4800;
+      3 : baudrateValue := br9600;
+      4 : baudrateValue := br14400;
+      5 : baudrateValue := br19200;
+      6 : baudrateValue := br38400;
+      7 : baudrateValue := br56000;
+      8 : baudrateValue := br57600;
+      9 : baudrateValue := br115200;
+      10: baudrateValue := br128000;
+      11: baudrateValue := br256000;
     end;
 
-    // configure port
+    // read port
     configIndex := settingsIni.ReadInteger('sci', 'port', 0);
-    sciDriver.Port := Format( 'COM%d', [ord(configIndex + 1)] );
 
     // release ini file object
     settingsIni.Free;
+
+    // set the port and the baudrate
+    try
+      sciDriver.Port := Format( 'COM%d', [ord(configIndex + 1)] );
+      sciDriver.BaudRate := baudrateValue;
+    except
+      Exit;
+    end;
   end;
 end; //*** end of Configure ***
 
@@ -168,8 +180,12 @@ end; //*** end of Configure ***
 //***************************************************************************************
 function TXcpTransport.Connect : Boolean;
 begin
-  sciDriver.Open;
-  result := sciDriver.Connected;
+  try
+    sciDriver.Open;
+    result := sciDriver.Connected;
+  except
+    result := False;
+  end;
 end; //*** end of Connect ***
 
 
@@ -196,11 +212,12 @@ end; //*** end of IsComError ***
 //***************************************************************************************
 function TXcpTransport.SendPacket(timeOutms: LongWord): Boolean;
 var
-  msgData : array of Byte;
-  resLen  : byte;
-  cnt     : byte;
-  rxCnt   : byte;
-  dwEnd   : DWord;
+  msgData   : array of Byte;
+  resLen    : byte;
+  cnt       : byte;
+  rxCnt     : byte;
+  dwEnd     : DWord;
+  bytesRead : integer;
 begin
   // init the return value
   result := false;
@@ -224,8 +241,12 @@ begin
   end;
 
   // configure transmit timeout. timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
-  sciDriver.Timeouts.WriteTotalConstant := 0;
-  sciDriver.Timeouts.WriteTotalMultiplier := timeOutms div (packetLen+1);
+  try
+    sciDriver.Timeouts.WriteTotalConstant := 0;
+    sciDriver.Timeouts.WriteTotalMultiplier := timeOutms div (packetLen+1);
+  except
+    Exit;
+  end;
 
   // submit the packet transmission request
   if sciDriver.Write(msgData[0], packetLen+1) <> (packetLen+1) then
@@ -238,14 +259,24 @@ begin
   Application.ProcessMessages;
 
   // confgure the reception timeout. timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
-  sciDriver.Timeouts.ReadTotalConstant := timeOutms;
-  sciDriver.Timeouts.ReadTotalMultiplier := 0;
+  try
+    sciDriver.Timeouts.ReadTotalConstant := timeOutms;
+    sciDriver.Timeouts.ReadTotalMultiplier := 0;
+  except
+    Exit;
+  end;
 
   // compute timeout time for receiving the response
   dwEnd := GetTickCount + timeOutms;
 
   // receive the first byte which should hold the packet length
-  if sciDriver.Read(resLen, 1) = 1 then
+  try
+    bytesRead := sciDriver.Read(resLen, 1);
+  except
+    Exit;
+  end;
+
+  if bytesRead = 1 then
   begin
     // init the number of received bytes to 0
     rxCnt := 0;
@@ -256,14 +287,24 @@ begin
     begin
       // re-confgure the reception timeout now that the total packet length is known.
       // timeout = (MULTIPLIER) * number_of_bytes + CONSTANT
-      sciDriver.Timeouts.ReadTotalConstant := 0;
-      sciDriver.Timeouts.ReadTotalMultiplier := timeOutms div resLen;
+      try
+        sciDriver.Timeouts.ReadTotalConstant := 0;
+        sciDriver.Timeouts.ReadTotalMultiplier := timeOutms div resLen;
+      except
+        Exit;
+      end;
 
       // attempt to receive the bytes of the response packet one by one
       while (rxCnt < resLen) and (GetTickCount < dwEnd) do
       begin
         // receive the next byte
-        if sciDriver.Read(packetData[rxCnt], 1) = 1 then
+        try
+          bytesRead := sciDriver.Read(packetData[rxCnt], 1);
+        except
+          Exit;
+        end;
+
+        if bytesRead  = 1 then
         begin
           // increment counter
           rxCnt := rxCnt + 1;
@@ -291,7 +332,11 @@ end; //*** end of SendPacket ***
 //***************************************************************************************
 procedure TXcpTransport.Disconnect;
 begin
-  sciDriver.Close;
+  try
+    sciDriver.Close;
+  except
+    Exit;
+  end;
 end; //*** end of Disconnect ***
 
 
