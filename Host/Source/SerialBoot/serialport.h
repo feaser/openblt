@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         port\linux\timeutil.c
-* \brief        Time utility source file.
+* \file         serialport.h
+* \brief        Serial port header file.
 * \ingroup      SerialBoot
 * \internal
 *----------------------------------------------------------------------------------------
@@ -20,50 +20,51 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
+#ifndef SERIALPORT_H
+#define SERIALPORT_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include <stddef.h>                         /* for NULL declaration                    */
-#include <unistd.h>                         /* UNIX standard functions                 */
-#include <sys/time.h>                       /* time definitions                        */
-#include "timeutil.h"                       /* for time utilities module               */
+#include <stdint.h>                         /* for standard integer types              */
+#include <stdbool.h>                        /* for boolean type                        */
 
 
-/************************************************************************************//**
-** \brief     Get the system time in milliseconds.
-** \return    Time in milliseconds.
-**
+/****************************************************************************************
+* Typde definitions
 ****************************************************************************************/
-uint32_t TimeUtilGetSystemTimeMs(void)
+/** \brief Enumaration of the supported baudrates. */
+typedef enum
 {
- struct timeval tv;
-
- if (gettimeofday(&tv, NULL) != 0)
- {
-   return 0;
- }
-
- return (uint32_t)((tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul));
-} /*** end of XcpTransportClose ***/
+  SERIALPORT_BR9600   = 0,                  /**< 9600 bits/sec                         */
+  SERIALPORT_BR19200  = 1,                  /**< 19200 bits/sec                        */
+  SERIALPORT_BR38400  = 2,                  /**< 38400 bits/sec                        */
+  SERIALPORT_BR57600  = 3,                  /**< 57600 bits/sec                        */
+  SERIALPORT_BR115200 = 4                   /**< 115200 bits/sec                       */
+} tSerialPortBaudrate;
 
 
-/************************************************************************************//**
-** \brief     Performs a delay of the specified amount of milliseconds.
-** \param     delay Delay time in milliseconds.
-** \return    none.
-**
+/****************************************************************************************
+* Function prototypes
 ****************************************************************************************/
-void TimeUtilDelayMs(uint16_t delay)
-{
-  usleep(1000 * delay);
-} /*** end of TimeUtilDelayMs **/
+bool SerialPortOpen(char *portname, tSerialPortBaudrate baudrate);
+void SerialPortClose(void);
+bool SerialPortWrite(uint8_t *data, uint32_t length);
+bool SerialPortRead(uint8_t *data, uint32_t length);
 
+#ifdef __cplusplus
+}
+#endif
 
-/*********************************** end of timeutil.c *********************************/
+#endif /* SERIALPORT_H */
+/********************************* end of serialport.h *********************************/
 

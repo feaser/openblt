@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         port\linux\timeutil.c
-* \brief        Time utility source file.
+* \file         xcptpuart.h
+* \brief        XCP transport layer module for UART header file.
 * \ingroup      SerialBoot
 * \internal
 *----------------------------------------------------------------------------------------
@@ -20,50 +20,47 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
+#ifndef XCPTPUART_H
+#define XCPTPUART_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include <stddef.h>                         /* for NULL declaration                    */
-#include <unistd.h>                         /* UNIX standard functions                 */
-#include <sys/time.h>                       /* time definitions                        */
-#include "timeutil.h"                       /* for time utilities module               */
+#include "xcploader.h"                      /* XCP loader module                       */
+#include "serialport.h"                     /* serial port module                      */
 
 
-/************************************************************************************//**
-** \brief     Get the system time in milliseconds.
-** \return    Time in milliseconds.
-**
+/***************************************************************************************
+* Type definitions
 ****************************************************************************************/
-uint32_t TimeUtilGetSystemTimeMs(void)
+/** \brief Layout of structure with settings specific to the XCP transport layer module
+ *         for UART.
+ */
+typedef struct t_xcp_tp_uart_settings
 {
- struct timeval tv;
-
- if (gettimeofday(&tv, NULL) != 0)
- {
-   return 0;
- }
-
- return (uint32_t)((tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul));
-} /*** end of XcpTransportClose ***/
+  tSerialPortBaudrate baudrate;        /**< UART communication speed.                  */
+  char *portname;                      /**< interface port name, i.e. /dev/ttyUSB0.    */
+} tXcpTpUartSettings;
 
 
-/************************************************************************************//**
-** \brief     Performs a delay of the specified amount of milliseconds.
-** \param     delay Delay time in milliseconds.
-** \return    none.
-**
+/***************************************************************************************
+* Function prototypes
 ****************************************************************************************/
-void TimeUtilDelayMs(uint16_t delay)
-{
-  usleep(1000 * delay);
-} /*** end of TimeUtilDelayMs **/
+tXcpTransport const * const XcpTpUartGetTransport(void);
 
+#ifdef __cplusplus
+}
+#endif
 
-/*********************************** end of timeutil.c *********************************/
+#endif /* XCPTPUART_H */
+/********************************* end of xcptpuart.h **********************************/
 

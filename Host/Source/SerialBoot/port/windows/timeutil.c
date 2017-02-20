@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         port\linux\timeutil.c
+* \file         port\windows\timeutil.c
 * \brief        Time utility source file.
 * \ingroup      SerialBoot
 * \internal
@@ -29,9 +29,7 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include <stddef.h>                         /* for NULL declaration                    */
-#include <unistd.h>                         /* UNIX standard functions                 */
-#include <sys/time.h>                       /* time definitions                        */
+#include <windows.h>                        /* for windows library                     */
 #include "timeutil.h"                       /* for time utilities module               */
 
 
@@ -42,14 +40,7 @@
 ****************************************************************************************/
 uint32_t TimeUtilGetSystemTimeMs(void)
 {
- struct timeval tv;
-
- if (gettimeofday(&tv, NULL) != 0)
- {
-   return 0;
- }
-
- return (uint32_t)((tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul));
+  return GetTickCount();
 } /*** end of XcpTransportClose ***/
 
 
@@ -61,7 +52,7 @@ uint32_t TimeUtilGetSystemTimeMs(void)
 ****************************************************************************************/
 void TimeUtilDelayMs(uint16_t delay)
 {
-  usleep(1000 * delay);
+ Sleep(delay);
 } /*** end of TimeUtilDelayMs **/
 
 

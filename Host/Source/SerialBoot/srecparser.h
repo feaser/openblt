@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         port\linux\timeutil.c
-* \brief        Time utility source file.
+* \file         srecparser.h
+* \brief        S-record parser header file.
 * \ingroup      SerialBoot
 * \internal
 *----------------------------------------------------------------------------------------
@@ -20,50 +20,33 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
+#ifndef SRECPARSER_H
+#define SRECPARSER_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include <stddef.h>                         /* for NULL declaration                    */
-#include <unistd.h>                         /* UNIX standard functions                 */
-#include <sys/time.h>                       /* time definitions                        */
-#include "timeutil.h"                       /* for time utilities module               */
+#include "firmware.h"                       /* firmware module                         */
 
 
-/************************************************************************************//**
-** \brief     Get the system time in milliseconds.
-** \return    Time in milliseconds.
-**
+/****************************************************************************************
+* Function prototypes
 ****************************************************************************************/
-uint32_t TimeUtilGetSystemTimeMs(void)
-{
- struct timeval tv;
+tFirmwareParser const * const SRecParserGetParser(void);
 
- if (gettimeofday(&tv, NULL) != 0)
- {
-   return 0;
- }
+#ifdef __cplusplus
+}
+#endif
 
- return (uint32_t)((tv.tv_sec * 1000ul) + (tv.tv_usec / 1000ul));
-} /*** end of XcpTransportClose ***/
-
-
-/************************************************************************************//**
-** \brief     Performs a delay of the specified amount of milliseconds.
-** \param     delay Delay time in milliseconds.
-** \return    none.
-**
-****************************************************************************************/
-void TimeUtilDelayMs(uint16_t delay)
-{
-  usleep(1000 * delay);
-} /*** end of TimeUtilDelayMs **/
-
-
-/*********************************** end of timeutil.c *********************************/
+#endif /* SRECPARSER_H */
+/********************************* end of srecparser.h *********************************/
 

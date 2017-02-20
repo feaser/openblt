@@ -1,12 +1,12 @@
 /************************************************************************************//**
 * \file         main.c
-* \brief        SerialBoot command line demonstration program for OpenBLT.
+* \brief        SerialBoot program source file.
 * \ingroup      SerialBoot
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2014  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2017  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -20,213 +20,223 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
-
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include <assert.h>                                   /* assertion module              */
-#include <sb_types.h>                                 /* C types                       */
-#include <stdio.h>                                    /* standard I/O library          */
-#include <string.h>                                   /* string library                */
-#include "xcpmaster.h"                                /* XCP master protocol module    */
-#include "srecord.h"                                  /* S-record file handling        */
-#include "timeutil.h"                                 /* time utility module           */
-
-
-/****************************************************************************************
-* Function prototypes
-****************************************************************************************/
-static void     DisplayProgramInfo(void);
-static void     DisplayProgramUsage(void);
-static sb_uint8 ParseCommandLine(sb_int32 argc, sb_char *argv[]);
+#include <stdio.h>                          /* standard I/O functions                  */
+#include <string.h>                         /* for string library                      */
+#include "xcploader.h"                      /* XCP loader module                       */
+#include "xcptpuart.h"                      /* XCP transport layer for UART            */
+#include "firmware.h"                       /* Firmware module                         */
+#include "srecparser.h"                     /* S-record parser                         */
+#include "timeutil.h"                       /* for time utilities module               */
 
 
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-/** \brief Program return code if all went ok. */
-#define PROG_RESULT_OK    (0)
-
-/** \brief Program return code if an error occurred. */
-#define PROG_RESULT_ERROR (1)
+/* Program return codes. */
+#define RESULT_OK                           (0)
+#define RESULT_COMMANDLINE_ERROR            (1)
+#define RESULT_FIRMWARE_LOAD_ERROR          (2)
+#define RESULT_PROGRAM_START_ERROR          (3)
+#define RESULT_MEMORY_ERASE_ERROR           (4)
+#define RESULT_PROGRAM_STOP_ERROR           (5)
+#define RESULT_MEMORY_PROGRAM_ERROR         (6)
 
 
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
-/** \brief Name of the serial device, such as COM4 or /dev/ttyUSB0. */
-static sb_char serialDeviceName[32]; 
+/** \brief The firmware filename that is specified at the command line. */
+static char *firmwareFilename;
 
-/** \brief Serial communication speed in bits per second. */
-static sb_uint32 serialBaudrate; 
+/** \brief XCP loader settings. */
+static tXcpSettings xcpSettings =
+{
+  .timeoutT1 = 1000,
+  .timeoutT3 = 2000,
+  .timeoutT4 = 10000,
+  .timeoutT5 = 1000,
+  .timeoutT7 = 2000
+};
 
-/** \brief Name of the S-record file. */
-static sb_char srecordFileName[128]; 
+/** \brief XCP UART transport layer settings. */
+static tXcpTpUartSettings xcpTpUartSettings =
+{
+  .baudrate = SERIALPORT_BR57600,
+  .portname = "/dev/ttyS0"
+};
+
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+static void DisplayProgramInfo(void);
+static void DisplayProgramUsage(void);
+static bool ParseCommandLine(int argc, char *argv[]);
 
 
 /************************************************************************************//**
-** \brief     Program entry point.
-** \param     argc Number of program parameters.
-** \param     argv array to program parameter strings.
-** \return    0 on success, > 0 on error.
+** \brief     This is the program entry point.
+** \param     argc Number of program arguments.
+** \param     argv Array with program arguments.
+** \return    Program return code. 0 for success, error code otherwise.
 **
 ****************************************************************************************/
-sb_int32 main(sb_int32 argc, sb_char *argv[])
+int main(int argc, char *argv[])
 {
-  sb_file hSrecord;
-  tSrecordParseResults fileParseResults;
-  tSrecordLineParseResults lineParseResults;
+  int result = RESULT_OK;
+  uint32_t fwBaseAddress;
+  uint32_t fwTotalSize;
+  uint32_t segmentIdx;
+  const tFirmwareSegment *segment;
 
-  /* disable buffering for the standard output to make sure printf does not wait until
-   * a newline character is detected before outputting text on the console.
-   */
-  setbuf(stdout, SB_NULL);
-
+  /* -------------------- Display info ----------------------------------------------- */
   /* inform user about the program */
   DisplayProgramInfo();
 
+  /* -------------------- Process command line --------------------------------------- */
   /* start out by making sure program was started with the correct parameters */
-  if (ParseCommandLine(argc, argv) == SB_FALSE)
+  if (!ParseCommandLine(argc, argv))
   {
     /* parameters invalid. inform user about how this program works */
     DisplayProgramUsage();
-    return PROG_RESULT_ERROR;
+    return RESULT_COMMANDLINE_ERROR;
   }
 
-  /* -------------------- start the firmware update procedure ------------------------ */
-  printf("Starting firmware update for \"%s\" using %s @ %u bits/s\n", srecordFileName, serialDeviceName, serialBaudrate);
+  /* -------------------- Initialization --------------------------------------------- */
+  /* initialize the XCP loader module using the UART transport layer. */
+  XcpLoaderInit(&xcpSettings, XcpTpUartGetTransport(), &xcpTpUartSettings);
+  /* initialize the firmware module and link the S-recorder parser */
+  FirmwareInit(SRecParserGetParser());
 
-  /* -------------------- validating the S-record file ------------------------------- */
-  printf("Checking formatting of S-record file \"%s\"...", srecordFileName);
-  if (SrecordIsValid(srecordFileName) == SB_FALSE)
+  /* -------------------- Parse the firmware file ------------------------------------ */
+  /* attempt to load the firmware file */
+  printf("Loading firmware file..."); fflush(stdout);
+  if (!FirmwareLoadFromFile(firmwareFilename))
   {
+    /* set error code and abort */
     printf("ERROR\n");
-    return PROG_RESULT_ERROR;
+    result = RESULT_FIRMWARE_LOAD_ERROR;
+    goto finish;
   }
   printf("OK\n");
-
-  /* -------------------- opening the S-record file ---------------------------------- */
-  printf("Opening S-record file \"%s\"...", srecordFileName);
-  if ((hSrecord = SrecordOpen(srecordFileName)) == SB_NULL)
+  /* determine firmware base address and total size */
+  for (segmentIdx=0; segmentIdx<FirmwareGetSegmentCount(); segmentIdx++)
   {
-    printf("ERROR\n");
-    return PROG_RESULT_ERROR;
+    segment = FirmwareGetSegment(segmentIdx);
+    /* is this the first segment? */
+    if (segmentIdx == 0)
+    {
+      /* initialize */
+      fwBaseAddress = segment->base;
+      fwTotalSize = segment->length;
+    }
+    else
+    {
+      /* update */
+      if (segment->base < fwBaseAddress)
+      {
+        fwBaseAddress = segment->base;
+      }
+      fwTotalSize += segment->length;
+    }
   }
-  printf("OK\n");
+  /* display some firmware statistics */
+  printf("-> Number of segments:  %u\n", FirmwareGetSegmentCount());
+  printf("-> Base memory address: 0x%08x\n", fwBaseAddress);
+  printf("-> Total data bytes:    %u\n", fwTotalSize);
 
-  /* -------------------- parsing the S-record file ---------------------------------- */
-  printf("Parsing S-record file \"%s\"...", srecordFileName);
-  SrecordParse(hSrecord, &fileParseResults);
-  printf("OK\n");
-  printf("-> Lowest memory address:  0x%08x\n", fileParseResults.address_low);
-  printf("-> Highest memory address: 0x%08x\n", fileParseResults.address_high);
-  printf("-> Total data bytes: %u\n", fileParseResults.data_bytes_total);
-
-  /* -------------------- Open the serial port --------------------------------------- */
-  printf("Opening serial port %s...", serialDeviceName);
-  if (XcpMasterInit(serialDeviceName, serialBaudrate) == SB_FALSE)
-  {
-    printf("ERROR\n");
-    SrecordClose(hSrecord);
-    return PROG_RESULT_ERROR;
-  }
-  printf("OK\n");
-
-  /* -------------------- Connect to XCP slave --------------------------------------- */
-  printf("Connecting to bootloader...");
-  if (XcpMasterConnect() == SB_FALSE)
+  /* -------------------- Connect to target ------------------------------------------ */
+  printf("Connecting to bootloader..."); fflush(stdout);
+  if (!XcpLoaderConnect())
   {
     /* no response. prompt the user to reset the system */
-    printf("TIMEOUT\nReset your microcontroller...");
-  }
-  /* now keep retrying until we get a response */
-  while (XcpMasterConnect() == SB_FALSE)
-  {
-    /* delay a bit to not pump up the CPU load */
-    TimeUtilDelayMs(20);
-  }
-  printf("OK\n");
- 
-  /* -------------------- Prepare the programming session ---------------------------- */
-  printf("Initializing programming session...");
-  if (XcpMasterStartProgrammingSession() == SB_FALSE)
-  {
-    printf("ERROR\n");
-    XcpMasterDisconnect();
-    XcpMasterDeinit();
-    SrecordClose(hSrecord);
-    return PROG_RESULT_ERROR;
-  }
-  printf("OK\n");
-
-  /* -------------------- Erase memory ----------------------------------------------- */
-  printf("Erasing %u bytes starting at 0x%08x...", fileParseResults.data_bytes_total, fileParseResults.address_low);
-  if (XcpMasterClearMemory(fileParseResults.address_low, (fileParseResults.address_high - fileParseResults.address_low)) == SB_FALSE)
-  {
-    printf("ERROR\n");
-    XcpMasterDisconnect();
-    XcpMasterDeinit();
-    SrecordClose(hSrecord);
-    return PROG_RESULT_ERROR;
-  }
-  printf("OK\n");
-
-  /* -------------------- Program data ----------------------------------------------- */
-  printf("Programming data. Please wait...");
-  /* loop through all S-records with program data */
-  while (SrecordParseNextDataLine(hSrecord, &lineParseResults) == SB_TRUE)
-  {
-    if (XcpMasterProgramData(lineParseResults.address, lineParseResults.length, lineParseResults.data) == SB_FALSE)
+    printf("TIMEOUT\nReset your microcontroller..."); fflush(stdout);
+    /* now keep retrying until we get a response */
+    while (!XcpLoaderConnect())
     {
-      printf("ERROR\n");
-      XcpMasterDisconnect();
-      XcpMasterDeinit();
-      SrecordClose(hSrecord);
-      return PROG_RESULT_ERROR;
+      /* delay a bit to not pump up the CPU load */
+      TimeUtilDelayMs(20);
     }
   }
   printf("OK\n");
 
+  /* -------------------- Start the programming session ------------------------------ */
+  /* attempt to start the programming session */
+  printf("Starting programming session..."); fflush(stdout);
+  if (!XcpLoaderStartProgrammingSession())
+  {
+    /* set error code and abort */
+    printf("ERROR\n");
+    result = RESULT_PROGRAM_START_ERROR;
+    goto finish;
+  }
+  printf("OK\n");
+
+  /* -------------------- Erase memory ----------------------------------------------- */
+  /* erase each segment one at a time  */
+  for (segmentIdx=0; segmentIdx<FirmwareGetSegmentCount(); segmentIdx++)
+  {
+    segment = FirmwareGetSegment(segmentIdx);
+    /* attempt to erase memory */
+    printf("Erasing %u bytes starting at 0x%08x...", segment->length, segment->base); fflush(stdout);
+    if (!XcpLoaderClearMemory(segment->base, segment->length))
+    {
+      /* set error code and abort */
+      printf("ERROR\n");
+      result = RESULT_MEMORY_ERASE_ERROR;
+      goto finish;
+    }
+    printf("OK\n");
+  }
+
+  /* -------------------- Program data ----------------------------------------------- */
+  /* program each segment one at a time  */
+  for (segmentIdx=0; segmentIdx<FirmwareGetSegmentCount(); segmentIdx++)
+  {
+    segment = FirmwareGetSegment(segmentIdx);
+    /* attempt to program memory */
+    printf("Programming %u bytes starting at 0x%08x...", segment->length, segment->base); fflush(stdout);
+    if (!XcpLoaderProgramData(segment->base, segment->length, segment->data))
+    {
+      /* set error code and abort */
+      printf("ERROR\n");
+      result = RESULT_MEMORY_PROGRAM_ERROR;
+      goto finish;
+    }
+    printf("OK\n");
+  }
+
   /* -------------------- Stop the programming session ------------------------------- */
-  printf("Finishing programming session...");
-  if (XcpMasterStopProgrammingSession() == SB_FALSE)
+  /* attempt to stop the programming session */
+  printf("Finishing programming session..."); fflush(stdout);
+  if (!XcpLoaderStopProgrammingSession())
   {
+    /* set error code and abort */
     printf("ERROR\n");
-    XcpMasterDisconnect();
-    XcpMasterDeinit();
-    SrecordClose(hSrecord);
-    return PROG_RESULT_ERROR;
+    result = RESULT_PROGRAM_STOP_ERROR;
+    goto finish;
   }
   printf("OK\n");
 
-  /* -------------------- Disconnect from XCP slave and perform software reset ------- */
-  printf("Performing software reset...");
-  if (XcpMasterDisconnect() == SB_FALSE)
-  {
-    printf("ERROR\n");
-    XcpMasterDeinit();
-    SrecordClose(hSrecord);
-    return PROG_RESULT_ERROR;
-  }
-  printf("OK\n");
-
-  /* -------------------- close the serial port -------------------------------------- */
-  XcpMasterDeinit();
-  printf("Closed serial port %s\n", serialDeviceName);
-
-  /* -------------------- close the S-record file ------------------------------------ */
-  SrecordClose(hSrecord);
-  printf("Closed S-record file \"%s\"\n", srecordFileName);
-
-  /* all done */
-  printf("Firmware successfully updated!\n");
-  return PROG_RESULT_OK;
+  /* -------------------- Cleanup ---------------------------------------------------- */
+finish:
+  /* uninitialize the firmware module */
+  FirmwareDeinit();
+  /* uninitialize the XCP loader module. note that this automatically disconnects the
+   * slave, if connected, by requesting it to perform a reset.
+   */
+  XcpLoaderDeinit();
+  /* give result back */
+  return result;
 } /*** end of main ***/
 
 
@@ -238,7 +248,7 @@ sb_int32 main(sb_int32 argc, sb_char *argv[])
 static void DisplayProgramInfo(void)
 {
   printf("-------------------------------------------------------------------------\n");
-  printf("SerialBoot version 1.00. Performs firmware updates via the serial port\n");
+  printf("SerialBoot version 2.00. Performs firmware updates via the serial port\n");
   printf("for a microcontroller based system that runs the OpenBLT bootloader.\n\n");
   printf("Copyright (c) by Feaser  http://www.feaser.com\n");
   printf("-------------------------------------------------------------------------\n");
@@ -262,69 +272,94 @@ static void DisplayProgramUsage(void)
 #endif
   printf("             bits/second and programs the myfirmware.s19 file in non-\n");
   printf("             volatile memory of the microcontroller using OpenBLT.\n");
+  printf("             Supported baudrates are: 9600, 19200, 38400, 57600 and\n");
+  printf("             115200 bits/second.\n");
   printf("-------------------------------------------------------------------------\n");
 } /*** end of DisplayProgramUsage ***/
 
 
 /************************************************************************************//**
 ** \brief     Parses the command line arguments. A fixed amount of arguments is expected.
-**            The program should be called as: 
+**            The program should be called as:
 **              SerialBoot -d[device] -b[baudrate] [s-record file]
 ** \param     argc Number of program parameters.
 ** \param     argv array to program parameter strings.
-** \return    SB_TRUE on success, SB_FALSE otherwise.
+** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-static sb_uint8 ParseCommandLine(sb_int32 argc, sb_char *argv[])
+static bool ParseCommandLine(int argc, char *argv[])
 {
-  sb_uint8 paramIdx;
-  sb_uint8 paramDfound = SB_FALSE;
-  sb_uint8 paramBfound = SB_FALSE;
-  sb_uint8 srecordfound = SB_FALSE;
+  uint8_t paramIdx;
+  bool firmwareFileFound = false;
+  uint32_t baudrateValue;
 
-  /* make sure the right amount of arguments are given */
-  if (argc != 4)
+  /* make sure that enough arguments were specified. this program needs at least 2. the
+   * first one is always the program name and the second one is the s-record file.
+   */
+  if (argc < 2)
   {
-    return SB_FALSE;
+    return false;
   }
 
-  /* loop through all the command lina parameters, just skip the 1st one because this
+  /* loop through all the command line parameters, just skip the 1st one because this
    * is the name of the program, which we are not interested in.
    */
   for (paramIdx=1; paramIdx<argc; paramIdx++)
   {
     /* is this the device name? */
-    if ( (argv[paramIdx][0] == '-') && (argv[paramIdx][1] == 'd') && (paramDfound == SB_FALSE) )
+    if ( (argv[paramIdx][0] == '-') && (argv[paramIdx][1] == 'd') )
     {
-      /* copy the device name and set flag that this parameter was found */
-      strcpy(serialDeviceName, &argv[paramIdx][2]);
-      paramDfound = SB_TRUE;
+      /* set the device name */
+      xcpTpUartSettings.portname = &argv[paramIdx][2];
+      continue;
     }
-    /* is this the device name? */
-    else if ( (argv[paramIdx][0] == '-') && (argv[paramIdx][1] == 'b') && (paramBfound == SB_FALSE) )
+    /* is this the baudrate? */
+    if ( (argv[paramIdx][0] == '-') && (argv[paramIdx][1] == 'b') )
     {
-      /* extract the baudrate and set flag that this parameter was found */
-      sscanf(&argv[paramIdx][2], "%u", &serialBaudrate);
-      paramBfound = SB_TRUE;
+      /* extract the baudrate */
+      sscanf(&argv[paramIdx][2], "%u", &baudrateValue);
+      /* convert to the baudrate type */
+      switch (baudrateValue)
+      {
+        case 115200:
+          xcpTpUartSettings.baudrate = SERIALPORT_BR115200;
+          break;
+        case 57600:
+          xcpTpUartSettings.baudrate = SERIALPORT_BR57600;
+          break;
+        case 38400:
+          xcpTpUartSettings.baudrate = SERIALPORT_BR38400;
+          break;
+        case 19200:
+          xcpTpUartSettings.baudrate = SERIALPORT_BR19200;
+          break;
+        case 9600:
+          xcpTpUartSettings.baudrate = SERIALPORT_BR9600;
+          break;
+        default:
+          /* unsupported baudrate specified */
+          return false;
+      }
+      continue;
     }
     /* still here so it must be the filename */
-    else if (srecordfound == SB_FALSE)
+    else
     {
-      /* copy the file name and set flag that this parameter was found */
-      strcpy(srecordFileName, &argv[paramIdx][0]);
-      srecordfound = SB_TRUE;
+      /* set the file name and set flag that this parameter was found */
+      firmwareFilename = &argv[paramIdx][0];
+      firmwareFileFound = true;
     }
   }
-  
-  /* verify if all parameters were found */
-  if ( (paramDfound == SB_FALSE) || (paramBfound == SB_FALSE) || (srecordfound == SB_FALSE) )
-  {
-    return SB_FALSE;
-  }
 
+  /* verify if all required parameters were found */
+  if (!firmwareFileFound)
+  {
+    return false;
+  }
   /* still here so the parsing was successful */
-  return SB_TRUE;
+  return true;
 } /*** end of ParseCommandLine ***/
 
 
 /*********************************** end of main.c *************************************/
+
