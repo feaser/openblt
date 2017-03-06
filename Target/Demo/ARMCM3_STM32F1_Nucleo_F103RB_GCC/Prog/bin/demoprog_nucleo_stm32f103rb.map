@@ -20,25 +20,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   2 .bss          00000154  20000014  080068c0  00008014  2**2
                   ALLOC
-  3 .debug_info   00002edc  00000000  00000000  00008014  2**0
+  3 .debug_info   00002eb9  00000000  00000000  00008014  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 00000d73  00000000  00000000  0000aef0  2**0
+  4 .debug_abbrev 00000d36  00000000  00000000  0000aecd  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_loc    00001297  00000000  00000000  0000bc63  2**0
+  5 .debug_loc    00001297  00000000  00000000  0000bc03  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 000003c8  00000000  00000000  0000cefa  2**0
+  6 .debug_aranges 000003c0  00000000  00000000  0000ce9a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_ranges 00000338  00000000  00000000  0000d2c2  2**0
+  7 .debug_ranges 00000330  00000000  00000000  0000d25a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000125b  00000000  00000000  0000d5fa  2**0
+  8 .debug_line   0000126e  00000000  00000000  0000d58a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000136f  00000000  00000000  0000e855  2**0
+  9 .debug_str    00001362  00000000  00000000  0000e7f8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  0000fbc4  2**0
+ 10 .comment      00000030  00000000  00000000  0000fb5a  2**0
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  0000fbf4  2**0
+ 11 .ARM.attributes 00000033  00000000  00000000  0000fb8a  2**0
                   CONTENTS, READONLY
- 12 .debug_frame  00000730  00000000  00000000  0000fc28  2**2
+ 12 .debug_frame  00000718  00000000  00000000  0000fbc0  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08006000 l    d  .text	00000000 .text
@@ -56,8 +56,7 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 boot.c
-08006154 l     F .text	0000001e NVIC_SystemReset
-08006174 l     F .text	00000038 UartReceiveByte
+08006154 l     F .text	00000038 UartReceiveByte
 20000014 l     O .bss	00000041 xcpCtoReqPacket.6443
 20000058 l     O .bss	00000001 xcpCtoRxLength.6444
 20000059 l     O .bss	00000001 xcpCtoRxInProgress.6445
@@ -85,6 +84,7 @@ SYMBOL TABLE:
 080065c4 g     F .text	000000a4 GPIO_Init
 0800687c g     F .text	0000001c USART_Cmd
 08006780 g     F .text	00000024 RCC_APB1PeriphClockCmd
+08006230 g     F .text	0000001e BootActivate
 20000068 g       .bss	00000000 _ebss
 080065c0 g     F .text	00000002 UnusedISR
 0800636c g     F .text	0000003e LedInit
@@ -94,7 +94,7 @@ SYMBOL TABLE:
 20000014 g       .bss	00000000 _bss
 0800666c g     F .text	00000004 GPIO_ResetBits
 08006428 g     F .text	00000148 main
-080061ac g     F .text	000000a4 BootComInit
+0800618c g     F .text	000000a4 BootComInit
 20000000 g       .data	00000000 _data
 080063ac g     F .text	0000007a LedToggle
 20000168 g       .bss	00000000 _estack
