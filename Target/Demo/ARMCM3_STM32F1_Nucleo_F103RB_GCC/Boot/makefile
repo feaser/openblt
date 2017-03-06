@@ -38,8 +38,6 @@ PROJ_FILES= \
 blt_conf.h \
 hooks.c \
 main.c \
-./lib/fatfs/ffconf.h \
-./lib/fatfs/mmc.c \
 ./lib/CMSIS/CM3/CoreSupport/core_cm3.c \
 ./lib/CMSIS/CM3/CoreSupport/core_cm3.h \
 ./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h \
@@ -54,11 +52,6 @@ main.c \
 ./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c \
 ./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c \
 ./lib/STM32F10x_StdPeriph_Driver/stm32f10x_conf.h \
-../../../Source/third_party/fatfs/src/diskio.h \
-../../../Source/third_party/fatfs/src/ff.c \
-../../../Source/third_party/fatfs/src/ff.h \
-../../../Source/third_party/fatfs/src/integer.h \
-../../../Source/third_party/fatfs/src/option/unicode.c \
 ../../../Source/boot.c \
 ../../../Source/boot.h \
 ../../../Source/com.c \

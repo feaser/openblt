@@ -104,42 +104,6 @@
 
 
 /****************************************************************************************
-*   F I L E   S Y S T E M   I N T E R F A C E   C O N F I G U R A T I O N
-****************************************************************************************/
-/* The file system interface is selected by setting the BOOT_FILE_SYS_ENABLE configurable
- * to 1. This enables support for firmware updates from a file stored on a locally
- * attached file system such as an SD-card. Note that this interface can be enabled
- * together with one of the remote communication interfaces such as UART, CAN or USB.
- *
- * Set BOOT_FILE_LOGGING_ENABLE to 1 if you would like log messages to be created during
- * a firmware update. The hook function FileFirmwareUpdateLogHook() will be called each
- * time a new string formatted log entry is available. This could be used during testing
- * by outputting the string on UART or to create a log file on the file system itself.
- *
- * Set BOOT_FILE_ERROR_HOOK_ENABLE to 1 if you would like to be informed in case an error
- * occurs during the firmware update. This could for example be used to turn on an error
- * LED to inform the user that something went wrong. Inspecting the log messages provides
- * additional information on the error cause.
- *
- * Set BOOT_FILE_STARTED_HOOK_ENABLE to 1 if you would like to be informed when a new
- * firmware update is started by the bootloader.
- *
- * Set BOOT_FILE_COMPLETED_HOOK_ENABLE to 1 if you would like to be informed when a
- * firmware update is completed by the bootloader.
- */
-/** \brief Enable/disable support for firmware updates from a locally attached storage.*/
-#define BOOT_FILE_SYS_ENABLE            (0)
-/** \brief Enable/disable logging messages during firmware updates. */
-#define BOOT_FILE_LOGGING_ENABLE        (0)
-/** \brief Enable/disable a hook function that is called upon detection of an error. */
-#define BOOT_FILE_ERROR_HOOK_ENABLE     (0)
-/** \brief Enable/disable a hook function that is called at the start of the update. */
-#define BOOT_FILE_STARTED_HOOK_ENABLE   (0)
-/** \brief Enable/disable a hook function that is called at the end of the update. */
-#define BOOT_FILE_COMPLETED_HOOK_ENABLE (0)
-
-
-/****************************************************************************************
 *   B A C K D O O R   E N T R Y   C O N F I G U R A T I O N
 ****************************************************************************************/
 /* It is possible to implement an application specific method to force the bootloader to
