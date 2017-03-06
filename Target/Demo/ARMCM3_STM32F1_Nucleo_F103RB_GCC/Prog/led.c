@@ -81,13 +81,13 @@ void LedToggle(void)
   {
     led_toggle_state = 1;
     /* turn the LED on */
-    GPIO_ResetBits(GPIOA, GPIO_Pin_5);
+    GPIO_SetBits(GPIOA, GPIO_Pin_5);
   }
   else
   {
     led_toggle_state = 0;
     /* turn the LED off */
-    GPIO_SetBits(GPIOA, GPIO_Pin_5);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_5);
   }
 
   /* store toggle time to determine next toggle interval */
