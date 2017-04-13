@@ -36,7 +36,7 @@ interface
 // Includes
 //***************************************************************************************
 uses
-  Windows, Messages, SysUtils, Classes, Forms, IniFiles;
+  Windows, Messages, SysUtils, Classes, Forms, IniFiles, canlib;
 
 
 //***************************************************************************************
@@ -57,8 +57,9 @@ type
     packetTxId   : LongWord;
     packetRxId   : LongWord;
     extendedId   : Boolean;
+    kvaserHandle : canHandle;
     canHardware  : TKvaserHardware; { KVASER_xxx }
-    canChannel   : Word; { currently supported is 1..8 }
+    canChannel   : Word; { currently supported is 1..1 }
     canBaudrate  : LongWord; { in bits/sec }
     connected    : Boolean;
   public
@@ -91,15 +92,16 @@ begin
   // reset the packet ids
   packetTxId := 0;
   packetRxId := 0;
-
   // use standard id's by default
   extendedId := false;
-
   // reset packet length
   packetLen := 0;
-
   // disconnected by default
   connected := false;
+  // invalidate the handle
+  kvaserHandle := canINVALID_HANDLE;
+  // initialize the library
+  canInitializeLibrary;
 end; //*** end of Create ***
 
 
@@ -112,6 +114,8 @@ end; //*** end of Create ***
 //***************************************************************************************
 destructor TXcpTransport.Destroy;
 begin
+  // unload the library
+  canUnloadLibrary;
   // call inherited destructor
   inherited;
 end; //*** end of Destroy ***
@@ -175,6 +179,9 @@ end; //*** end of Configure ***
 //
 //***************************************************************************************
 function TXcpTransport.Connect: Boolean;
+var
+  openFlags: Integer;
+  frequency: Integer;
 begin
   // init result value
   result := false;
@@ -183,8 +190,52 @@ begin
   if connected then
     Disconnect;
 
-  //##Vg TODO connect to the CAN hardware interface and update the connected flag
-  connected := false;
+  // the current version only supports the leaf light v2
+  if canHardware = KVASER_LEAFLIGHT_V2 then
+  begin
+    // open the CAN channel if valid
+    if canChannel > 0 then
+    begin
+      // set the open flags
+      openFlags := canOPEN_REQUIRE_INIT_ACCESS;
+      if extendedId then
+      begin
+        openFlags := openFlags or canOPEN_REQUIRE_EXTENDED;
+      end;
+      kvaserHandle := canOpenChannel(canChannel - 1, openFlags);
+      // only continue if the channel was opened and the handle is not valid
+      if kvaserHandle >= 0 then
+      begin
+        case canBaudrate of
+          1000000: frequency := canBITRATE_1M;
+           500000: frequency := canBITRATE_500K;
+           250000: frequency := canBITRATE_250K;
+           125000: frequency := canBITRATE_125K;
+           100000: frequency := canBITRATE_100K;
+            83333: frequency := canBITRATE_83K;
+            50000: frequency := canBITRATE_50K;
+            10000: frequency := canBITRATE_10K;
+        else
+          frequency := canBITRATE_500K;
+        end;
+        // configure the baudrate
+        if canSetBusParams(kvaserHandle, frequency, 0, 0, 0, 0, 0) = canOK then
+        begin
+          // configure output control to the default normal mode
+          if canSetBusOutputControl(kvaserHandle, canDRIVER_NORMAL) = canOK then
+          begin
+            // go on the bus
+            if canBusOn(kvaserHandle) = canOK then
+            begin
+              // connection was established
+              connected := true;
+              result := true;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
 end; //*** end of Connect ***
 
 
@@ -196,14 +247,34 @@ end; //*** end of Connect ***
 //
 //***************************************************************************************
 function TXcpTransport.IsComError: Boolean;
+var
+  statusFlags: Cardinal;
 begin
   // init result to no error.
   result := false;
 
-  // check for bus off error if connected
+  // do not check if the handle is invalid
+  if kvaserHandle <= canINVALID_HANDLE then
+  begin
+    Exit;
+  end;
+
+  // check for bus off error or error passive if connected
   if connected then
   begin
-    //##Vg TODO check for bus off and possible bus heavy if available
+    if canReadStatus(kvaserHandle, statusFlags) = canOK then
+    begin
+      // check for bus off or error passive bits
+      if (statusFlags and (canSTAT_BUS_OFF or canSTAT_ERROR_PASSIVE)) > 0 then
+      begin
+        result := true;
+      end;
+    end
+    else
+    begin
+      // could not read the status which is also an indicator that something is wrong
+      result := true
+    end;
   end;
 end; //*** end of IsComError ***
 
@@ -220,6 +291,17 @@ function TXcpTransport.SendPacket(timeOutms: LongWord): Boolean;
 var
   responseReceived: Boolean;
   timeoutTime: DWORD;
+  txId: LongInt;
+  txData: array[0..kMaxPacketSize-1] of Byte;
+  txFlags: Cardinal;
+  rxId: LongInt;
+  rxData: array[0..kMaxPacketSize-1] of Byte;
+  rxFlags: Cardinal;
+  rxLen: Cardinal;
+  rxTime: Cardinal;
+  byteIdx: Byte;
+  status: canStatus;
+  idTypeOk: Boolean;
 begin
   // initialize the result value
   result := false;
@@ -231,9 +313,28 @@ begin
     Exit;
   end;
 
-  //##Vg TODO prepare the packet for transmission in a CAN message
+  // do not send if the handle is invalid
+  if kvaserHandle <= canINVALID_HANDLE then
+  begin
+    Exit;
+  end;
 
-  //##Vg transmit the packet via CAN and Exit if not possible
+  // prepare the packet for transmission in a CAN message
+  txId := packetTxId;
+  for byteIdx := 0 to (packetLen - 1) do
+  begin
+    txData[byteIdx] := packetData[byteIdx];
+  end;
+  if extendedId then
+    txFlags := canMSG_EXT
+  else
+    txFlags := canMSG_STD;
+
+  // submit the packet for transmission via the CAN bus
+  if canWrite(kvaserHandle, txId, @txData[0], packetLen, txFlags) <> canOK then
+  begin
+    Exit;
+  end;
 
   // reset flag and set the reception timeout time
   responseReceived := false;
@@ -241,10 +342,38 @@ begin
 
   // attempt to receive the packet response within the timeout time
   repeat
-    //##Vg attempt to read a message from the reception buffer, break loop on error
-    //##Vg check if it has the correct identifier (packetRxId) and set the
-    //     responseReceived flag if so
-
+    // prepare message reception
+    rxId := packetRxId;
+    // attempt to read the packet response from the reception queue
+    status := canReadSpecificSkip(kvaserHandle, rxId, @rxData[0], rxLen, rxFlags, rxTime);
+    // check if an error was detected
+    if (status <> canOK) and (status <> canERR_NOMSG) then
+    begin
+      // error detected. stop loop.
+      Break;
+    end;
+    // no error, now check if a message was actually received
+    if status = canOK then
+    begin
+      // a message with the identifier of the response packet was received. now check
+      // that the identifier type also matches
+      idTypeOk := false;
+      if extendedId then
+      begin
+        if (rxFlags and canMSG_EXT) > 0 then
+          idTypeOk := true;
+      end
+      else
+      begin
+        if (rxFlags and canMSG_STD) > 0 then
+          idTypeOk := true;
+      end;
+      if idTypeOk then
+      begin
+        // response received. set flag
+        responseReceived := true;
+      end;
+    end;
     // give the application a chance to use the processor
     Application.ProcessMessages;
   until (GetTickCount > timeoutTime) or (responseReceived);
@@ -252,7 +381,12 @@ begin
   // check if the response was correctly received
   if responseReceived then
   begin
-    //##Vg copy the response for futher processing (packetLen and packetData)
+    // copy the received response packet
+    packetLen := rxLen;
+    for byteIdx := 0 to (packetLen - 1) do
+    begin
+      packetData[byteIdx] := rxData[byteIdx];
+    end;
     // success
     result := true;
   end;
@@ -271,8 +405,16 @@ begin
   // disconnect CAN interface if connected
   if connected then
   begin
-    //##Vg TODO disconnect from the CAN hardware interface
+    // only disconnect if the handle is valid
+    if kvaserHandle > canINVALID_HANDLE then
+    begin
+      // take the channel from the bus
+      canBusOff(kvaserHandle);
+      // close the channel
+      canClose(kvaserHandle);
+    end;
   end;
+  kvaserHandle := canINVALID_HANDLE;
   connected := false;
 end; //*** end of Disconnect ***
 
