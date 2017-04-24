@@ -99,7 +99,7 @@ void CpuStartUserProgram(void)
    * user program's reset handler.
    */
   pProgResetHandler = (void(*)(void))(*((blt_addr *)CPU_USER_PROGRAM_STARTADDR_PTR));
-  /* The Cortex-M4 core has interrupts enabled out of reset. the bootloader
+  /* The Cortex-M0 core has interrupts enabled out of reset. the bootloader
    * explicitly disables these for security reasons. Enable them here again, so it does
    * not have to be done by the user program.
    */
