@@ -35,7 +35,6 @@
 void CpuInit(void);
 void CpuStartUserProgram(void);
 void CpuMemCopy(blt_addr dest, blt_addr src, blt_int16u len);
-void CpuReset(void);
 void CpuIrqDisable(void);
 void CpuIrqEnable(void);
 

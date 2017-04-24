@@ -56,12 +56,6 @@ extern blt_bool CpuUserProgramStartHook(void);
 #endif
 
 
-/****************************************************************************************
-* External functions
-****************************************************************************************/
-extern void reset_handler(void);                      /* implemented in cstart.s       */
-
-
 /************************************************************************************//**
 ** \brief     Initializes the CPU module.
 ** \return    none.
@@ -149,18 +143,6 @@ void CpuMemCopy(blt_addr dest, blt_addr src, blt_int16u len)
     CopService();
   }
 } /*** end of CpuMemCopy ***/
-
-
-/************************************************************************************//**
-** \brief     Perform a soft reset of the microcontroller by starting from the reset ISR.
-** \return    none.
-**
-****************************************************************************************/
-void CpuReset(void)
-{
-  /* perform a software reset by calling the reset ISR routine */
-  reset_handler();
-} /*** end of CpuReset ***/
 
 
 /*********************************** end of cpu.c **************************************/

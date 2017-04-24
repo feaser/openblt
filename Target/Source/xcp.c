@@ -1302,9 +1302,7 @@ static void XcpCmdProgramReset(blt_int8u *data)
 #endif
 
   /* reset the ecu after programming is done. so basically, just start the newly programmed
-   * firmware. it is okay if the code does not return here. if CpuReset() is used here, then
-   * the bootloader is first activated again, including the backdoor timer which is not
-   * desired.
+   * firmware. it is okay if the code does not return here. 
    */
   CpuStartUserProgram();
 

@@ -451,11 +451,7 @@ void FileTask(void)
       /* inform application about update completed event via hook function */
       FileFirmwareUpdateCompletedHook();
 #endif
-      /* attempt to start the user program now that programming is done. note that
-       * a call to CpuReset() won't work correctly here, because if the same firmware
-       * file is still on the locally attached storage, it will just restart the
-       * firmware update again and again..
-       */
+      /* attempt to start the user program now that programming is done */
       CpuStartUserProgram();
     }
   }

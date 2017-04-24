@@ -74,8 +74,7 @@
 /** \brief Enable (=1) or disable (=0) support for the programming resource. This is
  *         required when non-volatile memory will be erased or programmed during an
  *         XCP session.  In this case the following external hardware specific
- *         functions must be provided: HwNvmWriteMemory, HwNvmEraseMemory and
- *         HwCpuReset.
+ *         functions must be provided: NvmWrite, NvmErase and CpuStartUserProgram.
  */
 #define XCP_RES_PROGRAMMING_EN         (1)
 

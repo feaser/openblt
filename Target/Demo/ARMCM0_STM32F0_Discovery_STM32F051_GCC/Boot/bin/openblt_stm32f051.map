@@ -3255,8 +3255,6 @@ Discarded input sections
  .text          0x00000000        0x0 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
  .data          0x00000000        0x0 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
  .bss           0x00000000        0x0 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
- .text.CpuReset
-                0x00000000        0x8 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
  .debug_macro   0x00000000      0x844 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
  .debug_macro   0x00000000       0x1c .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
  .debug_macro   0x00000000       0x1c .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
@@ -4267,54 +4265,53 @@ LOAD c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-
 .igot.plt       0x2000013c        0x0 load address 0x0800184c
  .igot.plt      0x2000013c        0x0 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
 
-.bss            0x2000013c      0x510 load address 0x0800184c
+.bss            0x2000013c      0x50c load address 0x0800184c
                 0x2000013c                __bss_start__ = .
  *(.bss*)
  .bss           0x2000013c       0x1c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
- .bss.ledOn.6540
-                0x20000158        0x1 .\..\obj\led.o
- *fill*         0x20000159        0x1 
+ .bss.nextBlinkEvent.6539
+                0x20000158        0x4 .\..\obj\led.o
  .bss.ledBlinkIntervalMs
-                0x2000015a        0x2 .\..\obj\led.o
- .bss.nextBlinkEvent.6541
-                0x2000015c        0x4 .\..\obj\led.o
+                0x2000015c        0x2 .\..\obj\led.o
+ .bss.ledOn.6538
+                0x2000015e        0x1 .\..\obj\led.o
+ *fill*         0x2000015f        0x1 
  .bss.bootBlockInfo
                 0x20000160      0x204 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
  .bss.blockInfo
                 0x20000364      0x204 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
  .bss.millisecond_counter
                 0x20000568        0x4 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
- .bss.xcpCtoRxLength.6550
-                0x2000056c        0x1 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
- *fill*         0x2000056d        0x3 
- .bss.xcpCtoReqPacket.6549
-                0x20000570       0x41 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
- .bss.xcpCtoRxInProgress.6551
-                0x200005b1        0x1 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
- *fill*         0x200005b2        0x2 
- .bss.xcpCtoRxStartTime.6552
-                0x200005b4        0x4 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+ .bss.xcpCtoReqPacket.6547
+                0x2000056c       0x41 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+ .bss.xcpCtoRxLength.6548
+                0x200005ad        0x1 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+ .bss.xcpCtoRxInProgress.6549
+                0x200005ae        0x1 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+ *fill*         0x200005af        0x1 
+ .bss.xcpCtoRxStartTime.6550
+                0x200005b0        0x4 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
  .bss.backdoorOpen
-                0x200005b8        0x1 .\..\obj\~#\~#\~#\source\backdoor.o
- *fill*         0x200005b9        0x3 
+                0x200005b4        0x1 .\..\obj\~#\~#\~#\source\backdoor.o
+ *fill*         0x200005b5        0x3 
  .bss.backdoorOpenTime
-                0x200005bc        0x4 .\..\obj\~#\~#\~#\source\backdoor.o
- .bss.xcpCtoReqPacket.4270
-                0x200005c0       0x40 .\..\obj\~#\~#\~#\source\com.o
- .bss.xcpInfo   0x20000600       0x4c .\..\obj\~#\~#\~#\source\xcp.o
+                0x200005b8        0x4 .\..\obj\~#\~#\~#\source\backdoor.o
+ .bss.xcpCtoReqPacket.4268
+                0x200005bc       0x40 .\..\obj\~#\~#\~#\source\com.o
+ .bss.xcpInfo   0x200005fc       0x4c .\..\obj\~#\~#\~#\source\xcp.o
  *(COMMON)
-                0x2000064c                __bss_end__ = .
+                0x20000648                __bss_end__ = .
 
-.heap           0x20000650        0x0
-                0x20000650                __end__ = .
-                0x20000650                end = __end__
+.heap           0x20000648        0x0
+                0x20000648                __end__ = .
+                0x20000648                end = __end__
  *(.heap*)
- .heap          0x20000650        0x0 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
-                0x20000650                __HeapLimit = .
+ .heap          0x20000648        0x0 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
+                0x20000648                __HeapLimit = .
 
-.stack_dummy    0x20000650      0x100
+.stack_dummy    0x20000648      0x100
  *(.stack)
- .stack         0x20000650      0x100 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
+ .stack         0x20000648      0x100 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
                 0x20001000                __StackTop = (ORIGIN (RAM) + LENGTH (RAM))
                 0x20000f00                __StackLimit = (__StackTop - SIZEOF (.stack_dummy))
                 0x20001000                PROVIDE (__stack, __StackTop)
@@ -4470,7 +4467,7 @@ OUTPUT(.\..\bin\openblt_stm32f051.elf elf32-littlearm)
  .comment       0x0000006e       0x6f .\..\obj\~#\~#\~#\source\cop.o
  .comment       0x0000006e       0x6f .\..\obj\~#\~#\~#\source\xcp.o
 
-.debug_info     0x00000000     0x609f
+.debug_info     0x00000000     0x6075
  .debug_info    0x00000000      0x264 .\..\obj\hooks.o
  .debug_info    0x00000264      0x2c3 .\..\obj\led.o
  .debug_info    0x00000527      0xb48 .\..\obj\lib\spl\src\stm32f0xx_flash.o
@@ -4480,19 +4477,19 @@ OUTPUT(.\..\bin\openblt_stm32f051.elf elf32-littlearm)
  .debug_info    0x000024d1      0xf42 .\..\obj\lib\spl\src\stm32f0xx_usart.o
  .debug_info    0x00003413      0x2e5 .\..\obj\lib\system_stm32f0xx.o
  .debug_info    0x000036f8      0x46e .\..\obj\main.o
- .debug_info    0x00003b66      0x2d0 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
- .debug_info    0x00003e36      0x955 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
- .debug_info    0x0000478b       0x84 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
- .debug_info    0x0000480f       0xac .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
- .debug_info    0x000048bb      0x252 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
- .debug_info    0x00004b0d      0x174 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
- .debug_info    0x00004c81      0x5a7 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
- .debug_info    0x00005228       0xc6 .\..\obj\~#\~#\~#\source\assert.o
- .debug_info    0x000052ee      0x114 .\..\obj\~#\~#\~#\source\backdoor.o
- .debug_info    0x00005402      0x156 .\..\obj\~#\~#\~#\source\boot.o
- .debug_info    0x00005558      0x289 .\..\obj\~#\~#\~#\source\com.o
- .debug_info    0x000057e1       0xb6 .\..\obj\~#\~#\~#\source\cop.o
- .debug_info    0x00005897      0x808 .\..\obj\~#\~#\~#\source\xcp.o
+ .debug_info    0x00003b66      0x2a6 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
+ .debug_info    0x00003e0c      0x955 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
+ .debug_info    0x00004761       0x84 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
+ .debug_info    0x000047e5       0xac .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
+ .debug_info    0x00004891      0x252 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
+ .debug_info    0x00004ae3      0x174 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
+ .debug_info    0x00004c57      0x5a7 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+ .debug_info    0x000051fe       0xc6 .\..\obj\~#\~#\~#\source\assert.o
+ .debug_info    0x000052c4      0x114 .\..\obj\~#\~#\~#\source\backdoor.o
+ .debug_info    0x000053d8      0x156 .\..\obj\~#\~#\~#\source\boot.o
+ .debug_info    0x0000552e      0x289 .\..\obj\~#\~#\~#\source\com.o
+ .debug_info    0x000057b7       0xb6 .\..\obj\~#\~#\~#\source\cop.o
+ .debug_info    0x0000586d      0x808 .\..\obj\~#\~#\~#\source\xcp.o
 
 .debug_abbrev   0x00000000     0x1a4f
  .debug_abbrev  0x00000000      0x11d .\..\obj\hooks.o
@@ -4518,7 +4515,7 @@ OUTPUT(.\..\bin\openblt_stm32f051.elf elf32-littlearm)
  .debug_abbrev  0x000017d8       0x63 .\..\obj\~#\~#\~#\source\cop.o
  .debug_abbrev  0x0000183b      0x214 .\..\obj\~#\~#\~#\source\xcp.o
 
-.debug_aranges  0x00000000      0x878
+.debug_aranges  0x00000000      0x870
  .debug_aranges
                 0x00000000       0x30 .\..\obj\hooks.o
  .debug_aranges
@@ -4538,33 +4535,33 @@ OUTPUT(.\..\bin\openblt_stm32f051.elf elf32-littlearm)
  .debug_aranges
                 0x00000570       0x20 .\..\obj\main.o
  .debug_aranges
-                0x00000590       0x38 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
+                0x00000590       0x30 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
  .debug_aranges
-                0x000005c8       0x78 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
+                0x000005c0       0x78 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
  .debug_aranges
-                0x00000640       0x28 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
+                0x00000638       0x28 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
  .debug_aranges
-                0x00000668       0x20 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
+                0x00000660       0x20 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
  .debug_aranges
-                0x00000688       0x50 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
+                0x00000680       0x50 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
  .debug_aranges
-                0x000006d8       0x38 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
+                0x000006d0       0x38 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
  .debug_aranges
-                0x00000710       0x40 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+                0x00000708       0x40 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
  .debug_aranges
-                0x00000750       0x20 .\..\obj\~#\~#\~#\source\assert.o
+                0x00000748       0x20 .\..\obj\~#\~#\~#\source\assert.o
  .debug_aranges
-                0x00000770       0x28 .\..\obj\~#\~#\~#\source\backdoor.o
+                0x00000768       0x28 .\..\obj\~#\~#\~#\source\backdoor.o
  .debug_aranges
-                0x00000798       0x28 .\..\obj\~#\~#\~#\source\boot.o
+                0x00000790       0x28 .\..\obj\~#\~#\~#\source\boot.o
  .debug_aranges
-                0x000007c0       0x50 .\..\obj\~#\~#\~#\source\com.o
+                0x000007b8       0x50 .\..\obj\~#\~#\~#\source\com.o
  .debug_aranges
-                0x00000810       0x28 .\..\obj\~#\~#\~#\source\cop.o
+                0x00000808       0x28 .\..\obj\~#\~#\~#\source\cop.o
  .debug_aranges
-                0x00000838       0x40 .\..\obj\~#\~#\~#\source\xcp.o
+                0x00000830       0x40 .\..\obj\~#\~#\~#\source\xcp.o
 
-.debug_ranges   0x00000000      0x728
+.debug_ranges   0x00000000      0x720
  .debug_ranges  0x00000000       0x20 .\..\obj\hooks.o
  .debug_ranges  0x00000020       0x20 .\..\obj\led.o
  .debug_ranges  0x00000040      0x100 .\..\obj\lib\spl\src\stm32f0xx_flash.o
@@ -4574,18 +4571,18 @@ OUTPUT(.\..\bin\openblt_stm32f051.elf elf32-littlearm)
  .debug_ranges  0x00000348      0x190 .\..\obj\lib\spl\src\stm32f0xx_usart.o
  .debug_ranges  0x000004d8       0x18 .\..\obj\lib\system_stm32f0xx.o
  .debug_ranges  0x000004f0       0x10 .\..\obj\main.o
- .debug_ranges  0x00000500       0x28 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
- .debug_ranges  0x00000528       0x88 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
- .debug_ranges  0x000005b0       0x18 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
- .debug_ranges  0x000005c8       0x40 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
- .debug_ranges  0x00000608       0x28 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
- .debug_ranges  0x00000630       0x30 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
- .debug_ranges  0x00000660       0x10 .\..\obj\~#\~#\~#\source\assert.o
- .debug_ranges  0x00000670       0x18 .\..\obj\~#\~#\~#\source\backdoor.o
- .debug_ranges  0x00000688       0x18 .\..\obj\~#\~#\~#\source\boot.o
- .debug_ranges  0x000006a0       0x40 .\..\obj\~#\~#\~#\source\com.o
- .debug_ranges  0x000006e0       0x18 .\..\obj\~#\~#\~#\source\cop.o
- .debug_ranges  0x000006f8       0x30 .\..\obj\~#\~#\~#\source\xcp.o
+ .debug_ranges  0x00000500       0x20 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
+ .debug_ranges  0x00000520       0x88 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
+ .debug_ranges  0x000005a8       0x18 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
+ .debug_ranges  0x000005c0       0x40 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
+ .debug_ranges  0x00000600       0x28 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
+ .debug_ranges  0x00000628       0x30 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+ .debug_ranges  0x00000658       0x10 .\..\obj\~#\~#\~#\source\assert.o
+ .debug_ranges  0x00000668       0x18 .\..\obj\~#\~#\~#\source\backdoor.o
+ .debug_ranges  0x00000680       0x18 .\..\obj\~#\~#\~#\source\boot.o
+ .debug_ranges  0x00000698       0x40 .\..\obj\~#\~#\~#\source\com.o
+ .debug_ranges  0x000006d8       0x18 .\..\obj\~#\~#\~#\source\cop.o
+ .debug_ranges  0x000006f0       0x30 .\..\obj\~#\~#\~#\source\xcp.o
 
 .debug_macro    0x00000000     0xca4a
  .debug_macro   0x00000000      0x213 .\..\obj\hooks.o
@@ -4657,7 +4654,7 @@ OUTPUT(.\..\bin\openblt_stm32f051.elf elf32-littlearm)
  .debug_macro   0x0000c862       0x91 .\..\obj\~#\~#\~#\source\cop.o
  .debug_macro   0x0000c8f3      0x157 .\..\obj\~#\~#\~#\source\xcp.o
 
-.debug_line     0x00000000     0x58ee
+.debug_line     0x00000000     0x58dc
  .debug_line    0x00000000      0x53e .\..\obj\hooks.o
  .debug_line    0x0000053e      0x53d .\..\obj\led.o
  .debug_line    0x00000a7b      0x740 .\..\obj\lib\spl\src\stm32f0xx_flash.o
@@ -4667,21 +4664,21 @@ OUTPUT(.\..\bin\openblt_stm32f051.elf elf32-littlearm)
  .debug_line    0x000023e5      0x848 .\..\obj\lib\spl\src\stm32f0xx_usart.o
  .debug_line    0x00002c2d      0x493 .\..\obj\lib\system_stm32f0xx.o
  .debug_line    0x000030c0      0x527 .\..\obj\main.o
- .debug_line    0x000035e7      0x56a .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
- .debug_line    0x00003b51      0x6d3 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
- .debug_line    0x00004224      0x142 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
- .debug_line    0x00004366       0xb4 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
- .debug_line    0x0000441a      0x1aa .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
- .debug_line    0x000045c4      0x569 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
- .debug_line    0x00004b2d      0x5c7 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
- .debug_line    0x000050f4      0x10a .\..\obj\~#\~#\~#\source\assert.o
- .debug_line    0x000051fe      0x128 .\..\obj\~#\~#\~#\source\backdoor.o
- .debug_line    0x00005326      0x11f .\..\obj\~#\~#\~#\source\boot.o
- .debug_line    0x00005445      0x191 .\..\obj\~#\~#\~#\source\com.o
- .debug_line    0x000055d6      0x115 .\..\obj\~#\~#\~#\source\cop.o
- .debug_line    0x000056eb      0x203 .\..\obj\~#\~#\~#\source\xcp.o
+ .debug_line    0x000035e7      0x558 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
+ .debug_line    0x00003b3f      0x6d3 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
+ .debug_line    0x00004212      0x142 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
+ .debug_line    0x00004354       0xb4 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cstart.o
+ .debug_line    0x00004408      0x1aa .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
+ .debug_line    0x000045b2      0x569 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
+ .debug_line    0x00004b1b      0x5c7 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+ .debug_line    0x000050e2      0x10a .\..\obj\~#\~#\~#\source\assert.o
+ .debug_line    0x000051ec      0x128 .\..\obj\~#\~#\~#\source\backdoor.o
+ .debug_line    0x00005314      0x11f .\..\obj\~#\~#\~#\source\boot.o
+ .debug_line    0x00005433      0x191 .\..\obj\~#\~#\~#\source\com.o
+ .debug_line    0x000055c4      0x115 .\..\obj\~#\~#\~#\source\cop.o
+ .debug_line    0x000056d9      0x203 .\..\obj\~#\~#\~#\source\xcp.o
 
-.debug_str      0x00000000    0x42095
+.debug_str      0x00000000    0x4207e
  .debug_str     0x00000000    0x3fb4d .\..\obj\hooks.o
                               0x3fcc3 (size before relaxing)
  .debug_str     0x0003fb4d       0x78 .\..\obj\led.o
@@ -4700,32 +4697,32 @@ OUTPUT(.\..\bin\openblt_stm32f051.elf elf32-littlearm)
                               0x3f4c0 (size before relaxing)
  .debug_str     0x000411db       0x34 .\..\obj\main.o
                               0x3fe18 (size before relaxing)
- .debug_str     0x0004120f      0x1f9 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
-                              0x3fe30 (size before relaxing)
- .debug_str     0x00041408      0x33d .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
+ .debug_str     0x0004120f      0x1e2 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
+                              0x3fe19 (size before relaxing)
+ .debug_str     0x000413f1      0x33d .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
                               0x3fffe (size before relaxing)
- .debug_str     0x00041745       0x31 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
+ .debug_str     0x0004172e       0x31 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
                                0x2c87 (size before relaxing)
- .debug_str     0x00041776       0x54 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
+ .debug_str     0x0004175f       0x54 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
                                0x2d6e (size before relaxing)
- .debug_str     0x000417ca       0x6c .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
+ .debug_str     0x000417b3       0x6c .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
                               0x3fc48 (size before relaxing)
- .debug_str     0x00041836      0x123 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+ .debug_str     0x0004181f      0x123 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
                               0x3fe7c (size before relaxing)
- .debug_str     0x00041959       0x2a .\..\obj\~#\~#\~#\source\assert.o
+ .debug_str     0x00041942       0x2a .\..\obj\~#\~#\~#\source\assert.o
                                0x2c8e (size before relaxing)
- .debug_str     0x00041983       0x8b .\..\obj\~#\~#\~#\source\backdoor.o
+ .debug_str     0x0004196c       0x8b .\..\obj\~#\~#\~#\source\backdoor.o
                                0x2cf7 (size before relaxing)
- .debug_str     0x00041a0e       0x32 .\..\obj\~#\~#\~#\source\boot.o
+ .debug_str     0x000419f7       0x32 .\..\obj\~#\~#\~#\source\boot.o
                                0x2ccb (size before relaxing)
- .debug_str     0x00041a40      0x10a .\..\obj\~#\~#\~#\source\com.o
+ .debug_str     0x00041a29      0x10a .\..\obj\~#\~#\~#\source\com.o
                                0x2ddd (size before relaxing)
- .debug_str     0x00041b4a       0x19 .\..\obj\~#\~#\~#\source\cop.o
+ .debug_str     0x00041b33       0x19 .\..\obj\~#\~#\~#\source\cop.o
                                0x2c82 (size before relaxing)
- .debug_str     0x00041b63      0x532 .\..\obj\~#\~#\~#\source\xcp.o
+ .debug_str     0x00041b4c      0x532 .\..\obj\~#\~#\~#\source\xcp.o
                                0x3280 (size before relaxing)
 
-.debug_frame    0x00000000     0x119c
+.debug_frame    0x00000000     0x1184
  .debug_frame   0x00000000       0x58 .\..\obj\hooks.o
  .debug_frame   0x00000058       0x50 .\..\obj\led.o
  .debug_frame   0x000000a8      0x2a0 .\..\obj\lib\spl\src\stm32f0xx_flash.o
@@ -4735,23 +4732,23 @@ OUTPUT(.\..\bin\openblt_stm32f051.elf elf32-littlearm)
  .debug_frame   0x000007a8      0x354 .\..\obj\lib\spl\src\stm32f0xx_usart.o
  .debug_frame   0x00000afc       0x38 .\..\obj\lib\system_stm32f0xx.o
  .debug_frame   0x00000b34       0x30 .\..\obj\main.o
- .debug_frame   0x00000b64       0x74 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
- .debug_frame   0x00000bd8      0x148 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
- .debug_frame   0x00000d20       0x30 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
- .debug_frame   0x00000d50       0xb8 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
- .debug_frame   0x00000e08       0x58 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
- .debug_frame   0x00000e60       0x94 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
- .debug_frame   0x00000ef4       0x28 .\..\obj\~#\~#\~#\source\assert.o
- .debug_frame   0x00000f1c       0x40 .\..\obj\~#\~#\~#\source\backdoor.o
- .debug_frame   0x00000f5c       0x40 .\..\obj\~#\~#\~#\source\boot.o
- .debug_frame   0x00000f9c       0xa0 .\..\obj\~#\~#\~#\source\com.o
- .debug_frame   0x0000103c       0x40 .\..\obj\~#\~#\~#\source\cop.o
- .debug_frame   0x0000107c       0x6c .\..\obj\~#\~#\~#\source\xcp.o
- .debug_frame   0x000010e8       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m\libgcc.a(_udivsi3.o)
- .debug_frame   0x00001108       0x28 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m\libg_n.a(lib_a-exit.o)
- .debug_frame   0x00001130       0x2c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m\libg_n.a(lib_a-init.o)
- .debug_frame   0x0000115c       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m\libg_n.a(lib_a-memset.o)
- .debug_frame   0x0000117c       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m\libnosys_s.a(_exit.o)
+ .debug_frame   0x00000b64       0x5c .\..\obj\~#\~#\~#\source\armcm0_stm32f0\cpu.o
+ .debug_frame   0x00000bc0      0x148 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\flash.o
+ .debug_frame   0x00000d08       0x30 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\gcc\cpu_comp.o
+ .debug_frame   0x00000d38       0xb8 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\nvm.o
+ .debug_frame   0x00000df0       0x58 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\timer.o
+ .debug_frame   0x00000e48       0x94 .\..\obj\~#\~#\~#\source\armcm0_stm32f0\uart.o
+ .debug_frame   0x00000edc       0x28 .\..\obj\~#\~#\~#\source\assert.o
+ .debug_frame   0x00000f04       0x40 .\..\obj\~#\~#\~#\source\backdoor.o
+ .debug_frame   0x00000f44       0x40 .\..\obj\~#\~#\~#\source\boot.o
+ .debug_frame   0x00000f84       0xa0 .\..\obj\~#\~#\~#\source\com.o
+ .debug_frame   0x00001024       0x40 .\..\obj\~#\~#\~#\source\cop.o
+ .debug_frame   0x00001064       0x6c .\..\obj\~#\~#\~#\source\xcp.o
+ .debug_frame   0x000010d0       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m\libgcc.a(_udivsi3.o)
+ .debug_frame   0x000010f0       0x28 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m\libg_n.a(lib_a-exit.o)
+ .debug_frame   0x00001118       0x2c c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m\libg_n.a(lib_a-init.o)
+ .debug_frame   0x00001144       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m\libg_n.a(lib_a-memset.o)
+ .debug_frame   0x00001164       0x20 c:/program files (x86)/embitz/1.00/share/em_armgcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m\libnosys_s.a(_exit.o)
 
 .debug_loc      0x00000000     0x2e5c
  .debug_loc     0x00000000      0x8c2 .\..\obj\lib\spl\src\stm32f0xx_flash.o
