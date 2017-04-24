@@ -33,7 +33,7 @@ QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
-TAB_SIZE               = 8
+TAB_SIZE               = 2
 ALIASES                = 
 OPTIMIZE_OUTPUT_FOR_C  = YES
 OPTIMIZE_OUTPUT_JAVA   = NO
@@ -44,7 +44,7 @@ CPP_CLI_SUPPORT        = NO
 SIP_SUPPORT            = NO
 DISTRIBUTE_GROUP_DOC   = NO
 SUBGROUPING            = YES
-TYPEDEF_HIDES_STRUCT   = NO
+TYPEDEF_HIDES_STRUCT   = YES
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
@@ -60,12 +60,12 @@ HIDE_FRIEND_COMPOUNDS  = NO
 HIDE_IN_BODY_DOCS      = NO
 INTERNAL_DOCS          = NO
 CASE_SENSE_NAMES       = NO
-HIDE_SCOPE_NAMES       = NO
+HIDE_SCOPE_NAMES       = YES
 SHOW_INCLUDE_FILES     = YES
 INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = YES
 SORT_BRIEF_DOCS        = NO
-SORT_GROUP_NAMES       = NO
+SORT_GROUP_NAMES       = YES
 SORT_BY_SCOPE_NAME     = NO
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
@@ -127,7 +127,10 @@ EXCLUDE                =
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */lib/* \
                          */third_party/* \
+                         */Libraries/* \
+                         */Startup/* \
                          */Boot/usb*
+
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *
