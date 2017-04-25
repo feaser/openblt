@@ -216,7 +216,7 @@ void FileTask(void)
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
     FileFirmwareUpdateLogHook("OK\n\r");
     FileFirmwareUpdateLogHook("Starting the programming sequence\n\r");
-    FileFirmwareUpdateLogHook("Parsing firmware file to obtain erase size...");
+    FileFirmwareUpdateLogHook("Parsing firmware file to detect erase blocks...");
 #endif
     /* prepare data objects for the erasing state */
     eraseInfo.start_address = 0;
@@ -276,12 +276,57 @@ void FileTask(void)
       }
       else
       {
-        /* update the start_address and byte count */
-        if (lineParseObject.address < eraseInfo.start_address)
+        /* does this data fit at the end of the previously detected program block? */
+        if (lineParseObject.address == (eraseInfo.start_address + eraseInfo.total_size))
         {
-          eraseInfo.start_address = lineParseObject.address;
+          /* update the byte count */
+          eraseInfo.total_size += parse_result;
         }
-        eraseInfo.total_size += parse_result;
+        else
+        {
+          /* data does not belong to the previously detected block so there must be a
+           * gap in the data. first erase the currently detected block and then start
+           * tracking a new block.
+           */
+          #if (BOOT_FILE_LOGGING_ENABLE > 0)
+          FileFirmwareUpdateLogHook("OK\n\r");
+          FileFirmwareUpdateLogHook("Erasing ");
+          /* convert size to string  */
+          FileLibLongToIntString(eraseInfo.total_size, loggingStr);
+          FileFirmwareUpdateLogHook(loggingStr);
+          FileFirmwareUpdateLogHook(" bytes from memory at 0x");
+          /* convert address to hex-string  */
+          FileLibByteToHexString((blt_int8u)(eraseInfo.start_address >> 24), &loggingStr[0]);
+          FileLibByteToHexString((blt_int8u)(eraseInfo.start_address >> 16), &loggingStr[2]);
+          FileLibByteToHexString((blt_int8u)(eraseInfo.start_address >> 8), &loggingStr[4]);
+          FileLibByteToHexString((blt_int8u)eraseInfo.start_address, &loggingStr[6]);
+          FileFirmwareUpdateLogHook(loggingStr);
+          FileFirmwareUpdateLogHook("...");
+          #endif
+          /* still here so we are ready to perform the memory erase operation */
+          if (NvmErase(eraseInfo.start_address, eraseInfo.total_size) == BLT_FALSE)
+          {
+            #if (BOOT_FILE_LOGGING_ENABLE > 0)
+            FileFirmwareUpdateLogHook("ERROR\n\r");
+            #endif
+            #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+            FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_ERASE_MEMORY);
+            #endif
+            /* close the file */
+            f_close(&fatFsObjects.file);
+            /* cannot continue with firmware update so go back to idle state */
+            firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
+            return;
+          }
+          #if (BOOT_FILE_LOGGING_ENABLE > 0)
+          FileFirmwareUpdateLogHook("OK\n\r");
+          FileFirmwareUpdateLogHook("Parsing firmware file to detect erase blocks...");
+          #endif
+
+          /* store the start_address and element count */
+          eraseInfo.start_address = lineParseObject.address;
+          eraseInfo.total_size = parse_result;
+        }
       }
     }
     /* check if the end of the file was reached */
@@ -302,35 +347,40 @@ void FileTask(void)
         firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
-#if (BOOT_FILE_LOGGING_ENABLE > 0)
-      FileFirmwareUpdateLogHook("OK\n\r");
-      FileFirmwareUpdateLogHook("Erasing ");
-      /* convert size to string  */
-      FileLibLongToIntString(eraseInfo.total_size, loggingStr);
-      FileFirmwareUpdateLogHook(loggingStr);
-      FileFirmwareUpdateLogHook(" bytes from memory at 0x");
-      /* convert address to hex-string  */
-      FileLibByteToHexString((blt_int8u)(eraseInfo.start_address >> 24), &loggingStr[0]);
-      FileLibByteToHexString((blt_int8u)(eraseInfo.start_address >> 16), &loggingStr[2]);
-      FileLibByteToHexString((blt_int8u)(eraseInfo.start_address >> 8), &loggingStr[4]);
-      FileLibByteToHexString((blt_int8u)eraseInfo.start_address, &loggingStr[6]);
-      FileFirmwareUpdateLogHook(loggingStr);
-      FileFirmwareUpdateLogHook("...");
-#endif
-      /* still here so we are ready to perform the memory erase operation */
-      if (NvmErase(eraseInfo.start_address, eraseInfo.total_size) == BLT_FALSE)
+      /* still here so we are ready to perform the last memory erase operation, if there
+       * is still something left to erase.
+       */
+      if (eraseInfo.total_size > 0)
       {
-#if (BOOT_FILE_LOGGING_ENABLE > 0)
-        FileFirmwareUpdateLogHook("ERROR\n\r");
-#endif
-#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
-        FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_ERASE_MEMORY);
-#endif
-        /* close the file */
-        f_close(&fatFsObjects.file);
-        /* cannot continue with firmware update so go back to idle state */
-        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
-        return;
+        #if (BOOT_FILE_LOGGING_ENABLE > 0)
+        FileFirmwareUpdateLogHook("OK\n\r");
+        FileFirmwareUpdateLogHook("Erasing ");
+        /* convert size to string  */
+        FileLibLongToIntString(eraseInfo.total_size, loggingStr);
+        FileFirmwareUpdateLogHook(loggingStr);
+        FileFirmwareUpdateLogHook(" bytes from memory at 0x");
+        /* convert address to hex-string  */
+        FileLibByteToHexString((blt_int8u)(eraseInfo.start_address >> 24), &loggingStr[0]);
+        FileLibByteToHexString((blt_int8u)(eraseInfo.start_address >> 16), &loggingStr[2]);
+        FileLibByteToHexString((blt_int8u)(eraseInfo.start_address >> 8), &loggingStr[4]);
+        FileLibByteToHexString((blt_int8u)eraseInfo.start_address, &loggingStr[6]);
+        FileFirmwareUpdateLogHook(loggingStr);
+        FileFirmwareUpdateLogHook("...");
+        #endif
+        if (NvmErase(eraseInfo.start_address, eraseInfo.total_size) == BLT_FALSE)
+        {
+          #if (BOOT_FILE_LOGGING_ENABLE > 0)
+          FileFirmwareUpdateLogHook("ERROR\n\r");
+          #endif
+          #if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+          FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_ERASE_MEMORY);
+          #endif
+          /* close the file */
+          f_close(&fatFsObjects.file);
+          /* cannot continue with firmware update so go back to idle state */
+          firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
+          return;
+        }
       }
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("OK\n\r");
