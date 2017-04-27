@@ -16,7 +16,7 @@
 <p>The f_chdrive function changes the current drive.</p>
 <pre>
 FRESULT f_chdrive (
-  BYTE <span class="arg">vol</span> <span class="c">/* [IN] Logical drive number */</span>
+  const TCHAR* <span class="arg">path</span>  <span class="c">/* [IN] Logical drive number */</span>
 );
 </pre>
 </div>
@@ -24,7 +24,7 @@ FRESULT f_chdrive (
 <div class="para arg">
 <h4>Parameters</h4>
 <dl class="par">
-<dt>vol</dt>
+<dt>path</dt>
 <dd>Specifies the <a href="filename.html">logical drive number</a> to be set as the current drive.</dd>
 </dl>
 </div>
@@ -41,12 +41,12 @@ FRESULT f_chdrive (
 
 <div class="para desc">
 <h4>Description</h4>
-<p>The <tt>f_chdrive()</tt> function changes the current drive. The initial value of the current drive number is 0. Note that the current drive is retained in a static variable so that it also affects other tasks that using the file functions.</p>
+<p>The <tt>f_chdrive</tt> function changes the current drive. The initial value of the current drive number is 0. Note that the current drive is retained in a static variable so that it also affects other tasks that using the file functions.</p>
 </div>
 
 <div class="para comp">
 <h4>QuickInfo</h4>
-<p>Available when <tt>_FS_RPATH >= 1</tt>.</p>
+<p>Available when <tt>_FS_RPATH >= 1</tt> and <tt>_VOLUMES >= 2</tt>.</p>
 </div>
 
 

@@ -21,7 +21,20 @@
 #include "diskio.h"
 #include "stm32f2xx.h"                                /* STM32 registers               */
 #include "stm32f2xx_conf.h"                           /* STM32 peripheral drivers      */
+#include "boot.h"
 
+
+/*--------------------------------------------------------------------------
+
+   Macro Definitions
+
+---------------------------------------------------------------------------*/
+/* MMC card type flags (MMC_GET_TYPE) */
+#define CT_MMC		0x01		/* MMC ver 3 */
+#define CT_SD1		0x02		/* SD ver 1 */
+#define CT_SD2		0x04		/* SD ver 2 */
+#define CT_SDC		(CT_SD1|CT_SD2)	/* SD */
+#define CT_BLOCK	0x08		/* Block addressing */
 
 
 /*--------------------------------------------------------------------------
@@ -62,9 +75,6 @@
 
 static volatile
 DSTATUS Stat = STA_NOINIT;	/* Disk status */
-
-static volatile
-UINT Timer1, Timer2;		/* 1000Hz decrement timer */
 
 static
 UINT CardType;
@@ -247,11 +257,14 @@ static
 int wait_ready (void)
 {
 	BYTE d;
+  DWORD timeOutTime;
 
-	Timer2 = 500;	/* Wait for ready in timeout of 500ms */
+  /* set timeout for 500 ms from now */
+  timeOutTime = TimerGet() + 500;
+
 	do {
 		d = xchg_spi(0xFF);
-	} while ((d != 0xFF) && Timer2);
+	} while ((d != 0xFF) && (TimerGet() < timeOutTime));
 
 	return (d == 0xFF) ? 1 : 0;
 }
@@ -298,12 +311,14 @@ int rcvr_datablock (	/* 1:OK, 0:Failed */
 )
 {
 	BYTE token;
+  DWORD timeOutTime;
 
+  /* set timeout for 100 ms from now */
+  timeOutTime = TimerGet() + 100;
 
-	Timer1 = 100;
 	do {							/* Wait for data packet in timeout of 100ms */
 		token = xchg_spi(0xFF);
-	} while ((token == 0xFF) && Timer1);
+	} while ((token == 0xFF) && (TimerGet() < timeOutTime));
 
 	if(token != 0xFE) return 0;		/* If not valid data token, retutn with error */
 
@@ -323,7 +338,6 @@ int rcvr_datablock (	/* 1:OK, 0:Failed */
 /* Send a data packet to MMC                                             */
 /*-----------------------------------------------------------------------*/
 
-#if _USE_WRITE
 static
 int xmit_datablock (	/* 1:OK, 0:Failed */
 	const BYTE *buff,	/* 512 byte data block to be transmitted */
@@ -352,7 +366,6 @@ int xmit_datablock (	/* 1:OK, 0:Failed */
 
 	return 1;
 }
-#endif
 
 
 
@@ -418,6 +431,7 @@ DSTATUS disk_initialize (
 )
 {
 	BYTE n, cmd, ty, ocr[4];
+  DWORD timeOutTime;
 
 
 	if (pdrv) return STA_NOINIT;		/* Supports only single drive */
@@ -429,12 +443,13 @@ DSTATUS disk_initialize (
 
 	ty = 0;
 	if (send_cmd(CMD0, 0) == 1) {			/* Enter Idle state */
-		Timer1 = 1000;						/* Initialization timeout of 1000 msec */
+    timeOutTime = TimerGet() + 1000; /* Initialization timeout of 1000 msec */
+
 		if (send_cmd(CMD8, 0x1AA) == 1) {	/* SDv2? */
 			for (n = 0; n < 4; n++) ocr[n] = xchg_spi(0xFF);			/* Get trailing return value of R7 resp */
 			if (ocr[2] == 0x01 && ocr[3] == 0xAA) {				/* The card can work at vdd range of 2.7-3.6V */
-				while (Timer1 && send_cmd(ACMD41, 0x40000000));	/* Wait for leaving idle state (ACMD41 with HCS bit) */
-				if (Timer1 && send_cmd(CMD58, 0) == 0) {			/* Check CCS bit in the OCR */
+				while ((TimerGet() < timeOutTime) && send_cmd(ACMD41, 0x40000000));	/* Wait for leaving idle state (ACMD41 with HCS bit) */
+				if ((TimerGet() < timeOutTime) && send_cmd(CMD58, 0) == 0) {			/* Check CCS bit in the OCR */
 					for (n = 0; n < 4; n++) ocr[n] = xchg_spi(0xFF);
 					ty = (ocr[0] & 0x40) ? CT_SD2|CT_BLOCK : CT_SD2;	/* SDv2 */
 				}
@@ -445,8 +460,8 @@ DSTATUS disk_initialize (
 			} else {
 				ty = CT_MMC; cmd = CMD1;	/* MMCv3 */
 			}
-			while (Timer1 && send_cmd(cmd, 0));		/* Wait for leaving idle state */
-			if (!Timer1 || send_cmd(CMD16, 512) != 0)	/* Set read/write block length to 512 */
+			while ((TimerGet() < timeOutTime) && send_cmd(cmd, 0));		/* Wait for leaving idle state */
+			if (!(TimerGet() < timeOutTime) || send_cmd(CMD16, 512) != 0)	/* Set read/write block length to 512 */
 				ty = 0;
 		}
 	}
@@ -484,10 +499,10 @@ DSTATUS disk_status (
 /*-----------------------------------------------------------------------*/
 
 DRESULT disk_read (
-	BYTE pdrv,		/* Physical drive number (0) */
-	BYTE *buff,		/* Pointer to the data buffer to store read data */
-	DWORD sector,	/* Start sector number (LBA) */
-	BYTE count		/* Sector count (1..255) */
+	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
+	BYTE *buff,		/* Data buffer to store read data */
+	DWORD sector,	/* Sector address in LBA */
+	UINT count		/* Number of sectors to read */
 )
 {
 	if (pdrv || !count) return RES_PARERR;
@@ -520,12 +535,11 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-#if _USE_WRITE
 DRESULT disk_write (
-	BYTE pdrv,				/* Physical drive nmuber (0) */
-	const BYTE *buff,		/* Pointer to the data to be written */
-	DWORD sector,			/* Start sector number (LBA) */
-	BYTE count				/* Sector count (1..255) */
+	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
+	const BYTE *buff,	/* Data to be written */
+	DWORD sector,		/* Sector address in LBA */
+	UINT count			/* Number of sectors to write */
 )
 {
 	if (pdrv || !count) return RES_PARERR;
@@ -554,7 +568,6 @@ DRESULT disk_write (
 
 	return count ? RES_ERROR : RES_OK;
 }
-#endif
 
 
 
@@ -562,7 +575,6 @@ DRESULT disk_write (
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
 
-#if _USE_IOCTL
 DRESULT disk_ioctl (
 	BYTE pdrv,		/* Physical drive nmuber (0) */
 	BYTE cmd,		/* Control code */
@@ -660,40 +672,6 @@ DRESULT disk_ioctl (
 
 	return res;
 }
-#endif
 
 
-/*-----------------------------------------------------------------------*/
-/* Device Timer Driven Procedure                                         */
-/*-----------------------------------------------------------------------*/
-/* This function must be called by timer interrupt in period of 1ms      */
 
-void disk_timerproc(void)
-{
-	UINT n;
-
-	n = Timer1;					/* 1000Hz decrement timer with zero stopped */
-	if (n) Timer1 = --n;
-	n = Timer2;
-	if (n) Timer2 = --n;
-}
-
-
-/*---------------------------------------------------------*/
-/* User Provided Timer Function for FatFs module           */
-/*---------------------------------------------------------*/
-/* This is a real time clock service to be called from     */
-/* FatFs module. Any valid time must be returned even if   */
-/* the system does not support a real time clock.          */
-/* This is not required in read-only configuration.        */
-
-DWORD get_fattime (void)
-{
-  /* No RTC supprt. Return a fixed value 2013/5/10 0:00:00 */
-  return    ((DWORD)(2013 - 1980) << 25)  /* Y */
-      | ((DWORD)5  << 21)       /* M */
-      | ((DWORD)10 << 16)       /* D */
-      | ((DWORD)0  << 11)       /* H */
-      | ((DWORD)0  << 5)        /* M */
-      | ((DWORD)0  >> 1);       /* S */
-}

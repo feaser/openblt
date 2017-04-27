@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/readdir.html">
@@ -13,33 +13,32 @@
 
 <div class="para func">
 <h2>f_readdir</h2>
-<p>�f�B���N�g�����ڂ�ǂݏo���܂�</p>
+<p>ディレクトリ項目を読み出します。</p>
 <pre>
 FRESULT f_readdir (
-  DIR* <span class="arg">dj</span>,      <span class="c">/* [IN] �f�B���N�g���E�u�W�F�N�g�\���̂ւ̃|�C���^ */</span>
-  FILINFO* <span class="arg">fno</span>  <span class="c">/* [OUT] �t�@�C�����\���̂ւ̃|�C���^ */</span>
+  DIR* <span class="arg">dp</span>,      <span class="c">/* [IN] ディレクトリ ブジェクト構造体へのポインタ */</span>
+  FILINFO* <span class="arg">fno</span>  <span class="c">/* [OUT] ファイル情報構造体へのポインタ */</span>
 );
 </pre>
 </div>
 
 <div class="para arg">
-<h4>����</h4>
+<h4>引数</h4>
 <dl class="par">
-<dt>dj</dt>
-<dd>�L���ȃf�B���N�g���E�I�u�W�F�N�g�\���̂ւ̃|�C���^���w�肵�܂��B</dd>
+<dt>dp</dt>
+<dd><tt>f_opendir</tt>関数で作成された有効なディレクトリ オブジェクトへのポインタ、またはヌル ポインタを指定します。</dd>
 <dt>fno</dt>
-<dd>�ǂݏo�����f�B���N�g�����ڂ��i�[����t�@�C�����\���̂ւ̃|�C���^���w�肵�܂��B</dd>
+<dd>読み出したディレクトリ項目を格納する<a href="sfileinfo.html">ファイル情報構造体</a>へのポインタを指定します。</dd>
 </dl>
 </div>
 
 
 <div class="para ret">
-<h4>�߂�l</h4>
+<h4>戻り値</h4>
 <p>
 <a href="rc.html#ok">FR_OK</a>,
 <a href="rc.html#de">FR_DISK_ERR</a>,
 <a href="rc.html#ie">FR_INT_ERR</a>,
-<a href="rc.html#nr">FR_NOT_READY</a>,
 <a href="rc.html#io">FR_INVALID_OBJECT</a>,
 <a href="rc.html#tm">FR_TIMEOUT</a>,
 <a href="rc.html#nc">FR_NOT_ENOUGH_CORE</a>
@@ -48,64 +47,69 @@ FRESULT f_readdir (
 
 
 <div class="para desc">
-<h4>���</h4>
-<p>�f�B���N�g���̍���(�t�@�C���ƃf�B���N�g��)�������ǂݏo���܂��B���̊֐����J��Ԃ����s���邱�Ƃɂ�肻�̃f�B���N�g���̑S�Ă̍��ڂ�ǂݏo�����Ƃ��ł��܂��B�S�Ă̍��ڂ�ǂݏo���A�ǂݏo�����ڂ����������Ƃ��́A<tt>fname[]</tt>�����o�Ƀk�������񂪕Ԃ���܂��B�h�b�g�E�G���g��("."�A"..")�́A���΃p�X���L���ȂƂ�(<tt>_FS_RPATH == 1</tt>)�ɂ̂݌���܂��B������t�@�C�����̏ڍׂɂ��Ă� <tt>FILINFO</tt>�\���̂��Q�Ƃ��Ă��������B<tt class="arg">fno</tt>�Ƀk���E�|�C���^���w�肷��ƁA���̃f�B���N�g���̃��[�h�E�C���f�b�N�X�������߂��܂��B</p>
-<p>LFN�@�\���L���Ȏ��́A<tt>f_readdir()</tt>�֐��̌Ăяo���ɐ旧����<tt>FILINFO</tt>�\���̂�<tt>lfname</tt>��<tt>lfsize</tt>���L���Ȓl�ŏ���������Ă��Ȃ���΂Ȃ�܂���B<tt>lfname</tt>��LFN���i�[����o�b�t�@�ŁA<tt>lfsize</tt>�͂��̃o�b�t�@�̗v�f���ł��B���̏����Ɉ�ł��Y������ꍇ�́ALFN�i�[�o�b�t�@�Ƀk�������񂪕Ԃ���܂��B</p>
+<h4>解説</h4>
+<p>ディレクトリの項目(ファイルおよびサブ ディレクトリ)の情報を順次読み出します。この関数を繰り返し実行することによりそのディレクトリの全ての項目を読み出すことができます。得られるファイル情報の詳細については <tt>FILINFO</tt>構造体を参照してください。全ての項目が読み出され、読み出す項目がもう無いときは、<tt>fno-&gt;fname[]</tt>にヌル文字列が返されます。<tt class="arg">fno</tt>にヌル ポインタを指定すると、そのディレクトリのリード インデックスを先頭に巻き戻します。サブ ディレクトリのドット エントリ(<tt>"."</tt>と<tt>".."</tt>)は、出力に現れません。</p>
+<p>LFN構成では、<tt>altname[]</tt>が新たに定義され、そのオブジェクトの短いファイル名がストアされます。次の条件のときは長いファイル名を返せないので<tt>fname[]</tt>に短いファイル名がストアされ、<tt>altname[]</tt>はヌル文字列になります。</p>
 <ul>
-<li>���̃f�B���N�g�����ڂ�LFN�����݂��Ȃ��B</li>
-<li>LFN�̒����ɑ΂���LFN�i�[�o�b�t�@�܂���LFN����o�b�t�@�̃T�C�Y���s�\���B</li>
-<li>LFN�Ɍ��݂�OEM�R�[�h�ɑ��݂��Ȃ��������܂܂�Ă���B(Unicode API�ł͂Ȃ��Ƃ�)</li>
+<li>オブジェクトが長いファイル名を持っていない。(exFATボリュームでは該当せず)</li>
+<li><tt>_MAX_LFN</tt>の設定がその長いファイル名の長さに対して不十分 (<tt>_MAX_LFN == 255</tt>では該当せず)</li>
+<li>長いファイル名にANSI/OEMコードに無い文字が含まれている。(<tt>_LFN_UNICODE == 1</tt>では該当せず)</li>
 </ul>
-<p>�܂��A<tt>lfname</tt>�Ƀk���E�|�C���^���w�肵���ꍇ�́ALFN�Ɋւ��ĉ����Ԃ���܂���BLFN�����݂��Ȃ��Ƃ��́A<tt>fname[]</tt>�����o��SFN��ASCII�p���������܂܂��ꍇ������܂��B</p>
+<p>exFATボリュームのディレクトリを読み出すとき、構成によっては問題が発生します。exFATでは短いファイル名がサポートされません。つまり、上記の条件のとき代わりに返すファイル名が無いということです。このような場合は<tt>fname[]</tt>に"?"が返され、そのオブジェクトにアクセスできないことを示します。この問題を避けるには、FatFsの構成を<tt>_LFN_UNICODE = 1</tt>および<tt>_MAX_LFN = 255</tt>として長いファイル名に完全対応とする必要があります。</p>
 </div>
 
-
 <div class="para comp">
-<h4>�Ή����</h4>
-<p><tt>_FS_MINIMIZE &lt;= 1</tt>�̂Ƃ��Ɏg�p�\�ł��B</p>
+<h4>対応情報</h4>
+<p><tt>_FS_MINIMIZE &lt;= 1</tt>のときに使用可能です。</p>
 </div>
 
 
 <div class="para use">
-<h4>�g�p��</h4>
+<h4>使用例</h4>
 <pre>
+FATFS fs;
+char buff[256];
+
 FRESULT scan_files (
-    char* path        <span class="c">/* �J�n�m�[�h (���[�N�G���A�Ƃ��Ă��g�p) */</span>
+    char* path        <span class="c">/* 開始ノード (ワークエリアとしても使用) */</span>
 )
 {
     FRESULT res;
-    FILINFO fno;
     DIR dir;
-    int i;
-    char *fn;   <span class="c">/* ��Unicode�\����z�� */</span>
-<span class="k">#if</span> _USE_LFN
-    static char lfn[_MAX_LFN + 1];
-    fno.lfname = lfn;
-    fno.lfsize = sizeof lfn;
-<span class="k">#endif</span>
+    UINT i;
+    static FILINFO fno;
 
 
-    res = f_opendir(&amp;dir, path);                       <span class="c">/* �f�B���N�g�����J�� */</span>
+    res = f_opendir(&amp;dir, path);                       <span class="c">/* ディレクトリを開く */</span>
     if (res == FR_OK) {
-        i = strlen(path);
         for (;;) {
-            res = f_readdir(&amp;dir, &amp;fno);                   <span class="c">/* �f�B���N�g�����ڂ�1�ǂݏo�� */</span>
-            if (res != FR_OK || fno.fname[0] == 0) break;  <span class="c">/* �G���[�܂��͍��ږ����̂Ƃ��͔����� */</span>
-            if (fno.fname[0] == '.') continue;             <span class="c">/* �h�b�g�G���g���͖��� */</span>
-<span class="k">#if</span> _USE_LFN
-            fn = *fno.lfname ? fno.lfname : fno.fname;
-<span class="k">#else</span>
-            fn = fno.fname;
-<span class="k">#endif</span>
-            if (fno.fattrib &amp; AM_DIR) {                    <span class="c">/* �f�B���N�g�� */</span>
-                sprintf(&amp;path[i], "/%s", fn);
-                res = scan_files(path);
+            res = f_readdir(&amp;dir, &amp;fno);                   <span class="c">/* ディレクトリ項目を1個読み出す */</span>
+            if (res != FR_OK || fno.fname[0] == 0) break;  <span class="c">/* エラーまたは項目無しのときは抜ける */</span>
+            if (fno.fattrib &amp; AM_DIR) {                    <span class="c">/* ディレクトリ */</span>
+                sprintf(&amp;path[i = strlen(path)], "/%s", fno.fname);
+                res = scan_files(path);                    <span class="c">/* 一つ下へ */</span>
                 if (res != FR_OK) break;
                 path[i] = 0;
-            } else {                                       <span class="c">/* �t�@�C�� */</span>
-                printf("%s/%s\n", path, fn);
+            } else {                                       <span class="c">/* ファイル */</span>
+                printf("%s/%s\n", path, fno.fname);
             }
         }
+        f_closedir(&amp;dir)
+    }
+
+    return res;
+}
+
+
+int main (void)
+{
+    FRESULT res;
+
+
+    res = f_mount(&fs, "", 1);
+    if (res == FR_OK) {
+        strcpy(buff, "/");
+        res = scan_files(buff);
     }
 
     return res;
@@ -115,10 +119,10 @@ FRESULT scan_files (
 
 
 <div class="para ref">
-<h4>�Q��</h4>
-<p><tt><a href="opendir.html">f_opendir</a>, <a href="stat.html">f_stat</a>, <a href="sfileinfo.html">FILINFO</a>, <a href="sdir.html">DIR</a></tt></p>
+<h4>参照</h4>
+<p><tt><a href="opendir.html">f_opendir</a>, <a href="closedir.html">f_closedir</a>, <a href="stat.html">f_stat</a>, <a href="sfileinfo.html">FILINFO</a>, <a href="sdir.html">DIR</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_j.html">�߂�</a></p>
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
 </body>
 </html>

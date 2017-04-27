@@ -13,7 +13,7 @@
 
 <div class="para func">
 <h2>f_utime</h2>
-<p>The f_utime function changes the timestamp of a file or directory.</p>
+<p>The f_utime function changes the timestamp of a file or sub-directory.</p>
 <pre>
 FRESULT f_utime (
   const TCHAR* <span class="arg">path</span>,  <span class="c">/* [IN] Object name */</span>
@@ -26,7 +26,7 @@ FRESULT f_utime (
 <h4>Parameters</h4>
 <dl class="par">
 <dt>path</dt>
-<dd>Pointer to the null-terminated string that specifies a <a href="filename.html">file or directory</a> to be changed.</dd>
+<dd>Pointer to the null-terminated string that specifies an <a href="filename.html">object</a> to be changed.</dd>
 <dt>fno</dt>
 <dd>Pointer to the file information structure that has a timestamp to be set in member fdate and ftime. Do not care any other members.</dd>
 </dl>
@@ -55,7 +55,7 @@ FRESULT f_utime (
 
 <div class="para desc">
 <h4>Description</h4>
-<p>The <tt>f_utime()</tt> function changes the timestamp of a file or directory</p>
+<p>The <tt>f_utime</tt> function changes the timestamp of a file or sub-directory</p>
 </div>
 
 
@@ -85,7 +85,7 @@ FRESULT set_timestamp (
 
 <div class="para comp">
 <h4>QuickInfo</h4>
-<p>Available when <tt>_FS_READONLY == 0</tt> and <tt>_FS_MINIMIZE == 0</tt>.</p>
+<p>Available when <tt>_FS_READONLY == 0</tt> and <tt>_USE_CHMOD == 1</tt>.</p>
 </div>
 
 

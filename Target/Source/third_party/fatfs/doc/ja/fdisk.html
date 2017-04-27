@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/fdisk.html">
@@ -13,30 +13,30 @@
 
 <div class="para func">
 <h2>f_fdisk</h2>
-<p>�����h���C�u�𕪊����܂��B</p>
+<p>物理ドライブを分割します。</p>
 <pre>
 FRESULT f_fdisk (
-  BYTE  <span class="arg">pdrv</span>,         <span class="c">/* [IN] �����h���C�u�ԍ� */</span>
-  const DWORD <em>part[]</em>, <span class="c">/* [IN] ���}�b�v�E�e�[�u�� */</span>
-  void* <span class="arg">work</span>          <span class="c">/* [-] ���[�N�G���A */</span>
+  BYTE  <span class="arg">pdrv</span>,         <span class="c">/* [IN] 物理ドライブ番号 */</span>
+  const DWORD <span class="arg">part[]</span>, <span class="c">/* [IN] 区画マップ テーブル */</span>
+  void* <span class="arg">work</span>          <span class="c">/* [-] ワークエリア */</span>
 );
 </pre>
 </div>
 
 <div class="para arg">
-<h4>����</h4>
+<h4>引数</h4>
 <dl class="par">
 <dt>pdrv</dt>
-<dd>��������<em>�����h���C�u</em>���w�肵�܂��B</dd>
+<dd>分割する<em>物理ドライブ</em>のドライブ番号を指定します。</dd>
 <dt>part[]</dt>
-<dd>���}�b�v�E�e�[�u���ւ̃|�C���^���w�肵�܂��B</dd>
+<dd>区画マップ テーブルへのポインタを指定します。</dd>
 <dt>work</dt>
-<dd>���[�N�G���A�ւ̃|�C���^���w�肵�܂��B�T�C�Y��<tt>_MAX_SS</tt>�o�C�g�K�v�ł��B</dd>
+<dd>ワークエリアへのポインタを指定します。サイズは<tt>_MAX_SS</tt>バイト必要です。</dd>
 </dl>
 </div>
 
 <div class="para ret">
-<h4>�߂�l</h4>
+<h4>戻り値</h4>
 <p>
 <a href="rc.html#ok">FR_OK</a>,
 <a href="rc.html#de">FR_DISK_ERR</a>,
@@ -47,42 +47,42 @@ FRESULT f_fdisk (
 </div>
 
 <div class="para desc">
-<h4>����</h4>
-<p>���̊֐��́A�w�肳�ꂽ�����h���C�u��MBR�ɋ��e�[�u�����쐬���܂��B��敪���͈�ʓI��FDISK�`���ōs�����߁A�ő�4�̊�{�����쐬���邱�Ƃ��ł��܂��B�g�����ɂ͑Ή����Ă��܂���B���}�b�v�e�[�u��<tt class="arg">part[]</tt>�ɂ̓h���C�u���ǂ̂悤�ɕ������邩�w�肵�ēn���܂��B���̔z���4�̍��ڂ��琬��A�擪�̍��ڂ�1�Ԗڂ́A�Ō�̍��ڂ�4�Ԗڂ̋��̃T�C�Y�������܂��B�l��100�ȉ��̏ꍇ�A�h���C�u�̑��e�ʂɑ΂��銄�����p�[�Z���g�P�ʂŎw�肵�܂��B100�𒴂���l�̏ꍇ�̓Z�N�^���̒��ڎw��ɂȂ�܂��B</p>
+<h4>説明</h4>
+<p>この関数は、指定された物理ドライブのMBRに区画テーブルを作成します。区画分けは一般的なFDISK形式で行うため、最大4つの基本区画を作成することができます。拡張区画には対応していません。区画マップテーブル<tt class="arg">part[]</tt>にはドライブをどのように分割するか指定して渡します。この配列は4つの項目から成り、先頭の項目が1番目の、最後の項目が4番目の区画のサイズを示します。値が100以下の場合、ドライブの総容量に対する割合をパーセント単位で指定します。100を超える値の場合はセクタ数の直接指定になります。</p>
 </div>
 
 <div class="para comp">
-<h4>�Ή����</h4>
-<p><tt>_FS_READOLNY == 0</tt> �� <tt>_USE_MKFS == 1</tt> �� <tt>_MULTI_PARTITION == 1</tt> �̂Ƃ��g�p�\�ł��B</p>
+<h4>対応情報</h4>
+<p><tt>_FS_READOLNY == 0</tt> で <tt>_USE_MKFS == 1</tt> で <tt>_MULTI_PARTITION == 1</tt> のとき使用可能です。</p>
 </div>
 
 <div class="para use">
-<h4>�g�p��</h4>
+<h4>使用例</h4>
 <pre>
-    <span class="c">/* ���[�U��`�̃{�����[���Ǘ��e�[�u�� (_MULTI_PARTITION == 1 �̂Ƃ��K�v) */</span>
+    <span class="c">/* ユーザ定義のボリューム管理テーブル (_MULTI_PARTITION == 1 のとき必要) */</span>
 
     PARTITION VolToPart[] = {
-        {0, 1},    <span class="c">/* �_���h���C�u 0 ==> �����h���C�u 0, ��1��� */</span>
-        {0, 2},    <span class="c">/* �_���h���C�u 1 ==> �����h���C�u 0, ��2��� */</span>
-        {1, 0}     <span class="c">/* �_���h���C�u 2 ==> �����h���C�u 1, �������o */</span>
+        {0, 1},    <span class="c">/* 論理ドライブ 0 ==> 物理ドライブ 0, 第1区画 */</span>
+        {0, 2},    <span class="c">/* 論理ドライブ 1 ==> 物理ドライブ 0, 第2区画 */</span>
+        {1, 0}     <span class="c">/* 論理ドライブ 2 ==> 物理ドライブ 1, 自動検出 */</span>
     };
 </pre>
 <pre>
-    <span class="c">/* �V���������h���C�u(0)�̏����� */</span>
+    <span class="c">/* 新しい物理ドライブ(0)の初期化 */</span>
 
-    FATFS Fatfs;
-    DWORD plist[] = {50, 50, 0, 0};  <span class="c">/* 2���� */</span>
+    FATFS fs;
+    DWORD plist[] = {50, 50, 0, 0};  <span class="c">/* 2分割 */</span>
     BYTE work[_MAX_SS];
 
-    f_fdisk(0, plist, work);  <span class="c">/* �����h���C�u 0 �̕��� */</span>
+    f_fdisk(0, plist, work);  <span class="c">/* 物理ドライブ 0 の分割 */</span>
 
-    f_mount(0, &amp;Fatfs);
-    f_mkfs(0, 0, 0);          <span class="c">/* �_���h���C�u 0 �̏�����. �������͖��������.  */</span>
-    f_mount(0, 0);
+    f_mount(&amp;fs "0:", 0);
+    f_mkfs("0:", 0, 0);       <span class="c">/* 論理ドライブ 0 のフォーマット. 第二引数は無視される.  */</span>
+    f_mount(0, "0:", 0);
 
-    f_mount(1, &amp;Fatfs);
-    f_mkfs(1, 0, 0);
-    f_mount(1, 0);
+    f_mount(&amp;fs, "1:", 0);
+    f_mkfs("1:", 0, 0);       <span class="c">/* 論理ドライブ 0 のフォーマット. 第二引数は無視される.  */</span>
+    f_mount(0, "1:", 0);
 
 </pre>
 </div>

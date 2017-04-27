@@ -16,7 +16,7 @@
 <p>The f_open function creates a <em>file object</em> to be used to access the file.</p>
 <pre>
 FRESULT f_open (
-  FIL* <span class="arg">fp</span>,           <span class="c">/* [OUT] File object structure */</span>
+  FIL* <span class="arg">fp</span>,           <span class="c">/* [OUT] Pointer to the file object structure */</span>
   const TCHAR* <span class="arg">path</span>, <span class="c">/* [IN] File name */</span>
   BYTE <span class="arg">mode</span>          <span class="c">/* [IN] Mode flags */</span>
 );
@@ -27,20 +27,20 @@ FRESULT f_open (
 <h4>Parameters</h4>
 <dl class="par">
 <dt>fp</dt>
-<dd>Pointer to the file object structure to be created.</dd>
+<dd>Pointer to the blank file object structure.</dd>
 <dt>path</dt>
-<dd>Pointer to a null-terminated string that specifies the <a href="filename.html">file name</a> to create or open.</dd>
+<dd>Pointer to the null-terminated string that specifies the <a href="filename.html">file name</a> to open or create.</dd>
 <dt>mode</dt>
-<dd>Specifies the type of access and open method for the file. It is specified by a combination of following flags.<br>
+<dd>Mode flags that specifies the type of access and open method for the file. It is specified by a combination of following flags.<br>
 <table class="lst">
 <tr><th>Value</th><th>Description</th></tr>
-<tr><td>FA_READ</td><td>Specifies read access to the object. Data can be read from the file. Combine with <tt>FA_WRITE</tt> for read-write access.</td></tr>
+<tr><td>FA_READ</td><td>Specifies read access to the object. Data can be read from the file.</tr>
 <tr><td>FA_WRITE</td><td>Specifies write access to the object. Data can be written to the file. Combine with <tt>FA_READ</tt> for read-write access.</td></tr>
 <tr><td>FA_OPEN_EXISTING</td><td>Opens the file. The function fails if the file is not existing. (Default)</td></tr>
-<tr><td>FA_OPEN_ALWAYS</td><td>Opens the file if it is existing. If not, a new file is created.<br>
-To append data to the file, use <a href="lseek.html"><tt>f_lseek()</tt></a> function after file open in this method.</td></tr>
+<tr><td>FA_OPEN_ALWAYS</td><td>Opens the file if it is existing. If not, a new file will be created.<br>
+To append data to the file, use <a href="lseek.html"><tt>f_lseek</tt></a> function after the file open in this method.</td></tr>
 <tr><td>FA_CREATE_NEW</td><td>Creates a new file. The function fails with <tt>FR_EXIST</tt> if the file is existing.</td></tr>
-<tr><td>FA_CREATE_ALWAYS</td><td>Creates a new file. If the file is existing, it is truncated and overwritten.</td></tr>
+<tr><td>FA_CREATE_ALWAYS</td><td>Creates a new file. If the file is existing, it will be truncated and overwritten.</td></tr>
 </table>
 </dd>
 </dl>
@@ -74,9 +74,9 @@ To append data to the file, use <a href="lseek.html"><tt>f_lseek()</tt></a> func
 
 <div class="para desc">
 <h4>Description</h4>
-<p>After <tt>f_open()</tt> function succeeded, the file object is valid. The file object is used for subsequent read/write functions to identify the file. To close an open file, use <a href="close.html"><tt>f_close()</tt></a> function. If the file is modified and not closed properly, the file data will be collapted.</p>
-<p>If duplicated file open is needed, read <a href="appnote.html#dup">here</a> carefully. However duplicated open of a file with write mode flag is always prohibited.</p>
-<p>Before using any file function, a work area (file system object) must be registered to the logical drive with <a href="mount.html"><tt>f_mount()</tt></a> function. All API functions except for <a href="fdisk.html"><tt>f_fdisk()</tt></a> function can work after this procedure.</p>
+<p>Before using any file function, a work area (file system object) must be registered to the logical drive with <a href="mount.html"><tt>f_mount</tt></a> function. All API functions except for <a href="fdisk.html"><tt>f_fdisk</tt></a> function can work after this procedure.</p>
+<p>After <tt>f_open</tt> function succeeded, the file object is valid. The file object is used for subsequent operations to the file to identify the file. Open file must be closed prior to power down, media removal or re-mount, or the file can be collapsed. To close an open file, use <a href="close.html"><tt>f_close</tt></a> function.</p>
+<p>If duplicated file open is needed, read <a href="appnote.html#dup">here</a> carefully. However duplicated open of a file with any write mode flag is always prohibited.</p>
 </div>
 
 
@@ -87,35 +87,66 @@ To append data to the file, use <a href="lseek.html"><tt>f_lseek()</tt></a> func
 
 
 <div class="para use">
-<h4>Example (File Copy)</h4>
+<h4>Example</h4>
 <pre>
-void main (void)
+<span class="c">/* Read a text file and display it */</span>
+
+FATFS FatFs;   <span class="c">/* Work area (file system object) for logical drive */</span>
+
+int main (void)
+{
+    FIL fil;       <span class="c">/* File object */</span>
+    char line[82]; <span class="c">/* Line buffer */</span>
+    FRESULT fr;    <span class="c">/* FatFs return code */</span>
+
+
+    <span class="c">/* Register work area to the default drive */</span>
+    f_mount(&amp;FatFs, "", 0);
+
+    <span class="c">/* Open a text file */</span>
+    fr = f_open(&amp;fil, "message.txt", FA_READ);
+    if (fr) return (int)fr;
+
+    <span class="c">/* Read all lines and display it */</span>
+    while (f_gets(line, sizeof line, &amp;fil))
+        printf(line);
+
+    <span class="c">/* Close the file */</span>
+    f_close(&amp;fil);
+
+    return 0;
+}
+</pre>
+<pre>
+<span class="c">/* Copy a file "file.bin" on the drive 1 to drive 0 */</span>
+
+int main (void)
 {
     FATFS fs[2];         <span class="c">/* Work area (file system object) for logical drives */</span>
-    FIL fsrc, fdst;      <span class="c">/* file objects */</span>
-    BYTE buffer[4096];   <span class="c">/* file copy buffer */</span>
-    FRESULT res;         <span class="c">/* FatFs function common result code */</span>
+    FIL fsrc, fdst;      <span class="c">/* File objects */</span>
+    BYTE buffer[4096];   <span class="c">/* File copy buffer */</span>
+    FRESULT fr;          <span class="c">/* FatFs function common result code */</span>
     UINT br, bw;         <span class="c">/* File read/write count */</span>
 
 
-    <span class="c">/* Register work area for each volume (Always succeeds regardless of disk status) */</span>
-    f_mount(0, &amp;fs[0]);
-    f_mount(1, &amp;fs[1]);
+    <span class="c">/* Register work area for each logical drive */</span>
+    f_mount(&amp;fs[0], "0:", 0);
+    f_mount(&amp;fs[1], "1:", 0);
 
     <span class="c">/* Open source file on the drive 1 */</span>
-    res = f_open(&amp;fsrc, "1:srcfile.dat", FA_OPEN_EXISTING | FA_READ);
-    if (res) die(res);
+    fr = f_open(&amp;fsrc, "1:file.bin", FA_READ);
+    if (fr) return (int)fr;
 
     <span class="c">/* Create destination file on the drive 0 */</span>
-    res = f_open(&amp;fdst, "0:dstfile.dat", FA_CREATE_ALWAYS | FA_WRITE);
-    if (res) die(res);
+    fr = f_open(&amp;fdst, "0:file.bin", FA_WRITE | FA_CREATE_ALWAYS);
+    if (fr) return (int)fr;
 
     <span class="c">/* Copy source to destination */</span>
     for (;;) {
-        res = f_read(&amp;fsrc, buffer, sizeof buffer, &amp;br);     <span class="c">/* Read a chunk of src file */</span>
-        if (res || br == 0) break; <span class="c">/* error or eof */</span>
-        res = f_write(&amp;fdst, buffer, br, &amp;bw);               <span class="c">/* Write it to the dst file */</span>
-        if (res || bw &lt; br) break; <span class="c">/* error or disk full */</span>
+        fr = f_read(&amp;fsrc, buffer, sizeof buffer, &amp;br);  <span class="c">/* Read a chunk of source file */</span>
+        if (fr || br == 0) break; <span class="c">/* error or eof */</span>
+        fr = f_write(&amp;fdst, buffer, br, &amp;bw);            <span class="c">/* Write it to the destination file */</span>
+        if (fr || bw &lt; br) break; <span class="c">/* error or disk full */</span>
     }
 
     <span class="c">/* Close open files */</span>
@@ -123,8 +154,10 @@ void main (void)
     f_close(&amp;fdst);
 
     <span class="c">/* Unregister work area prior to discard it */</span>
-    f_mount(0, NULL);
-    f_mount(1, NULL);
+    f_mount(NULL, "0:", 0);
+    f_mount(NULL, "1:", 0);
+
+    return (int)fr;
 }
 </pre>
 </div>

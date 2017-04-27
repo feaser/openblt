@@ -13,7 +13,7 @@
 
 <div class="para func">
 <h2>f_unlink</h2>
-<p>The f_unlink function removes a file or directory.</p>
+<p>The f_unlink function removes a file or sub-directory.</p>
 <pre>
 FRESULT f_unlink (
   const TCHAR* <span class="arg">path</span>  <span class="c">/* [IN] Object name */</span>
@@ -25,7 +25,7 @@ FRESULT f_unlink (
 <h4>Parameter</h4>
 <dl class="par">
 <dt>path</dt>
-<dd>Pointer to the null-terminated string that specifies an <a href="filename.html">object</a> to be removed.</dd>
+<dd>Pointer to a null-terminated string that specifies the <a href="filename.html">file or sub-directory</a> to be removed.</dd>
 </dl>
 </div>
 
@@ -56,10 +56,10 @@ FRESULT f_unlink (
 <div class="para desc">
 <h4>Description</h4>
 <p>
-If condition of the object to be removed is applicable to the following terms, the function will fail with error.<ul>
-<li>The object must not have read-only attribute (<tt>AM_RDO</tt>) or the function will be rejected with <tt>FR_DENIED</tt>.</li>
-<li>The directory must be empty and must not be current directory or the function will be rejected with <tt>FR_DENIED</tt>.</li>
-<li>The file must not have been opened or the <em>FAT volume can be collapted</em>. It will able to be rejected with <tt>FR_LOCKED</tt> when <a href="appnote.html#dup">file shareing control</a> is enabled.</li>
+If condition of the object to be removed is applicable to the following terms, the function will be rejected.<ul>
+<li>The file/sub-directory must not have read-only attribute (<tt>AM_RDO</tt>), or the function will be rejected with <tt>FR_DENIED</tt>.</li>
+<li>The sub-directory must be empty and must not be current directory, or the function will be rejected with <tt>FR_DENIED</tt>.</li>
+<li>The file/sub-directory must not be opened, or the <em>FAT volume can be collapsed</em>. It will be rejected safely when <a href="appnote.html#dup">file lock function</a> is enabled.</li>
 </ul>
 </div>
 

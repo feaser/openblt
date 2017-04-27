@@ -29,9 +29,9 @@ int f_printf (
 <dt>fp</dt>
 <dd>Pointer to the open file object structure.</dd>
 <dt>fmt</dt>
-<dd>Pointer to the null terminated format string.</dd>
+<dd>Pointer to the null terminated format string. The terminator charactor will not be written.</dd>
 <dt>...</dt>
-<dd>Optional arguments.</dd>
+<dd>Optional arguments...</dd>
 
 </dl>
 </div>
@@ -39,13 +39,13 @@ int f_printf (
 
 <div class="para ret">
 <h4>Return Values</h4>
-<p>When the function succeeded, number of characters written is returned. When the function failed due to disk full or any error, an <tt>EOF (-1)</tt> will be returned.</p>
+<p>When the function succeeded, it returns number of characters written. When the function failed due to disk full or any error, an <tt>EOF (-1)</tt> will be returned.</p>
 </div>
 
 
 <div class="para desc">
 <h4>Description</h4>
-<p>The <tt>f_printf()</tt> is a wrapper function of <a href="putc.html"><tt>f_putc()</tt></a> and <a href="puts.html"><tt>f_puts()</tt></a>. The format control directive is a sub-set of standard library shown as follos:</p>
+<p>The format control directive is a sub-set of standard library shown as follos:</p>
 <ul>
 <li>Type: <tt>c C s S d D u U x X b B</tt></li>
 <li>Size: <tt>l L</tt></li>
@@ -56,8 +56,8 @@ int f_printf (
 
 <div class="para comp">
 <h4>QuickInfo</h4>
-<p>Available when <tt>_FS_READONLY == 0</tt> and <tt>_USE_STRFUNC</tt> is 1 or 2. When it is set to 2, <tt>'\n'</tt>s contained in the output are converted to <tt>"\r\n"</tt>.</p>
-<p>When the FatFs is configured to Unicode API (<tt>_LFN_UNICODE == 1</tt>), the generated UCS-2 string is written to the file in UTF-8 encoding. If not the case, the byte characters will be written directly.</p>
+<p>This is a wrapper function of <a href="write.html"><tt>f_write</tt></a> function. Available when <tt>_FS_READONLY == 0</tt> and <tt>_USE_STRFUNC</tt> is 1 or 2. When it is set to 2, <tt>'\n'</tt>s contained in the output are converted to <tt>'\r'+'\n'</tt>.</p>
+<p>When FatFs is configured to Unicode API (<tt>_LFN_UNICODE == 1</tt>), data types on the srting fuctions, <tt>f_putc</tt>, <tt>f_puts</tt>, <tt>f_printf</tt> and <tt>f_gets</tt> function, is also switched to Unicode. The character encoding on the file to be read/written via those functions is selected by <tt>_STRF_ENCODE</tt> option.</p>
 </div>
 
 
@@ -66,14 +66,17 @@ int f_printf (
 <pre>
     f_printf(&amp;fil, "%d", 1234);            <span class="c">/* "1234" */</span>
     f_printf(&amp;fil, "%6d,%3d%%", -200, 5);  <span class="c">/* "  -200,  5%" */</span>
-    f_printf(&amp;fil, "%-6u", 100);           <span class="c">/* "100   " */</span>
-    f_printf(&amp;fil, "%ld", 12345678L);      <span class="c">/* "12345678" */</span>
-    f_printf(&amp;fil, "%04x", 0xA3);          <span class="c">/* "00a3" */</span>
-    f_printf(&amp;fil, "%08LX", 0x123ABC);     <span class="c">/* "00123ABC" */</span>
+    f_printf(&amp;fil, "%ld", 12345L);         <span class="c">/* "12345" */</span>
+    f_printf(&amp;fil, "%06d", 25);            <span class="c">/* "000025" */</span>
+    f_printf(&amp;fil, "%06d", -25);           <span class="c">/* "000-25" */</span>
+    f_printf(&amp;fil, "%-6d", 25);            <span class="c">/* "25    " */</span>
+    f_printf(&amp;fil, "%u", -1);              <span class="c">/* "65535" or "4294967295" */</span>
+    f_printf(&amp;fil, "%04x", 0xAB3);         <span class="c">/* "0ab3" */</span>
+    f_printf(&amp;fil, "%08LX", 0x123ABCL);    <span class="c">/* "00123ABC" */</span>
     f_printf(&amp;fil, "%016b", 0x550F);       <span class="c">/* "0101010100001111" */</span>
     f_printf(&amp;fil, "%s", "String");        <span class="c">/* "String" */</span>
-    f_printf(&amp;fil, "%-4s", "abc");         <span class="c">/* "abc " */</span>
-    f_printf(&amp;fil, "%4s", "abc");          <span class="c">/* " abc" */</span>
+    f_printf(&amp;fil, "%8s", "abc");          <span class="c">/* "     abc" */</span>
+    f_printf(&amp;fil, "%-8s", "abc");         <span class="c">/* "abc     " */</span>
     f_printf(&amp;fil, "%c", 'a');             <span class="c">/* "a" */</span>
     f_printf(&amp;fil, "%f", 10.0);            <span class="c">/* f_printf lacks floating point support */</span>
 </pre>

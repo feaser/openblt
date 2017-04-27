@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/unlink.html">
@@ -13,25 +13,25 @@
 
 <div class="para func">
 <h2>f_unlink</h2>
-<p>�t�@�C���܂��̓f�B���N�g�����폜���܂��B</p>
+<p>ファイルまたはサブ ディレクトリを削除します。</p>
 <pre>
 FRESULT f_unlink (
-  const TCHAR* <span class="arg">path</span>  <span class="c">/* [IN] �I�u�W�F�N�g���ւ̃|�C���^ */</span>
+  const TCHAR* <span class="arg">path</span>  <span class="c">/* [IN] オブジェクト名へのポインタ */</span>
 );
 </pre>
 </div>
 
 <div class="para arg">
-<h4>����</h4>
+<h4>引数</h4>
 <dl class="par">
 <dt>path</dt>
-<dd>�폜�Ώۂ�<a href="filename.html">�p�X��</a>�������k������<tt>'\0'</tt>�I�[�̕�����ւ̃|�C���^���w�肵�܂��B</dd>
+<dd>削除対象の<a href="filename.html">パス名</a>を示すヌル文字<tt>'\0'</tt>終端の文字列へのポインタを指定します。</dd>
 </dl>
 </div>
 
 
 <div class="para ret">
-<h4>�߂�l</h4>
+<h4>戻り値</h4>
 <p>
 <a href="rc.html#ok">FR_OK</a>,
 <a href="rc.html#de">FR_DISK_ERR</a>,
@@ -53,22 +53,21 @@ FRESULT f_unlink (
 
 
 <div class="para desc">
-<h4>���</h4>
-<p>�폜�Ώۂ̃I�u�W�F�N�����̏����ɓ��Ă͂܂�ꍇ�A���̃A�N�Z�X�͋��ۂ���֐��͎��s���܂��B
+<h4>解説</h4>
+<p>削除対象のオブジェクトが次の条件に当てはまる場合、そのアクセスは拒否(<tt>FR_DENIED</tt>)され関数は失敗します。</p>
 <ul>
-<li>���[�h�E�I�����[����(<tt>AM_RDO</tt>)�������Ă���B</li>
-<li>��łȂ��f�B���N�g���܂��̓J�����g�E�f�B���N�g���B</li>
-<li>�J����Ă���t�@�C���B<a href="appnote.html#dup">���d�A�N�Z�X����</a>���L���ȂƂ��͈��S�ɋ��ۂ���܂����A�����łȂ��Ƃ��͕s���ȑ���ƂȂ�A<em>FAT�\�����j�󂳂��\��</em>������܂��B</li>
+<li>リード オンリー属性(<tt>AM_RDO</tt>)を持っている場合。</li>
+<li>空でないサブ ディレクトリまたはカレント ディレクトリである場合。</li>
+<li>開かれているオブジェクトである場合。<a href="appnote.html#dup">多重アクセス制御</a>が有効のときは安全に拒否されるが、そうでないときは不正な操作となり<em>FAT構造が破壊される可能性</em>がある。</li>
 </ul>
-</p>
 </div>
 
 <div class="para comp">
-<h4>�Ή����</h4>
-<p><tt>_FS_READONLY == 0</tt>�ŁA����<tt>_FS_MINIMIZE == 0</tt>�̂Ƃ��Ɏg�p�\�ł��B</p>
+<h4>対応情報</h4>
+<p><tt>_FS_READONLY == 0</tt>で、且つ<tt>_FS_MINIMIZE == 0</tt>のときに使用可能です。</p>
 </div>
 
 
-<p class="foot"><a href="../00index_j.html">�߂�</a></p>
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
 </body>
 </html>

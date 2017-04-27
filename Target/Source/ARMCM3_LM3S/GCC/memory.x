@@ -6,7 +6,7 @@ MEMORY
 
 SECTIONS
 {
-    __STACKSIZE__ = 512;
+    __STACKSIZE__ = 2048;
 
     .text :
     {

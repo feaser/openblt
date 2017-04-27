@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/gets.html">
@@ -13,53 +13,53 @@
 
 <div class="para func">
 <h2>f_gets</h2>
-<p>�t�@�C�����當�����ǂݏo���܂��B</p>
+<p>ファイルから文字列を読み出します。</p>
 <pre>
 TCHAR* f_gets (
-  TCHAR* <span class="arg">buff</span>, <span class="c">/* [OUT] �o�b�t�@ */</span>
-  int <span class="arg">len</span>,     <span class="c">/* [IN] �o�b�t�@�̃T�C�Y */</span>
-  FIL* <span class="arg">fp</span>      <span class="c">/* [IN] �t�@�C���E�I�u�W�F�N�g */</span>
+  TCHAR* <span class="arg">buff</span>, <span class="c">/* [OUT] バッファ */</span>
+  int <span class="arg">len</span>,     <span class="c">/* [IN] バッファのサイズ */</span>
+  FIL* <span class="arg">fp</span>      <span class="c">/* [IN] ファイル オブジェクト */</span>
 );
 </pre>
 </div>
 
 <div class="para arg">
-<h4>����</h4>
+<h4>引数</h4>
 <dl class="par">
 <dt>buff</dt>
-<dd>�������ǂݏo���o�b�t�@���w���|�C���^���w�肵�܂��B</dd>
+<dd>文字列を読み出すバッファを指すポインタを指定します。</dd>
 <dt>len</dt>
-<dd>�o�b�t�@�̃T�C�Y��v�f���Ŏw�肵�܂��B</dd>
+<dd>バッファのサイズを要素数で指定します。</dd>
 <dt>fp</dt>
-<dd>�t�@�C���E�I�u�W�F�N�g�\���̂ւ̃|�C���^���w�肵�܂��B</dd>
+<dd>ファイル オブジェクト構造体へのポインタを指定します。</dd>
 </dl>
 </div>
 
 
 <div class="para ret">
-<h4>�߂�l</h4>
-<p>�֐������������<tt>buff</tt>���Ԃ���܂��B</p>
+<h4>戻り値</h4>
+<p>関数が成功すると<tt class="arg">buff</tt>が返されます。</p>
 </div>
 
 
 <div class="para desc">
-<h4>���</h4>
-<p>���̊֐���<a href="read.html"><tt>f_read()</tt></a>�̃��b�p�[�֐��ł��B�ǂݏo������́A�ŏ���<tt>'\n'</tt>��ǂݍ��ނ��A�t�@�C���I�[�ɒB���邩�A<tt>len - 1</tt>������ǂݏo���܂ő����܂��B�ǂݍ��܂ꂽ������̏I�[�ɂ�<tt>'\0'</tt>���t������܂��B���Ƀt�@�C���I�[��1�������ǂݍ��܂�Ȃ������Ƃ��A�܂��͉��炩�̃G���[�����������Ƃ��͊֐��͎��s���k���E�|�C���^��Ԃ��܂��B�t�@�C���I�[���G���[����<tt>f_eof()</tt>,<tt>f_error()</tt>�}�N���Œ��ׂ��܂��B</p>
-<p>API��Unicode���I������Ă���(<tt>_LFN_UNICODE</tt>��1)�Ƃ��́AUTF-8�G���R�[�h�̃e�L�X�g�E�t�@�C���Ƃ���UCS-2�ɕϊ����ăo�b�t�@�ɓǂݍ��݂܂��B����ȊO�̎��͖��ϊ�(1����1�o�C�g)�œǂݍ��݂܂��B</p>
+<h4>解説</h4>
+<p>読み出し動作は、最初の<tt>'\n'</tt>を読み込むか、ファイル終端に達するか、<tt class="arg">len</tt> - 1文字を読み出すまで続きます。読み込まれた文字列の終端には<tt>'\0'</tt>が付加されます。既にファイル終端で1文字も読み込まれなかったとき、または何らかのエラーが発生したときは関数は失敗しヌル ポインタを返します。ファイル終端かエラーかは<tt>f_eof/f_error</tt>関数で調べられます。</p>
+<p>Unicode API構成(<tt>_LFN_UNICODE == 1</tt>)が選択されているときは、<tt class="arg">buff</tt>はUTF-16文字列になりますが、ファイル上のエンコードは、<tt>_STRF_ENCODE</tt>オプションで選択できます。それ以外の時は無変換(1バイト/1文字)で読み出します。</p>
 </div>
 
 
 <div class="para comp">
-<h4>�Ή����</h4>
-<p><tt>_USE_STRFUNC</tt>��1�܂���2�̂Ƃ��g�p�\�ł��B2�̂Ƃ��́A�t�@�C���Ɋ܂܂��<tt>'\r'</tt>����菜����ăo�b�t�@�ɓǂݍ��܂�܂��B</p>
+<h4>対応情報</h4>
+<p>この関数は<a href="read.html"><tt>f_read</tt></a>関数のラッパー関数です。<tt>_USE_STRFUNC</tt>が1または2のとき使用可能です。2のときは、ファイルに含まれる<tt>'\r'</tt>が取り除かれてバッファに読み込まれます。</p>
 </div>
 
 
 <div class="para ref">
-<h4>�Q��</h4>
+<h4>参照</h4>
 <p><tt><a href="open.html">f_open</a>, <a href="read.html">f_read</a>, <a href="putc.html">f_putc</a>, <a href="puts.html">f_puts</a>, <a href="printf.html">f_printf</a>, <a href="close.html">f_close</a>, <a href="sfile.html">FIL</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_j.html">�߂�</a></p>
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
 </body>
 </html>

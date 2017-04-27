@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/getfree.html">
@@ -13,31 +13,31 @@
 
 <div class="para func">
 <h2>f_getfree</h2>
-<p>�_���h���C�u��̖��g�p�N���X�^���𓾂܂��B</p>
+<p>ボリューム上の空き領域のサイズを取得します。</p>
 <pre>
 FRESULT f_getfree (
-  const TCHAR* <span class="arg">path</span>,  <span class="c">/* [IN] �Ώۃh���C�u���w�肵�܂� */</span>
-  DWORD* <span class="arg">nclst</span>,       <span class="c">/* [OUT] �󂫃N���X�^�����i�[����ϐ��ւ̃|�C���^ */</span>
-  FATFS** <span class="arg">fatfs</span>       <span class="c">/* [OUT] �t�@�C���E�V�X�e���E�I�u�W�F�N�g���w���|�C���^�ւ̃|�C���^ */</span>
+  const TCHAR* <span class="arg">path</span>,  <span class="c">/* [IN] 対象ドライブを指定します */</span>
+  DWORD* <span class="arg">nclst</span>,       <span class="c">/* [OUT] 空きクラスタ数を格納する変数へのポインタ */</span>
+  FATFS** <span class="arg">fatfs</span>       <span class="c">/* [OUT] ファイル システム オブジェクトを指すポインタへのポインタ */</span>
 );
 </pre>
 </div>
 
 <div class="para arg">
-<h4>����</h4>
+<h4>引数</h4>
 <dl class="par">
 <dt>path</dt>
-<dd>���ׂ�Ώۂ̘_���h���C�u������<a href="filename.html">�p�X��</a>�������k������<tt>'\0'</tt>�I�[�̕�����ւ̃|�C���^���w�肵�܂��B�k��������̓J�����g�E�h���C�u���Ӗ����܂��B</dd>
+<dd>調べる対象の論理ドライブを示す<a href="filename.html">パス名</a>を示すヌル文字<tt>'\0'</tt>終端の文字列へのポインタを指定します。ヌル文字列はカレント ドライブを意味します。</dd>
 <dt>nclst</dt>
-<dd>�󂫃N���X�^�����i�[����<tt>DWORD</tt>�ϐ��ւ̃|�C���^���w�肵�܂��B</dd>
+<dd>空きクラスタ数を格納する<tt>DWORD</tt>型変数へのポインタを指定します。</dd>
 <dt>fatfs</dt>
-<dd>�Ώۃh���C�u�̃t�@�C���E�V�X�e���E�I�u�W�F�N�g���w���|�C���^���Ԃ���܂��B</dd>
+<dd>対象ドライブのファイル システム オブジェクトを指すポインタが返されます。</dd>
 </dl>
 </div>
 
 
 <div class="para ret">
-<h4>�߂�l</h4>
+<h4>戻り値</h4>
 <p>
 <a href="rc.html#ok">FR_OK</a>,
 <a href="rc.html#de">FR_DISK_ERR</a>,
@@ -52,44 +52,44 @@ FRESULT f_getfree (
 
 
 <div class="para desc">
-<h4>���</h4>
-<p>�_���h���C�u��̋󂫃N���X�^�����擾���܂��B�Ԃ��ꂽ�t�@�C���E�V�X�e���E�I�u�W�F�N�g��<tt>csize</tt>�����o���N���X�^������̃Z�N�^���������Ă���̂ŁA��������Ɏ��ۂ̋󂫃T�C�Y���v�Z�ł��܂��BFAT32�{�����[���ɂ����ẮAFSINFO�Z�N�^�̏�Ԃɂ���Ă͕s���m�Ȓl��Ԃ�����A�����Ɏ��Ԃ����������肷��\��������܂��B</p>
+<h4>解説</h4>
+<p>論理ドライブ上の空き領域のサイズをクラスタ単位で取得します。返されたファイル システム オブジェクトの<tt>csize</tt>メンバがクラスタあたりのセクタ数を示しているので、これを元にセクタ単位の空きサイズが計算できます。FAT32ボリュームにおいては、FSINFOの情報が実際の空きクラスタ数と同期していない場合、不正確な値を返す可能性があります。この問題を避けるため、<tt><a href="config.html#fs_nofsinfo">_FS_NOFSINFO</a></tt>オプションでマウント後の初回は必ずフルFATスキャンをするように構成することもできます。</p>
 </div>
 
 
 <div class="para comp">
-<h4>�Ή����</h4>
-<p><tt>_FS_READONLY == 0</tt>�ŁA����<tt>_FS_MINIMIZE == 0</tt>�̂Ƃ��g�p�\�ł��B</p>
+<h4>対応情報</h4>
+<p><tt>_FS_READONLY == 0</tt>で、且つ<tt>_FS_MINIMIZE == 0</tt>のとき使用可能です。</p>
 </div>
 
 
 <div class="para use">
-<h4>�g�p��</h4>
+<h4>使用例</h4>
 <pre>
     FATFS *fs;
     DWORD fre_clust, fre_sect, tot_sect;
 
 
-    <span class="c">/* �h���C�u1�̃{�����[�����Ƌ󂫃N���X�^���𓾂� */</span>
+    <span class="c">/* ドライブ1のボリューム情報と空きクラスタ数を得る */</span>
     res = f_getfree("1:", &amp;fre_clust, &amp;fs);
     if (res) die(res);
 
-    <span class="c">/* �S�Z�N�^���Ƌ󂫃Z�N�^�����v�Z */</span>
+    <span class="c">/* 全セクタ数と空きセクタ数を計算 */</span>
     tot_sect = (fs->n_fatent - 2) * fs->csize;
     fre_sect = fre_clust * fs->csize;
 
-    <span class="c">/* �{�����[���ƂƋ󂫂̃T�C�Y��KiB�P�ʂŕ\�� (512�o�C�g/�Z�N�^�Ɖ���) */</span>
-    printf("%lu KB total drive space.\n%lu KB available.\n",
+    <span class="c">/* ボリュームのサイズと空きサイズを表示 (512バイト/セクタと仮定) */</span>
+    printf("%10lu KiB total drive space.\n%10lu KiB available.\n",
            tot_sect / 2, fre_sect / 2);
 </pre>
 </div>
 
 
 <div class="para ref">
-<h4>�Q��</h4>
+<h4>参照</h4>
 <tt><a href="sfatfs.html">FATFS</a></tt>
 </div>
 
-<p class="foot"><a href="../00index_j.html">�߂�</a></p>
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
 </body>
 </html>

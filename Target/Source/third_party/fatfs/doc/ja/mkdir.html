@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/mkdir.html">
@@ -13,25 +13,25 @@
 
 <div class="para func">
 <h2>f_mkdir</h2>
-<p>�f�B���N�g�����쐬���܂��B</p>
+<p>サブ ディレクトリを作成します。</p>
 <pre>
 FRESULT f_mkdir (
-  const TCHAR* <span class="arg">path</span> <span class="c">/* [IN] �쐬����f�B���N�g�����ւ̃|�C���^ */</span>
+  const TCHAR* <span class="arg">path</span> <span class="c">/* [IN] 作成するディレクトリ名へのポインタ */</span>
 );
 </pre>
 </div>
 
 <div class="para arg">
-<h4>����</h4>
+<h4>引数</h4>
 <dl class="par">
 <dt>path</dt>
-<dd>�쐬����f�B���N�g����<a href="filename.html">�p�X��</a>�������k������<tt>'\0'</tt>�I�[�̕�����ւ̃|�C���^���w�肵�܂��B</dd>
+<dd>作成するディレクトリの<a href="filename.html">パス名</a>を示すヌル文字<tt>'\0'</tt>終端の文字列へのポインタを指定します。</dd>
 </dl>
 </div>
 
 
 <div class="para ret">
-<h4>�߂�l</h4>
+<h4>戻り値</h4>
 <p>
 <a href="rc.html#ok">FR_OK</a>,
 <a href="rc.html#de">FR_DISK_ERR</a>,
@@ -52,19 +52,19 @@ FRESULT f_mkdir (
 
 
 <div class="para desc">
-<h4>���</h4>
-<p>��̃f�B���N�g�����쐬���܂��B</p>
+<h4>解説</h4>
+<p>空のサブ ディレクトリを作成します。ディレクトリを削除するときは<a href="unlink.html"><tt>f_unlink</tt></a>関数を使用してください。</p>
 </div>
 
 
 <div class="para comp">
-<h4>�Ή����</h4>
-<p><tt>_FS_READONLY == 0</tt>�ŁA����<tt>_FS_MINIMIZE == 0</tt>�̂Ƃ��g�p�\�ł��B</p>
+<h4>対応情報</h4>
+<p><tt>_FS_READONLY == 0</tt>で、且つ<tt>_FS_MINIMIZE == 0</tt>のとき使用可能です。</p>
 </div>
 
 
 <div class="para use">
-<h4>�g�p��</h4>
+<h4>使用例</h4>
 <pre>
     res = f_mkdir("sub1");
     if (res) die(res);
@@ -75,6 +75,6 @@ FRESULT f_mkdir (
 </pre>
 </div>
 
-<p class="foot"><a href="../00index_j.html">�߂�</a></p>
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
 </body>
 </html>

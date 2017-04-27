@@ -13,7 +13,7 @@ SECTIONS
   __FLASH_segment_start__ = 0x00000000;
   __FLASH_segment_end__ = 0x00008000;
 
-  __STACKSIZE__ = 512;
+  __STACKSIZE__ = 2048;
   __STACKSIZE_PROCESS__ = 0;
   __STACKSIZE_IRQ__ = 0;
   __STACKSIZE_FIQ__ = 0;

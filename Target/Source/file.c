@@ -114,7 +114,7 @@ void FileInit(void)
   /* set the initial state */
   firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
   /* mount the file system, using logical disk 0 */
-  fresult = f_mount(0, &fatFsObjects.fs);
+  fresult = f_mount(&fatFsObjects.fs, "0:", 0);
   /* mounting does not access the disk and should succeed unless misconfigured */
   ASSERT_RT(fresult == FR_OK);
 } /*** end of FileInit ***/

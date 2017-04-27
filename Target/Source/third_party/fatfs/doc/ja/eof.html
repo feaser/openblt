@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/eof.html">
@@ -13,50 +13,50 @@
 
 <div class="para func">
 <h2>f_eof</h2>
-<p>���[�h/���C�g�E�|�C���^���t�@�C���I�[�ɒB���Ă��邩�ǂ������ׂ܂��B.</p>
+<p>リード/ライト ポインタがファイル終端に達しているかどうか調べます。.</p>
 <pre>
 int f_eof (
-  FIL* <span class="arg">fp</span>   <span class="c">/* [IN] �t�@�C���E�I�u�W�F�N�g */</span>
+  FIL* <span class="arg">fp</span>   <span class="c">/* [IN] ファイル オブジェクト */</span>
 );
 </pre>
 </div>
 
 
 <div class="para arg">
-<h4>����</h4>
+<h4>引数</h4>
 <dl class="par">
 <dt>fp</dt>
-<dd>�t�@�C���E�I�u�W�F�N�g�\���̂ւ̃|�C���^���w�肵�܂��B</dd>
+<dd>ファイル オブジェクト構造体へのポインタを指定します。</dd>
 </dl>
 </div>
 
 
 <div class="para ret">
-<h4>�߂�l</h4>
-<p>���[�h/���C�g�E�|�C���^���t�@�C���I�[�ɂ���ǂݏo���f�[�^���Ȃ��ꍇ�́A0�ȊO�̒l��Ԃ��܂��B����ȊO�̎���0��Ԃ��܂��B</p>
+<h4>戻り値</h4>
+<p>リード/ライト ポインタがファイル終端にあり読み出すデータがない場合は、0以外の値を返します。それ以外のときは0を返します。</p>
 </div>
 
 
 <div class="para desc">
-<h4>���</h4>
-<p>f_eof�֐��́A�����r�W�����ł̓}�N���Ƃ��Ď�������Ă��܂��B</p>
+<h4>解説</h4>
+<p>この関数は、現リビジョンではマクロとして実装されています。ファイル オブジェクトの正当性チェックや排他制御は行いません。</p>
 <pre>
-<span class="k">#define</span> f_eof(fp) (((fp)->fptr) == ((fp)->fsize) ? 1 : 0)
+<span class="k">#define</span> f_eof(fp) ((int)((fp)->fptr == (fp)->fsize))
 </pre>
 </div>
 
 
 <div class="para comp">
-<h4>�Ή����</h4>
-<p>��Ɏg�p�\�B</p>
+<h4>対応情報</h4>
+<p>常に使用可能。</p>
 </div>
 
 
 <div class="para ref">
-<h4>�Q��</h4>
+<h4>参照</h4>
 <p><tt><a href="open.html">f_open</a>, <a href="lseek.html">f_lseek</a>, <a href="sfile.html">FIL</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_j.html">�߂�</a></p>
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
 </body>
 </html>

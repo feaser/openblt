@@ -17,7 +17,7 @@
 <pre>
 FRESULT f_fdisk (
   BYTE  <span class="arg">pdrv</span>,         <span class="c">/* [IN] Physical drive number */</span>
-  const DWORD <em>part[]</em>, <span class="c">/* [IN] Partition size */</span>
+  const DWORD <span class="arg">part[]</span>, <span class="c">/* [IN] Partition size */</span>
   void* <span class="arg">work</span>          <span class="c">/* [IN] Work area */</span>
 );
 </pre>
@@ -48,7 +48,7 @@ FRESULT f_fdisk (
 
 <div class="para desc">
 <h4>Description</h4>
-<p>The <tt>f_fdisk()</tt> function creates a partition table into the MBR of the physical drive. The partitioning rule is in generic FDISK format so that it can create upto four primary partitions. Extended partition is not supported. The <tt class="arg">part[]</tt> array with four items specifies how to divide the physical drive. The first item specifies the size of first primary partition and fourth item specifies the fourth primary partition. If the value is less than or equal to 100, it means percentage of the partition in the entire disk space. If it is larger than 100, it means partition size in unit of sector.</p>
+<p>The <tt>f_fdisk</tt> function creates a partition table into the MBR of the physical drive. The partitioning rule is in generic FDISK format, so that it can create upto four primary partitions. Logical volumes in the extended partition is not supported. The <tt class="arg">part[]</tt> with four items specifies how to divide the physical drive. The first item specifies the size of first primary partition and fourth item specifies the fourth primary partition. If the value is less than or equal to 100, it specifies percentage of the partition in the entire disk space. If it is larger than 100, it specifies the partition size in unit of sector.</p>
 </div>
 
 <div class="para comp">
@@ -70,19 +70,19 @@ FRESULT f_fdisk (
 <pre>
     <span class="c">/* Initialize a brand-new disk drive mapped to physical drive 0 */</span>
 
-    FATFS Fatfs;
+    FATFS fs;
     DWORD plist[] = {50, 50, 0, 0};  <span class="c">/* Divide drive into two partitions */</span>
     BYTE work[_MAX_SS];
 
-    f_fdisk(0, plist, work);  <span class="c">/* Divide physical drive 0 */</span>
+    f_fdisk(0, plist, work);    <span class="c">/* Divide physical drive 0 */</span>
 
-    f_mount(0, &amp;Fatfs);
-    f_mkfs(0, 0, 0);          <span class="c">/* Create an FAT volume on the logical drive 0. 2nd argument is ignored. */</span>
-    f_mount(0, 0);
+    f_mount(&amp;fs, "0:", 0);      <span class="c">/* Register work area to the logical drive 0 */</span>
+    f_mkfs("0:", 0, 0);         <span class="c">/* Create FAT volume on the logical drive 0. 2nd argument is ignored. */</span>
+    f_mount(0, "0:", 0);        <span class="c">/* Unregister work area from the logical drive 0 */</span>
 
-    f_mount(1, &amp;Fatfs);
-    f_mkfs(1, 0, 0);
-    f_mount(1, 0);
+    f_mount(&amp;fs, "1:", 0);      <span class="c">/* Register a work area to the logical drive 1 */</span>
+    f_mkfs("1:", 0, 0);         <span class="c">/* Create FAT volume on the logical drive 1. 2nd argument is ignored. */</span>
+    f_mount(0, "1:", 0);        <span class="c">/* Unregister work area from the logical drive 1 */</span>
 
 </pre>
 </div>

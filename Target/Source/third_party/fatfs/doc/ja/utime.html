@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/utime.html">
@@ -13,28 +13,28 @@
 
 <div class="para func">
 <h2>f_utime</h2>
-<p>�I�u�W�F�N�g�̃^�C���X�^���v��ύX���܂��B</p>
+<p>ファイルまたはサブ ディレクトリのタイムスタンプを変更します。</p>
 <pre>
 FRESULT f_utime (
-  const TCHAR* <span class="arg">path</span>,  <span class="c">/* [IN] �I�u�W�F�N�g���ւ̃|�C���^ */</span>
-  const FILINFO* <span class="arg">fno</span>  <span class="c">/* [IN] �ݒ肷����t */</span>
+  const TCHAR* <span class="arg">path</span>,  <span class="c">/* [IN] オブジェクト名へのポインタ */</span>
+  const FILINFO* <span class="arg">fno</span>  <span class="c">/* [IN] 設定する日付 */</span>
 );
 </pre>
 </div>
 
 <div class="para arg">
-<h4>����</h4>
+<h4>引数</h4>
 <dl class="par">
 <dt>path</dt>
-<dd>�ύX�Ώۂ̃t�@�C���܂��̓f�B���N�g����<a href="filename.html">�p�X��</a>�������k������<tt>'\0'</tt>�I�[�̕�������w�肵�܂��B</dd>
+<dd>変更対象のオブジェクトの<a href="filename.html">パス名</a>を示すヌル文字<tt>'\0'</tt>終端の文字列を指定します。</dd>
 <dt>fno</dt>
-<dd>�ݒ肷����t�Ǝ��Ԃ�<tt>fdate</tt>��<tt>ftime</tt>�����o�ɐݒ肳�ꂽ<tt>FILINFO</tt>�\���̂ւ̃|�C���^�B���̃����o�͂��̊֐��ł͈Ӗ��������܂���B</dd>
+<dd>設定する日付と時間を<tt>fdate</tt>と<tt>ftime</tt>メンバに設定された<tt>FILINFO</tt>構造体へのポインタ。他のメンバはこの関数では意味を持ちません。</dd>
 </dl>
 </div>
 
 
 <div class="para ret">
-<h4>�߂�l</h4>
+<h4>戻り値</h4>
 <p>
 <a href="rc.html#ok">FR_OK</a>,
 <a href="rc.html#de">FR_DISK_ERR</a>,
@@ -54,16 +54,16 @@ FRESULT f_utime (
 
 
 <div class="para desc">
-<h4>���</h4>
-<p>�I�u�W�F�N�g�̃^�C���X�^���v��ύX���܂��B</p>
+<h4>解説</h4>
+<p>オブジェクトのタイムスタンプを変更します。</p>
 </div>
 
 
 <div class="para use">
-<h4>�g�p��</h4>
+<h4>使用例</h4>
 <pre>
 FRESULT set_timestamp (
-    char *obj,     <span class="c">/* �t�@�C�����ւ̃|�C���^ */</span>
+    char *obj,     <span class="c">/* ファイル名へのポインタ */</span>
     int year,
     int month,
     int mday,
@@ -84,16 +84,16 @@ FRESULT set_timestamp (
 
 
 <div class="para comp">
-<h4>�Ή����</h4>
-<p><tt>_FS_READONLY == 0</tt>�ŁA����<tt>_FS_MINIMIZE == 0</tt>�̂Ƃ��Ɏg�p�\�ł��B</p>
+<h4>対応情報</h4>
+<p><tt>_FS_READONLY == 0</tt>で、且つ<tt>_FS_MINIMIZE == 0</tt>のときに使用可能です。</p>
 </div>
 
 
 <div class="para ref">
-<h4>�Q��</h4>
+<h4>参照</h4>
 <p><tt><a href="stat.html">f_stat</a>, <a href="sfileinfo.html">FILINFO</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_j.html">�߂�</a></p>
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
 </body>
 </html>

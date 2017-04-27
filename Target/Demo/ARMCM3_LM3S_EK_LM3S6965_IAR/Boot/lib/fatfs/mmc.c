@@ -30,6 +30,18 @@
 #include "boot.h"
 
 
+/*--------------------------------------------------------------------------
+
+   Macro Definitions
+
+---------------------------------------------------------------------------*/
+/* MMC card type flags (MMC_GET_TYPE) */
+#define CT_MMC		0x01		/* MMC ver 3 */
+#define CT_SD1		0x02		/* SD ver 1 */
+#define CT_SD2		0x04		/* SD ver 2 */
+#define CT_SDC		(CT_SD1|CT_SD2)	/* SD */
+#define CT_BLOCK	0x08		/* Block addressing */
+
 
 /*--------------------------------------------------------------------------
 
@@ -226,7 +238,7 @@ static
 int wait_ready (void)
 {
 	BYTE d;
-  ULONG timeOutTime;
+  DWORD timeOutTime;
   
   /* set timeout for 500 ms from now */
   timeOutTime = TimerGet() + 500;
@@ -280,7 +292,7 @@ int rcvr_datablock (	/* 1:OK, 0:Failed */
 )
 {
 	BYTE token;
-  ULONG timeOutTime;
+  DWORD timeOutTime;
 
   /* set timeout for 100 ms from now */
   timeOutTime = TimerGet() + 100;
@@ -307,7 +319,6 @@ int rcvr_datablock (	/* 1:OK, 0:Failed */
 /* Send a data packet to MMC                                             */
 /*-----------------------------------------------------------------------*/
 
-#if _USE_WRITE
 static
 int xmit_datablock (	/* 1:OK, 0:Failed */
 	const BYTE *buff,	/* 512 byte data block to be transmitted */
@@ -336,7 +347,6 @@ int xmit_datablock (	/* 1:OK, 0:Failed */
 
 	return 1;
 }
-#endif
 
 
 
@@ -402,7 +412,7 @@ DSTATUS disk_initialize (
 )
 {
 	BYTE n, cmd, ty, ocr[4];
-  ULONG timeOutTime;
+  DWORD timeOutTime;
 
 
 	if (pdrv) return STA_NOINIT;		/* Supports only single drive */
@@ -470,10 +480,10 @@ DSTATUS disk_status (
 /*-----------------------------------------------------------------------*/
 
 DRESULT disk_read (
-	BYTE pdrv,		/* Physical drive nmuber (0) */
-	BYTE *buff,		/* Pointer to the data buffer to store read data */
-	DWORD sector,	/* Start sector number (LBA) */
-	BYTE count		/* Sector count (1..255) */
+	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
+	BYTE *buff,		/* Data buffer to store read data */
+	DWORD sector,	/* Sector address in LBA */
+	UINT count		/* Number of sectors to read */
 )
 {
 	if (pdrv || !count) return RES_PARERR;
@@ -506,12 +516,11 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-#if _USE_WRITE
 DRESULT disk_write (
-	BYTE pdrv,				/* Physical drive nmuber (0) */
-	const BYTE *buff,		/* Pointer to the data to be written */
-	DWORD sector,			/* Start sector number (LBA) */
-	BYTE count				/* Sector count (1..255) */
+	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
+	const BYTE *buff,	/* Data to be written */
+	DWORD sector,		/* Sector address in LBA */
+	UINT count			/* Number of sectors to write */
 )
 {
 	if (pdrv || !count) return RES_PARERR;
@@ -540,7 +549,6 @@ DRESULT disk_write (
 
 	return count ? RES_ERROR : RES_OK;
 }
-#endif
 
 
 
@@ -548,7 +556,6 @@ DRESULT disk_write (
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
 
-#if _USE_IOCTL
 DRESULT disk_ioctl (
 	BYTE pdrv,		/* Physical drive nmuber (0) */
 	BYTE cmd,		/* Control code */
@@ -645,27 +652,6 @@ DRESULT disk_ioctl (
 	deselect();
 
 	return res;
-}
-#endif
-
-
-/*---------------------------------------------------------*/
-/* User Provided Timer Function for FatFs module           */
-/*---------------------------------------------------------*/
-/* This is a real time clock service to be called from     */
-/* FatFs module. Any valid time must be returned even if   */
-/* the system does not support a real time clock.          */
-/* This is not required in read-only configuration.        */
-
-DWORD get_fattime (void)
-{
-  /* No RTC supprt. Return a fixed value 2013/5/10 0:00:00 */
-  return    ((DWORD)(2013 - 1980) << 25)  /* Y */
-      | ((DWORD)5  << 21)       /* M */
-      | ((DWORD)10 << 16)       /* D */
-      | ((DWORD)0  << 11)       /* H */
-      | ((DWORD)0  << 5)        /* M */
-      | ((DWORD)0  >> 1);       /* S */
 }
 
 

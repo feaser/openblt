@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/sfile.html">
@@ -13,36 +13,33 @@
 
 <div class="para">
 <h2>FIL</h2>
-<p><tt>FIL</tt>�\����(�t�@�C���E�I�u�W�F�N�g)�́A<tt>f_open()</tt>�ŏ���������A�Ȍセ�̃t�@�C���̏�Ԃ�ێ����܂��B�܂��A<tt>f_close()</tt>�Ńt�@�C����������Ɩ���������܂��B�A�v���P�[�V�����́A���̍\���̂̃����o�����������Ă͂Ȃ�܂���(<tt>cltbl</tt>�͗�O)�B��^�C�j�[�\���ł́A�����ɃZ�N�^�E�o�b�t�@���m�ۂ����̂ŁA��L�T�C�Y�ɒ��ӂ��K�v�ł��B</p>
+<p><tt>FIL</tt>構造体(ファイル オブジェクト)は、<tt>f_open</tt>関数で初期化され、以後そのファイルの状態を保持します。また、<tt>f_close</tt>関数でファイルが閉じられると無効化されます。アプリケーションは、この構造体のメンバを書き換えてはなりません(<tt>cltbl</tt>は例外)。非タイニー構成(<tt>_FS_TINY == 0</tt>)では、内部に<tt>_MAX_SS</tt>バイトのセクタ バッファが確保されるので、そのサイズには注意が必要です。</p>
 
 <pre>
 <span class="k">typedef</span> <span class="k">struct</span> {
-    FATFS*  fs;           <span class="c">/* �e�t�@�C���E�V�X�e���E�I�u�W�F�N�g�ւ̃|�C���^ */</span>
-    WORD    id;           <span class="c">/* �e�t�@�C���E�V�X�e���E�I�u�W�F�N�g�̃}�E���gID */</span>
-    BYTE    flag;         <span class="c">/* �t�@�C���E�X�e�[�^�X�E�t���O */</span>
-    BYTE    pad1;
-    DWORD   fptr;         <span class="c">/* �t�@�C���ǂݏ����|�C���^ (�t�@�C���擪����̃o�C�g�E�I�t�Z�b�g) */</span>
-    DWORD   fsize;        <span class="c">/* �t�@�C���E�T�C�Y(�o�C�g�P��) */</span>
-    DWORD   sclust;       <span class="c">/* �t�@�C���J�n�N���X�^�ԍ� (set 0 if fsize==0) */</span>
-    DWORD   clust;        <span class="c">/* ���݂̃N���X�^ */</span>
-    DWORD   dsect;        <span class="c">/* ���݂̃f�[�^�E�Z�N�^ */</span>
-<span class="k">#if</span> _FS_READONLY == 0
-    DWORD   dir_sect;     <span class="c">/* ���̃t�@�C���̃f�B���N�g���E�G���g���̂���Z�N�^ */</span>
-    BYTE*   dir_ptr;      <span class="c">/* ���̃t�@�C���̃f�B���N�g���ւ̃|�C���^ */</span>
+    _FDID   obj;          <span class="c">/* オブジェクトID */</span>
+    BYTE    flag;         <span class="c">/* ファイル ステータス フラグ */</span>
+    BYTE    err;          <span class="c">/* エラー中断フラグ */</span>
+    FSIZE_t fptr;         <span class="c">/* ファイル読み書きポインタ (ファイル先頭からのバイト オフセット) */</span>
+    DWORD   clust;        <span class="c">/* 現在のクラスタ (fptrがクラスタ境界上のときは前のクラスタ、fptrが0のときは無効) */</span>
+    DWORD   dsect;        <span class="c">/* 現在のデータ セクタ */</span>
+<span class="k">#if</span> !_FS_READONLY
+    DWORD   dir_sect;     <span class="c">/* このファイルのディレクトリ エントリのあるセクタ */</span>
+    BYTE*   dir_ptr;      <span class="c">/* このファイルのディレクトリへのポインタ */</span>
 <span class="k">#endif</span>
 <span class="k">#if</span> _USE_FASTSEEK
-    DWORD*  cltbl;        <span class="c">/* �t�@�C���̃N���X�^�E�����N���ւ̃|�C���^ (Nulled on file open) */</span>
+    DWORD*  cltbl;        <span class="c">/* ファイルのクラスタ リンク情報へのポインタ (オープン時にNULLがセットされる) */</span>
 <span class="k">#endif</span>
-<span class="k">#if</span> _FS_SHARE
-    UINT    lockid;       <span class="c">/* �t�@�C���E���b�NID */</span>
+<span class="k">#if</span> _FS_LOCK
+    UINT    lockid;       <span class="c">/* ファイル ロックID */</span>
 <span class="k">#endif</span>
 <span class="k">#if</span> !_FS_TINY
-    BYTE    buf[_MAX_SS]; <span class="c">/* �f�[�^�]���o�b�t�@ */</span>
+    BYTE    buf[_MAX_SS]; <span class="c">/* ファイル プライベート データ転送バッファ (fptrがセクタ境界上にない時は常に有効だが、fptrがセクタ境界上のときは無効な場合がある) */</span>
 <span class="k">#endif</span>
 } FIL;
 </pre>
 </div>
 
-<p class="foot"><a href="../00index_j.html">�߂�</a></p>
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/sdir.html">
@@ -13,25 +13,26 @@
 
 <div class="para">
 <h2>DIR</h2>
-<p><tt>DIR</tt>\‘¢‘Ì‚ÍA<tt>f_opendir(), f_readdir()</tt>‚Ìƒ[ƒNEƒGƒŠƒA‚Æ‚µ‚ÄŽg—p‚³‚ê‚Ü‚·BƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÍA‚±‚Ì\‘¢‘Ì‚Ìƒƒ“ƒo‚ð‘‚«Š·‚¦‚Ä‚Í‚È‚è‚Ü‚¹‚ñB</p>
+<p><tt>DIR</tt>æ§‹é€ ä½“ã¯ã€<tt>f_opendir/f_readdir/f_findfirst/f_findnext</tt>é–¢æ•°ã®ãƒ¯ãƒ¼ã‚¯ ã‚¨ãƒªã‚¢ã¨ã—ã¦ä½¿ç”¨ã•ã‚Œã¾ã™ã€‚ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã¯ã€ã“ã®æ§‹é€ ä½“ã®ãƒ¡ãƒ³ãƒã‚’æ›¸ãæ›ãˆã¦ã¯ãªã‚Šã¾ã›ã‚“ã€‚</p>
 <pre>
 <span class="k">typedef</span> <span class="k">struct</span> {
-    FATFS*  fs;        <span class="c">/* eƒtƒ@ƒCƒ‹EƒVƒXƒeƒ€EƒIƒuƒWƒFƒNƒg‚Ö‚Ìƒ|ƒCƒ“ƒ^ */</span>
-    WORD    id;        <span class="c">/* eƒtƒ@ƒCƒ‹EƒVƒXƒeƒ€EƒIƒuƒWƒFƒNƒg‚Ìƒ}ƒEƒ“ƒgID */</span>
-    WORD    index;     <span class="c">/* ŽŸ‚É“Ç‚Ýo‚·ƒfƒBƒŒƒNƒgƒŠEƒCƒ“ƒfƒbƒNƒX”Ô† */</span>
-    DWORD   sclust;    <span class="c">/* ƒfƒBƒŒƒNƒgƒŠŠJŽnƒNƒ‰ƒXƒ^ (0:ƒ‹[ƒg) */</span>
-    DWORD   clust;     <span class="c">/* Œ»Ý‚ÌƒNƒ‰ƒXƒ^”Ô† */</span>
-    DWORD   sect;      <span class="c">/* Œ»Ý‚ÌƒZƒNƒ^”Ô† */</span>
-    BYTE*   dir;       <span class="c">/* Œ»Ý‚ÌSFNƒGƒ“ƒgƒŠ‚Ö‚Ìƒ|ƒCƒ“ƒ^ */</span>
-    BYTE*   fn;        <span class="c">/* SFNƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^ (in/out) {file[8],ext[3],status[1]} */</span>
+    _FDID   obj;       <span class="c">/* ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆID */</span>
+    DOWRD   dptr;      <span class="c">/* ç¾åœ¨ã®read/writeã‚ªãƒ•ã‚»ãƒƒãƒˆ */</span>
+    DWORD   clust;     <span class="c">/* ç¾åœ¨ã®ã‚¯ãƒ©ã‚¹ã‚¿ç•ªå· */</span>
+    DWORD   sect;      <span class="c">/* ç¾åœ¨ã®ã‚»ã‚¯ã‚¿ç•ªå· */</span>
+    BYTE*   dir;       <span class="c">/* ç¾åœ¨ã®SFNã‚¨ãƒ³ãƒˆãƒª(Win[]å†…)ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */</span>
+    BYTE*   fn;        <span class="c">/* SFNãƒãƒƒãƒ•ã‚¡ã¸ã®ãƒã‚¤ãƒ³ã‚¿ (in/out) {file[8],ext[3],status[1]} */</span>
 <span class="k">#if</span> _USE_LFN
-    WCHAR*  lfn;       <span class="c">/* LFNƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^ */</span>
-    WORD    lfn_idx;   <span class="c">/* ÅŒã‚Éƒ}ƒbƒ`‚µ‚½LFNƒGƒ“ƒgƒŠ‚ÌƒCƒ“ƒfƒbƒNƒX (0xFFFF:–³Œø) */</span>
+    DWORD   blk_ofs;   <span class="c">/* ç¾åœ¨ã®ã‚¨ãƒ³ãƒˆãƒªãƒ–ãƒ­ãƒƒã‚¯ã®å…ˆé ­ (0xFFFFFFFF:ç„¡åŠ¹) */</span>
+    WCHAR*  lfn;       <span class="c">/* LFNãƒãƒƒãƒ•ã‚¡ã¸ã®ãƒã‚¤ãƒ³ã‚¿ (in/out) */</span>
+<span class="k">#endif</span>
+<span class="k">#if</span> _USE_FIND
+    const TCHAR*  pat; <span class="c">/* ãƒžãƒƒãƒãƒ³ã‚° ãƒ‘ã‚¿ãƒ¼ãƒ³ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */</span>
 <span class="k">#endif</span>
 } DIR;
 </pre>
 </div>
 
-<p class="foot"><a href="../00index_j.html">–ß‚é</a></p>
+<p class="foot"><a href="../00index_j.html">æˆ»ã‚‹</a></p>
 </body>
 </html>

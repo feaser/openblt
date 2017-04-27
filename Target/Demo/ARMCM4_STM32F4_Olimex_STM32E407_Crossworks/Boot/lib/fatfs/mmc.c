@@ -3186,7 +3186,7 @@ DSTATUS disk_status (BYTE drv)
  * \param sector: start sector number (LBA)
  * \param count: sector count
  */
-DRESULT disk_read (BYTE drv, BYTE *buff, DWORD sector, BYTE count)
+DRESULT disk_read (BYTE drv, BYTE *buff, DWORD sector, UINT count)
 {
 	DWORD scratch [SD_BLOCKSIZE / 4]; /* Alignment ensured, need enough stack */
 	SD_Error sdstatus = SD_OK;
@@ -3274,8 +3274,7 @@ DRESULT disk_read (BYTE drv, BYTE *buff, DWORD sector, BYTE count)
  * \param count: Sector count (1..255)
  * \note this function needs DMA access and is disabled if _READONLY is set
  */
-#if	_READONLY == 0
-DRESULT disk_write(BYTE drv, const BYTE *buff, DWORD sector, BYTE count)
+DRESULT disk_write(BYTE drv, const BYTE *buff, DWORD sector, UINT count)
 {
 	DWORD scratch [SD_BLOCKSIZE / 4]; /* Alignment ensured, need enough stack */
 	SD_Error sdstatus = SD_OK;
@@ -3359,7 +3358,6 @@ DRESULT disk_write(BYTE drv, const BYTE *buff, DWORD sector, BYTE count)
 
   return RES_ERROR;
 }
-#endif
 
 /*!
  * \brief ioctl implementation
@@ -3416,19 +3414,8 @@ DRESULT disk_ioctl(BYTE drv, BYTE ctrl, void *buff)
 	return res;
 }
 
-/*!
- * \brief user provided timer function for FatFs module
- */
-DWORD get_fattime(void)
-{
-  /* No RTC supprt. Return a fixed value 2013/5/10 0:00:00 */
-  return    ((DWORD)(2013 - 1980) << 25)  /* Y */
-      | ((DWORD)5  << 21)       /* M */
-      | ((DWORD)10 << 16)       /* D */
-      | ((DWORD)0  << 11)       /* H */
-      | ((DWORD)0  << 5)        /* M */
-      | ((DWORD)0  >> 1);       /* S */
-}
+
+
 
 /********************************* end of mmc.c ****************************************/
 

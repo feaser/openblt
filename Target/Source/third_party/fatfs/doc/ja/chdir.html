@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="up" title="FatFs" href="../00index_j.html">
 <link rel="alternate" hreflang="en" title="English" href="../en/chdir.html">
@@ -13,25 +13,25 @@
 
 <div class="para func">
 <h2>f_chdir</h2>
-<p>ƒJƒŒƒ“ƒgEƒfƒBƒŒƒNƒgƒŠ‚ð•ÏX‚µ‚Ü‚·B</p>
+<p>ã‚«ãƒ¬ãƒ³ãƒˆ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å¤‰æ›´ã—ã¾ã™ã€‚</p>
 <pre>
 FRESULT f_chdir (
-  const TCHAR* <span class="arg">path</span> <span class="c">/* [IN] ƒfƒBƒŒƒNƒgƒŠ–¼‚Ö‚Ìƒ|ƒCƒ“ƒ^ */</span>
+  const TCHAR* <span class="arg">path</span> <span class="c">/* [IN] ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªåã¸ã®ãƒã‚¤ãƒ³ã‚¿ */</span>
 );
 </pre>
 </div>
 
 <div class="para arg">
-<h4>ˆø”</h4>
+<h4>å¼•æ•°</h4>
 <dl class="par">
 <dt>path</dt>
-<dd>ˆÚ“®‘ÎÛ‚ÌƒfƒBƒŒƒNƒgƒŠ‚Ì<a href="filename.html">ƒpƒX–¼</a>‚ðŽ¦‚·ƒkƒ‹•¶Žš<tt>'\0'</tt>I’[‚Ì•¶Žš—ñ‚ðŽw’è‚µ‚Ü‚·B</dd>
+<dd>ç§»å‹•å¯¾è±¡ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®<a href="filename.html">ãƒ‘ã‚¹å</a>ã‚’ç¤ºã™ãƒŒãƒ«æ–‡å­—<tt>'\0'</tt>çµ‚ç«¯ã®æ–‡å­—åˆ—ã‚’æŒ‡å®šã—ã¾ã™ã€‚</dd>
 </dl>
 </div>
 
 
 <div class="para ret">
-<h4>–ß‚è’l</h4>
+<h4>æˆ»ã‚Šå€¤</h4>
 <p>
 <a href="rc.html#ok">FR_OK</a>,
 <a href="rc.html#de">FR_DISK_ERR</a>,
@@ -49,33 +49,33 @@ FRESULT f_chdir (
 
 
 <div class="para desc">
-<h4>‰ðà</h4>
-<p>Šeƒ{ƒŠƒ…[ƒ€‚ÌƒJƒŒƒ“ƒgEƒfƒBƒŒƒNƒgƒŠ‚ð•ÏX‚µ‚Ü‚·BƒJƒŒƒ“ƒgEƒfƒBƒŒƒNƒgƒŠ‚Íƒtƒ@ƒCƒ‹EƒVƒXƒeƒ€EƒIƒuƒWƒFƒNƒg‚Ì‰Šú‰»‚ªs‚í‚ê‚½‚Æ‚«Aƒ‹[ƒgEƒfƒBƒŒƒNƒgƒŠ‚ÉÝ’è‚³‚ê‚Ü‚·BƒJƒŒƒ“ƒgEƒfƒBƒŒƒNƒgƒŠ‚ÍAƒtƒ@ƒCƒ‹EƒVƒXƒeƒ€EƒIƒuƒWƒFƒNƒg‚É•ÛŽ‚³‚ê‚é‚½‚ßA‚»‚Ìƒ{ƒŠƒ…[ƒ€‚ðŽg—p‚·‚é‘S‚Ä‚Ìƒ^ƒXƒN‚É‘Î‚µ‚Ä‰e‹¿‚ð—^‚¦‚Ü‚·B</p>
+<h4>è§£èª¬</h4>
+<p>å„ãƒœãƒªãƒ¥ãƒ¼ãƒ ã®ã‚«ãƒ¬ãƒ³ãƒˆ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å¤‰æ›´ã—ã¾ã™ã€‚ã‚«ãƒ¬ãƒ³ãƒˆ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¯ã€ãã®ãƒœãƒªãƒ¥ãƒ¼ãƒ ã®ãƒžã‚¦ãƒ³ãƒˆå‹•ä½œãŒè¡Œã‚ã‚ŒãŸã¨ãã€ãƒ«ãƒ¼ãƒˆ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«åˆæœŸè¨­å®šã•ã‚Œã¾ã™ã€‚ã‚«ãƒ¬ãƒ³ãƒˆ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¯ã€ãƒ•ã‚¡ã‚¤ãƒ« ã‚·ã‚¹ãƒ†ãƒ  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ä¿æŒã•ã‚Œã‚‹ãŸã‚ã€ãã®ãƒœãƒªãƒ¥ãƒ¼ãƒ ã‚’ä½¿ç”¨ã™ã‚‹å…¨ã¦ã®ã‚¿ã‚¹ã‚¯ã«å¯¾ã—ã¦å½±éŸ¿ã‚’ä¸Žãˆã¾ã™ã€‚</p>
 </div>
 
 
 <div class="para comp">
-<h4>‘Î‰žî•ñ</h4>
-<p><tt>_FS_RPATH == 1</tt>‚Ì‚Æ‚«‚ÉŽg—p‰Â”\‚Æ‚È‚è‚Ü‚·B</p>
+<h4>å¯¾å¿œæƒ…å ±</h4>
+<p><tt>_FS_RPATH == 1</tt>ã®ã¨ãã«ä½¿ç”¨å¯èƒ½ã¨ãªã‚Šã¾ã™ã€‚</p>
 </div>
 
 
 <div class="para exa">
-<h4>Žg—p—á</h4>
+<h4>ä½¿ç”¨ä¾‹</h4>
 <pre>
-    <span class="c">/* ƒJƒŒƒ“ƒgEƒhƒ‰ƒCƒu‚ÌƒJƒŒƒ“ƒgEƒfƒBƒŒƒNƒgƒŠ‚ð•ÏX (ƒ‹[ƒg‰º‚Ìdir1‚Ö) */</span>
+    <span class="c">/* ã‚«ãƒ¬ãƒ³ãƒˆ ãƒ‰ãƒ©ã‚¤ãƒ–ã®ã‚«ãƒ¬ãƒ³ãƒˆ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å¤‰æ›´ (ãƒ«ãƒ¼ãƒˆä¸‹ã®dir1ã¸) */</span>
     f_chdir("/dir1");
 
-    <span class="c">/* ƒhƒ‰ƒCƒu2‚ÌƒJƒŒƒ“ƒgEƒfƒBƒŒƒNƒgƒŠ‚ð•ÏX (eƒfƒBƒŒƒNƒgƒŠ‚Ö) */</span>
+    <span class="c">/* ãƒ‰ãƒ©ã‚¤ãƒ–2ã®ã‚«ãƒ¬ãƒ³ãƒˆ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å¤‰æ›´ (è¦ªãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¸) */</span>
     f_chdir("2:..");
 </pre>
 </div>
 
 <div class="para ref">
-<h4>ŽQÆ</h4>
+<h4>å‚ç…§</h4>
 <p><tt><a href="chdrive.html">f_chdrive</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_j.html">–ß‚é</a></p>
+<p class="foot"><a href="../00index_j.html">æˆ»ã‚‹</a></p>
 </body>
 </html>

@@ -13,7 +13,7 @@
 
 <div class="para func">
 <h2>f_getcwd</h2>
-<p>The f_getcwd function retrieves the current directory.</p>
+<p>The f_getcwd function retrieves the current directory and current drive.</p>
 <pre>
 FRESULT f_getcwd (
   TCHAR* <span class="arg">buff</span>, <span class="c">/* [OUT] Buffer to return path name */</span>
@@ -28,7 +28,7 @@ FRESULT f_getcwd (
 <dt>buff</dt>
 <dd>Pointer to the buffer to receive the current directory string.</dd>
 <dt>len</dt>
-<dd>Size of the buffer in unit of TCHAR.</dd>
+<dd>Size of the buffer in unit of <tt>TCHAR</tt>.</dd>
 </dl>
 </div>
 
@@ -50,7 +50,8 @@ FRESULT f_getcwd (
 
 <div class="para desc">
 <h4>Description</h4>
-<p>The <tt>f_getcwd()</tt> function retrieves the current directory of the current drive in full path string including drive number.</p>
+<p>The <tt>f_getcwd</tt> function retrieves full path name of the current directory of the current drive. When <tt>_VOLUMES</tt> is larger than 1, a logical drive number is added to top of the path name.</p>
+<p><em>Note: In this revision, R0.12, this function cannot retrieve the current directory path on the exFAT volume. It always returns the root directory path.</em></p>
 </div>
 
 
