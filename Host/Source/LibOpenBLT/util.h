@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         main.c
-* \brief        BootCommander program source file.
-* \ingroup      BootCommander
+* \file         util.h
+* \brief        Utility module header file.
+* \ingroup      Utility
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,52 +25,35 @@
 *
 * \endinternal
 ****************************************************************************************/
-
-/****************************************************************************************
-* Include files
-****************************************************************************************/
-#include <stdio.h>                          /* Standard I/O functions.                 */
-#include "openblt.h"                        /* OpenBLT library.                        */
-
-
-/****************************************************************************************
-* Macro definitions
-****************************************************************************************/
-/* Program return codes. */
-#define RESULT_OK                           (0u)
-
-
 /************************************************************************************//**
-** \brief     This is the program entry point.
-** \param     argc Number of program arguments.
-** \param     argv Array with program arguments.
-** \return    Program return code. 0 for success, error code otherwise.
-**
+* \defgroup   Utility Generic Utilities
+* \brief      Generic utility functions and definitions.
+* \ingroup    Library
+* \details
+* The Utility modules contains generic functions and definitions that can be handy for
+* use internally in the library and also externally by another application that makes
+* use of the library.
 ****************************************************************************************/
-int main(int argc, char *argv[])
-{
-  int result = RESULT_OK;
-  const uint8_t crcTestData[] = 
-  {
-    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-    0x11, 0x54, 0xFE, 0xA1, 0x89, 0xFA, 0xA9, 0x12
-  };
-  
-  (void)argc;
-  (void)argv;
+#ifndef UTIL_H
+#define UTIL_H
 
-  /* Output info to the user. */
-  printf("The library version number: %u\n", BltVersionGetNumber());
-  printf("The library version string: %s\n", BltVersionGetString());
-  /* Output CRC calculation results. */  
-  printf("Test CRC16 value: %04xh\n", BltUtilCrc16Calculate(crcTestData, 16));
-  printf("Test CRC32 value: %08xh\n", BltUtilCrc32Calculate(crcTestData, 16));
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-  /* Give result back. */
-  return result;
-} /*** end of main ***/
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+uint16_t UtilChecksumCrc16Calculate(uint8_t const * data, uint32_t len);
+uint32_t UtilChecksumCrc32Calculate(uint8_t const * data, uint32_t len);
 
 
-/*********************************** end of main.c *************************************/
+#ifdef __cplusplus
+}
+#endif
 
+#endif /* UTIL_H */
+/********************************* end of util.h ***************************************/
+
+ 
  

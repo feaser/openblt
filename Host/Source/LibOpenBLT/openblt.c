@@ -32,6 +32,7 @@
 #include <assert.h>                         /* for assertions                          */
 #include <stddef.h>                         /* for NULL declaration                    */
 #include "openblt.h"                        /* OpenBLT host library                    */
+#include "util.h"                           /* Utility module                          */
 
 
 /****************************************************************************************
@@ -474,7 +475,8 @@ LIBOPENBLT_EXPORT uint16_t BltUtilCrc16Calculate(uint8_t const * data, uint32_t 
   /* Only continue if parameters are valid. */
   if ( (data != NULL) && (len > 0) ) /*lint !e774 */
   {
-    /* TODO Call function in util.c once it is implemented there. */
+    /* Perform checksum calculation. */
+    result = UtilChecksumCrc16Calculate(data, len);
   }
   
   return result;
@@ -499,7 +501,8 @@ LIBOPENBLT_EXPORT uint32_t BltUtilCrc32Calculate(uint8_t const * data, uint32_t 
   /* Only continue if parameters are valid. */
   if ( (data != NULL) && (len > 0) ) /*lint !e774 */
   {
-    /* TODO Call function in util.c once it is implemented there. */
+    /* Perform checksum calculation. */
+    result = UtilChecksumCrc32Calculate(data, len);
   }
   
   return result;

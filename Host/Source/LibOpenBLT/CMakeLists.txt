@@ -105,6 +105,7 @@ set(INCS ${INCS_ROOT} ${INCS_PORT})
 set(
   LIB_SRCS 
   openblt.c
+  util.c
   ${INCS}
 )
 
