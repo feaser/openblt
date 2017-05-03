@@ -40,8 +40,7 @@
 
 
 /************************************************************************************//**
-** \brief     Initializes the LED. The board doesn't have a dedicted LED so an
-**            indicator on the LCD is used instead.
+** \brief     Initializes the LED.
 ** \return    none.
 **
 ****************************************************************************************/

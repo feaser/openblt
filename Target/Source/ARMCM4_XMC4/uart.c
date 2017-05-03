@@ -45,7 +45,7 @@
 /** \brief Macro for accessing the UART channel handle in the format that is expected
  *         by the XMClib UART driver.
  */
-#define UART_CHANNEL ((XMC_USIC_CH_t * const)(uartChannelMap[BOOT_COM_UART_CHANNEL_INDEX]))
+#define UART_CHANNEL ((XMC_USIC_CH_t *)(uartChannelMap[BOOT_COM_UART_CHANNEL_INDEX]))
 
 
 /****************************************************************************************

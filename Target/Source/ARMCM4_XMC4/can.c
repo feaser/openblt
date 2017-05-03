@@ -42,7 +42,7 @@
 /** \brief Macro for accessing the CAN channel handle in the format that is expected
  *         by the XMClib CAN driver.
  */
-#define CAN_CHANNEL ((CAN_NODE_TypeDef * const)(canChannelMap[BOOT_COM_CAN_CHANNEL_INDEX]))
+#define CAN_CHANNEL ((CAN_NODE_TypeDef *)(canChannelMap[BOOT_COM_CAN_CHANNEL_INDEX]))
 
 /** \brief Message object dedicated to message transmission. */
 #define CAN_TX_MSBOBJ            (CAN_MO0)
