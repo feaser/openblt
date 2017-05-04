@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         util.h
-* \brief        Utility module header file.
-* \ingroup      Utility
+* \file         srecparser.h
+* \brief        Motorola S-record file parser header file.
+* \ingroup      Firmware
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,17 +25,8 @@
 *
 * \endinternal
 ****************************************************************************************/
-/************************************************************************************//**
-* \defgroup   Utility Generic Utilities
-* \brief      Generic utility functions and definitions.
-* \ingroup    Library
-* \details
-* The Utility module contains generic functions and definitions that can be handy for
-* use internally in the library and also externally by another application that makes
-* use of the library.
-****************************************************************************************/
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef SRECPARSER_H
+#define SRECPARSER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,16 +35,15 @@ extern "C" {
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-uint16_t UtilChecksumCrc16Calculate(uint8_t const * data, uint32_t len);
-uint32_t UtilChecksumCrc32Calculate(uint8_t const * data, uint32_t len);
+tFirmwareParser const * SRecParserGetParser(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* UTIL_H */
-/********************************* end of util.h ***************************************/
+#endif /* SRECPARSER_H */
+/********************************* end of srecparser.h *********************************/
 
  
  

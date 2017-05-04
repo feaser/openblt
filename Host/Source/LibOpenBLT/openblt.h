@@ -189,13 +189,13 @@ LIBOPENBLT_EXPORT uint32_t BltSessionReadData(uint32_t address, uint32_t len,
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-LIBOPENBLT_EXPORT void BltFirmwareInit(uint32_t parserType, void const * parserSettings);
+LIBOPENBLT_EXPORT void BltFirmwareInit(uint32_t parserType);
 LIBOPENBLT_EXPORT void BltFirmwareTerminate(void);
 LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile);
 LIBOPENBLT_EXPORT uint32_t BltFirmwareSaveToFile(char const * firmwareFile);
 LIBOPENBLT_EXPORT uint32_t BltFirmwareGetSegmentCount(void);
-LIBOPENBLT_EXPORT uint32_t BltFirmwareGetSegment(uint32_t idx, uint32_t * address, 
-                                                 uint32_t * len, uint8_t * data);
+LIBOPENBLT_EXPORT uint8_t * BltFirmwareGetSegment(uint32_t idx, uint32_t * address, 
+                                                  uint32_t * len);
 LIBOPENBLT_EXPORT uint32_t BltFirmwareAddData(uint32_t address, uint32_t len, 
                                               uint8_t const * data);
 LIBOPENBLT_EXPORT uint32_t BltFirmwareRemoveData(uint32_t address, uint32_t len);

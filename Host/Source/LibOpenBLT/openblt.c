@@ -31,8 +31,11 @@
 ****************************************************************************************/
 #include <assert.h>                         /* for assertions                          */
 #include <stddef.h>                         /* for NULL declaration                    */
+#include <stdbool.h>                        /* for boolean type                        */
 #include "openblt.h"                        /* OpenBLT host library                    */
 #include "util.h"                           /* Utility module                          */
+#include "firmware.h"                       /* Firmware data module                    */
+#include "srecparser.h"                     /* S-record parser                         */
 
 
 /****************************************************************************************
@@ -182,7 +185,7 @@ LIBOPENBLT_EXPORT uint32_t BltSessionClearMemory(uint32_t address, uint32_t len)
   /* TODO Implement. */
     result = BLT_RESULT_OK;
   }
-  
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltSessionClearMemory ***/
 
@@ -214,7 +217,7 @@ LIBOPENBLT_EXPORT uint32_t BltSessionWriteData(uint32_t address, uint32_t len,
   /* TODO Implement. */
     result = BLT_RESULT_OK;
   }
-
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltSessionWriteData ***/
 
@@ -247,7 +250,7 @@ LIBOPENBLT_EXPORT uint32_t BltSessionReadData(uint32_t address, uint32_t len,
     data[0] = 0;
     result = BLT_RESULT_OK;
   }
-      
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltSessionReadData ***/
 
@@ -259,20 +262,21 @@ LIBOPENBLT_EXPORT uint32_t BltSessionReadData(uint32_t address, uint32_t len,
 ** \brief     Initializes the firmware data module for a specified firmware file parser.
 ** \param     parserType The firmware file parser to use in this module. It should be a
 **            BLT_FIRMWARE_PARSER_xxx value.
-** \param     parserSettings Pointer to a structure with file parser specific settings if
-**            applicable, otherwise specify a NULL value.
 **
 ****************************************************************************************/
-LIBOPENBLT_EXPORT void BltFirmwareInit(uint32_t parserType, void const * parserSettings)
+LIBOPENBLT_EXPORT void BltFirmwareInit(uint32_t parserType)
 {
-  /* Verify parameters. Note that it is okay for the parserSettings to be a NULL value.
-   * Not all parsers require additional settings.
-   */
+  tFirmwareParser const * firmwareParser = NULL;
+  /* Verify parameters. */
   assert(parserType == BLT_FIRMWARE_PARSER_SRECORD);
   
-  (void)parserSettings;
-  
-  /* TODO Implement. */
+  /* Set the parser pointer. */
+  if (parserType == BLT_FIRMWARE_PARSER_SRECORD) /*lint !e774 */
+  {
+    firmwareParser = SRecParserGetParser();
+  }
+  /* Initialize the firmware data module by linking the firmware file parser. */
+  FirmwareInit(firmwareParser);
 } /*** end of BltFirmwareInit ***/
 
 
@@ -283,6 +287,8 @@ LIBOPENBLT_EXPORT void BltFirmwareInit(uint32_t parserType, void const * parserS
 ****************************************************************************************/
 LIBOPENBLT_EXPORT void BltFirmwareTerminate(void)
 {
+  /* Terminate the firmware data module. */
+  FirmwareTerminate();
 } /*** end of BltFirmwareTerminate ***/
 
 
@@ -303,10 +309,13 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile)
   /* Only continue if parameters are valid. */
   if (firmwareFile != NULL) /*lint !e774 */
   {
-    /* TODO Implement. */
-    result = BLT_RESULT_OK;
+    /* Pass the request on to the firmware data module. */
+    if (FirmwareLoadFromFile(firmwareFile))
+    {
+      result = BLT_RESULT_OK;
+    }
   }
-
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltFirmwareLoadFromFile ***/
 
@@ -328,10 +337,13 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareSaveToFile(char const * firmwareFile)
   /* Only continue if parameters are valid. */
   if (firmwareFile != NULL) /*lint !e774 */
   {
-    /* TODO Implement. */
-    result = BLT_RESULT_OK;
+    /* Pass the request on to the firmware data module. */
+    if (FirmwareSaveToFile(firmwareFile))
+    {
+      result = BLT_RESULT_OK;
+    }
   }
-
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltFirmwareSaveToFile ***/
 
@@ -344,49 +356,47 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareSaveToFile(char const * firmwareFile)
 ****************************************************************************************/
 LIBOPENBLT_EXPORT uint32_t BltFirmwareGetSegmentCount(void)
 {
-  /* TODO Implement. */
-  
-  return 0;
+  /* Pass the request on to the firmware data module. */
+  return FirmwareGetSegmentCount();
 } /*** end of BltFirmwareGetSegmentCount ***/
 
 
 /************************************************************************************//**
-** \brief     Obtains the contents of the firmware data segments that was specified by
-**            index parameter. Note that it is allowed to specify a NULL pointer for the
-**            data parameter. In which case only the address and length information of
-**            the segment are retrieved.
+** \brief     Obtains the contents of the firmware data segment that was specified by the
+**            index parameter. 
 ** \param     idx The segment index. It should be a value greater or equal to zero and
 **            smaller than the value returned by \ref BltFirmwareGetSegmentCount.
 ** \param     address Pointer to where the segment's base address will be written to.
 ** \param     len Pointer to where the segment's length will be written to.
-** \param     data Pointer to the the segment's data pointer will be written to. Note
-**            that no data is copied to this pointer, so it does not have a be a data
-**            array. This function gives direct access to the segment's data.
-** \return    BLT_RESULT_OK if successful, BLT_RESULT_ERROR_xxx otherwise.
+** \return    Pointer to the segment data if successful, NULL otherwise.
 **
 ****************************************************************************************/
-LIBOPENBLT_EXPORT uint32_t BltFirmwareGetSegment(uint32_t idx, uint32_t * address, 
-                                                 uint32_t * len, uint8_t * data)
+LIBOPENBLT_EXPORT uint8_t * BltFirmwareGetSegment(uint32_t idx, uint32_t * address, 
+                                                  uint32_t * len)
 {
-  uint32_t result = BLT_RESULT_ERROR_GENERIC;
+  uint8_t * result = NULL;
+  tFirmwareSegment *segmentPtr;
 
   /* Verify parameters. Note that it is okay for the data parameter to be NULL. */
-  assert(idx < BltFirmwareGetSegmentCount());
+  assert(idx < FirmwareGetSegmentCount());
   assert(address != NULL);
   assert(len != NULL);
   
-  (void)data;
-
   /* Only continue if parameters are valid. */ 
   if ((address != NULL) && (len != NULL) &&
-      (idx < BltFirmwareGetSegmentCount()) ) /*lint !e774 */
+      (idx < FirmwareGetSegmentCount()) ) /*lint !e774 */
   {
-    /* TODO Implement. */
-    *len = 0;
-    *address = 0;
-    result = BLT_RESULT_OK;
+    /* Pass the request on to the firmware data module. */
+    segmentPtr = FirmwareGetSegment(idx);
+    /* Process the result. */
+    if (segmentPtr != NULL)
+    {
+      *address = segmentPtr->base;
+      *len = segmentPtr->length;
+      result = segmentPtr->data;
+    }
   }
-  
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltFirmwareGetSegment ***/
 
@@ -416,11 +426,13 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareAddData(uint32_t address, uint32_t len,
   /* Only continue if parameters are valid. */
   if ( (len > 0) && (data != NULL) ) /*lint !e774 */
   {
-    /* TODO Implement. */
-    result = BLT_RESULT_OK;
+    /* Pass the request on to the firmware data module. */
+    if (FirmwareAddData(address, len, data))
+    {
+      result = BLT_RESULT_OK;
+    }
   }
-
-
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltFirmwareAddData ***/
 
@@ -446,10 +458,13 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareRemoveData(uint32_t address, uint32_t len)
   /* Only continue if parameters are valid. */
   if (len > 0)
   {
-    /* TODO Implement. */
-    result = BLT_RESULT_OK;
+    /* Pass the request on to the firmware data module. */
+    if (BltFirmwareRemoveData(address, len))
+    {
+      result = BLT_RESULT_OK;
+    }
   }
-
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltFirmwareRemoveData ***/
 
@@ -478,7 +493,7 @@ LIBOPENBLT_EXPORT uint16_t BltUtilCrc16Calculate(uint8_t const * data, uint32_t 
     /* Perform checksum calculation. */
     result = UtilChecksumCrc16Calculate(data, len);
   }
-  
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltUtilCrc16Calculate ***/
 
@@ -504,7 +519,7 @@ LIBOPENBLT_EXPORT uint32_t BltUtilCrc32Calculate(uint8_t const * data, uint32_t 
     /* Perform checksum calculation. */
     result = UtilChecksumCrc32Calculate(data, len);
   }
-  
+  /* Give the result back to the caller. */
   return result;
 } /*** end of BltUtilCrc32Calculate ***/
 

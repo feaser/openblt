@@ -132,9 +132,7 @@ const
   // the firmware's data as an S-record.
   BLT_FIRMWARE_PARSER_SRECORD: LongWord = 0;
 
-procedure BltFirmwareInit(parserType: LongWord;
-                          parserSettings: Pointer);
-                          cdecl; external LIBOPENBLT_LIBNAME;
+procedure BltFirmwareInit(parserType: LongWord); cdecl; external LIBOPENBLT_LIBNAME;
 procedure BltFirmwareTerminate; cdecl; external LIBOPENBLT_LIBNAME;
 function  BltFirmwareLoadFromFile(firmwareFile: PAnsiChar): LongWord;
                                   cdecl; external LIBOPENBLT_LIBNAME;
@@ -143,8 +141,7 @@ function  BltFirmwareSaveToFile(firmwareFile: PAnsiChar): LongWord;
 function  BltFirmwareGetSegmentCount: LongWord; cdecl; external LIBOPENBLT_LIBNAME;
 function  BltFirmwareGetSegment(idx: LongWord;
                                 var address: LongWord;
-                                var len: LongWord;
-                                data: PByte): LongWord;
+                                var len: LongWord): PByte;
                                 cdecl; external LIBOPENBLT_LIBNAME;
 function  BltFirmwareAddData(address: LongWord;
                              len: LongWord;
@@ -158,8 +155,10 @@ function  BltFirmwareRemoveData(address: LongWord;
 //***************************************************************************************
 //             G E N E R I C   U T I L I T I E S
 //***************************************************************************************
-function BltUtilCrc16Calculate(data: PByte; len: LongWord): Word; cdecl; external 'openblt';
-function BltUtilCrc32Calculate(data: PByte; len: LongWord): LongWord; cdecl; external 'openblt';
+function BltUtilCrc16Calculate(data: PByte; len: LongWord): Word; 
+                               cdecl; external LIBOPENBLT_LIBNAME;
+function BltUtilCrc32Calculate(data: PByte; len: LongWord): LongWord; 
+                               cdecl; external LIBOPENBLT_LIBNAME;
 
 
 implementation

@@ -105,6 +105,8 @@ set(INCS ${INCS_ROOT} ${INCS_PORT})
 set(
   LIB_SRCS 
   openblt.c
+  firmware.c
+  srecparser.c
   util.c
   ${INCS}
 )
