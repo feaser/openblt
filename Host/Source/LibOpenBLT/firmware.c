@@ -622,62 +622,62 @@ static void FirmwareTrimSegment(tFirmwareSegment const * segment, uint32_t addre
       currentSegment = currentSegment->next;
     }
     while (currentSegment != NULL);
-  }
-  
-  /* Only continue if the segment was successfully validated. */
-  if (segmentValid)
-  {
-    /* Does the data range to trim cover the entire segment? */
-    if ( (address <= segment->base) && 
-         ((address + len) >= (segment->base + segment->length)) )
+
+    /* Only continue if the segment was successfully validated. */
+    if (segmentValid)
     {
-      /* Delete the entire segment. */
-      FirmwareDeleteSegment(segment);
-    }
-    /* Does the data range cover the start of the segment, but does not go all the way
-     * to the end?
-     */
-    else if (address <= segment->base)
-    {
-      /* Create a new segment with the data that should remain in the segment. */
-      newBase1 = address + len;
-      newLength1 = (segment->base + segment->length) - (address + len);
-      newData1 = &(segment->data[newBase1 - segment->base]);
-      FirmwareCreateSegment(newBase1, newLength1, newData1);
-      /* The original segment can now be deleted. */
-      FirmwareDeleteSegment(segment);
-    }
-    /* does the data range cover the end of the segment, but does not go all the way to
-     * the start?
-     */
-    else if ((address + len) >= (segment->base + segment->length))
-    {
-      /* Create a new segment with the data that should remain in the segment. */
-      newBase1 = segment->base;
-      newLength1 = address - segment->base;
-      newData1 = segment->data;
-      FirmwareCreateSegment(newBase1, newLength1, newData1);
-      /* The original segment can now be deleted. */
-      FirmwareDeleteSegment(segment);
-    }
-    /* The data range covers a part in the middle of the segment. A split is needed. */
-    else
-    {
-      /* Create a new segment with the data that should remain in the segment that is
-       * currently before the to be removed range and create a new segment with the data
-       * that should remain in the segment that is currently after the to be removed
-       * range.
-       */
-      newBase1 = segment->base;
-      newLength1 = address - segment->base;
-      newData1 = segment->data;
-      newBase2 = address + len;
-      newLength2 = (segment->base + segment->length) - (address + len);
-      newData2 = &(segment->data[newBase2 - segment->base]);
-      FirmwareCreateSegment(newBase1, newLength1, newData1);
-      FirmwareCreateSegment(newBase2, newLength2, newData2);
-      /* The original segment can now be deleted. */
-      FirmwareDeleteSegment(segment);
+      /* Does the data range to trim cover the entire segment? */
+      if ((address <= segment->base) &&
+        ((address + len) >= (segment->base + segment->length)))
+      {
+        /* Delete the entire segment. */
+        FirmwareDeleteSegment(segment);
+      }
+      /* Does the data range cover the start of the segment, but does not go all the way
+      * to the end?
+      */
+      else if (address <= segment->base)
+      {
+        /* Create a new segment with the data that should remain in the segment. */
+        newBase1 = address + len;
+        newLength1 = (segment->base + segment->length) - (address + len);
+        newData1 = &(segment->data[newBase1 - segment->base]);
+        FirmwareCreateSegment(newBase1, newLength1, newData1);
+        /* The original segment can now be deleted. */
+        FirmwareDeleteSegment(segment);
+      }
+      /* does the data range cover the end of the segment, but does not go all the way to
+      * the start?
+      */
+      else if ((address + len) >= (segment->base + segment->length))
+      {
+        /* Create a new segment with the data that should remain in the segment. */
+        newBase1 = segment->base;
+        newLength1 = address - segment->base;
+        newData1 = segment->data;
+        FirmwareCreateSegment(newBase1, newLength1, newData1);
+        /* The original segment can now be deleted. */
+        FirmwareDeleteSegment(segment);
+      }
+      /* The data range covers a part in the middle of the segment. A split is needed. */
+      else
+      {
+        /* Create a new segment with the data that should remain in the segment that is
+        * currently before the to be removed range and create a new segment with the data
+        * that should remain in the segment that is currently after the to be removed
+        * range.
+        */
+        newBase1 = segment->base;
+        newLength1 = address - segment->base;
+        newData1 = segment->data;
+        newBase2 = address + len;
+        newLength2 = (segment->base + segment->length) - (address + len);
+        newData2 = &(segment->data[newBase2 - segment->base]);
+        FirmwareCreateSegment(newBase1, newLength1, newData1);
+        FirmwareCreateSegment(newBase2, newLength2, newData2);
+        /* The original segment can now be deleted. */
+        FirmwareDeleteSegment(segment);
+      }
     }
   }
 } /*** end of FirmwareTrimSegment ***/
