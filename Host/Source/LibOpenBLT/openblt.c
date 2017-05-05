@@ -421,8 +421,6 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareAddData(uint32_t address, uint32_t len,
   assert(len > 0);
   assert(data != NULL);
   
-  (void)address;
-
   /* Only continue if parameters are valid. */
   if ( (len > 0) && (data != NULL) ) /*lint !e774 */
   {
@@ -453,13 +451,11 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareRemoveData(uint32_t address, uint32_t len)
   /* Verify parameters. */
   assert(len > 0);
   
-  (void)address;
-
   /* Only continue if parameters are valid. */
   if (len > 0)
   {
     /* Pass the request on to the firmware data module. */
-    if (BltFirmwareRemoveData(address, len))
+    if (FirmwareRemoveData(address, len))
     {
       result = BLT_RESULT_OK;
     }

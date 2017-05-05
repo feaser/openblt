@@ -40,6 +40,21 @@
 #define RESULT_OK                           (0u)
 
 
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+static void DumpFirmwareData(void);
+
+
+/****************************************************************************************
+* Local constant declarations
+****************************************************************************************/
+static const uint8_t testData1[8] = { 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
+static const uint8_t testData2[8] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27 };
+static const uint8_t testData3[8] = { 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37 };
+static const uint8_t testData4[8] = { 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47 };
+
+
 /************************************************************************************//**
 ** \brief     This is the program entry point.
 ** \param     argc Number of program arguments.
@@ -50,25 +65,72 @@
 int main(int argc, char *argv[])
 {
   int result = RESULT_OK;
-  const uint8_t crcTestData[] = 
-  {
-    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-    0x11, 0x54, 0xFE, 0xA1, 0x89, 0xFA, 0xA9, 0x12
-  };
   
   (void)argc;
   (void)argv;
+  
+  /* Initialize the firmware data module using the S-record parser. */
+  BltFirmwareInit(BLT_FIRMWARE_PARSER_SRECORD);
 
-  /* Output info to the user. */
-  printf("The library version number: %u\n", BltVersionGetNumber());
-  printf("The library version string: %s\n", BltVersionGetString());
-  /* Output CRC calculation results. */  
-  printf("Test CRC16 value: %04xh\n", BltUtilCrc16Calculate(crcTestData, 16));
-  printf("Test CRC32 value: %08xh\n", BltUtilCrc32Calculate(crcTestData, 16));
+  /* Add firmware data. */
+  (void)BltFirmwareAddData(0x4000, 8, testData4);
+  (void)BltFirmwareAddData(0x2000, 8, testData2);
+  (void)BltFirmwareAddData(0x1000, 8, testData1);
+  (void)BltFirmwareAddData(0x3000, 8, testData3);
+  
+  /* Output firmware data. */
+  printf("Original data:\n");
+  DumpFirmwareData();
+  
+  /* Remove some data. */
+  (void)BltFirmwareRemoveData(0x2004, 0x1000); 
 
+  /* Output firmware data. */
+  printf("After removal:\n");
+  DumpFirmwareData();
+  
+  /* Terminate the firmware data module. */
+  BltFirmwareTerminate();
+  
   /* Give result back. */
   return result;
 } /*** end of main ***/
+
+
+/************************************************************************************//**
+** \brief     Displays the contents of the firmware data on the standard output.
+**
+****************************************************************************************/
+static void DumpFirmwareData(void)
+{
+  uint32_t i;
+  uint8_t  * segmentData;
+  uint32_t segmentBase;
+  uint32_t segmentLen;
+  uint32_t byteIdx;
+  
+  /* Loop through all segments with firmware data. */
+  for (i = 0; i < BltFirmwareGetSegmentCount(); i++)
+  {
+    /* Extract segment information. */
+    segmentData = BltFirmwareGetSegment(i, &segmentBase, &segmentLen);
+    /* Process the segment is valid. */
+    if (segmentData != NULL)
+    {
+      printf("Segment base = 0x%08X, len = %u", segmentBase, segmentLen);
+      for (byteIdx = 0; byteIdx < segmentLen; byteIdx++)
+      {
+        if ((byteIdx % 8) == 0)
+        {
+          printf("\n  ");
+        }
+        printf("%02X ", segmentData[byteIdx]);
+      }
+      printf("\n");
+      
+    }
+  }
+} /*** end of DumpFirmwareData ***/
 
 
 /*********************************** end of main.c *************************************/

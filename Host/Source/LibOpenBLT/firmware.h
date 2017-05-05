@@ -56,6 +56,8 @@ typedef struct t_firmware_segment
   uint32_t length;                
   /** \brief Pointer to array with the segment's data bytes. */
   uint8_t *data;                  
+  /** \brief Pointer to the previous node, or NULL if it is the first one. */
+  struct t_firmware_segment * prev;
   /** \brief Pointer to the next node, or NULL if it is the last one. */
   struct t_firmware_segment * next;
 } tFirmwareSegment;
