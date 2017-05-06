@@ -54,6 +54,15 @@ static const uint8_t testData2[8] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 
 static const uint8_t testData3[8] = { 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37 };
 static const uint8_t testData4[8] = { 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47 };
 
+static const uint8_t mergeData[64] = { 0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 
+                                       0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAE, 0xAF,
+                                       0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 
+                                       0xB8, 0xB9, 0xBA, 0xBB, 0xBC, 0xBD, 0xBE, 0xBF,
+                                       0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7,
+                                       0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCD, 0xCE, 0xCF,
+                                       0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7,
+                                       0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF };
+
 
 /************************************************************************************//**
 ** \brief     This is the program entry point.
@@ -73,20 +82,20 @@ int main(int argc, char *argv[])
   BltFirmwareInit(BLT_FIRMWARE_PARSER_SRECORD);
 
   /* Add firmware data. */
-  (void)BltFirmwareAddData(0x4000, 8, testData4);
-  (void)BltFirmwareAddData(0x2000, 8, testData2);
+  (void)BltFirmwareAddData(0x1030, 8, testData4);
+  (void)BltFirmwareAddData(0x1010, 8, testData2);
   (void)BltFirmwareAddData(0x1000, 8, testData1);
-  (void)BltFirmwareAddData(0x3000, 8, testData3);
+  (void)BltFirmwareAddData(0x1020, 8, testData3);
   
   /* Output firmware data. */
   printf("Original data:\n");
   DumpFirmwareData();
   
-  /* Remove some data. */
-  (void)BltFirmwareRemoveData(0x2004, 0x1000); 
-
+  /* Add some data. */
+  (void)BltFirmwareAddData(0x1004, 16, mergeData); 
+  
   /* Output firmware data. */
-  printf("After removal:\n");
+  printf("After change:\n");
   DumpFirmwareData();
   
   /* Terminate the firmware data module. */

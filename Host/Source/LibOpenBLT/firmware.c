@@ -772,16 +772,18 @@ static void FirmwareMergeSegments(void)
           currentSegment->length += currentSegment->next->length;
           /* Store the segment pointer that should be removed. */
           removeSegment = currentSegment->next;
-          /* Continue with the one after the one that is about to be removed. */
-          currentSegment = currentSegment->next->next;
           /* Remove the segment now that is has been merged with the previous one. */
           FirmwareDeleteSegment(removeSegment);
-          /* Note that currentSegment might now be a NULL pointer if the to be removed
-           * segment happened to be the last one in the linked list. This would cause 
-           * a problem when accessing currentSegment->next in the while-loop 
-           * condition. Therefore check this situation here. 
+          /* After removing the current segment's higher address sibling we have a new 
+           * sibling. This one could also be adjacent and in need of merging. So do not 
+           * update the currentSegment pointer to the next one. Instead repeat the loop
+           * iteration for the same currentSegment pointer. We just need to check that
+           * the new sibling is actually there and not the end of the list. This would
+           * cause a problem when accessing currentSegment->next in the while-loop 
+           * condition. If there is no sibling, then we can simply stop the loop because
+           * merging is all done then.
            */
-          if (currentSegment == NULL)
+          if (currentSegment->next == NULL)
           {
             /* End of the linked list reached. Merging is done. */
             break; 
