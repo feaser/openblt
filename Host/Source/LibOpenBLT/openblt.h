@@ -199,7 +199,7 @@ LIBOPENBLT_EXPORT uint8_t * BltFirmwareGetSegment(uint32_t idx, uint32_t * addre
 LIBOPENBLT_EXPORT uint32_t BltFirmwareAddData(uint32_t address, uint32_t len, 
                                               uint8_t const * data);
 LIBOPENBLT_EXPORT uint32_t BltFirmwareRemoveData(uint32_t address, uint32_t len);
-
+LIBOPENBLT_EXPORT void BltFirmwareClearData(void);
 
 /****************************************************************************************
 *             G E N E R I C   U T I L I T I E S

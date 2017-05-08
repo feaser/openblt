@@ -465,6 +465,18 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareRemoveData(uint32_t address, uint32_t len)
 } /*** end of BltFirmwareRemoveData ***/
 
 
+/************************************************************************************//**
+** \brief     Clears all data and segments that are currently present in the firmware
+**            data module.
+**
+****************************************************************************************/
+LIBOPENBLT_EXPORT void BltFirmwareClearData(void)
+{
+  /* Pass the request on to the firmware data module. */
+  FirmwareClearData();
+} /*** end of BltFirmwareClearData ***/
+
+
 /****************************************************************************************
 *             G E N E R I C   U T I L I T I E S
 ****************************************************************************************/

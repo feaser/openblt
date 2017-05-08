@@ -81,37 +81,8 @@ void FirmwareInit(tFirmwareParser const * parser)
 ****************************************************************************************/
 void FirmwareTerminate(void)
 {
-  tFirmwareSegment * currentSegment;
-  tFirmwareSegment * segmentToFree;
-  
-  /* Free al the segments in the segment list. */
-  if (segmentList != NULL)
-  {
-    currentSegment = segmentList;
-    do 
-    {
-      /* Store pointer to the segment that should be released for later usage. */
-      segmentToFree = currentSegment;
-      /* Move to the next segment before freeing it. */
-      currentSegment = currentSegment->next;
-      /* Sanity check. */
-      assert(segmentToFree != NULL); 
-      /* Only access the segment if it is not NULL. */
-      if (segmentToFree != NULL) /*lint !e774 */
-      {
-        /* Free the segment data. */
-        if (segmentToFree->data != NULL)
-        {
-          free(segmentToFree->data);
-        }
-        /* Free the segment. */
-        free(segmentToFree);
-      }
-    }
-    while (currentSegment != NULL);
-    /* Set the segment list to empty. */
-    segmentList = NULL;
-  }
+  /* Clear all data and segments from the linked list. */
+  FirmwareClearData();
   /* Unlink the firmware parser. */
   parserPtr = NULL;
 } /*** end of FirmwareTerminate ***/
@@ -427,6 +398,46 @@ bool FirmwareRemoveData(uint32_t address, uint32_t len)
   /* Give the result back to the caller. */
   return result;
 } /*** end of FirmwareRemoveData ***/
+
+
+/************************************************************************************//**
+** \brief     Clears all data and segments that are currently present in the linked list.
+**
+****************************************************************************************/
+void FirmwareClearData(void)
+{
+  tFirmwareSegment * currentSegment;
+  tFirmwareSegment * segmentToFree;
+  
+  /* Free al the segments in the segment list. */
+  if (segmentList != NULL)
+  {
+    currentSegment = segmentList;
+    do 
+    {
+      /* Store pointer to the segment that should be released for later usage. */
+      segmentToFree = currentSegment;
+      /* Move to the next segment before freeing it. */
+      currentSegment = currentSegment->next;
+      /* Sanity check. */
+      assert(segmentToFree != NULL); 
+      /* Only access the segment if it is not NULL. */
+      if (segmentToFree != NULL) /*lint !e774 */
+      {
+        /* Free the segment data. */
+        if (segmentToFree->data != NULL)
+        {
+          free(segmentToFree->data);
+        }
+        /* Free the segment. */
+        free(segmentToFree);
+      }
+    }
+    while (currentSegment != NULL);
+    /* Set the segment list to empty. */
+    segmentList = NULL;
+  }
+} /*** end of FirmwareClearData ***/
 
 
 /************************************************************************************//**

@@ -150,6 +150,7 @@ function  BltFirmwareAddData(address: LongWord;
 function  BltFirmwareRemoveData(address: LongWord;
                                len: LongWord): LongWord;
                                cdecl; external LIBOPENBLT_LIBNAME;
+procedure BltFirmwareClearData; cdecl; external LIBOPENBLT_LIBNAME;
 
 
 //***************************************************************************************

@@ -87,6 +87,7 @@ uint32_t FirmwareGetSegmentCount(void);
 tFirmwareSegment * FirmwareGetSegment(uint32_t segmentIdx);
 bool FirmwareAddData(uint32_t address, uint32_t len, uint8_t const * data);
 bool FirmwareRemoveData(uint32_t address, uint32_t len);
+void FirmwareClearData(void);
 
 
 #ifdef __cplusplus
