@@ -46,6 +46,7 @@ extern "C" {
 ****************************************************************************************/
 uint16_t UtilChecksumCrc16Calculate(uint8_t const * data, uint32_t len);
 uint32_t UtilChecksumCrc32Calculate(uint8_t const * data, uint32_t len);
+bool UtilFileExtractFilename(char const * fullFilename, char * filenameBuffer);
 
 
 #ifdef __cplusplus

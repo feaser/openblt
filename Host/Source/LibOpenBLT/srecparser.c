@@ -37,6 +37,7 @@
 #include <string.h>                         /* for string library                      */
 #include <ctype.h>                          /* for toupper() etc.                      */
 #include "firmware.h"                       /* Firmware data module                    */
+#include "util.h"                           /* Utility module                          */
 #include "srecparser.h"                     /* S-record parser                         */
 
 
@@ -46,22 +47,29 @@
 /** \brief Enumeration for the different supported S-record line types. */
 typedef enum t_srec_parser_line_type
 {
-  SREC_PARSER_LINE_TYPE_S1,                      /**< 16-bit address line              */
-  SREC_PARSER_LINE_TYPE_S2,                      /**< 24-bit address line              */
-  SREC_PARSER_LINE_TYPE_S3,                      /**< 32-bit address line              */
-  SREC_PARSER_LINE_TYPE_UNSUPPORTED              /**< unsupported line                 */
+  SREC_PARSER_LINE_TYPE_S0,                      /**< Header record.                   */
+  SREC_PARSER_LINE_TYPE_S1,                      /**< 16-bit address data record.      */
+  SREC_PARSER_LINE_TYPE_S2,                      /**< 24-bit address data record.      */
+  SREC_PARSER_LINE_TYPE_S3,                      /**< 32-bit address data record.      */
+  SREC_PARSER_LINE_TYPE_S7,                      /**< 32-bit address termination.      */
+  SREC_PARSER_LINE_TYPE_S8,                      /**< 24-bit address termination.      */
+  SREC_PARSER_LINE_TYPE_S9,                      /**< 16-bit address termination.      */
+  SREC_PARSER_LINE_TYPE_UNSUPPORTED              /**< Unsupported line.                */
 } tSRecParserLineType;
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-bool SRecParserLoadFromFile (char const * firmwareFile);
-bool SRecParserSaveToFile (char const * firmwareFile);
-bool SRecParserExtractLineData(char const * line, uint32_t * address, uint32_t * len, 
-                               uint8_t * data);
-tSRecParserLineType SRecParserGetLineType(char const * line);
-bool SRecParserVerifyChecksum(char const * line);
+static bool SRecParserLoadFromFile (char const * firmwareFile);
+static bool SRecParserSaveToFile (char const * firmwareFile);
+static bool SRecParserExtractLineData(char const * line, uint32_t * address, 
+                                      uint32_t * len, uint8_t * data);
+static tSRecParserLineType SRecParserGetLineType(char const * line);
+static bool SRecParserVerifyChecksum(char const * line);
+static bool SRecParserConstructLine(char * line, tSRecParserLineType lineType, 
+                                    uint32_t address,
+                                    uint8_t const * data, uint8_t dataLen);
 static uint8_t SRecParserHexStringToByte(char const * hexstring);
 
 
@@ -96,7 +104,7 @@ tFirmwareParser const * SRecParserGetParser(void)
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool SRecParserLoadFromFile (char const * firmwareFile)
+static bool SRecParserLoadFromFile (char const * firmwareFile)
 {
   bool result = false;
   FILE *fp;
@@ -104,7 +112,7 @@ bool SRecParserLoadFromFile (char const * firmwareFile)
    * address and the checksum. This would result in 255 * 2 = 510 characters. Another
    * 4 characters are needed for the bytes count and line type characters. Then another
    * two for possible line termination (new line + cariage return). This brings the total
-   * characters to 516. Note that this arraz was made static to lower the stack load.
+   * characters to 516. Note that this array was made static to lower the stack load.
    */
   static char line[516];
   /* The bytes count entry on the S-record line is max 255 bytes. This includes the 
@@ -168,20 +176,196 @@ bool SRecParserLoadFromFile (char const * firmwareFile)
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool SRecParserSaveToFile (char const * firmwareFile)
+static bool SRecParserSaveToFile (char const * firmwareFile)
 {
   bool result = false;
-  
+  FILE *fp;
+  /* The bytes count entry on the S-record line is max 255 bytes. This include the 
+   * address and the checksum. This would result in 255 * 2 = 510 characters. Another
+   * 4 characters are needed for the bytes count and line type characters. Then another
+   * two for possible line termination (new line + cariage return). This brings the total
+   * characters to 516. Note that this array was made static to lower the stack load.
+   */
+  static char line[516];
+  /* The bytes count entry on the S-record line is max 255 bytes. This includes the 
+   * address and checksum. This means the worst case max data bytes per line is 255 - 3.
+   * Note that this array was made static to lower the stack load.
+   */
+  static uint8_t data[252];
+  tFirmwareSegment * segment;
+  uint32_t progDataLowestAddress = 0x00000000;
+  uint32_t progDataHighestAddress = 0xffffffff;
+  tSRecParserLineType dataLineType = SREC_PARSER_LINE_TYPE_S1;
+  tSRecParserLineType terminationLineType = SREC_PARSER_LINE_TYPE_S9;
+  uint32_t segmentIdx;
+  uint32_t currentAddress;
+  uint8_t currentByteCnt;
+  uint8_t const * currentDataPtr;
+  uint32_t segmentBytesLeft;
+  const uint8_t maxDataBytesPerLine = 32;
+ 
   /* Check parameters. */
   assert(firmwareFile != NULL);
   
-  /* Only continue if the parameters are valid. */
-  if (firmwareFile != NULL) /*lint !e774 */
+  /* Only continue if the parameters are valid and if there is something to save. */
+  if ( (firmwareFile != NULL) && (FirmwareGetSegmentCount() > 0) ) /*lint !e774 */
   {
-    /* TODO Implement. Use functions FirmwareGetSegment and FirmwareGetSegmentCount to
-     *      access the firmware data that should be written. 
-     */
-    result = true;
+    /* Open the file for writing. */
+    fp = fopen(firmwareFile, "w");
+    /* Only continue if the filepointer is valid. */
+    if (fp != NULL)
+    {
+      /* Init result value to okay at this point and only set it to error in case a 
+       * problem was detected.
+       */
+      result = true;
+
+      /* Determine the lowest memory address used in the program data. This address needs
+       * to be specified in the termination record at the end of the S-record file.
+       */
+      segment = FirmwareGetSegment(0);
+      /* Sanity check. */
+      assert(segment != NULL);
+      if (segment == NULL) /*lint !e774 */
+      {
+        /* Flag error. */
+        result = false;
+      }
+      else
+      {
+        /* Store the lowest memory address. */
+        progDataLowestAddress = segment->base;
+      }
+
+      /* Determine the highest memory address used in the program data. This address 
+       * is needed to determine the number of bits needed for the address in the 
+       * S-record data lines (16, 24 or 32), which determines the type of S-record for
+       * the data lines (S1, S2, S3) and the termination line (S7, S8 or S9).
+       */
+      if (result) /*lint !e774 */
+      {
+        segment = FirmwareGetSegment(FirmwareGetSegmentCount() - 1u);
+        /* Sanity check. */
+        assert(segment != NULL);
+        if (segment == NULL) /*lint !e774 */
+        {
+          /* Flag error. */
+          result = false;
+        }
+        else
+        {
+          progDataHighestAddress = segment->base + segment->length - 1u;
+          /* Does the address have more than 24 bits? */
+          if (progDataHighestAddress > 0xffffff)
+          {
+            dataLineType = SREC_PARSER_LINE_TYPE_S3;
+            terminationLineType = SREC_PARSER_LINE_TYPE_S7;
+          }
+          /* Does the address have more than 16 bits? */
+          else if (progDataHighestAddress > 0xffff)
+          {
+            dataLineType = SREC_PARSER_LINE_TYPE_S2;
+            terminationLineType = SREC_PARSER_LINE_TYPE_S8;
+          }
+        }
+      }
+      
+      /* Extract just the filename and copy it to the data buffer. */
+      if (result) /*lint !e774 */
+      {
+        if (!UtilFileExtractFilename(firmwareFile, (char *)data))
+        {
+          /* Could not extract filename. */
+          result = false;
+        }
+      }
+      
+      /* Construct and add the S0-record with the filename. */
+      if (result)
+      {
+        /* Construct the S0-record. */
+        result = SRecParserConstructLine(line, SREC_PARSER_LINE_TYPE_S0, 0x0000, data, 
+                                         (uint8_t)strlen((char *)data));
+        if (result)
+        {
+          /* Add the S0-record. */
+          if (fprintf(fp, "%s\r\n", line) < 0)
+          {
+            /* Could not write line to the file. */
+            result = false;
+          }
+        }
+      }
+      
+      /* Write all the program data records. Process one segment at a time. */
+      if (result)
+      {
+        /* Loop through all segments. */
+        for (segmentIdx = 0; segmentIdx < FirmwareGetSegmentCount(); segmentIdx++)
+        {
+          /* Obtain the segment. */
+          segment = FirmwareGetSegment(segmentIdx);
+          /* Sanity check. */
+          assert(segment != NULL);
+          if (segment == 0) /*lint !e774 */
+          {
+            /* Flag error and abort loop. */
+            result = false;
+            break;
+          }
+          /* Initialize base address, byte count and data pointer. */
+          currentAddress = segment->base;
+          currentDataPtr = segment->data;
+          segmentBytesLeft = segment->length;
+          /* Process al bytes in the segment. */
+          while (segmentBytesLeft > 0)
+          {
+            /* Determine the number of bytes that can be written. */
+            currentByteCnt = maxDataBytesPerLine;
+            if (segmentBytesLeft < maxDataBytesPerLine)
+            {
+              currentByteCnt = (uint8_t)segmentBytesLeft;
+            }
+            /* Construct the data record. */
+            result = SRecParserConstructLine(line, dataLineType, currentAddress, 
+                                             currentDataPtr, currentByteCnt);
+            if (!result)
+            {
+              /* Error detected. No need to continue the loop. */
+              break;
+            }
+            /* Add the data record. */
+            if (fprintf(fp, "%s\r\n", line) < 0)
+            {
+              /* Could not write line to the file. Abort loop. */
+              result = false;
+              break;
+            }
+            /* Update loop variables. */
+            currentAddress += currentByteCnt;
+            currentDataPtr += currentByteCnt;
+            segmentBytesLeft -= currentByteCnt;
+          }
+        }
+      }
+      
+      /* Write the termination record. */
+      if (result)
+      {
+        /* Construct the termination record. */
+        result = SRecParserConstructLine(line, terminationLineType, 
+                                         progDataLowestAddress, data, 0u);
+        if (result)
+        {
+          /* Add the termination record. */
+          if (fprintf(fp, "%s\r\n", line) < 0)
+          {
+            /* Could not write line to the file. */
+            result = false;
+          }
+        }
+      }
+    }
   }
   /* Give the result back to the caller. */
   return result;
@@ -200,8 +384,8 @@ bool SRecParserSaveToFile (char const * firmwareFile)
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool SRecParserExtractLineData(char const * line, uint32_t * address, uint32_t * len, 
-                               uint8_t * data)
+static bool SRecParserExtractLineData(char const * line, uint32_t * address, 
+                                      uint32_t * len, uint8_t * data)
 {
   bool result = false;
   tSRecParserLineType lineType;
@@ -304,32 +488,52 @@ bool SRecParserExtractLineData(char const * line, uint32_t * address, uint32_t *
 ** \return    The S-Record line type.
 **
 ****************************************************************************************/
-tSRecParserLineType SRecParserGetLineType(char const * line)
+static tSRecParserLineType SRecParserGetLineType(char const * line)
 {
   tSRecParserLineType result = SREC_PARSER_LINE_TYPE_UNSUPPORTED;
-
-  /* Check if the line starts with the 'S' character, followed by a digit */
-  if ( (toupper((int32_t)(line[0])) == 'S') && (isdigit((int32_t)(line[1]))) )
+  
+  /* Verify parameters. */
+  assert(line != NULL);
+  
+  /* Only continue with valid parameters. */
+  if (line != NULL) /*lint !e774 */
   {
-    /* Check the digit that follows the 'S' character. Currently only line types that
-     * contain program data are needed.
-     */
-    switch (line[1])
+    /* Check if the line starts with the 'S' character, followed by a digit */
+    if ( (toupper((int32_t)(line[0])) == 'S') && (isdigit((int32_t)(line[1]))) )
     {
-      case '1':
-        result = SREC_PARSER_LINE_TYPE_S1;
-        break;
-      case '2':
-        result = SREC_PARSER_LINE_TYPE_S2;
-        break;
-      case '3':
-        result = SREC_PARSER_LINE_TYPE_S3;
-        break;
-      default:
-        result = SREC_PARSER_LINE_TYPE_UNSUPPORTED;
-        break;
+      /* Check the digit that follows the 'S' character. Currently only line types that
+      * contain program data are needed.
+      */
+      switch (line[1])
+      {
+        case '0':
+          result = SREC_PARSER_LINE_TYPE_S0;
+          break;
+        case '1':
+          result = SREC_PARSER_LINE_TYPE_S1;
+          break;
+        case '2':
+          result = SREC_PARSER_LINE_TYPE_S2;
+          break;
+        case '3':
+          result = SREC_PARSER_LINE_TYPE_S3;
+          break;
+        case '7':
+          result = SREC_PARSER_LINE_TYPE_S7;
+          break;
+        case '8':
+          result = SREC_PARSER_LINE_TYPE_S8;
+          break;
+        case '9':
+          result = SREC_PARSER_LINE_TYPE_S9;
+          break;
+        default:
+          result = SREC_PARSER_LINE_TYPE_UNSUPPORTED;
+          break;
+      }
     }
   }
+  
   /* Give the result back to the caller. */
   return result;
 } /*** end of SRecParserGetLineType ***/
@@ -342,7 +546,7 @@ tSRecParserLineType SRecParserGetLineType(char const * line)
 ** \return    True if the checksum is correct, false otherwise.
 **
 ****************************************************************************************/
-bool SRecParserVerifyChecksum(char const * line)
+static bool SRecParserVerifyChecksum(char const * line)
 {
   bool result = false;
   uint8_t bytes_on_line;
@@ -391,6 +595,155 @@ bool SRecParserVerifyChecksum(char const * line)
   /* Give the result back to the caller. */
   return result;
 } /*** end of SRecParserVerifyChecksum ***/
+
+
+/************************************************************************************//**
+** \brief     Creates a NUL terminated S-record line, given the specified line type,
+**            address and data bytes. The checksum at the end of the line is also
+**            calculated and added.
+** \param     line Pointer to character array where the string will be stored.
+** \param     lineType The type of S-record line to construct.
+** \param     address The address to embed into the line after the byte count.
+** \param     data Point to byte array with data bytes to add to the line.
+** \param     dataLen The number of data bytes present in the data-array.
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+static bool SRecParserConstructLine(char * line, tSRecParserLineType lineType, 
+                                    uint32_t address, uint8_t const * data, 
+                                    uint8_t dataLen)
+{
+  bool result = false;
+  uint8_t addressBits;
+  uint8_t byteVal;
+  char hexByteStr[3];
+  uint8_t cnt;
+  uint8_t checksumVal = 0;
+  
+  /* Verify parameters. */
+  assert(line != NULL);
+  if (dataLen > 0)
+  {
+    assert(data != NULL);
+  }
+  
+  /* Only continue with valid parameters. */
+  if (line != NULL) /*lint !e774 */
+  {
+    /* Set the result value to successful and only change this upon detection of an
+     * error.
+     */
+    result = true;
+    /* Start of with an empty string. */
+    line[0] = '\0';
+    /* Add the record type based on the lineType and store the number of bits in the 
+     * address.
+     */
+    switch (lineType)
+    {
+      case SREC_PARSER_LINE_TYPE_S0:
+        strcat(line, "S0");
+        addressBits = 16;
+        break;
+      case SREC_PARSER_LINE_TYPE_S1:
+        strcat(line, "S1");
+        addressBits = 16;
+        break;
+      case SREC_PARSER_LINE_TYPE_S2:
+        strcat(line, "S2");
+        addressBits = 24;
+        break;
+      case SREC_PARSER_LINE_TYPE_S3:
+        strcat(line, "S3");
+        addressBits = 32;
+        break;
+      case SREC_PARSER_LINE_TYPE_S7:
+        strcat(line, "S7");
+        addressBits = 32;
+        break;
+      case SREC_PARSER_LINE_TYPE_S8:
+        strcat(line, "S8");
+        addressBits = 24;
+        break;
+      case SREC_PARSER_LINE_TYPE_S9:
+        strcat(line, "S9");
+        addressBits = 16;
+        break;
+      case SREC_PARSER_LINE_TYPE_UNSUPPORTED:
+      default:
+        /* Invalid line type specified. Should not happed. */
+        addressBits = 16;
+        assert(false); /*lint !e506 */
+        break;
+    }
+    
+    /* Next, add the number of bytes that will follow on the line. This is the size in
+     * bytes of the address, the actual number of data bytes and the checksum.
+     */
+    byteVal = (addressBits / 8u) + dataLen + 1u;
+    checksumVal += byteVal;
+    if (sprintf(hexByteStr, "%02X", byteVal) != 2)
+    {
+      /* Error occurred. */
+      result = false;
+    }
+    else
+    {
+      /* Append it to the line. */
+      strcat(line, hexByteStr);
+    }
+      
+    /* Add the address. */
+    for (cnt = (addressBits / 8u); cnt > 0; cnt--)
+    {
+      byteVal = (uint8_t)(address >> ( (cnt - 1u) * 8u));
+      checksumVal += byteVal;
+      if (sprintf(hexByteStr, "%02X", byteVal) != 2)
+      {
+        /* Error occurred. */
+        result = false;
+      }
+      else
+      {
+        /* Append it to the line. */
+        strcat(line, hexByteStr);
+      }
+    }
+    
+    /* Add the data bytes. */
+    for (cnt = 0; cnt < dataLen; cnt++)
+    {
+      byteVal = data[cnt];
+      checksumVal += byteVal;
+      if (sprintf(hexByteStr, "%02X", byteVal) != 2)
+      {
+        /* Error occurred. */
+        result = false;
+      }
+      else
+      {
+        /* Append it to the line. */
+        strcat(line, hexByteStr);
+      }
+    }
+    
+    /* Calculate and add the checksum. */
+    checksumVal = ~checksumVal;
+    byteVal = checksumVal;
+    if (sprintf(hexByteStr, "%02X", byteVal) != 2)
+    {
+      /* Error occurred. */
+      result = false;
+    }
+    else
+    {
+      /* Append it to the line. */
+      strcat(line, hexByteStr);
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of SRecParserConstructLine ***/
 
 
 /************************************************************************************//**

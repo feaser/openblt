@@ -32,6 +32,8 @@
 #include <assert.h>                         /* for assertions                          */
 #include <stdint.h>                         /* for standard integer types              */
 #include <stddef.h>                         /* for NULL declaration                    */
+#include <stdbool.h>                        /* for boolean type                        */
+#include <string.h>                         /* for string library                      */
 #include "util.h"                           /* Utility module                          */
 
 
@@ -184,6 +186,70 @@ uint32_t UtilChecksumCrc32Calculate(uint8_t const * data, uint32_t len)
   
   return result;
 } /*** end of UtilChecksumCrc32Calculate ***/
+
+
+/************************************************************************************//**
+** \brief     Extracts the filename including extention from the specified full filename,
+**            which could possible include a path. The function can handle both the 
+**            backslash and forward slash path delimiter, to make it crossplatform.
+** \param     fullFilename The filename with path possible included.
+** \param     filenameBuffer Pointer to the character array where the resulting filename
+**            should be stored. 
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+bool UtilFileExtractFilename(char const * fullFilename, char * filenameBuffer)
+{
+  bool result = false;
+  char const * filenamePtr;
+
+  
+  /* Verify parameters. */
+  assert(fullFilename != NULL);
+  assert(filenameBuffer != NULL);
+  
+  /* Only continue with valid parameters. */
+  if ( (fullFilename != NULL) && (filenameBuffer != NULL) ) /*lint !e774 */
+  {
+    /* Extract just the filename, so without its path from the firmware file. First
+     * assume a unix type path with forward slashes.
+     */
+    filenamePtr = strrchr(fullFilename, '/');
+    /* Check if a forward slash was detected. */
+    if (filenamePtr != NULL)
+    {
+      /* Update the pointer so that it point to the start of the filename. */
+      filenamePtr++;
+    }
+    else
+    {
+      /* No unix type forward slash found. This can be because the path uses windows
+       * type backslashes or because there is no path present and it is already just
+       * the filename. Now check for a windows type path with backslashes.
+       */
+      filenamePtr = strrchr(fullFilename, '\\');
+      /* Check if a forward slash was detected. */
+      if (filenamePtr != NULL)
+      {
+        /* Update the pointer so that it point to the start of the filename. */
+        filenamePtr++;
+      }
+      /* In case no slashes were found in the firmware file, then it is already just the 
+       * filename.
+       */
+      else
+      {
+        filenamePtr = fullFilename;
+      }
+    }
+    /* Copy the resulting filename to the buffer. */
+    strcpy(filenameBuffer, filenamePtr);
+    /* Success. */
+    result = true;
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of UtilFileExtractFilename ***/
 
 
 /*********************************** end of util.c *************************************/

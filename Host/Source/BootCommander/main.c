@@ -68,6 +68,9 @@ int main(int argc, char *argv[])
   
   /* Display the firmware data on the standard output. */
   DumpFirmwareData();
+  
+  /* Write the firmware data to an S-record. */
+  (void)BltFirmwareSaveToFile("/home/voorburg/Desktop/TestSrecords/demoprog2.srec");
 
   /* Terminate the firmware data module. */
   BltFirmwareTerminate();
