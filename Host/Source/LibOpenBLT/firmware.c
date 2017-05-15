@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include <assert.h>                         /* for assertions                          */
 #include <stdint.h>                         /* for standard integer types              */
+#include <stddef.h>                         /* for NULL declaration                    */
 #include <stdbool.h>                        /* for boolean type                        */
 #include <stdlib.h>                         /* for standard library                    */
 #include <string.h>                         /* for string library                      */
