@@ -713,7 +713,11 @@ static bool SRecParserConstructLine(char * line, tSRecParserLineType lineType,
     /* Add the data bytes. */
     for (cnt = 0; cnt < dataLen; cnt++)
     {
-      byteVal = data[cnt];
+      byteVal = 0;
+      if (data != NULL)
+      {
+        byteVal = data[cnt];
+      }
       checksumVal += byteVal;
       if (sprintf(hexByteStr, "%02X", byteVal) != 2)
       {
