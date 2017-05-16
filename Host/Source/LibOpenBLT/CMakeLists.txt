@@ -111,6 +111,7 @@ set(
   srecparser.c
   util.c
   ${PROJECT_PORT_DIR}/timeutil.c
+  ${PROJECT_PORT_DIR}/serialport.c
   ${INCS}
 )
 
