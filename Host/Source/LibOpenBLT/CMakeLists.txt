@@ -106,6 +106,7 @@ set(
   LIB_SRCS 
   openblt.c
   session.c
+  xcploader.c
   firmware.c
   srecparser.c
   util.c

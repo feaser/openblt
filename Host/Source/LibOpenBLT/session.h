@@ -50,7 +50,7 @@ extern "C" {
 typedef struct t_session_protocol
 {
   /** \brief Initializes the protocol module. */
-  void (* Init) (void const * settings, void const * transportSettings);
+  void (* Init) (void const * settings);
   /** \brief Terminates the protocol module. */
   void (* Terminate) (void);
   /** \brief Starts the firmware update session. This is where the connection with the
@@ -81,8 +81,7 @@ typedef struct t_session_protocol
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void SessionInit(tSessionProtocol const * protocol, void const * protocolSettings,
-                 void const * transportSettings);
+void SessionInit(tSessionProtocol const * protocol, void const * protocolSettings);
 void SessionTerminate(void);
 bool SessionStart(void);
 void SessionStop(void);

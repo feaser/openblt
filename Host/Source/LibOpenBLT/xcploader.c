@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         session.c
-* \brief        Communication session module source file.
-* \ingroup      Session
+* \file         xcploader.c
+* \brief        XCP Loader module source file.
+* \ingroup      XcpLoader
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -34,53 +34,75 @@
 #include <stddef.h>                         /* for NULL declaration                    */
 #include <stdbool.h>                        /* for boolean type                        */
 #include "session.h"                        /* Communication session module            */
+#include "xcploader.h"                      /* XCP loader module                       */
 
 
 /****************************************************************************************
-* Local data declarations
+* Function prototypes
 ****************************************************************************************/
-/** \brief Pointer to the communication protocol that is linked. */
-static tSessionProtocol const * protocolPtr;
+static void XcpLoaderInit(void const * settings);
+static void XcpLoaderTerminate(void);
+static bool XcpLoaderStart(void);
+static void XcpLoaderStop(void);
+static bool XcpLoaderClearMemory(uint32_t address, uint32_t len);
+static bool XcpLoaderWriteData(uint32_t address, uint32_t len, uint8_t const * data);  
+static bool XcpLoaderReadData(uint32_t address, uint32_t len, uint8_t * data);
+
+
+/****************************************************************************************
+* Local constant declarations
+****************************************************************************************/
+/** \brief Protocol structure filled with XCP loader specifics. */
+static const tSessionProtocol xcpLoader =
+{
+  .Init = XcpLoaderInit,
+  .Terminate = XcpLoaderTerminate,
+  .Start = XcpLoaderStart,
+  .Stop = XcpLoaderStop,
+  .ClearMemory = XcpLoaderClearMemory,
+  .WriteData = XcpLoaderWriteData,
+  .ReadData = XcpLoaderReadData
+};
+
+
+/***********************************************************************************//**
+** \brief     Obtains a pointer to the protocol structure, so that it can be linked to 
+**            the communication session module.
+** \return    Pointer to protocol structure.
+**
+****************************************************************************************/
+tSessionProtocol const * XcpLoaderGetProtocol(void)
+{
+  return &xcpLoader;
+} /*** end of XcpLoaderGetProtocol ***/
 
 
 /************************************************************************************//**
-** \brief     Initializes the communication session module for the specified protocol.
-** \param     protocol The session protocol module to link.
-** \param     protocolSettings Pointer to structure with protocol specific settings.
+** \brief     Initializes the protocol module.
+** \param     settings Pointer to the structure with protocol settings.
 **
 ****************************************************************************************/
-void SessionInit(tSessionProtocol const * protocol, void const * protocolSettings)
+static void XcpLoaderInit(void const * settings)
 {
-  /* Check parameters. Note that the protocolSettings parameter is allowed to be NULL,
-   * because not every protocol might need additional settings. 
-   */
-  assert(protocol != NULL);
+  /* Check parameters. */
+  assert(settings != NULL);
   
-  /* Link the protocol module. */
-  protocolPtr = protocol;
-  
-  /* Initialize the protocol and pass on the settings pointer. */
-  if (protocolPtr != NULL)
+  /* Only continue with valid parameters. */
+  if (settings != NULL) /*lint !e774 */
   {
-    protocolPtr->Init(protocolSettings);
+    /* TODO Implement. */
   }
-} /*** end of SessionInit ***/
+} /*** end of XcpLoaderInit ***/
 
 
 /************************************************************************************//**
-** \brief     Terminates the communication session module.
+** \brief     Terminates the protocol module.
 **
 ****************************************************************************************/
-void SessionTerminate(void)
+static void XcpLoaderTerminate(void)
 {
-  /* Terminate the linked protocol. */
-  if (protocolPtr != NULL) 
-  {
-    protocolPtr->Terminate();
-  }
-  /* Unlink the protocol module. */
-  protocolPtr = NULL;
-} /*** end of SessionTerminate ***/
+  /* TODO Implement. */
+} /*** end of XcpLoaderTerminate ***/
 
 
 /************************************************************************************//**
@@ -89,34 +111,27 @@ void SessionTerminate(void)
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool SessionStart(void)
+static bool XcpLoaderStart(void)
 {
-  bool result = false;
-  
-  /* Pass the request on to the linked protocol module. */
-  if (protocolPtr != NULL)
-  {
-    result = protocolPtr->Start();
-  }
-  /* Give the result back to the caller. */
-  return result;
-} /*** end of SessionStart ***/
+   bool result = false;
+   
+   /* TODO Implement. */
+   
+   /* Give the result back to the caller. */
+   return result;
+} /*** end of XcpLoaderStart ***/
 
 
 /************************************************************************************//**
-** \brief    Stops the firmware update. This is where the bootloader starts the user
-**           program on the target if a valid one is present. After this the connection
-**           with the target is severed.
+** \brief     Stops the firmware update. This is where the bootloader starts the user
+**            program on the target if a valid one is present. After this the connection
+**            with the target is severed.
 **
 ****************************************************************************************/
-void SessionStop(void)
+static void XcpLoaderStop(void)
 {
-  /* Pass the request on to the linked protocol module. */
-  if (protocolPtr != NULL)
-  {
-    protocolPtr->Stop();
-  }
-} /*** end of SessionStop ***/
+   /* TODO Implement. */
+} /*** end of XcpLoaderStop ***/
 
 
 /************************************************************************************//**
@@ -128,7 +143,7 @@ void SessionStop(void)
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool SessionClearMemory(uint32_t address, uint32_t len)
+static bool XcpLoaderClearMemory(uint32_t address, uint32_t len)
 {
   bool result = false;
   
@@ -138,12 +153,12 @@ bool SessionClearMemory(uint32_t address, uint32_t len)
   /* Only continue if the parameters are vald. */
   if (len > 0)
   {
-    /* Pass the request on to the linked protocol module. */
-    result = protocolPtr->ClearMemory(address, len);
+    /* TODO Implement. */
+    (void)address;
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of SessionClearMemory ***/
+} /*** end of XcpLoaderClearMemory ***/
 
 
 /************************************************************************************//**
@@ -156,7 +171,7 @@ bool SessionClearMemory(uint32_t address, uint32_t len)
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool SessionWriteData(uint32_t address, uint32_t len, uint8_t const * data)
+static bool XcpLoaderWriteData(uint32_t address, uint32_t len, uint8_t const * data)
 {
   bool result = false;
 
@@ -167,12 +182,12 @@ bool SessionWriteData(uint32_t address, uint32_t len, uint8_t const * data)
   /* Only continue if the parameters are valid. */
   if ( (data != NULL) && (len > 0) ) /*lint !e774 */
   {
-    /* Pass the request on to the linked protocol module. */
-    result = protocolPtr->WriteData(address, len, data);
+    /* TODO Implement. */
+    (void)address;
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of SessionWriteData ***/
+} /*** end of XcpLoaderWriteData ***/
 
 
 /************************************************************************************//**
@@ -185,7 +200,7 @@ bool SessionWriteData(uint32_t address, uint32_t len, uint8_t const * data)
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool SessionReadData(uint32_t address, uint32_t len, uint8_t * data)
+static bool XcpLoaderReadData(uint32_t address, uint32_t len, uint8_t * data)
 {
   bool result = false;
 
@@ -196,11 +211,13 @@ bool SessionReadData(uint32_t address, uint32_t len, uint8_t * data)
   /* Only continue if the parameters are valid. */
   if ( (data != NULL) && (len > 0) ) /*lint !e774 */
   {
-    /* Pass the request on to the linked protocol module. */
-    result = protocolPtr->ReadData(address, len, data);
+    /* TODO Implement. */
+    (void)address;
+    data[0] = 0;
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of SessionReadData ***/
+} /*** end of XcpLoaderReadData ***/
 
-/*********************************** end of session.c **********************************/
+
+/*********************************** end of xcploader.c ********************************/
