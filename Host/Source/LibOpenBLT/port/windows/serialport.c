@@ -92,7 +92,7 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
   bool result = false;
   COMMTIMEOUTS timeouts = { 0 };
   DCB dcbSerialParams = { 0 };
-  char portStr[64] = "\\\\.\\\0";
+  char portStr[64] = "\\\\.\\";
 
   /* Check parameters. */
   assert(portname != NULL);
@@ -105,15 +105,21 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
      */
     result = true;
     /* Construct the COM port name as a string. */
-    strcat_s(portStr, 59, portname);
+    if (strcat_s(portStr, 59, portname) != 0)
+    {
+      result = false;
+    }
 
     /* Obtain access to the COM port. */
-    hUart = CreateFile(portStr, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 
-                      FILE_ATTRIBUTE_NORMAL, 0);
-    /* Validate COM port handle. */
-    if (hUart == INVALID_HANDLE_VALUE)
+    if (result)
     {
-      result= false;
+      hUart = CreateFile(portStr, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL, 0);
+      /* Validate COM port handle. */
+      if (hUart == INVALID_HANDLE_VALUE)
+      {
+        result = false;
+      }
     }
 
     /* Get current COM port configuration. */
@@ -122,7 +128,7 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
       dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
       if (!GetCommState(hUart, &dcbSerialParams))
       {
-        CloseHandle(hUart);
+        (void)CloseHandle(hUart);
         result = false;
       }
     }
@@ -140,7 +146,7 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
       dcbSerialParams.fDtrControl = DTR_CONTROL_ENABLE;
       if (!SetCommState(hUart, &dcbSerialParams))
       {
-        CloseHandle(hUart);
+        (void)CloseHandle(hUart);
         result =false;
       }
     }
@@ -155,7 +161,7 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
       timeouts.WriteTotalTimeoutMultiplier = 100;
       if (!SetCommTimeouts(hUart, &timeouts))
       {
-        CloseHandle(hUart);
+        (void)CloseHandle(hUart);
         result = false;
       }
     }
@@ -165,7 +171,7 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
     {
       if (!SetupComm(hUart, UART_RX_BUFFER_SIZE, UART_TX_BUFFER_SIZE))
       {
-        CloseHandle(hUart);
+        (void)CloseHandle(hUart);
         result = false;
       }
     }
@@ -175,7 +181,7 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
     {
       if (!FlushFileBuffers(hUart))
       {
-        CloseHandle(hUart);
+        (void)CloseHandle(hUart);
         result = false;
       }
     }
@@ -194,7 +200,7 @@ void SerialPortClose(void)
   /* Close the COM port handle if valid. */
   if (hUart != INVALID_HANDLE_VALUE)
   {
-    CloseHandle(hUart);
+    (void)CloseHandle(hUart);
   }
 
   /* Set handles to invalid. */
@@ -212,7 +218,7 @@ void SerialPortClose(void)
 bool SerialPortWrite(uint8_t const * data, uint32_t length)
 {
   bool result = false;
-  uint32_t dwWritten = 0;
+  DWORD dwWritten = 0;
 
   /* Check parameters. */
   assert(data != NULL);
@@ -246,7 +252,7 @@ bool SerialPortWrite(uint8_t const * data, uint32_t length)
 bool SerialPortRead(uint8_t * data, uint32_t length)
 {
   bool result = false;
-  uint32_t dwRead = 0;
+  DWORD dwRead = 0;
 
   /* Check parameters. */
   assert(data != NULL);
