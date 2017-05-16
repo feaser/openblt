@@ -110,6 +110,7 @@ set(
   firmware.c
   srecparser.c
   util.c
+  ${PROJECT_PORT_DIR}/timeutil.c
   ${INCS}
 )
 

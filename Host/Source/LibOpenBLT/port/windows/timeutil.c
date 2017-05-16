@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         util.h
-* \brief        Utility module header file.
+* \file         port\windows\timeutil.c
+* \brief        Time utility source file.
 * \ingroup      Utility
 * \internal
 *----------------------------------------------------------------------------------------
@@ -20,43 +20,43 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It
+* You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-*
+* 
 * \endinternal
 ****************************************************************************************/
-/************************************************************************************//**
-* \defgroup   Utility Generic Utilities
-* \brief      Generic utility functions and definitions.
-* \ingroup    Library
-* \details
-* The Utility module contains generic functions and definitions that can be handy for
-* use internally in the library and also externally by another application that makes
-* use of the library.
-****************************************************************************************/
-#ifndef UTIL_H
-#define UTIL_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /****************************************************************************************
-* Function prototypes
+* Include files
 ****************************************************************************************/
-uint16_t UtilChecksumCrc16Calculate(uint8_t const * data, uint32_t len);
-uint32_t UtilChecksumCrc32Calculate(uint8_t const * data, uint32_t len);
-bool UtilFileExtractFilename(char const * fullFilename, char * filenameBuffer);
-uint32_t UtilTimeGetSystemTimeMs(void);
-void UtilTimeDelayMs(uint16_t delay);
+#include <stdint.h>                         /* for standard integer types              */
+#include <stdbool.h>                        /* for boolean type                        */
+#include <windows.h>                        /* for windows library                     */
+#include "util.h"                           /* Utility module                          */
 
 
-#ifdef __cplusplus
-}
-#endif
+/************************************************************************************//**
+** \brief     Get the system time in milliseconds.
+** \return    Time in milliseconds.
+**
+****************************************************************************************/
+uint32_t UtilTimeGetSystemTimeMs(void)
+{
+  return GetTickCount();
+} /*** end of UtilTimeGetSystemTimeMs ***/
 
-#endif /* UTIL_H */
-/********************************* end of util.h ***************************************/
 
- 
- 
+/************************************************************************************//**
+** \brief     Performs a delay of the specified amount of milliseconds.
+** \param     delay Delay time in milliseconds.
+** \return    none.
+**
+****************************************************************************************/
+void UtilTimeDelayMs(uint16_t delay)
+{
+ Sleep(delay);
+} /*** end of UtilTimeDelayMs **/
+
+
+/*********************************** end of timeutil.c *********************************/
+
