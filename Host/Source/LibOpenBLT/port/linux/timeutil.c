@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         port\linux\timeutil.c
+* \file         port/linux/timeutil.c
 * \brief        Time utility source file.
 * \ingroup      Utility
 * \internal

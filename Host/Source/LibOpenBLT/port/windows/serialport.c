@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         port\windows\serialport.c
+* \file         port/windows/serialport.c
 * \brief        Serial port source file.
 * \ingroup      XcpLoader
 * \internal

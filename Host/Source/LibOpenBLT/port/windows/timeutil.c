@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         port\windows\timeutil.c
+* \file         port/windows/timeutil.c
 * \brief        Time utility source file.
 * \ingroup      Utility
 * \internal

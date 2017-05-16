@@ -26,9 +26,9 @@
 * \endinternal
 ****************************************************************************************/
 /************************************************************************************//**
-* \defgroup   XcpLoader XCP version 1.0 bootloader communication protocol.
-* \brief      This module implements a communication protocol that can be linked to the
-*             Session module. 
+* \defgroup   XcpLoader XCP version 1.0 protocol
+* \brief      This module implements the XCP communication protocol that can be linked 
+*             to the Session module. 
 * \ingroup    Session
 * \details
 * This XCP Loader module contains functionality according to the standardized XCP 

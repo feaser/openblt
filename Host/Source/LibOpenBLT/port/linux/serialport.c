@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         port\linux\serialport.c
+* \file         port/linux/serialport.c
 * \brief        Serial port source file.
 * \ingroup      XcpLoader
 * \internal
