@@ -34,7 +34,6 @@
 #include <stdbool.h>                        /* for boolean type                        */
 #include "openblt.h"                        /* OpenBLT host library                    */
 #include "util.h"                           /* Utility module                          */
-#include "firmware.h"                       /* Firmware data module                    */
 #include "srecparser.h"                     /* S-record parser                         */
 
 

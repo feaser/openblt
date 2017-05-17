@@ -36,7 +36,6 @@
 #include <stdio.h>                          /* for standard I/O library                */
 #include <string.h>                         /* for string library                      */
 #include <ctype.h>                          /* for toupper() etc.                      */
-#include "firmware.h"                       /* Firmware data module                    */
 #include "util.h"                           /* Utility module                          */
 #include "srecparser.h"                     /* S-record parser                         */
 

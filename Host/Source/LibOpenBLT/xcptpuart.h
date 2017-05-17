@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         serialport.h
-* \brief        Serial port header file.
-* \ingroup      Session
+* \file         xcptpuart.h
+* \brief        XCP UART transport layer header file.
+* \ingroup      XcpLoader
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,41 +25,40 @@
 *
 * \endinternal
 ****************************************************************************************/
-#ifndef SERIALPORT_H
-#define SERIALPORT_H
+#ifndef XCPTPUART_H
+#define XCPTPUART_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /****************************************************************************************
+* Include files
+****************************************************************************************/
+#include "xcploader.h"                      /* XCP loader module                       */
+  
+  
+/****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Enumaration of the supported baudrates. */
-typedef enum
+/** \brief Layout of structure with settings specific to the XCP transport layer module
+ *         for UART.
+ */
+typedef struct t_xcp_tp_uart_settings
 {
-  SERIALPORT_BR9600   = 0,                  /**< 9600 bits/sec                         */
-  SERIALPORT_BR19200  = 1,                  /**< 19200 bits/sec                        */
-  SERIALPORT_BR38400  = 2,                  /**< 38400 bits/sec                        */
-  SERIALPORT_BR57600  = 3,                  /**< 57600 bits/sec                        */
-  SERIALPORT_BR115200 = 4                   /**< 115200 bits/sec                       */
-} tSerialPortBaudrate;
+  char const * portname;               /**< Interface port name, i.e. /dev/ttyUSB0.    */
+  uint32_t baudrate;                   /**< Communication speed in bits/sec.           */
+} tXcpTpUartSettings;
 
 
-/****************************************************************************************
+/***************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void SerialPortInit(void);
-void SerialPortTerminate(void);
-bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate);
-void SerialPortClose(void);
-bool SerialPortWrite(uint8_t const * data, uint32_t length);
-bool SerialPortRead(uint8_t * data, uint32_t length);
+tXcpTransport const * XcpTpUartGetTransport(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SERIALPORT_H */
-/********************************* end of serialport.h *********************************/
-
+#endif /* XCPTPUART_H */
+/*********************************** end of xcptpuart.h ********************************/

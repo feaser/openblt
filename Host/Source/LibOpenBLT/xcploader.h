@@ -45,6 +45,12 @@ extern "C" {
 #endif
 
 /****************************************************************************************
+* Include files
+****************************************************************************************/
+#include "session.h"                        /* Communication session module            */
+
+  
+/****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief Total number of bytes in a master<->slave data packet. It should be at least
@@ -67,7 +73,7 @@ typedef struct t_xcp_transport_packet
 typedef struct t_xcp_transport
 {
   /** \brief Initialization of the XCP transpor layer. */
-  void (*Init) (void *settings);
+  void (*Init) (void const * settings);
   /** \brief Termination the XCP transpor layer. */
   void (*Terminate) (void);
   /** \brief Connects the XCP transpor layer. */
@@ -75,8 +81,8 @@ typedef struct t_xcp_transport
   /** \brief Disconnects the XCP transpor layer. */
   void (*Disconnect) (void);
   /** \brief Sends an XCP packet and waits for the response to come back. */
-  bool (*SendPacket) (tXcpTransportPacket *txPacket, tXcpTransportPacket *rxPacket, 
-                      uint16_t timeout);
+  bool (*SendPacket) (tXcpTransportPacket const * txPacket, 
+                      tXcpTransportPacket * rxPacket, uint16_t timeout);
 } tXcpTransport;
 
 /** \brief XCP protocol specific settings. */

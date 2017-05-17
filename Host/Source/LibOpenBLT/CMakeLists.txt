@@ -107,6 +107,7 @@ set(
   openblt.c
   session.c
   xcploader.c
+  xcptpuart.c
   firmware.c
   srecparser.c
   util.c

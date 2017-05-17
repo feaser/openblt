@@ -33,7 +33,6 @@
 #include <stdint.h>                         /* for standard integer types              */
 #include <stddef.h>                         /* for NULL declaration                    */
 #include <stdbool.h>                        /* for boolean type                        */
-#include "session.h"                        /* Communication session module            */
 #include "xcploader.h"                      /* XCP loader module                       */
 
 
@@ -64,11 +63,6 @@ static const tSessionProtocol xcpLoader =
   .ReadData = XcpLoaderReadData
 };
 
-/* TODO CONTINUE HERE Implement XCP transport layer for UART. Keep in mind that the 
- *      serial port driver now also has a Init and Terminate function. Once this is done
- *      (or before, if wanted), the BltSessionXxx functions can be fully implemented.
- *      After that it is just a matter of completing the XcpLoader implementation here.
- */
 
 /***********************************************************************************//**
 ** \brief     Obtains a pointer to the protocol structure, so that it can be linked to 
