@@ -51,7 +51,7 @@
 #define XCPLOADER_CMD_PROGRAM_MAX     (0xC9u)    /**< XCP program max command code.    */
 
 /* XCP response packet IDs as defined by the protocol. */
-#define XCPLOADER_CMD_PID_RES         (0xFFu)     /**< positive response                */
+#define XCPLOADER_CMD_PID_RES         (0xFFu)    /**< positive response                */
 
 /** \brief Maximum timeout for the XCP connect command. */
 #define XCPLOADER_CONNECT_TIMEOUT_MS  (20u)
@@ -541,7 +541,7 @@ static bool XcpLoaderSendCmdConnect(void)
     /* Only continue if a response was received. */
     if (result)
     {
-      /* Check if the responsee was valid. */
+      /* Check if the response was valid. */
       if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
@@ -626,7 +626,7 @@ static bool XcpLoaderSendCmdSetMta(uint32_t address)
     /* Only continue if a response was received. */
     if (result)
     {
-      /* Check if the responsee was valid. */
+      /* Check if the response was valid. */
       if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
@@ -679,7 +679,7 @@ static bool XcpLoaderSendCmdUpload(uint8_t * data, uint8_t length)
     /* Only continue if a response was received. */
     if (result)
     {
-      /* Check if the responsee was valid. */
+      /* Check if the response was valid. */
       if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
@@ -733,7 +733,7 @@ static bool XcpLoaderSendCmdProgramStart(void)
     /* Only continue if a response was received. */
     if (result)
     {
-      /* Check if the responsee was valid. */
+      /* Check if the response was valid. */
       if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
@@ -851,7 +851,7 @@ static bool XcpLoaderSendCmdProgram(uint8_t length, uint8_t const * data)
     /* Only continue if a response was received. */
     if (result)
     {
-      /* Check if the responsee was valid. */
+      /* Check if the response was valid. */
       if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
@@ -903,7 +903,7 @@ static bool XcpLoaderSendCmdProgramMax(uint8_t const * data)
     /* Only continue if a response was received. */
     if (result)
     {
-      /* Check if the responsee was valid. */
+      /* Check if the response was valid. */
       if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
@@ -951,7 +951,7 @@ static bool XcpLoaderSendCmdProgramClear(uint32_t length)
     /* Only continue if a response was received. */
     if (result)
     {
-      /* Check if the responsee was valid. */
+      /* Check if the response was valid. */
       if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */

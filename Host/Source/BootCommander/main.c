@@ -38,12 +38,7 @@
 ****************************************************************************************/
 /* Program return codes. */
 #define RESULT_OK                           (0u)
-
-
-/****************************************************************************************
-* Function prototypes
-****************************************************************************************/
-static void DumpFirmwareData(void);
+#define RESULT_ERROR_GENERIC                (1u)
 
 
 /************************************************************************************//**
@@ -62,58 +57,40 @@ int main(int argc, char *argv[])
   
   /* Initialize the firmware data module using the S-record parser. */
   BltFirmwareInit(BLT_FIRMWARE_PARSER_SRECORD);
-
-  /* Load firmware data from an S-record. */
-  (void)BltFirmwareLoadFromFile("/home/voorburg/Desktop/TestSrecords/demoprog.srec");
-  
-  /* Display the firmware data on the standard output. */
-  DumpFirmwareData();
-  
-  /* Write the firmware data to an S-record. */
-  (void)BltFirmwareSaveToFile("/home/voorburg/Desktop/TestSrecords/demoprog2.srec");
-
+  /* Configure session to use the XCP protocol. */
+  tBltSessionSettingsXcpV10 sessionSettings =
+  {
+    .timeoutT1 = 1000,
+    .timeoutT3 = 2000,
+    .timeoutT4 = 10000,
+    .timeoutT5 = 1000,
+    .timeoutT7 = 2000,
+    .seedKeyFile = NULL
+  };
+  /* Configure transport layer to use XCP on UART. */
+  tBltTransportSettingsXcpV10Rs232 transportSettings =
+  {
+    .portName = "/dev/ttyACM0",
+    .baudrate = 57600
+  };
+  /* Initialize the session. */
+  BltSessionInit(BLT_SESSION_XCP_V10, &sessionSettings, 
+                 BLT_TRANSPORT_XCP_V10_RS232, &transportSettings);
+  /* Start the session. */
+  if (BltSessionStart() != BLT_RESULT_OK)
+  {
+    result = RESULT_ERROR_GENERIC;
+  }
+  /* Stop the session. */
+  BltSessionStop();
+  /* Terminate the session. */
+  BltSessionTerminate();
   /* Terminate the firmware data module. */
   BltFirmwareTerminate();
   
   /* Give result back. */
   return result;
 } /*** end of main ***/
-
-
-/************************************************************************************//**
-** \brief     Displays the contents of the firmware data on the standard output.
-**
-****************************************************************************************/
-static void DumpFirmwareData(void)
-{
-  uint32_t i;
-  uint8_t  * segmentData;
-  uint32_t segmentBase;
-  uint32_t segmentLen;
-  uint32_t byteIdx;
-  
-  /* Loop through all segments with firmware data. */
-  for (i = 0; i < BltFirmwareGetSegmentCount(); i++)
-  {
-    /* Extract segment information. */
-    segmentData = BltFirmwareGetSegment(i, &segmentBase, &segmentLen);
-    /* Process the segment is valid. */
-    if (segmentData != NULL)
-    {
-      printf("Segment base = 0x%08X, len = %u", segmentBase, segmentLen);
-      for (byteIdx = 0; byteIdx < segmentLen; byteIdx++)
-      {
-        if ((byteIdx % 16) == 0)
-        {
-          printf("\n  ");
-        }
-        printf("%02X ", segmentData[byteIdx]);
-      }
-      printf("\n");
-      
-    }
-  }
-} /*** end of DumpFirmwareData ***/
 
 
 /*********************************** end of main.c *************************************/
