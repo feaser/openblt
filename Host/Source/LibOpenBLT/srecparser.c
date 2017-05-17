@@ -37,6 +37,7 @@
 #include <string.h>                         /* for string library                      */
 #include <ctype.h>                          /* for toupper() etc.                      */
 #include "util.h"                           /* Utility module                          */
+#include "firmware.h"                       /* Firmware data module                    */
 #include "srecparser.h"                     /* S-record parser                         */
 
 

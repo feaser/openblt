@@ -77,11 +77,11 @@ const
 type
   // Structure layout of the XCP version 1.0 session settings.
   tBltSessionSettingsXcpV10 = record
-    timeoutT1: LongWord;          // Command response timeout in milliseconds.
-    timeoutT3: LongWord;          // Start programming timeout in milliseconds.
-    timeoutT4: LongWord;          // Erase memory timeout in milliseonds.
-    timeoutT5: LongWord;          // Program memory and reset timeout in milliseonds.
-    timeoutT7: LongWord;          // Busy wait timer timeout in milliseonds.
+    timeoutT1: Word;          // Command response timeout in milliseconds.
+    timeoutT3: Word;          // Start programming timeout in milliseconds.
+    timeoutT4: Word;          // Erase memory timeout in milliseonds.
+    timeoutT5: Word;          // Program memory and reset timeout in milliseonds.
+    timeoutT7: Word;          // Busy wait timer timeout in milliseonds.
     seedKeyFile: PAnsiChar;       // Seed/key algorithm library filename.
   end;
 

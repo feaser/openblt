@@ -35,6 +35,8 @@
 #include <stdbool.h>                        /* for boolean type                        */
 #include <stdlib.h>                         /* for standard library                    */
 #include <string.h>                         /* for string library                      */
+#include "session.h"                        /* Communication session module            */
+#include "xcploader.h"                      /* XCP loader module                       */
 #include "xcptpuart.h"                      /* XCP UART transport layer                */
 #include "util.h"                           /* Utility module                          */
 #include "serialport.h"                     /* Serial port module                      */

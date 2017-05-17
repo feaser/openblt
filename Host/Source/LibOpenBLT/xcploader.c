@@ -33,6 +33,7 @@
 #include <stdint.h>                         /* for standard integer types              */
 #include <stddef.h>                         /* for NULL declaration                    */
 #include <stdbool.h>                        /* for boolean type                        */
+#include "session.h"                        /* Communication session module            */
 #include "xcploader.h"                      /* XCP loader module                       */
 
 

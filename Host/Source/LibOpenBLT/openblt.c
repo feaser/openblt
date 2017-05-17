@@ -34,7 +34,11 @@
 #include <stdbool.h>                        /* for boolean type                        */
 #include "openblt.h"                        /* OpenBLT host library                    */
 #include "util.h"                           /* Utility module                          */
+#include "firmware.h"                       /* Firmware data module                    */
 #include "srecparser.h"                     /* S-record parser                         */
+#include "session.h"                        /* Communication session module            */
+#include "xcploader.h"                      /* XCP loader module                       */
+#include "xcptpuart.h"                      /* XCP UART transport layer                */
 
 
 /****************************************************************************************
@@ -114,10 +118,57 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
   assert( (transportType == BLT_TRANSPORT_XCP_V10_RS232) || \
           (transportType == BLT_TRANSPORT_XCP_V10_CAN) );
   
-  (void)sessionSettings;
-  (void)transportSettings;
-  
-  /* TODO Implement. */
+  /* Initialize the correct session. */
+  if (sessionType == BLT_SESSION_XCP_V10) /*lint !e774 */
+  {
+    /* Verify settingsSettings parameter because the XCP loader requires them. */
+    assert(sessionSettings != NULL);
+    /* Only continue if the settingsSettings parameter is valid. */
+    if (sessionSettings != NULL) /*lint !e774 */
+    {
+      /* Cast session settings to the correct type. */
+      tBltSessionSettingsXcpV10 * bltSessionSettingsXcpV10Ptr;
+      bltSessionSettingsXcpV10Ptr = ((tBltSessionSettingsXcpV10 *)sessionSettings);
+      /* Convert session settings to the format supported by the XCP loader module. */
+      tXcpLoaderSettings xcpLoaderSettings;
+      xcpLoaderSettings.timeoutT1 = bltSessionSettingsXcpV10Ptr->timeoutT1;
+      xcpLoaderSettings.timeoutT3 = bltSessionSettingsXcpV10Ptr->timeoutT3;
+      xcpLoaderSettings.timeoutT4 = bltSessionSettingsXcpV10Ptr->timeoutT4;
+      xcpLoaderSettings.timeoutT5 = bltSessionSettingsXcpV10Ptr->timeoutT5;
+      xcpLoaderSettings.timeoutT7 = bltSessionSettingsXcpV10Ptr->timeoutT7;
+      xcpLoaderSettings.transport = NULL;
+      xcpLoaderSettings.transportSettings = NULL;
+      /* Link the correct transport layer. */
+      if (transportType == BLT_TRANSPORT_XCP_V10_RS232)
+      {
+        /* Verify transportSettings parameters because the XCP UART transport layer 
+         * requires them.
+         */
+        assert(transportSettings != NULL);
+        /* Only continue if the transportSettings parameter is valid. */
+        if (transportSettings != NULL) /*lint !e774 */
+        {
+          /* Cast transport settings to the correct type. */
+          tBltTransportSettingsXcpV10Rs232 * bltTransportSettingsXcpV10Rs232Ptr;
+          bltTransportSettingsXcpV10Rs232Ptr = 
+            (tBltTransportSettingsXcpV10Rs232 * )transportSettings;
+          /* Convert transport settings to the format supported by the XCP UART transport
+           * layer. It was made static to make sure it doesn't get out of scope when
+           * used in xcpLoaderSettings.
+           */
+          static tXcpTpUartSettings xcpTpUartSettings;
+          xcpTpUartSettings.baudrate = bltTransportSettingsXcpV10Rs232Ptr->baudrate;
+          xcpTpUartSettings.portname = bltTransportSettingsXcpV10Rs232Ptr->portName;
+          /* Store transport layer settings in the XCP loader settings. */
+          xcpLoaderSettings.transportSettings = &xcpTpUartSettings;
+          /* Link the transport layer to the XCP loader settings. */
+          xcpLoaderSettings.transport = XcpTpUartGetTransport();
+        }
+      }
+      /* Perform actual session initialization. */
+      SessionInit(XcpLoaderGetProtocol(), &xcpLoaderSettings);
+    }
+  }
 } /*** end of BltSessionInit ***/
 
 
@@ -128,7 +179,8 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
 ****************************************************************************************/
 LIBOPENBLT_EXPORT void BltSessionTerminate(void)
 {
-  /* TODO Implement. */
+  /* Terminate the session. */
+  SessionTerminate();
 } /*** end of BltSessionTerminate ***/
 
 
@@ -141,9 +193,8 @@ LIBOPENBLT_EXPORT void BltSessionTerminate(void)
 ****************************************************************************************/
 LIBOPENBLT_EXPORT uint32_t BltSessionStart(void)
 {
-  /* TODO Implement. */
-  
-  return BLT_RESULT_OK;
+  /* Start the session. */
+  return SessionStart();
 } /*** end of BltSessionStart ***/
 
 
@@ -154,7 +205,8 @@ LIBOPENBLT_EXPORT uint32_t BltSessionStart(void)
 ****************************************************************************************/
 LIBOPENBLT_EXPORT void BltSessionStop(void)
 {
-  /* TODO Implement. */
+  /* Stop the session. */
+  SessionStop();
 } /*** end of BltSessionStop ***/
 
 
@@ -176,13 +228,14 @@ LIBOPENBLT_EXPORT uint32_t BltSessionClearMemory(uint32_t address, uint32_t len)
   /* Check parameters. */
   assert(len > 0);
   
-  (void)address;
-
   /* Only continue if the parameters are valid. */
   if (len > 0) 
   {
-  /* TODO Implement. */
-    result = BLT_RESULT_OK;
+    /* Pass the request on to the session module. */
+    if (SessionClearMemory(address, len))
+    {
+      result = BLT_RESULT_OK;
+    }
   }
   /* Give the result back to the caller. */
   return result;
@@ -208,13 +261,14 @@ LIBOPENBLT_EXPORT uint32_t BltSessionWriteData(uint32_t address, uint32_t len,
   assert(data != NULL);
   assert(len > 0);
   
-  (void)address;
-  
   /* Only continue if the parameters are valid. */ 
   if ( (data != NULL) && (len > 0) ) /*lint !e774 */
   {
-  /* TODO Implement. */
-    result = BLT_RESULT_OK;
+    /* Pass the request on to the session module. */
+    if (SessionWriteData(address, len, data))
+    {
+      result = BLT_RESULT_OK;
+    }
   }
   /* Give the result back to the caller. */
   return result;
@@ -240,14 +294,14 @@ LIBOPENBLT_EXPORT uint32_t BltSessionReadData(uint32_t address, uint32_t len,
   assert(data != NULL);
   assert(len > 0);
 
-  (void)address;
-
   /* Only continue if the parameters are valid. */
   if ( (data != NULL) && (len > 0) ) /*lint !e774 */
   {
-    /* TODO Implement. */
-    data[0] = 0;
-    result = BLT_RESULT_OK;
+    /* Pass the request on to the session module. */
+    if (SessionReadData(address, len, data))
+    {
+      result = BLT_RESULT_OK;
+    }
   }
   /* Give the result back to the caller. */
   return result;
