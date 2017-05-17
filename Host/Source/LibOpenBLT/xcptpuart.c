@@ -304,7 +304,7 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
         if (SerialPortRead(&rxPacket->data[byteIdx], 1))
         {
           /* Check if the packet reception is now complete. */
-          if (byteIdx == rxPacket->len)
+          if ((byteIdx + 1) == rxPacket->len)
           {
             /* Set flag and stop the loop. */
             packetReceptionComplete = true;
