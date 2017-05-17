@@ -193,8 +193,14 @@ LIBOPENBLT_EXPORT void BltSessionTerminate(void)
 ****************************************************************************************/
 LIBOPENBLT_EXPORT uint32_t BltSessionStart(void)
 {
+  uint32_t result = BLT_RESULT_ERROR_GENERIC;
   /* Start the session. */
-  return SessionStart();
+  if (SessionStart())
+  {
+    result = BLT_RESULT_OK;
+  }
+  /* Give the result back to the caller. */
+  return result;
 } /*** end of BltSessionStart ***/
 
 

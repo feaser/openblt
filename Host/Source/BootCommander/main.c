@@ -51,6 +51,7 @@
 int main(int argc, char *argv[])
 {
   int result = RESULT_OK;
+  volatile uint32_t waitLoopCnt;
   
   (void)argc;
   (void)argv;
@@ -70,7 +71,7 @@ int main(int argc, char *argv[])
   /* Configure transport layer to use XCP on UART. */
   tBltTransportSettingsXcpV10Rs232 transportSettings =
   {
-    .portName = "/dev/ttyACM0",
+    .portName = "/dev/ttyUSB0",
     .baudrate = 57600
   };
   /* Initialize the session. */
@@ -81,6 +82,15 @@ int main(int argc, char *argv[])
   {
     result = RESULT_ERROR_GENERIC;
   }
+  
+  /* Do a little dummy delay check LED blink rate on the board to verify that the
+   * bootloader got activated.
+   */
+  for (waitLoopCnt = 0; waitLoopCnt < 500000000; waitLoopCnt++) 
+  {
+    ;
+  }
+  
   /* Stop the session. */
   BltSessionStop();
   /* Terminate the session. */
