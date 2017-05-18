@@ -7,38 +7,38 @@ start address 0x08006000
 
 Program Header:
     LOAD off    0x00000000 vaddr 0x08000000 paddr 0x08000000 align 2**15
-         filesz 0x00006e3c memsz 0x00006e3c flags r-x
-    LOAD off    0x00008000 vaddr 0x20000000 paddr 0x08006e3c align 2**15
-         filesz 0x00000014 memsz 0x00000168 flags rw-
+         filesz 0x00006e84 memsz 0x00006e84 flags r-x
+    LOAD off    0x00008000 vaddr 0x20000000 paddr 0x08006e84 align 2**15
+         filesz 0x00000014 memsz 0x0000016c flags rw-
 private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000e3c  08006000  08006000  00006000  2**2
+  0 .text         00000e84  08006000  08006000  00006000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000014  20000000  08006e3c  00008000  2**2
+  1 .data         00000014  20000000  08006e84  00008000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000154  20000014  08006e50  00008014  2**2
+  2 .bss          00000158  20000014  08006e98  00008014  2**2
                   ALLOC
-  3 .debug_info   000044dc  00000000  00000000  00008014  2**0
+  3 .debug_info   000044c9  00000000  00000000  00008014  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 0000109e  00000000  00000000  0000c4f0  2**0
+  4 .debug_abbrev 00001072  00000000  00000000  0000c4dd  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_loc    00002055  00000000  00000000  0000d58e  2**0
+  5 .debug_loc    00002055  00000000  00000000  0000d54f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 000004a0  00000000  00000000  0000f5e3  2**0
+  6 .debug_aranges 00000498  00000000  00000000  0000f5a4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_ranges 00000400  00000000  00000000  0000fa83  2**0
+  7 .debug_ranges 000003f8  00000000  00000000  0000fa3c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000017b4  00000000  00000000  0000fe83  2**0
+  8 .debug_line   000017d0  00000000  00000000  0000fe34  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00001939  00000000  00000000  00011637  2**0
+  9 .debug_str    0000194b  00000000  00000000  00011604  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  00012f70  2**0
+ 10 .comment      00000030  00000000  00000000  00012f4f  2**0
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  00012fa0  2**0
+ 11 .ARM.attributes 00000033  00000000  00000000  00012f7f  2**0
                   CONTENTS, READONLY
- 12 .debug_frame  000008f4  00000000  00000000  00012fd4  2**2
+ 12 .debug_frame  000008dc  00000000  00000000  00012fb4  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08006000 l    d  .text	00000000 .text
@@ -56,20 +56,20 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 boot.c
-08006154 l     F .text	0000001e NVIC_SystemReset
-08006174 l     F .text	00000038 UartReceiveByte
+08006154 l     F .text	00000038 UartReceiveByte
 20000014 l     O .bss	00000041 xcpCtoReqPacket.6447
 20000058 l     O .bss	00000001 xcpCtoRxLength.6448
 20000059 l     O .bss	00000001 xcpCtoRxInProgress.6449
-08006e18 l     O .text	00000024 canTiming
+08006e60 l     O .text	00000024 canTiming
+2000005c l     O .bss	00000004 xcpCtoRxStartTime.6450
 00000000 l    df *ABS*	00000000 cstart.c
-080064e0 l     F .text	00000000 zero_loop
+08006528 l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 led.c
-2000005c l     O .bss	00000004 timer_counter_last.6428
-20000060 l     O .bss	00000001 led_toggle_state.6427
+20000060 l     O .bss	00000004 timer_counter_last.6428
+20000064 l     O .bss	00000001 led_toggle_state.6427
 00000000 l    df *ABS*	00000000 main.c
 00000000 l    df *ABS*	00000000 timer.c
-20000064 l     O .bss	00000004 millisecond_counter
+20000068 l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 stm32f10x_can.c
 00000000 l    df *ABS*	00000000 stm32f10x_gpio.c
 00000000 l    df *ABS*	00000000 stm32f10x_rcc.c
@@ -78,41 +78,42 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 stm32f10x_usart.c
 00000000 l    df *ABS*	00000000 
 00000100 l       *ABS*	00000000 __STACKSIZE__
-0800649c g     F .text	00000060 reset_handler
-080068a0 g     F .text	00000126 CAN_FilterInit
-08006e0c g     F .text	0000000c USART_GetFlagStatus
-08006e3c g       .text	00000000 _etext
-0800675c g     F .text	00000010 TimerISRHandler
-08006b44 g     F .text	00000072 GPIO_PinRemapConfig
-08006e04 g     F .text	00000008 USART_ReceiveData
-08006ca4 g     F .text	00000024 RCC_APB2PeriphClockCmd
-08006a98 g     F .text	000000a4 GPIO_Init
-08006de8 g     F .text	0000001c USART_Cmd
-08006cc8 g     F .text	00000024 RCC_APB1PeriphClockCmd
-08006770 g     F .text	00000042 CAN_DeInit
-20000068 g       .bss	00000000 _ebss
-0800676c g     F .text	00000002 UnusedISR
-08006508 g     F .text	0000004c LedInit
-08006b3c g     F .text	00000004 GPIO_SetBits
-08006bb8 g     F .text	000000ea RCC_GetClocksFreq
-08006d10 g     F .text	000000d8 USART_Init
-080069e8 g     F .text	00000096 CAN_Receive
-080067b4 g     F .text	000000ea CAN_Init
+080064e4 g     F .text	00000060 reset_handler
+080068e8 g     F .text	00000126 CAN_FilterInit
+08006e54 g     F .text	0000000c USART_GetFlagStatus
+08006e84 g       .text	00000000 _etext
+080067a4 g     F .text	00000010 TimerISRHandler
+08006b8c g     F .text	00000072 GPIO_PinRemapConfig
+08006e4c g     F .text	00000008 USART_ReceiveData
+08006cec g     F .text	00000024 RCC_APB2PeriphClockCmd
+08006ae0 g     F .text	000000a4 GPIO_Init
+08006e30 g     F .text	0000001c USART_Cmd
+08006d10 g     F .text	00000024 RCC_APB1PeriphClockCmd
+080067b8 g     F .text	00000042 CAN_DeInit
+08006378 g     F .text	0000001e BootActivate
+2000006c g       .bss	00000000 _ebss
+080067b4 g     F .text	00000002 UnusedISR
+08006550 g     F .text	0000004c LedInit
+08006b84 g     F .text	00000004 GPIO_SetBits
+08006c00 g     F .text	000000ea RCC_GetClocksFreq
+08006d58 g     F .text	000000d8 USART_Init
+08006a30 g     F .text	00000096 CAN_Receive
+080067fc g     F .text	000000ea CAN_Init
 20000014 g       .bss	00000000 _bss
-080069c8 g     F .text	00000020 CAN_StructInit
-08006b40 g     F .text	00000004 GPIO_ResetBits
-080065d4 g     F .text	00000148 main
-08006a80 g     F .text	00000018 CAN_MessagePending
-080061ac g     F .text	000001ec BootComInit
-08006cec g     F .text	00000024 RCC_APB1PeriphResetCmd
+08006a10 g     F .text	00000020 CAN_StructInit
+08006b88 g     F .text	00000004 GPIO_ResetBits
+0800661c g     F .text	00000148 main
+08006ac8 g     F .text	00000018 CAN_MessagePending
+0800618c g     F .text	000001ec BootComInit
+08006d34 g     F .text	00000024 RCC_APB1PeriphResetCmd
 20000000 g       .data	00000000 _data
-08006554 g     F .text	0000007e LedToggle
-20000168 g       .bss	00000000 _estack
+0800659c g     F .text	0000007e LedToggle
+2000016c g       .bss	00000000 _estack
 20000014 g       .data	00000000 _edata
 08006000 g     O .text	00000154 _vectab
-08006398 g     F .text	00000104 BootComCheckActivationRequest
-20000068 g       .bss	00000000 _stack
-08006750 g     F .text	0000000c TimerGet
-0800671c g     F .text	00000034 TimerInit
+08006398 g     F .text	0000014c BootComCheckActivationRequest
+2000006c g       .bss	00000000 _stack
+08006798 g     F .text	0000000c TimerGet
+08006764 g     F .text	00000034 TimerInit
 
 

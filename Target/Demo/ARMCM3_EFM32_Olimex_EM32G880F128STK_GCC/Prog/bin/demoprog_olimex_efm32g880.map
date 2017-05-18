@@ -7,38 +7,38 @@ start address 0x00002000
 
 Program Header:
     LOAD off    0x00000000 vaddr 0x00000000 paddr 0x00000000 align 2**15
-         filesz 0x00003238 memsz 0x00003238 flags r-x
-    LOAD off    0x00008000 vaddr 0x20000000 paddr 0x00003238 align 2**15
-         filesz 0x00000008 memsz 0x00000168 flags rw-
+         filesz 0x000032c8 memsz 0x000032c8 flags r-x
+    LOAD off    0x00008000 vaddr 0x20000000 paddr 0x000032c8 align 2**15
+         filesz 0x00000008 memsz 0x0000016c flags rw-
 private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00001238  00002000  00002000  00002000  2**2
+  0 .text         000012c8  00002000  00002000  00002000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000008  20000000  00003238  00008000  2**2
+  1 .data         00000008  20000000  000032c8  00008000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000160  20000008  00003240  00008008  2**2
+  2 .bss          00000164  20000008  000032d0  00008008  2**2
                   ALLOC
-  3 .debug_info   00005760  00000000  00000000  00008008  2**0
+  3 .debug_info   000057a9  00000000  00000000  00008008  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 00001834  00000000  00000000  0000d768  2**0
+  4 .debug_abbrev 000017e4  00000000  00000000  0000d7b1  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_loc    00002944  00000000  00000000  0000ef9c  2**0
+  5 .debug_loc    0000284e  00000000  00000000  0000ef95  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 00000420  00000000  00000000  000118e0  2**0
+  6 .debug_aranges 00000408  00000000  00000000  000117e3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_ranges 000003e0  00000000  00000000  00011d00  2**0
+  7 .debug_ranges 000003e0  00000000  00000000  00011beb  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00001ab9  00000000  00000000  000120e0  2**0
+  8 .debug_line   00001b0e  00000000  00000000  00011fcb  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00001a85  00000000  00000000  00013b99  2**0
+  9 .debug_str    00001a97  00000000  00000000  00013ad9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  0001561e  2**0
+ 10 .comment      00000030  00000000  00000000  00015570  2**0
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  0001564e  2**0
+ 11 .ARM.attributes 00000033  00000000  00000000  000155a0  2**0
                   CONTENTS, READONLY
- 12 .debug_frame  0000082c  00000000  00000000  00015684  2**2
+ 12 .debug_frame  000007cc  00000000  00000000  000155d4  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00002000 l    d  .text	00000000 .text
@@ -56,79 +56,78 @@ SYMBOL TABLE:
 00000000 l    d  .debug_frame	00000000 .debug_frame
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 boot.c
-000020bc l     F .text	00000022 NVIC_SystemReset
-20000008 l     O .bss	00000041 xcpCtoReqPacket.5453
-2000004c l     O .bss	00000001 xcpCtoRxLength.5454
-2000004d l     O .bss	00000001 xcpCtoRxInProgress.5455
+20000008 l     O .bss	00000004 xcpCtoRxStartTime.5456
+2000000c l     O .bss	00000041 xcpCtoReqPacket.5453
+20000050 l     O .bss	00000001 xcpCtoRxLength.5454
+20000051 l     O .bss	00000001 xcpCtoRxInProgress.5455
 00000000 l    df *ABS*	00000000 cstart.c
-000022bc l     F .text	00000000 zero_loop
+000022fc l     F .text	00000000 zero_loop
 00000000 l    df *ABS*	00000000 led.c
-20000050 l     O .bss	00000004 timer_counter_last.5438
-20000054 l     O .bss	00000001 led_toggle_state.5437
+20000054 l     O .bss	00000004 timer_counter_last.5438
+20000058 l     O .bss	00000001 led_toggle_state.5437
 00000000 l    df *ABS*	00000000 main.c
 00000000 l    df *ABS*	00000000 timer.c
-20000058 l     O .bss	00000004 millisecond_counter
+2000005c l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 system_efm32.c
 20000000 l     O .data	00000004 SystemLFXOClock
 20000004 l     O .data	00000004 SystemHFXOClock
 00000000 l    df *ABS*	00000000 lcdcontroller.c
-00002754 l     F .text	0000005e LCD_enableSegment
-000027b4 l     F .text	0000006e LCD_disableSegment
+00002794 l     F .text	0000005e LCD_enableSegment
+000027f4 l     F .text	0000006e LCD_disableSegment
 00000000 l    df *ABS*	00000000 efm32_cmu.c
-0000297c l     F .text	00000034 CMU_FlashWaitStateMax
-000029b0 l     F .text	0000005c CMU_FlashWaitStateControl
-00002a0c l     F .text	00000020 CMU_Sync
-00002a2c l     F .text	0000004a CMU_LFClkGet
+000029bc l     F .text	00000034 CMU_FlashWaitStateMax
+000029f0 l     F .text	0000005c CMU_FlashWaitStateControl
+00002a4c l     F .text	0000004a CMU_LFClkGet
 00000000 l    df *ABS*	00000000 efm32_emu.c
-20000060 l     O .bss	00000002 cmuStatus
+20000064 l     O .bss	00000002 cmuStatus
 00000000 l    df *ABS*	00000000 efm32_gpio.c
 00000000 l    df *ABS*	00000000 efm32_leuart.c
-00003118 l     F .text	00000010 LEUART_Sync
 00000000 l    df *ABS*	00000000 efm32_system.c
 00000000 l    df *ABS*	00000000 
 00000100 l       *ABS*	00000000 __STACKSIZE__
-0000302c g     F .text	0000001a GPIO_DriveModeSet
-00003014 g     F .text	00000016 EMU_UpdateOscConfig
-00002278 g     F .text	00000060 reset_handler
-00002d18 g     F .text	000001b0 CMU_ClockFreqGet
-00003184 g     F .text	0000001e LEUART_Enable
-2000005c g     O .bss	00000004 frameCounter
-00002ec8 g     F .text	00000064 CMU_OscillatorEnable
-00002860 g     F .text	0000007e LCD_Symbol
-00003238 g       .text	00000000 _etext
-0000264c g     F .text	00000010 TimerISRHandler
-00002c80 g     F .text	00000098 CMU_ClockSelectGet
-20000064 g     O .bss	00000004 SystemCoreClock
-00002748 g     F .text	0000000c SystemLFXOClockGet
-00002c00 g     F .text	0000007e CMU_ClockEnable
-00002844 g     F .text	0000001a LCD_AllOff
-000031f4 g     F .text	0000000e LEUART_Rx
-20000068 g       .bss	00000000 _ebss
-00002824 g     F .text	0000001e LCD_IRQHandler
-0000265c g     F .text	00000002 UnusedISR
-000022e4 g     F .text	00000016 LedInit
-000031a4 g     F .text	0000004e LEUART_Init
-00002f2c g     F .text	000000e8 CMU_ClockSelectSet
+000030c4 g     F .text	0000001a GPIO_DriveModeSet
+000030ac g     F .text	00000016 EMU_UpdateOscConfig
+000022b8 g     F .text	00000060 reset_handler
+00002db0 g     F .text	000001b0 CMU_ClockFreqGet
+00003210 g     F .text	0000001e LEUART_Enable
+20000060 g     O .bss	00000004 frameCounter
+00002f60 g     F .text	00000064 CMU_OscillatorEnable
+000028a0 g     F .text	0000007e LCD_Symbol
+000032c8 g       .text	00000000 _etext
+0000268c g     F .text	00000010 TimerISRHandler
+00002d18 g     F .text	00000098 CMU_ClockSelectGet
+20000068 g     O .bss	00000004 SystemCoreClock
+00002788 g     F .text	0000000c SystemLFXOClockGet
+00002c84 g     F .text	00000094 CMU_ClockEnable
+00002884 g     F .text	0000001a LCD_AllOff
+00003284 g     F .text	0000000e LEUART_Rx
+00002180 g     F .text	00000022 BootActivate
+2000006c g       .bss	00000000 _ebss
+00002864 g     F .text	0000001e LCD_IRQHandler
+0000269c g     F .text	00000002 UnusedISR
+00002324 g     F .text	00000016 LedInit
+00003230 g     F .text	00000052 LEUART_Init
+00002fc4 g     F .text	000000e8 CMU_ClockSelectSet
 20000008 g       .bss	00000000 _bss
-00002660 g     F .text	000000b4 SystemHFClockGet
-000028e0 g     F .text	0000009c LCD_Init
-00002378 g     F .text	00000278 main
-00003048 g     F .text	000000ce GPIO_PinModeSet
-000020e0 g     F .text	000000c4 BootComInit
-0000273c g     F .text	00000002 SystemInit
-00002a78 g     F .text	00000186 CMU_ClockDivSet
+000026a0 g     F .text	000000b4 SystemHFClockGet
+00002920 g     F .text	0000009c LCD_Init
+000023b8 g     F .text	00000278 main
+000030e0 g     F .text	000000ce GPIO_PinModeSet
+000020bc g     F .text	000000c4 BootComInit
+0000277c g     F .text	00000002 SystemInit
+00002a98 g     F .text	000001ec CMU_ClockDivSet
 20000000 g       .data	00000000 _data
-000022fc g     F .text	0000007a LedToggle
-00002740 g     F .text	00000006 SystemLFRCOClockGet
-00003128 g     F .text	0000005c LEUART_BaudrateSet
-00003204 g     F .text	00000022 SYSTEM_ChipRevisionGet
-00002714 g     F .text	00000028 SystemCoreClockGet
-20000168 g       .bss	00000000 _estack
+0000233c g     F .text	0000007a LedToggle
+00002780 g     F .text	00000006 SystemLFRCOClockGet
+000031b0 g     F .text	0000005e LEUART_BaudrateSet
+00003294 g     F .text	00000022 SYSTEM_ChipRevisionGet
+00002754 g     F .text	00000028 SystemCoreClockGet
+2000016c g       .bss	00000000 _estack
 20000008 g       .data	00000000 _edata
 00002000 g     O .text	000000bc _vectab
-000021a4 g     F .text	000000d4 BootComCheckActivationRequest
-20000068 g       .bss	00000000 _stack
-00002640 g     F .text	0000000c TimerGet
-000025f0 g     F .text	0000004e TimerInit
+000021a4 g     F .text	00000114 BootComCheckActivationRequest
+2000006c g       .bss	00000000 _stack
+00002680 g     F .text	0000000c TimerGet
+00002630 g     F .text	0000004e TimerInit
 
 

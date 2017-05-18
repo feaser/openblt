@@ -117,6 +117,10 @@ void BootActivate(void)
 #define UART_FIFO_RX1  (0x07)
 /** \brief Receiver data ready. */
 #define UART_RDR       (0x01)
+/** \brief Timeout time for the reception of a CTO packet. The timer is started upon
+ *         reception of the first packet byte.
+ */
+#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
 
 
 /****************************************************************************************
@@ -172,6 +176,7 @@ static void BootComUartCheckActivationRequest(void)
   static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
   static unsigned char xcpCtoRxInProgress = 0;
+  static unsigned long xcpCtoRxStartTime = 0;
 
   /* start of cto packet received? */
   if (xcpCtoRxInProgress == 0)
@@ -179,11 +184,16 @@ static void BootComUartCheckActivationRequest(void)
     /* store the message length when received */
     if (UartReceiveByte(&xcpCtoReqPacket[0]) == 1)
     {
-      /* indicate that a cto packet is being received */
-      xcpCtoRxInProgress = 1;
-
-      /* reset packet data count */
-      xcpCtoRxLength = 0;
+      /* check that the length has a valid value. it should not be 0 */
+      if (xcpCtoReqPacket[0] > 0)
+      {
+        /* store the start time */
+        xcpCtoRxStartTime = TimerGet();
+        /* indicate that a cto packet is being received */
+        xcpCtoRxInProgress = 1;
+        /* reset packet data count */
+        xcpCtoRxLength = 0;
+      }
     }
   }
   else
@@ -206,6 +216,17 @@ static void BootComUartCheckActivationRequest(void)
           /* connection request received so start the bootloader */
           BootActivate();
         }
+      }
+    }
+    else
+    {
+      /* check packet reception timeout */
+      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      {
+        /* cancel cto packet reception due to timeout. note that this automatically
+         * discards the already received packet bytes, allowing the host to retry.
+         */
+        xcpCtoRxInProgress = 0;
       }
     }
   }

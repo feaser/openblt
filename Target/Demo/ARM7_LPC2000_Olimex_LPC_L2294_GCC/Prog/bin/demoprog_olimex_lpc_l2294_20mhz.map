@@ -7,32 +7,32 @@ start address 0x00002000
 
 Program Header:
     LOAD off    0x00000000 vaddr 0x00000000 paddr 0x00000000 align 2**15
-         filesz 0x00002e98 memsz 0x00002e98 flags r-x
-    LOAD off    0x00008200 vaddr 0x40000200 paddr 0x00002e98 align 2**15
-         filesz 0x00000000 memsz 0x0000005c flags rw-
+         filesz 0x00002efc memsz 0x00002efc flags r-x
+    LOAD off    0x00008200 vaddr 0x40000200 paddr 0x00002efc align 2**15
+         filesz 0x00000000 memsz 0x00000064 flags rw-
 private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000e98  00002000  00002000  00002000  2**2
+  0 .text         00000efc  00002000  00002000  00002000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          0000005c  40000200  00002e98  00008200  2**2
+  1 .bss          00000064  40000200  00002efc  00008200  2**2
                   ALLOC
-  2 .ARM.attributes 0000002e  00000000  00000000  00002e98  2**0
+  2 .ARM.attributes 0000002e  00000000  00000000  00002efc  2**0
                   CONTENTS, READONLY
-  3 .comment      00000030  00000000  00000000  00002ec6  2**0
+  3 .comment      00000030  00000000  00000000  00002f2a  2**0
                   CONTENTS, READONLY
-  4 .debug_info   0000058c  00000000  00000000  00002ef6  2**0
+  4 .debug_info   0000059d  00000000  00000000  00002f5a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 000003bd  00000000  00000000  00003482  2**0
+  5 .debug_abbrev 000003bd  00000000  00000000  000034f7  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 000000c0  00000000  00000000  0000383f  2**0
+  6 .debug_aranges 000000c0  00000000  00000000  000038b4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000279  00000000  00000000  000038ff  2**0
+  7 .debug_line   0000027e  00000000  00000000  00003974  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    000003aa  00000000  00000000  00003b78  2**0
+  8 .debug_str    000003bc  00000000  00000000  00003bf2  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000003c4  00000000  00000000  00003f24  2**2
+  9 .debug_frame  000003c4  00000000  00000000  00003fb0  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00002000 l    d  .text	00000000 .text
@@ -73,61 +73,62 @@ SYMBOL TABLE:
 0000217c l     F .text	00000214 Init
 00000000 l    df *ABS*	00000000 boot.c
 00002424 l     F .text	000000b8 BootComUartInit
-000027c0 l     F .text	00000090 BootComCanInit
-000024dc l     F .text	000000e8 BootComUartCheckActivationRequest
-00002850 l     F .text	000000a8 BootComCanCheckActivationRequest
-000025c4 l     F .text	00000060 UartReceiveByte
+00002824 l     F .text	00000090 BootComCanInit
+000024dc l     F .text	0000014c BootComUartCheckActivationRequest
+000028b4 l     F .text	000000a8 BootComCanCheckActivationRequest
+00002628 l     F .text	00000060 UartReceiveByte
 40000200 l       .bss	00000000 xcpCtoRxInProgress.4107
 40000204 l       .bss	00000000 xcpCtoReqPacket.4105
-40000245 l       .bss	00000000 xcpCtoRxLength.4106
-00002e74 l     O .text	00000024 canTiming
-00002624 l     F .text	0000019c CanGetSpeedConfig
+40000248 l       .bss	00000000 xcpCtoRxStartTime.4108
+4000024c l       .bss	00000000 xcpCtoRxLength.4106
+00002ed8 l     O .text	00000024 canTiming
+00002688 l     F .text	0000019c CanGetSpeedConfig
 00000000 l    df *ABS*	00000000 irq.c
-40000248 l       .bss	00000000 oldInterruptStatus
-4000024c l       .bss	00000000 interruptNesting
-000028f8 l     F .text	00000028 IrqGetCPSR
-00002920 l     F .text	00000024 IrqSetCPSR
+40000250 l       .bss	00000000 oldInterruptStatus
+40000254 l       .bss	00000000 interruptNesting
+0000295c l     F .text	00000028 IrqGetCPSR
+00002984 l     F .text	00000024 IrqSetCPSR
 00000000 l    df *ABS*	00000000 led.c
-40000250 l       .bss	00000000 timer_counter_last.4086
-40000254 l       .bss	00000000 led_toggle_state.4085
+40000258 l       .bss	00000000 timer_counter_last.4086
+4000025c l       .bss	00000000 led_toggle_state.4085
 00000000 l    df *ABS*	00000000 timer.c
-40000258 l       .bss	00000000 millisecond_counter
+40000260 l       .bss	00000000 millisecond_counter
 00000000 l    df *ABS*	00000000 _divsi3.o
-00002c3c l       .text	00000000 .divsi3_skip_div0_test
+00002ca0 l       .text	00000000 .divsi3_skip_div0_test
 00000000 l    df *ABS*	00000000 _dvmd_tls.o
 00000000 l    df *ABS*	00000000 memcpy-stub.c
 00000000 l    df *ABS*	00000000 
-00002bb8 g     F .text	0000002c TimerUpdate
-00002944 g     F .text	00000030 IrqInterruptEnable
+00002c1c g     F .text	0000002c TimerUpdate
+000029a8 g     F .text	00000030 IrqInterruptEnable
 000020d8 g     F .text	00000044 TIMER0_ISR
-00002e98 g       .text	00000000 _etext
-00002d80 g     F .text	000000f0 memcpy
+00002efc g       .text	00000000 _etext
+00002de4 g     F .text	000000f0 memcpy
 40000200 g       .bss	00000000 _bss_start
 00002000 g       .text	00000000 _startup
 000023c8 g     F .text	0000005c BootActivate
-4000025c g       .bss	00000000 _bss_end
+40000264 g       .bss	00000000 _bss_end
 00002040 g       .text	00000000 Reset_Handler
-00002a50 g     F .text	0000003c LedInit
-00002c34 g     F .text	00000000 .hidden __aeabi_idiv
-000029e0 g     F .text	00000070 IrqInterruptRestore
-00002d7c  w    F .text	00000004 .hidden __aeabi_ldiv0
+00002ab4 g     F .text	0000003c LedInit
+00002c98 g     F .text	00000000 .hidden __aeabi_idiv
+00002a44 g     F .text	00000070 IrqInterruptRestore
+00002de0  w    F .text	00000004 .hidden __aeabi_ldiv0
 0000213c g     F .text	00000040 main
 40003edc g       *ABS*	00000000 _stack_end
-00002c34 g     F .text	00000128 .hidden __divsi3
-00002be4 g     F .text	0000002c TimerSet
+00002c98 g     F .text	00000128 .hidden __divsi3
+00002c48 g     F .text	0000002c TimerSet
 00002390 g     F .text	0000001c BootComInit
 00002128 g     F .text	00000008 FIQ_ISR
 40000200 g       .text	00000000 _data
-00002a8c g     F .text	000000a8 LedToggle
+00002af0 g     F .text	000000a8 LedToggle
 40000200 g       .text	00000000 _edata
-4000025c g       .bss	00000000 _end
+40000264 g       .bss	00000000 _end
 00002130 g     F .text	0000000c UNDEF_ISR
 0000211c g     F .text	0000000c SWI_ISR
-00002974 g     F .text	0000006c IrqInterruptDisable
+000029d8 g     F .text	0000006c IrqInterruptDisable
 000023ac g     F .text	0000001c BootComCheckActivationRequest
-00002d7c  w    F .text	00000004 .hidden __aeabi_idiv0
-00002c10 g     F .text	00000024 TimerGet
-00002d5c g     F .text	00000020 .hidden __aeabi_idivmod
-00002b34 g     F .text	00000084 TimerInit
+00002de0  w    F .text	00000004 .hidden __aeabi_idiv0
+00002c74 g     F .text	00000024 TimerGet
+00002dc0 g     F .text	00000020 .hidden __aeabi_idivmod
+00002b98 g     F .text	00000084 TimerInit
 
 
