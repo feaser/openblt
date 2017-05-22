@@ -1,24 +1,26 @@
 /**
-\mainpage OpenBLT Host Library    
+\mainpage OpenBLT Host Library  (LibOpenBLT)   
 \details
 \tableofcontents
 \section into Introduction
-LibOpenBLT is a host library for OpenBLT. Its purpose is to allow quick and easy creation
-of programs that can connect to and perform firmware updates on a microcontroller that
-runs the OpenBLT bootloader.
+LibOpenBLT is a host library for he OpenBLT bootloader. Its purpose is to allow quick and 
+easy creation of programs that can connect to and perform firmware updates on a 
+microcontroller that runs the OpenBLT bootloader.
 
-LibOpenBLT is written in the C programming language and is crossplatform. It has been
-successfully tested on a Windows PC, Linux PC and even embedded Linux systems such as a
-Raspberry Pi and a Beagle Board.
+LibOpenBLT is written in the C programming language (C99) and is cross-platform. It has 
+been successfully tested on a Windows PC, Linux PC and even embedded Linux systems such 
+as a Raspberry Pi and a Beagle Board.
 
-Building LibOpenBLT is easy. It uses CMake (https://cmake.org/) to automatically detect 
-the build environment on your system. All you have to do is open your command prompt and
-go to directory ./Host/Source/LibOpenBLT/build/. From there, run the command "cmake ..". 
-to detect and configure the build environment for your system. Afterwards you can build
-LibOpenBLT. On Linux systems with GNU GCC, simply run the command "make". On Windows
-systems, open the LibOpenBLT.sln file in Microsoft Visual Studio and select "Build ->
-Rebuild Solution" from the program menu. After building LibOpenBLT, both a shared library
-and a static library are availabe in directory ./Host/.
+\image html libopenblt_architecture.png
+
+Both the MicroBoot (GUI) and BootCommander (CLI) firmware updater tools, which are part 
+of the OpenBLT bootloader package, make use of the OpenBLT Host Library. The source code
+of these two tools serve as an additional reference on how to use the OpenBLT Host 
+Library when your are developing your own custom tool.
+
+Refer to the OpenBLT website for additional information regarding the OpenBLT Host 
+Library, including step-by-step instructions on how to build both that shared and static 
+library from sources: https://www.feaser.com/openblt/doku.php?id=manual:libopenblt.
 
 \verbatim
 ----------------------------------------------------------------------------------------

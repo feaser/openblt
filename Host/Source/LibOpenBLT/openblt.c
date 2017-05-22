@@ -117,7 +117,7 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
   assert(sessionType == BLT_SESSION_XCP_V10);
   assert( (transportType == BLT_TRANSPORT_XCP_V10_RS232) || \
           (transportType == BLT_TRANSPORT_XCP_V10_CAN) );
-  
+
   /* Initialize the correct session. */
   if (sessionType == BLT_SESSION_XCP_V10) /*lint !e774 */
   {
@@ -194,6 +194,7 @@ LIBOPENBLT_EXPORT void BltSessionTerminate(void)
 LIBOPENBLT_EXPORT uint32_t BltSessionStart(void)
 {
   uint32_t result = BLT_RESULT_ERROR_GENERIC;
+
   /* Start the session. */
   if (SessionStart())
   {
@@ -326,6 +327,7 @@ LIBOPENBLT_EXPORT uint32_t BltSessionReadData(uint32_t address, uint32_t len,
 LIBOPENBLT_EXPORT void BltFirmwareInit(uint32_t parserType)
 {
   tFirmwareParser const * firmwareParser = NULL;
+
   /* Verify parameters. */
   assert(parserType == BLT_FIRMWARE_PARSER_SRECORD);
   
