@@ -131,7 +131,13 @@ endif(BUILD_STATIC)
 # "make openblt_shared" to build individually  shared library.
 if(BUILD_SHARED)
   add_library(openblt_shared SHARED ${LIB_SRCS})
-  SET_TARGET_PROPERTIES(openblt_shared PROPERTIES OUTPUT_NAME openblt CLEAN_DIRECT_OUTPUT 1)
+  if(CMAKE_C_COMPILER_ID MATCHES MSVC)
+    # Microsoft Visual Studio does not add "lib" to the name of the DLL, whereas GCC
+    # (including MinGW) does. Correct this here.
+    SET_TARGET_PROPERTIES(openblt_shared PROPERTIES OUTPUT_NAME libopenblt CLEAN_DIRECT_OUTPUT 1)
+  else()
+    SET_TARGET_PROPERTIES(openblt_shared PROPERTIES OUTPUT_NAME openblt CLEAN_DIRECT_OUTPUT 1)
+  endif()
 endif(BUILD_SHARED)
 
 # Only generate the PC-lint taget if the option is enabled. Use "make openblt_LINT" to 

@@ -44,8 +44,8 @@ uses
 // Global Constant Declarations
 //***************************************************************************************
 const
-  // Name of the external librarz.
-  LIBOPENBLT_LIBNAME = 'openblt';
+  // Name of the external library.
+  LIBOPENBLT_LIBNAME = 'libopenblt';
   // Function return value for when everything went okay.
   BLT_RESULT_OK = 0;
   // Function return value for when a generic error occured.

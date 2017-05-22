@@ -20,9 +20,9 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -96,7 +96,7 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
 
   /* Check parameters. */
   assert(portname != NULL);
-  
+
   /* Only continue if parameters are valid. */
   if (portname != NULL)
   {
@@ -105,21 +105,15 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
      */
     result = true;
     /* Construct the COM port name as a string. */
-    if (strcat_s(portStr, 59, portname) != 0)
-    {
-      result = false;
-    }
+    strcat(portStr, portname);
 
     /* Obtain access to the COM port. */
-    if (result)
+    hUart = CreateFile(portStr, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING,
+      FILE_ATTRIBUTE_NORMAL, 0);
+    /* Validate COM port handle. */
+    if (hUart == INVALID_HANDLE_VALUE)
     {
-      hUart = CreateFile(portStr, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING,
-        FILE_ATTRIBUTE_NORMAL, 0);
-      /* Validate COM port handle. */
-      if (hUart == INVALID_HANDLE_VALUE)
-      {
-        result = false;
-      }
+      result = false;
     }
 
     /* Get current COM port configuration. */
@@ -150,7 +144,7 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
         result =false;
       }
     }
-    
+
     /* Set communication timeout parameters. */
     if (result)
     {
@@ -165,7 +159,7 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
         result = false;
       }
     }
-    
+
     /* Set transmit and receive buffer sizes. */
     if (result)
     {
@@ -223,7 +217,7 @@ bool SerialPortWrite(uint8_t const * data, uint32_t length)
   /* Check parameters. */
   assert(data != NULL);
   assert(length > 0);
-  
+
   /* Only continue with valid parameters. */
   if ( (data != NULL) && (length > 0) )
   {
