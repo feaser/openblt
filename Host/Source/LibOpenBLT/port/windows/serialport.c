@@ -273,7 +273,6 @@ bool SerialPortRead(uint8_t * data, uint32_t length)
 /************************************************************************************//**
 ** \brief     Opens the connection with the serial port configured as 8,N,1 and no flow
 **            control.
-** \param     portname The name of the serial port to open, i.e. COM4.
 ** \param     baudrate The desired communication speed.
 ** \return    True if successful, false otherwise.
 **
