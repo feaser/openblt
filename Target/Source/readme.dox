@@ -11,11 +11,17 @@ The software program's architecture is divided into 4 major categories, namely t
 application code (App), target independent code (Core), target dependent code 
 (Target), and compiler specific code (Comp). 
 
+\image html openblt_architecture.png
+\image latex openblt_architecture.png
+
 To configure and fine-tune the bootloader for integration in your product, all you have 
 to do is take the demo bootloader project for the microcontroller and compiler you are
 using, and (optionally) modify just the application code (App) to fit your needs. This
 typically involves changing the configuration header file (blt_conf.h) and the 
 implementation of the hook functions (hooks.c).
+
+For more in-depth information behind the design of the OpenBLT bootloader, you can visit:
+https://www.feaser.com/openblt/doku.php?id=manual:design.
 
 \section copy Copyright and Licensing
 \verbatim
