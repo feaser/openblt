@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include <assert.h>                         /* for assertions                          */
 #include <stdint.h>                         /* for standard integer types              */
+#include <stdbool.h>                        /* for boolean type                        */
 #include <stdlib.h>                         /* for standard library                    */
 #include <stdio.h>                          /* Standard I/O functions.                 */
 #include <string.h>                         /* for string library                      */
@@ -49,12 +50,23 @@
 /** \brief Program return code indicating that the a generic error was detected. */
 #define RESULT_ERROR_GENERIC                (2)
 
+/** \brief Code for resetting the output color. */
+#define OUTPUT_RESET                        "\033[0m"
+/** \brief Code for setting the output color to red. */
+#define OUTPUT_RED                          "\033[31m"
+/** \brief Code for setting the output color to green. */
+#define OUTPUT_GREEN                        "\033[32m"
+/** \brief Code for setting the output color to yellow. */
+#define OUTPUT_YELLOW                       "\033[33m"
+
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void DisplayProgramInfo(void);
 static void DisplayProgramUsage(void);
+static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSettings);
+static void DisplayTransportInfo(uint32_t transportType, void const * transportSettings);
 static uint32_t ExtractSessionTypeFromCommandLine(int argc, char const * const argv[]);
 static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const argv[],
                                                     uint32_t sessionType);
@@ -64,6 +76,7 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
                                                       uint32_t transportType);
 static char const * const ExtractFirmwareFileFromCommandLine(int argc, 
                                                              char const * const argv[]);
+static char * GetLineTrailerByResult(bool errorDetected);
 
 
 /************************************************************************************//**
@@ -76,35 +89,21 @@ static char const * const ExtractFirmwareFileFromCommandLine(int argc,
 int main(int argc, char const * const argv[])
 {
   int result = RESULT_OK;
-  uint32_t appSessionType;
-  void * appSessionSettings;
-  uint32_t appTransportType;
-  void * appTransportSettings;
-  char const * appFirmwareFile;
+  uint32_t appSessionType = 0;
+  void * appSessionSettings = NULL;
+  uint32_t appTransportType = 0;;
+  void * appTransportSettings = NULL;
+  char const * appFirmwareFile = NULL;
   volatile uint32_t waitLoopCnt;
 
   /* -------------------- Display info ----------------------------------------------- */
   /* Display program info */
   DisplayProgramInfo();
-
-  /* -------------------- Process command line --------------------------------------- */
-  /* Extract the session type from the command line. */
-  appSessionType = ExtractSessionTypeFromCommandLine(argc, argv);
-  /* Extract the session type specific settings from the command line. */
-  appSessionSettings = ExtractSessionSettingsFromCommandLine(argc, argv, appSessionType);
-  /* Extract the transport type from the command line. */
-  appTransportType = ExtractTransportTypeFromCommandLine(argc, argv);
-  /* Extract the transport type specific settings from the command line. */
-  appTransportSettings = ExtractTransportSettingsFromCommandLine(argc, argv, 
-                                                                 appTransportType);
-  /* Extract the firmware filename from the command line. */
-  appFirmwareFile = ExtractFirmwareFileFromCommandLine(argc, argv);
-  /* Check the settings that were detected so far and verify that at least enough
-   * command line arguments were actually specified. At a minimum the firmware file
-   * needs to be specified.
+  /* Check that at least enough command line arguments were specified. The first one is
+   * always the name of the executable. Additionally, the firmware file must at least 
+   * be specified.
    */
-  if ( (argc < 2) || (appSessionSettings == NULL) || (appTransportSettings == NULL) ||
-     (appFirmwareFile == NULL) )
+  if (argc < 2)
   {
     /* Display program usage. */
     DisplayProgramUsage();
@@ -112,10 +111,42 @@ int main(int argc, char const * const argv[])
     result = RESULT_ERROR_COMMANDLINE;
   }
   
+  /* -------------------- Process command line --------------------------------------- */
+  if (result == RESULT_OK)
+  {
+    /* Extract the session type from the command line. */
+    appSessionType = ExtractSessionTypeFromCommandLine(argc, argv);
+    /* Extract the session type specific settings from the command line. */
+    appSessionSettings = ExtractSessionSettingsFromCommandLine(argc, argv, appSessionType);
+    /* Extract the transport type from the command line. */
+    appTransportType = ExtractTransportTypeFromCommandLine(argc, argv);
+    /* Extract the transport type specific settings from the command line. */
+    appTransportSettings = ExtractTransportSettingsFromCommandLine(argc, argv, 
+                                                                  appTransportType);
+    /* Extract the firmware filename from the command line. */
+    appFirmwareFile = ExtractFirmwareFileFromCommandLine(argc, argv);
+    /* Check the settings that were detected so far. */
+    if ( (appSessionSettings == NULL) || (appTransportSettings == NULL) ||
+        (appFirmwareFile == NULL) )
+    {
+      /* Display program usage. */
+      DisplayProgramUsage();
+      /* Set error code. */
+      result = RESULT_ERROR_COMMANDLINE;
+    }
+    printf("Processing command line parameters..."); 
+    printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));
+  }
+  
   /* -------------------- Display detected parameters -------------------------------- */
   if (result == RESULT_OK)
   {
-  /* TODO Display brief overview of detected settings. */
+    /* Display firmware file. */
+    printf("Detected firmware file: %s\n", appFirmwareFile);
+    /* Display session info. */
+    DisplaySessionInfo(appSessionType, appSessionSettings);
+    /* Display transport info. */
+    DisplayTransportInfo(appTransportType, appTransportSettings);
   }
   
   /* -------------------- Firmware loading ------------------------------------------- */
@@ -237,6 +268,128 @@ static void DisplayProgramUsage(void)
   printf("is already the desired value.\n");
   printf("-------------------------------------------------------------------------\n");
 } /*** end of DisplayProgramUsage ***/
+
+
+/************************************************************************************//**
+** \brief     Displays session protocol information on the standard output.
+** \param     sessionType The detected session type.
+** \param     sessionSettings The detected session settings.
+**
+****************************************************************************************/
+static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSettings)
+{
+  /* Output session protocol info. */
+  printf("Detected session protocol: ");
+  switch (sessionType) 
+  {
+    case BLT_SESSION_XCP_V10:
+      printf(OUTPUT_YELLOW "XCP version 1.0" OUTPUT_RESET "\n");
+      break;
+    default:
+      printf(OUTPUT_YELLOW "Unknow" OUTPUT_RESET "\n");
+      break;
+  }
+  
+  /* Output session settings info. */
+  printf("Using session protocol settings:\n");
+  switch (sessionType) 
+  {
+    case BLT_SESSION_XCP_V10:
+    {
+      /* Check settings pointer. */
+      assert(sessionSettings);
+      if (sessionSettings == NULL) /*lint !e774 */
+      {
+        /* No valid settings present. */
+        printf("  -> Invalid setings specified\n");
+      }
+      else
+      {
+        tBltSessionSettingsXcpV10 * xcpSettings = 
+          (tBltSessionSettingsXcpV10 *)sessionSettings;
+        
+        /* Output the settings to the user. */
+        printf("  -> Timeout T1: %hu ms\n", xcpSettings->timeoutT1);
+        printf("  -> Timeout T3: %hu ms\n", xcpSettings->timeoutT3);
+        printf("  -> Timeout T4: %hu ms\n", xcpSettings->timeoutT4);
+        printf("  -> Timeout T5: %hu ms\n", xcpSettings->timeoutT5);
+        printf("  -> Timeout T6: %hu ms\n", xcpSettings->timeoutT7);
+        printf("  -> Seed/Key file: ");
+        if (xcpSettings->seedKeyFile != NULL)
+        {
+          printf("%s\n", xcpSettings->seedKeyFile);
+        }
+        else
+        {
+          printf("None\n");
+        }
+      }
+      break;
+    }
+    default:
+      printf("  -> No settings specified\n");
+      break;
+  }
+} /*** end of DisplaySessionInfo ***/
+
+
+/************************************************************************************//**
+** \brief     Displays transport layer information on the standard output.
+** \param     transportType The detected transport type.
+** \param     transportSettings The detected transport settings.
+**
+****************************************************************************************/
+static void DisplayTransportInfo(uint32_t transportType, void const * transportSettings)
+{
+  /* Output transport layer info. */
+  printf("Detected transport layer: ");
+  switch (transportType) 
+  {
+    case BLT_TRANSPORT_XCP_V10_RS232:
+      printf(OUTPUT_YELLOW "XCP on RS232" OUTPUT_RESET "\n");
+      break;
+    default:
+      printf(OUTPUT_YELLOW "Unknow" OUTPUT_RESET "\n");
+      break;
+  }
+  
+  /* Output transport settings info. */
+  printf("Using transort layer settings:\n");
+  switch (transportType) 
+  {
+    case BLT_TRANSPORT_XCP_V10_RS232:
+    {
+      /* Check settings pointer. */
+      assert(transportSettings);
+      if (transportSettings == NULL) /*lint !e774 */
+      {
+        /* No valid settings present. */
+        printf("  -> Invalid setings specified\n");
+      }
+      else
+      {
+        tBltTransportSettingsXcpV10Rs232 * xcpRs232Settings = 
+          (tBltTransportSettingsXcpV10Rs232 *)transportSettings;
+        
+        /* Output the settings to the user. */
+        printf("  -> Device: ");
+        if (xcpRs232Settings->portName != NULL)
+        {
+          printf("%s\n", xcpRs232Settings->portName);
+        }
+        else
+        {
+          printf("Unknow\n");
+        }
+        printf("  -> Baudrate: %u bit/sec\n", xcpRs232Settings->baudrate);
+      }
+      break;
+    }
+    default:
+      printf("  -> No settings specified\n");
+      break;
+  }
+} /*** end of DisplayTransportInfo ***/
 
 
 /************************************************************************************//**
@@ -605,6 +758,32 @@ static char const * const ExtractFirmwareFileFromCommandLine(int argc,
   /* Give the result back to the caller. */
   return result;
 } /*** end of ExtractFirmwareFileFromCommandLine ***/
+
+
+/************************************************************************************//**
+** \brief     Information outputted to the user sometimes has [OK] or [ERROR] appended
+**            at the end. This function obtains this trailer based on the value of the
+**            parameter.
+** \param     errorDetected True to obtain an error trailer, false for a success trailer.
+** \return    Pointer to the character array (string) with the trailer.
+**
+****************************************************************************************/
+static char * GetLineTrailerByResult(bool errorDetected)
+{
+  char * result;
+
+  /* Set trailer based on the error status. */  
+  if (!errorDetected)
+  {
+    result = "[" OUTPUT_GREEN "OK" OUTPUT_RESET "]";
+  }
+  else
+  {
+    result = "[" OUTPUT_RED "ERROR" OUTPUT_RESET "]";
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of GetLineTrailerByResult ***/
 
 
 /*********************************** end of main.c *************************************/
