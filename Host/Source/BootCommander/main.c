@@ -50,14 +50,18 @@
 /** \brief Program return code indicating that the a generic error was detected. */
 #define RESULT_ERROR_GENERIC                (2)
 
-/** \brief Code for resetting the output color. */
+/* Macros for colored text on the output, if supported. */
+#if defined (PLATFORM_LINUX)
 #define OUTPUT_RESET                        "\033[0m"
-/** \brief Code for setting the output color to red. */
 #define OUTPUT_RED                          "\033[31m"
-/** \brief Code for setting the output color to green. */
 #define OUTPUT_GREEN                        "\033[32m"
-/** \brief Code for setting the output color to yellow. */
 #define OUTPUT_YELLOW                       "\033[33m"
+#else
+#define OUTPUT_RESET                        ""
+#define OUTPUT_RED                          ""
+#define OUTPUT_GREEN                        ""
+#define OUTPUT_YELLOW                       ""
+#endif
 
 
 /****************************************************************************************
@@ -286,7 +290,7 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
       printf(OUTPUT_YELLOW "XCP version 1.0" OUTPUT_RESET "\n");
       break;
     default:
-      printf(OUTPUT_YELLOW "Unknow" OUTPUT_RESET "\n");
+      printf(OUTPUT_RED "Unknown" OUTPUT_RESET "\n");
       break;
   }
   
@@ -349,7 +353,7 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
       printf(OUTPUT_YELLOW "XCP on RS232" OUTPUT_RESET "\n");
       break;
     default:
-      printf(OUTPUT_YELLOW "Unknow" OUTPUT_RESET "\n");
+      printf(OUTPUT_RED "Unknown" OUTPUT_RESET "\n");
       break;
   }
   
@@ -379,7 +383,7 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
         }
         else
         {
-          printf("Unknow\n");
+          printf("Unknown\n");
         }
         printf("  -> Baudrate: %u bit/sec\n", xcpRs232Settings->baudrate);
       }

@@ -70,6 +70,16 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 set(LIBOPENBLT_INC ${PROJECT_SOURCE_DIR}/../LibOpenBLT)
 set(LIBOPENBLT_LIB ${PROJECT_OUTPUT_DIRECTORY})
 
+#****************************************************************************************
+# Compiler flags
+#****************************************************************************************
+# Set platform specific compiler macro PLATFORM_XXX
+if(WIN32)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
+elseif(UNIX)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX")
+endif(WIN32)
+
 
 #***************************************************************************************
 # Includes
