@@ -20,9 +20,9 @@
 # without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 # PURPOSE. See the GNU General Public License for more details.
 #
-# You have received a copy of the GNU General Public License along with OpenBLT. It 
+# You have received a copy of the GNU General Public License along with OpenBLT. It
 # should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-# 
+#
 # \endinternal
 #****************************************************************************************
 # Specify the version being used aswell as the language
@@ -42,9 +42,9 @@ set(CMAKE_BUILD_TYPE "Debug")
 #****************************************************************************************
 # Options
 #****************************************************************************************
-# Add option with default value to disable the generation of the PC-lint target. It can 
+# Add option with default value to disable the generation of the PC-lint target. It can
 # be overridden on the command line when CMake is called using the following parameter:
-# -DLINT_ENABLED=ON  
+# -DLINT_ENABLED=ON
 option(LINT_ENABLED "Configurable to enable/disable the PC-lint target" OFF)
 
 
@@ -84,18 +84,19 @@ link_directories("${LIBOPENBLT_LIB}")
 #***************************************************************************************
 # Files
 #****************************************************************************************
-# Get header files from the root directory and the port directory.
+# Get header files from the root directory
 file(GLOB INCS_ROOT "*.h")
 set(INCS ${INCS_ROOT})
 
 # Add sources
 set(
-  PROG_SRCS 
-  main.c 
+  PROG_SRCS
+  main.c
+  ${LIBOPENBLT_INC}/openblt.h
   ${INCS}
 )
 
-# Set library name. When GNU GCC is used, the name to the static library file is used, 
+# Set library name. When GNU GCC is used, the name to the static library file is used,
 # otherwise the shared library is used by default. This works fine too, but the static
 # library makes it a bit easier to move the target executable around on the file system.
 if(CMAKE_C_COMPILER_ID MATCHES GNU)
@@ -110,7 +111,7 @@ endif()
 #****************************************************************************************
 # Set main target. Use "make BootCommander" to individually build the program.
 add_executable(
-  BootCommander 
+  BootCommander
   ${PROG_SRCS}
 )
 
@@ -122,17 +123,17 @@ target_link_libraries(BootCommander ${LIBOPENBLT_LIBNAME})
 if(LINT_ENABLED)
   # Include PC-lint configuration file for the correct compiler. Currently GNU GCC and
   # Microsoft Visual Studio are supported.
-  if(CMAKE_C_COMPILER_ID MATCHES GNU)  
+  if(CMAKE_C_COMPILER_ID MATCHES GNU)
     include(${PROJECT_SOURCE_DIR}/lint/gnu/pc_lint.cmake)
   elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
     include(${PROJECT_SOURCE_DIR}/lint/msvc/pc_lint.cmake)
   endif()
 
-  # Generate the PC-lint target.  
+  # Generate the PC-lint target.
   if(COMMAND add_pc_lint)
     add_pc_lint(BootCommander ${PROG_SRCS})
   endif(COMMAND add_pc_lint)
 endif(LINT_ENABLED)
 
 
-#*********************************** end of CMakeLists.txt ****************************** 
+#*********************************** end of CMakeLists.txt ******************************
