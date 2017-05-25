@@ -201,6 +201,7 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareAddData(uint32_t address, uint32_t len,
 LIBOPENBLT_EXPORT uint32_t BltFirmwareRemoveData(uint32_t address, uint32_t len);
 LIBOPENBLT_EXPORT void BltFirmwareClearData(void);
 
+
 /****************************************************************************************
 *             G E N E R I C   U T I L I T I E S
 ****************************************************************************************/
@@ -209,6 +210,8 @@ LIBOPENBLT_EXPORT void BltFirmwareClearData(void);
 ****************************************************************************************/
 LIBOPENBLT_EXPORT uint16_t BltUtilCrc16Calculate(uint8_t const * data, uint32_t len);
 LIBOPENBLT_EXPORT uint32_t BltUtilCrc32Calculate(uint8_t const * data, uint32_t len);
+LIBOPENBLT_EXPORT uint32_t BltUtilTimeGetSystemTime(void);
+LIBOPENBLT_EXPORT void BltUtilTimeDelayMs(uint16_t delay);
 
 
 #ifdef __cplusplus

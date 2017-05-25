@@ -1,7 +1,6 @@
 /************************************************************************************//**
 * \file         main.c
 * \brief        BootCommander program source file.
-* \ingroup      BootCommander
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -47,8 +46,10 @@
  *         command line parameters/
  */
 #define RESULT_ERROR_COMMANDLINE            (1)
-/** \brief Program return code indicating that the a generic error was detected. */
-#define RESULT_ERROR_GENERIC                (2)
+/** \brief Program return code indicating that an error was detected while loading 
+ *         firmware data from the firmware file.
+ */
+#define RESULT_ERROR_FIRMWARE_LOAD          (2)
 
 /* Macros for colored text on the output, if supported. */
 #if defined (PLATFORM_LINUX)
@@ -98,6 +99,7 @@ int main(int argc, char const * const argv[])
   uint32_t appTransportType = 0;;
   void * appTransportSettings = NULL;
   char const * appFirmwareFile = NULL;
+  uint32_t firmwareDataTotalSize;
   volatile uint32_t waitLoopCnt;
 
   /* -------------------- Display info ----------------------------------------------- */
@@ -156,25 +158,81 @@ int main(int argc, char const * const argv[])
   /* -------------------- Firmware loading ------------------------------------------- */
   if (result == RESULT_OK)
   {
+    printf("Loading firmware data from file..."); (void)fflush(stdout); 
     /* Initialize the firmware data module using the S-record parser. */
     BltFirmwareInit(BLT_FIRMWARE_PARSER_SRECORD);
-    
-    /* TODO Load firmware data from the file and chek the result. */
-    
-    /* TODO Display brief overview of the firmware data. */
+    /* Load firmware data from the firmware file. */
+    if (BltFirmwareLoadFromFile(appFirmwareFile) != BLT_RESULT_OK)
+    {
+      /* Set error code. */
+      result = RESULT_ERROR_FIRMWARE_LOAD;
+    }
+    /* Check to make sure that data was actually present, in which case at least one
+     * firmware data segment should be there.
+     */
+    if (result == RESULT_OK)
+    {
+      if (BltFirmwareGetSegmentCount() == 0)
+      {
+        /* Set error code. */
+        result = RESULT_ERROR_FIRMWARE_LOAD;
+      }
+    }
+    printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));
+    /* Determine and output firmware data statistics. */
+    if (result == RESULT_OK)
+    {
+      uint32_t segmentIdx;
+      uint32_t segmentLen;
+      uint32_t segmentBase;
+      uint8_t const * segmentData;
+      
+      /* Output number of segments. */
+      printf("  -> Number of segments: %u\n", BltFirmwareGetSegmentCount());
+      /* Loop through all segments. */
+      firmwareDataTotalSize = 0;
+      for (segmentIdx = 0; segmentIdx < BltFirmwareGetSegmentCount(); segmentIdx++) 
+      {
+        /* Extract segment info. */
+        segmentData = BltFirmwareGetSegment(segmentIdx, &segmentBase, &segmentLen);
+        /* Sanity check. */
+        assert(segmentData != NULL);
+        /* Update total size. */
+        firmwareDataTotalSize += segmentLen;
+        /* If it is the first segment, then output the base address. */
+        if (segmentIdx == 0)
+        {
+          printf("  -> Base memory address: 0x%08x\n", segmentBase);
+        }
+      }
+      /* Sanity check. */
+      assert(firmwareDataTotalSize > 0);
+      /* Ouput total firmware data size. */
+      printf("  -> Total data size: %u bytes\n", firmwareDataTotalSize);
+    }
   }
   
   /* -------------------- Session starting ------------------------------------------- */
   if (result == RESULT_OK)
   {
     /* Initialize the session. */
+    printf("Connecting to target bootloader..."); (void)fflush(stdout);
     BltSessionInit(appSessionType,appSessionSettings, 
                   appTransportType, appTransportSettings);
     /* Start the session. */
     if (BltSessionStart() != BLT_RESULT_OK)
     {
-      result = RESULT_ERROR_GENERIC;
+      printf("[" OUTPUT_YELLOW "TIMEOUT" OUTPUT_RESET "]\n");
+      /* No response. Prompt the user to reset the system. */
+      printf("Reset target system..."); (void)fflush(stdout);
+      /* Now keep trying until we get a response. */
+      while (BltSessionStart() != BLT_RESULT_OK)
+      {
+        /* Delay a bit to not pump up the CPU load. */
+        BltUtilTimeDelayMs(20);
+      }
     }
+    printf("%s\n", GetLineTrailerByResult((bool)false));
   }
 
   /* -------------------- Erase operation -------------------------------------------- */
@@ -201,7 +259,9 @@ int main(int argc, char const * const argv[])
   if (result == RESULT_OK)
   {
     /* Stop the session. */
+    printf("Finishing programming session..."); (void)fflush(stdout);
     BltSessionStop();
+    printf("%s\n", GetLineTrailerByResult((bool)false));
   }
 
   /* -------------------- Cleanup ---------------------------------------------------- */
@@ -287,10 +347,10 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
   switch (sessionType) 
   {
     case BLT_SESSION_XCP_V10:
-      printf(OUTPUT_YELLOW "XCP version 1.0" OUTPUT_RESET "\n");
+      printf("XCP version 1.0\n");
       break;
     default:
-      printf(OUTPUT_RED "Unknown" OUTPUT_RESET "\n");
+      printf("Unknown\n");
       break;
   }
   
@@ -350,10 +410,10 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
   switch (transportType) 
   {
     case BLT_TRANSPORT_XCP_V10_RS232:
-      printf(OUTPUT_YELLOW "XCP on RS232" OUTPUT_RESET "\n");
+      printf("XCP on RS232\n");
       break;
     default:
-      printf(OUTPUT_RED "Unknown" OUTPUT_RESET "\n");
+      printf("Unknown\n");
       break;
   }
   

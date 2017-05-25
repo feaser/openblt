@@ -160,6 +160,8 @@ function BltUtilCrc16Calculate(data: PByte; len: LongWord): Word;
                                cdecl; external LIBOPENBLT_LIBNAME;
 function BltUtilCrc32Calculate(data: PByte; len: LongWord): LongWord; 
                                cdecl; external LIBOPENBLT_LIBNAME;
+function BltUtilTimeGetSystemTime: LongWord; cdecl; external LIBOPENBLT_LIBNAME;
+procedure BltUtilTimeDelayMs(delay: Word); cdecl; external LIBOPENBLT_LIBNAME;
 
 
 implementation

@@ -593,6 +593,33 @@ LIBOPENBLT_EXPORT uint32_t BltUtilCrc32Calculate(uint8_t const * data, uint32_t 
 } /*** end of BltUtilCrc32Calculate ***/
 
 
+/************************************************************************************//**
+** \brief     Get the system time in milliseconds.
+** \return    Time in milliseconds.
+**
+****************************************************************************************/
+LIBOPENBLT_EXPORT uint32_t BltUtilTimeGetSystemTime(void)
+{
+  uint32_t result;
+  
+  /* Pass the request on to the utility module. */
+  result = UtilTimeGetSystemTimeMs();
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of BltUtilTimeGetSystemTime ***/
+
+/************************************************************************************//**
+** \brief     Performs a delay of the specified amount of milliseconds.
+** \param     delay Delay time in milliseconds.
+**
+****************************************************************************************/
+LIBOPENBLT_EXPORT void BltUtilTimeDelayMs(uint16_t delay)
+{
+  /* Pass the request on to the utility module. */
+  UtilTimeDelayMs(delay);
+} /*** end of BltUtilTimeDelayMs ***/
+
+
 /*********************************** end of openblt.c **********************************/
 
  

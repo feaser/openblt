@@ -542,7 +542,7 @@ static bool XcpLoaderSendCmdConnect(void)
     if (result)
     {
       /* Check if the response was valid. */
-      if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      if ( (resPacket.len != 8) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
         result = false;
@@ -578,6 +578,10 @@ static bool XcpLoaderSendCmdConnect(void)
         xcpMaxCto = XCPLOADER_PACKET_SIZE_MAX;
       }
       if (xcpMaxDto > XCPLOADER_PACKET_SIZE_MAX)
+      {
+        result = false;
+      }
+      if ( (xcpMaxCto == 0) || (xcpMaxDto == 0) )
       {
         result = false;
       }
@@ -627,7 +631,7 @@ static bool XcpLoaderSendCmdSetMta(uint32_t address)
     if (result)
     {
       /* Check if the response was valid. */
-      if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      if ( (resPacket.len != 1) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
         result = false;
@@ -734,7 +738,7 @@ static bool XcpLoaderSendCmdProgramStart(void)
     if (result)
     {
       /* Check if the response was valid. */
-      if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      if ( (resPacket.len != 7) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
         result = false;
@@ -786,7 +790,7 @@ static bool XcpLoaderSendCmdProgramReset(void)
                                            xcpSettings.timeoutT5))
     {
       /* Still here so a response was received. check if the reponse was valid. */
-      if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      if ( (resPacket.len != 1) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
         result = false;
@@ -852,7 +856,7 @@ static bool XcpLoaderSendCmdProgram(uint8_t length, uint8_t const * data)
     if (result)
     {
       /* Check if the response was valid. */
-      if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      if ( (resPacket.len != 1) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
         result = false;
@@ -904,7 +908,7 @@ static bool XcpLoaderSendCmdProgramMax(uint8_t const * data)
     if (result)
     {
       /* Check if the response was valid. */
-      if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      if ( (resPacket.len != 1) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
         result = false;
@@ -952,7 +956,7 @@ static bool XcpLoaderSendCmdProgramClear(uint32_t length)
     if (result)
     {
       /* Check if the response was valid. */
-      if ( (resPacket.len == 0) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      if ( (resPacket.len != 1) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
       {
         /* Not a valid or positive response. */
         result = false;
