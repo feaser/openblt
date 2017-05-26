@@ -31,11 +31,11 @@
 /****************************************************************************************
 * Defines
 ****************************************************************************************/
-/** \brief Main version of the bootloader core. */
+/** \brief Main version number of the bootloader core. */
 #define BOOT_VERSION_CORE_MAIN     (1u)
-/** \brief Minor version of the bootloader core. */
+/** \brief Minor version number of the bootloader core. */
 #define BOOT_VERSION_CORE_MINOR    (3u)
-/** \brief Build version of the bootloader core. */
+/** \brief Patch number of the bootloader core. */
 #define BOOT_VERSION_CORE_BUILD    (2u)
 
 
