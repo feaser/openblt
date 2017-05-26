@@ -259,15 +259,29 @@ int main(int argc, char const * const argv[])
       segmentData = BltFirmwareGetSegment(segmentIdx, &segmentBase, &segmentLen);
       /* Sanity check. */
       assert( (segmentData != NULL) && (segmentLen > 0) );
-      /* Perform erase operation. */
-      printf("Erasing %u bytes starting at 0x%08x...", segmentLen, segmentBase);
-      (void)fflush(stdout);
-      if (BltSessionClearMemory(segmentBase, segmentLen) != BLT_RESULT_OK)
+      /* Only continue if sanity check passed. */
+      if ((segmentData != NULL) && (segmentLen > 0)) /*lint !e774 */
       {
-        /* Set error code. */
+        /* Perform erase operation. */
+        printf("Erasing %u bytes starting at 0x%08x...", segmentLen, segmentBase);
+        (void)fflush(stdout);
+        if (BltSessionClearMemory(segmentBase, segmentLen) != BLT_RESULT_OK)
+        {
+          /* Set error code. */
+          result = RESULT_ERROR_MEMORY_ERASE;
+        }
+      }
+      else
+      {
+        /* Set error code because sanity check failed. */
         result = RESULT_ERROR_MEMORY_ERASE;
       }
-      printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));      
+      printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK))); 
+      /* Do not continue loop if an error was detected. */
+      if (result != RESULT_OK)
+      {
+        break;
+      }
     }
   }  
   
@@ -286,56 +300,70 @@ int main(int argc, char const * const argv[])
       segmentData = BltFirmwareGetSegment(segmentIdx, &segmentBase, &segmentLen);
       /* Sanity check. */
       assert( (segmentData != NULL) && (segmentLen > 0) );
-      printf("Programming %u bytes starting at 0x%08x...%s", segmentLen, segmentBase, 
-             GetLineTrailerByPercentage(0));
-      (void)fflush(stdout);
-      /* Perform write operation in chunks, so that a progress update can be shown. */
-      uint32_t const writeChunkSize = 256;
-      uint32_t currentWriteCnt;
-      uint32_t currentWriteBase;
-      uint8_t const * currentWriteDataPtr;
-      uint32_t currentWriteResult;
-      uint32_t stillToWriteCnt;
-      
-      stillToWriteCnt = segmentLen;
-      currentWriteBase = segmentBase;
-      currentWriteDataPtr = segmentData;
-      while (stillToWriteCnt > 0)
+      /* Only continue if sanity check passed. */
+      if ((segmentData != NULL) && (segmentLen > 0)) /*lint !e774 */
       {
-        /* Determine chunk size. */
-        if (stillToWriteCnt >= writeChunkSize)
-        {
-          currentWriteCnt = writeChunkSize;
-        }
-        else
-        {
-          currentWriteCnt = stillToWriteCnt;
-        }
-        /* Write the next data chunk to the target's memory. */
-        currentWriteResult = BltSessionWriteData(currentWriteBase, currentWriteCnt, 
-                                                 currentWriteDataPtr);
-        if (currentWriteResult != BLT_RESULT_OK)
-        {
-          /* Set error code. */
-          result = RESULT_ERROR_MEMORY_PROGRAM;
-          /* Error detected so abort program operation. */
-          break;
-        }
-        /* Update loop variables. */
-        currentWriteBase += currentWriteCnt;
-        currentWriteDataPtr += currentWriteCnt;
-        stillToWriteCnt -= currentWriteCnt;
-        /* Display progress. */
-        uint8_t progressPct;
+        printf("Programming %u bytes starting at 0x%08x...%s", segmentLen, segmentBase,
+          GetLineTrailerByPercentage(0));
+        (void)fflush(stdout);
+        /* Perform write operation in chunks, so that a progress update can be shown. */
+        uint32_t const writeChunkSize = 256;
+        uint32_t currentWriteCnt;
+        uint32_t currentWriteBase;
+        uint8_t const * currentWriteDataPtr;
+        uint32_t currentWriteResult;
+        uint32_t stillToWriteCnt;
 
-        /* First backspace the old percentage trailer. */
-        ErasePercentageTrailer();
-        /* Now add the new percentage trailer. */
-        progressPct = (uint8_t)(((segmentLen - stillToWriteCnt) * 100ul) / segmentLen);
-        printf("%s", GetLineTrailerByPercentage(progressPct)); (void)fflush(stdout);
+        stillToWriteCnt = segmentLen;
+        currentWriteBase = segmentBase;
+        currentWriteDataPtr = segmentData;
+        while (stillToWriteCnt > 0)
+        {
+          /* Determine chunk size. */
+          if (stillToWriteCnt >= writeChunkSize)
+          {
+            currentWriteCnt = writeChunkSize;
+          }
+          else
+          {
+            currentWriteCnt = stillToWriteCnt;
+          }
+          /* Write the next data chunk to the target's memory. */
+          currentWriteResult = BltSessionWriteData(currentWriteBase, currentWriteCnt,
+            currentWriteDataPtr);
+          if (currentWriteResult != BLT_RESULT_OK)
+          {
+            /* Set error code. */
+            result = RESULT_ERROR_MEMORY_PROGRAM;
+            /* Error detected so abort program operation. */
+            break;
+          }
+          /* Update loop variables. */
+          currentWriteBase += currentWriteCnt;
+          currentWriteDataPtr += currentWriteCnt;
+          stillToWriteCnt -= currentWriteCnt;
+          /* Display progress. */
+          uint8_t progressPct;
+
+          /* First backspace the old percentage trailer. */
+          ErasePercentageTrailer();
+          /* Now add the new percentage trailer. */
+          progressPct = (uint8_t)(((segmentLen - stillToWriteCnt) * 100ul) / segmentLen);
+          printf("%s", GetLineTrailerByPercentage(progressPct)); (void)fflush(stdout);
+        }
+      }
+      else
+      {
+        /* Set error code because sanity check failed. */
+        result = RESULT_ERROR_MEMORY_PROGRAM;
       }
       ErasePercentageTrailer();
-      printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));      
+      printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK))); 
+      /* Do not continue loop if an error was detected. */
+      if (result != RESULT_OK)
+      {
+        break;
+      }
     }
   }
 
