@@ -50,6 +50,14 @@
  *         firmware data from the firmware file.
  */
 #define RESULT_ERROR_FIRMWARE_LOAD          (2)
+/** \brief Program return code indicating that an error was detected during a memory
+ *         erase operation on the target.
+ */
+#define RESULT_ERROR_MEMORY_ERASE           (3)
+/** \brief Program return code indicating that an error was detected during a memory
+ *         progrma operation on the target.
+ */
+#define RESULT_ERROR_MEMORY_PROGRAM         (4)
 
 /* Macros for colored text on the output, if supported. */
 #if defined (PLATFORM_LINUX)
@@ -81,7 +89,7 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
                                                       uint32_t transportType);
 static char const * const ExtractFirmwareFileFromCommandLine(int argc, 
                                                              char const * const argv[]);
-static char * GetLineTrailerByResult(bool errorDetected);
+static char const * GetLineTrailerByResult(bool errorDetected);
 
 
 /************************************************************************************//**
@@ -100,7 +108,6 @@ int main(int argc, char const * const argv[])
   void * appTransportSettings = NULL;
   char const * appFirmwareFile = NULL;
   uint32_t firmwareDataTotalSize;
-  volatile uint32_t waitLoopCnt;
 
   /* -------------------- Display info ----------------------------------------------- */
   /* Display program info */
@@ -196,7 +203,7 @@ int main(int argc, char const * const argv[])
         /* Extract segment info. */
         segmentData = BltFirmwareGetSegment(segmentIdx, &segmentBase, &segmentLen);
         /* Sanity check. */
-        assert(segmentData != NULL);
+        assert( (segmentData != NULL) && (segmentLen > 0) );
         /* Update total size. */
         firmwareDataTotalSize += segmentLen;
         /* If it is the first segment, then output the base address. */
@@ -238,20 +245,53 @@ int main(int argc, char const * const argv[])
   /* -------------------- Erase operation -------------------------------------------- */
   if (result == RESULT_OK)
   {
-    /* TODO Implement memory erase procedure for all segments. */
+    uint32_t segmentIdx;
+    uint32_t segmentLen;
+    uint32_t segmentBase;
+    uint8_t const * segmentData;
+    
+    /* Erase the memory segments on the target that are covered by the firmwware data. */
+    for (segmentIdx = 0; segmentIdx < BltFirmwareGetSegmentCount(); segmentIdx++) 
+    {
+      /* Extract segment info. */
+      segmentData = BltFirmwareGetSegment(segmentIdx, &segmentBase, &segmentLen);
+      /* Sanity check. */
+      assert( (segmentData != NULL) && (segmentLen > 0) );
+      /* Perform erase operation. */
+      printf("Erasing %u bytes starting at 0x%08x...", segmentLen, segmentBase);
+      (void)fflush(stdout);
+      if (BltSessionClearMemory(segmentBase, segmentLen) != BLT_RESULT_OK)
+      {
+        /* Set error code. */
+        result = RESULT_ERROR_MEMORY_ERASE;
+      }
+      printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));      
+    }
   }  
   
   /* -------------------- Program operation ------------------------------------------ */
   if (result == RESULT_OK)
   {
-    /* TODO Implement firmware update procedure. */
+    uint32_t segmentIdx;
+    uint32_t segmentLen;
+    uint32_t segmentBase;
+    uint8_t const * segmentData;
 
-    /* Do a little dummy delay check LED blink rate on the board to verify that the
-     * bootloader got activated.
-     */
-    for (waitLoopCnt = 0; waitLoopCnt < 500000000; waitLoopCnt++)
+    /* Program the memory segments on the target with the firmwware data. */
+    for (segmentIdx = 0; segmentIdx < BltFirmwareGetSegmentCount(); segmentIdx++) 
     {
-      ;
+      /* Extract segment info. */
+      segmentData = BltFirmwareGetSegment(segmentIdx, &segmentBase, &segmentLen);
+      /* Sanity check. */
+      assert( (segmentData != NULL) && (segmentLen > 0) );
+      printf("Programming %u bytes starting at 0x%08x...", segmentLen, segmentBase);
+      (void)fflush(stdout);
+      if (BltSessionWriteData(segmentBase, segmentLen, segmentData) != BLT_RESULT_OK)
+      {
+        /* Set error code. */
+        result = RESULT_ERROR_MEMORY_PROGRAM;
+      }
+      printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));      
     }
   }
 
@@ -832,18 +872,23 @@ static char const * const ExtractFirmwareFileFromCommandLine(int argc,
 ** \return    Pointer to the character array (string) with the trailer.
 **
 ****************************************************************************************/
-static char * GetLineTrailerByResult(bool errorDetected)
+static char const * GetLineTrailerByResult(bool errorDetected)
 {
-  char * result;
+  char const * result;
+  /* Note that the following strings were declared static to guarantee that the pointers
+   * stay valid and can be used by the caller of this function.
+   */
+  static char const * trailerStrOk = "[" OUTPUT_GREEN "OK" OUTPUT_RESET "]";
+  static char const * trailerStrError = "[" OUTPUT_RED "ERROR" OUTPUT_RESET "]";
 
   /* Set trailer based on the error status. */  
   if (!errorDetected)
   {
-    result = "[" OUTPUT_GREEN "OK" OUTPUT_RESET "]";
+    result = trailerStrOk;
   }
   else
   {
-    result = "[" OUTPUT_RED "ERROR" OUTPUT_RESET "]";
+    result = trailerStrError;
   }
   /* Give the result back to the caller. */
   return result;
