@@ -90,6 +90,8 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
 static char const * const ExtractFirmwareFileFromCommandLine(int argc, 
                                                              char const * const argv[]);
 static char const * GetLineTrailerByResult(bool errorDetected);
+static char const * GetLineTrailerByPercentage(uint8_t percentage);
+static void ErasePercentageTrailer(void);
 
 
 /************************************************************************************//**
@@ -284,13 +286,55 @@ int main(int argc, char const * const argv[])
       segmentData = BltFirmwareGetSegment(segmentIdx, &segmentBase, &segmentLen);
       /* Sanity check. */
       assert( (segmentData != NULL) && (segmentLen > 0) );
-      printf("Programming %u bytes starting at 0x%08x...", segmentLen, segmentBase);
+      printf("Programming %u bytes starting at 0x%08x...%s", segmentLen, segmentBase, 
+             GetLineTrailerByPercentage(0));
       (void)fflush(stdout);
-      if (BltSessionWriteData(segmentBase, segmentLen, segmentData) != BLT_RESULT_OK)
+      /* Perform write operation in chunks, so that a progress update can be shown. */
+      uint32_t const writeChunkSize = 256;
+      uint32_t currentWriteCnt;
+      uint32_t currentWriteBase;
+      uint8_t const * currentWriteDataPtr;
+      uint32_t currentWriteResult;
+      uint32_t stillToWriteCnt;
+      
+      stillToWriteCnt = segmentLen;
+      currentWriteBase = segmentBase;
+      currentWriteDataPtr = segmentData;
+      while (stillToWriteCnt > 0)
       {
-        /* Set error code. */
-        result = RESULT_ERROR_MEMORY_PROGRAM;
+        /* Determine chunk size. */
+        if (stillToWriteCnt >= writeChunkSize)
+        {
+          currentWriteCnt = writeChunkSize;
+        }
+        else
+        {
+          currentWriteCnt = stillToWriteCnt;
+        }
+        /* Write the next data chunk to the target's memory. */
+        currentWriteResult = BltSessionWriteData(currentWriteBase, currentWriteCnt, 
+                                                 currentWriteDataPtr);
+        if (currentWriteResult != BLT_RESULT_OK)
+        {
+          /* Set error code. */
+          result = RESULT_ERROR_MEMORY_PROGRAM;
+          /* Error detected so abort program operation. */
+          break;
+        }
+        /* Update loop variables. */
+        currentWriteBase += currentWriteCnt;
+        currentWriteDataPtr += currentWriteCnt;
+        stillToWriteCnt -= currentWriteCnt;
+        /* Display progress. */
+        uint8_t progressPct;
+
+        /* First backspace the old percentage trailer. */
+        ErasePercentageTrailer();
+        /* Now add the new percentage trailer. */
+        progressPct = (uint8_t)(((segmentLen - stillToWriteCnt) * 100ul) / segmentLen);
+        printf("%s", GetLineTrailerByPercentage(progressPct)); (void)fflush(stdout);
       }
+      ErasePercentageTrailer();
       printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));      
     }
   }
@@ -893,6 +937,53 @@ static char const * GetLineTrailerByResult(bool errorDetected)
   /* Give the result back to the caller. */
   return result;
 } /*** end of GetLineTrailerByResult ***/
+
+
+/************************************************************************************//**
+** \brief     Information outputted to the user sometimes has [xxx%] appended at the end.
+**            This function obtains this trailer based on the value of the parameter.
+** \param     percentage Percentage value (0..100) to embed in the trailer.
+** \return    Pointer to the character array (string) with the trailer.
+**
+****************************************************************************************/
+static char const * GetLineTrailerByPercentage(uint8_t percentage)
+{
+  char const * result;
+  /* Note that the following string was declared static to guarantee that the pointer
+   * stays valid and can be used by the caller of this function.
+   */
+  static char trailerStrPct[32] = "";
+
+  /* Construct the trailer. */
+  sprintf(trailerStrPct, "[" OUTPUT_YELLOW "%3hhu%%" OUTPUT_RESET "]", percentage);
+  /* Set the result. */
+  result = &trailerStrPct[0];
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of GetLineTrailerByPercentage ***/
+
+
+/************************************************************************************//**
+** \brief     Erases a percentage trailer from the standard ouput by means of writing
+**            backspace characters.
+**
+****************************************************************************************/
+static void ErasePercentageTrailer(void)
+{
+  uint32_t backspaceCnt;
+  uint32_t trailerLen;
+  
+  trailerLen = strlen("[100%]");
+  for (backspaceCnt = 0; backspaceCnt < trailerLen; backspaceCnt++)
+  {
+    /* Go one character back. */
+    (void)putchar('\b');
+    /* Overwrite it with a space. */
+    (void)putchar(' ');
+    /* Go one character back. */
+    (void)putchar('\b');
+  }
+} /*** end of ErasePercentageTrailer ***/
 
 
 /*********************************** end of main.c *************************************/

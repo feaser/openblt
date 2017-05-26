@@ -1,7 +1,6 @@
 #****************************************************************************************
 # \file         CMakeLists.txt
 # \brief        CMake descriptor file for the OpenBLT host library.
-# \ingroup      LibOpenBLT
 # \internal
 #----------------------------------------------------------------------------------------
 #                          C O P Y R I G H T

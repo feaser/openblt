@@ -1,7 +1,6 @@
 #****************************************************************************************
 # \file         CMakeLists.txt
 # \brief        CMake descriptor file for BootCommander command line program.
-# \ingroup      BootCommander
 # \internal
 #----------------------------------------------------------------------------------------
 #                          C O P Y R I G H T
