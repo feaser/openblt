@@ -93,10 +93,12 @@ void FirmwareTerminate(void)
 ** \brief     Uses the linked parser to load the firmware data from the specified file
 **            into the linked list of segments.
 ** \param     firmwareFile Filename of the firmware file to load.
+** \param     addressOffset Optional memory address offset to add when loading the 
+**            firmware data from the file.
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool FirmwareLoadFromFile(char const * firmwareFile)
+bool FirmwareLoadFromFile(char const * firmwareFile, uint32_t addressOffset)
 {
   bool result = false;
   
@@ -113,7 +115,7 @@ bool FirmwareLoadFromFile(char const * firmwareFile)
       if (parserPtr->LoadFromFile != NULL)
       {
         /* Request the parser to perform the load operation. */
-        result = parserPtr->LoadFromFile(firmwareFile);
+        result = parserPtr->LoadFromFile(firmwareFile, addressOffset);
       }
     }
   }

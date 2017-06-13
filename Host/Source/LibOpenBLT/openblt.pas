@@ -134,9 +134,9 @@ const
 
 procedure BltFirmwareInit(parserType: LongWord); cdecl; external LIBOPENBLT_LIBNAME;
 procedure BltFirmwareTerminate; cdecl; external LIBOPENBLT_LIBNAME;
-function  BltFirmwareLoadFromFile(firmwareFile: PAnsiChar): LongWord;
-                                  cdecl; external LIBOPENBLT_LIBNAME;
-function  BltFirmwareSaveToFile(firmwareFile: PAnsiChar): LongWord;
+function  BltFirmwareLoadFromFile(firmwareFile: PAnsiChar; addressOffsets: LongWord): 
+                                  LongWord; cdecl; external LIBOPENBLT_LIBNAME;
+function  BltFirmwareSaveToFile(firmwareFile: PAnsiChar): LongWord; 
                                 cdecl; external LIBOPENBLT_LIBNAME;
 function  BltFirmwareGetSegmentCount: LongWord; cdecl; external LIBOPENBLT_LIBNAME;
 function  BltFirmwareGetSegment(idx: LongWord;

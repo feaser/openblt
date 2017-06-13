@@ -357,10 +357,14 @@ LIBOPENBLT_EXPORT void BltFirmwareTerminate(void)
 ** \brief     Loads firmware data from the specified file using the firmware file parser
 **            that was specified during the initialization of this module.
 ** \param     firmwareFile Filename of the firmware file to load.
+** \param     addressOffset Optional memory address offset to add when loading the 
+**            firmware data from the file. This is typically only useful when loading
+**            firmware data from a binary formatted firmware file.
 ** \return    BLT_RESULT_OK if successful, BLT_RESULT_ERROR_xxx otherwise.
 **
 ****************************************************************************************/
-LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile)
+LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile, 
+                                                   uint32_t addressOffset)
 {
   uint32_t result = BLT_RESULT_ERROR_GENERIC;
   
@@ -371,7 +375,7 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile)
   if (firmwareFile != NULL) /*lint !e774 */
   {
     /* Pass the request on to the firmware data module. */
-    if (FirmwareLoadFromFile(firmwareFile))
+    if (FirmwareLoadFromFile(firmwareFile, addressOffset))
     {
       result = BLT_RESULT_OK;
     }

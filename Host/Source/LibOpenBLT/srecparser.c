@@ -61,7 +61,7 @@ typedef enum t_srec_parser_line_type
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static bool SRecParserLoadFromFile (char const * firmwareFile);
+static bool SRecParserLoadFromFile (char const * firmwareFile, uint32_t addressOffset);
 static bool SRecParserSaveToFile (char const * firmwareFile);
 static bool SRecParserExtractLineData(char const * line, uint32_t * address, 
                                       uint32_t * len, uint8_t * data);
@@ -101,10 +101,12 @@ tFirmwareParser const * SRecParserGetParser(void)
 **            data to the firmware data that is currently managed by the firmware data
 **            module.
 ** \param     firmwareFile Filename of the firmware file to load.
+** \param     addressOffset Optional memory address offset to add when loading the 
+**            firmware data from the file.
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-static bool SRecParserLoadFromFile (char const * firmwareFile)
+static bool SRecParserLoadFromFile (char const * firmwareFile, uint32_t addressOffset)
 {
   bool result = false;
   FILE *fp;
@@ -151,8 +153,10 @@ static bool SRecParserLoadFromFile (char const * firmwareFile)
           /* Only add data if there is actually something to add. */
           if (len > 0)
           {
-            /* Add the extracted data to the firmware data module. */
-            if (!FirmwareAddData(address, len, data))
+            /* Add the extracted data to the firmware data module and add the memory
+             * address that was specified by the caller.
+             */
+            if (!FirmwareAddData(address + addressOffset, len, data))
             {
               /* Error detected. Flag it and abort. */
               result = false;

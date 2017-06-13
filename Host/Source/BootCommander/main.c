@@ -170,8 +170,8 @@ int main(int argc, char const * const argv[])
     printf("Loading firmware data from file..."); (void)fflush(stdout); 
     /* Initialize the firmware data module using the S-record parser. */
     BltFirmwareInit(BLT_FIRMWARE_PARSER_SRECORD);
-    /* Load firmware data from the firmware file. */
-    if (BltFirmwareLoadFromFile(appFirmwareFile) != BLT_RESULT_OK)
+    /* Load firmware data from the firmware file without memory address offset. */
+    if (BltFirmwareLoadFromFile(appFirmwareFile, 0) != BLT_RESULT_OK)
     {
       /* Set error code. */
       result = RESULT_ERROR_FIRMWARE_LOAD;
