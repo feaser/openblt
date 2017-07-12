@@ -38,78 +38,18 @@ TOOL_PATH=/opt/gcc-arm-none-eabi-5_4-2016q3/bin/
 
 
 #|--------------------------------------------------------------------------------------|
-#| Speficy project source files                                                         |
+#| Collect project files                                                                |
 #|--------------------------------------------------------------------------------------|
-PROJ_FILES= \
-main.c \
-header.h \
-boot.h \
-boot.c \
-led.h \
-led.c \
-timer.h \
-timer.c \
-startup_stm32f30x.S \
-lib/stm32f30x_conf.h \
-lib/stm32f30x.h \
-lib/system_stm32f30x.h \
-lib/system_stm32f30x.c \
-lib/newlib/_exit.c \
-lib/cmsis/core_cmSimd.h \
-lib/cmsis/core_cmFunc.h \
-lib/cmsis/core_cmInstr.h \
-lib/cmsis/arm_const_structs.h \
-lib/cmsis/core_cm4.h \
-lib/cmsis/arm_common_tables.h \
-lib/cmsis/arm_math.h \
-lib/SPL/inc/stm32f30x_opamp.h \
-lib/SPL/inc/stm32f30x_dma.h \
-lib/SPL/inc/stm32f30x_pwr.h \
-lib/SPL/inc/stm32f30x_iwdg.h \
-lib/SPL/inc/stm32f30x_comp.h \
-lib/SPL/inc/stm32f30x_syscfg.h \
-lib/SPL/inc/stm32f30x_spi.h \
-lib/SPL/inc/stm32f30x_rcc.h \
-lib/SPL/inc/stm32f30x_usart.h \
-lib/SPL/inc/stm32f30x_adc.h \
-lib/SPL/inc/stm32f30x_rtc.h \
-lib/SPL/inc/stm32f30x_wwdg.h \
-lib/SPL/inc/stm32f30x_fmc.h \
-lib/SPL/inc/stm32f30x_dac.h \
-lib/SPL/inc/stm32f30x_exti.h \
-lib/SPL/inc/stm32f30x_dbgmcu.h \
-lib/SPL/inc/stm32f30x_i2c.h \
-lib/SPL/inc/stm32f30x_misc.h \
-lib/SPL/inc/stm32f30x_gpio.h \
-lib/SPL/inc/stm32f30x_can.h \
-lib/SPL/inc/stm32f30x_flash.h \
-lib/SPL/inc/stm32f30x_crc.h \
-lib/SPL/inc/stm32f30x_hrtim.h \
-lib/SPL/inc/stm32f30x_tim.h \
-lib/SPL/src/stm32f30x_dbgmcu.c \
-lib/SPL/src/stm32f30x_opamp.c \
-lib/SPL/src/stm32f30x_rtc.c \
-lib/SPL/src/stm32f30x_misc.c \
-lib/SPL/src/stm32f30x_wwdg.c \
-lib/SPL/src/stm32f30x_iwdg.c \
-lib/SPL/src/stm32f30x_flash.c \
-lib/SPL/src/stm32f30x_pwr.c \
-lib/SPL/src/stm32f30x_crc.c \
-lib/SPL/src/stm32f30x_tim.c \
-lib/SPL/src/stm32f30x_adc.c \
-lib/SPL/src/stm32f30x_hrtim.c \
-lib/SPL/src/stm32f30x_usart.c \
-lib/SPL/src/stm32f30x_spi.c \
-lib/SPL/src/stm32f30x_dac.c \
-lib/SPL/src/stm32f30x_gpio.c \
-lib/SPL/src/stm32f30x_can.c \
-lib/SPL/src/stm32f30x_exti.c \
-lib/SPL/src/stm32f30x_fmc.c \
-lib/SPL/src/stm32f30x_rcc.c \
-lib/SPL/src/stm32f30x_syscfg.c \
-lib/SPL/src/stm32f30x_i2c.c \
-lib/SPL/src/stm32f30x_comp.c \
-lib/SPL/src/stm32f30x_dma.c
+# Recursive wildcard function implementation. Example usages:
+#   $(call rwildcard, , *.c *.h)   
+#     --> Returns all *.c and *.h files in the current directory and below
+#   $(call rwildcard, /lib/, *.c)
+#     --> Returns all *.c files in the /lib directory and below
+rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d)))
+
+# Collect all application files in the current directory and its subdirectories
+PROJ_FILES = $(call rwildcard, , *.c *.h *.S)
+
 
 #|--------------------------------------------------------------------------------------|
 #| Toolchain binaries                                                                   |
@@ -124,7 +64,7 @@ SZ = $(TOOL_PATH)arm-none-eabi-size
 
 
 #|--------------------------------------------------------------------------------------|
-#| Extract file names                                                                   |
+#| Filter project files
 #|--------------------------------------------------------------------------------------|
 PROJ_ASRCS  = $(filter %.S,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CSRCS  = $(filter %.c,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
