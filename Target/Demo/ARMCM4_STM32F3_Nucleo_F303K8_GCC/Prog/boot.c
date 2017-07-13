@@ -401,7 +401,6 @@ static void BootComCanCheckActivationRequest(void)
   CanRxMsg RxMessage;
   unsigned char canIdMatched = 0;
 
-
   /* check if a new message was received */
   if (CAN_MessagePending(CAN1, CAN_FIFO0) > 0)
   {
