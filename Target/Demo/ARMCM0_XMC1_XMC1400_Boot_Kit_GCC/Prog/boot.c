@@ -263,6 +263,7 @@ static void BootComCanInit(void)
   unsigned char byteIdx;
   unsigned long canModuleFreqHz;
   XMC_CAN_NODE_NOMINAL_BIT_TIME_CONFIG_t baud;
+  unsigned long receiveId;
 
   /* decide on fCAN frequency. it should be in the 5-120MHz range. according to the
    * datasheet, it must be at least 12MHz if 1 node (channel) is used with up to
@@ -297,10 +298,28 @@ static void BootComCanInit(void)
   /* configure the receive message object */
   receiveMsgObj.can_mo_ptr = CAN_MO1;
   receiveMsgObj.can_priority = XMC_CAN_ARBITRATION_MODE_IDE_DIR_BASED_PRIO_2;
-  receiveMsgObj.can_identifier = BOOT_COM_CAN_RX_MSG_ID;
-  receiveMsgObj.can_id_mask= BOOT_COM_CAN_RX_MSG_ID;
-  receiveMsgObj.can_id_mode = XMC_CAN_FRAME_TYPE_STANDARD_11BITS;
-  receiveMsgObj.can_ide_mask = 1;
+  /* set the receive CAN identifier and negate the bit that configures it as a
+   * 29-bit extended CAN identifier.
+   */
+  receiveId = BOOT_COM_CAN_RX_MSG_ID;
+  receiveId &= ~0x80000000;
+
+  if ((BOOT_COM_CAN_RX_MSG_ID & 0x80000000) == 0)
+  {
+    /* 11-bit standard CAN identifier */
+    receiveMsgObj.can_identifier = receiveId;
+    receiveMsgObj.can_id_mask = receiveId;
+    receiveMsgObj.can_id_mode = XMC_CAN_FRAME_TYPE_STANDARD_11BITS;
+    XMC_CAN_MO_AcceptOnlyMatchingIDE(&receiveMsgObj);
+  }
+  else
+  {
+    /* 29-bit extended CAN identifier */
+    receiveMsgObj.can_identifier = receiveId;
+    receiveMsgObj.can_id_mask = receiveId;
+    receiveMsgObj.can_id_mode = XMC_CAN_FRAME_TYPE_EXTENDED_29BITS;
+    XMC_CAN_MO_AcceptOnlyMatchingIDE(&receiveMsgObj);
+  }
   receiveMsgObj.can_data_length = BOOT_COM_CAN_RX_MAX_DATA;
   for (byteIdx=0; byteIdx<receiveMsgObj.can_data_length; byteIdx++)
   {
