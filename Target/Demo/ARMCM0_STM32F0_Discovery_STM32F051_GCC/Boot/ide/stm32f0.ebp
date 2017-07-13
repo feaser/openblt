@@ -31,7 +31,7 @@
 		</Build>
 		<Device>
 			<Add option="$device=cortex-m0" />
-			<Add option="$lscript=./../../../../Source/ARMCM0_STM32F0/GCC/memory.x" />
+			<Add option="$lscript=./../stm32f051r8_flash.ld" />
 			<Add option="$stack=0x0100" />
 			<Add option="$heap=0x0000" />
 		</Device>
@@ -267,6 +267,10 @@
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Srcs\" />
 		</Unit>
+		<Unit filename="..\startup_stm32f0xx.S">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Srcs\" />
+		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32F0\cpu.c">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Srcs\Core\ARMCM0_STM32F0\" />
@@ -279,10 +283,6 @@
 			<Option virtualFolder="Srcs\Core\ARMCM0_STM32F0\" />
 		</Unit>
 		<Unit filename="..\..\..\..\Source\ARMCM0_STM32F0\GCC\cpu_comp.c">
-			<Option compilerVar="CC" />
-			<Option virtualFolder="Srcs\Core\ARMCM0_STM32F0\GCC\" />
-		</Unit>
-		<Unit filename="..\..\..\..\Source\ARMCM0_STM32F0\GCC\cstart.S">
 			<Option compilerVar="CC" />
 			<Option virtualFolder="Srcs\Core\ARMCM0_STM32F0\GCC\" />
 		</Unit>

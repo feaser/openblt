@@ -115,15 +115,8 @@ __vector_table
 ;;
         THUMB
 
-        PUBWEAK Reset_Handler
         SECTION .text:CODE:REORDER(2)
 Reset_Handler
-;; Initialize the stackpointer. this is done automatically after a reset event.
-;; the bootloader performs a software reset by calling this reset handler, in
-;; which case the stackpointer is not yet initialized.
-        LDR	    R0, =sfe(CSTACK)
-        MOV	    SP, R0
-
         LDR     R0, =SystemInit
         BLX     R0
         LDR     R0, =__iar_program_start

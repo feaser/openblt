@@ -733,7 +733,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\IAR\memory.x</state>
+          <state>$PROJ_DIR$\..\stm32f0xx_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1194,9 +1194,6 @@
         <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\IAR\cpu_comp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM0_STM32F0\IAR\cstart.s</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\file.c</name>
       </file>
       <file>
@@ -1262,6 +1259,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\startup_stm32f0xx.s</name>
     </file>
   </group>
 </project>
