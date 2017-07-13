@@ -1,11 +1,88 @@
+/**
+ * @file XMC1400x0200.ld
+ * @date 2017-04-20
+ *
+ * @cond
+ *********************************************************************************************************************
+ * Linker file for the GNU C Compiler v1.6
+ * Supported devices: XMC1402-Q064X0200
+ *                    XMC1402-T038X0200
+ *                    XMC1402-Q040X0200
+ *                    XMC1402-Q048X0200
+ *                    XMC1403-Q040X0200
+ *                    XMC1403-Q048X0200
+ *                    XMC1403-Q064X0200
+ *                    XMC1404-Q048X0200
+ *                    XMC1404-Q064X0200
+ *                    XMC1404-F064X0200
+ *
+ * Copyright (c) 2015-2017, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-07-07:
+ *     - Product splitting
+ *     - Copyright notice update
+ *      
+ * 2015-11-24:
+ *     - Compatibility with GCC 4.9 2015q2
+ *
+ * 2016-03-15:
+ *     - Add assertion to check that region SRAM_combined does not overflowed no_init section 
+ *
+ * 2016-06-07:
+ *     - Add XMC1403-Q040X0200
+ *
+ * 2016-07-20:
+ *     - Add XMC1402-T038X0200, XMC1402-Q040X0200, XMC1402-Q048X0200
+ *
+ * 2016-10-28:
+ *     - Fix linker not complaining if sum of data + text sections is bigger that physical FLASH size
+ *
+ * 2017-04-07:
+ *     - Added new symbols __text_size and eText
+ *
+ * 2017-04-20:
+ *     - Change vtable location to flash area to save ram             
+ *
+ * @endcond 
+ *
+ */
+
 OUTPUT_FORMAT("elf32-littlearm")
 OUTPUT_ARCH(arm)
 ENTRY(Reset_Handler)
 
 MEMORY
 {
-	FLASH(RX) : ORIGIN = 0x10001000, LENGTH = 0x8000
-	SRAM(!RX) : ORIGIN = 0x20000000, LENGTH = 0x2000
+	FLASH(RX) : ORIGIN = 0x10001000, LENGTH = 0x2000
+	SRAM(!RX) : ORIGIN = 0x20000000, LENGTH = 0x4000
 }
 
 stack_size = DEFINED(stack_size) ? stack_size : 2048;
