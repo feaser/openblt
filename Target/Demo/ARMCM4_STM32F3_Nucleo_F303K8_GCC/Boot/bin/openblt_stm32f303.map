@@ -6,23 +6,23 @@ EXEC_P, HAS_SYMS, D_PAGED
 start address 0x08000000
 
 Program Header:
-0x70000001 off    0x00011ac4 vaddr 0x08001ac4 paddr 0x08001ac4 align 2**2
+0x70000001 off    0x00011adc vaddr 0x08001adc paddr 0x08001adc align 2**2
          filesz 0x00000008 memsz 0x00000008 flags r--
     LOAD off    0x00010000 vaddr 0x08000000 paddr 0x08000000 align 2**16
-         filesz 0x00001acc memsz 0x00001acc flags r-x
-    LOAD off    0x00020000 vaddr 0x20000000 paddr 0x08001acc align 2**16
+         filesz 0x00001ae4 memsz 0x00001ae4 flags r-x
+    LOAD off    0x00020000 vaddr 0x20000000 paddr 0x08001ae4 align 2**16
          filesz 0x0000009c memsz 0x000005ac flags rw-
 private flags = 5000400: [Version5 EABI] [hard-float ABI]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00001ac4  08000000  08000000  00010000  2**2
+  0 .text         00001adc  08000000  08000000  00010000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .ARM.exidx    00000008  08001ac4  08001ac4  00011ac4  2**2
+  1 .ARM.exidx    00000008  08001adc  08001adc  00011adc  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  2 .data         0000009c  20000000  08001acc  00020000  2**2
+  2 .data         0000009c  20000000  08001ae4  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  3 .bss          00000510  2000009c  08001b68  0002009c  2**2
+  3 .bss          00000510  2000009c  08001b80  0002009c  2**2
                   ALLOC
   4 .stack_dummy  00000100  200005b0  200005b0  000200a0  2**3
                   CONTENTS, READONLY
@@ -30,27 +30,27 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   6 .comment      0000006e  00000000  00000000  000201d0  2**0
                   CONTENTS, READONLY
-  7 .debug_line   00005131  00000000  00000000  0002023e  2**0
+  7 .debug_line   00005136  00000000  00000000  0002023e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_info   00006609  00000000  00000000  0002536f  2**0
+  8 .debug_info   00006617  00000000  00000000  00025374  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_abbrev 00001a7d  00000000  00000000  0002b978  2**0
+  9 .debug_abbrev 00001a8c  00000000  00000000  0002b98b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_aranges 00000900  00000000  00000000  0002d3f8  2**3
+ 10 .debug_aranges 00000900  00000000  00000000  0002d418  2**3
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000780  00000000  00000000  0002dcf8  2**0
+ 11 .debug_ranges 00000780  00000000  00000000  0002dd18  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_macro  00015338  00000000  00000000  0002e478  2**0
+ 12 .debug_macro  0001533e  00000000  00000000  0002e498  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_str    000815c4  00000000  00000000  000437b0  2**0
+ 13 .debug_str    000815f3  00000000  00000000  000437d6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_frame  000012fc  00000000  00000000  000c4d74  2**2
+ 14 .debug_frame  000012fc  00000000  00000000  000c4dcc  2**2
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_loc    00002ecc  00000000  00000000  000c6070  2**0
+ 15 .debug_loc    00002ecf  00000000  00000000  000c60c8  2**0
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08000000 l    d  .text	00000000 .text
-08001ac4 l    d  .ARM.exidx	00000000 .ARM.exidx
+08001adc l    d  .ARM.exidx	00000000 .ARM.exidx
 20000000 l    d  .data	00000000 .data
 2000009c l    d  .bss	00000000 .bss
 200005b0 l    d  .stack_dummy	00000000 .stack_dummy
@@ -72,7 +72,7 @@ SYMBOL TABLE:
 08000294 l       .text	00000000 .fill_zero_bss
 08000290 l       .text	00000000 .loop_zero_bss
 00000000 l    df *ABS*	00000000 crtstuff.c
-08001ac0 l     O .text	00000000 __EH_FRAME_BEGIN__
+08001ad8 l     O .text	00000000 __EH_FRAME_BEGIN__
 08000188 l     F .text	00000000 __do_global_dtors_aux
 2000009c l       .bss	00000000 completed.8605
 20000098 l     O .data	00000000 __do_global_dtors_aux_fini_array_entry
@@ -116,7 +116,7 @@ SYMBOL TABLE:
 08000ed4 l     F .text	00000028 XcpCmdProgramClear
 08000efc l     F .text	00000018 XcpCmdProgramReset
 08000f14 l     F .text	0000000a XcpTransmitPacket
-08001a40 l     O .text	00000008 xcpStationId
+08001a58 l     O .text	00000008 xcpStationId
 200000c0 l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 com.c
 2000010c l     O .bss	00000040 xcpCtoReqPacket.4277
@@ -145,7 +145,7 @@ SYMBOL TABLE:
 200003a4 l     O .bss	00000204 blockInfo
 00000000 l    df *ABS*	00000000 can.c
 080016d8 l     F .text	00000058 CanGetSpeedConfig
-08001a98 l     O .text	00000024 canTiming
+08001ab0 l     O .text	00000024 canTiming
 00000000 l    df *ABS*	00000000 timer.c
 200005a8 l     O .bss	00000004 millisecond_counter
 00000000 l    df *ABS*	00000000 cpu_comp.c
@@ -157,7 +157,7 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 impure.c
 20000034 l     O .data	00000060 impure_data
 00000000 l    df *ABS*	00000000 crtstuff.c
-08001ac0 l     O .text	00000000 __FRAME_END__
+08001ad8 l     O .text	00000000 __FRAME_END__
 00000000 l    df *ABS*	00000000 
 20000098 l       .data	00000000 __init_array_end
 20000094 l       .data	00000000 __preinit_array_end
@@ -170,10 +170,10 @@ SYMBOL TABLE:
 08000870 g     F .text	00000020 FLASH_Unlock
 080011ac g     F .text	00000008 AssertFailure
 080002aa  w    F .text	00000002 DebugMon_Handler
-080018cc g     F .text	00000074 CanReceivePacket
+080018cc g     F .text	0000008c CanReceivePacket
 08000b48 g     F .text	0000002e GPIO_PinAFConfig
 00000000 g       *ABS*	00000000 __HEAP_SIZE
-08001970 g     F .text	0000001c TimerUpdate
+08001988 g     F .text	0000001c TimerUpdate
 08000f4c g     F .text	00000010 XcpPacketTransmitted
 20000000 g       .data	00000000 __data_start__
 080002e6  w    F .text	00000002 TIM1_CC_IRQHandler
@@ -185,16 +185,16 @@ SYMBOL TABLE:
 08001114 g     F .text	0000001c BootInit
 080002ac  w    F .text	00000002 PendSV_Handler
 0800029e  w    F .text	00000002 NMI_Handler
-08001acc g       .ARM.exidx	00000000 __exidx_end
+08001ae4 g       .ARM.exidx	00000000 __exidx_end
 080002c2  w    F .text	00000002 EXTI3_IRQHandler
 0800118c g     F .text	00000020 BackDoorInit
-08001acc g       .ARM.exidx	00000000 __etext
+08001ae4 g       .ARM.exidx	00000000 __etext
 08000a90 g     F .text	0000000e USART_GetFlagStatus
 0800114c g     F .text	00000008 CopService
-0800199c g     F .text	00000004 CpuIrqDisable
+080019b4 g     F .text	00000004 CpuIrqDisable
 08000900 g     F .text	0000003c FLASH_ErasePage
 080016d0 g     F .text	00000008 FlashGetUserProgBaseAddress
-08001940 g     F .text	0000000c TimerReset
+08001958 g     F .text	0000000c TimerReset
 080002bc  w    F .text	00000002 EXTI0_IRQHandler
 08000304  w    F .text	00000002 FPU_IRQHandler
 080002c0  w    F .text	00000002 EXTI2_TS_IRQHandler
@@ -212,14 +212,14 @@ SYMBOL TABLE:
 08000a68 g     F .text	00000016 USART_Cmd
 080002fc  w    F .text	00000002 TIM6_DAC_IRQHandler
 08000854 g     F .text	0000001c RCC_APB1PeriphClockCmd
-08001ac4 g       .text	00000000 __exidx_start
-08001abc g     O .text	00000004 _global_impure_ptr
-080019cc g     F .text	0000004c __libc_init_array
+08001adc g       .text	00000000 __exidx_start
+08001ad4 g     O .text	00000004 _global_impure_ptr
+080019e4 g     F .text	0000004c __libc_init_array
 08000838 g     F .text	0000001c RCC_AHBPeriphClockCmd
 080002cc  w    F .text	00000002 DMA1_Channel4_IRQHandler
 080001e4 g     F .text	00000000 _mainCRTStartup
 08000f3c g     F .text	00000010 XcpIsConnected
-08001a28 g     F .text	00000000 _init
+08001a40 g     F .text	00000000 _init
 0800132c g     F .text	00000008 NvmInit
 0800150c g     F .text	00000018 FlashInit
 08000890 g     F .text	00000010 FLASH_Lock
@@ -269,7 +269,7 @@ SYMBOL TABLE:
 08000f20 g     F .text	0000001c XcpInit
 00000000  w      *UND*	00000000 __sf_fake_stdin
 08001574 g     F .text	0000007c FlashErase
-08001a18 g     F .text	00000010 memset
+08001a30 g     F .text	00000010 memset
 080004c8 g     F .text	00000010 LedBlinkExit
 080002a2  w    F .text	00000002 MemManage_Handler
 08000000 g       .text	00000188 __isr_vector
@@ -285,13 +285,13 @@ SYMBOL TABLE:
 080002c4  w    F .text	00000002 EXTI4_IRQHandler
 080002d8  w    F .text	00000002 USB_LP_CAN1_RX0_IRQHandler
 08000bdc g     F .text	00000070 SystemInit
-08001a34 g     F .text	00000000 _fini
+08001a4c g     F .text	00000000 _fini
 080002e4  w    F .text	00000002 TIM1_TRG_COM_TIM17_IRQHandler
 080002d6  w    F .text	00000002 USB_HP_CAN1_TX_IRQHandler
 080010e8 g     F .text	00000024 ComGetActiveInterfaceMaxTxLen
 00000000  w      *UND*	00000000 atexit
 0800128c g     F .text	000000a0 UartReceivePacket
-080019a0 g     F .text	00000004 CpuIrqEnable
+080019b8 g     F .text	00000004 CpuIrqEnable
 080002ca  w    F .text	00000002 DMA1_Channel3_IRQHandler
 20003000 g       .bss	00000000 __StackTop
 080002b0  w    F .text	00000002 WWDG_IRQHandler
@@ -307,7 +307,7 @@ SYMBOL TABLE:
 08000302  w    F .text	00000002 COMP4_6_IRQHandler
 20002f00 g       *ABS*	00000100 __StackLimit
 080002f4  w    F .text	00000002 USART2_IRQHandler
-080019a4 g     F .text	00000028 exit
+080019bc g     F .text	00000028 exit
 0800110c g     F .text	00000008 ComIsConnected
 080002c8  w    F .text	00000002 DMA1_Channel2_IRQHandler
 00000000  w      *UND*	00000000 __sf_fake_stdout
@@ -320,10 +320,10 @@ SYMBOL TABLE:
 08000454 g     F .text	0000000a CopInitHook
 08001154 g     F .text	00000038 BackDoorCheck
 080002ee  w    F .text	00000002 I2C1_ER_IRQHandler
-0800198c g     F .text	00000010 TimerGet
+080019a4 g     F .text	00000010 TimerGet
 00000000  w      *UND*	00000000 _Jv_RegisterClasses
 08000b30 g     F .text	0000000e GPIO_ReadInputDataBit
-0800194c g     F .text	00000024 TimerInit
+08001964 g     F .text	00000024 TimerInit
 00000000  w      *UND*	00000000 __register_frame_info
 08000460 g     F .text	00000008 CopServiceHook
 080002e0  w    F .text	00000002 TIM1_BRK_TIM15_IRQHandler
