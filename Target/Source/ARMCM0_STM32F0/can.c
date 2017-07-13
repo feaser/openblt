@@ -190,8 +190,19 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   uint8_t txMailbox;
 
   /* prepare message */
-  txMsg.IDE = CAN_ID_STD;
-  txMsg.StdId = BOOT_COM_CAN_TX_MSG_ID;
+  if ((BOOT_COM_CAN_TX_MSG_ID & 0x80000000) == 0)
+  {
+    /* 11-bit standard CAN identifier. */
+    txMsg.IDE = CAN_Id_Standard;
+    txMsg.StdId = BOOT_COM_CAN_TX_MSG_ID;
+  }
+  else
+  {
+    /* 29-bit extended CAN identifier. */
+    txMsg.IDE = CAN_Id_Extended;
+    txMsg.ExtId = BOOT_COM_CAN_TX_MSG_ID;
+    txMsg.ExtId &= ~0x80000000;
+  }
   txMsg.RTR = CAN_RTR_DATA;
   txMsg.DLC = len;
   for (byteIdx=0; byteIdx<len; byteIdx++)
@@ -219,14 +230,27 @@ blt_bool CanReceivePacket(blt_int8u *data)
   CanRxMsg rxMsg;
   blt_int8u byteIdx;
   blt_bool result = BLT_FALSE;
+  blt_bool canIdMatched = BLT_FALSE;
 
   /* check if a new message was received */
   if (CAN_MessagePending(CAN, CAN_FIFO0) > 0)
   {
     /* receive the message */
     CAN_Receive(CAN, CAN_FIFO0, &rxMsg);
-    /* check if this is the message we are looking for */
-    if ( (rxMsg.IDE == CAN_ID_STD) && (rxMsg.StdId == BOOT_COM_CAN_RX_MSG_ID) )
+
+    /* check if the message identifier matches the bootloader reception message */
+    if ( (rxMsg.IDE == CAN_Id_Standard) &&
+         (rxMsg.StdId == BOOT_COM_CAN_RX_MSG_ID) )
+    {
+      canIdMatched = BLT_TRUE;
+    }
+    if ( (rxMsg.IDE == CAN_Id_Extended) &&
+         ((rxMsg.ExtId | 0x80000000) == BOOT_COM_CAN_RX_MSG_ID) )
+    {
+      canIdMatched = BLT_TRUE;
+    }
+    /* is the identifier a match to the bootloader reception message identifier? */
+    if (canIdMatched == BLT_TRUE)
     {
       for (byteIdx=0; byteIdx<rxMsg.DLC; byteIdx++)
       {
