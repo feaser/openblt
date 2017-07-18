@@ -61,7 +61,8 @@
  * in bits/second. Two CAN messages are reserved for communication with the host. The
  * message identifier for sending data from the target to the host is configured with
  * BOOT_COM_CAN_TXMSG_ID. The one for receiving data from the host is configured with
- * BOOT_COM_CAN_RXMSG_ID. The maximum amount of data bytes in a message for data
+ * BOOT_COM_CAN_RXMSG_ID. Note that an extended 29-bit CAN identifier is configured by
+ * OR-ing with mask 0x80000000. The maximum amount of data bytes in a message for data
  * transmission and reception is set through BOOT_COM_CAN_TX_MAX_DATA and
  * BOOT_COM_CAN_RX_MAX_DATA, respectively. It is common for a microcontroller to have more
  * than 1 CAN controller on board. The zero-based BOOT_COM_CAN_CHANNEL_INDEX selects the
@@ -73,11 +74,11 @@
 /** \brief Configure the desired CAN baudrate. */
 #define BOOT_COM_CAN_BAUDRATE           (500000)
 /** \brief Configure CAN message ID target->host. */
-#define BOOT_COM_CAN_TX_MSG_ID          (0x7E1)
+#define BOOT_COM_CAN_TX_MSG_ID          (0x7E1 /*| 0x80000000*/)
 /** \brief Configure number of bytes in the target->host CAN message. */
 #define BOOT_COM_CAN_TX_MAX_DATA        (8)
 /** \brief Configure CAN message ID host->target. */
-#define BOOT_COM_CAN_RX_MSG_ID          (0x667)
+#define BOOT_COM_CAN_RX_MSG_ID          (0x667 /*| 0x80000000*/)
 /** \brief Configure number of bytes in the host->target CAN message. */
 #define BOOT_COM_CAN_RX_MAX_DATA        (8)
 /** \brief Select the desired CAN peripheral as a zero based index. */

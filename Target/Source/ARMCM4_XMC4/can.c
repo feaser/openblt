@@ -95,6 +95,8 @@ void CanInit(void)
   blt_int8u byteIdx;
   blt_int32u canModuleFreqHz;
   XMC_CAN_NODE_NOMINAL_BIT_TIME_CONFIG_t baud;
+  blt_int32u transmitId;
+  blt_int32u receiveId;
 
   /* the current implementation supports CAN_NODE0 to CAN_NODE5. throw an assertion error
    * in case a different CAN channel is configured.
@@ -134,10 +136,27 @@ void CanInit(void)
   /* configure the transmit message object */
   transmitMsgObj.can_mo_ptr = CAN_TX_MSBOBJ;
   transmitMsgObj.can_priority = XMC_CAN_ARBITRATION_MODE_IDE_DIR_BASED_PRIO_2;
-  transmitMsgObj.can_identifier = BOOT_COM_CAN_TX_MSG_ID;
-  transmitMsgObj.can_id_mask= BOOT_COM_CAN_TX_MSG_ID;
-  transmitMsgObj.can_id_mode = XMC_CAN_FRAME_TYPE_STANDARD_11BITS;
-  transmitMsgObj.can_ide_mask = 1;
+  /* set the transmit CAN identifier and negate the bit that configures it as a
+   * 29-bit extended CAN identifier.
+   */
+  transmitId = BOOT_COM_CAN_TX_MSG_ID;
+  transmitId &= ~0x80000000;
+  if ((BOOT_COM_CAN_TX_MSG_ID & 0x80000000) == 0)
+  {
+    /* 11-bit standard CAN identifier */
+    transmitMsgObj.can_identifier = transmitId;
+    transmitMsgObj.can_id_mask = transmitId;
+    transmitMsgObj.can_id_mode = XMC_CAN_FRAME_TYPE_STANDARD_11BITS;
+    XMC_CAN_MO_AcceptOnlyMatchingIDE(&transmitMsgObj);
+  }
+  else
+  {
+    /* 29-bit extended CAN identifier */
+    transmitMsgObj.can_identifier = transmitId;
+    transmitMsgObj.can_id_mask = transmitId;
+    transmitMsgObj.can_id_mode = XMC_CAN_FRAME_TYPE_EXTENDED_29BITS;
+    XMC_CAN_MO_AcceptOnlyMatchingIDE(&transmitMsgObj);
+  }
   transmitMsgObj.can_data_length = BOOT_COM_CAN_TX_MAX_DATA;
   for (byteIdx=0; byteIdx<transmitMsgObj.can_data_length; byteIdx++)
   {
@@ -152,10 +171,28 @@ void CanInit(void)
   /* configure the receive message object */
   receiveMsgObj.can_mo_ptr = CAN_RX_MSBOBJ;
   receiveMsgObj.can_priority = XMC_CAN_ARBITRATION_MODE_IDE_DIR_BASED_PRIO_2;
-  receiveMsgObj.can_identifier = BOOT_COM_CAN_RX_MSG_ID;
-  receiveMsgObj.can_id_mask= BOOT_COM_CAN_RX_MSG_ID;
-  receiveMsgObj.can_id_mode = XMC_CAN_FRAME_TYPE_STANDARD_11BITS;
-  receiveMsgObj.can_ide_mask = 1;
+  /* set the receive CAN identifier and negate the bit that configures it as a
+   * 29-bit extended CAN identifier.
+   */
+  receiveId = BOOT_COM_CAN_RX_MSG_ID;
+  receiveId &= ~0x80000000;
+  
+  if ((BOOT_COM_CAN_RX_MSG_ID & 0x80000000) == 0)
+  {
+    /* 11-bit standard CAN identifier */
+    receiveMsgObj.can_identifier = receiveId;
+    receiveMsgObj.can_id_mask = receiveId;
+    receiveMsgObj.can_id_mode = XMC_CAN_FRAME_TYPE_STANDARD_11BITS;
+    XMC_CAN_MO_AcceptOnlyMatchingIDE(&receiveMsgObj);
+  }
+  else
+  {
+    /* 29-bit extended CAN identifier */
+    receiveMsgObj.can_identifier = receiveId;
+    receiveMsgObj.can_id_mask = receiveId;
+    receiveMsgObj.can_id_mode = XMC_CAN_FRAME_TYPE_EXTENDED_29BITS;
+    XMC_CAN_MO_AcceptOnlyMatchingIDE(&receiveMsgObj);
+  }
   receiveMsgObj.can_data_length = BOOT_COM_CAN_RX_MAX_DATA;
   for (byteIdx=0; byteIdx<receiveMsgObj.can_data_length; byteIdx++)
   {
