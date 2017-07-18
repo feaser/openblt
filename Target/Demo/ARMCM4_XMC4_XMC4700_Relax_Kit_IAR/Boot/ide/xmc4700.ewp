@@ -731,7 +731,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_XMC4\IAR\memory.x</state>
+          <state>$PROJ_DIR$\..\cfg\memory.x</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2227,6 +2227,9 @@
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
     </file>
+    <file>
+      <name>$PROJ_DIR$\..\startup_XMC4700.s</name>
+    </file>
   </group>
   <group>
     <name>Source</name>
@@ -2236,9 +2239,6 @@
         <name>IAR</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_XMC4\IAR\cpu_comp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_XMC4\IAR\cstart.s</name>
         </file>
       </group>
       <file>

@@ -1,3 +1,61 @@
+/**
+ * @file XMC4700x2048.ld
+ * @date 2017-04-20
+ *
+ * @cond
+ *********************************************************************************************************************
+ * Linker file for the GNU C Compiler v1.3
+ * Supported devices: XMC4700-E196x2048
+ *                    XMC4700-F144x2048
+ *                    XMC4700-F100x2048
+ *
+ * Copyright (c) 2015-2017, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-09-03:
+ *     - Initial version
+ *
+ * 2016-03-08:
+ *     - Fix size of BSS and DATA sections to be multiple of 4
+ *     - Add assertion to check that region SRAM_combined does not overflowed no_init section
+ *      
+ * 2017-04-07:
+ *     - Added new symbols __text_size and eText
+ * 
+ * 2017-04-20:
+ *     - Change vtable location to flash area to save ram             
+ *
+ * @endcond 
+ *
+ */
+
 OUTPUT_FORMAT("elf32-littlearm")
 OUTPUT_ARCH(arm)
 ENTRY(Reset_Handler)
@@ -7,12 +65,12 @@ no_init_size = 64;
 
 MEMORY
 {
-    FLASH_1_cached(RX) : ORIGIN = 0x08000000, LENGTH = 0x00008000
-    FLASH_1_uncached(RX) : ORIGIN = 0x0C000000, LENGTH = 0x00008000
-    PSRAM_1(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x18000
-    DSRAM_1_system(!RX) : ORIGIN = 0x20000000, LENGTH = 0x20000
-    DSRAM_2_comm(!RX) : ORIGIN = 0x20020000, LENGTH = 0x20000
-    SRAM_combined(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x00058000
+	FLASH_1_cached(RX) : ORIGIN = 0x08000000, LENGTH = 0x4000
+	FLASH_1_uncached(RX) : ORIGIN = 0x0C000000, LENGTH = 0x4000
+	PSRAM_1(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x18000
+	DSRAM_1_system(!RX) : ORIGIN = 0x20000000, LENGTH = 0x20000
+	DSRAM_2_comm(!RX) : ORIGIN = 0x20020000, LENGTH = 0x20000
+	SRAM_combined(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x58000
 }
 
 SECTIONS
