@@ -105,6 +105,7 @@ set(
   LIB_SRCS 
   openblt.c
   session.c
+  candriver.c
   xcploader.c
   xcptpuart.c
   firmware.c

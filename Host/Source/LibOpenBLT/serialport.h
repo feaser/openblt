@@ -35,7 +35,7 @@ extern "C" {
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Enumaration of the supported baudrates. */
+/** \brief Enumeration of the supported baudrates. */
 typedef enum
 {
   SERIALPORT_BR9600   = 0,                  /**< 9600 bits/sec                         */
