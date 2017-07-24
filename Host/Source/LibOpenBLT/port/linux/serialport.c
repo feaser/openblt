@@ -1,7 +1,7 @@
 /************************************************************************************//**
 * \file         port/linux/serialport.c
 * \brief        Serial port source file.
-* \ingroup      Session
+* \ingroup      SerialPort
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

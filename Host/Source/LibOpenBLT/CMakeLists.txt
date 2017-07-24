@@ -88,8 +88,21 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 #***************************************************************************************
 # Includes
 #****************************************************************************************
+# Source: http://www.vtk.org/Wiki/CMake/Examples
+macro (header_directories return_list dir)
+  file(GLOB_RECURSE new_list ${dir}/*.h)
+  set(dir_list "")
+  foreach(file_path ${new_list})
+    get_filename_component(dir_path ${file_path} PATH)
+    set(dir_list ${dir_list} ${dir_path})
+  endforeach()
+  list(REMOVE_DUPLICATES dir_list)
+  set(${return_list} ${dir_list})
+endmacro()
+
 # Set include directories
-include_directories("${PROJECT_SOURCE_DIR}" "${PROJECT_PORT_DIR}")
+header_directories(PROJECT_PORT_INC_DIRS "${PROJECT_PORT_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}" "${PROJECT_PORT_INC_DIRS}")
 
 
 #***************************************************************************************
@@ -97,22 +110,18 @@ include_directories("${PROJECT_SOURCE_DIR}" "${PROJECT_PORT_DIR}")
 #****************************************************************************************
 # Get header files from the root directory and the port directory.
 file(GLOB INCS_ROOT "*.h")
-file(GLOB INCS_PORT "${PROJECT_PORT_DIR}/*.h")
+file(GLOB_RECURSE INCS_PORT "${PROJECT_PORT_DIR}/*.h")
 set(INCS ${INCS_ROOT} ${INCS_PORT})
+
+# Get source files from the root directory and the port directory.
+file(GLOB SRCS_ROOT "*.c")
+file(GLOB_RECURSE SRCS_PORT "${PROJECT_PORT_DIR}/*.c")
+set(SRCS ${SRCS_ROOT} ${SRCS_PORT})
 
 # Add sources
 set(
   LIB_SRCS 
-  openblt.c
-  session.c
-  candriver.c
-  xcploader.c
-  xcptpuart.c
-  firmware.c
-  srecparser.c
-  util.c
-  ${PROJECT_PORT_DIR}/timeutil.c
-  ${PROJECT_PORT_DIR}/serialport.c
+  ${SRCS}
   ${INCS}
 )
 

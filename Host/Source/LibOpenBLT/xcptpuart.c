@@ -1,7 +1,7 @@
 /************************************************************************************//**
 * \file         xcptpuart.c
 * \brief        XCP UART transport layer source file.
-* \ingroup      XcpLoader
+* \ingroup      XcpTpUart
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

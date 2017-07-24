@@ -1,7 +1,7 @@
 /************************************************************************************//**
 * \file         candriver.h
 * \brief        Generic CAN driver header file.
-* \ingroup      Session
+* \ingroup      CanDriver
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -24,6 +24,11 @@
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
+****************************************************************************************/
+/************************************************************************************//**
+* \defgroup   CanDriver CAN driver
+* \brief      This module implements a generic CAN driver.
+* \ingroup    Session
 ****************************************************************************************/
 #ifndef CANDRIVER_H
 #define CANDRIVER_H

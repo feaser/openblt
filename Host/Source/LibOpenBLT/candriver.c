@@ -1,7 +1,7 @@
 /************************************************************************************//**
 * \file         candriver.c
 * \brief        Generic CAN driver source file.
-* \ingroup      Session
+* \ingroup      CanDriver
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

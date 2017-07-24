@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         serialport.h
-* \brief        Serial port header file.
-* \ingroup      SerialPort
+* \file         pcanusb.h
+* \brief        Peak PCAN-USB interface header file.
+* \ingroup      PCanUsb
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -26,45 +26,25 @@
 * \endinternal
 ****************************************************************************************/
 /************************************************************************************//**
-* \defgroup   SerialPort Serial port driver
-* \brief      This module implements a generic serial port driver.
-* \ingroup    Session
+* \defgroup   PCanUsb Peak PCAN-USB interface
+* \brief      This module implements the CAN interface for the Peak PCAN-USB.
+* \ingroup    CanDriver
 ****************************************************************************************/
-#ifndef SERIALPORT_H
-#define SERIALPORT_H
+#ifndef PCANUSB_H
+#define PCANUSB_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/****************************************************************************************
-* Type definitions
-****************************************************************************************/
-/** \brief Enumeration of the supported baudrates. */
-typedef enum
-{
-  SERIALPORT_BR9600   = 0,                  /**< 9600 bits/sec                         */
-  SERIALPORT_BR19200  = 1,                  /**< 19200 bits/sec                        */
-  SERIALPORT_BR38400  = 2,                  /**< 38400 bits/sec                        */
-  SERIALPORT_BR57600  = 3,                  /**< 57600 bits/sec                        */
-  SERIALPORT_BR115200 = 4                   /**< 115200 bits/sec                       */
-} tSerialPortBaudrate;
-
-
-/****************************************************************************************
+/***************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void SerialPortInit(void);
-void SerialPortTerminate(void);
-bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate);
-void SerialPortClose(void);
-bool SerialPortWrite(uint8_t const * data, uint32_t length);
-bool SerialPortRead(uint8_t * data, uint32_t length);
+tCanInterface const * PCanUsbGetInterface(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SERIALPORT_H */
-/********************************* end of serialport.h *********************************/
-
+#endif /* PCANUSB_H */
+/*********************************** end of pcanusb.h **********************************/
