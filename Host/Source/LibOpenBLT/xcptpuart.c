@@ -83,7 +83,7 @@ static tXcpTpUartSettings tpUartSettings;
 tXcpTransport const * XcpTpUartGetTransport(void)
 {
   return &uartTransport;
-} /*** end of XcpLoaderGetProtocol ***/
+} /*** end of XcpTpUartGetTransport ***/
 
 
 /************************************************************************************//**

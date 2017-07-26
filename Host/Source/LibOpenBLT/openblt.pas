@@ -93,7 +93,7 @@ type
 
   // Structure layout of the XCP version 1.0 CAN transport layer settings.
   tBltTransportSettingsXcpV10Can = record
-    deviceName: PAnsiChar;        // Device name such as /dev/can0.
+    deviceName: PAnsiChar;        // Device name such as can0, pcanusb, etc.
     deviceChannel: LongWord;      // Channel on the device to use.
     baudrate: LongWord;           // Communication speed in bits/sec.
     transmitId: LongWord;         // Transmit CAN identifier.
