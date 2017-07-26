@@ -45,7 +45,7 @@ extern "C" {
  */
 typedef struct t_xcp_tp_can_settings
 {
-  char const * device;           /**< Device name such as can0, pcanusb, etc.          */
+  char const * device;           /**< Device name such as can0, peak_pcanusb, etc.     */
   uint32_t channel;              /**< Channel on the device to use.                    */
   uint32_t baudrate;             /**< Communication speed in bits/sec.                 */
   uint32_t transmitId;           /**< Transmit CAN identifier.                         */

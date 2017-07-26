@@ -146,7 +146,7 @@ typedef struct t_blt_transport_settings_xcp_v10_rs232
  */
 typedef struct t_blt_transport_settings_xcp_v10_can
 {
-  char const * deviceName;       /**< Device name such as can0.                        */
+  char const * deviceName;       /**< Device name such as can0, peak_pcanusb etc.      */
   uint32_t deviceChannel;        /**< Channel on the device to use.                    */
   uint32_t baudrate;             /**< Communication speed in bits/sec.                 */
   uint32_t transmitId;           /**< Transmit CAN identifier.                         */
