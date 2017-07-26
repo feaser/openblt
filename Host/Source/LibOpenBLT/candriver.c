@@ -186,6 +186,32 @@ bool CanTransmit(tCanMsg const * msg)
 
 
 /************************************************************************************//**
+** \brief     Checks if a bus off or bus heavy situation occurred.
+** \return    True if a bus error situation was detected, false otherwise.
+**
+****************************************************************************************/
+bool CanIsBusError(void)
+{
+  bool result = false;
+
+  /* Make sure a valid CAN interface is linked. */
+  assert(canIfPtr != NULL);
+  
+  /* Only continue with a valid CAN interface. */
+  if (canIfPtr != NULL) /*lint !e774 */
+  {
+    /* Only check for bus error if connected. */
+    if (canConnected)
+    {
+      result = canIfPtr->IsBusError();
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of CanIsBusError ***/
+
+
+/************************************************************************************//**
 ** \brief     Registers the event callback functions that should be called by the CAN
 **            module.
 ** \param     events Pointer to structure with event callback function pointers.

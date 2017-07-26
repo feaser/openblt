@@ -90,13 +90,13 @@ typedef struct t_can_msg
  *                      .mask = 0x00000000
  *           Example 2: Receive only CAN identifier 0x124 (11-bit or 29-bit)
  *                      .code = 0x00000124
- *                      .mask = 0x00000124
+ *                      .mask = 0x1fffffff
  *           Example 3: Receive only CAN identifier 0x124 (11-bit)
  *                      .code = 0x00000124
- *                      .mask = 0x80000124
+ *                      .mask = 0x9fffffff
  *           Example 4: Receive only CAN identifier 0x124 (29-bit)
  *                      .code = 0x80000124
- *                      .mask = 0x80000124
+ *                      .mask = 0x9fffffff
  */
 typedef struct t_can_settings
 {
@@ -129,6 +129,8 @@ typedef struct t_can_interface
   void (*Disconnect) (void);
   /** \brief Submits a CAN message for transmission. */
   bool (*Transmit) (tCanMsg const * msg);
+  /** \brief Check if a bus off and/or bus heavy situation occurred. */
+  bool (*IsBusError) (void);
   /** \brief Registers the event callback functions. */
   void (*RegisterEvents) (tCanEvents const * events);
 } tCanInterface;
@@ -143,6 +145,7 @@ bool CanConnect(void);
 void CanDisconnect(void);
 bool CanIsConnected(void);
 bool CanTransmit(tCanMsg const * msg);
+bool CanIsBusError(void);
 void CanRegisterEvents(tCanEvents const * events);
 
 #ifdef __cplusplus
