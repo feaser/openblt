@@ -48,12 +48,16 @@
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
+/* Transport layer module functions. */
 static void XcpTpCanInit(void const * settings);
 static void XcpTpCanTerminate(void);
 static bool XcpTpCanConnect(void);
 static void XcpTpCanDisconnect(void);
 static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket, 
                                tXcpTransportPacket * rxPacket, uint16_t timeout);
+/* CAN event functions. */
+static void XcpTpCanEventMessageTransmitted(tCanMsg const * msg);
+static void XcpTpCanEventMessageReceived(tCanMsg const * msg);
 
  
 /****************************************************************************************
@@ -68,6 +72,20 @@ static const tXcpTransport canTransport =
   XcpTpCanDisconnect,
   XcpTpCanSendPacket
 };
+
+/** \brief CAN driver event functions. */
+static const tCanEvents canEvents =
+{
+  XcpTpCanEventMessageTransmitted,
+  XcpTpCanEventMessageReceived
+};
+
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief The settings to use in this transport layer. */
+static tXcpTpCanSettings tpCanSettings;
 
 
 /***********************************************************************************//**
@@ -90,15 +108,103 @@ tXcpTransport const * XcpTpCanGetTransport(void)
 ****************************************************************************************/
 static void XcpTpCanInit(void const * settings)
 {
+  char * canDeviceName;
+  tCanInterface const * canInterface = NULL;
+  tCanSettings canSettings;
+
+  /* Reset transport layer settings. */
+  tpCanSettings.device = NULL;
+  tpCanSettings.channel = 0;
+  tpCanSettings.baudrate = 500000;
+  tpCanSettings.transmitId = 0x667;
+  tpCanSettings.receiveId = 0x7e1;
+  tpCanSettings.useExtended = false;
+
+  /* This module uses critical sections so initialize them. */
+  UtilCriticalSectionInit();
+
   /* Check parameters. */
   assert(settings != NULL);
 
   /* Only continue with valid parameters. */
   if (settings != NULL) /*lint !e774 */
   {
-    /* ##Vg TODO Extract and set the pointer to the CAN interface to link. */
+    /* Shallow copy the transport layer settings for layer usage. */
+    tpCanSettings = *((tXcpTpCanSettings *)settings);
+    /* The device name is a pointer and it is not gauranteed that it stays valid so we need
+     * to deep copy this one. note the +1 for '\0' in malloc.
+     */
+    assert(((tXcpTpCanSettings *)settings)->device != NULL);
+    if (((tXcpTpCanSettings *)settings)->device != NULL) /*lint !e774 */
+    {
+      canDeviceName = malloc(strlen(((tXcpTpCanSettings *)settings)->device) + 1);
+      assert(canDeviceName != NULL);
+      if (canDeviceName != NULL) /*lint !e774 */
+      {
+        strcpy(canDeviceName, ((tXcpTpCanSettings *)settings)->device);
+        tpCanSettings.device = canDeviceName;
+
+        /* Determine the pointer to the correct CAN interface, based on the specified
+         * device name.
+         */
+#if defined(PLATFORM_WIN32)
+        if (strcmp(tpCanSettings.device, "peak_pcanusb") == 0)
+        {
+          canInterface = PCanUsbGetInterface();
+        }
+#endif
+      }
+    }
   }
-  /* ##Vg TODO Implement CAN module initialization. */
+
+  /* Convert the transport layer settings to CAN driver settings. */
+  canSettings.devicename = tpCanSettings.device;
+  canSettings.channel = tpCanSettings.channel;
+  switch (tpCanSettings.baudrate)
+  {
+    case 1000000:
+      canSettings.baudrate = CAN_BR1M;
+      break;
+    case 800000:
+      canSettings.baudrate = CAN_BR800K;
+      break;
+    case 500000:
+      canSettings.baudrate = CAN_BR500K;
+      break;
+    case 250000:
+      canSettings.baudrate = CAN_BR250K;
+      break;
+    case 125000:
+      canSettings.baudrate = CAN_BR125K;
+      break;
+    case 100000:
+      canSettings.baudrate = CAN_BR100K;
+      break;
+    case 50000:
+      canSettings.baudrate = CAN_BR50K;
+      break;
+    case 20000:
+      canSettings.baudrate = CAN_BR20K;
+      break;
+    case 10000:
+      canSettings.baudrate = CAN_BR10K;
+      break;
+    default:
+      /* Default to 500 kbits/sec in case an unsupported baudrate was specified. */
+      canSettings.baudrate = CAN_BR500K;
+      break;
+  }
+  /* Configure the reception acceptance filter to receive only one CAN identifier. */
+  canSettings.code = tpCanSettings.receiveId;
+  if (tpCanSettings.useExtended)
+  {
+    canSettings.code |= CAN_MSG_EXT_ID_MASK;
+  }
+  canSettings.mask = 0x9fffffff;
+  /* Initialize the CAN driver. */
+  CanInit(&canSettings, canInterface);
+  /* Register CAN event functions. */
+  CanRegisterEvents(&canEvents);
 } /*** end of XcpTpCanInit ***/
 
 
@@ -108,7 +214,22 @@ static void XcpTpCanInit(void const * settings)
 ****************************************************************************************/
 static void XcpTpCanTerminate(void)
 {
-  /* ##Vg TODO Implement. */
+  /* Terminate the CAN driver. */
+  CanTerminate();
+  /* Release memory that was allocated for storing the device name. */
+  if (tpCanSettings.device != NULL)
+  {
+    free((char *)tpCanSettings.device);
+  }
+  /* Reset transport layer settings. */
+  tpCanSettings.device = NULL;
+  tpCanSettings.channel = 0;
+  tpCanSettings.baudrate = 500000;
+  tpCanSettings.transmitId = 0x667;
+  tpCanSettings.receiveId = 0x7e1;
+  tpCanSettings.useExtended = false;
+  /* This module used critical sections so terminate them. */
+  UtilCriticalSectionTerminate();
 } /*** end of XcpTpCanTerminate ***/
 
 
@@ -121,7 +242,11 @@ static bool XcpTpCanConnect(void)
 {
   bool result = false;
 
-  /* ##Vg TODO Implement. */
+  /* Connect to the CAN driver. */
+  if (CanConnect())
+  {
+    result = true;
+  }
   
   /* Give the result back to the caller. */
   return result;
@@ -134,7 +259,8 @@ static bool XcpTpCanConnect(void)
 ****************************************************************************************/
 static void XcpTpCanDisconnect(void)
 {
-  /* ##Vg TODO Disconnect from the CAN bus. */
+  /* Disconnect from the CAN driver. */
+  CanDisconnect();
 } /*** end of XcpTpCanDisconnect ***/
 
 
@@ -152,7 +278,9 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
                                tXcpTransportPacket * rxPacket, uint16_t timeout)
 {
   bool result = false;
-
+  tCanMsg canMsg;
+  uint32_t responseTimeoutTime = 0;
+  
   /* Check parameters. */
   assert(txPacket != NULL);
   assert(rxPacket != NULL);
@@ -160,11 +288,85 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
   /* Only continue with valid parameters. */
   if ( (txPacket != NULL) && (rxPacket != NULL) ) /*lint !e774 */
   {
-    /* ##Vg TODO Implement. */
+    /* Only continue if data length fits in a CAN message and the CAN bus is not in error
+     * state. 
+     */
+    if ( ((txPacket->len <= CAN_MSG_MAX_LEN)) && (!CanIsBusError()) )
+    {
+      /* Set result value to okay and only change it from now on if an error occurred. */
+      result = true;
+      /* Store the packet data into a CAN message. */
+      canMsg.id = tpCanSettings.transmitId;
+      if (tpCanSettings.useExtended)
+      {
+        canMsg.id |= CAN_MSG_EXT_ID_MASK;
+      }
+      canMsg.dlc = txPacket->len;
+      for (uint8_t idx = 0; idx < canMsg.dlc; idx++)
+      {
+        canMsg.data[idx] = txPacket->data[idx];
+      }
+      /* Submit the packet for transmission on the CAN bus. */
+      if (!CanTransmit(&canMsg))
+      {
+        result = false;
+      }
+      /* Only continue if the transmission was successful. */
+      if (result)
+      {
+        /* Determine timeout time for the response packet. */
+        responseTimeoutTime = UtilTimeGetSystemTimeMs() + timeout;
+        /* Poll with timeout detection to receive the response packet as a CAN message
+         * on the CAN bus.
+         */
+        while (UtilTimeGetSystemTimeMs() < responseTimeoutTime)
+        {
+          /* ##Vg TODO Implement packet reception. */
+          break;
+        }
+      }
+    }
   }
   /* Give the result back to the caller. */
   return result;
 } /*** end of XcpTpCanSendPacket ***/
+
+
+/************************************************************************************//**
+** \brief     CAN driver event callback function that gets called each time a CAN
+**            message was transmitted.
+** \param     msg Pointer to the transmitted CAN message.
+**
+****************************************************************************************/
+static void XcpTpCanEventMessageTransmitted(tCanMsg const * msg)
+{
+  (void)msg;
+
+  /* Nothing needs to be done here for now. Added for possible future expansions. */
+} /*** end of XcpTpCanEventMessageTransmitted ***/
+
+
+/************************************************************************************//**
+** \brief     CAN driver event callback function that gets called each time a CAN
+**            message was received.
+** \param     msg Pointer to the received CAN message.
+**
+****************************************************************************************/
+static void XcpTpCanEventMessageReceived(tCanMsg const * msg)
+{
+  /* Determine CAN identifier for receiving XCP commands via CAN. */
+  uint32_t tpCanRxId = tpCanSettings.receiveId;
+  if (tpCanSettings.useExtended)
+  {
+    tpCanRxId |= CAN_MSG_EXT_ID_MASK;
+  }
+
+  /* Check if the identifier matches the one for XCP on CAN. */
+  if (msg->id == tpCanRxId)
+  {
+    /* ##Vg TODO process CAN message reception. */
+  }
+} /*** end of XcpTpCanEventMessageReceived ***/
 
 
 /*********************************** end of xcptpcan.c *********************************/

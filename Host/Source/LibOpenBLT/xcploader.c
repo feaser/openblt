@@ -237,16 +237,16 @@ static bool XcpLoaderStart(void)
           break;
         }
       }
-    }
-    /* Check if a connection with the target could be made within the finite amount
-     * of retries.
-     */
-    if (!xcpConnected)
-    {
-      /* Disconnect the transport layer again. */
-      xcpSettings.transport->Disconnect();
-      /* Update the result. */
-      result = false;
+      /* Check if a connection with the target could be made within the finite amount
+       * of retries.
+       */
+      if (!xcpConnected)
+      {
+        /* Disconnect the transport layer again. */
+        xcpSettings.transport->Disconnect();
+        /* Update the result. */
+        result = false;
+      }
     }
     
     /* Place the target in programming mode if connected. */

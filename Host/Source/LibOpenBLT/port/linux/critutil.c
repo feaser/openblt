@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         util.h
-* \brief        Utility module header file.
+* \file         port/linux/critutil.c
+* \brief        Critical section utility source file.
 * \ingroup      Utility
 * \internal
 *----------------------------------------------------------------------------------------
@@ -20,47 +20,45 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It
+* You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-*
+* 
 * \endinternal
 ****************************************************************************************/
-/************************************************************************************//**
-* \defgroup   Utility Generic Utilities
-* \brief      Generic utility functions and definitions.
-* \ingroup    Library
-* \details
-* The Utility module contains generic functions and definitions that can be handy for
-* use internally in the library and also externally by another application that makes
-* use of the library.
-****************************************************************************************/
-#ifndef UTIL_H
-#define UTIL_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /****************************************************************************************
-* Function prototypes
+* Include files
 ****************************************************************************************/
-uint16_t UtilChecksumCrc16Calculate(uint8_t const * data, uint32_t len);
-uint32_t UtilChecksumCrc32Calculate(uint8_t const * data, uint32_t len);
-bool UtilFileExtractFilename(char const * fullFilename, char * filenameBuffer);
-uint32_t UtilTimeGetSystemTimeMs(void);
-void UtilTimeDelayMs(uint16_t delay);
-void UtilCriticalSectionInit(void);
-void UtilCriticalSectionTerminate(void);
-void UtilCriticalSectionEnter(void);
-void UtilCriticalSectionExit(void);
+#include <stdint.h>                         /* for standard integer types              */
+#include <stdbool.h>                        /* for boolean type                        */
+#include <pthread.h>                        /* for posix threads                       */
+#include "util.h"                           /* Utility module                          */
 
 
-#ifdef __cplusplus
-}
-#endif
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
 
-#endif /* UTIL_H */
-/********************************* end of util.h ***************************************/
 
- 
- 
+/************************************************************************************//**
+** \brief     Enters a critical section. The functions UtilCriticalSectionEnter and 
+**            UtilCriticalSectionExit should always be used in a pair.
+**
+****************************************************************************************/
+void UtilCriticalSectionEnter(void)
+{
+} /*** end of UtilCriticalSectionEnter ***/
+
+
+/************************************************************************************//**
+** \brief     Leaves a critical section. The functions UtilCriticalSectionEnter and 
+**            UtilCriticalSectionExit should always be used in a pair.
+**
+****************************************************************************************/
+void UtilCriticalSectionExit(void)
+{
+} /*** end of UtilCriticalSectionExit ***/
+
+
+/*********************************** end of critutil.c *********************************/
+
