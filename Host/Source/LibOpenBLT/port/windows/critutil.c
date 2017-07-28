@@ -40,13 +40,13 @@
 * Local data declarations
 ****************************************************************************************/
 /** \brief Flag to determine if the critical section object was already initialized. */
-static volatile bool criticalSectionInitialized = false;
+static bool criticalSectionInitialized = false;
 
 /** \brief Crital section nesting counter. ***/
-static volatile uint32_t criticalSectionNesting;
+static uint32_t criticalSectionNesting;
 
 /** \brief Critical section object. */
-static volatile CRITICAL_SECTION criticalSection;
+static CRITICAL_SECTION criticalSection;
 
 
 /************************************************************************************//**

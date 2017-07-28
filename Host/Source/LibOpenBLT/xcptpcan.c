@@ -87,6 +87,18 @@ static const tCanEvents canEvents =
 /** \brief The settings to use in this transport layer. */
 static tXcpTpCanSettings tpCanSettings;
 
+/** \brief Flag to indicate that a response packet was received via CAN. Made volatile
+ *         because it is shared with an event callback function that could be called from
+ *         a different thread.
+ */
+static volatile bool tpCanResponseMessageReceived;
+
+/** \brief Buffer for storing the CAN message with response packet data. Made volatile
+ *         because it is shared with an event callback function that could be called from
+ *         a different thread.
+ */
+static volatile tCanMsg tpCanResponseMessage;
+
 
 /***********************************************************************************//**
 ** \brief     Obtains a pointer to the transport layer structure, so that it can be 
@@ -306,6 +318,14 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
       {
         canMsg.data[idx] = txPacket->data[idx];
       }
+      /* Enter critical section. */
+      UtilCriticalSectionEnter();
+      /* Reset packet received flag before transmitting the packet, to be able to detect
+       * its response packet.
+       */
+      tpCanResponseMessageReceived = false;
+      /* Exit critical section. */
+      UtilCriticalSectionExit();
       /* Submit the packet for transmission on the CAN bus. */
       if (!CanTransmit(&canMsg))
       {
@@ -321,9 +341,36 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
          */
         while (UtilTimeGetSystemTimeMs() < responseTimeoutTime)
         {
-          /* ##Vg TODO Implement packet reception. */
-          break;
+          /* Enter critical section. */
+          UtilCriticalSectionEnter();
+          /* Response received? */
+          if (tpCanResponseMessageReceived)
+          {
+            /* Copy the response packet. */
+            rxPacket->len = tpCanResponseMessage.dlc;
+            for (uint8_t idx = 0; idx < rxPacket->len; idx++)
+            {
+              rxPacket->data[idx] = tpCanResponseMessage.data[idx];
+            }
+            /* Exit critical section. */
+            UtilCriticalSectionExit();
+            /* Response packet receive so no need to continue loop. */
+            break;
+          }
+          /* Exit critical section. */
+          UtilCriticalSectionExit();
+          /* Wait a little bit to not starve the CPU. */
+          UtilTimeDelayMs(1);
         }
+        /* Enter critical section. */
+        UtilCriticalSectionEnter();
+        /* Check if a timeout occurred and no response was received. */
+        if (!tpCanResponseMessageReceived)
+        {
+          result = false;
+        }
+        /* Exit critical section. */
+        UtilCriticalSectionExit();
       }
     }
   }
@@ -364,7 +411,19 @@ static void XcpTpCanEventMessageReceived(tCanMsg const * msg)
   /* Check if the identifier matches the one for XCP on CAN. */
   if (msg->id == tpCanRxId)
   {
-    /* ##Vg TODO process CAN message reception. */
+    /* Enter critical section. */
+    UtilCriticalSectionEnter();
+    /* Copy to the packet response message buffer. */
+    tpCanResponseMessage.id = msg->id;
+    tpCanResponseMessage.dlc = msg->dlc;
+    for (uint8_t idx = 0; idx < msg->dlc; idx++)
+    {
+      tpCanResponseMessage.data[idx] = msg->data[idx];
+    }
+    /* Set packet received flag. */
+    tpCanResponseMessageReceived = true;
+    /* Exit critical section. */
+    UtilCriticalSectionExit();
   }
 } /*** end of XcpTpCanEventMessageReceived ***/
 
