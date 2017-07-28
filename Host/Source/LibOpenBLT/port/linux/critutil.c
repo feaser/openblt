@@ -61,7 +61,7 @@ void UtilCriticalSectionInit(void)
   if (!criticalSectionInitialized)
   {
     /* Initialize the critical section object. */
-    pthread_mutex_init(&mtxCritSect, NULL);
+    (void)pthread_mutex_init(&mtxCritSect, NULL);
     /* Reset nesting counter. */
     criticalSectionNesting = 0;
     /* Set initialized flag. */
@@ -87,7 +87,7 @@ void UtilCriticalSectionTerminate(void)
     /* Reset nesting counter. */
     criticalSectionNesting = 0;
     /* Delete the critical section object. */
-    pthread_mutex_destroy(&mtxCritSect);
+    (void)pthread_mutex_destroy(&mtxCritSect);
   }
 } /*** end of UtilCriticalSectionTerminate ***/
 
@@ -109,12 +109,12 @@ void UtilCriticalSectionEnter(void)
     /* Enter the critical section if not already entered. */
     if (criticalSectionNesting == 0)
     {
-      pthread_mutex_lock(&mtxCritSect);
+      (void)pthread_mutex_lock(&mtxCritSect);
     }
     /* Increment nesting counter. */
-    criticalSectionNesting++;
+    criticalSectionNesting++; /*lint !e456 */
   }
-} /*** end of UtilCriticalSectionEnter ***/
+} /*** end of UtilCriticalSectionEnter ***/ /*lint !e456 !e454 */
 
 
 /************************************************************************************//**
@@ -140,11 +140,17 @@ void UtilCriticalSectionExit(void)
       /* Leave the critical section. */
       if (criticalSectionNesting == 0)
       {
-        pthread_mutex_unlock (&mtxCritSect);
+        (void)pthread_mutex_unlock (&mtxCritSect); /*lint !e455 */
       }
     }
   }
 } /*** end of UtilCriticalSectionExit ***/
+
+
+/*lint -esym(793, pthread_mutexattr_getprioceiling, pthread_mutexattr_setprioceiling) 
+ * suppress info message regarding 31 significant character limit for these library
+ * functions.
+ */
 
 
 /*********************************** end of critutil.c *********************************/
