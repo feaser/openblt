@@ -29,6 +29,7 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
+#include <assert.h>                         /* for assertions                          */
 #include <stdint.h>                         /* for standard integer types              */
 #include <stdbool.h>                        /* for boolean type                        */
 #include <pthread.h>                        /* for posix threads                       */
@@ -38,6 +39,58 @@
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
+/** \brief Flag to determine if the critical section object was already initialized. */
+static volatile bool criticalSectionInitialized = false;
+
+/** \brief Crital section nesting counter. ***/
+static volatile uint32_t criticalSectionNesting;
+
+/** \brief Critical section object. */
+static pthread_mutex_t mtxCritSect;
+
+
+/************************************************************************************//**
+** \brief     Initializes the critical section module. Should be called before the
+**            Enter/Exit functions are used. It is okay to call this initialization
+**            multiple times from different modules.
+**
+****************************************************************************************/
+void UtilCriticalSectionInit(void)
+{
+  /* Only initialize if not yet done so previously. */
+  if (!criticalSectionInitialized)
+  {
+    /* Initialize the critical section object. */
+    pthread_mutex_init(&mtxCritSect, NULL);
+    /* Reset nesting counter. */
+    criticalSectionNesting = 0;
+    /* Set initialized flag. */
+    criticalSectionInitialized = true;
+  }
+} /*** end of UtilCriticalSectionInit ***/
+
+
+/************************************************************************************//**
+** \brief     Terminates the critical section module. Should be called once critical
+**            sections are no longer needed. Typically called from another module's
+**            termination function that also initialized it. It is okay to call this 
+**            termination multiple times from different modules.
+**
+****************************************************************************************/
+void UtilCriticalSectionTerminate(void)
+{
+  /* Only terminate if it was initialized. */
+  if (criticalSectionInitialized)
+  {
+    /* Reset the initialized flag. */
+    criticalSectionInitialized = false;
+    /* Reset nesting counter. */
+    criticalSectionNesting = 0;
+    /* Delete the critical section object. */
+    pthread_mutex_destroy(&mtxCritSect);
+  }
+} /*** end of UtilCriticalSectionTerminate ***/
+
 
 
 /************************************************************************************//**
@@ -47,6 +100,20 @@
 ****************************************************************************************/
 void UtilCriticalSectionEnter(void)
 {
+  /* Check initialization. */
+  assert(criticalSectionInitialized);
+
+  /* Only continue if actually initialized. */
+  if (criticalSectionInitialized)
+  {
+    /* Enter the critical section if not already entered. */
+    if (criticalSectionNesting == 0)
+    {
+      pthread_mutex_lock(&mtxCritSect);
+    }
+    /* Increment nesting counter. */
+    criticalSectionNesting++;
+  }
 } /*** end of UtilCriticalSectionEnter ***/
 
 
@@ -57,6 +124,26 @@ void UtilCriticalSectionEnter(void)
 ****************************************************************************************/
 void UtilCriticalSectionExit(void)
 {
+  /* Check initialization. */
+  assert(criticalSectionInitialized);
+
+  /* Only continue if actually initialized. */
+  if (criticalSectionInitialized)
+  {
+    /* Sanity check. */
+    assert(criticalSectionNesting > 0);
+
+    /* Decrement nesting counter if it is valid. */
+    if (criticalSectionNesting > 0)
+    {
+      criticalSectionNesting--;
+      /* Leave the critical section. */
+      if (criticalSectionNesting == 0)
+      {
+        pthread_mutex_unlock (&mtxCritSect);
+      }
+    }
+  }
 } /*** end of UtilCriticalSectionExit ***/
 
 
