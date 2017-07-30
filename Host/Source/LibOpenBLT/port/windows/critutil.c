@@ -42,7 +42,7 @@
 /** \brief Flag to determine if the critical section object was already initialized. */
 static bool criticalSectionInitialized = false;
 
-/** \brief Crital section nesting counter. ***/
+/** \brief Critical section nesting counter. ***/
 static uint32_t criticalSectionNesting;
 
 /** \brief Critical section object. */
