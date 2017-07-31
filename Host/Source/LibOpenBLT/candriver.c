@@ -33,7 +33,14 @@
 #include <stdint.h>                         /* for standard integer types              */
 #include <stddef.h>                         /* for NULL declaration                    */
 #include <stdbool.h>                        /* for boolean type                        */
+#include <string.h>                         /* for string library                      */
 #include "candriver.h"                      /* Generic CAN driver module               */
+#if defined(PLATFORM_WIN32)
+#include "pcanusb.h"                        /* Peak PCAN-USB interface                 */
+#endif
+#if defined(PLATFORM_LINUX)
+#include "socketcan.h"                      /* SocketCAN interface                     */
+#endif
 
 
 /****************************************************************************************
@@ -49,10 +56,9 @@ static bool canConnected;
 /************************************************************************************//**
 ** \brief     Initializes the CAN module. Typically called once at program startup.
 ** \param     settings Pointer to the CAN module settings.
-** \param     interface Pointer to the CAN interface to link.
 **
 ****************************************************************************************/
-void CanInit(tCanSettings const * settings, tCanInterface const * const interface)
+void CanInit(tCanSettings const * settings)
 {
   /* Initialize locals. */
   canIfPtr = NULL;
@@ -60,15 +66,41 @@ void CanInit(tCanSettings const * settings, tCanInterface const * const interfac
   
   /* Check parameters. */
   assert(settings != NULL);
-  assert(interface != NULL);
   
   /* Only continue with valid parameters. */
-  if ( (settings != NULL) && (interface != NULL) ) /*lint !e774 */
+  if (settings != NULL)  /*lint !e774 */
   {
-    /* Link the CAN interface. */
-    canIfPtr = interface;
-    /* Initialize the CAN interface. */
-    canIfPtr->Init(settings);
+    /* Check device name. */
+    assert(settings->devicename != NULL);
+
+    /* Only continue with a valid device name. */
+    if (settings->devicename != NULL) /*lint !e774 */
+    {
+      /* Determine the pointer to the correct CAN interface, based on the specified
+       * device name.
+       */
+#if defined(PLATFORM_WIN32)
+      if (strcmp(settings->devicename, "peak_pcanusb") == 0)
+      {
+        canIfPtr = PCanUsbGetInterface();
+      }
+#endif
+#if defined(PLATFORM_LINUX)
+      /* On Linux, the device name is the name of the SocketCAN link, so always link
+       * the SocketCAN interface to the CAN driver.
+       */
+      canIfPtr = SocketCanGetInterface();
+#endif
+      /* Check validity of the interface. */
+      assert(canIfPtr != NULL);
+
+      /* Only continue with a valid interface. */
+      if (canIfPtr != NULL) /*lint !e774 */
+      {
+        /* Initialize the CAN interface. */
+        canIfPtr->Init(settings);
+      }
+    }
   }
 } /*** end of CanInit ***/
 

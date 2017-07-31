@@ -40,12 +40,6 @@
 #include "xcptpcan.h"                       /* XCP CAN transport layer                 */
 #include "util.h"                           /* Utility module                          */
 #include "candriver.h"                      /* Generic CAN driver module               */
-#if defined(PLATFORM_WIN32)
-#include "pcanusb.h"                        /* Peak PCAN-USB interface                 */
-#endif
-#if defined(PLATFORM_LINUX)
-#include "socketcan.h"                      /* SocketCAN interface                     */
-#endif
 
 
 /****************************************************************************************
@@ -124,7 +118,6 @@ tXcpTransport const * XcpTpCanGetTransport(void)
 static void XcpTpCanInit(void const * settings)
 {
   char * canDeviceName;
-  tCanInterface const * canInterface = NULL;
   tCanSettings canSettings;
 
   /* Reset transport layer settings. */
@@ -158,25 +151,6 @@ static void XcpTpCanInit(void const * settings)
       {
         strcpy(canDeviceName, ((tXcpTpCanSettings *)settings)->device);
         tpCanSettings.device = canDeviceName;
-
-        /* ##Vg TODO Refactor such that the CAN driver does this interface linking
-         *           automatically.
-         */
-        /* Determine the pointer to the correct CAN interface, based on the specified
-         * device name.
-         */
-#if defined(PLATFORM_WIN32)
-        if (strcmp(tpCanSettings.device, "peak_pcanusb") == 0)
-        {
-          canInterface = PCanUsbGetInterface();
-        }
-#endif
-#if defined(PLATFORM_LINUX)
-        /* On Linux, the device name is the name of the SocketCAN link, so always link
-         * the SocketCAN interface to the CAN driver.
-         */
-        canInterface = SocketCanGetInterface();
-#endif
       }
     }
   }
@@ -226,7 +200,7 @@ static void XcpTpCanInit(void const * settings)
   }
   canSettings.mask = 0x9fffffff;
   /* Initialize the CAN driver. */
-  CanInit(&canSettings, canInterface);
+  CanInit(&canSettings);
   /* Register CAN event functions. */
   CanRegisterEvents(&canEvents);
 } /*** end of XcpTpCanInit ***/

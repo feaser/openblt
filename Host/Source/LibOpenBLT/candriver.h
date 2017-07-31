@@ -139,7 +139,7 @@ typedef struct t_can_interface
 /***************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void CanInit(tCanSettings const * settings, tCanInterface const * const interface);
+void CanInit(tCanSettings const * settings);
 void CanTerminate(void);
 bool CanConnect(void);
 void CanDisconnect(void);
