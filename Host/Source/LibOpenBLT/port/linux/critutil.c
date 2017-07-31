@@ -147,11 +147,5 @@ void UtilCriticalSectionExit(void)
 } /*** end of UtilCriticalSectionExit ***/
 
 
-/*lint -esym(793, pthread_mutexattr_getprioceiling, pthread_mutexattr_setprioceiling) 
- * suppress info message regarding 31 significant character limit for these library
- * functions.
- */
-
-
 /*********************************** end of critutil.c *********************************/
 

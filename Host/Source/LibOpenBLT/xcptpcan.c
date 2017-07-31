@@ -43,6 +43,9 @@
 #if defined(PLATFORM_WIN32)
 #include "pcanusb.h"                        /* Peak PCAN-USB interface                 */
 #endif
+#if defined(PLATFORM_LINUX)
+#include "socketcan.h"                      /* SocketCAN interface                     */
+#endif
 
 
 /****************************************************************************************
@@ -156,6 +159,9 @@ static void XcpTpCanInit(void const * settings)
         strcpy(canDeviceName, ((tXcpTpCanSettings *)settings)->device);
         tpCanSettings.device = canDeviceName;
 
+        /* ##Vg TODO Refactor such that the CAN driver does this interface linking
+         *           automatically.
+         */
         /* Determine the pointer to the correct CAN interface, based on the specified
          * device name.
          */
@@ -164,6 +170,12 @@ static void XcpTpCanInit(void const * settings)
         {
           canInterface = PCanUsbGetInterface();
         }
+#endif
+#if defined(PLATFORM_LINUX)
+        /* On Linux, the device name is the name of the SocketCAN link, so always link
+         * the SocketCAN interface to the CAN driver.
+         */
+        canInterface = SocketCanGetInterface();
 #endif
       }
     }

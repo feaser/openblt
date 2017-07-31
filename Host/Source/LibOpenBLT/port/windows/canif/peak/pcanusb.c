@@ -535,7 +535,7 @@ static bool PCanUsbTransmit(tCanMsg const * msg)
       msgBuf.ID = msg->id & 0x1fffffffu;
       msgBuf.MSGTYPE = PCAN_MESSAGE_EXTENDED;
     }
-    msgBuf.LEN = msg->dlc;
+    msgBuf.LEN = ((msg->dlc <= CAN_MSG_MAX_LEN) ? msg->dlc : CAN_MSG_MAX_LEN);
     for (uint8_t idx = 0; idx < msgBuf.LEN; idx++)
     {
       msgBuf.DATA[idx] = msg->data[idx];
