@@ -40,13 +40,10 @@
 * Local data declarations
 ****************************************************************************************/
 /** \brief Flag to determine if the critical section object was already initialized. */
-static bool criticalSectionInitialized = false;
-
-/** \brief Critical section nesting counter. ***/
-static uint32_t criticalSectionNesting;
+static volatile bool criticalSectionInitialized = false;
 
 /** \brief Critical section object. */
-static pthread_mutex_t mtxCritSect;
+static volatile pthread_mutex_t mtxCritSect;
 
 
 /************************************************************************************//**
@@ -61,9 +58,7 @@ void UtilCriticalSectionInit(void)
   if (!criticalSectionInitialized)
   {
     /* Initialize the critical section object. */
-    (void)pthread_mutex_init(&mtxCritSect, NULL);
-    /* Reset nesting counter. */
-    criticalSectionNesting = 0;
+    (void)pthread_mutex_init((pthread_mutex_t *)&mtxCritSect, NULL);
     /* Set initialized flag. */
     criticalSectionInitialized = true;
   }
@@ -84,10 +79,8 @@ void UtilCriticalSectionTerminate(void)
   {
     /* Reset the initialized flag. */
     criticalSectionInitialized = false;
-    /* Reset nesting counter. */
-    criticalSectionNesting = 0;
     /* Delete the critical section object. */
-    (void)pthread_mutex_destroy(&mtxCritSect);
+    (void)pthread_mutex_destroy((pthread_mutex_t *)&mtxCritSect);
   }
 } /*** end of UtilCriticalSectionTerminate ***/
 
@@ -106,13 +99,7 @@ void UtilCriticalSectionEnter(void)
   /* Only continue if actually initialized. */
   if (criticalSectionInitialized)
   {
-    /* Enter the critical section if not already entered. */
-    if (criticalSectionNesting == 0)
-    {
-      (void)pthread_mutex_lock(&mtxCritSect);
-    }
-    /* Increment nesting counter. */
-    criticalSectionNesting++; /*lint !e456 */
+    (void)pthread_mutex_lock((pthread_mutex_t *)&mtxCritSect);
   }
 } /*** end of UtilCriticalSectionEnter ***/ /*lint !e456 !e454 */
 
@@ -130,19 +117,7 @@ void UtilCriticalSectionExit(void)
   /* Only continue if actually initialized. */
   if (criticalSectionInitialized)
   {
-    /* Sanity check. */
-    assert(criticalSectionNesting > 0);
-
-    /* Decrement nesting counter if it is valid. */
-    if (criticalSectionNesting > 0)
-    {
-      criticalSectionNesting--;
-      /* Leave the critical section. */
-      if (criticalSectionNesting == 0)
-      {
-        (void)pthread_mutex_unlock (&mtxCritSect); /*lint !e455 */
-      }
-    }
+    (void)pthread_mutex_unlock((pthread_mutex_t *)&mtxCritSect); /*lint !e455 */
   }
 } /*** end of UtilCriticalSectionExit ***/
 

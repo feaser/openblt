@@ -40,10 +40,7 @@
 * Local data declarations
 ****************************************************************************************/
 /** \brief Flag to determine if the critical section object was already initialized. */
-static bool criticalSectionInitialized = false;
-
-/** \brief Critical section nesting counter. ***/
-static uint32_t criticalSectionNesting;
+static volatile bool criticalSectionInitialized = false;
 
 /** \brief Critical section object. */
 static CRITICAL_SECTION criticalSection;
@@ -61,9 +58,7 @@ void UtilCriticalSectionInit(void)
   if (!criticalSectionInitialized)
   {
     /* Initialize the critical section object. */
-    InitializeCriticalSection(&criticalSection);
-    /* Reset nesting counter. */
-    criticalSectionNesting = 0;
+    InitializeCriticalSection((CRITICAL_SECTION *)&criticalSection);
     /* Set initialized flag. */
     criticalSectionInitialized = true;
   }
@@ -84,10 +79,8 @@ void UtilCriticalSectionTerminate(void)
   {
     /* Reset the initialized flag. */
     criticalSectionInitialized = false;
-    /* Reset nesting counter. */
-    criticalSectionNesting = 0;
     /* Delete the critical section object. */
-    DeleteCriticalSection(&criticalSection);
+    DeleteCriticalSection((CRITICAL_SECTION *)&criticalSection);
   }
 } /*** end of UtilCriticalSectionTerminate ***/
 
@@ -106,13 +99,7 @@ void UtilCriticalSectionEnter(void)
   /* Only continue if actually initialized. */
   if (criticalSectionInitialized)
   {
-    /* Enter the critical section if not already entered. */
-    if (criticalSectionNesting == 0)
-    {
-      EnterCriticalSection(&criticalSection);
-    }
-    /* Increment nesting counter. */
-    criticalSectionNesting++;
+    EnterCriticalSection((CRITICAL_SECTION *)&criticalSection);
   }
 } /*** end of UtilCriticalSectionEnter ***/
 
@@ -130,19 +117,7 @@ void UtilCriticalSectionExit(void)
   /* Only continue if actually initialized. */
   if (criticalSectionInitialized)
   {
-    /* Sanity check. */
-    assert(criticalSectionNesting > 0);
-
-    /* Decrement nesting counter if it is valid. */
-    if (criticalSectionNesting > 0)
-    {
-      criticalSectionNesting--;
-      /* Leave the critical section. */
-      if (criticalSectionNesting == 0)
-      {
-        LeaveCriticalSection(&criticalSection);
-      }
-    }
+    LeaveCriticalSection((CRITICAL_SECTION *)&criticalSection);
   }
 } /*** end of UtilCriticalSectionExit ***/
 

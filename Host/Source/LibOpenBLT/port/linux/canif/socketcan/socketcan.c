@@ -42,7 +42,6 @@
 #include <net/if.h>                         /* network interfaces                      */
 #include <linux/can.h>                      /* CAN kernel definitions                  */
 #include <linux/can/raw.h>                  /* CAN raw sockets                         */
-#include <linux/can/error.h>                /* CAN errors                              */
 #include "util.h"                           /* Utility module                          */
 #include "candriver.h"                      /* Generic CAN driver module               */
 #include "socketcan.h"                      /* SocketCAN interface                     */
@@ -104,11 +103,6 @@ static volatile tCanEvents * socketCanEventsList;
 /** \brief Total number of event entries into the \ref socketCanEventsList list. */
 static volatile uint32_t socketCanEventsEntries;
 
-/** \brief Flag to set in the event thread when either a bus off or bus heavy situation
- *
- */
-static volatile bool socketCanErrorDetected;
-
 /** \brief Event thread control. */
 static volatile tSocketCanThreadCtrl eventThreadCtrl;
 
@@ -145,7 +139,6 @@ static void SocketCanInit(tCanSettings const * settings)
   /* Initialize locals. */
   socketCanEventsList = NULL;
   socketCanEventsEntries = 0;
-  socketCanErrorDetected = false;
   /* Reset CAN interface settings. */
   socketCanSettings.devicename = "";
   socketCanSettings.channel = 0;
@@ -224,10 +217,6 @@ static bool SocketCanConnect(void)
   struct ifreq ifr;
   int32_t flags;
   struct can_filter rxFilter;
-  can_err_mask_t errMask;
-
-  /* Reset the error flag. */
-  socketCanErrorDetected = false;
 
   /* Check settings. */
   assert(socketCanSettings.devicename != NULL);
@@ -314,17 +303,6 @@ static bool SocketCanConnect(void)
       }
     }
 
-    /* Configure reception of bus off and other CAN controller status related events. */
-    if (result)
-    {
-      errMask = (CAN_ERR_BUSOFF | CAN_ERR_CRTL);
-      if (setsockopt(canSocket, SOL_CAN_RAW, CAN_RAW_ERR_FILTER, &errMask, sizeof(errMask)) != 0)
-      {
-        close(canSocket);
-        result = false;
-      }
-    }
-
     if (result)
     {
       /* Start the event thread. */
@@ -350,8 +328,6 @@ static void SocketCanDisconnect(void)
   SocketCanStopEventThread();
   /* Close the socket. */
   close(canSocket);
-  /* Reset the error flag. */
-  socketCanErrorDetected = false;
 } /*** end of SocketCanDisconnect ***/
 
 
@@ -421,16 +397,15 @@ static bool SocketCanIsBusError(void)
 {
   bool result= false;
 
-  /* Read flag to detect bus off or bus heavy. */
-  UtilCriticalSectionEnter();
-  if (socketCanErrorDetected)
-  {
-    /* Update result. */
-    result = true;
-    /* Reset the error flag. */
-    socketCanErrorDetected = false;
-  }
-  UtilCriticalSectionExit();
+  /* The purpose of this function is that when an error is detected, SocketCanConnect()
+   * can be called to reset the error. With SocketCAN a bus off error is reset on
+   * network link level and not by this interface module. It is therefore not needed to
+   * check for the errors here. It is better to configure the automatic bus off recovery
+   * on network link level. For example:
+   *   ip link set can0 type can bitrate 500000 restart-ms 100
+   * where "restart-ms <value>" specifies the number of milliseconds after which that
+   * automatic recovery is started.
+   */
 
   /* Give the result back to the caller. */
   return result;
@@ -555,34 +530,10 @@ static void *SocketCanEventThread(void *param)
     /* Check if CAN frames were received. */
     while (read(canSocket, &canRxFrame, sizeof(struct can_frame)) == (ssize_t)sizeof(struct can_frame))
     {
-      /* Ignore remote frames */
-      if (canRxFrame.can_id & CAN_RTR_FLAG)
+      /* Ignore remote frames and error information. */
+      if ( (canRxFrame.can_id & CAN_RTR_FLAG) || (canRxFrame.can_id & CAN_ERR_FLAG) )
       {
         continue;
-      }
-      /* Does the message contain error information? */
-      else if (canRxFrame.can_id & CAN_ERR_FLAG)
-      {
-        /* Was it a bus off event? */
-        if ((canRxFrame.can_id & CAN_ERR_BUSOFF) != 0)
-        {
-          /* Set the error flag. */
-          UtilCriticalSectionEnter();
-          socketCanErrorDetected = true;
-          UtilCriticalSectionExit();
-        }
-        /* Was it a CAN controller event? */
-        else if ((canRxFrame.can_id & CAN_ERR_CRTL) != 0)
-        {
-          /* Is the controller in error passive mode (bus heavy)? */
-          if ((canRxFrame.data[1] & (CAN_ERR_CRTL_RX_PASSIVE | CAN_ERR_CRTL_TX_PASSIVE)) != 0)
-          {
-            /* Set the error flag. */
-            UtilCriticalSectionEnter();
-            socketCanErrorDetected = true;
-            UtilCriticalSectionExit();
-          }
-        }
       }
       /* It was a regular CAN message with either 11- or 29-bit identifier. */
       else
