@@ -66,7 +66,7 @@ if(WIN32)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
 elseif(UNIX)
   set(PROJECT_PORT_DIR ${PROJECT_SOURCE_DIR}/port/linux)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -pthread")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -pthread -std=gnu99")
 endif(WIN32)
 
 # Set the output directory
