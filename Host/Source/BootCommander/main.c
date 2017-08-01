@@ -162,6 +162,7 @@ int main(int argc, char const * const argv[])
     DisplaySessionInfo(appSessionType, appSessionSettings);
     /* Display transport info. */
     DisplayTransportInfo(appTransportType, appTransportSettings);
+
   }
   
   /* -------------------- Firmware loading ------------------------------------------- */
@@ -419,6 +420,7 @@ static void DisplayProgramUsage(void)
   printf("                     xcp (default) -> XCP version 1.0.\n");
   printf("  -t=[name]        Name of the communication transport layer:\n");
   printf("                     xcp_rs232 (default) -> XCP on RS232.\n");
+  printf("                     xcp_can             -> XCP on CAN.\n");
   printf("\n");                   
   printf("XCP version 1.0 settings (xcp):\n");
   printf("  -t1=[timeout]    Command response timeout in milliseconds as a 16-bit\n");
@@ -439,6 +441,31 @@ static void DisplayProgramUsage(void)
   printf("  -b=[value]       The communication speed, a.k.a baudrate in bits per\n");
   printf("                   second, as a 32-bit value (Default = 57600).\n");
   printf("                   Supported values: 9600, 19200, 38400, 57600, 115200.\n");
+  printf("\n");  
+  printf("XCP on CAN settings (xcp_can):\n");
+  printf("  -d=[name]        Name of the CAN device (Mandatory). On Linux this is\n");
+  printf("                   the name of the SocketCAN network interface, such as\n");
+  printf("                   can0, slcan0. On Windows it specifies the CAN adapter.\n");
+  printf("                   Currently supported CAN adapters:\n");
+  printf("                     peak_pcanusb     -> Peak System PCAN-USB.\n");
+  printf("                     kvaser_leaflight -> Kvaser Leaf Light V2.\n");
+  printf("                     lawicel_canusb   -> Lawicel CANUSB.\n");
+  printf("  -c=[value]       Zero based index of the CAN channel if multiple CAN\n");
+  printf("                   channels are supported for the CAN adapter, as a 32-\n");
+  printf("                   bit value (Default = 0).\n");
+  printf("  -b=[value]       The communication speed, a.k.a baudrate in bits per\n");
+  printf("                   second, as a 32-bit value (Default = 500000).\n");
+  printf("                   Supported values: 1000000, 800000, 500000, 250000,\n");
+  printf("                   125000, 100000, 50000, 20000, 10000.\n");
+  printf("  -tid=[value]     CAN identifier for transmitting XCP command messages\n");
+  printf("                   from the host to the target, as a 32-bit hexadecimal.\n");
+  printf("                   value (Default = 667h).\n");
+  printf("  -rid=[value]     CAN identifier for receiving XCP response messages\n");
+  printf("                   from the target to the host, as a 32-bit hexadecimal.\n");
+  printf("                   value (Default = 7E1h).\n");
+  printf("  -xid=[value]     Configures the 'tid' and 'rid' CAN identifier values\n");
+  printf("                   as 29-bit CAN identifiers, if this 8-bit value is > 0\n");
+  printf("                   (Default = 0).\n");
   printf("\n");                   
   printf("Note that it is not necessary to specify an option if its default value\n");
   printf("is already the desired value.\n");
@@ -524,6 +551,9 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
     case BLT_TRANSPORT_XCP_V10_RS232:
       printf("XCP on RS232\n");
       break;
+    case BLT_TRANSPORT_XCP_V10_CAN:
+      printf("XCP on CAN\n");
+      break;
     default:
       printf("Unknown\n");
       break;
@@ -558,6 +588,46 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
           printf("Unknown\n");
         }
         printf("  -> Baudrate: %u bit/sec\n", xcpRs232Settings->baudrate);
+      }
+      break;
+    }
+    case BLT_TRANSPORT_XCP_V10_CAN:
+    {
+      /* Check settings pointer. */
+      assert(transportSettings);
+      if (transportSettings == NULL) /*lint !e774 */
+      {
+        /* No valid settings present. */
+        printf("  -> Invalid setings specified\n");
+      }
+      else
+      {
+        tBltTransportSettingsXcpV10Can * xcpCanSettings = 
+          (tBltTransportSettingsXcpV10Can *)transportSettings;
+        
+        /* Output the settings to the user. */
+        printf("  -> Device: ");
+        if (xcpCanSettings->deviceName != NULL)
+        {
+          printf("%s (channel %u)\n", xcpCanSettings->deviceName,
+                 xcpCanSettings->deviceChannel);
+        }
+        else
+        {
+          printf("Unknown\n");
+        }
+        printf("  -> Baudrate: %u bit/sec\n", xcpCanSettings->baudrate);
+        printf("  -> Transmit CAN identifier: %Xh\n", xcpCanSettings->transmitId);
+        printf("  -> Receive CAN identifier: %Xh\n", xcpCanSettings->receiveId);
+        printf("  -> Use 29-bit CAN identifiers: ");
+        if (xcpCanSettings->useExtended)
+        {
+          printf("Yes\n");
+        }
+        else
+        {
+          printf("No\n");
+        }
       }
       break;
     }
@@ -773,7 +843,8 @@ static uint32_t ExtractTransportTypeFromCommandLine(int argc, char const * const
     uint32_t value;
   } transportMap[] =
   {
-    { .name = "xcp_rs232", .value = BLT_TRANSPORT_XCP_V10_RS232 }
+    { .name = "xcp_rs232", .value = BLT_TRANSPORT_XCP_V10_RS232 },
+    { .name = "xcp_can", .value = BLT_TRANSPORT_XCP_V10_CAN }
   };
   
   /* Set the default transport type in case nothing was specified on the command line. */
@@ -879,6 +950,96 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
             {
               /* Extract the baudrate value. */
               sscanf(&argv[paramIdx][3], "%u", &(rs232Settings->baudrate));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+          }
+        }
+        break;
+      /* -------------------------- XCP on CAN --------------------------------------- */
+      case BLT_TRANSPORT_XCP_V10_CAN:
+        /* The following transport layer specific command line parameters are supported:
+         *   -d=[name]      -> Device name: peak_pcanusb, can0, etc.
+         *   -c=[value]     -> CAN channel index (32-bit).
+         *   -b=[value]     -> Baudrate in bits per second (32-bit).
+         *   -tid=[value]   -> Transmit CAN identifier (32-bit hexadecimal).
+         *   -rid=[value]   -> Receive CAN identifier (32-bit hexadecimal).
+         *   -xid=[value]   -> Flag for configuring extended CAN identifiers (8-bit).
+         */
+        /* Allocate memory for storing the settings and check the result. */
+        result = malloc(sizeof(tBltTransportSettingsXcpV10Can));
+        assert(result != NULL);
+        if (result != NULL) /*lint !e774 */
+        {
+          /* Create typed pointer for easy reading. */
+          tBltTransportSettingsXcpV10Can * canSettings =
+            (tBltTransportSettingsXcpV10Can *)result;
+          /* Set default values. */
+          canSettings->deviceName = NULL;
+          canSettings->deviceChannel = 0;
+          canSettings->baudrate = 500000;
+          canSettings->transmitId = 0x667;
+          canSettings->receiveId = 0x7E1;
+          canSettings->useExtended = false;
+          /* Loop through all the command line parameters, just skip the 1st one because 
+           * this  is the name of the program, which we are not interested in.
+           */
+          for (paramIdx = 1; paramIdx < argc; paramIdx++)
+          {
+            /* Is this the -d=[name] parameter? */
+            if ( (strstr(argv[paramIdx], "-d=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 3) )
+            {
+              /* Store the pointer to the device name. */
+              canSettings->deviceName = &argv[paramIdx][3];
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -c=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-c=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 3) )
+            {
+              /* Extract the channel index value. */
+              sscanf(&argv[paramIdx][3], "%u", &(canSettings->deviceChannel));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -b=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-b=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 3) )
+            {
+              /* Extract the baudrate value. */
+              sscanf(&argv[paramIdx][3], "%u", &(canSettings->baudrate));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -tid=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-tid=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 5) )
+            {
+              /* Extract the hexadecimal transmit CAN identifier value. */
+              sscanf(&argv[paramIdx][5], "%x", &(canSettings->transmitId));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -rid=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-rid=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 5) )
+            {
+              /* Extract the hexadecimal receive CAN identifier value. */
+              sscanf(&argv[paramIdx][5], "%x", &(canSettings->receiveId));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -xid=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-xid=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 5) )
+            {
+              /* Extract the extended CAN identifier configuration value. */
+              static uint8_t xidValue;
+              sscanf(&argv[paramIdx][5], "%hhu", &xidValue);
+              /* Convert to boolean. */
+              canSettings->useExtended = ((xidValue > 0) ? true : false);
               /* Continue with next loop iteration. */
               continue;
             }
