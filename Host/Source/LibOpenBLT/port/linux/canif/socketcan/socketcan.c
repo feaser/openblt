@@ -38,6 +38,7 @@
 #include <pthread.h>                        /* for posix threads                       */
 #include <unistd.h>                         /* UNIX standard functions                 */
 #include <fcntl.h>                          /* file control operations                 */
+#include <sys/time.h>                       /* time definitions                        */
 #include <sys/ioctl.h>                      /* I/O control operations                  */
 #include <net/if.h>                         /* network interfaces                      */
 #include <linux/can.h>                      /* CAN kernel definitions                  */
@@ -567,8 +568,10 @@ static void *SocketCanEventThread(void *param)
         }
       }
     }
-    /* wait a little to not starve the CPU */
-    UtilTimeDelayMs(1);
+    /* Wait a little to not starve the CPU, but not too long to prevent interference with
+     * data throughput.
+     */
+    (void)usleep(10u);
   }
 
   /* handshake */

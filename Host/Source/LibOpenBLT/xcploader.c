@@ -54,7 +54,7 @@
 #define XCPLOADER_CMD_PID_RES         (0xFFu)    /**< positive response                */
 
 /** \brief Maximum timeout for the XCP connect command. */
-#define XCPLOADER_CONNECT_TIMEOUT_MS  (20u)
+#define XCPLOADER_CONNECT_TIMEOUT_MS  (50u)
 
 /** \brief Number of retries to connect to the XCP slave. */
 #define XCPLOADER_CONNECT_RETRIES     (5u)
