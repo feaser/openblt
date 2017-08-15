@@ -35,7 +35,6 @@ void          TimerInit(void);
 void          TimerDeinit(void);
 void          TimerSet(unsigned long timer_value);
 unsigned long TimerGet(void);
-void          TimerISRHandler(void);
 
 #endif /* TIMER_H */
 /*********************************** end of timer.h ************************************/
