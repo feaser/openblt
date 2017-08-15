@@ -53,6 +53,8 @@ void UtilCriticalSectionInit(void);
 void UtilCriticalSectionTerminate(void);
 void UtilCriticalSectionEnter(void);
 void UtilCriticalSectionExit(void);
+bool UtilCryptoAes256Encrypt(uint8_t * data, uint32_t len, uint8_t const * key);
+bool UtilCryptoAes256Decrypt(uint8_t * data, uint32_t len, uint8_t const * key);
 
 
 #ifdef __cplusplus

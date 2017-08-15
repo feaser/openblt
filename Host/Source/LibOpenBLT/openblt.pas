@@ -162,6 +162,10 @@ function BltUtilCrc32Calculate(data: PByte; len: LongWord): LongWord;
                                cdecl; external LIBOPENBLT_LIBNAME;
 function BltUtilTimeGetSystemTime: LongWord; cdecl; external LIBOPENBLT_LIBNAME;
 procedure BltUtilTimeDelayMs(delay: Word); cdecl; external LIBOPENBLT_LIBNAME;
+function BltUtilCryptoAes256Encrypt(data: PByte; len: LongWord; key: PByte): LongWord;
+                                    cdecl; external LIBOPENBLT_LIBNAME;
+function BltUtilCryptoAes256Decrypt(data: PByte; len: LongWord; key: PByte): LongWord;
+                                    cdecl; external LIBOPENBLT_LIBNAME;
 
 
 implementation

@@ -647,6 +647,74 @@ LIBOPENBLT_EXPORT void BltUtilTimeDelayMs(uint16_t delay)
 } /*** end of BltUtilTimeDelayMs ***/
 
 
+/************************************************************************************//**
+** \brief     Encrypts the len-bytes in the specified data-array, using the specified
+**            256-bit (32 bytes) key. The results are written back into the same array.
+** \param     data Pointer to the byte array with data to encrypt. The encrypted bytes
+**            are stored in the same array.
+** \param     len The number of bytes in the data-array to encrypt. It must be a multiple
+**            of 16, as this is the AES256 minimal block size.
+** \param     key The 256-bit encryption key as a array of 32 bytes.
+** \return    BLT_RESULT_OK if successful, BLT_RESULT_ERROR_xxx otherwise.
+**
+****************************************************************************************/
+LIBOPENBLT_EXPORT uint32_t BltUtilCryptoAes256Encrypt(uint8_t * data, uint32_t len,
+                                                      uint8_t const * key)
+{
+  uint32_t result = BLT_RESULT_ERROR_GENERIC;
+
+  /* Check parameters */
+  assert(data != NULL);
+  assert(key != NULL);
+
+  /* Only continue with valid parameters. Also add a block size check for 'len'. */
+  if ( (data != NULL) && (key != NULL) && ((len % 16u) == 0) ) /*lint !e774 */
+  {
+    /* Pass the request on to the utility module. */
+    if (UtilCryptoAes256Encrypt(data, len, key))
+    {
+      result = BLT_RESULT_OK;
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of BltUtilCryptoAes256Encrypt ***/
+
+
+/************************************************************************************//**
+** \brief     Decrypts the len-bytes in the specified data-array, using the specified 256-
+**            bit (32 bytes) key. The results are written back into the same array.
+** \param     data Pointer to the byte array with data to decrypt. The decrypted bytes
+**            are stored in the same array.
+** \param     len The number of bytes in the data-array to decrypt. It must be a multiple
+**            of 16, as this is the AES256 minimal block size.
+** \param     key The 256-bit decryption key as a array of 32 bytes.
+** \return    BLT_RESULT_OK if successful, BLT_RESULT_ERROR_xxx otherwise.
+**
+****************************************************************************************/
+LIBOPENBLT_EXPORT uint32_t BltUtilCryptoAes256Decrypt(uint8_t * data, uint32_t len,
+                                                      uint8_t const * key)
+{
+  uint32_t result = BLT_RESULT_ERROR_GENERIC;
+
+  /* Check parameters */
+  assert(data != NULL);
+  assert(key != NULL);
+
+  /* Only continue with valid parameters. Also add a block size check for 'len'. */
+  if ( (data != NULL) && (key != NULL) && ((len % 16u) == 0) ) /*lint !e774 */
+  {
+    /* Pass the request on to the utility module. */
+    if (UtilCryptoAes256Decrypt(data, len, key))
+    {
+      result = BLT_RESULT_OK;
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of BltUtilCryptoAes256Decrypt ***/
+
+
 /*********************************** end of openblt.c **********************************/
 
  

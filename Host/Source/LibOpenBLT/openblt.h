@@ -213,6 +213,10 @@ LIBOPENBLT_EXPORT uint16_t BltUtilCrc16Calculate(uint8_t const * data, uint32_t 
 LIBOPENBLT_EXPORT uint32_t BltUtilCrc32Calculate(uint8_t const * data, uint32_t len);
 LIBOPENBLT_EXPORT uint32_t BltUtilTimeGetSystemTime(void);
 LIBOPENBLT_EXPORT void BltUtilTimeDelayMs(uint16_t delay);
+LIBOPENBLT_EXPORT uint32_t BltUtilCryptoAes256Encrypt(uint8_t * data, uint32_t len,
+                                                      uint8_t const * key);
+LIBOPENBLT_EXPORT uint32_t BltUtilCryptoAes256Decrypt(uint8_t * data, uint32_t len,
+                                                      uint8_t const * key);
 
 
 #ifdef __cplusplus

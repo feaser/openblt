@@ -35,6 +35,7 @@
 #include <stdbool.h>                        /* for boolean type                        */
 #include <string.h>                         /* for string library                      */
 #include "util.h"                           /* Utility module                          */
+#include "aes256.h"                         /* for AES256 cryptography.                */
 
 
 /****************************************************************************************
@@ -250,6 +251,86 @@ bool UtilFileExtractFilename(char const * fullFilename, char * filenameBuffer)
   /* Give the result back to the caller. */
   return result;
 } /*** end of UtilFileExtractFilename ***/
+
+
+/************************************************************************************//**
+** \brief     Encrypts the len-bytes in the specified data-array, using the specified
+**            256-bit (32 bytes) key. The results are written back into the same array.
+** \param     data Pointer to the byte array with data to encrypt. The encrypted bytes
+**            are stored in the same array.
+** \param     len The number of bytes in the data-array to encrypt. It must be a multiple
+**            of 16, as this is the AES256 minimal block size.
+** \param     key The 256-bit encryption key as a array of 32 bytes.
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+bool UtilCryptoAes256Encrypt(uint8_t * data, uint32_t len, uint8_t const * key)
+{
+  bool result = false;
+  aes256_context ctx;
+
+  /* Check parameters */
+  assert(data != NULL);
+  assert(key != NULL);
+
+  /* Only continue with valid parameters. Also add a block size check for 'len'. */
+  if ( (data != NULL) && (key != NULL) && ((len % 16u) == 0) ) /*lint !e774 */
+  {
+    /* Init context */
+    aes256_init(&ctx, key);
+    /* Encrypt in blocks of 16 bytes. */
+    for (uint32_t i = 0; i < (len / 16u); i++)
+    {
+      aes256_encrypt_ecb(&ctx, &data[i * 16u]);
+    }
+    /* Cleanup */
+    aes256_done(&ctx);
+    /* Set positive result. */
+    result = true;
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of UtilCryptoAes256Encrypt ***/
+
+
+/************************************************************************************//**
+** \brief     Decrypts the len-bytes in the specified data-array, using the specified 256-
+**            bit (32 bytes) key. The results are written back into the same array.
+** \param     data Pointer to the byte array with data to decrypt. The decrypted bytes
+**            are stored in the same array.
+** \param     len The number of bytes in the data-array to decrypt. It must be a multiple
+**            of 16, as this is the AES256 minimal block size.
+** \param     key The 256-bit decryption key as a array of 32 bytes.
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+bool UtilCryptoAes256Decrypt(uint8_t * data, uint32_t len, uint8_t const * key)
+{
+  bool result = false;
+  aes256_context ctx;
+
+  /* Check parameters */
+  assert(data != NULL);
+  assert(key != NULL);
+
+  /* Only continue with valid parameters. Also add a block size check for 'len'. */
+  if ( (data != NULL) && (key != NULL) && ((len % 16u) == 0) ) /*lint !e774 */
+  {
+    /* Init context */
+    aes256_init(&ctx, key);
+    /* Decrypt in blocks of 16 bytes. */
+    for (uint32_t i = 0; i < (len / 16u); i++)
+    {
+      aes256_decrypt_ecb(&ctx, &data[i * 16u]);
+    }
+    /* Cleanup */
+    aes256_done(&ctx);
+    /* Set positive result. */
+    result = true;
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of UtilCryptoAes256Decrypt ***/
 
 
 /*********************************** end of util.c *************************************/
