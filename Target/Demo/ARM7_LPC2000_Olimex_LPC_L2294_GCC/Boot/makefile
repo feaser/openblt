@@ -1,11 +1,11 @@
 #****************************************************************************************
-#|  Description: Makefile for NXP LPC2000 using CodeSourcery GNU GCC compiler toolset
+#|  Description: Makefile for GNU ARM Embedded toolchain.
 #|    File Name: makefile
 #|
 #|---------------------------------------------------------------------------------------
 #|                          C O P Y R I G H T
 #|---------------------------------------------------------------------------------------
-#|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+#|   Copyright (c) 2017  by Feaser    http://www.feaser.com    All rights reserved
 #|
 #|---------------------------------------------------------------------------------------
 #|                            L I C E N S E
@@ -25,111 +25,115 @@
 #****************************************************************************************
 SHELL = sh
 
-#|---------------------------------------------------------------------------------------|
-#| Configure project name                                                                |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Configure project name                                                               |
+#|--------------------------------------------------------------------------------------|
 PROJ_NAME=openblt_olimex_lpc_l2294_20mhz
 
 
-#|---------------------------------------------------------------------------------------|
-#| Speficy project source files                                                          |
-#|---------------------------------------------------------------------------------------|
-PROJ_FILES= \
-blt_conf.h \
-hooks.c \
-main.c \
-extflash.c \
-extflash.h \
-lpc2294.h \
-vectors.c \
-cstart.s \
-../../../Source/boot.c \
-../../../Source/boot.h \
-../../../Source/com.c \
-../../../Source/com.h \
-../../../Source/xcp.c \
-../../../Source/xcp.h \
-../../../Source/backdoor.c \
-../../../Source/backdoor.h \
-../../../Source/cop.c \
-../../../Source/cop.h \
-../../../Source/assert.c \
-../../../Source/assert.h \
-../../../Source/cpu.h \
-../../../Source/can.h \
-../../../Source/uart.h \
-../../../Source/nvm.h \
-../../../Source/timer.h \
-../../../Source/plausibility.h \
-../../../Source/ARM7_LPC2000/types.h \
-../../../Source/ARM7_LPC2000/cpu.c \
-../../../Source/ARM7_LPC2000/can.c \
-../../../Source/ARM7_LPC2000/uart.c \
-../../../Source/ARM7_LPC2000/nvm.c \
-../../../Source/ARM7_LPC2000/timer.c \
-../../../Source/ARM7_LPC2000/flash.c \
-../../../Source/ARM7_LPC2000/flash.h \
-../../../Source/ARM7_LPC2000/GCC/cpu_comp.c
+#|--------------------------------------------------------------------------------------|
+#| Configure tool path                                                                  |
+#|--------------------------------------------------------------------------------------|
+TOOL_PATH=/opt/gcc-arm-none-eabi-5_4-2016q3/bin/
 
 
-#|---------------------------------------------------------------------------------------|
-#| Compiler binaries                                                                     |
-#|---------------------------------------------------------------------------------------|
-CC = arm-none-eabi-gcc
-LN = arm-none-eabi-gcc
-OC = arm-none-eabi-objcopy
-OD = arm-none-eabi-objdump
-AS = arm-none-eabi-as
-SZ = arm-none-eabi-size
+#|--------------------------------------------------------------------------------------|
+#| Collect project files                                                                |
+#|--------------------------------------------------------------------------------------|
+# Recursive wildcard function implementation. Example usages:
+#   $(call rwildcard, , *.c *.h)   
+#     --> Returns all *.c and *.h files in the current directory and below
+#   $(call rwildcard, /lib/, *.c)
+#     --> Returns all *.c files in the /lib directory and below
+rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d)))
+
+# Collect all application files in the current directory and its subdirectories, but 
+# exclude flash-layout.c as this one is directly included in a source file, when used.
+PROJ_FILES  = $(filter-out flash_layout.c, $(call rwildcard, , *.c *.h *.s))
+# Collect bootloader core files
+PROJ_FILES += $(wildcard ../../../Source/*.c)
+PROJ_FILES += $(wildcard ../../../Source/*.h)
+# Collect bootloader port files
+PROJ_FILES += $(wildcard ../../../Source/ARM7_LPC2000/*.c)
+PROJ_FILES += $(wildcard ../../../Source/ARM7_LPC2000/*.h)
+# Collect bootloader port compiler specific files
+PROJ_FILES += $(wildcard ../../../Source/ARM7_LPC2000/GCC/*.c)
+PROJ_FILES += $(wildcard ../../../Source/ARM7_LPC2000/GCC/*.h)
 
 
-#|---------------------------------------------------------------------------------------|
-#| Extract file names                                                                    |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Toolchain binaries                                                                   |
+#|--------------------------------------------------------------------------------------|
+RM = rm
+CC = $(TOOL_PATH)arm-none-eabi-gcc
+LN = $(TOOL_PATH)arm-none-eabi-gcc
+OC = $(TOOL_PATH)arm-none-eabi-objcopy
+OD = $(TOOL_PATH)arm-none-eabi-objdump
+AS = $(TOOL_PATH)arm-none-eabi-gcc
+SZ = $(TOOL_PATH)arm-none-eabi-size
+
+
+#|--------------------------------------------------------------------------------------|
+#| Filter project files
+#|--------------------------------------------------------------------------------------|
 PROJ_ASRCS  = $(filter %.s,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CSRCS  = $(filter %.c,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CHDRS  = $(filter %.h,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
-PROJ_CCMPL  = $(patsubst %.c,%.cpl,$(PROJ_CSRCS))
-PROJ_ACMPL  = $(patsubst %.s,%.cpl,$(PROJ_ASRCS))
 
 
-#|---------------------------------------------------------------------------------------|
-#| Set important path variables                                                          |
-#|---------------------------------------------------------------------------------------|
-VPATH     = $(foreach path,$(sort $(foreach file,$(PROJ_FILES),$(dir $(file)))) $(subst \,/,$(OBJ_PATH)),$(path) :)
-OBJ_PATH  = ./obj
-BIN_PATH  = ./bin
-INC_PATH  = $(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file)))))
-INC_PATH += -I.
-LIB_PATH  = -L./
+#|--------------------------------------------------------------------------------------|
+#| Set important path variables                                                         |
+#|--------------------------------------------------------------------------------------|
+VPATH    = $(foreach path,$(sort $(foreach file,$(PROJ_FILES),$(dir $(file)))) $(subst \,/,$(OBJ_PATH)),$(path) :)
+OBJ_PATH = obj
+BIN_PATH = bin
+INC_PATH = $(patsubst %/,%,$(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file))))))
+INC_PATH += -I./lib
+LIB_PATH  = 
 
 
-#|---------------------------------------------------------------------------------------|
-#| Options for compiler binaries                                                         |
-#|---------------------------------------------------------------------------------------|
-AFLAGS   = -ahls -mapcs-32 -mcpu=arm7tdmi-s -mfpu=softfpa
-CFLAGS   = $(INC_PATH) -O1 -Wall -fmessage-length=0 -mcpu=arm7tdmi-s -g
-CFLAGS  += -Wa,-adhlns="$(OBJ_PATH)/$(subst .o,.lst,$@)"
-LFLAGS   = $(LIB_PATH) -T"memory.x" -g -mcpu=arm7tdmi-s -nostartfiles
-OCFLAGS  = -O ihex
-ODFLAGS  = -x
-SZFLAGS  = -B -d
+#|--------------------------------------------------------------------------------------|
+#| Options for toolchain binaries                                                       |
+#|--------------------------------------------------------------------------------------|
+STDFLAGS    = -mcpu=arm7tdmi-s -mlong-calls -fno-strict-aliasing
+STDFLAGS   += -Wno-unused-but-set-variable
+STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
+OPTFLAGS    = -O1
+CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
+CFLAGS     += -DDEBUG -Dgcc
+CFLAGS     += $(INC_PATH)
+AFLAGS      = $(CFLAGS)
+LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
+LFLAGS     += -Wl,-script="memory.x" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -specs=nano.specs -Wl,--gc-sections $(LIB_PATH)
+OFLAGS      = -O srec
+ODFLAGS     = -x
+SZFLAGS     = -B -d
+RMFLAGS     = -f
 
 
-#|---------------------------------------------------------------------------------------|
-#| Define targets                                                                        |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Specify library files                                                                |
+#|--------------------------------------------------------------------------------------|
+LIBS = 
+
+
+#|--------------------------------------------------------------------------------------|
+#| Define targets                                                                       |
+#|--------------------------------------------------------------------------------------|
 AOBJS = $(patsubst %.s,%.o,$(PROJ_ASRCS))
 COBJS = $(patsubst %.c,%.o,$(PROJ_CSRCS))
 
 
-#|---------------------------------------------------------------------------------------|
-#| Make ALL                                                                              |
-#|---------------------------------------------------------------------------------------|
-all : $(BIN_PATH)/$(PROJ_NAME).hex
+#|--------------------------------------------------------------------------------------|
+#| Make ALL                                                                             |
+#|--------------------------------------------------------------------------------------|
+.PHONY: all
+all: $(BIN_PATH)/$(PROJ_NAME).srec
 
-$(BIN_PATH)/$(PROJ_NAME).hex : $(BIN_PATH)/$(PROJ_NAME).elf
-	@$(OC) $(OCFLAGS) $< $@
+
+$(BIN_PATH)/$(PROJ_NAME).srec : $(BIN_PATH)/$(PROJ_NAME).elf
+	@$(OC) $< $(OFLAGS) $@
 	@$(OD) $(ODFLAGS) $< > $(BIN_PATH)/$(PROJ_NAME).map
 	@echo +++ Summary of memory consumption:
 	@$(SZ) $(SZFLAGS) $<
@@ -137,30 +141,32 @@ $(BIN_PATH)/$(PROJ_NAME).hex : $(BIN_PATH)/$(PROJ_NAME).elf
 
 $(BIN_PATH)/$(PROJ_NAME).elf : $(AOBJS) $(COBJS) 
 	@echo +++ Linking [$(notdir $@)]
-	@$(LN) $(LFLAGS) -o $@ $(patsubst %.o,$(OBJ_PATH)/%.o,$(^F))
+	@$(LN) $(LFLAGS) -o $@ $(patsubst %.o,$(OBJ_PATH)/%.o,$(^F)) $(LIBS)
 
 
-#|---------------------------------------------------------------------------------------|
-#| Compile and assemble                                                                  |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Compile and assemble                                                                 |
+#|--------------------------------------------------------------------------------------|
 $(AOBJS): %.o: %.s $(PROJ_CHDRS)
-	@echo +++ Assembling [$@]
-	@$(AS) $(AFLAGS) $< -o $(OBJ_PATH)/$(@F) > $(subst .o,.lst,$(OBJ_PATH)/$(@F))
+	@echo +++ Assembling [$(notdir $<)]
+	@$(AS) $(AFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
 $(COBJS): %.o: %.c $(PROJ_CHDRS)
-	@echo +++ Compiling [$@]
-	@$(CC) $(CFLAGS) -c -o $(OBJ_PATH)/$(@F) $<
+	@echo +++ Compiling [$(notdir $<)]
+	@$(CC) $(CFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
-#|---------------------------------------------------------------------------------------|
-#| Make CLEAN                                                                            |
-#|---------------------------------------------------------------------------------------|
-clean : 
+
+#|--------------------------------------------------------------------------------------|
+#| Make CLEAN                                                                           |
+#|--------------------------------------------------------------------------------------|
+.PHONY: clean
+clean: 
 	@echo +++ Cleaning build environment
-	@cs-rm -f $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
-	@cs-rm -f $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
-	@cs-rm -f $(patsubst %.o,%.lst,$(foreach file,$(AOBJS),$(OBJ_PATH)/$(file)))
-	@cs-rm -f $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
-	@cs-rm -f $(BIN_PATH)/$(PROJ_NAME).hex $(BIN_PATH)/$(PROJ_NAME).map $(BIN_PATH)/$(PROJ_NAME).elf
+	@$(RM) $(RMFLAGS) $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
+	@$(RM) $(RMFLAGS) $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
+	@$(RM) $(RMFLAGS) $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
+	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
+	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).srec
 	@echo +++ Clean complete
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                
