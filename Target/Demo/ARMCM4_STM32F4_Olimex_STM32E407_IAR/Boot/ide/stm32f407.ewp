@@ -744,7 +744,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32F4\IAR\memory.x</state>
+          <state>$PROJ_DIR$\..\stm32f4xx_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2250,6 +2250,9 @@
       <name>$PROJ_DIR$\..\main.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\startup_stm32f40xx.s</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\usb_bsp.c</name>
     </file>
     <file>
@@ -2282,12 +2285,6 @@
         <name>IAR</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32F4\IAR\cpu_comp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32F4\IAR\cstart.s</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32F4\IAR\vectors.c</name>
         </file>
       </group>
       <file>
