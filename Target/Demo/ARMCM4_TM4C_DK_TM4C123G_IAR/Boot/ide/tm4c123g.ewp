@@ -741,7 +741,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\memory.x</state>
+          <state>$PROJ_DIR$\..\memory.x</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1431,10 +1431,16 @@
       <name>$PROJ_DIR$\..\blt_conf.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\cstart.s</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\hooks.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\vectors.c</name>
     </file>
   </group>
   <group>
@@ -1445,12 +1451,6 @@
         <name>IAR</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\cpu_comp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\cstart.s</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_TM4C\IAR\vectors.c</name>
         </file>
       </group>
       <file>
