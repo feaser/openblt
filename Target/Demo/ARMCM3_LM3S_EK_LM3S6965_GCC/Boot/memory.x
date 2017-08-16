@@ -1,12 +1,12 @@
 MEMORY
 {
-    FLASH (rx) : ORIGIN = 0x00004000, LENGTH = 240K
+    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 32K
     SRAM (rwx) : ORIGIN = 0x20000000, LENGTH = 64K
 }
 
 SECTIONS
 {
-    __STACKSIZE__ = 1024;
+    __STACKSIZE__ = 2048;
 
     .text :
     {
@@ -33,5 +33,6 @@ SECTIONS
         _stack = .;
         . = ALIGN(MAX(_stack + __STACKSIZE__ , .), 4);
         _estack = .;
+        
     } > SRAM
 }

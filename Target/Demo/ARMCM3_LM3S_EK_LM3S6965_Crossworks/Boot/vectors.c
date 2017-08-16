@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_LM3S\Crossworks\vectors.c
+* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_Crossworks\Boot\vectors.c
 * \brief        Bootloader interrupt vector table source file.
-* \ingroup      Target_ARMCM3_LM3S
+* \ingroup      Boot_ARMCM3_LM3S_EK_LM3S6965_Crossworks
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

@@ -53,7 +53,6 @@ reset_handler:
 
   BL	__iar_init_core
 	BL	__iar_init_vfp
-  /* this part makes the difference with function EntryFromProg */
 	BL	__cmain
 
 	REQUIRE __vector_table

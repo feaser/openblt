@@ -732,7 +732,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR\memory.x</state>
+          <state>$PROJ_DIR$\..\LM3S8962.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2022,10 +2022,22 @@
       <name>$PROJ_DIR$\..\blt_conf.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\cstart.s</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\flash_layout.c</name>
+      <excluded>
+        <configuration>Debug</configuration>
+      </excluded>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\hooks.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\vectors.c</name>
     </file>
   </group>
   <group>
@@ -2036,12 +2048,6 @@
         <name>IAR</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR\cpu_comp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR\cstart.s</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S\IAR\vectors.c</name>
         </file>
       </group>
       <file>

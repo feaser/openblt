@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_LM3S\IAR\vectors.c
-* \brief        Bootloader interrupt vector table source file.
-* \ingroup      Target_ARMCM3_LM3S
+* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_GCC\Boot\vectors.c
+* \brief        Bootloader application source file.
+* \ingroup      Boot_ARMCM3_LM3S_EK_LM3S6965_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -33,20 +33,9 @@
 
 
 /****************************************************************************************
-* External functions
+* External data declarations
 ****************************************************************************************/
-extern void reset_handler(void);
-
-
-/****************************************************************************************
-* Type definitions
-****************************************************************************************/
-/** \brief Structure type for vector table entries. */
-typedef union
-{
-  void (*func)(void);                                 /**< for ISR function pointers   */
-  void *ptr;                                          /**< for stack pointer entry     */
-} tIsrFunc;
+extern blt_int32u _estack;                            /* stack end address (memory.x)  */
 
 
 /************************************************************************************//**
@@ -64,14 +53,20 @@ void UnusedISR(void)
 /****************************************************************************************
 *                I N T E R R U P T     V E C T O R     T A B L E
 ****************************************************************************************/
-#pragma language=extended                             /* enable IAR extensions         */
-#pragma segment="CSTACK"
+extern void reset_handler(void);                      /* implemented in cstart.c       */
+/** \brief Structure type for vector table entries. */
+typedef union
+{
+  void (*func)(void);                                 /**< for ISR function pointers   */
+  blt_int32u ptr;                                     /**< for stack pointer entry     */
+} tIsrFunc;
 
 /** \brief Interrupt vector table. */
-__root const tIsrFunc __vector_table[] @ ".intvec" =
+__attribute__((section(".isr_vector")))
+const tIsrFunc _vectab[] =
 {
-  { .ptr = __sfe("CSTACK")    },                      /* the initial stack pointer     */
-  { &reset_handler              },                    /* the reset handler             */
+  { .ptr = (blt_int32u) &_estack },                   /* the initial stack pointer     */
+  { reset_handler               },                    /* the reset handler             */
   { UnusedISR                   },                    /* NMI Handler                   */
   { UnusedISR                   },                    /* Hard Fault Handler            */
   { UnusedISR                   },                    /* MPU Fault Handler             */

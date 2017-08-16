@@ -38,6 +38,8 @@ PROJ_FILES= \
 blt_conf.h \
 hooks.c \
 main.c \
+vectors.c \
+cstart.c \
 ./lib/inc/hw_flash.h \
 ./lib/inc/hw_gpio.h \
 ./lib/inc/hw_ints.h \
@@ -88,9 +90,7 @@ main.c \
 ../../../Source/ARMCM3_LM3S/timer.c \
 ../../../Source/ARMCM3_LM3S/flash.c \
 ../../../Source/ARMCM3_LM3S/flash.h \
-../../../Source/ARMCM3_LM3S/GCC/vectors.c \
-../../../Source/ARMCM3_LM3S/GCC/cpu_comp.c \
-../../../Source/ARMCM3_LM3S/GCC/cstart.c
+../../../Source/ARMCM3_LM3S/GCC/cpu_comp.c
 
 
 #|---------------------------------------------------------------------------------------|
@@ -122,7 +122,7 @@ OBJ_PATH = obj
 BIN_PATH = bin
 INC_PATH = $(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file)))))
 INC_PATH += -I. -I./lib
-LIB_PATH  = -L../../../Source/ARMCM3_LM3S/GCC/
+LIB_PATH  = -L./
 
 
 #|---------------------------------------------------------------------------------------|
