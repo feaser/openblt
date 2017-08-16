@@ -733,7 +733,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_EFM32\IAR\memory.x</state>
+          <state>$PROJ_DIR$\..\memory.x</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2179,12 +2179,6 @@
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_EFM32\IAR\cpu_comp.c</name>
         </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_EFM32\IAR\cstart.s</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_EFM32\IAR\vectors.c</name>
-        </file>
       </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_EFM32\cpu.c</name>
@@ -2260,6 +2254,12 @@
       <name>$PROJ_DIR$\..\..\..\..\Source\xcp.h</name>
     </file>
   </group>
+  <file>
+    <name>$PROJ_DIR$\..\cstart.s</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\..\vectors.c</name>
+  </file>
 </project>
 
 

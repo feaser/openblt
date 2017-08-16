@@ -38,6 +38,8 @@ PROJ_FILES= \
 blt_conf.h \
 hooks.c \
 main.c \
+vectors.c \
+cstart.c \
 ./lib/CMSIS/CM3/CoreSupport/core_cm3.c \
 ./lib/CMSIS/CM3/CoreSupport/core_cm3.h \
 ./lib/CMSIS/CM3/CoreSupport/core_cmFunc.h \
@@ -131,9 +133,7 @@ main.c \
 ../../../Source/ARMCM3_EFM32/timer.c \
 ../../../Source/ARMCM3_EFM32/flash.c \
 ../../../Source/ARMCM3_EFM32/flash.h \
-../../../Source/ARMCM3_EFM32/GCC/vectors.c \
-../../../Source/ARMCM3_EFM32/GCC/cpu_comp.c \
-../../../Source/ARMCM3_EFM32/GCC/cstart.c
+../../../Source/ARMCM3_EFM32/GCC/cpu_comp.c
 
 
 #|---------------------------------------------------------------------------------------|
@@ -165,7 +165,7 @@ OBJ_PATH = obj
 BIN_PATH = bin
 INC_PATH = $(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file)))))
 INC_PATH += -I. -I./lib
-LIB_PATH  = -L../../../Source/ARMCM3_EFM32/GCC/
+LIB_PATH  = -L./
 
 
 #|---------------------------------------------------------------------------------------|

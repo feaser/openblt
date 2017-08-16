@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_EFM32\GCC\vectors.c
+* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC\Boot\vectors.c
 * \brief        Bootloader interrupt vector table source file.
-* \ingroup      Target_ARMCM3_EFM32
+* \ingroup      Boot_ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
