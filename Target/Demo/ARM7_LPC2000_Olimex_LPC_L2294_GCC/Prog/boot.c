@@ -275,6 +275,8 @@ static unsigned char UartReceiveByte(unsigned char *data)
 #define CAN_TR          (0x01)
 /** \brief Select tx buffer 1 for transmit. */
 #define CAN_STB1        (0x20)
+/** \brief Frame format bit. 0 for 11-bit and 1 for 29-bit CAN identifiers. */
+#define CAN_FF          (0x80000000)
 
 
 /****************************************************************************************
@@ -395,29 +397,44 @@ static void BootComCanInit(void)
 ****************************************************************************************/
 static void BootComCanCheckActivationRequest(void)
 {
+  unsigned long rxMsgId;
   unsigned char data[2];
+  unsigned char idMatchFound = 0;
   
   /* check if a new message was received */
   if ((CAN1SR & CAN_RBS) == 0)
   {
     return;
   }
-  /* see if this is the message identifier that we are interested in */
-  if (CAN1RID != BOOT_COM_CAN_RX_MSG_ID)
+  /* read out the CAN message identifier */
+  rxMsgId = CAN1RID;
+  /* was is a 29-bit extended CAN identifier? */
+  if ((CAN1RFS & CAN_FF) != 0)
   {
-    return;
+    /* set mask bit. */
+    rxMsgId |= 0x80000000;
   }
-  /* store the message data */
-  data[0] = (unsigned char)CAN1RDA; 
-  data[1] = (unsigned char)(CAN1RDA >> 8); 
+  /* see if this is the message identifier that we are interested in */
+  if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)
+  {
+    /* store the message data */
+    data[0] = (unsigned char)CAN1RDA; 
+    data[1] = (unsigned char)(CAN1RDA >> 8); 
+    /* set matched flag. */
+    idMatchFound = 1;
+  }
   /* release the receive buffer */
   CAN1CMR = CAN_RRB;
-  /* check if this was an XCP CONNECT command */
-  if ((data[0] == 0xff) && (data[1] == 0x00))
+  /* check if a match was found. */
+  if (idMatchFound == 1)
   {
-    /* connection request received so start the bootloader */
-    BootActivate();
-   }
+    /* check if this was an XCP CONNECT command */
+    if ((data[0] == 0xff) && (data[1] == 0x00))
+    {
+      /* connection request received so start the bootloader */
+      BootActivate();
+    }
+  }  
 } /*** end of BootComCanCheckActivationRequest ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 

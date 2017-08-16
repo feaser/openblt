@@ -49,6 +49,8 @@
 #define CAN_TR          (0x01)
 /** \brief Select tx buffer 1 for transmit bit. */
 #define CAN_STB1        (0x20)
+/** \brief Frame format bit. 0 for 11-bit and 1 for 29-bit CAN identifiers. */
+#define CAN_FF          (0x80000000)
 
 
 /****************************************************************************************
@@ -76,6 +78,8 @@
 #define CAN1CMR         (*((volatile blt_int32u *) 0xE0044004))
 /** \brief CAN1SR CAN controller register. */
 #define CAN1SR          (*((volatile blt_int32u *) 0xE004401C))
+/** \brief CAN1RFS CAN controller register. */
+#define CAN1RFS         (*((volatile blt_int32u *) 0xE0044020))
 /** \brief CAN1RID CAN controller register. */
 #define CAN1RID         (*((volatile blt_int32u *) 0xE0044024))
 /** \brief CAN1RDA CAN controller register. */
@@ -216,6 +220,14 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   CAN1TFI1 = (len << 16);
   /* write the message identifier */
   CAN1TID1 = BOOT_COM_CAN_TX_MSG_ID;
+  /* is it a 29-bit CAN identifier? */
+  if ( (BOOT_COM_CAN_TX_MSG_ID & 0x80000000) != 0)
+  {
+    /* configure identifier as 29-bit extended. */
+    CAN1TFI1 |= CAN_FF;
+    /* Reset the mask bit. */
+    CAN1TID1 &= ~0x80000000;
+  }
   /* write the first set of 4 data bytes */
   CAN1TDA1 = (data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
   /* write the second set of 4 data bytes */
@@ -239,29 +251,40 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool CanReceivePacket(blt_int8u *data)
 {
+  blt_int32u rxMsgId;
+  blt_bool result = BLT_FALSE;
+  
   /* check if a new message was received */
-  if ((CAN1SR & CAN_RBS) == 0)
+  if ((CAN1SR & CAN_RBS) != 0)
   {
-    return BLT_FALSE;
+    /* read out the CAN message identifier */
+    rxMsgId = CAN1RID;
+    /* was is a 29-bit extended CAN identifier? */
+    if ((CAN1RFS & CAN_FF) != 0)
+    {
+      /* set mask bit. */
+      rxMsgId |= 0x80000000;
+    }
+    /* see if this is the message identifier that we are interested in */
+    if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)
+    {
+      /* store the message data */
+      data[0] = (blt_int8u)CAN1RDA;
+      data[1] = (blt_int8u)(CAN1RDA >> 8);
+      data[2] = (blt_int8u)(CAN1RDA >> 16);
+      data[3] = (blt_int8u)(CAN1RDA >> 24);
+      data[4] = (blt_int8u)CAN1RDB;
+      data[5] = (blt_int8u)(CAN1RDB >> 8);
+      data[6] = (blt_int8u)(CAN1RDB >> 16);
+      data[7] = (blt_int8u)(CAN1RDB >> 24);
+      /* update the result. */
+      result = BLT_TRUE;
+    }
+    /* release the receive buffer */
+    CAN1CMR = CAN_RRB;
   }
-  /* see if this is the message identifier that we are interested in */
-  if (CAN1RID != BOOT_COM_CAN_RX_MSG_ID)
-  {
-    return BLT_FALSE;
-  }
-  /* store the message data */
-  data[0] = (blt_int8u)CAN1RDA;
-  data[1] = (blt_int8u)(CAN1RDA >> 8);
-  data[2] = (blt_int8u)(CAN1RDA >> 16);
-  data[3] = (blt_int8u)(CAN1RDA >> 24);
-  data[4] = (blt_int8u)CAN1RDB;
-  data[5] = (blt_int8u)(CAN1RDB >> 8);
-  data[6] = (blt_int8u)(CAN1RDB >> 16);
-  data[7] = (blt_int8u)(CAN1RDB >> 24);
-  /* release the receive buffer */
-  CAN1CMR = CAN_RRB;
-  /* inform called that a new data was received */
-  return BLT_TRUE;
+  /* give the result back to the caller. */
+  return result;
 } /*** end of CanReceivePacket ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 

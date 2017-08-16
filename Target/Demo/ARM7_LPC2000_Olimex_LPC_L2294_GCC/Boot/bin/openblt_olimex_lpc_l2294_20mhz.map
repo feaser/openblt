@@ -7,32 +7,32 @@ start address 0x00000000
 
 Program Header:
     LOAD off    0x00010000 vaddr 0x00000000 paddr 0x00000000 align 2**16
-         filesz 0x00001dac memsz 0x00001dac flags r-x
-    LOAD off    0x00020200 vaddr 0x40000200 paddr 0x00001dac align 2**16
+         filesz 0x00001dbc memsz 0x00001dbc flags r-x
+    LOAD off    0x00020200 vaddr 0x40000200 paddr 0x00001dbc align 2**16
          filesz 0x00000001 memsz 0x00000001 flags rw-
-    LOAD off    0x00020204 vaddr 0x40000204 paddr 0x00001dad align 2**16
+    LOAD off    0x00020204 vaddr 0x40000204 paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x0000004c flags rw-
-    LOAD off    0x00020250 vaddr 0x40000250 paddr 0x00001dad align 2**16
+    LOAD off    0x00020250 vaddr 0x40000250 paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000040 flags rw-
-    LOAD off    0x00020290 vaddr 0x40000290 paddr 0x00001dad align 2**16
+    LOAD off    0x00020290 vaddr 0x40000290 paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000001 flags rw-
-    LOAD off    0x00020294 vaddr 0x40000294 paddr 0x00001dad align 2**16
+    LOAD off    0x00020294 vaddr 0x40000294 paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000004 flags rw-
-    LOAD off    0x00020298 vaddr 0x40000298 paddr 0x00001dad align 2**16
+    LOAD off    0x00020298 vaddr 0x40000298 paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000041 flags rw-
-    LOAD off    0x000202d9 vaddr 0x400002d9 paddr 0x00001dad align 2**16
+    LOAD off    0x000202d9 vaddr 0x400002d9 paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000001 flags rw-
-    LOAD off    0x000202da vaddr 0x400002da paddr 0x00001dad align 2**16
+    LOAD off    0x000202da vaddr 0x400002da paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000001 flags rw-
-    LOAD off    0x000202dc vaddr 0x400002dc paddr 0x00001dad align 2**16
+    LOAD off    0x000202dc vaddr 0x400002dc paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000004 flags rw-
-    LOAD off    0x000202e0 vaddr 0x400002e0 paddr 0x00001dad align 2**16
+    LOAD off    0x000202e0 vaddr 0x400002e0 paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000204 flags rw-
-    LOAD off    0x000204e4 vaddr 0x400004e4 paddr 0x00001dad align 2**16
+    LOAD off    0x000204e4 vaddr 0x400004e4 paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000204 flags rw-
-    LOAD off    0x000206e8 vaddr 0x400006e8 paddr 0x00001dad align 2**16
+    LOAD off    0x000206e8 vaddr 0x400006e8 paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000004 flags rw-
-    LOAD off    0x000206ec vaddr 0x400006ec paddr 0x00001dad align 2**16
+    LOAD off    0x000206ec vaddr 0x400006ec paddr 0x00001dbd align 2**16
          filesz 0x00000000 memsz 0x00000004 flags rw-
 private flags = 5000200: [Version5 EABI] [soft-float ABI]
 
@@ -142,65 +142,65 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
  51 .text.CanTransmitPacket 000000d4  00001b58  00001b58  00011b58  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 52 .text.CanReceivePacket 000000a8  00001c2c  00001c2c  00011c2c  2**2
+ 52 .text.CanReceivePacket 000000b8  00001c2c  00001c2c  00011c2c  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 53 .text.TimerInit 00000048  00001cd4  00001cd4  00011cd4  2**2
+ 53 .text.TimerInit 00000048  00001ce4  00001ce4  00011ce4  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 54 .text.TimerReset 00000020  00001d1c  00001d1c  00011d1c  2**2
+ 54 .text.TimerReset 00000020  00001d2c  00001d2c  00011d2c  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 55 .text.TimerUpdate 00000038  00001d3c  00001d3c  00011d3c  2**2
+ 55 .text.TimerUpdate 00000038  00001d4c  00001d4c  00011d4c  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 56 .text.TimerGet 00000028  00001d74  00001d74  00011d74  2**2
+ 56 .text.TimerGet 00000028  00001d84  00001d84  00011d84  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 57 .text.CpuIrqDisable 00000010  00001d9c  00001d9c  00011d9c  2**2
+ 57 .text.CpuIrqDisable 00000010  00001dac  00001dac  00011dac  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 58 .data.comActiveInterface 00000001  40000200  00001dac  00020200  2**0
+ 58 .data.comActiveInterface 00000001  40000200  00001dbc  00020200  2**0
                   CONTENTS, ALLOC, LOAD, DATA
- 59 .bss.xcpInfo  0000004c  40000204  00001dad  00020204  2**2
+ 59 .bss.xcpInfo  0000004c  40000204  00001dbd  00020204  2**2
                   ALLOC
- 60 .bss.xcpCtoReqPacket.4275 00000040  40000250  00001dad  00020250  2**2
+ 60 .bss.xcpCtoReqPacket.4275 00000040  40000250  00001dbd  00020250  2**2
                   ALLOC
- 61 .bss.backdoorOpen 00000001  40000290  00001dad  00020290  2**0
+ 61 .bss.backdoorOpen 00000001  40000290  00001dbd  00020290  2**0
                   ALLOC
- 62 .bss.backdoorOpenTime 00000004  40000294  00001dad  00020294  2**2
+ 62 .bss.backdoorOpenTime 00000004  40000294  00001dbd  00020294  2**2
                   ALLOC
- 63 .bss.xcpCtoReqPacket.4280 00000041  40000298  00001dad  00020298  2**2
+ 63 .bss.xcpCtoReqPacket.4280 00000041  40000298  00001dbd  00020298  2**2
                   ALLOC
- 64 .bss.xcpCtoRxLength.4281 00000001  400002d9  00001dad  000202d9  2**0
+ 64 .bss.xcpCtoRxLength.4281 00000001  400002d9  00001dbd  000202d9  2**0
                   ALLOC
- 65 .bss.xcpCtoRxInProgress.4282 00000001  400002da  00001dad  000202da  2**0
+ 65 .bss.xcpCtoRxInProgress.4282 00000001  400002da  00001dbd  000202da  2**0
                   ALLOC
- 66 .bss.xcpCtoRxStartTime.4283 00000004  400002dc  00001dad  000202dc  2**2
+ 66 .bss.xcpCtoRxStartTime.4283 00000004  400002dc  00001dbd  000202dc  2**2
                   ALLOC
- 67 .bss.bootBlockInfo 00000204  400002e0  00001dad  000202e0  2**2
+ 67 .bss.bootBlockInfo 00000204  400002e0  00001dbd  000202e0  2**2
                   ALLOC
- 68 .bss.blockInfo 00000204  400004e4  00001dad  000204e4  2**2
+ 68 .bss.blockInfo 00000204  400004e4  00001dbd  000204e4  2**2
                   ALLOC
- 69 .bss.millisecond_counter 00000004  400006e8  00001dad  000206e8  2**2
+ 69 .bss.millisecond_counter 00000004  400006e8  00001dbd  000206e8  2**2
                   ALLOC
- 70 .bss.free_running_counter_last 00000004  400006ec  00001dad  000206ec  2**2
+ 70 .bss.free_running_counter_last 00000004  400006ec  00001dbd  000206ec  2**2
                   ALLOC
  71 .ARM.attributes 0000002c  00000000  00000000  00020201  2**0
                   CONTENTS, READONLY
  72 .comment      0000006e  00000000  00000000  0002022d  2**0
                   CONTENTS, READONLY
- 73 .debug_line   0000150f  00000000  00000000  0002029b  2**0
+ 73 .debug_line   00001519  00000000  00000000  0002029b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 74 .debug_info   00002136  00000000  00000000  000217aa  2**0
+ 74 .debug_info   00002154  00000000  00000000  000217b4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 75 .debug_abbrev 00000edf  00000000  00000000  000238e0  2**0
+ 75 .debug_abbrev 00000edf  00000000  00000000  00023908  2**0
                   CONTENTS, READONLY, DEBUGGING
- 76 .debug_aranges 00000358  00000000  00000000  000247c0  2**3
+ 76 .debug_aranges 00000358  00000000  00000000  000247e8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 77 .debug_ranges 00000298  00000000  00000000  00024b18  2**0
+ 77 .debug_ranges 00000298  00000000  00000000  00024b40  2**0
                   CONTENTS, READONLY, DEBUGGING
- 78 .debug_macro  00001d6a  00000000  00000000  00024db0  2**0
+ 78 .debug_macro  00001d76  00000000  00000000  00024dd8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 79 .debug_str    000080ff  00000000  00000000  00026b1a  2**0
+ 79 .debug_str    0000814b  00000000  00000000  00026b4e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 80 .debug_frame  00000754  00000000  00000000  0002ec1c  2**2
+ 80 .debug_frame  00000754  00000000  00000000  0002ec9c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 81 .debug_loc    00000f18  00000000  00000000  0002f370  2**0
+ 81 .debug_loc    00000f54  00000000  00000000  0002f3f0  2**0
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00000000 l    d  .text	00000000 .text
@@ -256,11 +256,11 @@ SYMBOL TABLE:
 00001a38 l    d  .text.CanInit	00000000 .text.CanInit
 00001b58 l    d  .text.CanTransmitPacket	00000000 .text.CanTransmitPacket
 00001c2c l    d  .text.CanReceivePacket	00000000 .text.CanReceivePacket
-00001cd4 l    d  .text.TimerInit	00000000 .text.TimerInit
-00001d1c l    d  .text.TimerReset	00000000 .text.TimerReset
-00001d3c l    d  .text.TimerUpdate	00000000 .text.TimerUpdate
-00001d74 l    d  .text.TimerGet	00000000 .text.TimerGet
-00001d9c l    d  .text.CpuIrqDisable	00000000 .text.CpuIrqDisable
+00001ce4 l    d  .text.TimerInit	00000000 .text.TimerInit
+00001d2c l    d  .text.TimerReset	00000000 .text.TimerReset
+00001d4c l    d  .text.TimerUpdate	00000000 .text.TimerUpdate
+00001d84 l    d  .text.TimerGet	00000000 .text.TimerGet
+00001dac l    d  .text.CpuIrqDisable	00000000 .text.CpuIrqDisable
 40000200 l    d  .data.comActiveInterface	00000000 .data.comActiveInterface
 40000204 l    d  .bss.xcpInfo	00000000 .bss.xcpInfo
 40000250 l    d  .bss.xcpCtoReqPacket.4275	00000000 .bss.xcpCtoReqPacket.4275
@@ -372,18 +372,18 @@ e01fc040 l       *ABS*	00000000 MEMMAP
 00000ba4 g     F .text.ComInit	00000054 ComInit
 000016f0 g     F .text.FlashWrite	0000008c FlashWrite
 00000f08 g     F .text.AssertFailure	00000018 AssertFailure
-00001c2c g     F .text.CanReceivePacket	000000a8 CanReceivePacket
+00001c2c g     F .text.CanReceivePacket	000000b8 CanReceivePacket
 000003a8 g     F .text.IRQ_ISR	00000028 IRQ_ISR
-00001d3c g     F .text.TimerUpdate	00000038 TimerUpdate
+00001d4c g     F .text.TimerUpdate	00000038 TimerUpdate
 00000518 g     F .text.XcpPacketTransmitted	00000014 XcpPacketTransmitted
 00000bf8 g     F .text.ComTask	00000088 ComTask
 00000e48 g     F .text.BootInit	0000006c BootInit
 00000e00 g     F .text.BackDoorInit	00000048 BackDoorInit
 00000f04 g     F .text.CopService	00000004 CopService
 00000368 g       .text	00000000 _etext
-00001d9c g     F .text.CpuIrqDisable	00000010 CpuIrqDisable
+00001dac g     F .text.CpuIrqDisable	00000010 CpuIrqDisable
 00001a30 g     F .text.FlashGetUserProgBaseAddress	00000008 FlashGetUserProgBaseAddress
-00001d1c g     F .text.TimerReset	00000020 TimerReset
+00001d2c g     F .text.TimerReset	00000020 TimerReset
 00000eb4 g     F .text.BootTask	0000004c BootTask
 000018e8 g     F .text.FlashWriteChecksum	00000090 FlashWriteChecksum
 40000201 g       .data.comActiveInterface	00000000 _bss_start
@@ -432,8 +432,8 @@ e01fc040 l       *ABS*	00000000 MEMMAP
 00000224  w    F .text	00000004 .hidden __aeabi_idiv0
 00000cf0 g     F .text.ComGetActiveInterfaceMaxRxLen	0000003c ComGetActiveInterfaceMaxRxLen
 00000d84 g     F .text.BackDoorCheck	0000007c BackDoorCheck
-00001d74 g     F .text.TimerGet	00000028 TimerGet
+00001d84 g     F .text.TimerGet	00000028 TimerGet
 00000204 g     F .text	00000020 .hidden __aeabi_idivmod
-00001cd4 g     F .text.TimerInit	00000048 TimerInit
+00001ce4 g     F .text.TimerInit	00000048 TimerInit
 
 
