@@ -1,37 +1,44 @@
-<!DOCTYPE CrossStudio_for_ARM_Session_File>
+<!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks/>
- <Breakpoints/>
+ <Breakpoints>
+  <Exceptions set="MemManage;UsageFault_Coprocessor;UsageFault_CheckingError;UsageFault_StateError;BusFault;ExceptionEntryReturnFault;HardFault" />
+ </Breakpoints>
  <ExecutionProfileWindow/>
+ <FrameBufferWindow>
+  <FrameBufferWindow addressText="" bufferWidth="-1" bufferHeight="-1" addressSpace="" />
+ </FrameBufferWindow>
  <Memory1>
-  <MemoryWindow autoEvaluate="0" addressText="" numColumns="8" sizeText="" dataSize="1" radix="16" name="" addressSpace="" />
+  <MemoryWindow autoEvaluate="0" addressText="" addressOrder="0" refreshPeriod="0" columnsText="" sizeText="" viewMode="0" dataSize="1" radix="16" name="openblt_ek_lm3s8962" addressSpace="" />
  </Memory1>
  <Memory2>
-  <MemoryWindow autoEvaluate="0" addressText="" numColumns="8" sizeText="" dataSize="1" radix="16" name="" addressSpace="" />
+  <MemoryWindow autoEvaluate="0" addressText="" addressOrder="0" refreshPeriod="0" columnsText="" sizeText="" viewMode="0" dataSize="1" radix="16" name="openblt_ek_lm3s8962" addressSpace="" />
  </Memory2>
  <Memory3>
-  <MemoryWindow autoEvaluate="0" addressText="" numColumns="8" sizeText="" dataSize="1" radix="16" name="" addressSpace="" />
+  <MemoryWindow autoEvaluate="0" addressText="" addressOrder="0" refreshPeriod="0" columnsText="" sizeText="" viewMode="0" dataSize="1" radix="16" name="openblt_ek_lm3s8962" addressSpace="" />
  </Memory3>
  <Memory4>
-  <MemoryWindow autoEvaluate="0" addressText="" numColumns="8" sizeText="" dataSize="1" radix="16" name="" addressSpace="" />
+  <MemoryWindow autoEvaluate="0" addressText="" addressOrder="0" refreshPeriod="0" columnsText="" sizeText="" viewMode="0" dataSize="1" radix="16" name="openblt_ek_lm3s8962" addressSpace="" />
  </Memory4>
  <Project>
   <ProjectSessionItem path="lm3s8962_crossworks" name="unnamed" />
   <ProjectSessionItem path="lm3s8962_crossworks;openblt_ek_lm3s8962" name="unnamed" />
   <ProjectSessionItem path="lm3s8962_crossworks;openblt_ek_lm3s8962;Source Files" name="unnamed" />
+  <ProjectSessionItem path="lm3s8962_crossworks;openblt_ek_lm3s8962;Source Files;Demo" name="unnamed" />
+  <ProjectSessionItem path="lm3s8962_crossworks;openblt_ek_lm3s8962;Source Files;Demo;Boot" name="unnamed" />
   <ProjectSessionItem path="lm3s8962_crossworks;openblt_ek_lm3s8962;Source Files;Source" name="unnamed" />
  </Project>
  <Register1>
-  <RegisterWindow openNodes="" binaryNodes="" hiddenNodes="" unsignedNodes="" visibleGroups="" decimalNodes="" octalNodes="" asciiNodes="" name="" />
+  <RegisterWindow openNodes="" binaryNodes="" unsignedNodes="" decimalNodes="" octalNodes="" asciiNodes="" visibleNodes="" name="openblt_ek_lm3s8962" />
  </Register1>
  <Register2>
-  <RegisterWindow openNodes="" binaryNodes="" hiddenNodes="" unsignedNodes="" visibleGroups="" decimalNodes="" octalNodes="" asciiNodes="" name="" />
+  <RegisterWindow openNodes="" binaryNodes="" unsignedNodes="" decimalNodes="" octalNodes="" asciiNodes="" visibleNodes="" name="openblt_ek_lm3s8962" />
  </Register2>
  <Register3>
-  <RegisterWindow openNodes="" binaryNodes="" hiddenNodes="" unsignedNodes="" visibleGroups="" decimalNodes="" octalNodes="" asciiNodes="" name="" />
+  <RegisterWindow openNodes="" binaryNodes="" unsignedNodes="" decimalNodes="" octalNodes="" asciiNodes="" visibleNodes="" name="openblt_ek_lm3s8962" />
  </Register3>
  <Register4>
-  <RegisterWindow openNodes="" binaryNodes="" hiddenNodes="" unsignedNodes="" visibleGroups="" decimalNodes="" octalNodes="" asciiNodes="" name="" />
+  <RegisterWindow openNodes="" binaryNodes="" unsignedNodes="" decimalNodes="" octalNodes="" asciiNodes="" visibleNodes="" name="openblt_ek_lm3s8962" />
  </Register4>
  <TargetWindow programAction="" uploadFileType="" programLoadAddress="" programSize="" uploadFileName="" uploadMemoryInterface="" programFileName="" uploadStartAddress="" programFileType="" uploadSize="" programMemoryInterface="" />
  <TraceWindow>
@@ -50,9 +57,8 @@
   <Watches active="0" update="Never" />
  </Watch4>
  <Files>
-  <SessionOpenFile useTextEdit="1" useBinaryEdit="0" codecName="Latin1" x="0" debugPath="C:\Work\software\OpenBLT\Target\Demo\ARMCM3_LM3S_EK_LM3S8962_Crossworks\Boot\main.c" y="7" path="C:\Work\software\OpenBLT\Target\Demo\ARMCM3_LM3S_EK_LM3S8962_Crossworks\Boot\main.c" left="0" selected="0" name="unnamed" top="0" />
-  <SessionOpenFile useTextEdit="1" useBinaryEdit="0" codecName="Latin1" x="0" debugPath="C:\Work\software\OpenBLT\Target\Demo\ARMCM3_LM3S_EK_LM3S8962_Crossworks\Boot\blt_conf.h" y="51" path="C:\Work\software\OpenBLT\Target\Demo\ARMCM3_LM3S_EK_LM3S8962_Crossworks\Boot\blt_conf.h" left="0" selected="0" name="unnamed" top="51" />
-  <SessionOpenFile useTextEdit="1" useBinaryEdit="0" codecName="Latin1" x="0" debugPath="C:\Work\software\OpenBLT\Target\Source\backdoor.c" y="26" path="C:\Work\software\OpenBLT\Target\Source\backdoor.c" left="0" selected="1" name="unnamed" top="24" />
+  <SessionOpenFile useTextEdit="1" useBinaryEdit="0" codecName="Latin1" x="0" debugPath="../main.c" y="54" path="../main.c" left="0" selected="1" name="unnamed" top="19" />
+  <SessionOpenFile useTextEdit="1" useBinaryEdit="0" codecName="Latin1" x="63" debugPath="../blt_conf.h" y="80" path="../blt_conf.h" left="0" selected="0" name="unnamed" top="63" />
  </Files>
- <ARMCrossStudioWindow activeProject="openbtl_ek_lm3s8962" autoConnectTarget="Luminary USB Debug" debugSearchFileMap="" fileDialogInitialDirectory="C:\Work\software\OpenBLT\Target\Source\ARMCM3_LM3S\Crossworks" fileDialogDefaultFilter="*.c" autoConnectCapabilities="388991" debugSearchPath="" buildConfiguration="THUMB Debug" />
+ <ARMCrossStudioWindow activeProject="openblt_ek_lm3s8962" autoConnectTarget="Texas Instruments ICDI" debugSearchFileMap="" fileDialogInitialDirectory="C:/Work/software/OpenBLT/Target/Source/ARMCM3_LM3S/Crossworks" fileDialogDefaultFilter="*.c" autoConnectCapabilities="388991" debugSearchPath="" buildConfiguration="THUMB Debug" />
 </session>

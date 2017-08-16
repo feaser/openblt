@@ -144,6 +144,14 @@ void CanInit(void)
   rxMsgObject.ulMsgIDMask = 0x7ff;
   rxMsgObject.ulFlags = MSG_OBJ_USE_ID_FILTER;
   rxMsgObject.ulMsgLen = 8;
+  /* is it a 29-bit extended CAN identifier? */
+  if ((BOOT_COM_CAN_RX_MSG_ID & 0x80000000) != 0)
+  {
+    /* configure reception acceptance filter for 29-bit CAN identifier. */
+    rxMsgObject.ulMsgID &= ~0x80000000;
+    rxMsgObject.ulMsgIDMask = 0x1fffffff;
+    rxMsgObject.ulFlags |= MSG_OBJ_EXTENDED_ID;
+  }
   CANMessageSet(CAN0_BASE, CAN_RX_MSGOBJECT_IDX+1, &rxMsgObject, MSG_OBJ_TYPE_RX);
 } /*** end of CanInit ***/
 
@@ -167,6 +175,12 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   /* prepare the message and submit it for transmission */
   msgObject.ulMsgID = BOOT_COM_CAN_TX_MSG_ID;
   msgObject.ulFlags = 0;
+  /* is it a 29-bit extended CAN identifier? */
+  if ((BOOT_COM_CAN_TX_MSG_ID & 0x80000000) != 0)
+  {
+    msgObject.ulMsgID &= ~0x80000000;
+    msgObject.ulFlags |= MSG_OBJ_EXTENDED_ID;
+  }
   msgObject.ulMsgLen = len;
   msgObject.pucMsgData = data;
   CANMessageSet(CAN0_BASE, CAN_TX_MSGOBJECT_IDX+1, &msgObject, MSG_OBJ_TYPE_TX);
