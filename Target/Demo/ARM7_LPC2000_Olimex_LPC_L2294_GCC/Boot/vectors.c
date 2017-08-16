@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source\ARM7_LPC2000\Crossworks\cpu_comp.c
-* \brief        Bootloader cpu module source file.
-* \ingroup      Target_ARM7_LPC2000
+* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_GCC\Boot\vectors.c
+* \brief        Bootloader interrupt vectors source file.
+* \ingroup      Boot_ARM7_LPC2000_Olimex_LPC_L2294_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -26,66 +26,55 @@
 * \endinternal
 ****************************************************************************************/
 
+
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 
 
-/************************************************************************************//**
-** \brief     Obtains current value of CPSR CPU register. Derived from a sample by R O 
-**            Software that is Copyright 2004, R O SoftWare, and can be used for hobby 
-**            or commercial purposes.
-** \return    CPSR value.
-**
+/****************************************************************************************
+* Function prototypes
 ****************************************************************************************/
-static blt_int32u IrqGetCPSR(void)
-{
-  blt_int32u retval;
-  __asm__ volatile (" mrs  %0, cpsr" : "=r" (retval) : /* no inputs */  );
-  return retval;
-} /*** end of IrqGetCPSR ***/
+void __attribute__((interrupt("FIQ")))   FIQ_ISR(void);
+void __attribute__((interrupt("IRQ")))   IRQ_ISR(void);
+void __attribute__((interrupt("UNDEF"))) UNDEF_ISR(void);
 
 
 /************************************************************************************//**
-** \brief     Update value of CPSR CPU register. Derived from a sample by R O 
-**            Software that is Copyright 2004, R O SoftWare, and can be used for hobby 
-**            or commercial purposes.
-** \param     val CPSR value.
+** \brief     FIQ exception routine.
 ** \return    none.
 **
 ****************************************************************************************/
-static void IrqSetCPSR(blt_int32u val)
+void FIQ_ISR(void)
 {
-  __asm__ volatile (" msr  cpsr, %0" : /* no outputs */ : "r" (val)  );
-} /*** end of IrqSetCPSR ***/
+  /* unexpected interrupt so trigger assertion */
+  ASSERT_RT(BLT_FALSE);
+} /*** end of FIQ_ISR ***/
 
 
 /************************************************************************************//**
-** \brief     Disable global interrupts.
+** \brief     IRQ exception routine.
 ** \return    none.
 **
 ****************************************************************************************/
-void CpuIrqDisable(void)
+void IRQ_ISR(void)
 {
-  blt_int32u _cpsr;
-  
-  _cpsr = IrqGetCPSR();
-  IrqSetCPSR(_cpsr | 0x00000080);
-} /*** end of CpuIrqDisable ***/
+  /* unexpected interrupt so trigger assertion */
+  ASSERT_RT(BLT_FALSE);
+} /*** end of IRQ_ISR ***/
 
 
 /************************************************************************************//**
-** \brief     Enable global interrupts.
+** \brief     UNDEF exception routine.
 ** \return    none.
 **
 ****************************************************************************************/
-void CpuIrqEnable(void)
+void UNDEF_ISR(void)
 {
-  blt_int32u _cpsr;
+  /* unexpected interrupt so trigger assertion */
+  ASSERT_RT(BLT_FALSE);
+} /*** end of UNDEF_ISR ***/
 
-  _cpsr = IrqGetCPSR();
-  IrqSetCPSR(_cpsr & ~0x00000080);
-} /*** end of CpuIrqEnable ***/
 
-/*********************************** end of cpu_comp.c *********************************/
+/*********************************** end of vectors.c **********************************/

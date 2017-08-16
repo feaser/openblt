@@ -41,6 +41,8 @@ main.c \
 extflash.c \
 extflash.h \
 lpc2294.h \
+vectors.c \
+cstart.s \
 ../../../Source/boot.c \
 ../../../Source/boot.h \
 ../../../Source/com.c \
@@ -65,11 +67,9 @@ lpc2294.h \
 ../../../Source/ARM7_LPC2000/uart.c \
 ../../../Source/ARM7_LPC2000/nvm.c \
 ../../../Source/ARM7_LPC2000/timer.c \
-../../../Source/ARM7_LPC2000/GCC/flash.c \
-../../../Source/ARM7_LPC2000/GCC/flash.h \
-../../../Source/ARM7_LPC2000/GCC/vectors.c \
-../../../Source/ARM7_LPC2000/GCC/cpu_comp.c \
-../../../Source/ARM7_LPC2000/GCC/cstart.s
+../../../Source/ARM7_LPC2000/flash.c \
+../../../Source/ARM7_LPC2000/flash.h \
+../../../Source/ARM7_LPC2000/GCC/cpu_comp.c
 
 
 #|---------------------------------------------------------------------------------------|
@@ -101,7 +101,7 @@ OBJ_PATH  = ./obj
 BIN_PATH  = ./bin
 INC_PATH  = $(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file)))))
 INC_PATH += -I.
-LIB_PATH  = -L../../../Source/ARM7_LPC2000/GCC/
+LIB_PATH  = -L./
 
 
 #|---------------------------------------------------------------------------------------|

@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         ARM7_LPC2000\GCC\cstart.s
+* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_GCC\Boot\cstart.s
 * \brief        Bootloader C-startup assembly file.
-* \ingroup      Target_ARM7_LPC2000
+* \ingroup      Boot_ARM7_LPC2000_Olimex_LPC_L2294_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
