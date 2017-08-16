@@ -6,13 +6,33 @@ MEMORY
 
 SECTIONS
 {
-    __STACKSIZE__ = 256;
+    __STACKSIZE__ = 1024;
 
     .text :
     {
-        KEEP(*(.isr_vector))
-        *(.text*)
-        *(.rodata*)
+		    KEEP(*(.isr_vector))
+		    *(.text*)
+
+		    KEEP(*(.init))
+		    KEEP(*(.fini))
+
+		    /* .ctors */
+		    *crtbegin.o(.ctors)
+		    *crtbegin?.o(.ctors)
+		    *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+		    *(SORT(.ctors.*))
+		    *(.ctors)
+
+		    /* .dtors */
+     		*crtbegin.o(.dtors)
+     		*crtbegin?.o(.dtors)
+     		*(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+     		*(SORT(.dtors.*))
+     		*(.dtors)
+
+		    *(.rodata*)
+
+		    KEEP(*(.eh_frame*))
         _etext = .;
     } > FLASH
 
@@ -21,6 +41,8 @@ SECTIONS
         _data = .;
         *(vtable)
         *(.data*)
+        *(.ram)
+        . = ALIGN (8);
         _edata = .;
     } > SRAM
 
@@ -29,9 +51,12 @@ SECTIONS
         _bss = .;
         *(.bss*)
         *(COMMON)
+        . = ALIGN (8);
+        *(.ram.b .bss.ram)
         _ebss = .;
         _stack = .;
         . = ALIGN(MAX(_stack + __STACKSIZE__ , .), 4);
         _estack = .;
+        
     } > SRAM
 }

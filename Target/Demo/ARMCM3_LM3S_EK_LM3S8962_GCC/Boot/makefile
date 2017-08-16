@@ -166,7 +166,7 @@ clean:
 	@$(RM) $(RMFLAGS) $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
 	@$(RM) $(RMFLAGS) $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
 	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
-	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).srec
+	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).bin
 	@echo +++ Clean complete
 
                                                                                                                                                                                                                                                                 
