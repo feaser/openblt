@@ -435,6 +435,7 @@ static void BootComCanCheckActivationRequest(void)
       /* 29-bit id */
       rxMsgId = (unsigned long)(((*(unsigned long*)(&CAN0RXIDR0)) & 0x0007ffff) >> 1) |
                 (unsigned long)(((*(unsigned long*)(&CAN0RXIDR0)) & 0xffe00000) >> 3);
+      rxMsgId |= 0x80000000;
     }
     /* is this the packet identifier? */    
     if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)

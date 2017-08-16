@@ -301,6 +301,7 @@ void CanInit(void)
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int8u byte_idx;
+  blt_int32u txMsgId;
 
   /* double check that the transmit slot is really available */
   ASSERT_RT((CAN->ctflg & TXE0_BIT) != 0);
@@ -309,18 +310,22 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   if ((BOOT_COM_CAN_TX_MSG_ID & EXTIDMASK_BIT) == 0)
   {
     /* store the identifier */
-    CAN->txSlot.idr[0] = CONVERT_STD_ID_TO_REG0(BOOT_COM_CAN_TX_MSG_ID);
-    CAN->txSlot.idr[1] = CONVERT_STD_ID_TO_REG1(BOOT_COM_CAN_TX_MSG_ID);
-    CAN->txSlot.idr[2] = CONVERT_STD_ID_TO_REG2(BOOT_COM_CAN_TX_MSG_ID);
-    CAN->txSlot.idr[3] = CONVERT_STD_ID_TO_REG3(BOOT_COM_CAN_TX_MSG_ID);
+    txMsgId = BOOT_COM_CAN_TX_MSG_ID;
+    txMsgId &= ~EXTIDMASK_BIT;
+    CAN->txSlot.idr[0] = CONVERT_STD_ID_TO_REG0(txMsgId);
+    CAN->txSlot.idr[1] = CONVERT_STD_ID_TO_REG1(txMsgId);
+    CAN->txSlot.idr[2] = CONVERT_STD_ID_TO_REG2(txMsgId);
+    CAN->txSlot.idr[3] = CONVERT_STD_ID_TO_REG3(txMsgId);
   }
   else
   {
     /* store the identifier */
-    CAN->txSlot.idr[0] = CONVERT_EXT_ID_TO_REG0(BOOT_COM_CAN_TX_MSG_ID);
-    CAN->txSlot.idr[1] = CONVERT_EXT_ID_TO_REG1(BOOT_COM_CAN_TX_MSG_ID);
-    CAN->txSlot.idr[2] = CONVERT_EXT_ID_TO_REG2(BOOT_COM_CAN_TX_MSG_ID);
-    CAN->txSlot.idr[3] = CONVERT_EXT_ID_TO_REG3(BOOT_COM_CAN_TX_MSG_ID);
+    txMsgId = BOOT_COM_CAN_TX_MSG_ID;
+    txMsgId &= ~EXTIDMASK_BIT;
+    CAN->txSlot.idr[0] = CONVERT_EXT_ID_TO_REG0(txMsgId);
+    CAN->txSlot.idr[1] = CONVERT_EXT_ID_TO_REG1(txMsgId);
+    CAN->txSlot.idr[2] = CONVERT_EXT_ID_TO_REG2(txMsgId);
+    CAN->txSlot.idr[3] = CONVERT_EXT_ID_TO_REG3(txMsgId);
   }
 
   /* store the data length code */
@@ -373,6 +378,7 @@ blt_bool CanReceivePacket(blt_int8u *data)
       /* 29-bit id */
       rxMsgId = (blt_int32u)(((*(blt_int32u *)(&CAN->rxSlot.idr[0])) & 0x0007ffff) >> 1) |
                 (blt_int32u)(((*(blt_int32u *)(&CAN->rxSlot.idr[0])) & 0xffe00000) >> 3);
+      rxMsgId |= EXTIDMASK_BIT;
     }
     /* is this the packet identifier? */
     if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)
