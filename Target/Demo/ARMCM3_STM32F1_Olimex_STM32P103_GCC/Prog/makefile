@@ -34,7 +34,7 @@ PROJ_NAME=demoprog_olimex_stm32p103
 #|--------------------------------------------------------------------------------------|
 #| Configure tool path                                                                  |
 #|--------------------------------------------------------------------------------------|
-TOOL_PATH=
+TOOL_PATH=/opt/gcc-arm-none-eabi-5_4-2016q3/bin/
 
 
 #|--------------------------------------------------------------------------------------|
@@ -54,7 +54,7 @@ PROJ_FILES = $(call rwildcard, , *.c *.h *.S)
 #|--------------------------------------------------------------------------------------|
 #| Toolchain binaries                                                                   |
 #|--------------------------------------------------------------------------------------|
-RM = cs-rm
+RM = rm
 CC = $(TOOL_PATH)arm-none-eabi-gcc
 LN = $(TOOL_PATH)arm-none-eabi-gcc
 OC = $(TOOL_PATH)arm-none-eabi-objcopy
@@ -97,7 +97,7 @@ AFLAGS      = $(CFLAGS)
 LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 LFLAGS     += -Wl,--defsym=__HEAP_SIZE=$(HEAP_SIZE) -Wl,--defsym=__STACK_SIZE=$(STACK_SIZE)
 LFLAGS     += -Wl,-script="stm32f103rb_flash.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
-LFLAGS     += -Wl,--gc-sections $(LIB_PATH)
+LFLAGS     += -specs=nano.specs -Wl,--gc-sections $(LIB_PATH)
 OFLAGS      = -O srec
 ODFLAGS     = -x
 SZFLAGS     = -B -d

@@ -28,7 +28,7 @@ SHELL = sh
 #|--------------------------------------------------------------------------------------|
 #| Configure project name                                                               |
 #|--------------------------------------------------------------------------------------|
-PROJ_NAME=openblt_olimex_stm32h103
+PROJ_NAME=openblt_olimexino_stm32
 
 
 #|--------------------------------------------------------------------------------------|
@@ -59,6 +59,10 @@ PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/*.h)
 # Collect bootloader port compiler specific files
 PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/GCC/*.c)
 PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/GCC/*.h)
+# Collect FatFS third party library files
+PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/src/*.c)
+PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/src/*.h)
+PROJ_FILES += ../../../Source/third_party/fatfs/src/option/unicode.c
 
 
 #|--------------------------------------------------------------------------------------|
@@ -98,9 +102,9 @@ HEAP_SIZE   = 0x0800
 STACK_SIZE  = 0x0800
 STDFLAGS    = -mcpu=cortex-m3 -mthumb -fno-strict-aliasing -Wno-maybe-uninitialized
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
-OPTFLAGS    = -Og
+OPTFLAGS    = -O2
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-CFLAGS     += -DSTM32F10X_MD -DGCC_ARMCM3
+CFLAGS     += -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DVECT_TAB_FLASH -DGCC_ARMCM3
 CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)

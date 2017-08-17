@@ -28,7 +28,7 @@ SHELL = sh
 #|--------------------------------------------------------------------------------------|
 #| Configure project name                                                               |
 #|--------------------------------------------------------------------------------------|
-PROJ_NAME=openblt_olimex_stm32h103
+PROJ_NAME=demoprog_olimexino_stm32
 
 
 #|--------------------------------------------------------------------------------------|
@@ -47,18 +47,8 @@ TOOL_PATH=/opt/gcc-arm-none-eabi-5_4-2016q3/bin/
 #     --> Returns all *.c files in the /lib directory and below
 rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d)))
 
-# Collect all application files in the current directory and its subdirectories, but 
-# exclude flash-layout.c as this one is directly included in a source file, when used.
-PROJ_FILES  = $(filter-out flash_layout.c, $(call rwildcard, , *.c *.h *.S))
-# Collect bootloader core files
-PROJ_FILES += $(wildcard ../../../Source/*.c)
-PROJ_FILES += $(wildcard ../../../Source/*.h)
-# Collect bootloader port files
-PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/*.c)
-PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/*.h)
-# Collect bootloader port compiler specific files
-PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/GCC/*.c)
-PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/GCC/*.h)
+# Collect all application files in the current directory and its subdirectories
+PROJ_FILES = $(call rwildcard, , *.c *.h *.S)
 
 
 #|--------------------------------------------------------------------------------------|
@@ -96,11 +86,11 @@ LIB_PATH  =
 #|--------------------------------------------------------------------------------------|
 HEAP_SIZE   = 0x0800
 STACK_SIZE  = 0x0800
-STDFLAGS    = -mcpu=cortex-m3 -mthumb -fno-strict-aliasing -Wno-maybe-uninitialized
+STDFLAGS    = -mcpu=cortex-m3 -mthumb -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
 OPTFLAGS    = -Og
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-CFLAGS     += -DSTM32F10X_MD -DGCC_ARMCM3
+CFLAGS     += -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DVECT_TAB_FLASH -DGCC_ARMCM3
 CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
