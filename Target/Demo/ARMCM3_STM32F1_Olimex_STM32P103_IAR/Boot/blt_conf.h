@@ -174,6 +174,17 @@
 
 
 /****************************************************************************************
+*   F L A S H   M E M O R Y   D R I V E R   C O N F I G U R A T I O N
+****************************************************************************************/
+/** \brief This microcontroller has a smaller vector table then the default STM32F1xx
+ *         project as assumed in the bootloader's core. This means the user program has
+ *         a different checksum location, because this one is added at the end of the
+ *         user program's vector table.
+ */
+#define FLASH_VECTOR_TABLE_CS_OFFSET    (0xec)
+
+
+/****************************************************************************************
 *   W A T C H D O G   D R I V E R   C O N F I G U R A T I O N
 ****************************************************************************************/
 /* The COP driver cannot be configured internally in the bootloader, because its use

@@ -177,6 +177,7 @@ Reset_Handler:
 .flash_to_ram_loop_end:
 #endif
 
+#define __NO_SYSTEM_INIT
 #ifndef __NO_SYSTEM_INIT
     ldr    r0, =SystemInit
     blx    r0

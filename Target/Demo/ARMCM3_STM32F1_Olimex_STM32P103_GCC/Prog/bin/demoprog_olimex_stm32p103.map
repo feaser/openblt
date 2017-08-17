@@ -7,113 +7,213 @@ start address 0x08006000
 
 Program Header:
     LOAD off    0x00000000 vaddr 0x08000000 paddr 0x08000000 align 2**15
-         filesz 0x00006e84 memsz 0x00006e84 flags r-x
-    LOAD off    0x00008000 vaddr 0x20000000 paddr 0x08006e84 align 2**15
-         filesz 0x00000014 memsz 0x0000016c flags rw-
+         filesz 0x00006f00 memsz 0x00006f00 flags r-x
+    LOAD off    0x00008000 vaddr 0x20000000 paddr 0x08006f00 align 2**15
+         filesz 0x0000001c memsz 0x00000090 flags rw-
 private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000e84  08006000  08006000  00006000  2**2
+  0 .text         00000f00  08006000  08006000  00006000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000014  20000000  08006e84  00008000  2**2
+  1 .data         0000001c  20000000  08006f00  00008000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000158  20000014  08006e98  00008014  2**2
+  2 .bss          00000074  2000001c  08006f1c  0000801c  2**2
                   ALLOC
-  3 .debug_info   000044c9  00000000  00000000  00008014  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 00001072  00000000  00000000  0000c4dd  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  5 .debug_loc    00002055  00000000  00000000  0000d54f  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 00000498  00000000  00000000  0000f5a4  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  7 .debug_ranges 000003f8  00000000  00000000  0000fa3c  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000017d0  00000000  00000000  0000fe34  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000194b  00000000  00000000  00011604  2**0
-                  CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  00012f4f  2**0
+  3 .heap         00000800  20000090  20000090  00008020  2**3
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  00012f7f  2**0
+  4 .stack_dummy  00000800  20000090  20000090  00008820  2**3
                   CONTENTS, READONLY
- 12 .debug_frame  000008dc  00000000  00000000  00012fb4  2**2
+  5 .ARM.attributes 00000027  00000000  00000000  00009020  2**0
+                  CONTENTS, READONLY
+  6 .comment      00000030  00000000  00000000  00009047  2**0
+                  CONTENTS, READONLY
+  7 .debug_line   00003493  00000000  00000000  00009077  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_info   000043f9  00000000  00000000  0000c50a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_abbrev 00000f38  00000000  00000000  00010903  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_aranges 000004b0  00000000  00000000  00011840  2**3
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00001dc0  00000000  00000000  00011cf0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000410  00000000  00000000  00013ab0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_macro  0000dc0c  00000000  00000000  00013ec0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 14 .debug_str    0004f0bb  00000000  00000000  00021acc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 15 .debug_frame  00000950  00000000  00000000  00070b88  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08006000 l    d  .text	00000000 .text
 20000000 l    d  .data	00000000 .data
-20000014 l    d  .bss	00000000 .bss
+2000001c l    d  .bss	00000000 .bss
+20000090 l    d  .heap	00000000 .heap
+20000090 l    d  .stack_dummy	00000000 .stack_dummy
+00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .debug_line	00000000 .debug_line
 00000000 l    d  .debug_info	00000000 .debug_info
 00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
-00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    d  .debug_ranges	00000000 .debug_ranges
-00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_macro	00000000 .debug_macro
 00000000 l    d  .debug_str	00000000 .debug_str
-00000000 l    d  .comment	00000000 .comment
-00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
 00000000 l    d  .debug_frame	00000000 .debug_frame
-00000000 l    df *ABS*	00000000 vectors.c
+00000000 l    df *ABS*	00000000 obj/startup_stm32f10x_md.o
+00000800 l       *ABS*	00000000 Stack_Size
+00000800 l       *ABS*	00000000 Heap_Size
+080061c2 l       .text	00000000 .flash_to_ram_loop
+080061f4 l       .text	00000000 .fill_zero_bss
+080061f0 l       .text	00000000 .loop_zero_bss
+00000000 l    df *ABS*	00000000 crtstuff.c
+08006efc l     O .text	00000000 __EH_FRAME_BEGIN__
+080060f0 l     F .text	00000000 deregister_tm_clones
+08006118 l     F .text	00000000 register_tm_clones
+08006148 l     F .text	00000000 __do_global_dtors_aux
+2000001c l       .bss	00000000 completed.7922
+20000018 l     O .data	00000000 __do_global_dtors_aux_fini_array_entry
+08006178 l     F .text	00000000 frame_dummy
+20000020 l       .bss	00000000 object.7927
+20000014 l     O .data	00000000 __frame_dummy_init_array_entry
 00000000 l    df *ABS*	00000000 boot.c
-08006154 l     F .text	00000038 UartReceiveByte
-20000014 l     O .bss	00000041 xcpCtoReqPacket.6447
-20000058 l     O .bss	00000001 xcpCtoRxLength.6448
-20000059 l     O .bss	00000001 xcpCtoRxInProgress.6449
-08006e60 l     O .text	00000024 canTiming
-2000005c l     O .bss	00000004 xcpCtoRxStartTime.6450
-00000000 l    df *ABS*	00000000 cstart.c
-08006528 l     F .text	00000000 zero_loop
+08006270 l     F .text	00000060 CanGetSpeedConfig
+080062d0 l     F .text	00000086 BootComUartInit
+08006358 l     F .text	000000fe BootComCanInit
+08006458 l     F .text	0000002c UartReceiveByte
+080064b0 l     F .text	000000d8 BootComUartCheckActivationRequest
+08006588 l     F .text	00000046 BootComCanCheckActivationRequest
+20000038 l     O .bss	00000004 xcpCtoRxStartTime.6448
+2000003c l     O .bss	00000041 xcpCtoReqPacket.6445
+20000080 l     O .bss	00000001 xcpCtoRxLength.6446
+20000081 l     O .bss	00000001 xcpCtoRxInProgress.6447
+08006ed8 l     O .text	00000024 canTiming
 00000000 l    df *ABS*	00000000 led.c
-20000060 l     O .bss	00000004 timer_counter_last.6428
-20000064 l     O .bss	00000001 led_toggle_state.6427
-00000000 l    df *ABS*	00000000 main.c
-00000000 l    df *ABS*	00000000 timer.c
-20000068 l     O .bss	00000004 millisecond_counter
+20000084 l     O .bss	00000004 timer_counter_last.6426
+20000088 l     O .bss	00000001 led_toggle_state.6425
 00000000 l    df *ABS*	00000000 stm32f10x_can.c
 00000000 l    df *ABS*	00000000 stm32f10x_gpio.c
 00000000 l    df *ABS*	00000000 stm32f10x_rcc.c
 20000000 l     O .data	00000004 ADCPrescTable
 20000004 l     O .data	00000010 APBAHBPrescTable
 00000000 l    df *ABS*	00000000 stm32f10x_usart.c
+00000000 l    df *ABS*	00000000 main.c
+08006d30 l     F .text	00000122 Init
+00000000 l    df *ABS*	00000000 timer.c
+2000008c l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 c:/users/frank voorburg/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.1/thumb2/crti.o
+00000000 l    df *ABS*	00000000 c:/users/frank voorburg/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.1/thumb2/crtn.o
+00000000 l    df *ABS*	00000000 crtstuff.c
+08006efc l     O .text	00000000 __FRAME_END__
 00000000 l    df *ABS*	00000000 
-00000100 l       *ABS*	00000000 __STACKSIZE__
-080064e4 g     F .text	00000060 reset_handler
-080068e8 g     F .text	00000126 CAN_FilterInit
-08006e54 g     F .text	0000000c USART_GetFlagStatus
-08006e84 g       .text	00000000 _etext
-080067a4 g     F .text	00000010 TimerISRHandler
-08006b8c g     F .text	00000072 GPIO_PinRemapConfig
-08006e4c g     F .text	00000008 USART_ReceiveData
-08006cec g     F .text	00000024 RCC_APB2PeriphClockCmd
-08006ae0 g     F .text	000000a4 GPIO_Init
-08006e30 g     F .text	0000001c USART_Cmd
-08006d10 g     F .text	00000024 RCC_APB1PeriphClockCmd
-080067b8 g     F .text	00000042 CAN_DeInit
-08006378 g     F .text	0000001e BootActivate
-2000006c g       .bss	00000000 _ebss
-080067b4 g     F .text	00000002 UnusedISR
-08006550 g     F .text	0000004c LedInit
-08006b84 g     F .text	00000004 GPIO_SetBits
-08006c00 g     F .text	000000ea RCC_GetClocksFreq
-08006d58 g     F .text	000000d8 USART_Init
-08006a30 g     F .text	00000096 CAN_Receive
-080067fc g     F .text	000000ea CAN_Init
-20000014 g       .bss	00000000 _bss
-08006a10 g     F .text	00000020 CAN_StructInit
-08006b88 g     F .text	00000004 GPIO_ResetBits
-0800661c g     F .text	00000148 main
-08006ac8 g     F .text	00000018 CAN_MessagePending
-0800618c g     F .text	000001ec BootComInit
-08006d34 g     F .text	00000024 RCC_APB1PeriphResetCmd
-20000000 g       .data	00000000 _data
-0800659c g     F .text	0000007e LedToggle
-2000016c g       .bss	00000000 _estack
-20000014 g       .data	00000000 _edata
-08006000 g     O .text	00000154 _vectab
-08006398 g     F .text	0000014c BootComCheckActivationRequest
-2000006c g       .bss	00000000 _stack
-08006798 g     F .text	0000000c TimerGet
-08006764 g     F .text	00000034 TimerInit
+00000800 l       *ABS*	00000000 __HEAP_SIZE
+08006f00 l       .text	00000000 __exidx_end
+08006f00 l       .text	00000000 __exidx_start
+00000800 l       *ABS*	00000000 __STACK_SIZE
+08006222  w    F .text	00000002 EXTI2_IRQHandler
+20000090 g       .heap	00000800 __HeapBase
+0800620a  w    F .text	00000002 DebugMon_Handler
+20000000 g       .data	00000000 __data_start__
+08006248  w    F .text	00000002 TIM1_CC_IRQHandler
+08006200  w    F .text	00000002 HardFault_Handler
+080067b0 g     F .text	00000126 CAN_FilterInit
+08006eb0 g     F .text	00000010 SysTick_Handler
+08006214  w    F .text	00000002 PVD_IRQHandler
+0800620c  w    F .text	00000002 PendSV_Handler
+080061fe  w    F .text	00000002 NMI_Handler
+08006224  w    F .text	00000002 EXTI3_IRQHandler
+08006f00 g       .text	00000000 __etext
+08006d24 g     F .text	0000000c USART_GetFlagStatus
+2000001c g     O .data	00000000 .hidden __TMC_END__
+08006a64 g     F .text	00000072 GPIO_PinRemapConfig
+0800621e  w    F .text	00000002 EXTI0_IRQHandler
+08006254  w    F .text	00000002 I2C2_EV_IRQHandler
+08006d1c g     F .text	00000008 USART_ReceiveData
+08006206  w    F .text	00000002 UsageFault_Handler
+08006bc4 g     F .text	00000024 RCC_APB2PeriphClockCmd
+08006236  w    F .text	00000002 ADC1_2_IRQHandler
+080069b0 g     F .text	000000aa GPIO_Init
+20000890 g       .heap	00000000 __HeapLimit
+2000001c g       .bss	00000000 __bss_start__
+08006258  w    F .text	00000002 SPI1_IRQHandler
+08006d00 g     F .text	0000001c USART_Cmd
+08006216  w    F .text	00000002 TAMPER_IRQHandler
+08006be8 g     F .text	00000024 RCC_APB1PeriphClockCmd
+0800622e  w    F .text	00000002 DMA1_Channel4_IRQHandler
+08006684 g     F .text	0000003a CAN_DeInit
+08006ec0 g     F .text	00000000 _init
+08006490 g     F .text	0000001e BootActivate
+08006260  w    F .text	00000002 USART3_IRQHandler
+08006218  w    F .text	00000002 RTC_IRQHandler
+08006234  w    F .text	00000002 DMA1_Channel7_IRQHandler
+080061b8 g     F .text	00000030 Reset_Handler
+0800623c  w    F .text	00000002 CAN1_RX1_IRQHandler
+080065dc g     F .text	0000003a LedInit
+08006a5c g     F .text	00000004 GPIO_SetBits
+0800624e  w    F .text	00000002 TIM4_IRQHandler
+00000000  w      *UND*	00000000 __deregister_frame_info
+20000090 g       .heap	00000000 end
+08006250  w    F .text	00000002 I2C1_EV_IRQHandler
+2000001c g       .data	00000000 __data_end__
+00000000  w      *UND*	00000000 _ITM_registerTMCloneTable
+08006ad8 g     F .text	000000ea RCC_GetClocksFreq
+08006232  w    F .text	00000002 DMA1_Channel6_IRQHandler
+08006c30 g     F .text	000000d0 USART_Init
+20000090 g       .bss	00000000 __bss_end__
+0800624c  w    F .text	00000002 TIM3_IRQHandler
+0800621c  w    F .text	00000002 RCC_IRQHandler
+080068f8 g     F .text	000000a0 CAN_Receive
+08006246  w    F .text	00000002 TIM1_TRG_COM_IRQHandler
+080066c0 g     F .text	000000ee CAN_Init
+08006228  w    F .text	00000002 DMA1_Channel1_IRQHandler
+08006210  w    F .text	00000002 Default_Handler
+080061e8  w    F .text	00000016 _start
+080068d8 g     F .text	00000020 CAN_StructInit
+08006262  w    F .text	00000002 EXTI15_10_IRQHandler
+08006a60 g     F .text	00000004 GPIO_ResetBits
+08006240  w    F .text	00000002 EXTI9_5_IRQHandler
+00000000  w      *UND*	00000000 _ITM_deregisterTMCloneTable
+0800625a  w    F .text	00000002 SPI2_IRQHandler
+08006202  w    F .text	00000002 MemManage_Handler
+08006000 g       .text	000000f0 __isr_vector
+08006e54 g     F .text	00000014 main
+08006208  w    F .text	00000002 SVC_Handler
+20000090 g       .heap	00000000 __end__
+08006230  w    F .text	00000002 DMA1_Channel5_IRQHandler
+08006998 g     F .text	00000018 CAN_MessagePending
+08006226  w    F .text	00000002 EXTI4_IRQHandler
+08006e68 g     F .text	0000000c TimerSet
+0800623a  w    F .text	00000002 USB_LP_CAN1_RX0_IRQHandler
+08006484 g     F .text	0000000c BootComInit
+08006ecc g     F .text	00000000 _fini
+08006238  w    F .text	00000002 USB_HP_CAN1_TX_IRQHandler
+0800622c  w    F .text	00000002 DMA1_Channel3_IRQHandler
+20005000 g       *ABS*	00000000 __StackTop
+08006244  w    F .text	00000002 TIM1_UP_IRQHandler
+08006212  w    F .text	00000002 WWDG_IRQHandler
+08006c0c g     F .text	00000024 RCC_APB1PeriphResetCmd
+08006618 g     F .text	0000006c LedToggle
+0800624a  w    F .text	00000002 TIM2_IRQHandler
+08006242  w    F .text	00000002 TIM1_BRK_IRQHandler
+08006220  w    F .text	00000002 EXTI1_IRQHandler
+08006264  w    F .text	00000002 RTCAlarm_IRQHandler
+20004800 g       *ABS*	00000800 __StackLimit
+0800625e  w    F .text	00000002 USART2_IRQHandler
+08006256  w    F .text	00000002 I2C2_ER_IRQHandler
+0800622a  w    F .text	00000002 DMA1_Channel2_IRQHandler
+080065d0 g     F .text	0000000c BootComCheckActivationRequest
+0800623e  w    F .text	00000002 CAN1_SCE_IRQHandler
+0800621a  w    F .text	00000002 FLASH_IRQHandler
+08006204  w    F .text	00000002 BusFault_Handler
+0800625c  w    F .text	00000002 USART1_IRQHandler
+08006252  w    F .text	00000002 I2C1_ER_IRQHandler
+08006ea4 g     F .text	0000000c TimerGet
+00000000  w      *UND*	00000000 _Jv_RegisterClasses
+08006e74 g     F .text	00000030 TimerInit
+00000000  w      *UND*	00000000 __register_frame_info
+08006266  w    F .text	00000002 USBWakeUp_IRQHandler
 
 

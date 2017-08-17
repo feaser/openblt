@@ -46,9 +46,6 @@
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
       <folder Name="Source">
         <folder Name="ARMCM3_EFM32">
-          <folder Name="Crossworks">
-            <file file_name="../../../../Source/ARMCM3_EFM32/Crossworks/cpu_comp.c" />
-          </folder>
           <file file_name="../../../../Source/ARMCM3_EFM32/cpu.c" />
           <file file_name="../../../../Source/ARMCM3_EFM32/flash.c" />
           <file file_name="../../../../Source/ARMCM3_EFM32/flash.h" />
@@ -56,6 +53,9 @@
           <file file_name="../../../../Source/ARMCM3_EFM32/timer.c" />
           <file file_name="../../../../Source/ARMCM3_EFM32/types.h" />
           <file file_name="../../../../Source/ARMCM3_EFM32/uart.c" />
+          <folder Name="GCC">
+            <file file_name="../../../../Source/ARMCM3_EFM32/GCC/cpu_comp.c" />
+          </folder>
         </folder>
         <file file_name="../../../../Source/assert.c" />
         <file file_name="../../../../Source/assert.h" />

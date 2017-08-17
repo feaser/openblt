@@ -93,15 +93,17 @@
           <file file_name="../usb_pwr.c" />
           <file file_name="../usb_pwr.h" />
           <file file_name="../blt_conf.h" />
+          <file file_name="../cstart.s" />
+          <file file_name="../vectors.c" />
+          <file file_name="../flash_layout.c">
+            <configuration
+              Name="THUMB Debug"
+              build_exclude_from_build="Yes" />
+          </file>
         </folder>
       </folder>
       <folder Name="Source">
         <folder Name="ARMCM3_STM32F1">
-          <folder Name="Crossworks">
-            <file file_name="../../../../Source/ARMCM3_STM32F1/Crossworks/cpu_comp.c" />
-            <file file_name="../../../../Source/ARMCM3_STM32F1/Crossworks/cstart.s" />
-            <file file_name="../../../../Source/ARMCM3_STM32F1/Crossworks/vectors.c" />
-          </folder>
           <file file_name="../../../../Source/ARMCM3_STM32F1/can.c" />
           <file file_name="../../../../Source/ARMCM3_STM32F1/cpu.c" />
           <file file_name="../../../../Source/ARMCM3_STM32F1/flash.c" />
@@ -111,6 +113,9 @@
           <file file_name="../../../../Source/ARMCM3_STM32F1/types.h" />
           <file file_name="../../../../Source/ARMCM3_STM32F1/uart.c" />
           <file file_name="../../../../Source/ARMCM3_STM32F1/usb.c" />
+          <folder Name="GCC">
+            <file file_name="../../../../Source/ARMCM3_STM32F1/GCC/cpu_comp.c" />
+          </folder>
         </folder>
         <file file_name="../../../../Source/assert.c" />
         <file file_name="../../../../Source/assert.h" />
@@ -137,7 +142,7 @@
       <file file_name="$(TargetsDir)/STM32/STM32_Target.js">
         <configuration Name="Common" file_type="Reset Script" />
       </file>
-      <file file_name="../../../../Source/ARMCM3_STM32F1/Crossworks/memory.x">
+      <file file_name="../memory.x">
         <configuration Name="Common" file_type="Linker Script" />
       </file>
     </folder>

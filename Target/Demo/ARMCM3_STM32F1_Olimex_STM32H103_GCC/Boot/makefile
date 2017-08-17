@@ -1,11 +1,11 @@
 #****************************************************************************************
-#|  Description: Makefile for STM32 using CodeSourcery GNU GCC compiler toolset
+#|  Description: Makefile for GNU ARM Embedded toolchain.
 #|    File Name: makefile
 #|
 #|---------------------------------------------------------------------------------------
 #|                          C O P Y R I G H T
 #|---------------------------------------------------------------------------------------
-#|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+#|   Copyright (c) 2017  by Feaser    http://www.feaser.com    All rights reserved
 #|
 #|---------------------------------------------------------------------------------------
 #|                            L I C E N S E
@@ -25,146 +25,113 @@
 #****************************************************************************************
 SHELL = sh
 
-#|---------------------------------------------------------------------------------------|
-#| Configure project name                                                                |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Configure project name                                                               |
+#|--------------------------------------------------------------------------------------|
 PROJ_NAME=openblt_olimex_stm32h103
 
 
-#|---------------------------------------------------------------------------------------|
-#| Speficy project source files                                                          |
-#|---------------------------------------------------------------------------------------|
-PROJ_FILES= \
-blt_conf.h \
-hooks.c \
-main.c \
-usb_conf.h \
-usb_endp.c \
-usb_prop.h \
-usb_prop.c \
-usb_desc.h \
-usb_desc.c \
-usb_istr.h \
-usb_istr.c \
-usb_pwr.h \
-usb_pwr.c \
-./lib/CMSIS/CM3/CoreSupport/core_cm3.c \
-./lib/CMSIS/CM3/CoreSupport/core_cm3.h \
-./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h \
-./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c \
-./lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h \
-./lib/USB_FS_DEVICE/inc/usb_core.h \
-./lib/USB_FS_DEVICE/inc/usb_init.h \
-./lib/USB_FS_DEVICE/inc/usb_lib.h \
-./lib/USB_FS_DEVICE/inc/usb_regs.h \
-./lib/USB_FS_DEVICE/inc/usb_type.h \
-./lib/USB_FS_DEVICE/inc/usb_def.h \
-./lib/USB_FS_DEVICE/inc/usb_int.h \
-./lib/USB_FS_DEVICE/inc/usb_mem.h \
-./lib/USB_FS_DEVICE/inc/usb_sil.h \
-./lib/USB_FS_DEVICE/src/usb_core.c \
-./lib/USB_FS_DEVICE/src/usb_init.c \
-./lib/USB_FS_DEVICE/src/usb_int.c \
-./lib/USB_FS_DEVICE/src/usb_mem.c \
-./lib/USB_FS_DEVICE/src/usb_regs.c \
-./lib/USB_FS_DEVICE/src/usb_sil.c \
-../../../Source/boot.c \
-../../../Source/boot.h \
-../../../Source/com.c \
-../../../Source/com.h \
-../../../Source/xcp.c \
-../../../Source/xcp.h \
-../../../Source/backdoor.c \
-../../../Source/backdoor.h \
-../../../Source/cop.c \
-../../../Source/cop.h \
-../../../Source/assert.c \
-../../../Source/assert.h \
-../../../Source/cpu.h \
-../../../Source/can.h \
-../../../Source/uart.h \
-../../../Source/usb.h \
-../../../Source/nvm.h \
-../../../Source/timer.h \
-../../../Source/plausibility.h \
-../../../Source/ARMCM3_STM32F1/types.h \
-../../../Source/ARMCM3_STM32F1/cpu.c \
-../../../Source/ARMCM3_STM32F1/can.c \
-../../../Source/ARMCM3_STM32F1/uart.c \
-../../../Source/ARMCM3_STM32F1/usb.c \
-../../../Source/ARMCM3_STM32F1/nvm.c \
-../../../Source/ARMCM3_STM32F1/timer.c \
-../../../Source/ARMCM3_STM32F1/flash.c \
-../../../Source/ARMCM3_STM32F1/flash.h \
-../../../Source/ARMCM3_STM32F1/GCC/vectors.c \
-../../../Source/ARMCM3_STM32F1/GCC/cpu_comp.c \
-../../../Source/ARMCM3_STM32F1/GCC/cstart.c
+#|--------------------------------------------------------------------------------------|
+#| Configure tool path                                                                  |
+#|--------------------------------------------------------------------------------------|
+TOOL_PATH=
 
 
-#|---------------------------------------------------------------------------------------|
-#| Compiler binaries                                                                     |
-#|---------------------------------------------------------------------------------------|
-CC = arm-none-eabi-gcc
-LN = arm-none-eabi-gcc
-OC = arm-none-eabi-objcopy
-OD = arm-none-eabi-objdump
-AS = arm-none-eabi-as
-SZ = arm-none-eabi-size
+#|--------------------------------------------------------------------------------------|
+#| Collect project files                                                                |
+#|--------------------------------------------------------------------------------------|
+# Recursive wildcard function implementation. Example usages:
+#   $(call rwildcard, , *.c *.h)   
+#     --> Returns all *.c and *.h files in the current directory and below
+#   $(call rwildcard, /lib/, *.c)
+#     --> Returns all *.c files in the /lib directory and below
+rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d)))
+
+# Collect all application files in the current directory and its subdirectories, but 
+# exclude flash-layout.c as this one is directly included in a source file, when used.
+PROJ_FILES  = $(filter-out flash_layout.c, $(call rwildcard, , *.c *.h *.S))
+# Collect bootloader core files
+PROJ_FILES += $(wildcard ../../../Source/*.c)
+PROJ_FILES += $(wildcard ../../../Source/*.h)
+# Collect bootloader port files
+PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/*.c)
+PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/*.h)
+# Collect bootloader port compiler specific files
+PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/GCC/*.c)
+PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/GCC/*.h)
 
 
-#|---------------------------------------------------------------------------------------|
-#| Extract file names                                                                    |
-#|---------------------------------------------------------------------------------------|
-PROJ_ASRCS  = $(filter %.s,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
+#|--------------------------------------------------------------------------------------|
+#| Toolchain binaries                                                                   |
+#|--------------------------------------------------------------------------------------|
+RM = cs-rm
+CC = $(TOOL_PATH)arm-none-eabi-gcc
+LN = $(TOOL_PATH)arm-none-eabi-gcc
+OC = $(TOOL_PATH)arm-none-eabi-objcopy
+OD = $(TOOL_PATH)arm-none-eabi-objdump
+AS = $(TOOL_PATH)arm-none-eabi-gcc
+SZ = $(TOOL_PATH)arm-none-eabi-size
+
+
+#|--------------------------------------------------------------------------------------|
+#| Filter project files
+#|--------------------------------------------------------------------------------------|
+PROJ_ASRCS  = $(filter %.S,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CSRCS  = $(filter %.c,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CHDRS  = $(filter %.h,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
-PROJ_CCMPL  = $(patsubst %.c,%.cpl,$(PROJ_CSRCS))
-PROJ_ACMPL  = $(patsubst %.s,%.cpl,$(PROJ_ASRCS))
 
 
-#|---------------------------------------------------------------------------------------|
-#| Set important path variables                                                          |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Set important path variables                                                         |
+#|--------------------------------------------------------------------------------------|
 VPATH    = $(foreach path,$(sort $(foreach file,$(PROJ_FILES),$(dir $(file)))) $(subst \,/,$(OBJ_PATH)),$(path) :)
 OBJ_PATH = obj
 BIN_PATH = bin
-INC_PATH = $(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file)))))
-INC_PATH += -I.
-LIB_PATH  = -L../../../Source/ARMCM3_STM32F1/GCC/
+INC_PATH = $(patsubst %/,%,$(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file))))))
+LIB_PATH  = 
 
 
-#|---------------------------------------------------------------------------------------|
-#| Options for compiler binaries                                                         |
-#|---------------------------------------------------------------------------------------|
-CFLAGS   = -g -mthumb -mcpu=cortex-m3 -O1 -T memory.x
-CFLAGS  += -D PACK_STRUCT_END=__attribute\(\(packed\)\) -Wno-main
-CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) 
-CFLAGS  += -ffunction-sections -fdata-sections $(INC_PATH) -D STM32F10X_MD -D GCC_ARMCM3
-CFLAGS  += -Wa,-adhlns="$(OBJ_PATH)/$(subst .o,.lst,$@)"
-LFLAGS   = -nostartfiles -Xlinker -M -Xlinker -Map=$(BIN_PATH)/$(PROJ_NAME).map
-LFLAGS  += $(LIB_PATH) -Xlinker --gc-sections
-OFLAGS   = -O srec
-ODFLAGS  = -x
-SZFLAGS  = -B -d
+#|--------------------------------------------------------------------------------------|
+#| Options for toolchain binaries                                                       |
+#|--------------------------------------------------------------------------------------|
+HEAP_SIZE   = 0x0800
+STACK_SIZE  = 0x0800
+STDFLAGS    = -mcpu=cortex-m3 -mthumb -fno-strict-aliasing -Wno-maybe-uninitialized
+STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
+OPTFLAGS    = -Og
+CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
+CFLAGS     += -DSTM32F10X_MD -DGCC_ARMCM3
+CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)
+CFLAGS     += $(INC_PATH)
+AFLAGS      = $(CFLAGS)
+LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
+LFLAGS     += -Wl,--defsym=__HEAP_SIZE=$(HEAP_SIZE) -Wl,--defsym=__STACK_SIZE=$(STACK_SIZE)
+LFLAGS     += -Wl,-script="stm32f103rb_flash.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -Wl,--gc-sections $(LIB_PATH)
+OFLAGS      = -O srec
+ODFLAGS     = -x
+SZFLAGS     = -B -d
+RMFLAGS     = -f
 
 
-#|---------------------------------------------------------------------------------------|
-#| Specify library files                                                                 |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Specify library files                                                                |
+#|--------------------------------------------------------------------------------------|
 LIBS = 
 
 
-#|---------------------------------------------------------------------------------------|
-#| Define targets                                                                        |
-#|---------------------------------------------------------------------------------------|
-AOBJS = $(patsubst %.s,%.o,$(PROJ_ASRCS))
+#|--------------------------------------------------------------------------------------|
+#| Define targets                                                                       |
+#|--------------------------------------------------------------------------------------|
+AOBJS = $(patsubst %.S,%.o,$(PROJ_ASRCS))
 COBJS = $(patsubst %.c,%.o,$(PROJ_CSRCS))
 
 
-#|---------------------------------------------------------------------------------------|
-#| Make ALL                                                                              |
-#|---------------------------------------------------------------------------------------|
-all : $(BIN_PATH)/$(PROJ_NAME).srec
+#|--------------------------------------------------------------------------------------|
+#| Make ALL                                                                             |
+#|--------------------------------------------------------------------------------------|
+.PHONY: all
+all: $(BIN_PATH)/$(PROJ_NAME).srec
 
 
 $(BIN_PATH)/$(PROJ_NAME).srec : $(BIN_PATH)/$(PROJ_NAME).elf
@@ -176,31 +143,32 @@ $(BIN_PATH)/$(PROJ_NAME).srec : $(BIN_PATH)/$(PROJ_NAME).elf
 
 $(BIN_PATH)/$(PROJ_NAME).elf : $(AOBJS) $(COBJS) 
 	@echo +++ Linking [$(notdir $@)]
-	@$(LN) $(CFLAGS) -o $@ $(patsubst %.o,$(OBJ_PATH)/%.o,$(^F)) $(LIBS) $(LFLAGS)
+	@$(LN) $(LFLAGS) -o $@ $(patsubst %.o,$(OBJ_PATH)/%.o,$(^F)) $(LIBS)
 
 
-#|---------------------------------------------------------------------------------------|
-#| Compile and assemble                                                                  |
-#|---------------------------------------------------------------------------------------|
-$(AOBJS): %.o: %.s $(PROJ_CHDRS)
+#|--------------------------------------------------------------------------------------|
+#| Compile and assemble                                                                 |
+#|--------------------------------------------------------------------------------------|
+$(AOBJS): %.o: %.S $(PROJ_CHDRS)
 	@echo +++ Assembling [$(notdir $<)]
-	@$(AS) $(AFLAGS) $< -o $(OBJ_PATH)/$(@F)
+	@$(AS) $(AFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
 $(COBJS): %.o: %.c $(PROJ_CHDRS)
 	@echo +++ Compiling [$(notdir $<)]
 	@$(CC) $(CFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
 
-#|---------------------------------------------------------------------------------------|
-#| Make CLEAN                                                                            |
-#|---------------------------------------------------------------------------------------|
-clean : 
+#|--------------------------------------------------------------------------------------|
+#| Make CLEAN                                                                           |
+#|--------------------------------------------------------------------------------------|
+.PHONY: clean
+clean: 
 	@echo +++ Cleaning build environment
-	@cs-rm -f $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
-	@cs-rm -f $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
-	@cs-rm -f $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
-	@cs-rm -f $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
-	@cs-rm -f $(BIN_PATH)/$(PROJ_NAME).srec
+	@$(RM) $(RMFLAGS) $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
+	@$(RM) $(RMFLAGS) $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
+	@$(RM) $(RMFLAGS) $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
+	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
+	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).srec
 	@echo +++ Clean complete
 
                                                                                                                                                                                                                                                                 

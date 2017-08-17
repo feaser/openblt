@@ -1,7 +1,7 @@
 MEMORY
 {
   UNPLACED_SECTIONS (wx) : ORIGIN = 0x100000000, LENGTH = 0
-  FLASH (rx) : ORIGIN = 0x08006000, LENGTH = 0x00020000-0x6000
+  FLASH (rx) : ORIGIN = 0x08004000, LENGTH = 0x00020000-0x4000
   RAM (wx) : ORIGIN = 0x20000000, LENGTH = 0x00005000
   USB_CAN_RAM (wx) : ORIGIN = 0x40006000, LENGTH = 0x00000200
   CM3_System_Control_Space (wx) : ORIGIN = 0xe000e000, LENGTH = 0x00001000
@@ -10,7 +10,7 @@ MEMORY
 
 SECTIONS
 {
-  __FLASH_segment_start__ = 0x08006000;
+  __FLASH_segment_start__ = 0x08004000;
   __FLASH_segment_end__ = 0x08020000;
   __RAM_segment_start__ = 0x20000000;
   __RAM_segment_end__ = 0x20005000;

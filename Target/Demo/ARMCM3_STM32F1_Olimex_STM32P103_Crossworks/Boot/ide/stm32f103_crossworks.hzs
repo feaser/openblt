@@ -1,9 +1,7 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks/>
- <Breakpoints>
-  <Exceptions set="MemManage;UsageFault_Coprocessor;UsageFault_CheckingError;UsageFault_StateError;BusFault;ExceptionEntryReturnFault;HardFault" />
- </Breakpoints>
+ <Breakpoints/>
  <ExecutionProfileWindow/>
  <FrameBufferWindow>
   <FrameBufferWindow addressText="" bufferWidth="-1" bufferHeight="-1" addressSpace="" />
@@ -30,8 +28,10 @@
   <ProjectSessionItem path="stm32f103_crossworks;openblt_olimex_stm32p103;Source Files" name="unnamed" />
   <ProjectSessionItem path="stm32f103_crossworks;openblt_olimex_stm32p103;Source Files;Demo" name="unnamed" />
   <ProjectSessionItem path="stm32f103_crossworks;openblt_olimex_stm32p103;Source Files;Demo;Boot" name="unnamed" />
-  <ProjectSessionItem path="stm32f103_crossworks;openblt_olimex_stm32p103;Source Files;Demo;Boot;lib" name="unnamed" />
-  <ProjectSessionItem path="stm32f103_crossworks;openblt_olimex_stm32p103;Source Files;Demo;Boot;lib;cmsis" name="unnamed" />
+  <ProjectSessionItem path="stm32f103_crossworks;openblt_olimex_stm32p103;Source Files;Source" name="unnamed" />
+  <ProjectSessionItem path="stm32f103_crossworks;openblt_olimex_stm32p103;Source Files;Source;ARMCM3_STM32F1" name="unnamed" />
+  <ProjectSessionItem path="stm32f103_crossworks;openblt_olimex_stm32p103;Source Files;Source;ARMCM3_STM32F1;GCC" name="unnamed" />
+  <ProjectSessionItem path="stm32f103_crossworks;openblt_olimex_stm32p103;System Files" name="unnamed" />
  </Project>
  <Register1>
   <RegisterWindow openNodes="CPU" binaryNodes="" unsignedNodes="" decimalNodes="" octalNodes="" asciiNodes="" visibleNodes="" name="openbtl_olimex_stm32p103" />
@@ -70,7 +70,8 @@
   <Watches active="0" update="Never" />
  </Watch4>
  <Files>
-  <SessionOpenFile useTextEdit="1" useBinaryEdit="0" codecName="Latin1" x="0" debugPath="../main.c" y="51" path="../main.c" left="0" selected="1" name="unnamed" top="31" />
+  <SessionOpenFile useTextEdit="1" useBinaryEdit="0" codecName="Latin1" x="0" debugPath="../main.c" y="51" path="../main.c" left="0" selected="0" name="unnamed" top="31" />
+  <SessionOpenFile useTextEdit="1" useBinaryEdit="0" codecName="Default" x="0" debugPath="../../../../Source/com.c" y="112" path="../../../../Source/com.c" left="0" selected="1" name="unnamed" top="88" />
  </Files>
- <ARMCrossStudioWindow activeProject="openblt_olimex_stm32p103" autoConnectTarget="SEGGER J-Link" debugSearchFileMap="" fileDialogInitialDirectory="C:/Work/software/OpenBLT/Target/Source/ARMCM3_STM32F1/Crossworks" fileDialogDefaultFilter="*.c" autoConnectCapabilities="3711" debugSearchPath="" buildConfiguration="THUMB Debug" />
+ <ARMCrossStudioWindow activeProject="openblt_olimex_stm32p103" autoConnectTarget="SEGGER J-Link" debugSearchFileMap="" fileDialogInitialDirectory="C:/Work/software/OpenBLT/Target/Source/ARMCM3_STM32F1/GCC" fileDialogDefaultFilter="" autoConnectCapabilities="3711" debugSearchPath="" buildConfiguration="THUMB Debug" />
 </session>

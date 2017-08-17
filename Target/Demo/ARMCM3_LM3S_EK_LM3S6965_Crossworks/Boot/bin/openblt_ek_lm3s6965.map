@@ -512,9 +512,6 @@ Discarded input sections
  .text          0x00000000        0x0 THUMB Debug/../../obj/vectors.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/vectors.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/vectors.o
- .text          0x00000000        0x0 THUMB Debug/../../obj/cpu_comp.o
- .data          0x00000000        0x0 THUMB Debug/../../obj/cpu_comp.o
- .bss           0x00000000        0x0 THUMB Debug/../../obj/cpu_comp.o
  .text          0x00000000        0x0 THUMB Debug/../../obj/cpu.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/cpu.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/cpu.o
@@ -532,6 +529,9 @@ Discarded input sections
  .text          0x00000000        0x0 THUMB Debug/../../obj/uart.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/uart.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/uart.o
+ .text          0x00000000        0x0 THUMB Debug/../../obj/cpu_comp.o
+ .data          0x00000000        0x0 THUMB Debug/../../obj/cpu_comp.o
+ .bss           0x00000000        0x0 THUMB Debug/../../obj/cpu_comp.o
  .text          0x00000000        0x0 THUMB Debug/../../obj/assert.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/assert.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/assert.o
@@ -2654,92 +2654,92 @@ Linker script and memory map
  .text.UnusedISR
                 0x00001c4c        0xc THUMB Debug/../../obj/vectors.o
                 0x00001c4c                UnusedISR
- .text.CpuIrqDisable
-                0x00001c58        0x4 THUMB Debug/../../obj/cpu_comp.o
-                0x00001c58                CpuIrqDisable
- .text.CpuIrqEnable
-                0x00001c5c        0x4 THUMB Debug/../../obj/cpu_comp.o
-                0x00001c5c                CpuIrqEnable
- .text.CpuInit  0x00001c60        0x4 THUMB Debug/../../obj/cpu.o
-                0x00001c60                CpuInit
+ .text.CpuInit  0x00001c58        0x4 THUMB Debug/../../obj/cpu.o
+                0x00001c58                CpuInit
  .text.CpuStartUserProgram
-                0x00001c64       0x38 THUMB Debug/../../obj/cpu.o
-                0x00001c64                CpuStartUserProgram
+                0x00001c5c       0x38 THUMB Debug/../../obj/cpu.o
+                0x00001c5c                CpuStartUserProgram
  .text.CpuMemCopy
-                0x00001c9c       0x1c THUMB Debug/../../obj/cpu.o
-                0x00001c9c                CpuMemCopy
+                0x00001c94       0x1c THUMB Debug/../../obj/cpu.o
+                0x00001c94                CpuMemCopy
  .text.FlashGetSector
-                0x00001cb8       0x34 THUMB Debug/../../obj/flash.o
+                0x00001cb0       0x34 THUMB Debug/../../obj/flash.o
  .text.FlashWriteBlock
-                0x00001cec       0x4e THUMB Debug/../../obj/flash.o
- *fill*         0x00001d3a        0x2 
+                0x00001ce4       0x4e THUMB Debug/../../obj/flash.o
+ *fill*         0x00001d32        0x2 
  .text.FlashSwitchBlock
-                0x00001d3c       0x50 THUMB Debug/../../obj/flash.o
+                0x00001d34       0x50 THUMB Debug/../../obj/flash.o
  .text.FlashAddToBlock
-                0x00001d8c       0x82 THUMB Debug/../../obj/flash.o
- *fill*         0x00001e0e        0x2 
+                0x00001d84       0x82 THUMB Debug/../../obj/flash.o
+ *fill*         0x00001e06        0x2 
  .text.FlashReinit
-                0x00001e10       0x18 THUMB Debug/../../obj/flash.o
-                0x00001e10                FlashReinit
+                0x00001e08       0x18 THUMB Debug/../../obj/flash.o
+                0x00001e08                FlashReinit
  .text.FlashInit
-                0x00001e28        0x4 THUMB Debug/../../obj/flash.o
-                0x00001e28                FlashInit
+                0x00001e20        0x4 THUMB Debug/../../obj/flash.o
+                0x00001e20                FlashInit
  .text.FlashWrite
-                0x00001e2c       0x48 THUMB Debug/../../obj/flash.o
-                0x00001e2c                FlashWrite
+                0x00001e24       0x48 THUMB Debug/../../obj/flash.o
+                0x00001e24                FlashWrite
  .text.FlashErase
-                0x00001e74       0xc4 THUMB Debug/../../obj/flash.o
-                0x00001e74                FlashErase
+                0x00001e6c       0xc4 THUMB Debug/../../obj/flash.o
+                0x00001e6c                FlashErase
  .text.FlashWriteChecksum
-                0x00001f38       0x44 THUMB Debug/../../obj/flash.o
-                0x00001f38                FlashWriteChecksum
+                0x00001f30       0x44 THUMB Debug/../../obj/flash.o
+                0x00001f30                FlashWriteChecksum
  .text.FlashVerifyChecksum
-                0x00001f7c       0x46 THUMB Debug/../../obj/flash.o
-                0x00001f7c                FlashVerifyChecksum
- *fill*         0x00001fc2        0x2 
+                0x00001f74       0x46 THUMB Debug/../../obj/flash.o
+                0x00001f74                FlashVerifyChecksum
+ *fill*         0x00001fba        0x2 
  .text.FlashDone
-                0x00001fc4       0x34 THUMB Debug/../../obj/flash.o
-                0x00001fc4                FlashDone
+                0x00001fbc       0x34 THUMB Debug/../../obj/flash.o
+                0x00001fbc                FlashDone
  .text.FlashGetUserProgBaseAddress
-                0x00001ff8        0x6 THUMB Debug/../../obj/flash.o
-                0x00001ff8                FlashGetUserProgBaseAddress
- .text.NvmInit  0x00001ffe        0x4 THUMB Debug/../../obj/nvm.o
-                0x00001ffe                NvmInit
+                0x00001ff0        0x6 THUMB Debug/../../obj/flash.o
+                0x00001ff0                FlashGetUserProgBaseAddress
+ .text.NvmInit  0x00001ff6        0x4 THUMB Debug/../../obj/nvm.o
+                0x00001ff6                NvmInit
  .text.NvmWrite
-                0x00002002        0x4 THUMB Debug/../../obj/nvm.o
-                0x00002002                NvmWrite
+                0x00001ffa        0x4 THUMB Debug/../../obj/nvm.o
+                0x00001ffa                NvmWrite
  .text.NvmErase
-                0x00002006        0x4 THUMB Debug/../../obj/nvm.o
-                0x00002006                NvmErase
+                0x00001ffe        0x4 THUMB Debug/../../obj/nvm.o
+                0x00001ffe                NvmErase
  .text.NvmVerifyChecksum
-                0x0000200a        0x4 THUMB Debug/../../obj/nvm.o
-                0x0000200a                NvmVerifyChecksum
+                0x00002002        0x4 THUMB Debug/../../obj/nvm.o
+                0x00002002                NvmVerifyChecksum
  .text.NvmGetUserProgBaseAddress
-                0x0000200e        0x4 THUMB Debug/../../obj/nvm.o
-                0x0000200e                NvmGetUserProgBaseAddress
- .text.NvmDone  0x00002012       0x12 THUMB Debug/../../obj/nvm.o
-                0x00002012                NvmDone
+                0x00002006        0x4 THUMB Debug/../../obj/nvm.o
+                0x00002006                NvmGetUserProgBaseAddress
+ .text.NvmDone  0x0000200a       0x12 THUMB Debug/../../obj/nvm.o
+                0x0000200a                NvmDone
  .text.TimerInit
-                0x00002024       0x20 THUMB Debug/../../obj/timer.o
-                0x00002024                TimerInit
+                0x0000201c       0x20 THUMB Debug/../../obj/timer.o
+                0x0000201c                TimerInit
  .text.TimerReset
-                0x00002044        0xc THUMB Debug/../../obj/timer.o
-                0x00002044                TimerReset
+                0x0000203c        0xc THUMB Debug/../../obj/timer.o
+                0x0000203c                TimerReset
  .text.TimerUpdate
-                0x00002050       0x1c THUMB Debug/../../obj/timer.o
-                0x00002050                TimerUpdate
+                0x00002048       0x1c THUMB Debug/../../obj/timer.o
+                0x00002048                TimerUpdate
  .text.TimerGet
-                0x0000206c       0x10 THUMB Debug/../../obj/timer.o
-                0x0000206c                TimerGet
+                0x00002064       0x10 THUMB Debug/../../obj/timer.o
+                0x00002064                TimerGet
  .text.UartInit
-                0x0000207c       0x28 THUMB Debug/../../obj/uart.o
-                0x0000207c                UartInit
+                0x00002074       0x28 THUMB Debug/../../obj/uart.o
+                0x00002074                UartInit
  .text.UartTransmitPacket
-                0x000020a4       0x74 THUMB Debug/../../obj/uart.o
-                0x000020a4                UartTransmitPacket
+                0x0000209c       0x74 THUMB Debug/../../obj/uart.o
+                0x0000209c                UartTransmitPacket
  .text.UartReceivePacket
-                0x00002118       0x94 THUMB Debug/../../obj/uart.o
-                0x00002118                UartReceivePacket
+                0x00002110       0x94 THUMB Debug/../../obj/uart.o
+                0x00002110                UartReceivePacket
+ .text.CpuIrqDisable
+                0x000021a4        0x4 THUMB Debug/../../obj/cpu_comp.o
+                0x000021a4                CpuIrqDisable
+ .text.CpuIrqEnable
+                0x000021a8        0x4 THUMB Debug/../../obj/cpu_comp.o
+                0x000021a8                CpuIrqEnable
  .text.AssertFailure
                 0x000021ac        0x8 THUMB Debug/../../obj/assert.o
                 0x000021ac                AssertFailure
@@ -3362,12 +3362,12 @@ LOAD THUMB Debug/../../obj/hooks.o
 LOAD THUMB Debug/../../obj/main.o
 LOAD THUMB Debug/../../obj/cstart.o
 LOAD THUMB Debug/../../obj/vectors.o
-LOAD THUMB Debug/../../obj/cpu_comp.o
 LOAD THUMB Debug/../../obj/cpu.o
 LOAD THUMB Debug/../../obj/flash.o
 LOAD THUMB Debug/../../obj/nvm.o
 LOAD THUMB Debug/../../obj/timer.o
 LOAD THUMB Debug/../../obj/uart.o
+LOAD THUMB Debug/../../obj/cpu_comp.o
 LOAD THUMB Debug/../../obj/assert.o
 LOAD THUMB Debug/../../obj/backdoor.o
 LOAD THUMB Debug/../../obj/boot.o
@@ -3405,12 +3405,12 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .debug_frame   0x00001afc       0xb8 THUMB Debug/../../obj/hooks.o
  .debug_frame   0x00001bb4       0x2c THUMB Debug/../../obj/main.o
  .debug_frame   0x00001be0       0x20 THUMB Debug/../../obj/vectors.o
- .debug_frame   0x00001c00       0x30 THUMB Debug/../../obj/cpu_comp.o
- .debug_frame   0x00001c30       0x6c THUMB Debug/../../obj/cpu.o
- .debug_frame   0x00001c9c      0x180 THUMB Debug/../../obj/flash.o
- .debug_frame   0x00001e1c       0x9c THUMB Debug/../../obj/nvm.o
- .debug_frame   0x00001eb8       0x5c THUMB Debug/../../obj/timer.o
- .debug_frame   0x00001f14       0x78 THUMB Debug/../../obj/uart.o
+ .debug_frame   0x00001c00       0x6c THUMB Debug/../../obj/cpu.o
+ .debug_frame   0x00001c6c      0x180 THUMB Debug/../../obj/flash.o
+ .debug_frame   0x00001dec       0x9c THUMB Debug/../../obj/nvm.o
+ .debug_frame   0x00001e88       0x5c THUMB Debug/../../obj/timer.o
+ .debug_frame   0x00001ee4       0x78 THUMB Debug/../../obj/uart.o
+ .debug_frame   0x00001f5c       0x30 THUMB Debug/../../obj/cpu_comp.o
  .debug_frame   0x00001f8c       0x2c THUMB Debug/../../obj/assert.o
  .debug_frame   0x00001fb8       0x60 THUMB Debug/../../obj/backdoor.o
  .debug_frame   0x00002018       0x58 THUMB Debug/../../obj/boot.o
@@ -3439,12 +3439,12 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .debug_info    0x000073f4      0x136 THUMB Debug/../../obj/main.o
  .debug_info    0x0000752a       0xd6 THUMB Debug/../../obj/cstart.o
  .debug_info    0x00007600      0x11b THUMB Debug/../../obj/vectors.o
- .debug_info    0x0000771b       0x91 THUMB Debug/../../obj/cpu_comp.o
- .debug_info    0x000077ac      0x1d8 THUMB Debug/../../obj/cpu.o
- .debug_info    0x00007984      0x86e THUMB Debug/../../obj/flash.o
- .debug_info    0x000081f2      0x25f THUMB Debug/../../obj/nvm.o
- .debug_info    0x00008451      0x13e THUMB Debug/../../obj/timer.o
- .debug_info    0x0000858f      0x455 THUMB Debug/../../obj/uart.o
+ .debug_info    0x0000771b      0x1d8 THUMB Debug/../../obj/cpu.o
+ .debug_info    0x000078f3      0x86e THUMB Debug/../../obj/flash.o
+ .debug_info    0x00008161      0x25f THUMB Debug/../../obj/nvm.o
+ .debug_info    0x000083c0      0x13e THUMB Debug/../../obj/timer.o
+ .debug_info    0x000084fe      0x455 THUMB Debug/../../obj/uart.o
+ .debug_info    0x00008953       0x91 THUMB Debug/../../obj/cpu_comp.o
  .debug_info    0x000089e4       0xd3 THUMB Debug/../../obj/assert.o
  .debug_info    0x00008ab7      0x14f THUMB Debug/../../obj/backdoor.o
  .debug_info    0x00008c06      0x18b THUMB Debug/../../obj/boot.o
@@ -3472,12 +3472,12 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .debug_abbrev  0x00001081       0xbb THUMB Debug/../../obj/main.o
  .debug_abbrev  0x0000113c       0x14 THUMB Debug/../../obj/cstart.o
  .debug_abbrev  0x00001150       0xef THUMB Debug/../../obj/vectors.o
- .debug_abbrev  0x0000123f       0x43 THUMB Debug/../../obj/cpu_comp.o
- .debug_abbrev  0x00001282       0xdf THUMB Debug/../../obj/cpu.o
- .debug_abbrev  0x00001361      0x276 THUMB Debug/../../obj/flash.o
- .debug_abbrev  0x000015d7       0xd9 THUMB Debug/../../obj/nvm.o
- .debug_abbrev  0x000016b0       0xea THUMB Debug/../../obj/timer.o
- .debug_abbrev  0x0000179a      0x19e THUMB Debug/../../obj/uart.o
+ .debug_abbrev  0x0000123f       0xdf THUMB Debug/../../obj/cpu.o
+ .debug_abbrev  0x0000131e      0x276 THUMB Debug/../../obj/flash.o
+ .debug_abbrev  0x00001594       0xd9 THUMB Debug/../../obj/nvm.o
+ .debug_abbrev  0x0000166d       0xea THUMB Debug/../../obj/timer.o
+ .debug_abbrev  0x00001757      0x19e THUMB Debug/../../obj/uart.o
+ .debug_abbrev  0x000018f5       0x43 THUMB Debug/../../obj/cpu_comp.o
  .debug_abbrev  0x00001938       0x89 THUMB Debug/../../obj/assert.o
  .debug_abbrev  0x000019c1       0xae THUMB Debug/../../obj/backdoor.o
  .debug_abbrev  0x00001a6f       0x6f THUMB Debug/../../obj/boot.o
@@ -3541,17 +3541,17 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .debug_pubnames
                 0x0000179d       0x2d THUMB Debug/../../obj/vectors.o
  .debug_pubnames
-                0x000017ca       0x35 THUMB Debug/../../obj/cpu_comp.o
+                0x000017ca       0x45 THUMB Debug/../../obj/cpu.o
  .debug_pubnames
-                0x000017ff       0x45 THUMB Debug/../../obj/cpu.o
+                0x0000180f      0x178 THUMB Debug/../../obj/flash.o
  .debug_pubnames
-                0x00001844      0x178 THUMB Debug/../../obj/flash.o
+                0x00001987       0x86 THUMB Debug/../../obj/nvm.o
  .debug_pubnames
-                0x000019bc       0x86 THUMB Debug/../../obj/nvm.o
+                0x00001a0d       0x64 THUMB Debug/../../obj/timer.o
  .debug_pubnames
-                0x00001a42       0x64 THUMB Debug/../../obj/timer.o
+                0x00001a71       0x75 THUMB Debug/../../obj/uart.o
  .debug_pubnames
-                0x00001aa6       0x75 THUMB Debug/../../obj/uart.o
+                0x00001ae6       0x35 THUMB Debug/../../obj/cpu_comp.o
  .debug_pubnames
                 0x00001b1b       0x24 THUMB Debug/../../obj/assert.o
  .debug_pubnames
@@ -3602,17 +3602,17 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .debug_pubtypes
                 0x00000920       0xe2 THUMB Debug/../../obj/vectors.o
  .debug_pubtypes
-                0x00000a02       0xc6 THUMB Debug/../../obj/cpu_comp.o
+                0x00000a02       0xff THUMB Debug/../../obj/cpu.o
  .debug_pubtypes
-                0x00000ac8       0xff THUMB Debug/../../obj/cpu.o
+                0x00000b01      0x131 THUMB Debug/../../obj/flash.o
  .debug_pubtypes
-                0x00000bc7      0x131 THUMB Debug/../../obj/flash.o
+                0x00000c32       0xfd THUMB Debug/../../obj/nvm.o
  .debug_pubtypes
-                0x00000cf8       0xfd THUMB Debug/../../obj/nvm.o
+                0x00000d2f       0xe6 THUMB Debug/../../obj/timer.o
  .debug_pubtypes
-                0x00000df5       0xe6 THUMB Debug/../../obj/timer.o
+                0x00000e15      0x10e THUMB Debug/../../obj/uart.o
  .debug_pubtypes
-                0x00000edb      0x10e THUMB Debug/../../obj/uart.o
+                0x00000f23       0xc6 THUMB Debug/../../obj/cpu_comp.o
  .debug_pubtypes
                 0x00000fe9       0xe2 THUMB Debug/../../obj/assert.o
  .debug_pubtypes
@@ -3664,17 +3664,17 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .debug_aranges
                 0x00000820       0x20 THUMB Debug/../../obj/vectors.o
  .debug_aranges
-                0x00000840       0x28 THUMB Debug/../../obj/cpu_comp.o
+                0x00000840       0x30 THUMB Debug/../../obj/cpu.o
  .debug_aranges
-                0x00000868       0x30 THUMB Debug/../../obj/cpu.o
+                0x00000870       0x70 THUMB Debug/../../obj/flash.o
  .debug_aranges
-                0x00000898       0x70 THUMB Debug/../../obj/flash.o
+                0x000008e0       0x50 THUMB Debug/../../obj/nvm.o
  .debug_aranges
-                0x00000908       0x50 THUMB Debug/../../obj/nvm.o
+                0x00000930       0x38 THUMB Debug/../../obj/timer.o
  .debug_aranges
-                0x00000958       0x38 THUMB Debug/../../obj/timer.o
+                0x00000968       0x30 THUMB Debug/../../obj/uart.o
  .debug_aranges
-                0x00000990       0x30 THUMB Debug/../../obj/uart.o
+                0x00000998       0x28 THUMB Debug/../../obj/cpu_comp.o
  .debug_aranges
                 0x000009c0       0x20 THUMB Debug/../../obj/assert.o
  .debug_aranges
@@ -3714,12 +3714,12 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .debug_ranges  0x00000760       0x38 THUMB Debug/../../obj/hooks.o
  .debug_ranges  0x00000798       0x10 THUMB Debug/../../obj/main.o
  .debug_ranges  0x000007a8       0x10 THUMB Debug/../../obj/vectors.o
- .debug_ranges  0x000007b8       0x18 THUMB Debug/../../obj/cpu_comp.o
- .debug_ranges  0x000007d0       0x20 THUMB Debug/../../obj/cpu.o
- .debug_ranges  0x000007f0       0xa8 THUMB Debug/../../obj/flash.o
- .debug_ranges  0x00000898       0x40 THUMB Debug/../../obj/nvm.o
- .debug_ranges  0x000008d8       0x28 THUMB Debug/../../obj/timer.o
- .debug_ranges  0x00000900       0x60 THUMB Debug/../../obj/uart.o
+ .debug_ranges  0x000007b8       0x20 THUMB Debug/../../obj/cpu.o
+ .debug_ranges  0x000007d8       0xa8 THUMB Debug/../../obj/flash.o
+ .debug_ranges  0x00000880       0x40 THUMB Debug/../../obj/nvm.o
+ .debug_ranges  0x000008c0       0x28 THUMB Debug/../../obj/timer.o
+ .debug_ranges  0x000008e8       0x60 THUMB Debug/../../obj/uart.o
+ .debug_ranges  0x00000948       0x18 THUMB Debug/../../obj/cpu_comp.o
  .debug_ranges  0x00000960       0x10 THUMB Debug/../../obj/assert.o
  .debug_ranges  0x00000970       0x18 THUMB Debug/../../obj/backdoor.o
  .debug_ranges  0x00000988       0x18 THUMB Debug/../../obj/boot.o
@@ -3734,7 +3734,7 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .debug_ranges  0x00000f68       0x28 THUMB Debug/../../obj/net.o
  .debug_ranges  0x00000f90     0x1098 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 3.7/lib/libc_v7m_t_le_eabi_small.a(libc2.o)
 
-.debug_line     0x00000000     0x6fe9
+.debug_line     0x00000000     0x6fe2
  .debug_line    0x00000000      0x8ad THUMB Debug/../../obj/sysctl.o
  .debug_line    0x000008ad      0x770 THUMB Debug/../../obj/gpio.o
  .debug_line    0x0000101d      0x426 THUMB Debug/../../obj/flashlib.o
@@ -3747,27 +3747,27 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .debug_line    0x00002ef3      0x139 THUMB Debug/../../obj/main.o
  .debug_line    0x0000302c      0x105 THUMB Debug/../../obj/cstart.o
  .debug_line    0x00003131       0xff THUMB Debug/../../obj/vectors.o
- .debug_line    0x00003230       0xc6 THUMB Debug/../../obj/cpu_comp.o
- .debug_line    0x000032f6      0x16d THUMB Debug/../../obj/cpu.o
- .debug_line    0x00003463      0x337 THUMB Debug/../../obj/flash.o
- .debug_line    0x0000379a      0x162 THUMB Debug/../../obj/nvm.o
- .debug_line    0x000038fc      0x126 THUMB Debug/../../obj/timer.o
- .debug_line    0x00003a22      0x235 THUMB Debug/../../obj/uart.o
- .debug_line    0x00003c57      0x10f THUMB Debug/../../obj/assert.o
- .debug_line    0x00003d66      0x14d THUMB Debug/../../obj/backdoor.o
- .debug_line    0x00003eb3      0x126 THUMB Debug/../../obj/boot.o
- .debug_line    0x00003fd9      0x1aa THUMB Debug/../../obj/com.o
- .debug_line    0x00004183       0x99 THUMB Debug/../../obj/cop.o
- .debug_line    0x0000421c      0x23b THUMB Debug/../../obj/xcp.o
- .debug_line    0x00004457      0x3f0 THUMB Debug/../../obj/file.o
- .debug_line    0x00004847      0xfda THUMB Debug/../../obj/ff.o
- .debug_line    0x00005821      0x117 THUMB Debug/../../obj/unicode.o
- .debug_line    0x00005938      0x645 THUMB Debug/../../obj/uip.o
- .debug_line    0x00005f7d      0x2d7 THUMB Debug/../../obj/uip_arp.o
- .debug_line    0x00006254      0x26f THUMB Debug/../../obj/net.o
- .debug_line    0x000064c3      0xb26 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 3.7/lib/libc_v7m_t_le_eabi_small.a(libc2.o)
+ .debug_line    0x00003230      0x16d THUMB Debug/../../obj/cpu.o
+ .debug_line    0x0000339d      0x337 THUMB Debug/../../obj/flash.o
+ .debug_line    0x000036d4      0x162 THUMB Debug/../../obj/nvm.o
+ .debug_line    0x00003836      0x126 THUMB Debug/../../obj/timer.o
+ .debug_line    0x0000395c      0x235 THUMB Debug/../../obj/uart.o
+ .debug_line    0x00003b91       0xbf THUMB Debug/../../obj/cpu_comp.o
+ .debug_line    0x00003c50      0x10f THUMB Debug/../../obj/assert.o
+ .debug_line    0x00003d5f      0x14d THUMB Debug/../../obj/backdoor.o
+ .debug_line    0x00003eac      0x126 THUMB Debug/../../obj/boot.o
+ .debug_line    0x00003fd2      0x1aa THUMB Debug/../../obj/com.o
+ .debug_line    0x0000417c       0x99 THUMB Debug/../../obj/cop.o
+ .debug_line    0x00004215      0x23b THUMB Debug/../../obj/xcp.o
+ .debug_line    0x00004450      0x3f0 THUMB Debug/../../obj/file.o
+ .debug_line    0x00004840      0xfda THUMB Debug/../../obj/ff.o
+ .debug_line    0x0000581a      0x117 THUMB Debug/../../obj/unicode.o
+ .debug_line    0x00005931      0x645 THUMB Debug/../../obj/uip.o
+ .debug_line    0x00005f76      0x2d7 THUMB Debug/../../obj/uip_arp.o
+ .debug_line    0x0000624d      0x26f THUMB Debug/../../obj/net.o
+ .debug_line    0x000064bc      0xb26 C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 3.7/lib/libc_v7m_t_le_eabi_small.a(libc2.o)
 
-.debug_str      0x00000000     0x565e
+.debug_str      0x00000000     0x5657
  .debug_str     0x00000000      0x757 THUMB Debug/../../obj/sysctl.o
                                 0x7bf (size before relaxing)
  .debug_str     0x00000757      0x411 THUMB Debug/../../obj/gpio.o
@@ -3790,43 +3790,43 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
                                 0x24d (size before relaxing)
  .debug_str     0x00001d4b       0x8d THUMB Debug/../../obj/vectors.o
                                 0x246 (size before relaxing)
- .debug_str     0x00001dd8       0xa1 THUMB Debug/../../obj/cpu_comp.o
-                                0x241 (size before relaxing)
- .debug_str     0x00001e79      0x117 THUMB Debug/../../obj/cpu.o
+ .debug_str     0x00001dd8      0x132 THUMB Debug/../../obj/cpu.o
                                 0x2e7 (size before relaxing)
- .debug_str     0x00001f90      0x267 THUMB Debug/../../obj/flash.o
+ .debug_str     0x00001f0a      0x267 THUMB Debug/../../obj/flash.o
                                 0x497 (size before relaxing)
- .debug_str     0x000021f7       0xac THUMB Debug/../../obj/nvm.o
+ .debug_str     0x00002171       0xac THUMB Debug/../../obj/nvm.o
                                 0x318 (size before relaxing)
- .debug_str     0x000022a3       0xb9 THUMB Debug/../../obj/timer.o
+ .debug_str     0x0000221d       0xb9 THUMB Debug/../../obj/timer.o
                                 0x278 (size before relaxing)
- .debug_str     0x0000235c      0x120 THUMB Debug/../../obj/uart.o
+ .debug_str     0x000022d6      0x120 THUMB Debug/../../obj/uart.o
                                 0x399 (size before relaxing)
- .debug_str     0x0000247c       0x6d THUMB Debug/../../obj/assert.o
+ .debug_str     0x000023f6       0x7f THUMB Debug/../../obj/cpu_comp.o
+                                0x23a (size before relaxing)
+ .debug_str     0x00002475       0x6d THUMB Debug/../../obj/assert.o
                                 0x244 (size before relaxing)
- .debug_str     0x000024e9       0xe2 THUMB Debug/../../obj/backdoor.o
+ .debug_str     0x000024e2       0xe2 THUMB Debug/../../obj/backdoor.o
                                 0x2b3 (size before relaxing)
- .debug_str     0x000025cb       0x95 THUMB Debug/../../obj/boot.o
+ .debug_str     0x000025c4       0x95 THUMB Debug/../../obj/boot.o
                                 0x293 (size before relaxing)
- .debug_str     0x00002660      0x160 THUMB Debug/../../obj/com.o
+ .debug_str     0x00002659      0x160 THUMB Debug/../../obj/com.o
                                 0x38f (size before relaxing)
- .debug_str     0x000027c0       0x6a THUMB Debug/../../obj/cop.o
+ .debug_str     0x000027b9       0x6a THUMB Debug/../../obj/cop.o
                                 0x215 (size before relaxing)
- .debug_str     0x0000282a      0x23c THUMB Debug/../../obj/xcp.o
+ .debug_str     0x00002823      0x23c THUMB Debug/../../obj/xcp.o
                                 0x4d9 (size before relaxing)
- .debug_str     0x00002a66      0x36e THUMB Debug/../../obj/file.o
+ .debug_str     0x00002a5f      0x36e THUMB Debug/../../obj/file.o
                                 0x8d6 (size before relaxing)
- .debug_str     0x00002dd4      0x361 THUMB Debug/../../obj/ff.o
+ .debug_str     0x00002dcd      0x361 THUMB Debug/../../obj/ff.o
                                 0x85d (size before relaxing)
- .debug_str     0x00003135       0x95 THUMB Debug/../../obj/unicode.o
+ .debug_str     0x0000312e       0x95 THUMB Debug/../../obj/unicode.o
                                 0x24b (size before relaxing)
- .debug_str     0x000031ca      0x3dd THUMB Debug/../../obj/uip.o
+ .debug_str     0x000031c3      0x3dd THUMB Debug/../../obj/uip.o
                                 0x685 (size before relaxing)
- .debug_str     0x000035a7      0x17e THUMB Debug/../../obj/uip_arp.o
+ .debug_str     0x000035a0      0x17e THUMB Debug/../../obj/uip_arp.o
                                 0x451 (size before relaxing)
- .debug_str     0x00003725       0xbd THUMB Debug/../../obj/net.o
+ .debug_str     0x0000371e       0xbd THUMB Debug/../../obj/net.o
                                 0x4a0 (size before relaxing)
- .debug_str     0x000037e2     0x1e7c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 3.7/lib/libc_v7m_t_le_eabi_small.a(libc2.o)
+ .debug_str     0x000037db     0x1e7c C:/Program Files (x86)/Rowley Associates Limited/CrossWorks for ARM 3.7/lib/libc_v7m_t_le_eabi_small.a(libc2.o)
                                0x2019 (size before relaxing)
 
 .comment        0x00000000       0x4c
@@ -3842,12 +3842,12 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/hooks.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/main.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/vectors.o
- .comment       0x0000004c       0x4d THUMB Debug/../../obj/cpu_comp.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/cpu.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/flash.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/nvm.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/timer.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/uart.o
+ .comment       0x0000004c       0x4d THUMB Debug/../../obj/cpu_comp.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/assert.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/backdoor.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/boot.o
@@ -3889,17 +3889,17 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/B
  .ARM.attributes
                 0x0000021f       0x33 THUMB Debug/../../obj/vectors.o
  .ARM.attributes
-                0x00000252       0x33 THUMB Debug/../../obj/cpu_comp.o
+                0x00000252       0x33 THUMB Debug/../../obj/cpu.o
  .ARM.attributes
-                0x00000285       0x33 THUMB Debug/../../obj/cpu.o
+                0x00000285       0x33 THUMB Debug/../../obj/flash.o
  .ARM.attributes
-                0x000002b8       0x33 THUMB Debug/../../obj/flash.o
+                0x000002b8       0x33 THUMB Debug/../../obj/nvm.o
  .ARM.attributes
-                0x000002eb       0x33 THUMB Debug/../../obj/nvm.o
+                0x000002eb       0x33 THUMB Debug/../../obj/timer.o
  .ARM.attributes
-                0x0000031e       0x33 THUMB Debug/../../obj/timer.o
+                0x0000031e       0x33 THUMB Debug/../../obj/uart.o
  .ARM.attributes
-                0x00000351       0x33 THUMB Debug/../../obj/uart.o
+                0x00000351       0x33 THUMB Debug/../../obj/cpu_comp.o
  .ARM.attributes
                 0x00000384       0x33 THUMB Debug/../../obj/assert.o
  .ARM.attributes

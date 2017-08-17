@@ -138,6 +138,23 @@
 
 
 /****************************************************************************************
+*   F L A S H   M E M O R Y   D R I V E R   C O N F I G U R A T I O N
+****************************************************************************************/
+/** \brief This microcontroller has a smaller vector table then the default STM32F1xx
+ *         project as assumed in the bootloader's core. This means the user program has
+ *         a different checksum location, because this one is added at the end of the
+ *         user program's vector table.
+ */
+#define FLASH_VECTOR_TABLE_CS_OFFSET    (0xec)
+/** \brief Enable support for a custom flash layout table. It is located in
+ *         flash_layout.c. This was done because the default flashLayout[] table
+ *         in the bootloader's core has more flash memory reserved for the bootloader
+ *         than is needed for this demo.
+ */
+#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (1)
+
+
+/****************************************************************************************
 *   W A T C H D O G   D R I V E R   C O N F I G U R A T I O N
 ****************************************************************************************/
 /* The COP driver cannot be configured internally in the bootloader, because its use

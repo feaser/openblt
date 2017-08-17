@@ -1,11 +1,11 @@
 #****************************************************************************************
-#|  Description: Makefile for STM32 using CodeSourcery GNU GCC compiler toolset
+#|  Description: Makefile for GNU ARM Embedded toolchain.
 #|    File Name: makefile
 #|
 #|---------------------------------------------------------------------------------------
 #|                          C O P Y R I G H T
 #|---------------------------------------------------------------------------------------
-#|   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+#|   Copyright (c) 2017  by Feaser    http://www.feaser.com    All rights reserved
 #|
 #|---------------------------------------------------------------------------------------
 #|                            L I C E N S E
@@ -25,142 +25,103 @@
 #****************************************************************************************
 SHELL = sh
 
-#|---------------------------------------------------------------------------------------|
-#| Configure project name                                                                |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Configure project name                                                               |
+#|--------------------------------------------------------------------------------------|
 PROJ_NAME=demoprog_olimex_stm32h103
 
 
-#|---------------------------------------------------------------------------------------|
-#| Speficy project source files                                                          |
-#|---------------------------------------------------------------------------------------|
-PROJ_FILES= \
-cstart.c \
-header.h \
-led.c \
-led.h \
-main.c \
-timer.c \
-timer.h \
-vectors.c \
-lib/stdperiphlib/stm32f10x_conf.h \
-lib/stdperiphlib/CMSIS/CM3/CoreSupport/core_cm3.c \
-lib/stdperiphlib/CMSIS/CM3/CoreSupport/core_cm3.h \
-lib/stdperiphlib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h \
-lib/stdperiphlib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c \
-lib/stdperiphlib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/misc.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_adc.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_bkp.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_can.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_cec.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_crc.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_dac.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_dbgmcu.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_dma.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_exti.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_flash.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_fsmc.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_i2c.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_iwdg.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_pwr.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_rcc.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_rtc.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_sdio.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_spi.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_tim.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_usart.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_wwdg.h \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/misc.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_bkp.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_can.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_crc.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dbgmcu.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_flash.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_fsmc.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_iwdg.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_pwr.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_rtc.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c \
-lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_wwdg.c
+#|--------------------------------------------------------------------------------------|
+#| Configure tool path                                                                  |
+#|--------------------------------------------------------------------------------------|
+TOOL_PATH=
 
 
-#|---------------------------------------------------------------------------------------|
-#| Compiler binaries                                                                     |
-#|---------------------------------------------------------------------------------------|
-CC = arm-none-eabi-gcc
-LN = arm-none-eabi-gcc
-OC = arm-none-eabi-objcopy
-OD = arm-none-eabi-objdump
-AS = arm-none-eabi-as
-SZ = arm-none-eabi-size
+#|--------------------------------------------------------------------------------------|
+#| Collect project files                                                                |
+#|--------------------------------------------------------------------------------------|
+# Recursive wildcard function implementation. Example usages:
+#   $(call rwildcard, , *.c *.h)   
+#     --> Returns all *.c and *.h files in the current directory and below
+#   $(call rwildcard, /lib/, *.c)
+#     --> Returns all *.c files in the /lib directory and below
+rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d)))
+
+# Collect all application files in the current directory and its subdirectories
+PROJ_FILES = $(call rwildcard, , *.c *.h *.S)
 
 
-#|---------------------------------------------------------------------------------------|
-#| Extract file names                                                                    |
-#|---------------------------------------------------------------------------------------|
-PROJ_ASRCS  = $(filter %.s,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
+#|--------------------------------------------------------------------------------------|
+#| Toolchain binaries                                                                   |
+#|--------------------------------------------------------------------------------------|
+RM = cs-rm
+CC = $(TOOL_PATH)arm-none-eabi-gcc
+LN = $(TOOL_PATH)arm-none-eabi-gcc
+OC = $(TOOL_PATH)arm-none-eabi-objcopy
+OD = $(TOOL_PATH)arm-none-eabi-objdump
+AS = $(TOOL_PATH)arm-none-eabi-gcc
+SZ = $(TOOL_PATH)arm-none-eabi-size
+
+
+#|--------------------------------------------------------------------------------------|
+#| Filter project files
+#|--------------------------------------------------------------------------------------|
+PROJ_ASRCS  = $(filter %.S,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CSRCS  = $(filter %.c,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CHDRS  = $(filter %.h,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
-PROJ_CCMPL  = $(patsubst %.c,%.cpl,$(PROJ_CSRCS))
-PROJ_ACMPL  = $(patsubst %.s,%.cpl,$(PROJ_ASRCS))
 
 
-#|---------------------------------------------------------------------------------------|
-#| Set important path variables                                                          |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Set important path variables                                                         |
+#|--------------------------------------------------------------------------------------|
 VPATH    = $(foreach path,$(sort $(foreach file,$(PROJ_FILES),$(dir $(file)))) $(subst \,/,$(OBJ_PATH)),$(path) :)
 OBJ_PATH = obj
 BIN_PATH = bin
-INC_PATH = $(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file)))))
-INC_PATH += -I.
+INC_PATH = $(patsubst %/,%,$(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file))))))
 LIB_PATH  = 
 
 
-#|---------------------------------------------------------------------------------------|
-#| Options for compiler binaries                                                         |
-#|---------------------------------------------------------------------------------------|
-CFLAGS   = -g -mthumb -mcpu=cortex-m3 -mlong-calls -O1 -T memory.x
-CFLAGS  += -D PACK_STRUCT_END=__attribute\(\(packed\)\) -D sprintf=usprintf -Wno-main
-CFLAGS  += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) -D snprintf=usnprintf
-CFLAGS  += -D printf=uipprintf -ffunction-sections -fdata-sections $(INC_PATH)
-CFLAGS  += -D STM32F10X_MD -D USE_STDPERIPH_DRIVER -D VECT_TAB_FLASH -D GCC_ARMCM3
-LFLAGS   = -nostartfiles -Xlinker -M -Xlinker -Map=$(BIN_PATH)/$(PROJ_NAME).map
-LFLAGS  += $(LIB_PATH) -Xlinker --gc-sections
-OFLAGS   = -O srec
-ODFLAGS  = -x
-SZFLAGS  = -B -d
+#|--------------------------------------------------------------------------------------|
+#| Options for toolchain binaries                                                       |
+#|--------------------------------------------------------------------------------------|
+HEAP_SIZE   = 0x0800
+STACK_SIZE  = 0x0800
+STDFLAGS    = -mcpu=cortex-m3 -mthumb -fno-strict-aliasing
+STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
+OPTFLAGS    = -Og
+CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
+CFLAGS     += -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DVECT_TAB_FLASH -DGCC_ARMCM3
+CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)
+CFLAGS     += $(INC_PATH)
+AFLAGS      = $(CFLAGS)
+LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
+LFLAGS     += -Wl,--defsym=__HEAP_SIZE=$(HEAP_SIZE) -Wl,--defsym=__STACK_SIZE=$(STACK_SIZE)
+LFLAGS     += -Wl,-script="stm32f103rb_flash.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -Wl,--gc-sections $(LIB_PATH)
+OFLAGS      = -O srec
+ODFLAGS     = -x
+SZFLAGS     = -B -d
+RMFLAGS     = -f
 
 
-#|---------------------------------------------------------------------------------------|
-#| Specify library files                                                                 |
-#|---------------------------------------------------------------------------------------|
+#|--------------------------------------------------------------------------------------|
+#| Specify library files                                                                |
+#|--------------------------------------------------------------------------------------|
 LIBS = 
 
 
-#|---------------------------------------------------------------------------------------|
-#| Define targets                                                                        |
-#|---------------------------------------------------------------------------------------|
-AOBJS = $(patsubst %.s,%.o,$(PROJ_ASRCS))
+#|--------------------------------------------------------------------------------------|
+#| Define targets                                                                       |
+#|--------------------------------------------------------------------------------------|
+AOBJS = $(patsubst %.S,%.o,$(PROJ_ASRCS))
 COBJS = $(patsubst %.c,%.o,$(PROJ_CSRCS))
 
 
-#|---------------------------------------------------------------------------------------|
-#| Make ALL                                                                              |
-#|---------------------------------------------------------------------------------------|
-all : $(BIN_PATH)/$(PROJ_NAME).srec
+#|--------------------------------------------------------------------------------------|
+#| Make ALL                                                                             |
+#|--------------------------------------------------------------------------------------|
+.PHONY: all
+all: $(BIN_PATH)/$(PROJ_NAME).srec
 
 
 $(BIN_PATH)/$(PROJ_NAME).srec : $(BIN_PATH)/$(PROJ_NAME).elf
@@ -172,31 +133,32 @@ $(BIN_PATH)/$(PROJ_NAME).srec : $(BIN_PATH)/$(PROJ_NAME).elf
 
 $(BIN_PATH)/$(PROJ_NAME).elf : $(AOBJS) $(COBJS) 
 	@echo +++ Linking [$(notdir $@)]
-	@$(LN) $(CFLAGS) -o $@ $(patsubst %.o,$(OBJ_PATH)/%.o,$(^F)) $(LIBS) $(LFLAGS)
+	@$(LN) $(LFLAGS) -o $@ $(patsubst %.o,$(OBJ_PATH)/%.o,$(^F)) $(LIBS)
 
 
-#|---------------------------------------------------------------------------------------|
-#| Compile and assemble                                                                  |
-#|---------------------------------------------------------------------------------------|
-$(AOBJS): %.o: %.s $(PROJ_CHDRS)
+#|--------------------------------------------------------------------------------------|
+#| Compile and assemble                                                                 |
+#|--------------------------------------------------------------------------------------|
+$(AOBJS): %.o: %.S $(PROJ_CHDRS)
 	@echo +++ Assembling [$(notdir $<)]
-	@$(AS) $(AFLAGS) $< -o $(OBJ_PATH)/$(@F)
+	@$(AS) $(AFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
 $(COBJS): %.o: %.c $(PROJ_CHDRS)
 	@echo +++ Compiling [$(notdir $<)]
 	@$(CC) $(CFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
 
-#|---------------------------------------------------------------------------------------|
-#| Make CLEAN                                                                            |
-#|---------------------------------------------------------------------------------------|
-clean : 
+#|--------------------------------------------------------------------------------------|
+#| Make CLEAN                                                                           |
+#|--------------------------------------------------------------------------------------|
+.PHONY: clean
+clean: 
 	@echo +++ Cleaning build environment
-	@cs-rm -f $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
-	@cs-rm -f $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
-	@cs-rm -f $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
-	@cs-rm -f $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
-	@cs-rm -f $(BIN_PATH)/$(PROJ_NAME).srec
+	@$(RM) $(RMFLAGS) $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
+	@$(RM) $(RMFLAGS) $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
+	@$(RM) $(RMFLAGS) $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
+	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
+	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).srec
 	@echo +++ Clean complete
 
                                                                                                                                                                                                                                                                 

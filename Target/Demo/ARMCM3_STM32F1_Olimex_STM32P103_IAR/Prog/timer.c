@@ -96,11 +96,11 @@ unsigned long TimerGet(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void TimerISRHandler(void)
+void SysTick_Handler(void)
 {
   /* increment the millisecond counter */
   millisecond_counter++;
-} /*** end of TimerISRHandler ***/
+} /*** end of SysTick_Handler ***/
 
 
 /*********************************** end of timer.c ************************************/

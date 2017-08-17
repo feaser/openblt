@@ -735,7 +735,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32F1\IAR\memory.x</state>
+          <state>$PROJ_DIR$\..\stm32f103xB.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2009,6 +2009,9 @@
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
     </file>
+    <file>
+      <name>$PROJ_DIR$\..\startup_stm32f103xb.s</name>
+    </file>
   </group>
   <group>
     <name>Source</name>
@@ -2018,12 +2021,6 @@
         <name>IAR</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32F1\IAR\cpu_comp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32F1\IAR\cstart.s</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32F1\IAR\vectors.c</name>
         </file>
       </group>
       <file>

@@ -7,262 +7,399 @@ start address 0x08000000
 
 Program Header:
     LOAD off    0x00008000 vaddr 0x08000000 paddr 0x08000000 align 2**15
-         filesz 0x00005248 memsz 0x00005248 flags r-x
-    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08005248 align 2**15
-         filesz 0x00000008 memsz 0x00001158 flags rw-
+         filesz 0x00005210 memsz 0x00005210 flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x08005210 align 2**15
+         filesz 0x00000010 memsz 0x00000f7c flags rw-
 private flags = 5000202: [Version5 EABI] [soft-float ABI] [has entry point]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00005248  08000000  08000000  00008000  2**2
+  0 .text         00005210  08000000  08000000  00008000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000008  20000000  08005248  00010000  2**2
+  1 .data         00000010  20000000  08005210  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00001150  20000008  08005250  00010008  2**2
+  2 .bss          00000f6c  20000010  08005220  00010010  2**2
                   ALLOC
-  3 .debug_info   0000c02f  00000000  00000000  00010008  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 00002514  00000000  00000000  0001c037  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  5 .debug_loc    00009b46  00000000  00000000  0001e54b  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  6 .debug_aranges 000009c0  00000000  00000000  00028091  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  7 .debug_ranges 00000938  00000000  00000000  00028a51  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000037dd  00000000  00000000  00029389  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000026e1  00000000  00000000  0002cb66  2**0
-                  CONTENTS, READONLY, DEBUGGING
- 10 .comment      00000030  00000000  00000000  0002f247  2**0
+  3 .heap         00000800  20000f80  20000f80  00010010  2**3
                   CONTENTS, READONLY
- 11 .ARM.attributes 00000033  00000000  00000000  0002f277  2**0
+  4 .stack_dummy  00000800  20000f80  20000f80  00010810  2**3
                   CONTENTS, READONLY
- 12 .debug_frame  000018bc  00000000  00000000  0002f2ac  2**2
+  5 .ARM.attributes 00000027  00000000  00000000  00011010  2**0
+                  CONTENTS, READONLY
+  6 .comment      00000030  00000000  00000000  00011037  2**0
+                  CONTENTS, READONLY
+  7 .debug_line   00005746  00000000  00000000  00011067  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_info   0000b80d  00000000  00000000  000167ad  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_abbrev 00002103  00000000  00000000  00021fba  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_aranges 00000af8  00000000  00000000  000240c0  2**3
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00007b66  00000000  00000000  00024bb8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000980  00000000  00000000  0002c71e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_macro  0000cff9  00000000  00000000  0002d09e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 14 .debug_str    000401c1  00000000  00000000  0003a097  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 15 .debug_frame  00001a74  00000000  00000000  0007a258  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08000000 l    d  .text	00000000 .text
 20000000 l    d  .data	00000000 .data
-20000008 l    d  .bss	00000000 .bss
+20000010 l    d  .bss	00000000 .bss
+20000f80 l    d  .heap	00000000 .heap
+20000f80 l    d  .stack_dummy	00000000 .stack_dummy
+00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .debug_line	00000000 .debug_line
 00000000 l    d  .debug_info	00000000 .debug_info
 00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
-00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    d  .debug_ranges	00000000 .debug_ranges
-00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_macro	00000000 .debug_macro
 00000000 l    d  .debug_str	00000000 .debug_str
-00000000 l    d  .comment	00000000 .comment
-00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
 00000000 l    d  .debug_frame	00000000 .debug_frame
-00000000 l    df *ABS*	00000000 vectors.c
+00000000 l    df *ABS*	00000000 obj/startup_stm32f10x_md.o
+00000800 l       *ABS*	00000000 Stack_Size
+00000800 l       *ABS*	00000000 Heap_Size
+080001be l       .text	00000000 .flash_to_ram_loop
+080001f0 l       .text	00000000 .fill_zero_bss
+080001ec l       .text	00000000 .loop_zero_bss
+00000000 l    df *ABS*	00000000 crtstuff.c
+0800520c l     O .text	00000000 __EH_FRAME_BEGIN__
+080000ec l     F .text	00000000 deregister_tm_clones
+08000114 l     F .text	00000000 register_tm_clones
+08000144 l     F .text	00000000 __do_global_dtors_aux
+20000010 l       .bss	00000000 completed.7922
+2000000c l     O .data	00000000 __do_global_dtors_aux_fini_array_entry
+08000174 l     F .text	00000000 frame_dummy
+20000014 l       .bss	00000000 object.7927
+20000008 l     O .data	00000000 __frame_dummy_init_array_entry
 00000000 l    df *ABS*	00000000 hooks.c
-080049ac l     O .text	00000020 firmwareFilename
-20000008 l     O .bss	0000022c logfile
-00000000 l    df *ABS*	00000000 main.c
-00000000 l    df *ABS*	00000000 mmc.c
-08000458 l     F .text	00000036 xchg_spi
-08000490 l     F .text	0000002a wait_ready
-080004bc l     F .text	0000001a deselect
-080004d8 l     F .text	0000002c select
-08000504 l     F .text	00000090 send_cmd
-08000594 l     F .text	0000005c xmit_datablock
-080005f0 l     F .text	0000005e rcvr_datablock
-20000234 l     O .bss	00000004 CardType
-20000000 l     O .data	00000001 Stat
+080049a0 l     O .text	00000020 firmwareFilename
+2000002c l     O .bss	0000022c logfile
 00000000 l    df *ABS*	00000000 stm32f10x_gpio.c
 00000000 l    df *ABS*	00000000 stm32f10x_rcc.c
 00000000 l    df *ABS*	00000000 stm32f10x_spi.c
 00000000 l    df *ABS*	00000000 stm32f10x_usart.c
-00000000 l    df *ABS*	00000000 ff.c
-08000f20 l     F .text	00000016 ld_dword
-08000f38 l     F .text	00000012 mem_cpy
-08000f4c l     F .text	00000016 clust2sect
-08000f64 l     F .text	0000001e sum_sfn
-08000f84 l     F .text	00000056 get_ldnumber
-08000fdc l     F .text	00000034 validate
-08001010 l     F .text	0000006c sync_window
-0800107c l     F .text	0000003c move_window
-080010b8 l     F .text	000000b8 sync_fs
-08001170 l     F .text	00000128 put_fat
-08001298 l     F .text	00000018 st_clust
-080012b0 l     F .text	000000f4 get_fileinfo
-080013a4 l     F .text	000000d6 get_fat
-0800147c l     F .text	000000b4 dir_sdi
-08001530 l     F .text	000000d8 create_chain
-08001608 l     F .text	00000096 remove_chain
-080016a0 l     F .text	00000126 dir_next
-080017c8 l     F .text	00000058 dir_remove
-08001820 l     F .text	000001c2 dir_find
-080019e4 l     F .text	000002fe dir_register
-08001ce4 l     F .text	00000070 check_fs
-08001d54 l     F .text	0000030a find_volume
-08002060 l     F .text	00000156 dir_read
-080021b8 l     F .text	0000001e ld_clust
-080021d8 l     F .text	00000352 follow_path
-08002a58 l     F .text	00000046 putc_bfd
-20000238 l     O .bss	00000200 LfnBuf
-20000438 l     O .bss	00000002 Fsid
-080049f8 l     O .text	00000080 ExCvt
-08004a78 l     O .text	0000000d LfnOfs
-2000043c l     O .bss	00000004 FatFs
-00000000 l    df *ABS*	00000000 unicode.c
-08004a88 l     O .text	000000bc cvt2.4272
-08004b44 l     O .text	00000100 Tbl
-08004c44 l     O .text	000001f2 cvt1.4271
+00000000 l    df *ABS*	00000000 mmc.c
+08000568 l     F .text	00000012 power_off
+0800057c l     F .text	00000062 set_max_speed
+080005e0 l     F .text	0000009e send_initial_clock_train
+08000680 l     F .text	000000d0 power_on
+08000750 l     F .text	00000036 xchg_spi
+08000788 l     F .text	0000002a wait_ready
+080007b4 l     F .text	0000001a deselect
+080007d0 l     F .text	0000002c select
+080007fc l     F .text	00000084 send_cmd
+08000880 l     F .text	0000000e rcvr_spi_m
+08000890 l     F .text	00000054 rcvr_datablock
+080008e4 l     F .text	0000005a xmit_datablock
+20000258 l     O .bss	00000004 CardType
+20000000 l     O .data	00000001 Stat
+00000000 l    df *ABS*	00000000 main.c
+08000ec4 l     F .text	000001b4 Init
+00000000 l    df *ABS*	00000000 assert.c
+00000000 l    df *ABS*	00000000 backdoor.c
+2000025c l     O .bss	00000001 backdoorOpen
+20000260 l     O .bss	00000004 backdoorOpenTime
 00000000 l    df *ABS*	00000000 boot.c
 00000000 l    df *ABS*	00000000 com.c
-20000440 l     O .bss	00000040 xcpCtoReqPacket.4398
+20000264 l     O .bss	00000040 xcpCtoReqPacket.4398
 20000001 l     O .data	00000001 comActiveInterface
-00000000 l    df *ABS*	00000000 xcp.c
-080030b8 l     F .text	00000016 XcpSetCtoError
-08004e38 l     O .text	00000008 xcpStationId
-20000480 l     O .bss	0000004c xcpInfo
-00000000 l    df *ABS*	00000000 backdoor.c
-200004cc l     O .bss	00000001 backdoorOpen
-200004d0 l     O .bss	00000004 backdoorOpenTime
 00000000 l    df *ABS*	00000000 cop.c
 00000000 l    df *ABS*	00000000 file.c
-08003510 l     F .text	0000002e FileLibByteNibbleToChar
-08003540 l     F .text	00000020 FileLibByteToHexString
-08003560 l     F .text	00000046 FileLibLongToIntString
-080035a8 l     F .text	00000066 FileLibHexStringToByte
-200004d4 l     O .bss	00000040 loggingStr
-20000514 l     O .bss	00000001 firmwareUpdateState
-20000518 l     O .bss	00000008 eraseInfo
-20000520 l     O .bss	00000458 fatFsObjects
-20000978 l     O .bss	00000184 lineParseObject
-00000000 l    df *ABS*	00000000 assert.c
-00000000 l    df *ABS*	00000000 cpu.c
+0800123c l     F .text	0000002e FileLibByteNibbleToChar
+0800126c l     F .text	00000020 FileLibByteToHexString
+0800128c l     F .text	00000046 FileLibLongToIntString
+080012d4 l     F .text	00000066 FileLibHexStringToByte
+200002a4 l     O .bss	00000040 loggingStr
+200002e4 l     O .bss	00000001 firmwareUpdateState
+200002e8 l     O .bss	00000008 eraseInfo
+200002f0 l     O .bss	00000458 fatFsObjects
+20000748 l     O .bss	00000184 lineParseObject
+00000000 l    df *ABS*	00000000 xcp.c
+08001b00 l     F .text	00000020 XcpComputeChecksum
+08001b20 l     F .text	0000000e XcpProtectResources
+08001b30 l     F .text	00000016 XcpSetCtoError
+08001b48 l     F .text	0000001e XcpCmdDisconnect
+08001b68 l     F .text	00000022 XcpCmdGetStatus
+08001b8c l     F .text	0000000a XcpCmdSynch
+08001b98 l     F .text	00000030 XcpCmdGetId
+08001bc8 l     F .text	00000018 XcpCmdSetMta
+08001be0 l     F .text	00000028 XcpCmdBuildCheckSum
+08001c08 l     F .text	0000000a XcpCmdProgramPrepare
+08001c14 l     F .text	00000028 XcpCmdProgramStart
+08001c3c l     F .text	00000052 XcpCmdConnect
+08001c90 l     F .text	00000040 XcpCmdUpload
+08001cd0 l     F .text	00000042 XcpCmdShortUpload
+08001d14 l     F .text	00000046 XcpCmdProgramMax
+08001d5c l     F .text	00000068 XcpCmdProgram
+08001dc4 l     F .text	00000030 XcpCmdProgramClear
+08001df4 l     F .text	0000001a XcpCmdProgramReset
+08001e10 l     F .text	0000000a XcpTransmitPacket
+08004b9c l     O .text	00000008 xcpStationId
+200008cc l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 can.c
-0800502c l     O .text	00000024 canTiming
-00000000 l    df *ABS*	00000000 uart.c
-080040f0 l     F .text	0000004e UartTransmitByte
-20000afc l     O .bss	00000001 xcpCtoRxInProgress.4416
-20000b00 l     O .bss	00000004 xcpCtoRxStartTime.4417
-20000b04 l     O .bss	00000041 xcpCtoReqPacket.4414
-20000b48 l     O .bss	00000001 xcpCtoRxLength.4415
+08001f54 l     F .text	00000060 CanGetSpeedConfig
+08004bcc l     O .text	00000024 canTiming
+00000000 l    df *ABS*	00000000 cpu.c
+00000000 l    df *ABS*	00000000 flash.c
+08002268 l     F .text	00000022 FlashUnlock
+0800228c l     F .text	00000012 FlashLock
+080022a0 l     F .text	00000050 FlashGetSector
+080022f0 l     F .text	000000b6 FlashWriteBlock
+080023a8 l     F .text	00000042 FlashGetSectorBaseAddr
+080023ec l     F .text	00000042 FlashGetSectorSize
+08002430 l     F .text	000000b0 FlashEraseSectors
+080024e0 l     F .text	00000026 FlashInitBlock
+08002508 l     F .text	0000004e FlashSwitchBlock
+08002558 l     F .text	00000082 FlashAddToBlock
+08004bf0 l     O .text	0000009c flashLayout
+20000918 l     O .bss	00000204 bootBlockInfo
+20000b1c l     O .bss	00000204 blockInfo
 00000000 l    df *ABS*	00000000 nvm.c
 00000000 l    df *ABS*	00000000 timer.c
-20000b4c l     O .bss	00000004 millisecond_counter
-00000000 l    df *ABS*	00000000 flash.c
-08004378 l     F .text	00000012 FlashLock
-0800438c l     F .text	00000044 FlashGetSector
-080043d0 l     F .text	000000d0 FlashWriteBlock
-080044a0 l     F .text	00000062 FlashSwitchBlock
-08004504 l     F .text	00000084 FlashAddToBlock
-08005078 l     O .text	0000009c flashLayout
-20000b50 l     O .bss	00000204 bootBlockInfo
-20000d54 l     O .bss	00000204 blockInfo
+20000d20 l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 uart.c
+0800283c l     F .text	00000026 UartReceiveByte
+08002864 l     F .text	00000040 UartTransmitByte
+20000d24 l     O .bss	00000001 xcpCtoRxInProgress.4416
+20000d28 l     O .bss	00000004 xcpCtoRxStartTime.4417
+20000d2c l     O .bss	00000041 xcpCtoReqPacket.4414
+20000d70 l     O .bss	00000001 xcpCtoRxLength.4415
 00000000 l    df *ABS*	00000000 cpu_comp.c
-00000000 l    df *ABS*	00000000 cstart.c
-080048ec l     F .text	00000000 zero_loop
+00000000 l    df *ABS*	00000000 ff.c
+08002a14 l     F .text	0000000a ld_word
+08002a20 l     F .text	00000016 ld_dword
+08002a38 l     F .text	00000008 st_word
+08002a40 l     F .text	00000014 st_dword
+08002a54 l     F .text	00000012 mem_cpy
+08002a68 l     F .text	0000000c mem_set
+08002a74 l     F .text	0000001e mem_cmp
+08002a94 l     F .text	00000010 chk_chr
+08002aa4 l     F .text	00000016 clust2sect
+08002abc l     F .text	00000024 ld_clust
+08002ae0 l     F .text	00000024 st_clust
+08002b04 l     F .text	0000008e pick_lfn
+08002b94 l     F .text	00000074 put_lfn
+08002c08 l     F .text	000000a6 gen_numname
+08002cb0 l     F .text	0000001c sum_sfn
+08002ccc l     F .text	0000004e get_ldnumber
+08002d1c l     F .text	00000034 validate
+08002d50 l     F .text	00000062 sync_window
+08002db4 l     F .text	0000003c move_window
+08002df0 l     F .text	00000066 check_fs
+08002e58 l     F .text	000002d4 find_volume
+0800312c l     F .text	000000ce get_fat
+080031fc l     F .text	000000b0 dir_sdi
+080032ac l     F .text	0000010c put_fat
+080033b8 l     F .text	000000ce create_chain
+08003488 l     F .text	00000094 remove_chain
+0800351c l     F .text	00000122 dir_next
+08003640 l     F .text	00000056 dir_alloc
+08003698 l     F .text	000000c8 dir_read
+08003760 l     F .text	0000005e dir_remove
+080037c0 l     F .text	0000022c create_name
+080039ec l     F .text	000000ea get_fileinfo
+08003ad8 l     F .text	000000a4 cmp_lfn
+08003b7c l     F .text	000000e6 dir_find
+08003c64 l     F .text	00000090 follow_path
+08003cf4 l     F .text	00000140 dir_register
+08003e34 l     F .text	00000090 sync_fs
+080043d0 l     F .text	00000048 putc_bfd
+20000d74 l     O .bss	00000200 LfnBuf
+20000f74 l     O .bss	00000002 Fsid
+08004cc8 l     O .text	00000080 ExCvt
+08004d48 l     O .text	0000000d LfnOfs
+20000f78 l     O .bss	00000004 FatFs
+00000000 l    df *ABS*	00000000 unicode.c
+08004d58 l     O .text	000000bc cvt2.4272
+08004e14 l     O .text	00000100 Tbl
+08004f14 l     O .text	000001f2 cvt1.4271
 00000000 l    df *ABS*	00000000 memset.c
+00000000 l    df *ABS*	00000000 c:/users/frank voorburg/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.1/thumb2/crti.o
+00000000 l    df *ABS*	00000000 c:/users/frank voorburg/mentorgraphics/sourcery_codebench_lite_for_arm_eabi/bin/../lib/gcc/arm-none-eabi/4.8.1/thumb2/crtn.o
 00000000 l    df *ABS*	00000000 ctype_.c
+00000000 l    df *ABS*	00000000 crtstuff.c
+0800520c l     O .text	00000000 __FRAME_END__
 00000000 l    df *ABS*	00000000 
-00000200 l       *ABS*	00000000 __STACKSIZE__
-08002fbc g     F .text	00000020 ComInit
-080045a4 g     F .text	00000050 FlashWrite
-08002dec g     F .text	0000004e f_gets
-08003df4 g     F .text	00000008 AssertFailure
-08004068 g     F .text	00000088 CanReceivePacket
-080048a8 g     F .text	00000058 reset_handler
-08004340 g     F .text	00000022 TimerUpdate
-08003100 g     F .text	00000010 XcpPacketTransmitted
-08000ed8 g     F .text	00000004 SPI_I2S_SendData
-08002fdc g     F .text	00000054 ComTask
-08002f84 g     F .text	00000020 BootInit
-080036dc g     F .text	00000038 FileSrecVerifyChecksum
-08000edc g     F .text	00000006 SPI_I2S_ReceiveData
-080034e4 g     F .text	00000022 BackDoorInit
-08000f14 g     F .text	0000000c USART_GetFlagStatus
-0800350c g     F .text	00000002 CopService
-08005248 g       .text	00000000 _etext
-080048a0 g     F .text	00000004 CpuIrqDisable
-08002edc g     F .text	000000a6 ff_wtoupper
-08004880 g     F .text	0000000a FlashGetUserProgBaseAddress
-08003894 g     F .text	00000560 FileTask
-08004330 g     F .text	0000000e TimerReset
-08000650 g     F .text	00000330 disk_initialize
-08002fa4 g     F .text	00000018 BootTask
-08004774 g     F .text	00000058 FlashWriteChecksum
-08000ee4 g     F .text	0000001c SPI_CalculateCRC
-08000e30 g     F .text	00000024 RCC_APB2PeriphClockCmd
-08003034 g     F .text	00000034 ComTransmitPacket
-08000d84 g     F .text	000000a4 GPIO_Init
-08000980 g     F .text	00000014 disk_status
-08003714 g     F .text	0000017e FileSrecParseLine
-08000af4 g     F .text	0000028e disk_ioctl
-08003658 g     F .text	00000036 FileHandleFirmwareUpdateRequest
-08000e54 g     F .text	00000024 RCC_APB1PeriphClockCmd
-08000f00 g     F .text	0000000c SPI_I2S_GetFlagStatus
-080001cc g     F .text	00000054 FileFirmwareUpdateCompletedHook
-080030ec g     F .text	00000012 XcpIsConnected
-08002d24 g     F .text	000000c8 f_unlink
-080042cc g     F .text	00000008 NvmInit
-08004588 g     F .text	0000001a FlashInit
-080042ec g     F .text	00000008 NvmGetUserProgBaseAddress
-20000f58 g       .bss	00000000 _ebss
-08002e3c g     F .text	00000052 f_puts
-0800488c g     F .text	00000012 UnusedISR
-08003030 g     F .text	00000002 ComFree
-08000e28 g     F .text	00000004 GPIO_SetBits
-08004140 g     F .text	0000002a UartInit
-080042dc g     F .text	00000008 NvmErase
-20000008 g       .bss	00000000 _bss
-08002b3c g     F .text	00000024 f_close
-08003110 g     F .text	00000388 XcpPacketReceived
-08003dfc g     F .text	00000008 CpuInit
-0800272c g     F .text	0000017c f_read
-08004834 g     F .text	0000004c FlashDone
-08000e2c g     F .text	00000004 GPIO_ResetBits
-08003fc0 g     F .text	000000a8 CanTransmitPacket
-080030d0 g     F .text	0000001c XcpInit
-08003610 g     F .text	00000034 FileInit
-080045f4 g     F .text	0000017e FlashErase
-0800490c g     F .text	0000009e memset
-08000220 g     F .text	00000020 FileFirmwareUpdateErrorHook
-080002a0 g     F .text	000001b8 main
-08002aa0 g     F .text	0000009c f_sync
-08003690 g     F .text	0000004c FileSrecGetLineType
-080042f4 g     F .text	00000012 NvmDone
-0800252c g     F .text	0000007a f_mount
-0800416c g     F .text	00000066 UartTransmitPacket
-080042e4 g     F .text	00000008 NvmVerifyChecksum
-08003e38 g     F .text	0000001e CpuMemCopy
-08000ebc g     F .text	0000001c SPI_Cmd
-08002b60 g     F .text	00000170 f_lseek
-0800308c g     F .text	00000024 ComGetActiveInterfaceMaxTxLen
-080041d4 g     F .text	000000f8 UartReceivePacket
-08000190 g     F .text	0000000a FileGetFirmwareFilenameHook
-080048a4 g     F .text	00000004 CpuIrqEnable
-20000000 g       .data	00000000 _data
-08002cd0 g     F .text	00000054 f_stat
-08003508 g     F .text	00000002 CopInit
-08003e58 g     F .text	00000168 CanInit
-080042d4 g     F .text	00000008 NvmWrite
-08003e04 g     F .text	00000034 CpuStartUserProgram
-20001158 g       .bss	00000000 _estack
-08000f0c g     F .text	00000008 USART_SendData
-080047cc g     F .text	00000068 FlashVerifyChecksum
-20000008 g       .data	00000000 _edata
-08003644 g     F .text	00000014 FileIsIdle
-080028a8 g     F .text	000001b0 f_write
-08000000 g     O .text	00000150 _vectab
-080025a8 g     F .text	00000184 f_open
-08000a30 g     F .text	000000c2 disk_write
-08000240 g     F .text	00000060 FileFirmwareUpdateLogHook
+00000800 l       *ABS*	00000000 __HEAP_SIZE
+08005210 l       .text	00000000 __exidx_end
+08005210 l       .text	00000000 __exidx_start
+00000800 l       *ABS*	00000000 __STACK_SIZE
+08001138 g     F .text	00000020 ComInit
+080025f8 g     F .text	00000050 FlashWrite
+0800021e  w    F .text	00000002 EXTI2_IRQHandler
+20000f80 g       .heap	00000800 __HeapBase
+08004760 g     F .text	00000054 f_gets
+08001088 g     F .text	00000008 AssertFailure
+08000206  w    F .text	00000002 DebugMon_Handler
+08002184 g     F .text	00000088 CanReceivePacket
+08002804 g     F .text	00000022 TimerUpdate
+08001e4c g     F .text	00000010 XcpPacketTransmitted
+20000000 g       .data	00000000 __data_start__
+08000244  w    F .text	00000002 TIM1_CC_IRQHandler
+08000520 g     F .text	00000004 SPI_I2S_SendData
+08001158 g     F .text	00000054 ComTask
+080001fc  w    F .text	00000002 HardFault_Handler
+0800020a  w    F .text	00000002 SysTick_Handler
+08000210  w    F .text	00000002 PVD_IRQHandler
+08001100 g     F .text	00000020 BootInit
+08001408 g     F .text	00000038 FileSrecVerifyChecksum
+08000524 g     F .text	00000006 SPI_I2S_ReceiveData
+08000208  w    F .text	00000002 PendSV_Handler
+080001fa  w    F .text	00000002 NMI_Handler
+08000220  w    F .text	00000002 EXTI3_IRQHandler
+080010dc g     F .text	00000022 BackDoorInit
+08005210 g       .text	00000000 __etext
+0800055c g     F .text	0000000c USART_GetFlagStatus
+08001238 g     F .text	00000002 CopService
+08002a0c g     F .text	00000004 CpuIrqDisable
+08004844 g     F .text	000000a2 ff_wtoupper
+08002780 g     F .text	0000000a FlashGetUserProgBaseAddress
+080015a4 g     F .text	0000055c FileTask
+20000010 g     O .data	00000000 .hidden __TMC_END__
+080027c8 g     F .text	0000000e TimerReset
+0800021a  w    F .text	00000002 EXTI0_IRQHandler
+08000250  w    F .text	00000002 I2C2_EV_IRQHandler
+08000940 g     F .text	00000182 disk_initialize
+08001120 g     F .text	00000018 BootTask
+08002674 g     F .text	00000058 FlashWriteChecksum
+0800052c g     F .text	0000001c SPI_CalculateCRC
+08000202  w    F .text	00000002 UsageFault_Handler
+0800046c g     F .text	00000024 RCC_APB2PeriphClockCmd
+080011b0 g     F .text	00000034 ComTransmitPacket
+08000232  w    F .text	00000002 ADC1_2_IRQHandler
+080003b8 g     F .text	000000aa GPIO_Init
+08000ac4 g     F .text	00000014 disk_status
+20001780 g       .heap	00000000 __HeapLimit
+20000010 g       .bss	00000000 __bss_start__
+08001440 g     F .text	00000164 FileSrecParseLine
+08000254  w    F .text	00000002 SPI1_IRQHandler
+08000212  w    F .text	00000002 TAMPER_IRQHandler
+08000c34 g     F .text	0000028e disk_ioctl
+08001384 g     F .text	00000036 FileHandleFirmwareUpdateRequest
+08000490 g     F .text	00000024 RCC_APB1PeriphClockCmd
+08000548 g     F .text	0000000c SPI_I2S_GetFlagStatus
+0800022a  w    F .text	00000002 DMA1_Channel4_IRQHandler
+080002e4 g     F .text	00000054 FileFirmwareUpdateCompletedHook
+08001e38 g     F .text	00000012 XcpIsConnected
+08004690 g     F .text	000000ce f_unlink
+08004988 g     F .text	00000000 _init
+0800278c g     F .text	00000008 NvmInit
+080025dc g     F .text	0000001a FlashInit
+080027ac g     F .text	00000008 NvmGetUserProgBaseAddress
+0800025c  w    F .text	00000002 USART3_IRQHandler
+08000214  w    F .text	00000002 RTC_IRQHandler
+08000230  w    F .text	00000002 DMA1_Channel7_IRQHandler
+080001b4 g     F .text	00000030 Reset_Handler
+080047b4 g     F .text	00000050 f_puts
+08000238  w    F .text	00000002 CAN1_RX1_IRQHandler
+080011ac g     F .text	00000002 ComFree
+08000464 g     F .text	00000004 GPIO_SetBits
+0800024a  w    F .text	00000002 TIM4_IRQHandler
+00000000  w      *UND*	00000000 __deregister_frame_info
+20000f80 g       .heap	00000000 end
+0800024c  w    F .text	00000002 I2C1_EV_IRQHandler
+080028a4 g     F .text	0000002a UartInit
+20000010 g       .data	00000000 __data_end__
+00000000  w      *UND*	00000000 _ITM_registerTMCloneTable
+0800279c g     F .text	00000008 NvmErase
+0800022e  w    F .text	00000002 DMA1_Channel6_IRQHandler
+20000f7c g       .bss	00000000 __bss_end__
+08000248  w    F .text	00000002 TIM3_IRQHandler
+08000218  w    F .text	00000002 RCC_IRQHandler
+08000242  w    F .text	00000002 TIM1_TRG_COM_IRQHandler
+08000224  w    F .text	00000002 DMA1_Channel1_IRQHandler
+080044b8 g     F .text	00000024 f_close
+0800020c  w    F .text	00000002 Default_Handler
+080001e4  w    F .text	00000016 _start
+08001e5c g     F .text	000000f6 XcpPacketReceived
+0800220c g     F .text	00000008 CpuInit
+0800025e  w    F .text	00000002 EXTI15_10_IRQHandler
+080040b0 g     F .text	00000172 f_read
+08002734 g     F .text	0000004c FlashDone
+08000468 g     F .text	00000004 GPIO_ResetBits
+080020e0 g     F .text	000000a2 CanTransmitPacket
+0800023c  w    F .text	00000002 EXTI9_5_IRQHandler
+08001e1c g     F .text	0000001c XcpInit
+0800133c g     F .text	00000034 FileInit
+00000000  w      *UND*	00000000 _ITM_deregisterTMCloneTable
+08000256  w    F .text	00000002 SPI2_IRQHandler
+08002648 g     F .text	0000002a FlashErase
+080048e8 g     F .text	0000009e memset
+08000338 g     F .text	00000020 FileFirmwareUpdateErrorHook
+080001fe  w    F .text	00000002 MemManage_Handler
+08000000 g       .text	000000ec __isr_vector
+08001078 g     F .text	00000010 main
+08004418 g     F .text	0000009e f_sync
+08000204  w    F .text	00000002 SVC_Handler
+080013bc g     F .text	0000004c FileSrecGetLineType
+080027b4 g     F .text	00000012 NvmDone
+08003ec4 g     F .text	0000006a f_mount
+080028d0 g     F .text	00000064 UartTransmitPacket
+080027a4 g     F .text	00000008 NvmVerifyChecksum
+08002248 g     F .text	00000020 CpuMemCopy
+20000f80 g       .heap	00000000 __end__
+0800022c  w    F .text	00000002 DMA1_Channel5_IRQHandler
+08000222  w    F .text	00000002 EXTI4_IRQHandler
+08000236  w    F .text	00000002 USB_LP_CAN1_RX0_IRQHandler
+08000504 g     F .text	0000001c SPI_Cmd
+08004994 g     F .text	00000000 _fini
+080044dc g     F .text	00000160 f_lseek
+08000234  w    F .text	00000002 USB_HP_CAN1_TX_IRQHandler
+08001208 g     F .text	00000024 ComGetActiveInterfaceMaxTxLen
+08002934 g     F .text	000000d8 UartReceivePacket
+080002a8 g     F .text	0000000a FileGetFirmwareFilenameHook
+08002a10 g     F .text	00000004 CpuIrqEnable
+08000228  w    F .text	00000002 DMA1_Channel3_IRQHandler
+20005000 g       *ABS*	00000000 __StackTop
+08000240  w    F .text	00000002 TIM1_UP_IRQHandler
+0800020e  w    F .text	00000002 WWDG_IRQHandler
+0800463c g     F .text	00000054 f_stat
+08001234 g     F .text	00000002 CopInit
+08000246  w    F .text	00000002 TIM2_IRQHandler
+08001fb4 g     F .text	0000012c CanInit
+08002794 g     F .text	00000008 NvmWrite
+08002214 g     F .text	00000034 CpuStartUserProgram
+0800023e  w    F .text	00000002 TIM1_BRK_IRQHandler
+08000554 g     F .text	00000008 USART_SendData
+0800021c  w    F .text	00000002 EXTI1_IRQHandler
+080026cc g     F .text	00000068 FlashVerifyChecksum
+08001370 g     F .text	00000014 FileIsIdle
+08004224 g     F .text	000001ac f_write
+08000260  w    F .text	00000002 RTCAlarm_IRQHandler
+20004800 g       *ABS*	00000800 __StackLimit
+0800025a  w    F .text	00000002 USART2_IRQHandler
+08003f30 g     F .text	0000017e f_open
+08000b74 g     F .text	000000c0 disk_write
+08000358 g     F .text	00000060 FileFirmwareUpdateLogHook
 20000004 g     O .data	00000004 __ctype_ptr__
-080030b0 g     F .text	00000008 ComIsConnected
-08005144 g     O .text	00000101 _ctype_
-08000150 g     F .text	0000003e FileIsFirmwareUpdateRequestedHook
-08003068 g     F .text	00000024 ComGetActiveInterfaceMaxRxLen
-08000994 g     F .text	0000009c disk_read
-08003498 g     F .text	0000004c BackDoorCheck
-20000f58 g       .bss	00000000 _stack
-08000e78 g     F .text	00000042 SPI_Init
-08002e90 g     F .text	0000004a ff_convert
-08004364 g     F .text	00000012 TimerGet
-08004308 g     F .text	00000028 TimerInit
-0800019c g     F .text	00000030 FileFirmwareUpdateStartedHook
+08000252  w    F .text	00000002 I2C2_ER_IRQHandler
+0800122c g     F .text	00000008 ComIsConnected
+08000226  w    F .text	00000002 DMA1_Channel2_IRQHandler
+08005108 g     O .text	00000101 _ctype_
+0800026c g     F .text	0000003c FileIsFirmwareUpdateRequestedHook
+0800023a  w    F .text	00000002 CAN1_SCE_IRQHandler
+08000216  w    F .text	00000002 FLASH_IRQHandler
+080011e4 g     F .text	00000024 ComGetActiveInterfaceMaxRxLen
+08000200  w    F .text	00000002 BusFault_Handler
+08000258  w    F .text	00000002 USART1_IRQHandler
+08000ad8 g     F .text	0000009a disk_read
+08001090 g     F .text	0000004c BackDoorCheck
+0800024e  w    F .text	00000002 I2C1_ER_IRQHandler
+080004b4 g     F .text	0000004e SPI_Init
+08004804 g     F .text	00000040 ff_convert
+08002828 g     F .text	00000012 TimerGet
+00000000  w      *UND*	00000000 _Jv_RegisterClasses
+080027d8 g     F .text	0000002c TimerInit
+00000000  w      *UND*	00000000 __register_frame_info
+08000262  w    F .text	00000002 USBWakeUp_IRQHandler
+080002b4 g     F .text	00000030 FileFirmwareUpdateStartedHook
 
 
