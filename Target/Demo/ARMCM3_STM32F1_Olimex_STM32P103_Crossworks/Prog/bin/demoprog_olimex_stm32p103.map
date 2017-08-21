@@ -3218,7 +3218,7 @@ Linker script and memory map
                 0x00000001                . = ASSERT (((__init_end__ >= __FLASH_segment_start__) && (__init_end__ <= __FLASH_segment_end__)), error: .init is too large to fit in FLASH memory segment)
                 0x0800626c                __text_load_start__ = ALIGN (__init_end__, 0x4)
 
-.text           0x0800626c     0x13a0
+.text           0x0800626c     0x13b4
                 0x0800626c                __text_start__ = .
  *(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table .ARM.extab* .gnu.linkonce.armextab.*)
  .glue_7        0x0800626c        0x0 linker stubs
@@ -3272,63 +3272,63 @@ Linker script and memory map
  .text.BootComCanInit
                 0x0800686c      0x128 THUMB Debug/../../obj/boot.o
  .text.BootComCanCheckActivationRequest
-                0x08006994       0x54 THUMB Debug/../../obj/boot.o
+                0x08006994       0x68 THUMB Debug/../../obj/boot.o
  .text.CAN_DeInit
-                0x080069e8       0x4c THUMB Debug/../../obj/stm32f10x_can.o
-                0x080069e8                CAN_DeInit
+                0x080069fc       0x4c THUMB Debug/../../obj/stm32f10x_can.o
+                0x080069fc                CAN_DeInit
  .text.CAN_Init
-                0x08006a34      0x1a0 THUMB Debug/../../obj/stm32f10x_can.o
-                0x08006a34                CAN_Init
+                0x08006a48      0x1a0 THUMB Debug/../../obj/stm32f10x_can.o
+                0x08006a48                CAN_Init
  .text.CAN_FilterInit
-                0x08006bd4      0x174 THUMB Debug/../../obj/stm32f10x_can.o
-                0x08006bd4                CAN_FilterInit
+                0x08006be8      0x174 THUMB Debug/../../obj/stm32f10x_can.o
+                0x08006be8                CAN_FilterInit
  .text.CAN_StructInit
-                0x08006d48       0x54 THUMB Debug/../../obj/stm32f10x_can.o
-                0x08006d48                CAN_StructInit
+                0x08006d5c       0x54 THUMB Debug/../../obj/stm32f10x_can.o
+                0x08006d5c                CAN_StructInit
  .text.CAN_Receive
-                0x08006d9c      0x174 THUMB Debug/../../obj/stm32f10x_can.o
-                0x08006d9c                CAN_Receive
+                0x08006db0      0x174 THUMB Debug/../../obj/stm32f10x_can.o
+                0x08006db0                CAN_Receive
  .text.CAN_MessagePending
-                0x08006f10       0x48 THUMB Debug/../../obj/stm32f10x_can.o
-                0x08006f10                CAN_MessagePending
+                0x08006f24       0x48 THUMB Debug/../../obj/stm32f10x_can.o
+                0x08006f24                CAN_MessagePending
  .text.GPIO_Init
-                0x08006f58      0x178 THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x08006f58                GPIO_Init
+                0x08006f6c      0x178 THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x08006f6c                GPIO_Init
  .text.GPIO_SetBits
-                0x080070d0       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x080070d0                GPIO_SetBits
+                0x080070e4       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x080070e4                GPIO_SetBits
  .text.GPIO_ResetBits
-                0x080070ec       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x080070ec                GPIO_ResetBits
+                0x08007100       0x1c THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x08007100                GPIO_ResetBits
  .text.GPIO_PinRemapConfig
-                0x08007108       0xe0 THUMB Debug/../../obj/stm32f10x_gpio.o
-                0x08007108                GPIO_PinRemapConfig
+                0x0800711c       0xe0 THUMB Debug/../../obj/stm32f10x_gpio.o
+                0x0800711c                GPIO_PinRemapConfig
  .text.RCC_GetClocksFreq
-                0x080071e8      0x160 THUMB Debug/../../obj/stm32f10x_rcc.o
-                0x080071e8                RCC_GetClocksFreq
+                0x080071fc      0x160 THUMB Debug/../../obj/stm32f10x_rcc.o
+                0x080071fc                RCC_GetClocksFreq
  .text.RCC_APB2PeriphClockCmd
-                0x08007348       0x3c THUMB Debug/../../obj/stm32f10x_rcc.o
-                0x08007348                RCC_APB2PeriphClockCmd
+                0x0800735c       0x3c THUMB Debug/../../obj/stm32f10x_rcc.o
+                0x0800735c                RCC_APB2PeriphClockCmd
  .text.RCC_APB1PeriphClockCmd
-                0x08007384       0x3c THUMB Debug/../../obj/stm32f10x_rcc.o
-                0x08007384                RCC_APB1PeriphClockCmd
+                0x08007398       0x3c THUMB Debug/../../obj/stm32f10x_rcc.o
+                0x08007398                RCC_APB1PeriphClockCmd
  .text.RCC_APB1PeriphResetCmd
-                0x080073c0       0x3c THUMB Debug/../../obj/stm32f10x_rcc.o
-                0x080073c0                RCC_APB1PeriphResetCmd
+                0x080073d4       0x3c THUMB Debug/../../obj/stm32f10x_rcc.o
+                0x080073d4                RCC_APB1PeriphResetCmd
  .text.USART_Init
-                0x080073fc      0x178 THUMB Debug/../../obj/stm32f10x_usart.o
-                0x080073fc                USART_Init
+                0x08007410      0x178 THUMB Debug/../../obj/stm32f10x_usart.o
+                0x08007410                USART_Init
  .text.USART_Cmd
-                0x08007574       0x40 THUMB Debug/../../obj/stm32f10x_usart.o
-                0x08007574                USART_Cmd
+                0x08007588       0x40 THUMB Debug/../../obj/stm32f10x_usart.o
+                0x08007588                USART_Cmd
  .text.USART_ReceiveData
-                0x080075b4       0x20 THUMB Debug/../../obj/stm32f10x_usart.o
-                0x080075b4                USART_ReceiveData
+                0x080075c8       0x20 THUMB Debug/../../obj/stm32f10x_usart.o
+                0x080075c8                USART_ReceiveData
  .text.USART_GetFlagStatus
-                0x080075d4       0x38 THUMB Debug/../../obj/stm32f10x_usart.o
-                0x080075d4                USART_GetFlagStatus
-                0x0800760c                __text_end__ = (__text_start__ + SIZEOF (.text))
-                0x0800760c                __text_load_end__ = __text_end__
+                0x080075e8       0x38 THUMB Debug/../../obj/stm32f10x_usart.o
+                0x080075e8                USART_GetFlagStatus
+                0x08007620                __text_end__ = (__text_start__ + SIZEOF (.text))
+                0x08007620                __text_load_end__ = __text_end__
 
 .vfp11_veneer   0x00000000        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
@@ -3339,56 +3339,56 @@ Linker script and memory map
 .iplt           0x00000000        0x0
  .iplt          0x00000000        0x0 THUMB Debug/../../obj/cstart.o
                 0x00000001                . = ASSERT (((__text_end__ >= __FLASH_segment_start__) && (__text_end__ <= __FLASH_segment_end__)), error: .text is too large to fit in FLASH memory segment)
-                0x0800760c                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
+                0x08007620                __dtors_load_start__ = ALIGN (__text_end__, 0x4)
 
-.dtors          0x0800760c        0x0
-                0x0800760c                __dtors_start__ = .
+.dtors          0x08007620        0x0
+                0x08007620                __dtors_start__ = .
  *(SORT(.dtors.*))
  *(.dtors)
  *(.fini_array .fini_array.*)
-                0x0800760c                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
-                0x0800760c                __dtors_load_end__ = __dtors_end__
+                0x08007620                __dtors_end__ = (__dtors_start__ + SIZEOF (.dtors))
+                0x08007620                __dtors_load_end__ = __dtors_end__
                 0x00000001                . = ASSERT (((__dtors_end__ >= __FLASH_segment_start__) && (__dtors_end__ <= __FLASH_segment_end__)), error: .dtors is too large to fit in FLASH memory segment)
-                0x0800760c                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
+                0x08007620                __ctors_load_start__ = ALIGN (__dtors_end__, 0x4)
 
-.ctors          0x0800760c        0x0
-                0x0800760c                __ctors_start__ = .
+.ctors          0x08007620        0x0
+                0x08007620                __ctors_start__ = .
  *(SORT(.ctors.*))
  *(.ctors)
  *(.init_array .init_array.*)
-                0x0800760c                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
-                0x0800760c                __ctors_load_end__ = __ctors_end__
+                0x08007620                __ctors_end__ = (__ctors_start__ + SIZEOF (.ctors))
+                0x08007620                __ctors_load_end__ = __ctors_end__
                 0x00000001                . = ASSERT (((__ctors_end__ >= __FLASH_segment_start__) && (__ctors_end__ <= __FLASH_segment_end__)), error: .ctors is too large to fit in FLASH memory segment)
-                0x0800760c                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
+                0x08007620                __rodata_load_start__ = ALIGN (__ctors_end__, 0x4)
 
-.rodata         0x0800760c       0x24
-                0x0800760c                __rodata_start__ = .
+.rodata         0x08007620       0x24
+                0x08007620                __rodata_start__ = .
  *(.rodata .rodata.* .gnu.linkonce.r.*)
  .rodata.canTiming
-                0x0800760c       0x24 THUMB Debug/../../obj/boot.o
-                0x08007630                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
-                0x08007630                __rodata_load_end__ = __rodata_end__
+                0x08007620       0x24 THUMB Debug/../../obj/boot.o
+                0x08007644                __rodata_end__ = (__rodata_start__ + SIZEOF (.rodata))
+                0x08007644                __rodata_load_end__ = __rodata_end__
 
 .rel.dyn        0x08006000        0x0
  .rel.iplt      0x08006000        0x0 THUMB Debug/../../obj/cstart.o
                 0x00000001                . = ASSERT (((__rodata_end__ >= __FLASH_segment_start__) && (__rodata_end__ <= __FLASH_segment_end__)), error: .rodata is too large to fit in FLASH memory segment)
-                0x08007630                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
+                0x08007644                __ARM.exidx_load_start__ = ALIGN (__rodata_end__, 0x4)
 
-.ARM.exidx      0x08007630        0x0
-                0x08007630                __ARM.exidx_start__ = .
-                0x08007630                __exidx_start = __ARM.exidx_start__
+.ARM.exidx      0x08007644        0x0
+                0x08007644                __ARM.exidx_start__ = .
+                0x08007644                __exidx_start = __ARM.exidx_start__
  *(.ARM.exidx .ARM.exidx.*)
-                0x08007630                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
-                0x08007630                __exidx_end = __ARM.exidx_end__
-                0x08007630                __ARM.exidx_load_end__ = __ARM.exidx_end__
+                0x08007644                __ARM.exidx_end__ = (__ARM.exidx_start__ + SIZEOF (.ARM.exidx))
+                0x08007644                __exidx_end = __ARM.exidx_end__
+                0x08007644                __ARM.exidx_load_end__ = __ARM.exidx_end__
                 0x00000001                . = ASSERT (((__ARM.exidx_end__ >= __FLASH_segment_start__) && (__ARM.exidx_end__ <= __FLASH_segment_end__)), error: .ARM.exidx is too large to fit in FLASH memory segment)
-                0x08007630                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
+                0x08007644                __fast_load_start__ = ALIGN (__ARM.exidx_end__, 0x4)
 
-.fast           0x20000000        0x0 load address 0x08007630
+.fast           0x20000000        0x0 load address 0x08007644
                 0x20000000                __fast_start__ = .
  *(.fast .fast.*)
                 0x20000000                __fast_end__ = (__fast_start__ + SIZEOF (.fast))
-                0x08007630                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
+                0x08007644                __fast_load_end__ = (__fast_load_start__ + SIZEOF (.fast))
                 0x00000001                . = ASSERT (((__fast_load_end__ >= __FLASH_segment_start__) && (__fast_load_end__ <= __FLASH_segment_end__)), error: .fast is too large to fit in FLASH memory segment)
 
 .fast_run       0x20000000        0x0
@@ -3397,9 +3397,9 @@ Linker script and memory map
                 0x20000000                __fast_run_end__ = (__fast_run_start__ + SIZEOF (.fast_run))
                 0x20000000                __fast_run_load_end__ = __fast_run_end__
                 0x00000001                . = ASSERT (((__fast_run_end__ >= __SRAM_segment_start__) && (__fast_run_end__ <= __SRAM_segment_end__)), error: .fast_run is too large to fit in SRAM memory segment)
-                0x08007630                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
+                0x08007644                __data_load_start__ = ALIGN ((__fast_load_start__ + SIZEOF (.fast)), 0x4)
 
-.data           0x20000000       0x14 load address 0x08007630
+.data           0x20000000       0x14 load address 0x08007644
                 0x20000000                __data_start__ = .
  *(.data .data.* .gnu.linkonce.d.*)
  .data.APBAHBPrescTable
@@ -3407,13 +3407,13 @@ Linker script and memory map
  .data.ADCPrescTable
                 0x20000010        0x4 THUMB Debug/../../obj/stm32f10x_rcc.o
                 0x20000014                __data_end__ = (__data_start__ + SIZEOF (.data))
-                0x08007644                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
+                0x08007658                __data_load_end__ = (__data_load_start__ + SIZEOF (.data))
 
 .igot.plt       0x00000000        0x0
  .igot.plt      0x00000000        0x0 THUMB Debug/../../obj/cstart.o
                 0x00000001                . = ASSERT (((__data_load_end__ >= __FLASH_segment_start__) && (__data_load_end__ <= __FLASH_segment_end__)), error: .data is too large to fit in FLASH memory segment)
 
-.data_run       0x20000000       0x14 load address 0x08007630
+.data_run       0x20000000       0x14 load address 0x08007644
                 0x20000000                __data_run_start__ = .
                 0x20000014                . = MAX ((__data_run_start__ + SIZEOF (.data)), .)
  *fill*         0x20000000       0x14 
@@ -3491,14 +3491,14 @@ Linker script and memory map
                 0x200001f0                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
                 0x200001f0                __tbss_load_end__ = __tbss_end__
                 0x00000001                . = ASSERT (((__tbss_end__ >= __SRAM_segment_start__) && (__tbss_end__ <= __SRAM_segment_end__)), error: .tbss is too large to fit in SRAM memory segment)
-                0x08007644                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
+                0x08007658                __tdata_load_start__ = ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4)
 
-.tdata          0x200001f0        0x0 load address 0x08007644
+.tdata          0x200001f0        0x0 load address 0x08007658
                 0x200001f0                __tdata_start__ = .
  *(.tdata .tdata.*)
                 0x200001f0                __tdata_end__ = (__tdata_start__ + SIZEOF (.tdata))
-                0x08007644                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
-                0x08007644                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
+                0x08007658                __tdata_load_end__ = (__tdata_load_start__ + SIZEOF (.tdata))
+                0x08007658                __FLASH_segment_used_end__ = (ALIGN ((__data_load_start__ + SIZEOF (.data)), 0x4) + SIZEOF (.tdata))
                 0x00000001                . = ASSERT (((__tdata_load_end__ >= __FLASH_segment_start__) && (__tdata_load_end__ <= __FLASH_segment_end__)), error: .tdata is too large to fit in FLASH memory segment)
 
 .tdata_run      0x200001f0        0x0
@@ -3585,29 +3585,29 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_STM32F1_Olimex_STM32P103_Cros
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/stm32f10x_rcc.o
  .comment       0x0000004c       0x4d THUMB Debug/../../obj/stm32f10x_usart.o
 
-.debug_line     0x00000000     0x2526
+.debug_line     0x00000000     0x2533
  .debug_line    0x00000000      0x117 THUMB Debug/../../obj/cstart.o
  .debug_line    0x00000117      0x2cf THUMB Debug/../../obj/led.o
  .debug_line    0x000003e6      0x277 THUMB Debug/../../obj/main.o
  .debug_line    0x0000065d      0x29a THUMB Debug/../../obj/timer.o
  .debug_line    0x000008f7      0x180 THUMB Debug/../../obj/vectors.o
- .debug_line    0x00000a77      0x438 THUMB Debug/../../obj/boot.o
- .debug_line    0x00000eaf      0x65a THUMB Debug/../../obj/stm32f10x_can.o
- .debug_line    0x00001509      0x4c0 THUMB Debug/../../obj/stm32f10x_gpio.o
- .debug_line    0x000019c9      0x5bb THUMB Debug/../../obj/stm32f10x_rcc.o
- .debug_line    0x00001f84      0x5a2 THUMB Debug/../../obj/stm32f10x_usart.o
+ .debug_line    0x00000a77      0x445 THUMB Debug/../../obj/boot.o
+ .debug_line    0x00000ebc      0x65a THUMB Debug/../../obj/stm32f10x_can.o
+ .debug_line    0x00001516      0x4c0 THUMB Debug/../../obj/stm32f10x_gpio.o
+ .debug_line    0x000019d6      0x5bb THUMB Debug/../../obj/stm32f10x_rcc.o
+ .debug_line    0x00001f91      0x5a2 THUMB Debug/../../obj/stm32f10x_usart.o
 
-.debug_info     0x00000000     0x3bec
+.debug_info     0x00000000     0x3bfb
  .debug_info    0x00000000       0xe6 THUMB Debug/../../obj/cstart.o
  .debug_info    0x000000e6      0x23e THUMB Debug/../../obj/led.o
  .debug_info    0x00000324      0x232 THUMB Debug/../../obj/main.o
  .debug_info    0x00000556      0x5ef THUMB Debug/../../obj/timer.o
  .debug_info    0x00000b45       0xfc THUMB Debug/../../obj/vectors.o
- .debug_info    0x00000c41      0xb66 THUMB Debug/../../obj/boot.o
- .debug_info    0x000017a7      0xb6a THUMB Debug/../../obj/stm32f10x_can.o
- .debug_info    0x00002311      0x6bc THUMB Debug/../../obj/stm32f10x_gpio.o
- .debug_info    0x000029cd      0x869 THUMB Debug/../../obj/stm32f10x_rcc.o
- .debug_info    0x00003236      0x9b6 THUMB Debug/../../obj/stm32f10x_usart.o
+ .debug_info    0x00000c41      0xb75 THUMB Debug/../../obj/boot.o
+ .debug_info    0x000017b6      0xb6a THUMB Debug/../../obj/stm32f10x_can.o
+ .debug_info    0x00002320      0x6bc THUMB Debug/../../obj/stm32f10x_gpio.o
+ .debug_info    0x000029dc      0x869 THUMB Debug/../../obj/stm32f10x_rcc.o
+ .debug_info    0x00003245      0x9b6 THUMB Debug/../../obj/stm32f10x_usart.o
 
 .debug_abbrev   0x00000000      0xdb0
  .debug_abbrev  0x00000000       0x14 THUMB Debug/../../obj/cstart.o
@@ -3707,7 +3707,7 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_STM32F1_Olimex_STM32P103_Cros
  .debug_ranges  0x00000240      0x108 THUMB Debug/../../obj/stm32f10x_rcc.o
  .debug_ranges  0x00000348       0xf0 THUMB Debug/../../obj/stm32f10x_usart.o
 
-.debug_str      0x00000000     0x1cde
+.debug_str      0x00000000     0x1ceb
  .debug_str     0x00000000      0x37d THUMB Debug/../../obj/led.o
                                 0x3b0 (size before relaxing)
  .debug_str     0x0000037d       0xfb THUMB Debug/../../obj/main.o
@@ -3716,13 +3716,13 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_STM32F1_Olimex_STM32P103_Cros
                                 0x662 (size before relaxing)
  .debug_str     0x00000906       0x95 THUMB Debug/../../obj/vectors.o
                                 0x253 (size before relaxing)
- .debug_str     0x0000099b      0x4d1 THUMB Debug/../../obj/boot.o
-                                0x86b (size before relaxing)
- .debug_str     0x00000e6c      0x379 THUMB Debug/../../obj/stm32f10x_can.o
+ .debug_str     0x0000099b      0x4de THUMB Debug/../../obj/boot.o
+                                0x878 (size before relaxing)
+ .debug_str     0x00000e79      0x379 THUMB Debug/../../obj/stm32f10x_can.o
                                 0x7f5 (size before relaxing)
- .debug_str     0x000011e5      0x2b1 THUMB Debug/../../obj/stm32f10x_gpio.o
+ .debug_str     0x000011f2      0x2b1 THUMB Debug/../../obj/stm32f10x_gpio.o
                                 0x5e0 (size before relaxing)
- .debug_str     0x00001496      0x455 THUMB Debug/../../obj/stm32f10x_rcc.o
+ .debug_str     0x000014a3      0x455 THUMB Debug/../../obj/stm32f10x_rcc.o
                                 0x6e1 (size before relaxing)
- .debug_str     0x000018eb      0x3f3 THUMB Debug/../../obj/stm32f10x_usart.o
+ .debug_str     0x000018f8      0x3f3 THUMB Debug/../../obj/stm32f10x_usart.o
                                 0x757 (size before relaxing)

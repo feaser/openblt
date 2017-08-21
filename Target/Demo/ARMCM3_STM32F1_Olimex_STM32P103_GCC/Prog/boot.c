@@ -395,13 +395,26 @@ static void BootComCanInit(void)
 static void BootComCanCheckActivationRequest(void)
 {
   CanRxMsg RxMessage;
+  unsigned char canIdMatched = 0;
 
   /* check if a new message was received */
   if (CAN_MessagePending(CAN1, CAN_FIFO0) > 0)
   {
     /* receive the message */
     CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-    if (RxMessage.StdId == BOOT_COM_CAN_RX_MSG_ID)
+    /* check if the message identifier matches the bootloader reception message */
+    if ( (RxMessage.IDE == CAN_Id_Standard) &&
+         (RxMessage.StdId == BOOT_COM_CAN_RX_MSG_ID) )
+    {
+      canIdMatched = 1;
+    }
+    if ( (RxMessage.IDE == CAN_Id_Extended) &&
+         ((RxMessage.ExtId | 0x80000000) == BOOT_COM_CAN_RX_MSG_ID) )
+    {
+      canIdMatched = 1;
+    }
+    /* is the identifier a match to the bootloader reception message identifier? */
+    if (canIdMatched == 1)
     {
       /* check if this was an XCP CONNECT command */
       if ((RxMessage.Data[0] == 0xff) && (RxMessage.Data[1] == 0x00))
@@ -411,7 +424,7 @@ static void BootComCanCheckActivationRequest(void)
        }
     }
   }
-} /*** end of BootCanComCheckActivationRequest ***/
+} /*** end of BootComCanCheckActivationRequest ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 

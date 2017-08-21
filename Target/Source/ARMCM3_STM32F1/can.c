@@ -107,6 +107,8 @@ typedef struct
 #define CAN_BIT_FINIT    ((blt_int32u)0x00000001)
 /** \brief Transmit mailbox 0 empty bit. */
 #define CAN_BIT_TME0     ((blt_int32u)0x04000000)
+/** \brief Identifier extension bit. */
+#define CAN_BIT_IDE      ((blt_int32u)0x00000004)
 /** \brief Transmit mailbox request bit. */
 #define CAN_BIT_TXRQ     ((blt_int32u)0x00000001)
 /** \brief Release FIFO 0 mailbox bit. */
@@ -285,11 +287,28 @@ void CanInit(void)
 ****************************************************************************************/
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
+  blt_int32u txMsgId = BOOT_COM_CAN_TX_MSG_ID;
+
   /* make sure that transmit mailbox 0 is available */
   ASSERT_RT((CANx->TSR&CAN_BIT_TME0) == CAN_BIT_TME0);
-  /* store the 11-bit message identifier */
+
+  /* reset all CAN identifier related bits */
   CANx->sTxMailBox[0].TIR &= CAN_BIT_TXRQ;
-  CANx->sTxMailBox[0].TIR |= ((blt_int32u)BOOT_COM_CAN_TX_MSG_ID << 21);
+  /* is it a 11-bit standard CAN identifier? */
+  if ((txMsgId & 0x80000000) == 0)
+  {
+    /* store the 11-bit message identifier */
+    CANx->sTxMailBox[0].TIR |= ((blt_int32u)txMsgId << 21);
+  }
+  /* it is a 29-bit extended CAN identifier */
+  else
+  {
+    /* negate the ID-type bit */
+    txMsgId &= ~0x80000000;
+    /* store the 29-bit message identifier */
+    CANx->sTxMailBox[0].TIR |= (((blt_int32u)txMsgId << 3) | CAN_BIT_IDE);
+  }
+
   /* store the message date length code (DLC) */
   CANx->sTxMailBox[0].TDTR = len;
   /* store the message data bytes */
@@ -326,8 +345,18 @@ blt_bool CanReceivePacket(blt_int8u *data)
   /* check if a new message was received */
   if ((CANx->RF0R&(blt_int32u)0x00000003) > 0)
   {
-    /* read out the message identifier */
-    rxMsgId = (blt_int32u)0x000007FF & (CANx->sFIFOMailBox[0].RIR >> 21);
+    /* read out the CAN identifier */
+    if ((CANx->sFIFOMailBox[0].RIR & CAN_BIT_IDE) == 0)
+    {
+      /* read out the 11-bit standard CAN identifier */
+      rxMsgId = (blt_int32u)0x000007FF & (CANx->sFIFOMailBox[0].RIR >> 21);
+    }
+    else
+    {
+      /* read out the 29-bit extended CAN identifier */
+      rxMsgId = (blt_int32u)0x1FFFFFFF & (CANx->sFIFOMailBox[0].RIR >> 3);
+      rxMsgId |= 0x80000000;
+    }
     /* is this the packet identifier */
     if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)
     {
