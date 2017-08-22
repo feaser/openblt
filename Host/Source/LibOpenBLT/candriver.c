@@ -37,6 +37,7 @@
 #include "candriver.h"                      /* Generic CAN driver module               */
 #if defined(PLATFORM_WIN32)
 #include "pcanusb.h"                        /* Peak PCAN-USB interface                 */
+#include "leaflight.h"                      /* Kvaser Leaf Light v2 interface          */
 #endif
 #if defined(PLATFORM_LINUX)
 #include "socketcan.h"                      /* SocketCAN interface                     */
@@ -83,6 +84,10 @@ void CanInit(tCanSettings const * settings)
       if (strcmp(settings->devicename, "peak_pcanusb") == 0)
       {
         canIfPtr = PCanUsbGetInterface();
+      }
+      else if (strcmp(settings->devicename, "kvaser_leaflight") == 0)
+      {
+        canIfPtr = LeafLightGetInterface();
       }
 #endif
 #if defined(PLATFORM_LINUX)
