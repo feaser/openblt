@@ -46,7 +46,7 @@
 ****************************************************************************************/
 /* Type definitions of the function in the PCAN-Basic API that this CAN interface uses.*/
 typedef TPCANStatus (__stdcall * tPCanUsbLibFuncInitialize)(TPCANHandle, TPCANBaudrate, TPCANType, DWORD, WORD);
-typedef TPCANStatus (__stdcall * tPCanUsbLibFuncpUninitialize)(TPCANHandle); 
+typedef TPCANStatus (__stdcall * tPCanUsbLibFuncUninitialize)(TPCANHandle); 
 typedef TPCANStatus (__stdcall * tPCanUsbLibFuncGetStatus)(TPCANHandle); 
 typedef TPCANStatus (__stdcall * tPCanUsbLibFuncSetValue)(TPCANHandle, TPCANParameter, void*, DWORD); 
 typedef TPCANStatus (__stdcall * tPCanUsbLibFuncRead)(TPCANHandle, TPCANMsg*, TPCANTimestamp*); 
@@ -73,7 +73,7 @@ static void PCanUsbLibUnloadDll(void);
 static TPCANStatus PCanUsbLibFuncInitialize(TPCANHandle Channel, TPCANBaudrate Btr0Btr1, 
                                             TPCANType HwType, DWORD IOPort, 
                                             WORD Interrupt);
-static TPCANStatus PCanUsbLibFuncpUninitialize(TPCANHandle Channel);
+static TPCANStatus PCanUsbLibFuncUninitialize(TPCANHandle Channel);
 static TPCANStatus PCanUsbLibFuncGetStatus(TPCANHandle Channel);
 static TPCANStatus PCanUsbLibFuncSetValue(TPCANHandle Channel, TPCANParameter Parameter,
                                           void * Buffer, DWORD BufferLength);
@@ -142,7 +142,7 @@ static HINSTANCE pCanUsbDllHandle;
 static tPCanUsbLibFuncInitialize pCanUsbLibFuncInitializePtr;
 
 /** \brief Function pointer to the PCAN-Basic Uninitialize function. */
-static tPCanUsbLibFuncpUninitialize pCanUsbLibFuncpUninitializePtr;
+static tPCanUsbLibFuncUninitialize pCanUsbLibFuncUninitializePtr;
 
 /** \brief Function pointer to the PCAN-Basic GetStatus function. */
 static tPCanUsbLibFuncGetStatus pCanUsbLibFuncGetStatusPtr;
@@ -199,7 +199,7 @@ static void PCanUsbInit(tCanSettings const * settings)
   pCanUsbDllHandle = NULL;
   /* Reset library function pointers. */
   pCanUsbLibFuncInitializePtr = NULL;
-  pCanUsbLibFuncpUninitializePtr = NULL;
+  pCanUsbLibFuncUninitializePtr = NULL;
   pCanUsbLibFuncGetStatusPtr = NULL;
   pCanUsbLibFuncSetValuePtr = NULL;
   pCanUsbLibFuncReadPtr = NULL;
@@ -329,6 +329,11 @@ static bool PCanUsbConnect(void)
   assert(baudrateSupported);
   assert(channelSupported);
 
+  /* Invalidate handles. */
+  pCanUsbTerminateEvent = NULL;
+  pCanUsbCanEvent = NULL;
+  pCanUsbRxThreadHandle = NULL;
+
   /* Only continue with valid settings. */
   if ( (baudrateSupported) && (channelSupported) )
   {
@@ -451,7 +456,7 @@ static bool PCanUsbConnect(void)
     if (libInitialized)
     { 
       /* Uninitialize the library. */
-      (void)PCanUsbLibFuncpUninitialize(pCanUsbChannelLookup[pCanUsbSettings.channel]);
+      (void)PCanUsbLibFuncUninitialize(pCanUsbChannelLookup[pCanUsbSettings.channel]);
     }
     if (pCanUsbTerminateEvent != NULL)
     {
@@ -487,6 +492,7 @@ static void PCanUsbDisconnect(void)
     (void)WaitForSingleObject(pCanUsbRxThreadHandle, INFINITE);
     /* Close the thread handle. */
     (void)CloseHandle(pCanUsbRxThreadHandle);
+    pCanUsbRxThreadHandle = NULL;
   }
 
   /* Close the terminate event handle. */
@@ -502,7 +508,7 @@ static void PCanUsbDisconnect(void)
     pCanUsbCanEvent = NULL;
   }
   /* Disconnect from the CAN interface. */
-  (void)PCanUsbLibFuncpUninitialize(pCanUsbChannelLookup[pCanUsbSettings.channel]);
+  (void)PCanUsbLibFuncUninitialize(pCanUsbChannelLookup[pCanUsbSettings.channel]);
 } /*** end of PCanUsbDisconnect ***/
 
 
@@ -725,7 +731,7 @@ static void PCanUsbLibLoadDll(void)
 {
   /* Start out by resetting the API function pointers. */
   pCanUsbLibFuncInitializePtr = NULL;
-  pCanUsbLibFuncpUninitializePtr = NULL;
+  pCanUsbLibFuncUninitializePtr = NULL;
   pCanUsbLibFuncGetStatusPtr = NULL;
   pCanUsbLibFuncSetValuePtr = NULL;
   pCanUsbLibFuncReadPtr = NULL;
@@ -744,7 +750,7 @@ static void PCanUsbLibLoadDll(void)
     /* Set CAN_Initialize function pointer. */
     pCanUsbLibFuncInitializePtr = (tPCanUsbLibFuncInitialize)GetProcAddress(pCanUsbDllHandle, "CAN_Initialize");
     /* Set CAN_Uninitialize function pointer. */
-    pCanUsbLibFuncpUninitializePtr = (tPCanUsbLibFuncpUninitialize)GetProcAddress(pCanUsbDllHandle, "CAN_Uninitialize");
+    pCanUsbLibFuncUninitializePtr = (tPCanUsbLibFuncUninitialize)GetProcAddress(pCanUsbDllHandle, "CAN_Uninitialize");
     /* Set CAN_GetStatus function pointer. */
     pCanUsbLibFuncGetStatusPtr = (tPCanUsbLibFuncGetStatus)GetProcAddress(pCanUsbDllHandle, "CAN_GetStatus");
     /* Set CAN_SetValue function pointer. */
@@ -767,7 +773,7 @@ static void PCanUsbLibUnloadDll(void)
 {
   /* Reset the API function pointers. */
   pCanUsbLibFuncInitializePtr = NULL;
-  pCanUsbLibFuncpUninitializePtr = NULL;
+  pCanUsbLibFuncUninitializePtr = NULL;
   pCanUsbLibFuncGetStatusPtr = NULL;
   pCanUsbLibFuncSetValuePtr = NULL;
   pCanUsbLibFuncReadPtr = NULL;
@@ -825,24 +831,24 @@ static TPCANStatus PCanUsbLibFuncInitialize(TPCANHandle Channel, TPCANBaudrate B
 **            success.
 **
 ****************************************************************************************/
-static TPCANStatus PCanUsbLibFuncpUninitialize(TPCANHandle Channel)
+static TPCANStatus PCanUsbLibFuncUninitialize(TPCANHandle Channel)
 {
   /* set result to error. */
   TPCANStatus result = PCAN_ERROR_INITIALIZE;
 
   /* Check function pointer and library handle. */
-  assert(pCanUsbLibFuncpUninitializePtr != NULL);
+  assert(pCanUsbLibFuncUninitializePtr != NULL);
   assert(pCanUsbDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((pCanUsbLibFuncpUninitializePtr != NULL) && (pCanUsbDllHandle != NULL)) /*lint !e774 */
+  if ((pCanUsbLibFuncUninitializePtr != NULL) && (pCanUsbDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = pCanUsbLibFuncpUninitializePtr(Channel);
+    result = pCanUsbLibFuncUninitializePtr(Channel);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of PCanUsbLibFuncpUninitialize ***/
+} /*** end of PCanUsbLibFuncUninitialize ***/
 
 
 /************************************************************************************//**
