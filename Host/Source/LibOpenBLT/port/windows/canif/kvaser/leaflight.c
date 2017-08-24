@@ -46,7 +46,7 @@
 /***************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/* Type definitions of the function in the Kvaser CANLIB API that this CAN interface
+/* Type definitions of the functions in the Kvaser CANLIB API that this CAN interface
  * uses.
  */
 typedef void      (__stdcall * tLeafLightLibFuncInitializeLibrary)(void); 

@@ -44,7 +44,7 @@
 /***************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/* Type definitions of the function in the PCAN-Basic API that this CAN interface uses.*/
+/* Type definitions of the functions in the PCAN-Basic API that this CAN interface uses.*/
 typedef TPCANStatus (__stdcall * tPCanUsbLibFuncInitialize)(TPCANHandle, TPCANBaudrate, TPCANType, DWORD, WORD);
 typedef TPCANStatus (__stdcall * tPCanUsbLibFuncUninitialize)(TPCANHandle); 
 typedef TPCANStatus (__stdcall * tPCanUsbLibFuncGetStatus)(TPCANHandle); 

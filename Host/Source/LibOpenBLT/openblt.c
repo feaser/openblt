@@ -46,13 +46,13 @@
 * Macro definitions
 ****************************************************************************************/
 /** \brief The version number of the library as an integer. The number has two digits
- *         for major-, minor-, and build-version. Version 1.05.12 would for example be
+ *         for major-, minor-, and patch-version. Version 1.05.12 would for example be
  *         10512.
  */
-#define BLT_VERSION_NUMBER   (10000u)
+#define BLT_VERSION_NUMBER   (10100u)
 
 /** \brief The version number of the library as a null-terminated string. */
-#define BLT_VERSION_STRING   "1.00.00"
+#define BLT_VERSION_STRING   "1.01.00"
 
 
 /****************************************************************************************
