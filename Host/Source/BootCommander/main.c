@@ -74,12 +74,29 @@
 
 
 /****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Type for program settings. */
+typedef struct t_program_settings
+{
+  /* \brief Controls what gets written to the standard output. If set to false then all
+   *        information is written. If set to true then only the most basic progress
+   *        information is shows.
+   */
+  bool silentMode;
+} tProgramSettings;
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void DisplayProgramInfo(void);
 static void DisplayProgramUsage(void);
 static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSettings);
 static void DisplayTransportInfo(uint32_t transportType, void const * transportSettings);
+static void DisplayFirmwareDataInfo(uint32_t segments, uint32_t base, uint32_t size);
+static void ExtractProgramSettingsFromCommandLine(int argc, char const * const argv[],
+                                                  tProgramSettings * programSettings);
 static uint32_t ExtractSessionTypeFromCommandLine(int argc, char const * const argv[]);
 static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const argv[],
                                                     uint32_t sessionType);
@@ -104,22 +121,22 @@ static void ErasePercentageTrailer(void);
 int main(int argc, char const * const argv[])
 {
   int result = RESULT_OK;
+  tProgramSettings appProgramSettings = { 0 };
   uint32_t appSessionType = 0;
   void * appSessionSettings = NULL;
   uint32_t appTransportType = 0;;
   void * appTransportSettings = NULL;
   char const * appFirmwareFile = NULL;
-  uint32_t firmwareDataTotalSize;
 
   /* -------------------- Display info ----------------------------------------------- */
-  /* Display program info */
-  DisplayProgramInfo();
   /* Check that at least enough command line arguments were specified. The first one is
    * always the name of the executable. Additionally, the firmware file must at least 
    * be specified.
    */
   if (argc < 2)
   {
+    /* Display program info */
+    DisplayProgramInfo();
     /* Display program usage. */
     DisplayProgramUsage();
     /* Set error code. */
@@ -129,10 +146,13 @@ int main(int argc, char const * const argv[])
   /* -------------------- Process command line --------------------------------------- */
   if (result == RESULT_OK)
   {
+    /* Extract program specific settings from the command line. */
+    ExtractProgramSettingsFromCommandLine(argc, argv, &appProgramSettings);
     /* Extract the session type from the command line. */
     appSessionType = ExtractSessionTypeFromCommandLine(argc, argv);
     /* Extract the session type specific settings from the command line. */
-    appSessionSettings = ExtractSessionSettingsFromCommandLine(argc, argv, appSessionType);
+    appSessionSettings = ExtractSessionSettingsFromCommandLine(argc, argv,
+                                                               appSessionType);
     /* Extract the transport type from the command line. */
     appTransportType = ExtractTransportTypeFromCommandLine(argc, argv);
     /* Extract the transport type specific settings from the command line. */
@@ -144,17 +164,24 @@ int main(int argc, char const * const argv[])
     if ( (appSessionSettings == NULL) || (appTransportSettings == NULL) ||
         (appFirmwareFile == NULL) )
     {
+      /* Display program info */
+      DisplayProgramInfo();
       /* Display program usage. */
       DisplayProgramUsage();
       /* Set error code. */
       result = RESULT_ERROR_COMMANDLINE;
+    }
+    if ((!appProgramSettings.silentMode))
+    {
+      /* Display program info */
+      DisplayProgramInfo();
     }
     printf("Processing command line parameters..."); 
     printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));
   }
   
   /* -------------------- Display detected parameters -------------------------------- */
-  if (result == RESULT_OK)
+  if ( (result == RESULT_OK) && (!appProgramSettings.silentMode) )
   {
     /* Display firmware file. */
     printf("Detected firmware file: %s\n", appFirmwareFile);
@@ -162,7 +189,6 @@ int main(int argc, char const * const argv[])
     DisplaySessionInfo(appSessionType, appSessionSettings);
     /* Display transport info. */
     DisplayTransportInfo(appTransportType, appTransportSettings);
-
   }
   
   /* -------------------- Firmware loading ------------------------------------------- */
@@ -192,16 +218,19 @@ int main(int argc, char const * const argv[])
     /* Determine and output firmware data statistics. */
     if (result == RESULT_OK)
     {
+      uint32_t firmwareDataTotalSize;
+      uint32_t firmwareDataTotalSegments;
+      uint32_t firmwareDataBaseAddress = 0;
       uint32_t segmentIdx;
       uint32_t segmentLen;
       uint32_t segmentBase;
       uint8_t const * segmentData;
       
-      /* Output number of segments. */
-      printf("  -> Number of segments: %u\n", BltFirmwareGetSegmentCount());
+      /* Store the number of segments. */
+      firmwareDataTotalSegments = BltFirmwareGetSegmentCount();
       /* Loop through all segments. */
       firmwareDataTotalSize = 0;
-      for (segmentIdx = 0; segmentIdx < BltFirmwareGetSegmentCount(); segmentIdx++) 
+      for (segmentIdx = 0; segmentIdx < firmwareDataTotalSegments; segmentIdx++)
       {
         /* Extract segment info. */
         segmentData = BltFirmwareGetSegment(segmentIdx, &segmentBase, &segmentLen);
@@ -209,16 +238,20 @@ int main(int argc, char const * const argv[])
         assert( (segmentData != NULL) && (segmentLen > 0) );
         /* Update total size. */
         firmwareDataTotalSize += segmentLen;
-        /* If it is the first segment, then output the base address. */
+        /* If it is the first segment, then store the base address. */
         if (segmentIdx == 0)
         {
-          printf("  -> Base memory address: 0x%08x\n", segmentBase);
+          firmwareDataBaseAddress = segmentBase;
         }
       }
       /* Sanity check. */
       assert(firmwareDataTotalSize > 0);
-      /* Ouput total firmware data size. */
-      printf("  -> Total data size: %u bytes\n", firmwareDataTotalSize);
+      /* Output firmware data information. */
+      if (!appProgramSettings.silentMode)
+      {
+        DisplayFirmwareDataInfo(firmwareDataTotalSegments, firmwareDataBaseAddress,
+                                firmwareDataTotalSize);
+      }
     }
   }
   
@@ -294,7 +327,7 @@ int main(int argc, char const * const argv[])
     uint32_t segmentBase;
     uint8_t const * segmentData;
 
-    /* Program the memory segments on the target with the firmwware data. */
+    /* Program the memory segments on the target with the firmware data. */
     for (segmentIdx = 0; segmentIdx < BltFirmwareGetSegmentCount(); segmentIdx++) 
     {
       /* Extract segment info. */
@@ -467,6 +500,10 @@ static void DisplayProgramUsage(void)
   printf("                   as 29-bit CAN identifiers, if this 8-bit value is > 0\n");
   printf("                   (Default = 0).\n");
   printf("\n");                   
+  printf("Program settings:\n");
+  printf("  -sm              Silent mode switch. When specified, only minimal\n");
+  printf("                   information is written to the output (Optional).\n");
+  printf("\n");
   printf("Note that it is not necessary to specify an option if its default value\n");
   printf("is already the desired value.\n");
   printf("-------------------------------------------------------------------------\n");
@@ -636,6 +673,68 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
       break;
   }
 } /*** end of DisplayTransportInfo ***/
+
+
+/************************************************************************************//**
+** \brief     Displays firmware data information on the standard output.
+** \param     segments Total number of firmware data segments
+** \param     base The base memory address of the firmware data.
+** \param     size Total number of firmware data bytes.
+**
+****************************************************************************************/
+static void DisplayFirmwareDataInfo(uint32_t segments, uint32_t base, uint32_t size)
+{
+  /* Output number of segments. */
+  printf("  -> Number of segments: %u\n", segments);
+  /* Output the base address. */
+  printf("  -> Base memory address: 0x%08x\n", base);
+  /* Ouput total firmware data size. */
+  printf("  -> Total data size: %u bytes\n", size);
+} /*** end of DisplayFirmwareDataInfo ***/
+
+
+/************************************************************************************//**
+** \brief     Parses the command line to extract the program settings. Note that this
+**            function allocates the memory necessary to store the settings. It is the
+**            caller's responsibility to free this memory after it is done with it.
+** \param     argc Number of program arguments.
+** \param     argv Array with program parameter strings.
+** \param     programSettings Pointer to the setting structure where the program settings
+**            should be written to.
+**
+****************************************************************************************/
+static void ExtractProgramSettingsFromCommandLine(int argc, char const * const argv[],
+                                                  tProgramSettings * programSettings)
+{
+  uint8_t paramIdx;
+
+  /* Check parameters. */
+  assert(argv != NULL);
+  assert(programSettings != NULL);
+
+  /* Set default program settings. */
+  programSettings->silentMode = false;
+
+  /* Only continue if parameters are valid. */
+  if ( (argv != NULL) && (programSettings != NULL) ) /*lint !e774 */
+  {
+    /* Loop through all the command line parameters, just skip the 1st one because
+     * this  is the name of the program, which we are not interested in.
+     */
+    for (paramIdx = 1; paramIdx < argc; paramIdx++)
+    {
+      /* Is this the -sm parameter? */
+      if ( (strstr(argv[paramIdx], "-sm") != NULL) &&
+           (strlen(argv[paramIdx]) == 3) )
+      {
+        /* Activate silent mode. */
+        programSettings->silentMode = true;
+        /* Continue with next loop iteration. */
+        continue;
+      }
+    }
+  }
+} /*** end of ExtractProgramSettingsFromCommandLine ***/
 
 
 /************************************************************************************//**
