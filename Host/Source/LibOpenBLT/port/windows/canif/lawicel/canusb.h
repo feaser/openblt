@@ -27,9 +27,9 @@
 ****************************************************************************************/
 /************************************************************************************//**
 * \defgroup   Lawicel_CanUsb Lawicel CANUSB interface
-* \brief      This module implements the CAN interface for the Lawicel CANUSB. When using
-*             the Lawicel CANUSB interface, the 32-bit driver for the CANUSB DLL API
-*             should be installed: 
+* \brief      This module implements the CAN interface for the Lawicel CANUSB.
+* \details    When using the Lawicel CANUSB interface, the 32-bit driver for the CANUSB 
+*             DLL API should be installed: 
 *             http://www.can232.com/download/canusb_setup_win32_v_2_2.zip
 * \ingroup    CanDriver
 ****************************************************************************************/
