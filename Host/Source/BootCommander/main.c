@@ -712,12 +712,11 @@ static void ExtractProgramSettingsFromCommandLine(int argc, char const * const a
   assert(argv != NULL);
   assert(programSettings != NULL);
 
-  /* Set default program settings. */
-  programSettings->silentMode = false;
-
   /* Only continue if parameters are valid. */
   if ( (argv != NULL) && (programSettings != NULL) ) /*lint !e774 */
   {
+    /* Set default program settings. */
+    programSettings->silentMode = false;
     /* Loop through all the command line parameters, just skip the 1st one because
      * this  is the name of the program, which we are not interested in.
      */
