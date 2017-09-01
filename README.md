@@ -25,8 +25,8 @@ subversion SVN repository:
 
 - **https://sourceforge.net/projects/openblt/**
 
-For those that prefer GIT for their version control, there is a read only
-mirror of SVN repository at GitHub:
+For those that prefer GIT for their version control, there is a read-only
+mirror of the SVN repository at GitHub:
 
 - **https://github.com/feaser/openblt/**
 
