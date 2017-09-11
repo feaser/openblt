@@ -57,16 +57,16 @@
  *         of the checksum in the user program accordingly. Otherwise the checksum
  *         verification will always fail.
  */
-#ifndef FLASH_VECTOR_TABLE_CS_OFFSET
-#define FLASH_VECTOR_TABLE_CS_OFFSET    (0x26C)
+#ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x26C)
 #endif
 
 
 /****************************************************************************************
 * Plausibility checks
 ****************************************************************************************/
-#if (FLASH_VECTOR_TABLE_CS_OFFSET >= FLASH_WRITE_BLOCK_SIZE)
-#error "FLASH_VECTOR_TABLE_CS_OFFSET is set too high. It must be located in the first writable block."
+#if (BOOT_FLASH_VECTOR_TABLE_CS_OFFSET >= FLASH_WRITE_BLOCK_SIZE)
+#error "BOOT_FLASH_VECTOR_TABLE_CS_OFFSET is set too high. It must be located in the first writable block."
 #endif
 
 #ifndef BOOT_FLASH_CUSTOM_LAYOUT_ENABLE
@@ -363,7 +363,7 @@ blt_bool FlashWriteChecksum(void)
   signature_checksum += 1; /* two's complement */
 
   /* write the checksum */
-  return FlashWrite(flashLayout[0].sector_start+FLASH_VECTOR_TABLE_CS_OFFSET,
+  return FlashWrite(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET,
                     sizeof(blt_addr), (blt_int8u *)&signature_checksum);
 } /*** end of FlashWriteChecksum ***/
 
@@ -386,7 +386,7 @@ blt_bool FlashVerifyChecksum(void)
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x10));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x14));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x18));
-  signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+FLASH_VECTOR_TABLE_CS_OFFSET));
+  signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET));
   /* sum should add up to an unsigned 32-bit value of 0 */
   if (signature_checksum == 0)
   {

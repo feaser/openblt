@@ -45,8 +45,15 @@
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 #define FLASH_LAST_SECTOR_IDX           (FLASH_TOTAL_SECTORS-1)
 #define FLASH_ERASE_BLOCK_SIZE          (512)
-/** \brief Offset into the user program's vector table where the checksum is located. */
-#define FLASH_VECTOR_TABLE_CS_OFFSET    (0x82)
+/** \brief Offset into the user program's vector table where the checksum is located.
+ *         Note that the value can be overriden in blt_conf.h, because the size of the 
+ *         vector table could vary. When changing this value, don't forget to update the
+ *         location of the checksum in the user program accordingly. Otherwise the 
+ *         checksum verification will always fail.
+ */
+#ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET (0x82)
+#endif
 /** \brief Total size of the vector table, excluding the bootloader specific checksum. */
 #define FLASH_VECTOR_TABLE_SIZE         (0x80)
 /** \brief Start address of the bootloader programmable flash. */
@@ -101,6 +108,10 @@
 /****************************************************************************************
 * Plausibility checks
 ****************************************************************************************/
+#if (BOOT_FLASH_VECTOR_TABLE_CS_OFFSET >= FLASH_WRITE_BLOCK_SIZE)
+#error "BOOT_FLASH_VECTOR_TABLE_CS_OFFSET is set too high. It must be located in the first writable block."
+#endif
+
 #ifndef BOOT_FLASH_CUSTOM_LAYOUT_ENABLE
 #define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (0u)
 #endif
@@ -562,7 +573,7 @@ blt_bool FlashWriteChecksum(void)
   /* write the checksum */
   checksum_address = flashLayout[FLASH_LAST_SECTOR_IDX].sector_start + \
                      flashLayout[FLASH_LAST_SECTOR_IDX].sector_size -  \
-                     FLASH_VECTOR_TABLE_CS_OFFSET;
+                     BOOT_FLASH_VECTOR_TABLE_CS_OFFSET;
   return FlashWrite(checksum_address, sizeof(signature_checksum),
                     (blt_int8u *)&signature_checksum);
 } /*** end of FlashWriteChecksum ***/
@@ -584,7 +595,7 @@ blt_bool FlashVerifyChecksum(void)
   /* get linear address of the checksum */
   checksum_addr_lin = (flashLayout[FLASH_LAST_SECTOR_IDX].sector_start + \
                        flashLayout[FLASH_LAST_SECTOR_IDX].sector_size -  \
-                       FLASH_VECTOR_TABLE_CS_OFFSET);
+                       BOOT_FLASH_VECTOR_TABLE_CS_OFFSET);
   /* get linear address of the vector table start */
   vector_table_addr_lin = (flashLayout[FLASH_LAST_SECTOR_IDX].sector_start + \
                            flashLayout[FLASH_LAST_SECTOR_IDX].sector_size -  \
