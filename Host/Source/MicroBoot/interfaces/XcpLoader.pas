@@ -114,6 +114,7 @@ type
     FIsConnected     : Boolean;
     FTimerInterval   : array[1..7] of Word;
     FConnectCmdTimer : Word;
+    FConnectMode     : Byte;
     FIsIntel         : Boolean;
     FCtoPacketLen    : Byte;
     FCtoPGMPacketLen : Byte;
@@ -128,7 +129,7 @@ type
     procedure   SetOrderedLong(value: LongWord; data : PByteArray);
     function    SendSynchedPacket(timeMs : Word; useMta : Boolean) : Boolean;
     function    CmdSynch(useMta : Boolean) : Boolean;
-    function    CmdConnect : Boolean;
+    function    CmdConnect(mode: Byte) : Boolean;
     function    CmdDisconnect : Boolean;
     function    CmdProgramStart : Boolean;
     function    CmdGetStatus : Boolean;
@@ -202,6 +203,8 @@ begin
   // timeout is important for the OpenBLT timed backdoor feature. The backdoor time should
   // be at least 2.5 times the length of this timeout value.
   FConnectCmdTimer  :=  20;   // 20 ms - connect command
+  // set default connection mode
+  FConnectMode := 0;
 
   // create instance of XCP transport layer object
   comDriver := TXcpTransport.Create;
@@ -374,6 +377,7 @@ begin
     FTimerInterval[5] := settingsIni.ReadInteger('xcp', 't5', 1000);
     FTimerInterval[7] := settingsIni.ReadInteger('xcp', 't7', 2000);
     FConnectCmdTimer := settingsIni.ReadInteger('xcp', 'tconnect', 20);
+    FConnectMode := settingsIni.ReadInteger('xcp', 'connectmode', 0);
 
     // release ini file object
     settingsIni.Free;
@@ -553,19 +557,19 @@ end; //*** end of CmdSynch ***
 
 //***************************************************************************************
 // NAME:           CmdConnect
-// PARAMETER:      none
+// PARAMETER:      mode Connection mode.
 // RETURN VALUE:   True is successful, False otherwise
 // DESCRIPTION:    Connects the XCP slave to start the XCP session
 //
 //***************************************************************************************
-function TXcpLoader.CmdConnect : Boolean;
+function TXcpLoader.CmdConnect(mode: Byte) : Boolean;
 begin
   // init return value
   Result := false;
 
   // prepare the connect command packet
   comDriver.packetData[0] := kCmdCONNECT;
-  comDriver.packetData[1] := 0; // normal mode
+  comDriver.packetData[1] := mode; // normal mode
   comDriver.packetLen := 2;
 
   // send out the command with 20ms timeout. note that this timeout is not required at
@@ -1076,7 +1080,7 @@ end; //*** end of CmdProgramClear ***
 
 //***************************************************************************************
 // NAME:           StartProgrammingSession
-// PARAMETER:      none
+// PARAMETER:      none.
 // RETURN VALUE:   kProgSessionStarted if successful, kProgSessionUnlockError in case
 //                 the PGM resource could not be unlocked or kProgSessionGenericError.
 // DESCRIPTION:    Starts the programming session using the following XCP command
@@ -1098,7 +1102,7 @@ var
   keyLen        : byte;
 begin
   // send the CONNECT command
-  if not CmdConnect then
+  if not CmdConnect(FConnectMode) then
   begin
     result := kProgSessionGenericError;
     Exit;

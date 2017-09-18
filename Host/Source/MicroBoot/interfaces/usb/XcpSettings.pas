@@ -69,6 +69,11 @@ type
     openDialog: TOpenDialog;
     edtTconnect: TEdit;
     lblTconnect: TLabel;
+    tabSession: TTabSheet;
+    iconXcp3: TImage;
+    lblXcpSession: TLabel;
+    lblConnectMode: TLabel;
+    cmbConnectMode: TComboBox;
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
@@ -102,8 +107,7 @@ implementation
 procedure TXcpSettingsForm.btnOKClick(Sender: TObject);
 begin
   ModalResult := mrOK;
-end;
-//*** end of btnOKClick ***
+end; //*** end of btnOKClick ***
 
 
 //***************************************************************************************
@@ -201,6 +205,7 @@ begin
     FSettingsForm.edtT5.Text := IntToStr(settingsIni.ReadInteger('xcp', 't5', 1000));
     FSettingsForm.edtT7.Text := IntToStr(settingsIni.ReadInteger('xcp', 't7', 2000));
     FSettingsForm.edtTconnect.Text := IntToStr(settingsIni.ReadInteger('xcp', 'tconnect', 20));
+    FSettingsForm.cmbConnectMode.ItemIndex := settingsIni.ReadInteger('xcp', 'connectmode', 0);
 
     // release ini file object
     settingsIni.Free;
@@ -216,6 +221,7 @@ begin
     FSettingsForm.edtT5.Text := IntToStr(1000);
     FSettingsForm.edtT7.Text := IntToStr(2000);
     FSettingsForm.edtTconnect.Text := IntToStr(20);
+    FSettingsForm.cmbConnectMode.ItemIndex := 0;
   end;
 
   // show the form as modal so we can get the result here
@@ -234,6 +240,7 @@ begin
       settingsIni.WriteInteger('xcp', 't5', StrToInt(FSettingsForm.edtT5.Text));
       settingsIni.WriteInteger('xcp', 't7', StrToInt(FSettingsForm.edtT7.Text));
       settingsIni.WriteInteger('xcp', 'tconnect', StrToInt(FSettingsForm.edtTconnect.Text));
+      settingsIni.WriteInteger('xcp', 'connectmode', FSettingsForm.cmbConnectMode.ItemIndex);
 
       // release ini file object
       settingsIni.Free;
