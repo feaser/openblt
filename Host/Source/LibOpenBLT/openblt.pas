@@ -82,7 +82,8 @@ type
     timeoutT4: Word;          // Erase memory timeout in milliseonds.
     timeoutT5: Word;          // Program memory and reset timeout in milliseonds.
     timeoutT7: Word;          // Busy wait timer timeout in milliseonds.
-    seedKeyFile: PAnsiChar;       // Seed/key algorithm library filename.
+    seedKeyFile: PAnsiChar;   // Seed/key algorithm library filename.
+    connectMode: Byte;        // Connection mode parameter in XCP connect command.
   end;
 
   // Structure layout of the XCP version 1.0 RS232 transport layer settings.

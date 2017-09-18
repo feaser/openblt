@@ -529,7 +529,7 @@ static bool XcpLoaderSendCmdConnect(void)
     result = true;
     /* Prepare the command packet. */
     cmdPacket.data[0] = XCPLOADER_CMD_CONNECT;
-    cmdPacket.data[1] = 0; /* normal mode */
+    cmdPacket.data[1] = xcpSettings.connectMode;
     cmdPacket.len = 2;
     /* Send the packet. */
     if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket, 

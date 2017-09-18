@@ -116,6 +116,7 @@ typedef struct t_blt_session_settings_xcp_v10
   uint16_t timeoutT5;            /**< Program memory and reset timeout in milliseonds. */
   uint16_t timeoutT7;            /**< Busy wait timer timeout in milliseonds.          */
   char const * seedKeyFile;      /**< Seed/key algorithm library filename.             */
+  uint8_t connectMode;           /**< Connection mode parameter in XCP connect command.*/
 } tBltSessionSettingsXcpV10;
 
 /** \brief Structure layout of the XCP version 1.0 RS232 transport layer settings. The

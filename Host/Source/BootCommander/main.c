@@ -467,6 +467,8 @@ static void DisplayProgramUsage(void)
   printf("  -t7=[timeout]    Busy wait timer timeout in milliseconds as a 16-bit\n"); 
   printf("                   value (Default = 2000 ms).\n");
   printf("  -sk=[file]       Seed/key algorithm library filename (Optional).\n");
+  printf("  -cm=[value]      Connection mode value sent in the XCP connect command,\n");
+  printf("                   as a 8-bit value (Default=0).\n");
   printf("\n");  
   printf("XCP on RS232 settings (xcp_rs232):\n");
   printf("  -d=[name]        Name of the communication device. For example COM1 or\n");
@@ -563,6 +565,7 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
         {
           printf("None\n");
         }
+        printf("  -> Connection mode: %hhu\n", xcpSettings->connectMode);
       }
       break;
     }
@@ -832,7 +835,8 @@ static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const
          *   -t4=[timeout]  -> Erase memory timeout in milliseconds.
          *   -t5=[timeout]  -> Program memory and reset timeout in milliseconds.
          *   -t7=[timeout]  -> Busy wait timer timeout in milliseconds.
-         *   -sk=[file]     -> Seed/key algorithm library filename.  
+         *   -sk=[file]     -> Seed/key algorithm library filename. 
+         *   -cm=[value]    -> Connection mode parameter in XCP connect command.
          */
         /* Allocate memory for storing the settings and check the result. */
         result = malloc(sizeof(tBltSessionSettingsXcpV10));
@@ -848,6 +852,7 @@ static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const
           xcpSettings->timeoutT5 = 1000;
           xcpSettings->timeoutT7 = 2000;
           xcpSettings->seedKeyFile = NULL;
+          xcpSettings->connectMode = 0;
           /* Loop through all the command line parameters, just skip the 1st one because 
            * this  is the name of the program, which we are not interested in.
            */
@@ -904,6 +909,15 @@ static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const
             {
               /* Store the pointer to the seek/key filename. */
               xcpSettings->seedKeyFile = &argv[paramIdx][4];
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -cm=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-cm=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 4) )
+            {
+              /* Extract the connection mode value. */
+              sscanf(&argv[paramIdx][4], "%hhu", &(xcpSettings->connectMode));
               /* Continue with next loop iteration. */
               continue;
             }

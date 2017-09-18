@@ -137,6 +137,7 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
       xcpLoaderSettings.timeoutT4 = bltSessionSettingsXcpV10Ptr->timeoutT4;
       xcpLoaderSettings.timeoutT5 = bltSessionSettingsXcpV10Ptr->timeoutT5;
       xcpLoaderSettings.timeoutT7 = bltSessionSettingsXcpV10Ptr->timeoutT7;
+      xcpLoaderSettings.connectMode = bltSessionSettingsXcpV10Ptr->connectMode;
       xcpLoaderSettings.transport = NULL;
       xcpLoaderSettings.transportSettings = NULL;
       /* Link the correct transport layer. */
