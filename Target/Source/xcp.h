@@ -99,10 +99,103 @@
 #define XCP_SEED_KEY_PROTECTION_EN     (0)
 #endif
 
+/** \brief Enable (=1) or disable the hook function that gets called each time an XCP
+ *         packet was received from the host.
+ *  \details A master-slave bootloader can be realized by using this hook-function. The
+ *           mode parameter in the XCP Connect command can be interpreted as a node ID.
+ *           When trying to connect to a slave, a gateway could be activated that passes
+ *           the packet on to the slave. When the response packet is received from the
+ *           slave, ComTransmitPacket() can be called to pass the response on to the
+ *           host. At the end of a firmware update procedure, the XCP Program Reset
+ *           command is called, which can be used to deactivate the gateway. If this
+ *           hook-function returns BLT_TRUE, the packet is no longer processed by the XCP
+ *           module. If it returns BLT_FALSE, then the packet is processed as usual by
+ *           the XCP module.
+ */
+#if (BOOT_XCP_PACKET_RECEIVED_HOOK > 0)
+#define XCP_PACKET_RECEIVED_HOOK_EN    (1)
+#else
+#define XCP_PACKET_RECEIVED_HOOK_EN    (0)
+#endif
+
 
 /****************************************************************************************
 * Defines
 ****************************************************************************************/
+/** \brief XCP protocol layer version number (16-bit). */
+#define XCP_VERSION_PROTOCOL_LAYER  (0x0100)
+
+/** \brief XCP transport layer version number (16-bit). */
+#define XCP_VERSION_TRANSPORT_LAYER (0x0100)
+
+/* XCP packet identifiers */
+/** \brief Command response packet identifier. */
+#define XCP_PID_RES                 (0xff)
+/** \brief Error packet identifier. */
+#define XCP_PID_ERR                 (0xfe)
+
+/* XCP error codes */
+/** \brief Cmd processor synchronization error code. */
+#define XCP_ERR_CMD_SYNCH           (0x00)
+/** \brief Command was not executed error code. */
+#define XCP_ERR_CMD_BUSY            (0x10)
+/** \brief Unknown or unsupported command error code. */
+#define XCP_ERR_CMD_UNKNOWN         (0x20)
+/** \brief Parameter out of range error code. */
+#define XCP_ERR_OUT_OF_RANGE        (0x22)
+/** \brief Protected error code. Seed/key required. */
+#define XCP_ERR_ACCESS_LOCKED       (0x25)
+/** \brief Cal page not valid error code. */
+#define XCP_ERR_PAGE_NOT_VALID      (0x26)
+/** \brief Sequence error code. */
+#define XCP_ERR_SEQUENCE            (0x29)
+/** \brief Generic error code. */
+#define XCP_ERR_GENERIC             (0x31)
+
+/* XCP command codes */
+/** \brief CONNECT command code. */
+#define XCP_CMD_CONNECT             (0xff)
+/** \brief DISCONNECT command code. */
+#define XCP_CMD_DISCONNECT          (0xfe)
+/** \brief GET_STATUS command code. */
+#define XCP_CMD_GET_STATUS          (0xfd)
+/** \brief SYNCH command code. */
+#define XCP_CMD_SYNCH               (0xfc)
+/** \brief GET_ID command code. */
+#define XCP_CMD_GET_ID              (0xfa)
+/** \brief GET_SEED command code. */
+#define XCP_CMD_GET_SEED            (0xf8)
+/** \brief UNLOCK command code. */
+#define XCP_CMD_UNLOCK              (0xf7)
+/** \brief SET_MTA command code. */
+#define XCP_CMD_SET_MTA             (0xf6)
+/** \brief UPLOAD command code. */
+#define XCP_CMD_UPLOAD              (0xf5)
+/** \brief SHORT_UPLOAD command code. */
+#define XCP_CMD_SHORT_UPLOAD        (0xf4)
+/** \brief BUILD_CHECKSUM command code. */
+#define XCP_CMD_BUILD_CHECKSUM      (0xf3)
+/** \brief DOWNLOAD command code. */
+#define XCP_CMD_DOWNLOAD            (0xf0)
+/** \brief DOWNLOAD_MAX command code. */
+#define XCP_CMD_DOWLOAD_MAX         (0xee)
+/** \brief SET_CALPAGE command code. */
+#define XCP_CMD_SET_CAL_PAGE        (0xeb)
+/** \brief GET_CALPAGE command code. */
+#define XCP_CMD_GET_CAL_PAGE        (0xea)
+/** \brief PROGRAM_START command code. */
+#define XCP_CMD_PROGRAM_START       (0xd2)
+/** \brief PROGRAM_CLEAR command code. */
+#define XCP_CMD_PROGRAM_CLEAR       (0xd1)
+/** \brief PROGRAM command code. */
+#define XCP_CMD_PROGRAM             (0xd0)
+/** \brief PROGRAM_RESET command code. */
+#define XCP_CMD_PROGRAM_RESET       (0xcf)
+/** \brief PROGRAM_PREPARE command code. */
+#define XCP_CMD_PROGRAM_PREPARE     (0xcc)
+/** \brief PROGRAM_MAX command code. */
+#define XCP_CMD_PROGRAM_MAX         (0xc9)
+
 /* xcp supported resources */
 /** \brief ProGraMming resource. */
 #define XCP_RES_PGM            (0x10)
@@ -226,6 +319,14 @@ void     XcpPacketReceived(blt_int8u *data);
 #error  "XCP.H, XCP_SEED_KEY_PROTECTION_EN must be 0 or 1."
 #endif
 
+
+#ifndef XCP_PACKET_RECEIVED_HOOK_EN
+#error  "XCP.H, Configuration macro XCP_PACKET_RECEIVED_HOOK_EN is missing."
+#endif
+
+#if     (XCP_PACKET_RECEIVED_HOOK_EN < 0) || (XCP_PACKET_RECEIVED_HOOK_EN > 1)
+#error  "XCP.H, XCP_PACKET_RECEIVED_HOOK_EN must be 0 or 1."
+#endif
 
 #endif /* BOOT_COM_ENABLE > 0 */
 #endif /* XCP_H */

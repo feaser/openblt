@@ -474,7 +474,7 @@
 
 
 /****************************************************************************************
-*   S E E D / K E Y   S E C U R I T Y   C O N F I G U R A T I O N
+*   X C P   M O D U L E   C O N F I G U R A T I O N   C H E C K
 ****************************************************************************************/
 #ifndef BOOT_XCP_SEED_KEY_ENABLE
 #define BOOT_XCP_SEED_KEY_ENABLE        (0)
@@ -482,6 +482,14 @@
 
 #if (BOOT_XCP_SEED_KEY_ENABLE < 0) || (BOOT_XCP_SEED_KEY_ENABLE > 1)
 #error "BOOT_XCP_SEED_KEY_ENABLE must be 0 or 1"
+#endif
+
+#ifndef BOOT_XCP_PACKET_RECEIVED_HOOK
+#define BOOT_XCP_PACKET_RECEIVED_HOOK   (0)
+#endif
+
+#if (BOOT_XCP_PACKET_RECEIVED_HOOK < 0) || (BOOT_XCP_PACKET_RECEIVED_HOOK > 1)
+#error "BOOT_XCP_PACKET_RECEIVED_HOOK must be 0 or 1"
 #endif
 
 

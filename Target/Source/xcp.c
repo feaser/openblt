@@ -34,84 +34,6 @@
 
 #if (BOOT_COM_ENABLE > 0)
 /****************************************************************************************
-* Defines
-****************************************************************************************/
-/** \brief XCP protocol layer version number (16-bit). */
-#define XCP_VERSION_PROTOCOL_LAYER  (0x0100)
-
-/** \brief XCP transport layer version number (16-bit). */
-#define XCP_VERSION_TRANSPORT_LAYER (0x0100)
-
-/* XCP packet identifiers */
-/** \brief Command response packet identifier. */
-#define XCP_PID_RES                 (0xff)
-/** \brief Error packet identifier. */
-#define XCP_PID_ERR                 (0xfe)
-
-/* XCP error codes */
-/** \brief Cmd processor synchronization error code. */
-#define XCP_ERR_CMD_SYNCH           (0x00)
-/** \brief Command was not executed error code. */
-#define XCP_ERR_CMD_BUSY            (0x10)
-/** \brief Unknown or unsupported command error code. */
-#define XCP_ERR_CMD_UNKNOWN         (0x20)
-/** \brief Parameter out of range error code. */
-#define XCP_ERR_OUT_OF_RANGE        (0x22)
-/** \brief Protected error code. Seed/key required. */
-#define XCP_ERR_ACCESS_LOCKED       (0x25)
-/** \brief Cal page not valid error code. */
-#define XCP_ERR_PAGE_NOT_VALID      (0x26)
-/** \brief Sequence error code. */
-#define XCP_ERR_SEQUENCE            (0x29)
-/** \brief Generic error code. */
-#define XCP_ERR_GENERIC             (0x31)
-
-/* XCP command codes */
-/** \brief CONNECT command code. */
-#define XCP_CMD_CONNECT             (0xff)
-/** \brief DISCONNECT command code. */
-#define XCP_CMD_DISCONNECT          (0xfe)
-/** \brief GET_STATUS command code. */
-#define XCP_CMD_GET_STATUS          (0xfd)
-/** \brief SYNCH command code. */
-#define XCP_CMD_SYNCH               (0xfc)
-/** \brief GET_ID command code. */
-#define XCP_CMD_GET_ID              (0xfa)
-/** \brief GET_SEED command code. */
-#define XCP_CMD_GET_SEED            (0xf8)
-/** \brief UNLOCK command code. */
-#define XCP_CMD_UNLOCK              (0xf7)
-/** \brief SET_MTA command code. */
-#define XCP_CMD_SET_MTA             (0xf6)
-/** \brief UPLOAD command code. */
-#define XCP_CMD_UPLOAD              (0xf5)
-/** \brief SHORT_UPLOAD command code. */
-#define XCP_CMD_SHORT_UPLOAD        (0xf4)
-/** \brief BUILD_CHECKSUM command code. */
-#define XCP_CMD_BUILD_CHECKSUM      (0xf3)
-/** \brief DOWNLOAD command code. */
-#define XCP_CMD_DOWNLOAD            (0xf0)
-/** \brief DOWNLOAD_MAX command code. */
-#define XCP_CMD_DOWLOAD_MAX         (0xee)
-/** \brief SET_CALPAGE command code. */
-#define XCP_CMD_SET_CAL_PAGE        (0xeb)
-/** \brief GET_CALPAGE command code. */
-#define XCP_CMD_GET_CAL_PAGE        (0xea)
-/** \brief PROGRAM_START command code. */
-#define XCP_CMD_PROGRAM_START       (0xd2)
-/** \brief PROGRAM_CLEAR command code. */
-#define XCP_CMD_PROGRAM_CLEAR       (0xd1)
-/** \brief PROGRAM command code. */
-#define XCP_CMD_PROGRAM             (0xd0)
-/** \brief PROGRAM_RESET command code. */
-#define XCP_CMD_PROGRAM_RESET       (0xcf)
-/** \brief PROGRAM_PREPARE command code. */
-#define XCP_CMD_PROGRAM_PREPARE     (0xcc)
-/** \brief PROGRAM_MAX command code. */
-#define XCP_CMD_PROGRAM_MAX         (0xc9)
-
-
-/****************************************************************************************
 * Type definitions
 ****************************************************************************************/
 /** \brief Struture type for grouping XCP internal module information. */
@@ -181,20 +103,19 @@ static void XcpCmdProgramPrepare(blt_int8u *data);
 /****************************************************************************************
 * Hook functions
 ****************************************************************************************/
+#if (XCP_PACKET_RECEIVED_HOOK_EN == 1)
+extern blt_bool XcpPacketReceivedHook(blt_int8u *data);
+#endif
+
 #if (XCP_RES_PAGING_EN == 1)
 extern blt_int8u XcpCalSetPageHook(blt_int8u segment, blt_int8u page);
 extern blt_int8u XcpCalGetPageHook(blt_int8u segment);
-#endif
-
-#if (XCP_CONNECT_MODE_HOOK_EN == 1)
-extern blt_bool XcpConnectModeHook(blt_int8u mode);
 #endif
 
 #if (XCP_SEED_KEY_PROTECTION_EN == 1)
 extern blt_int8u XcpGetSeedHook(blt_int8u resource, blt_int8u *seed);
 extern blt_int8u XcpVerifyKeyHook(blt_int8u resource, blt_int8u *key, blt_int8u len);
 #endif
-
 
 
 /****************************************************************************************
@@ -277,6 +198,17 @@ void XcpPacketTransmitted(void)
 ****************************************************************************************/
 void XcpPacketReceived(blt_int8u *data)
 {
+#if (XCP_PACKET_RECEIVED_HOOK_EN == 1)
+  /* give the hook function a chance to process this packet. A return value of BLT_TRUE
+   * indicates that the hook function processed the packet and that no further processing
+   * is required.
+   */
+  if (XcpPacketReceivedHook(data) == BLT_TRUE)
+  {
+    /* packet processed by hook function so no need to continue. */
+    return;
+  }
+#endif
   /* was this a connect command? */
   if (data[0] == XCP_CMD_CONNECT)
   {
@@ -535,20 +467,6 @@ static void XcpCmdConnect(blt_int8u *data)
   {
     /* command not processed because we are busy */
     XcpSetCtoError(XCP_ERR_CMD_BUSY);
-    return;
-  }
-#endif
-
-#if (XCP_CONNECT_MODE_HOOK_EN == 1)
-  /* pass on the mode to a application specific hook function. This function can determine
-   * is the mode is supported or not. A return value of BLT_FALSE causes the CONNECT command
-   * to be ignored. Note that this mode could potentially be used to specify a node ID in a
-   * multi XCP slave system.
-   */
-  if (XcpConnectModeHook(data[1]) == BLT_FALSE)
-  {
-    /* set the response length to 0 to suppress it */
-    xcpInfo.ctoLen = 0;
     return;
   }
 #endif
