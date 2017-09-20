@@ -543,7 +543,7 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
       if (sessionSettings == NULL) /*lint !e774 */
       {
         /* No valid settings present. */
-        printf("  -> Invalid setings specified\n");
+        printf("  -> Invalid settings specified\n");
       }
       else
       {
@@ -600,7 +600,7 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
   }
   
   /* Output transport settings info. */
-  printf("Using transort layer settings:\n");
+  printf("Using transport layer settings:\n");
   switch (transportType) 
   {
     case BLT_TRANSPORT_XCP_V10_RS232:
@@ -610,7 +610,7 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
       if (transportSettings == NULL) /*lint !e774 */
       {
         /* No valid settings present. */
-        printf("  -> Invalid setings specified\n");
+        printf("  -> Invalid settings specified\n");
       }
       else
       {
@@ -638,7 +638,7 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
       if (transportSettings == NULL) /*lint !e774 */
       {
         /* No valid settings present. */
-        printf("  -> Invalid setings specified\n");
+        printf("  -> Invalid settings specified\n");
       }
       else
       {
