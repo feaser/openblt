@@ -157,6 +157,14 @@ typedef void (*pFlashExeCmdFct)(void);
 
 
 /****************************************************************************************
+* Hook functions
+****************************************************************************************/
+#if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
+extern blt_bool FlashCryptoDecryptDataHook(blt_int8u * data, blt_int32u size);
+#endif
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static blt_bool   FlashInitBlock(tFlashBlockInfo *block, blt_addr address);
@@ -552,6 +560,16 @@ blt_bool FlashWriteChecksum(void)
     return BLT_TRUE;
   }
 
+#if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
+  /* perform decryption of the bootblock, before calculating the checksum and writing it
+   * to flash memory.
+   */
+  if (FlashCryptoDecryptDataHook(bootBlockInfo.data, FLASH_WRITE_BLOCK_SIZE) == BLT_FALSE)
+  {
+    return BLT_FALSE;
+  }
+#endif
+
   /* the bootblock contains the data for the last sector in flashLayout. the
    * user program vector table and the checkum will be located at the end
    * of this block. first determine the offset in the bootblock data to
@@ -870,6 +888,23 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   {
     return BLT_FALSE;
   }
+
+#if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
+  #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE == 0)
+  /* note that the bootblock is already decrypted in FlashWriteChecksum(), if the
+   * internal checksum mechanism is used. Therefore don't decrypt it again.
+   */
+  if (block != &bootBlockInfo)
+  #endif
+  {
+    /* perform decryption of the program data before writing it to flash memory. */
+    if (FlashCryptoDecryptDataHook(block->data, FLASH_WRITE_BLOCK_SIZE) == BLT_FALSE)
+    {
+      return BLT_FALSE;
+    }
+  }
+#endif
+
   /* program all words in the block one by one */
   for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int16u)); word_cnt++)
   {

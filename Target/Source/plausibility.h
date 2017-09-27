@@ -434,6 +434,18 @@
 
 
 /****************************************************************************************
+*   F L A S H   D R I V E R   C O N F I G U R A T I O N   C H E C K
+****************************************************************************************/
+#ifndef BOOT_FLASH_CRYPTO_HOOKS_ENABLE
+#define BOOT_FLASH_CRYPTO_HOOKS_ENABLE  (0)
+#endif
+
+#if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE < 0) || (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 1)
+#error "BOOT_FLASH_CRYPTO_HOOKS_ENABLE must be 0 or 1"
+#endif
+
+
+/****************************************************************************************
 *   N V M   D R I V E R   C O N F I G U R A T I O N   C H E C K
 ****************************************************************************************/
 #ifndef BOOT_NVM_HOOKS_ENABLE

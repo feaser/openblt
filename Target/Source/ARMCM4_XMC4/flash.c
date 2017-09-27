@@ -123,6 +123,14 @@ typedef struct
 
 
 /****************************************************************************************
+* Hook functions
+****************************************************************************************/
+#if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
+extern blt_bool FlashCryptoDecryptDataHook(blt_int8u * data, blt_int32u size);
+#endif
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static blt_bool  FlashInitBlock(tFlashBlockInfo *block, blt_addr address);
@@ -363,6 +371,16 @@ blt_bool FlashWriteChecksum(void)
   {
     return BLT_TRUE;
   }
+
+#if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
+  /* perform decryption of the bootblock, before calculating the checksum and writing it
+   * to flash memory.
+   */
+  if (FlashCryptoDecryptDataHook(bootBlockInfo.data, FLASH_WRITE_BLOCK_SIZE) == BLT_FALSE)
+  {
+    return BLT_FALSE;
+  }
+#endif
 
   /* compute the checksum. note that the user program's vectors are not yet written
    * to flash but are present in the bootblock data structure at this point.
@@ -635,6 +653,22 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   {
     return BLT_FALSE;
   }
+
+#if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
+  #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE == 0)
+  /* note that the bootblock is already decrypted in FlashWriteChecksum(), if the
+   * internal checksum mechanism is used. Therefore don't decrypt it again.
+   */
+  if (block != &bootBlockInfo)
+  #endif
+  {
+    /* perform decryption of the program data before writing it to flash memory. */
+    if (FlashCryptoDecryptDataHook(block->data, FLASH_WRITE_BLOCK_SIZE) == BLT_FALSE)
+    {
+      return BLT_FALSE;
+    }
+  }
+#endif
 
   /* program all pages in the block one by one */
   for (page_cnt=0; page_cnt< (FLASH_WRITE_BLOCK_SIZE/FLASH_WRITE_PAGE_SIZE); page_cnt++)
