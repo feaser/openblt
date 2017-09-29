@@ -293,7 +293,7 @@ static bool SRecParserSaveToFile (char const * firmwareFile)
         if (result)
         {
           /* Add the S0-record. */
-          if (fprintf(fp, "%s\r\n", line) < 0)
+          if (fprintf(fp, "%s\n", line) < 0)
           {
             /* Could not write line to the file. */
             result = false;
@@ -339,7 +339,7 @@ static bool SRecParserSaveToFile (char const * firmwareFile)
               break;
             }
             /* Add the data record. */
-            if (fprintf(fp, "%s\r\n", line) < 0)
+            if (fprintf(fp, "%s\n", line) < 0)
             {
               /* Could not write line to the file. Abort loop. */
               result = false;
@@ -362,7 +362,7 @@ static bool SRecParserSaveToFile (char const * firmwareFile)
         if (result)
         {
           /* Add the termination record. */
-          if (fprintf(fp, "%s\r\n", line) < 0)
+          if (fprintf(fp, "%s\n", line) < 0)
           {
             /* Could not write line to the file. */
             result = false;
