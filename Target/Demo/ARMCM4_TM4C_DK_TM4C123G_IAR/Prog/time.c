@@ -46,15 +46,15 @@ static unsigned long millisecond_counter;
 ** \return    none.
 **
 ****************************************************************************************/
-void TimeInit(void)
+void TimerInit(void)
 {
   /* configure the SysTick timer for 1 ms period */
   SysTickPeriodSet((unsigned long)SysCtlClockGet() / 1000);
   SysTickEnable();
   SysTickIntEnable();
   /* reset the millisecond counter */
-  TimeSet(0);
-} /*** end of TimeInit ***/
+  TimerSet(0);
+} /*** end of TimerInit ***/
 
 
 /************************************************************************************//**
@@ -62,11 +62,11 @@ void TimeInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void TimeDeinit(void)
+void TimerDeinit(void)
 {
   SysTickIntDisable();
   SysTickDisable();
-} /*** end of TimeDeinit ***/
+} /*** end of TimerDeinit ***/
 
 
 /************************************************************************************//**
@@ -75,11 +75,11 @@ void TimeDeinit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void TimeSet(unsigned long timer_value)
+void TimerSet(unsigned long timer_value)
 {
   /* set the millisecond counter */
   millisecond_counter = timer_value;
-} /*** end of TimeSet ***/
+} /*** end of TimerSet ***/
 
 
 /************************************************************************************//**
@@ -87,11 +87,11 @@ void TimeSet(unsigned long timer_value)
 ** \return    Current value of the millisecond timer.
 **
 ****************************************************************************************/
-unsigned long TimeGet(void)
+unsigned long TimerGet(void)
 {
   /* read and return the millisecond counter value */
   return millisecond_counter;
-} /*** end of TimeGet ***/
+} /*** end of TimerGet ***/
 
 
 /************************************************************************************//**
@@ -99,11 +99,11 @@ unsigned long TimeGet(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void TimeISRHandler(void)
+void TimerISRHandler(void)
 {
   /* increment the millisecond counter */
   millisecond_counter++;
-} /*** end of TimeISRHandler ***/
+} /*** end of TimerISRHandler ***/
 
 
 /*********************************** end of time.c *************************************/

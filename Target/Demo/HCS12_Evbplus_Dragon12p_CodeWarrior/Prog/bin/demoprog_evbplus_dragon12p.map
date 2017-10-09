@@ -17,9 +17,9 @@ mc9s12dg256.c.o                         Model: SMALL,         Lang: ANSI-C
 boot.c.o                                Model: SMALL,         Lang: ANSI-C
 led.c.o                                 Model: SMALL,         Lang: ANSI-C
 main.c.o                                Model: SMALL,         Lang: ANSI-C
-time.c.o                                Model: SMALL,         Lang: ANSI-C
 vectors.c.o                             Model: SMALL,         Lang: ANSI-C
 cstartup.c.o                            Model: SMALL,         Lang: ANSI-C
+timer.c.o                               Model: SMALL,         Lang: ANSI-C
 
 *********************************************************************************************
 STARTUP SECTION
@@ -781,18 +781,9 @@ MODULE:                 -- main.c.o --
      Init                                      C2E7       C      12       1   .text       
      SysClockInit                              C2F3       1       1       1   .text       
 - VARIABLES:
-MODULE:                 -- time.c.o --
-- PROCEDURES:
-     TimeInit                                  C2F4      1E      30       1   .text       
-     TimeDeinit                                C312      1C      28       1   .text       
-     TimeSet                                   C32E       7       7       1   .text       
-     TimeGet                                   C335       7       7       3   .text       
-     TimeISRHandler                            C33C      1B      27       1   .text       
-- VARIABLES:
-     millisecond_counter                       114C       4       4       8   .bss        
 MODULE:                 -- vectors.c.o --
 - PROCEDURES:
-     UnusedISR                                 C357       2       2      62   .text       
+     UnusedISR                                 C2F4       2       2      62   .text       
 - VARIABLES:
      _vectab                                   E77E      82     130       0   .abs_section_e77e
 MODULE:                 -- cstartup.c.o --
@@ -803,6 +794,15 @@ MODULE:                 -- cstartup.c.o --
      _startupData                              C03B       6       6       3   .startData  
 - LABELS:
      __SEG_END_SSTACK                          1100       0       0       1               
+MODULE:                 -- timer.c.o --
+- PROCEDURES:
+     TimerInit                                 C2F6      1E      30       1   .text       
+     TimerDeinit                               C314      1C      28       1   .text       
+     TimerSet                                  C330       7       7       1   .text       
+     TimerGet                                  C337       7       7       3   .text       
+     TimerISRHandler                           C33E      1B      27       1   .text       
+- VARIABLES:
+     millisecond_counter                       114C       4       4       8   .bss        
 
 *********************************************************************************************
 MODULE STATISTIC
@@ -813,9 +813,9 @@ MODULE STATISTIC
   boot.c.o                                    71    537     36
   led.c.o                                      5     87      0
   main.c.o                                     0     27      0
-  time.c.o                                     4     99      0
   vectors.c.o                                  0      2    130
   cstartup.c.o                                 0     59      0
+  timer.c.o                                    4     99      0
   other                                      256     10      2
 
 *********************************************************************************************
@@ -825,7 +825,8 @@ SECTION: ".text"
   BootComInit BootComCheckActivationRequest BootActivate BootComUartInit 
   BootComUartCheckActivationRequest UartReceiveByte CanGetSpeedConfig 
   BootComCanInit BootComCanCheckActivationRequest LedInit LedToggle main Init 
-  SysClockInit TimeInit TimeDeinit TimeSet TimeGet TimeISRHandler UnusedISR 
+  SysClockInit UnusedISR TimerInit TimerDeinit TimerSet TimerGet 
+  TimerISRHandler 
 SECTION: ".bss"
   xcpCtoRxInProgress.3 xcpCtoRxStartTime.4 xcpCtoReqPacket.1 xcpCtoRxLength.2 
   led_toggle_state.1 timer_counter_last.2 millisecond_counter 
@@ -1889,12 +1890,12 @@ OBJECT LIST SORTED BY ADDRESS
      main                                      C2D9       E      14       1   .text       
      Init                                      C2E7       C      12       1   .text       
      SysClockInit                              C2F3       1       1       1   .text       
-     TimeInit                                  C2F4      1E      30       1   .text       
-     TimeDeinit                                C312      1C      28       1   .text       
-     TimeSet                                   C32E       7       7       1   .text       
-     TimeGet                                   C335       7       7       3   .text       
-     TimeISRHandler                            C33C      1B      27       1   .text       
-     UnusedISR                                 C357       2       2      62   .text       
+     UnusedISR                                 C2F4       2       2      62   .text       
+     TimerInit                                 C2F6      1E      30       1   .text       
+     TimerDeinit                               C314      1C      28       1   .text       
+     TimerSet                                  C330       7       7       1   .text       
+     TimerGet                                  C337       7       7       3   .text       
+     TimerISRHandler                           C33E      1B      27       1   .text       
      _LSHRU                                    C359      11      17       1   RUNTIME     
      _LCMP                                     C36A      19      25       2   RUNTIME     
      _LINC                                     C383       5       5       1   RUNTIME     
@@ -1933,7 +1934,7 @@ BootComCheckActivationRequest USES BootComUartCheckActivationRequest
 BootActivate              USES _COPCTL 
 BootComUartInit           USES _SCI0CR2 _SCI0CR1 _SCI0BD 
 BootComUartCheckActivationRequest USES xcpCtoRxInProgress.3 xcpCtoReqPacket.1 
-                                UartReceiveByte TimeGet xcpCtoRxStartTime.4 xcpCtoRxLength.2 
+                                UartReceiveByte TimerGet xcpCtoRxStartTime.4 xcpCtoRxLength.2 
                                 BootActivate _LCMP 
 UartReceiveByte           USES _SCI0SR1 _SCI0DRL 
 CanGetSpeedConfig         USES canTiming 
@@ -1945,19 +1946,19 @@ BootComCanInit            USES _CAN0CTL0 _CAN0CTL1 CanGetSpeedConfig _CAN0BTR0
 BootComCanCheckActivationRequest USES _CAN0RFLG _CAN0RXIDR1 _CAN0RXIDR0 _LSHRU 
                                 _CAN0RXDSR0 _CAN0RXDSR1 BootActivate 
 LedInit                   USES _DDRJ _PTJ _DDRAB _PORTAB 
-LedToggle                 USES TimeGet timer_counter_last.2 _LCMP 
+LedToggle                 USES TimerGet timer_counter_last.2 _LCMP 
                                 led_toggle_state.1 _PORTAB 
 main                      USES Init BootComInit LedToggle 
                                 BootComCheckActivationRequest 
-Init                      USES SysClockInit LedInit TimeInit 
-TimeInit                  USES TimeDeinit _TIOS _TFLG1 _TCNT _TC0 _TIE _TSCR1 
-                                TimeSet 
-TimeDeinit                USES _TIE _TSCR1 _TSCR2 _TIOS _TTOV _TCTL1 _TCTL2 
+Init                      USES SysClockInit LedInit TimerInit 
+TimerInit                 USES TimerDeinit _TIOS _TFLG1 _TCNT _TC0 _TIE _TSCR1 
+                                TimerSet 
+TimerDeinit               USES _TIE _TSCR1 _TSCR2 _TIOS _TTOV _TCTL1 _TCTL2 
                                 _TCTL3 _TCTL4 
-TimeSet                   USES millisecond_counter 
-TimeGet                   USES millisecond_counter 
-TimeISRHandler            USES _TFLG1 _TC0 millisecond_counter _LINC 
-_vectab                   USES UnusedISR TimeISRHandler _Startup 
+TimerSet                  USES millisecond_counter 
+TimerGet                  USES millisecond_counter 
+TimerISRHandler           USES _TFLG1 _TC0 millisecond_counter _LINC 
+_vectab                   USES UnusedISR TimerISRHandler _Startup 
 
 *********************************************************************************************
 DEPENDENCY TREE
@@ -1972,11 +1973,11 @@ DEPENDENCY TREE
  |  |  |    
  |  |  +- LedInit             
  |  |  |    
- |  |  +- TimeInit            
+ |  |  +- TimerInit           
  |  |     | 
- |  |     +- TimeDeinit          
+ |  |     +- TimerDeinit         
  |  |     |    
- |  |     +- TimeSet             
+ |  |     +- TimerSet            
  |  |          
  |  +- BootComInit         
  |  |  | 
@@ -1988,7 +1989,7 @@ DEPENDENCY TREE
  |  |          
  |  +- LedToggle           
  |  |  | 
- |  |  +- TimeGet             
+ |  |  +- TimerGet            
  |  |  |    
  |  |  +- _LCMP               
  |  |       
@@ -1998,7 +1999,7 @@ DEPENDENCY TREE
  |     |  | 
  |     |  +- UartReceiveByte     
  |     |  |    
- |     |  +- TimeGet              (see above)
+ |     |  +- TimerGet             (see above)
  |     |  |  
  |     |  +- BootActivate        
  |     |  |    
@@ -2020,7 +2021,7 @@ DEPENDENCY TREE
  | 
  +- UnusedISR           
  |    
- +- TimeISRHandler      
+ +- TimerISRHandler     
  |  | 
  |  +- _LINC               
  |       

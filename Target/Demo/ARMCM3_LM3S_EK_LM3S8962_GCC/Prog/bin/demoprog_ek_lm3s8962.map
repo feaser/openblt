@@ -28,19 +28,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   6 .debug_abbrev 00000d80  00000000  00000000  00015b93  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_aranges 00000708  00000000  00000000  00016913  2**0
+  7 .debug_loc    00003b22  00000000  00000000  00016913  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_ranges 00000648  00000000  00000000  0001701b  2**0
+  8 .debug_aranges 00000708  00000000  00000000  0001a435  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_macro  0000742a  00000000  00000000  00017663  2**0
+  9 .debug_ranges 00000648  00000000  00000000  0001ab3d  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_line   000025ea  00000000  00000000  0001ea8d  2**0
+ 10 .debug_macro  00004185  00000000  00000000  0001b185  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    0001e461  00000000  00000000  00021077  2**0
+ 11 .debug_line   000025ea  00000000  00000000  0001f30a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_frame  000012e4  00000000  00000000  0003f4d8  2**2
+ 12 .debug_str    0001e45c  00000000  00000000  000218f4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_loc    00003b22  00000000  00000000  000407bc  2**0
+ 13 .debug_frame  000012e4  00000000  00000000  0003fd50  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 00004000 l    d  .text	00000000 .text
@@ -50,13 +50,13 @@ SYMBOL TABLE:
 00000000 l    d  .comment	00000000 .comment
 00000000 l    d  .debug_info	00000000 .debug_info
 00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
+00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    d  .debug_aranges	00000000 .debug_aranges
 00000000 l    d  .debug_ranges	00000000 .debug_ranges
 00000000 l    d  .debug_macro	00000000 .debug_macro
 00000000 l    d  .debug_line	00000000 .debug_line
 00000000 l    d  .debug_str	00000000 .debug_str
 00000000 l    d  .debug_frame	00000000 .debug_frame
-00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    df *ABS*	00000000 vectors.c
 00000000 l    df *ABS*	00000000 crtstuff.c
 000058ec l     O .text	00000000 __EH_FRAME_BEGIN__
@@ -66,46 +66,46 @@ SYMBOL TABLE:
 00004118 l     F .text	00000000 frame_dummy
 2000000c l       .bss	00000000 object.8608
 20000000 l     O .data	00000000 __frame_dummy_init_array_entry
-00000000 l    df *ABS*	00000000 time.c
-20000024 l     O .bss	00000004 millisecond_counter
-00000000 l    df *ABS*	00000000 boot.c
-000041a0 l     F .text	00000038 BootComUartInit
-000041d8 l     F .text	00000074 CanSetBittiming
-0000424c l     F .text	0000005c BootComCanInit
-000042a8 l     F .text	00000020 UartReceiveByte
-000042dc l     F .text	00000094 BootComUartCheckActivationRequest
-00004370 l     F .text	00000040 BootComCanCheckActivationRequest
-20000028 l     O .bss	00000001 xcpCtoRxLength.4647
-20000029 l     O .bss	00000001 xcpCtoRxInProgress.4648
-2000002c l     O .bss	00000004 xcpCtoRxStartTime.4649
-20000030 l     O .bss	00000041 xcpCtoReqPacket.4646
-00000000 l    df *ABS*	00000000 main.c
-000043c0 l     F .text	00000018 Init
-20000074 l     O .bss	00000004 assert_failure_line.4635
-00000000 l    df *ABS*	00000000 cstart.c
-0000441a l     F .text	00000000 zero_loop
-00000000 l    df *ABS*	00000000 led.c
-20000078 l     O .bss	00000004 timer_counter_last.4628
-2000007c l     O .bss	00000001 led_toggle_state.4627
-00000000 l    df *ABS*	00000000 sysctl.c
-000044b8 l     F .text	000001f8 SysCtlPeripheralValid
-000057f4 l     O .text	0000005c g_pulXtals
-00005868 l     O .text	0000000c g_pulRCGCRegs
-00000000 l    df *ABS*	00000000 uart.c
-00004a68 l     F .text	0000002c UARTBaseValid
-00000000 l    df *ABS*	00000000 interrupt.c
-00000000 l    df *ABS*	00000000 gpio.c
-00004d28 l     F .text	000000dc GPIOBaseValid
-00000000 l    df *ABS*	00000000 can.c
-00005078 l     F .text	0000002c CANBaseValid
-000050a4 l     F .text	0000002c CANIntNumberGet
-000050d0 l     F .text	0000001a CANRegWrite
-000050ec l     F .text	0000002e CANDataRegWrite
-0000511c l     F .text	00000068 CANRegRead
-00005184 l     F .text	0000002e CANDataRegRead
 00000000 l    df *ABS*	00000000 systick.c
-00000000 l    df *ABS*	00000000 /opt/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7-m/crti.o
-00000000 l    df *ABS*	00000000 /opt/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7-m/crtn.o
+00000000 l    df *ABS*	00000000 can.c
+00004190 l     F .text	0000002c CANBaseValid
+000041bc l     F .text	0000002c CANIntNumberGet
+000041e8 l     F .text	0000001a CANRegWrite
+00004204 l     F .text	0000002e CANDataRegWrite
+00004234 l     F .text	00000068 CANRegRead
+0000429c l     F .text	0000002e CANDataRegRead
+00000000 l    df *ABS*	00000000 gpio.c
+000048b4 l     F .text	000000dc GPIOBaseValid
+00000000 l    df *ABS*	00000000 interrupt.c
+00000000 l    df *ABS*	00000000 uart.c
+00004d1c l     F .text	0000002c UARTBaseValid
+00000000 l    df *ABS*	00000000 sysctl.c
+00004ec4 l     F .text	000001f8 SysCtlPeripheralValid
+0000586c l     O .text	0000005c g_pulXtals
+000058e0 l     O .text	0000000c g_pulRCGCRegs
+00000000 l    df *ABS*	00000000 led.c
+20000024 l     O .bss	00000004 timer_counter_last.4628
+20000028 l     O .bss	00000001 led_toggle_state.4627
+00000000 l    df *ABS*	00000000 cstart.c
+0000550a l     F .text	00000000 zero_loop
+00000000 l    df *ABS*	00000000 main.c
+00005534 l     F .text	00000018 Init
+2000002c l     O .bss	00000004 assert_failure_line.4635
+00000000 l    df *ABS*	00000000 boot.c
+00005570 l     F .text	00000038 BootComUartInit
+000055a8 l     F .text	00000074 CanSetBittiming
+0000561c l     F .text	0000005c BootComCanInit
+00005678 l     F .text	00000020 UartReceiveByte
+000056ac l     F .text	00000094 BootComUartCheckActivationRequest
+00005740 l     F .text	00000040 BootComCanCheckActivationRequest
+20000030 l     O .bss	00000001 xcpCtoRxLength.4647
+20000031 l     O .bss	00000001 xcpCtoRxInProgress.4648
+20000034 l     O .bss	00000004 xcpCtoRxStartTime.4649
+20000038 l     O .bss	00000041 xcpCtoReqPacket.4646
+00000000 l    df *ABS*	00000000 time.c
+2000007c l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 c:/progra~2/gnutoo~1/50a5a~1.420/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7-m/crti.o
+00000000 l    df *ABS*	00000000 c:/progra~2/gnutoo~1/50a5a~1.420/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7-m/crtn.o
 00000000 l    df *ABS*	00000000 crtstuff.c
 000058ec l     O .text	00000000 __FRAME_END__
 00000000 l    df *ABS*	00000000 
@@ -125,58 +125,58 @@ SYMBOL TABLE:
 20000000 l       .data	00000000 __init_array_start
 00000000 l       *UND*	00000000 _exit
 20000000 l       .data	00000000 __preinit_array_start
-000043ec g     F .text	0000000c __error__
-000043f8 g     F .text	00000040 reset_handler
-000051b4 g     F .text	0000009c CANInit
-000046f8 g     F .text	00000008 SysCtlDelay
-00005250 g     F .text	0000002c CANEnable
-00004150 g     F .text	0000000c TimeSet
+00005560 g     F .text	0000000c __error__
+000054e8 g     F .text	00000040 reset_handler
+000042cc g     F .text	0000009c CANInit
+00005104 g     F .text	00000008 SysCtlDelay
+00004368 g     F .text	0000002c CANEnable
 000058f0 g       .text	00000000 _etext
-00004fb8 g     F .text	00000024 GPIOPinWrite
-000046b0 g     F .text	00000038 SysCtlPeripheralEnable
+00004b44 g     F .text	00000024 GPIOPinWrite
+000057cc g     F .text	00000010 TimerISRHandler
+000050bc g     F .text	00000038 SysCtlPeripheralEnable
 000057dc g     F .text	00000000 _init
-000042d4 g     F .text	00000008 BootActivate
-000046e8 g     F .text	00000010 SysCtlReset
-2000007d g       .bss	00000000 _ebss
+000056a4 g     F .text	00000008 BootActivate
+000050f4 g     F .text	00000010 SysCtlReset
+20000080 g       .bss	00000000 _ebss
 00000400 g       *ABS*	00000000 __STACKSIZE__
-000043bc g     F .text	00000002 UnusedISR
-00004444 g     F .text	00000028 LedInit
-00004190 g     F .text	00000010 TimeISRHandler
+0000556c g     F .text	00000002 UnusedISR
+00005474 g     F .text	00000028 LedInit
 00000000  w      *UND*	00000000 __deregister_frame_info
-00004be4 g     F .text	0000002c UARTCharGetNonBlocking
+00004e98 g     F .text	0000002c UARTCharGetNonBlocking
 20000008 g       .bss	00000000 _bss
-000057bc g     F .text	00000020 SysTickPeriodSet
-00005358 g     F .text	0000008c CANStatusGet
-000043d8 g     F .text	00000014 main
-00004864 g     F .text	00000204 SysCtlClockGet
-00004ac4 g     F .text	00000038 UARTDisable
-000055e0 g     F .text	000001bc CANMessageGet
-00004fdc g     F .text	00000034 GPIOPinTypeCAN
-000042c8 g     F .text	0000000c BootComInit
+00004170 g     F .text	00000020 SysTickPeriodSet
+00004470 g     F .text	0000008c CANStatusGet
+0000554c g     F .text	00000014 main
+00005270 g     F .text	00000204 SysCtlClockGet
+00004d78 g     F .text	00000038 UARTDisable
+000046f8 g     F .text	000001bc CANMessageGet
+0000578c g     F .text	0000000c TimerSet
+00004b68 g     F .text	00000034 GPIOPinTypeCAN
+00005698 g     F .text	0000000c BootComInit
 000057e8 g     F .text	00000000 _fini
-0000415c g     F .text	00000028 TimeInit
-00004c9c g     F .text	0000008c IntDisable
+00004c90 g     F .text	0000008c IntDisable
 20000000 g       .data	00000000 _data
-0000446c g     F .text	0000004c LedToggle
-0000527c g     F .text	000000dc CANBitTimingSet
+0000549c g     F .text	0000004c LedToggle
+00004394 g     F .text	000000dc CANBitTimingSet
 20000480 g       .bss	00000000 _estack
 20000008 g       .data	00000000 _edata
 00004000 g     O .text	000000f4 _vectab
-00005044 g     F .text	00000034 GPIOPinTypeUART
-00005010 g     F .text	00000034 GPIOPinTypeGPIOOutput
-00004c10 g     F .text	0000008c IntEnable
-000043b0 g     F .text	0000000c BootComCheckActivationRequest
-00004184 g     F .text	0000000c TimeGet
-00004e04 g     F .text	00000060 GPIODirModeSet
-2000007d g       .bss	00000000 _stack
-0000579c g     F .text	00000010 SysTickEnable
+00004bd0 g     F .text	00000034 GPIOPinTypeUART
+00004b9c g     F .text	00000034 GPIOPinTypeGPIOOutput
+00004c04 g     F .text	0000008c IntEnable
+00005780 g     F .text	0000000c BootComCheckActivationRequest
+00004990 g     F .text	00000060 GPIODirModeSet
+20000080 g       .bss	00000000 _stack
+00004150 g     F .text	00000010 SysTickEnable
+000057c0 g     F .text	0000000c TimerGet
 00000000  w      *UND*	00000000 _Jv_RegisterClasses
-000057ac g     F .text	00000010 SysTickIntEnable
-000053e4 g     F .text	000001fc CANMessageSet
-00004afc g     F .text	000000e8 UARTConfigSetExpClk
-00004700 g     F .text	00000164 SysCtlClockSet
-00004e64 g     F .text	00000154 GPIOPadConfigSet
+00004160 g     F .text	00000010 SysTickIntEnable
+000044fc g     F .text	000001fc CANMessageSet
+00004db0 g     F .text	000000e8 UARTConfigSetExpClk
+0000510c g     F .text	00000164 SysCtlClockSet
+000049f0 g     F .text	00000154 GPIOPadConfigSet
+00005798 g     F .text	00000028 TimerInit
 00000000  w      *UND*	00000000 __register_frame_info
-00004a94 g     F .text	00000030 UARTEnable
+00004d48 g     F .text	00000030 UARTEnable
 
 

@@ -37,7 +37,7 @@ Discarded input sections
  .text          0x00000000        0x0 THUMB Debug/../../obj/time.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/time.o
  .bss           0x00000000        0x0 THUMB Debug/../../obj/time.o
- .text.TimeDeinit
+ .text.TimerDeinit
                 0x00000000       0x18 THUMB Debug/../../obj/time.o
  .text          0x00000000        0x0 THUMB Debug/../../obj/net.o
  .data          0x00000000        0x0 THUMB Debug/../../obj/net.o
@@ -3462,16 +3462,18 @@ Linker script and memory map
  .text.UnusedISR
                 0x00008494        0x8 THUMB Debug/../../obj/vectors.o
                 0x00008494                UnusedISR
- .text.TimeInit
+ .text.TimerInit
                 0x0000849c       0x44 THUMB Debug/../../obj/time.o
-                0x0000849c                TimeInit
- .text.TimeSet  0x000084e0       0x1c THUMB Debug/../../obj/time.o
-                0x000084e0                TimeSet
- .text.TimeGet  0x000084fc       0x14 THUMB Debug/../../obj/time.o
-                0x000084fc                TimeGet
- .text.TimeISRHandler
+                0x0000849c                TimerInit
+ .text.TimerSet
+                0x000084e0       0x1c THUMB Debug/../../obj/time.o
+                0x000084e0                TimerSet
+ .text.TimerGet
+                0x000084fc       0x14 THUMB Debug/../../obj/time.o
+                0x000084fc                TimerGet
+ .text.TimerISRHandler
                 0x00008510       0x1c THUMB Debug/../../obj/time.o
-                0x00008510                TimeISRHandler
+                0x00008510                TimerISRHandler
  .text.NetInit  0x0000852c       0xb0 THUMB Debug/../../obj/net.o
                 0x0000852c                NetInit
  .text.NetApp   0x000085dc       0x58 THUMB Debug/../../obj/net.o
@@ -4000,7 +4002,7 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
  .debug_abbrev  0x00000f13       0xe5 THUMB Debug/../../obj/netdev.o
 
 .debug_pubnames
-                0x00000000     0x1515
+                0x00000000     0x151a
  .debug_pubnames
                 0x00000000       0xa3 THUMB Debug/../../obj/boot.o
  .debug_pubnames
@@ -4010,27 +4012,27 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
  .debug_pubnames
                 0x00000101       0x2d THUMB Debug/../../obj/vectors.o
  .debug_pubnames
-                0x0000012e       0x71 THUMB Debug/../../obj/time.o
+                0x0000012e       0x76 THUMB Debug/../../obj/time.o
  .debug_pubnames
-                0x0000019f       0x62 THUMB Debug/../../obj/net.o
+                0x000001a4       0x62 THUMB Debug/../../obj/net.o
  .debug_pubnames
-                0x00000201      0x229 THUMB Debug/../../obj/uip.o
+                0x00000206      0x229 THUMB Debug/../../obj/uip.o
  .debug_pubnames
-                0x0000042a       0xd1 THUMB Debug/../../obj/uip_arp.o
+                0x0000042f       0xd1 THUMB Debug/../../obj/uip_arp.o
  .debug_pubnames
-                0x000004fb      0x265 THUMB Debug/../../obj/ethernet.o
+                0x00000500      0x265 THUMB Debug/../../obj/ethernet.o
  .debug_pubnames
-                0x00000760      0x19d THUMB Debug/../../obj/flash.o
+                0x00000765      0x19d THUMB Debug/../../obj/flash.o
  .debug_pubnames
-                0x000008fd      0x2fa THUMB Debug/../../obj/gpio.o
+                0x00000902      0x2fa THUMB Debug/../../obj/gpio.o
  .debug_pubnames
-                0x00000bf7      0x4a0 THUMB Debug/../../obj/sysctl.o
+                0x00000bfc      0x4a0 THUMB Debug/../../obj/sysctl.o
  .debug_pubnames
-                0x00001097       0xd0 THUMB Debug/../../obj/systick.o
+                0x0000109c       0xd0 THUMB Debug/../../obj/systick.o
  .debug_pubnames
-                0x00001167      0x358 THUMB Debug/../../obj/uart.o
+                0x0000116c      0x358 THUMB Debug/../../obj/uart.o
  .debug_pubnames
-                0x000014bf       0x56 THUMB Debug/../../obj/netdev.o
+                0x000014c4       0x56 THUMB Debug/../../obj/netdev.o
 
 .debug_pubtypes
                 0x00000000      0x722
@@ -4134,7 +4136,7 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
  .debug_line    0x00002953      0x742 THUMB Debug/../../obj/uart.o
  .debug_line    0x00003095      0x1af THUMB Debug/../../obj/netdev.o
 
-.debug_str      0x00000000     0x1e25
+.debug_str      0x00000000     0x1e2a
  .debug_str     0x00000000      0x276 THUMB Debug/../../obj/boot.o
                                 0x27b (size before relaxing)
  .debug_str     0x00000276       0xa2 THUMB Debug/../../obj/led.o
@@ -4143,27 +4145,27 @@ OUTPUT(C:/Work/software/OpenBLT/Target/Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/P
                                 0x1f3 (size before relaxing)
  .debug_str     0x000003bc       0x8d THUMB Debug/../../obj/vectors.o
                                 0x1db (size before relaxing)
- .debug_str     0x00000449       0xae THUMB Debug/../../obj/time.o
-                                0x1f3 (size before relaxing)
- .debug_str     0x000004f7      0x1d1 THUMB Debug/../../obj/net.o
+ .debug_str     0x00000449       0xb3 THUMB Debug/../../obj/time.o
+                                0x1f8 (size before relaxing)
+ .debug_str     0x000004fc      0x1d1 THUMB Debug/../../obj/net.o
                                 0x33e (size before relaxing)
- .debug_str     0x000006c8      0x359 THUMB Debug/../../obj/uip.o
+ .debug_str     0x000006cd      0x359 THUMB Debug/../../obj/uip.o
                                 0x617 (size before relaxing)
- .debug_str     0x00000a21      0x172 THUMB Debug/../../obj/uip_arp.o
+ .debug_str     0x00000a26      0x172 THUMB Debug/../../obj/uip_arp.o
                                 0x40d (size before relaxing)
- .debug_str     0x00000b93      0x2e8 THUMB Debug/../../obj/ethernet.o
+ .debug_str     0x00000b98      0x2e8 THUMB Debug/../../obj/ethernet.o
                                 0x446 (size before relaxing)
- .debug_str     0x00000e7b      0x227 THUMB Debug/../../obj/flash.o
+ .debug_str     0x00000e80      0x227 THUMB Debug/../../obj/flash.o
                                 0x3bc (size before relaxing)
- .debug_str     0x000010a2      0x36f THUMB Debug/../../obj/gpio.o
+ .debug_str     0x000010a7      0x36f THUMB Debug/../../obj/gpio.o
                                 0x500 (size before relaxing)
- .debug_str     0x00001411      0x4c7 THUMB Debug/../../obj/sysctl.o
+ .debug_str     0x00001416      0x4c7 THUMB Debug/../../obj/sysctl.o
                                 0x642 (size before relaxing)
- .debug_str     0x000018d8      0x10f THUMB Debug/../../obj/systick.o
+ .debug_str     0x000018dd      0x10f THUMB Debug/../../obj/systick.o
                                 0x25f (size before relaxing)
- .debug_str     0x000019e7      0x38c THUMB Debug/../../obj/uart.o
+ .debug_str     0x000019ec      0x38c THUMB Debug/../../obj/uart.o
                                 0x53f (size before relaxing)
- .debug_str     0x00001d73       0xb2 THUMB Debug/../../obj/netdev.o
+ .debug_str     0x00001d78       0xb2 THUMB Debug/../../obj/netdev.o
                                 0x270 (size before relaxing)
 
 .comment        0x00000000       0x4c

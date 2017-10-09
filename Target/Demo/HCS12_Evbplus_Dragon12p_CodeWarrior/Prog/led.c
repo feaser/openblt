@@ -68,7 +68,7 @@ void LedToggle(void)
   unsigned long timer_counter_now;
 
   /* check if toggle interval time passed */
-  timer_counter_now = TimeGet();
+  timer_counter_now = TimerGet();
   if ( (timer_counter_now - timer_counter_last) < LED_TOGGLE_MS)
   {
     /* not yet time to toggle */

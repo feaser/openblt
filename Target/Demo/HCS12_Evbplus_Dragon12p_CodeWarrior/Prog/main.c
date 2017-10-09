@@ -75,7 +75,7 @@ static void Init(void)
   /* init the led driver */
   LedInit();
   /* init the timer driver */
-  TimeInit();
+  TimerInit();
   /* enable interrupts */
   asm("cli");
 } /*** end of Init ***/

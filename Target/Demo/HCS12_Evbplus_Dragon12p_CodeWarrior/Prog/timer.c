@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\time.c
+* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\timer.c
 * \brief        Timer driver source file.
 * \ingroup      Prog_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal
@@ -53,12 +53,12 @@ static unsigned long millisecond_counter;
 ** \return    none.
 **
 ****************************************************************************************/
-void TimeInit(void)
+void TimerInit(void)
 {
   /* reset the timer configuration. note that this also sets the default prescaler
    * to 1, so the free running counter runs at the same speed as the system clock.
    */
-  TimeDeinit();
+  TimerDeinit();
 
   /* configure timer channel 0 as a 1 millisecond software timer */
   TIOS_IOS0 = 1;
@@ -71,8 +71,8 @@ void TimeInit(void)
   /* enable the timer subsystem */
   TSCR1_TEN = 1;
   /* reset the millisecond counter */
-  TimeSet(0);
-} /*** end of TimeInit ***/
+  TimerSet(0);
+} /*** end of TimerInit ***/
 
 
 /************************************************************************************//**
@@ -80,7 +80,7 @@ void TimeInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void TimeDeinit(void)
+void TimerDeinit(void)
 {
   /* bring the timer subsystem back into its reset state */
   TIE = 0;
@@ -92,7 +92,7 @@ void TimeDeinit(void)
   TCTL2 = 0;
   TCTL3 = 0;
   TCTL4 = 0;
-} /*** end of TimeDeinit ***/
+} /*** end of TimerDeinit ***/
 
 
 /************************************************************************************//**
@@ -101,11 +101,11 @@ void TimeDeinit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void TimeSet(unsigned long timer_value)
+void TimerSet(unsigned long timer_value)
 {
   /* set the millisecond counter */
   millisecond_counter = timer_value;
-} /*** end of TimeSet ***/
+} /*** end of TimerSet ***/
 
 
 /************************************************************************************//**
@@ -113,11 +113,11 @@ void TimeSet(unsigned long timer_value)
 ** \return    Current value of the millisecond timer.
 **
 ****************************************************************************************/
-unsigned long TimeGet(void)
+unsigned long TimerGet(void)
 {
   /* read and return the millisecond counter value */
   return millisecond_counter;
-} /*** end of TimeGet ***/
+} /*** end of TimerGet ***/
 
 
 /************************************************************************************//**
@@ -125,7 +125,7 @@ unsigned long TimeGet(void)
 ** \return    none.
 **
 ****************************************************************************************/
-__interrupt void TimeISRHandler(void)
+__interrupt void TimerISRHandler(void)
 {
   /* make sure timer 0 interrupt flag is cleared */
   TFLG1 = TFLG1_C0F_MASK;
@@ -133,7 +133,7 @@ __interrupt void TimeISRHandler(void)
   TC0 += TIMER_COUNTS_PER_MS;
   /* increment the millisecond counter */
   millisecond_counter++;
-} /*** end of TimeISRHandler ***/
+} /*** end of TimerISRHandler ***/
 
 
-/*********************************** end of time.c *************************************/
+/*********************************** end of timer.c ************************************/

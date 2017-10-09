@@ -86,7 +86,7 @@ const tIsrFunc _vectors[] =
   { UnusedISR                      },                 /* Debug Monitor Handler         */
   { UnusedISR                      },                 /* Reserved                      */
   { UnusedISR                      },                 /* PendSV Handler                */
-  { TimeISRHandler                 },                 /* SysTick Handler               */
+  { TimerISRHandler                },                 /* SysTick Handler               */
   { UnusedISR                      },                 /* GPIO Port A                   */
   { UnusedISR                      },                 /* GPIO Port B                   */
   { UnusedISR                      },                 /* GPIO Port C                   */

@@ -168,7 +168,7 @@ static void BootComUartCheckActivationRequest(void)
       if (xcpCtoReqPacket[0] > 0)
       {
         /* store the start time */
-        xcpCtoRxStartTime = TimeGet();
+        xcpCtoRxStartTime = TimerGet();
         /* indicate that a cto packet is being received */
         xcpCtoRxInProgress = 1;
         /* reset packet data count */
@@ -201,7 +201,7 @@ static void BootComUartCheckActivationRequest(void)
     else
     {
       /* check packet reception timeout */
-      if (TimeGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
       {
         /* cancel cto packet reception due to timeout. note that this automatically
          * discards the already received packet bytes, allowing the host to retry.

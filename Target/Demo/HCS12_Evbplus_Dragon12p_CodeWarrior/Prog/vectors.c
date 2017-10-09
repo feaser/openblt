@@ -141,7 +141,7 @@ const tIsrFunc _vectab[] @0xe77e =
   (tIsrFunc)UnusedISR,                                /* Timer 3 0xFFE8                */
   (tIsrFunc)UnusedISR,                                /* Timer 2 0xFFEA                */
   (tIsrFunc)UnusedISR,                                /* Timer 1 0xFFEC                */
-  (tIsrFunc)TimeISRHandler,                           /* Timer 0 0xFFEE                */
+  (tIsrFunc)TimerISRHandler,                          /* Timer 0 0xFFEE                */
   (tIsrFunc)UnusedISR,                                /* RTI 0xFFF0                    */
   (tIsrFunc)UnusedISR,                                /* IRQ 0xFFF2                    */
   (tIsrFunc)UnusedISR,                                /* XIRQ 0xFFF4                   */

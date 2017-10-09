@@ -103,7 +103,7 @@ void netdev_init_mac(void)
 
   /* wait for the link to become active. */
   ulTemp = EthernetPHYRead(ETH_BASE, PHY_MR1);
-  ulLinkTimeOut = TimeGet() + NETDEV_LINKUP_TIMEOUT_MS;
+  ulLinkTimeOut = TimerGet() + NETDEV_LINKUP_TIMEOUT_MS;
   
   while ((ulTemp & 0x0004) == 0)
   {
@@ -111,7 +111,7 @@ void netdev_init_mac(void)
     /* check for timeout so that the software program can still start if the 
      * ethernet cable is not connected.
      */
-    if (TimeGet() >= ulLinkTimeOut)
+    if (TimerGet() >= ulLinkTimeOut)
     {
       break;
     }

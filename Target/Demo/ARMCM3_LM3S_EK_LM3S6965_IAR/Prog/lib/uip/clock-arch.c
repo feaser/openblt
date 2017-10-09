@@ -45,6 +45,6 @@
 clock_time_t
 clock_time(void)
 {
-  return (clock_time_t)TimeGet();
+  return (clock_time_t)TimerGet();
 }
 /*---------------------------------------------------------------------------*/

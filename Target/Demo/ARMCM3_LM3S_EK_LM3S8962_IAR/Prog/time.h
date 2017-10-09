@@ -31,11 +31,11 @@
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void          TimeInit(void);
-void          TimeDeinit(void);
-void          TimeSet(unsigned long timer_value);
-unsigned long TimeGet(void);
-void          TimeISRHandler(void);
+void          TimerInit(void);
+void          TimerDeinit(void);
+void          TimerSet(unsigned long timer_value);
+unsigned long TimerGet(void);
+void          TimerISRHandler(void);
 
 #endif /* TIME_H */
 /*********************************** end of time.h *************************************/

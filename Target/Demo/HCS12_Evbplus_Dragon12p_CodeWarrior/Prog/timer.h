@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\time.h
+* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\timer.h
 * \brief        Timer driver header file.
 * \ingroup      Prog_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal
@@ -28,17 +28,17 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef TIME_H
-#define TIME_H
+#ifndef TIMER_H
+#define TIMER_H
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void          TimeInit(void);
-void          TimeDeinit(void);
-void          TimeSet(unsigned long timer_value);
-unsigned long TimeGet(void);
-void          TimeISRHandler(void);
+void          TimerInit(void);
+void          TimerDeinit(void);
+void          TimerSet(unsigned long timer_value);
+unsigned long TimerGet(void);
+void          TimerISRHandler(void);
 
-#endif /* TIME_H */
-/*********************************** end of time.h *************************************/
+#endif /* TIMER_H */
+/*********************************** end of timer.h ************************************/

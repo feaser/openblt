@@ -47,7 +47,7 @@
 #include "../Boot/blt_conf.h"                          /* bootloader configuration     */
 #include "boot.h"                                      /* bootloader interface driver  */
 #include "led.h"                                       /* LED driver                   */
-#include "time.h"                                      /* Timer driver                 */
+#include "timer.h"                                     /* Timer driver                 */
 #include "derivative.h"                                /* MCU registers                */
 
 
