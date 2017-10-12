@@ -50,7 +50,7 @@ uses
   XcpTransport in 'XcpTransport.pas',
   XcpSettings in 'XcpSettings.pas' {XcpSettingsForm},
   CPort in 'CPort.pas',
-  FirmwareData in '..\..\..\Library\FirmwareData\pas\FirmwareData.pas';
+  FirmwareData in '..\FirmwareData.pas';
 
 //***************************************************************************************
 // Global Constants

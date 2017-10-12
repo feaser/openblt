@@ -49,7 +49,7 @@ uses
   XcpLoader in '..\..\XcpLoader.pas',
   XcpTransport in 'XcpTransport.pas',
   XcpSettings in 'XcpSettings.pas' {XcpSettingsForm},
-  FirmwareData in '..\..\..\..\Library\FirmwareData\pas\FirmwareData.pas';
+  FirmwareData in '..\..\FirmwareData.pas';
 
 //***************************************************************************************
 // Global Constants
