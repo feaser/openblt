@@ -41,15 +41,15 @@ set(CMAKE_BUILD_TYPE "Debug")
 #****************************************************************************************
 # Options
 #****************************************************************************************
-# Add option with default value to enable the generation and building of the static
-# library. It can be overridden on the command line when CMake is called using the 
-# following parameter: -DBUILD_STATIC=OFF
-option(BUILD_STATIC "Configurable to enable/disable building of the static library" ON)
-
 # Add option with default value to enable the generation and building of the shared
-# library. It can be overridden on the command line when CMake is called using the 
-# following parameter: -DBUILD_SHARED=OFF
+# library. By default it is turned on. It can be overridden on the command line when 
+# CMake is called using the following parameter: -DBUILD_SHARED=OFF
 option(BUILD_SHARED "Configurable to enable/disable building of the shared library" ON)
+
+# Add option with default value to enable the generation and building of the static
+# library. By default it is turned off. It can be overridden on the command line when 
+# CMake is called using the following parameter: -DBUILD_STATIC=ON
+option(BUILD_STATIC "Configurable to enable/disable building of the static library" OFF)
 
 # Add option with default value to disable the generation of the PC-lint target. It can 
 # be overridden on the command line when CMake is called using the following parameter:
@@ -131,6 +131,9 @@ set(
 #****************************************************************************************
 # Only generate the static library taget if the option is enabled. Use 
 # "make openblt_static" to individually build the static library. 
+# Note that when you link your own application to the static library of LibOpenBLT under
+# Unix, you need to also link the LibUsb library by adding usb-1.0 to the linker library
+# dependencies.
 if(BUILD_STATIC)
   add_library(openblt_static STATIC ${LIB_SRCS})
   SET_TARGET_PROPERTIES(openblt_static PROPERTIES OUTPUT_NAME openblt CLEAN_DIRECT_OUTPUT 1)
@@ -140,6 +143,13 @@ endif(BUILD_STATIC)
 # "make openblt_shared" to build individually  shared library.
 if(BUILD_SHARED)
   add_library(openblt_shared SHARED ${LIB_SRCS})
+  if(UNIX)
+    # Under Unix the LibUsb library (http://libusb.info/) is needed for the USB support.
+    # Make sure the libusb-1.0-0 and  libusb-1.0-0-dev packages are installed to be able to
+    # build LibOpenBLT. Example under Debian/Ubuntu:
+    #   sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev
+    target_link_libraries(openblt_shared usb-1.0)
+  endif(UNIX)  
   if(CMAKE_C_COMPILER_ID MATCHES MSVC)
     # Microsoft Visual Studio does not add "lib" to the name of the DLL, whereas GCC
     # (including MinGW) does. Correct this here.

@@ -103,6 +103,11 @@ LIBOPENBLT_EXPORT char const * BltVersionGetString(void);
  */
 #define BLT_TRANSPORT_XCP_V10_CAN      ((uint32_t)1u)
 
+/** \brief Transport layer for the XCP v1.0 protocol that uses USB Bulk for data 
+ *         exchange.
+ */
+#define BLT_TRANSPORT_XCP_V10_USB      ((uint32_t)2u)
+
 
 /****************************************************************************************
 * Type definitions

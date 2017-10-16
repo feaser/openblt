@@ -40,6 +40,7 @@
 #include "xcploader.h"                      /* XCP loader module                       */
 #include "xcptpuart.h"                      /* XCP UART transport layer                */
 #include "xcptpcan.h"                       /* XCP CAN transport layer                 */
+#include "xcptpusb.h"                       /* XCP USB transport layer                 */
 
 
 /****************************************************************************************
@@ -49,10 +50,10 @@
  *         for major-, minor-, and patch-version. Version 1.05.12 would for example be
  *         10512.
  */
-#define BLT_VERSION_NUMBER   (10100u)
+#define BLT_VERSION_NUMBER   (10200u)
 
 /** \brief The version number of the library as a null-terminated string. */
-#define BLT_VERSION_STRING   "1.01.00"
+#define BLT_VERSION_STRING   "1.02.00"
 
 
 /****************************************************************************************
@@ -117,7 +118,8 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
    */
   assert(sessionType == BLT_SESSION_XCP_V10);
   assert( (transportType == BLT_TRANSPORT_XCP_V10_RS232) || \
-          (transportType == BLT_TRANSPORT_XCP_V10_CAN) );
+          (transportType == BLT_TRANSPORT_XCP_V10_CAN) || \
+          (transportType == BLT_TRANSPORT_XCP_V10_USB) );
 
   /* Initialize the correct session. */
   if (sessionType == BLT_SESSION_XCP_V10) /*lint !e774 */
@@ -169,25 +171,40 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
       }
       else if (transportType == BLT_TRANSPORT_XCP_V10_CAN)
       {
-        /* Cast transport settings to the correct type. */
-        tBltTransportSettingsXcpV10Can * bltTransportSettingsXcpV10CanPtr;
-        bltTransportSettingsXcpV10CanPtr = 
-          (tBltTransportSettingsXcpV10Can * )transportSettings;
-        /* Convert transport settings to the format supported by the XCP CAN transport
-          * layer. It was made static to make sure it doesn't get out of scope when
-          * used in xcpLoaderSettings.
-          */
-        static tXcpTpCanSettings xcpTpCanSettings;
-        xcpTpCanSettings.device = bltTransportSettingsXcpV10CanPtr->deviceName;
-        xcpTpCanSettings.channel = bltTransportSettingsXcpV10CanPtr->deviceChannel;
-        xcpTpCanSettings.baudrate = bltTransportSettingsXcpV10CanPtr->baudrate;
-        xcpTpCanSettings.transmitId = bltTransportSettingsXcpV10CanPtr->transmitId;
-        xcpTpCanSettings.receiveId = bltTransportSettingsXcpV10CanPtr->receiveId;
-        xcpTpCanSettings.useExtended = (bltTransportSettingsXcpV10CanPtr->useExtended != 0);
+        /* Verify transportSettings parameters because the XCP CAN transport layer 
+         * requires them.
+         */
+        assert(transportSettings != NULL);
+        /* Only continue if the transportSettings parameter is valid. */
+        if (transportSettings != NULL) /*lint !e774 */
+        {
+          /* Cast transport settings to the correct type. */
+          tBltTransportSettingsXcpV10Can * bltTransportSettingsXcpV10CanPtr;
+          bltTransportSettingsXcpV10CanPtr =
+            (tBltTransportSettingsXcpV10Can *)transportSettings;
+          /* Convert transport settings to the format supported by the XCP CAN transport
+            * layer. It was made static to make sure it doesn't get out of scope when
+            * used in xcpLoaderSettings.
+            */
+          static tXcpTpCanSettings xcpTpCanSettings;
+          xcpTpCanSettings.device = bltTransportSettingsXcpV10CanPtr->deviceName;
+          xcpTpCanSettings.channel = bltTransportSettingsXcpV10CanPtr->deviceChannel;
+          xcpTpCanSettings.baudrate = bltTransportSettingsXcpV10CanPtr->baudrate;
+          xcpTpCanSettings.transmitId = bltTransportSettingsXcpV10CanPtr->transmitId;
+          xcpTpCanSettings.receiveId = bltTransportSettingsXcpV10CanPtr->receiveId;
+          xcpTpCanSettings.useExtended = (bltTransportSettingsXcpV10CanPtr->useExtended != 0);
+          /* Store transport layer settings in the XCP loader settings. */
+          xcpLoaderSettings.transportSettings = &xcpTpCanSettings;
+          /* Link the transport layer to the XCP loader settings. */
+          xcpLoaderSettings.transport = XcpTpCanGetTransport();
+        }
+      }
+      else if (transportType == BLT_TRANSPORT_XCP_V10_USB)
+      {
         /* Store transport layer settings in the XCP loader settings. */
-        xcpLoaderSettings.transportSettings = &xcpTpCanSettings;
+        xcpLoaderSettings.transportSettings = NULL;
         /* Link the transport layer to the XCP loader settings. */
-        xcpLoaderSettings.transport = XcpTpCanGetTransport();
+        xcpLoaderSettings.transport = XcpTpUsbGetTransport();
       }
       /* Perform actual session initialization. */
       SessionInit(XcpLoaderGetProtocol(), &xcpLoaderSettings);

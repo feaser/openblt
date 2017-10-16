@@ -73,6 +73,7 @@ const
   // Transport layer for the XCP v1.0 protocol that uses Controller Area Network (CAN)
   // for data exchange.
   BLT_TRANSPORT_XCP_V10_CAN: LongWord = 1;
+  BLT_TRANSPORT_XCP_V10_USB: LongWord = 2;
 
 type
   // Structure layout of the XCP version 1.0 session settings.

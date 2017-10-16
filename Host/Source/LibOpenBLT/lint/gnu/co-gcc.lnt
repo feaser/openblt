@@ -179,6 +179,7 @@ size-options.lnt // This .lnt file should be generated (preferrably
 -elib(93)     // allow newlines within quoted string arguments to macros
 -elib(46)     // allow bit fields to have integral types other than
               // '_Bool' and 'int'.
+-elibsym(793) // suppress warning about limit of 31 significant characters
 -elibsym(628) // Suppress 628 for __builtin symbols.
 
 -esym(528,__huge_val,__nan,__qnan,__qnanf,__snan,__snanf)

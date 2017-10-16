@@ -160,8 +160,13 @@ int main(int argc, char const * const argv[])
                                                                   appTransportType);
     /* Extract the firmware filename from the command line. */
     appFirmwareFile = ExtractFirmwareFileFromCommandLine(argc, argv);
+    /* Note that the transport settings are allowed to be NULL in case of 
+     * BLT_TRANSPORT_XCP_V10_USB. 
+     */
+    bool appTransportSettingsOkay = (appTransportType == BLT_TRANSPORT_XCP_V10_USB) ?
+      true : (appTransportSettings != NULL);
     /* Check the settings that were detected so far. */
-    if ( (appSessionSettings == NULL) || (appTransportSettings == NULL) ||
+    if ( (appSessionSettings == NULL) || (!appTransportSettingsOkay) ||
         (appFirmwareFile == NULL) )
     {
       /* Display program info */
@@ -430,7 +435,7 @@ int main(int argc, char const * const argv[])
 static void DisplayProgramInfo(void)
 {
   printf("--------------------------------------------------------------------------\n");
-  printf("BootCommander version 1.01. Performs firmware updates on a microcontroller\n");
+  printf("BootCommander version 1.02. Performs firmware updates on a microcontroller\n");
   printf("based system that runs the OpenBLT bootloader.\n\n");
   printf("Copyright (c) 2017 by Feaser  http://www.feaser.com\n");
   printf("-------------------------------------------------------------------------\n");
@@ -454,6 +459,7 @@ static void DisplayProgramUsage(void)
   printf("  -t=[name]        Name of the communication transport layer:\n");
   printf("                     xcp_rs232 (default) -> XCP on RS232.\n");
   printf("                     xcp_can             -> XCP on CAN.\n");
+  printf("                     xcp_usb             -> XCP on USB.\n");
   printf("\n");                   
   printf("XCP version 1.0 settings (xcp):\n");
   printf("  -t1=[timeout]    Command response timeout in milliseconds as a 16-bit\n");
@@ -502,6 +508,9 @@ static void DisplayProgramUsage(void)
   printf("                   as 29-bit CAN identifiers, if this 8-bit value is > 0\n");
   printf("                   (Default = 0).\n");
   printf("\n");                   
+  printf("XCP on USB settings (xcp_usb):\n");
+  printf("  No additional settings needed.\n");
+  printf("\n");  
   printf("Program settings:\n");
   printf("  -sm              Silent mode switch. When specified, only minimal\n");
   printf("                   information is written to the output (Optional).\n");
@@ -594,6 +603,9 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
     case BLT_TRANSPORT_XCP_V10_CAN:
       printf("XCP on CAN\n");
       break;
+    case BLT_TRANSPORT_XCP_V10_USB:
+      printf("XCP on USB\n");
+      break;
     default:
       printf("Unknown\n");
       break;
@@ -669,6 +681,11 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
           printf("No\n");
         }
       }
+      break;
+    }
+    case BLT_TRANSPORT_XCP_V10_USB:
+    {
+      printf("  -> No additional settings required.\n");
       break;
     }
     default:
@@ -956,7 +973,8 @@ static uint32_t ExtractTransportTypeFromCommandLine(int argc, char const * const
   } transportMap[] =
   {
     { .name = "xcp_rs232", .value = BLT_TRANSPORT_XCP_V10_RS232 },
-    { .name = "xcp_can", .value = BLT_TRANSPORT_XCP_V10_CAN }
+    { .name = "xcp_can", .value = BLT_TRANSPORT_XCP_V10_CAN },
+    { .name = "xcp_usb", .value = BLT_TRANSPORT_XCP_V10_USB }
   };
   
   /* Set the default transport type in case nothing was specified on the command line. */
@@ -1157,6 +1175,12 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
             }
           }
         }
+        break;
+      /* -------------------------- XCP on USB --------------------------------------- */
+      case BLT_TRANSPORT_XCP_V10_USB:
+        /* No additional command line parameters are neede for the USB transport
+         * layer. 
+         */
         break;
       /* -------------------------- Unknown ------------------------------------------ */
       default:
