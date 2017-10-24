@@ -245,7 +245,7 @@ static bool CanUsbConnect(void)
     result = true;
     /* Set the reception callback function. */
     if (CanUsbLibFuncSetReceiveCallBack(canUsbCanHandle, 
-                                        CanUsbLibReceiveCallback) <= 0)
+                               (LPFNDLL_RECEIVE_CALLBACK)CanUsbLibReceiveCallback) <= 0)
     {
       result = false;
     }

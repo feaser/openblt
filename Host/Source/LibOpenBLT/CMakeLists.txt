@@ -63,10 +63,8 @@ option(LINT_ENABLED "Configurable to enable/disable the PC-lint target" OFF)
 # Set the port directory, which is platform specific
 if(WIN32)
   set(PROJECT_PORT_DIR ${PROJECT_SOURCE_DIR}/port/windows)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
 elseif(UNIX)
   set(PROJECT_PORT_DIR ${PROJECT_SOURCE_DIR}/port/linux)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -pthread -std=gnu99")
 endif(WIN32)
 
 # Set the output directory
@@ -83,6 +81,20 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_OUTPUT_DIRECTORY} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_OUTPUT_DIRECTORY} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+
+#****************************************************************************************
+# Compiler flags
+#****************************************************************************************
+# Set platform specific compiler macro PLATFORM_XXX
+if(WIN32)
+  if(CMAKE_C_COMPILER_ID MATCHES GNU)  
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS -std=gnu99")
+  elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
+  endif()
+elseif(UNIX)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -pthread -std=gnu99")
+endif(WIN32)
 
 
 #***************************************************************************************

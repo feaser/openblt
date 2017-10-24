@@ -71,9 +71,13 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 #****************************************************************************************
 # Set platform specific compiler macro PLATFORM_XXX
 if(WIN32)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
+  if(CMAKE_C_COMPILER_ID MATCHES GNU)  
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS -std=gnu99")
+  elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
+  endif()
 elseif(UNIX)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -std=gnu99")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -pthread -std=gnu99")
 endif(WIN32)
 
 
