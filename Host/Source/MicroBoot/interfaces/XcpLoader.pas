@@ -365,7 +365,7 @@ begin
     // create ini file object
     settingsIni := TIniFile.Create(iniFile);
 
-    FSeedKeyDll := settingsIni.ReadString('xcp', 'seedkey', ExtractFilePath(ParamStr(0))+'FeaserKey.dll');
+    FSeedKeyDll := settingsIni.ReadString('xcp', 'seedkey', ExtractFilePath(ParamStr(0))+'libseednkey.dll');
 
     // if no path specified, then assume dll is located in the executable's path
     if ExtractFilePath(FSeedKeyDll) = '' then
