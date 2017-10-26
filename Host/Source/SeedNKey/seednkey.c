@@ -85,7 +85,7 @@ LIBOPENBLT_EXPORT uint32_t XCP_ComputeKeyFromSeed(uint8_t resource, uint8_t seed
 
                                                   
 /************************************************************************************//**
-** \brief     Computes the key for the requested resource.
+** \brief     Obtains a bitmask of the resources for which an key algorithm is available.
 ** \param     resourcePtr pointer where to store the supported resources for the key 
 **                        computation.
 ** \return    XCP_RESULT_OK on success, otherwise XCP_RESULT_ERROR.

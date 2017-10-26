@@ -136,7 +136,9 @@ add_executable(
 if(CMAKE_C_COMPILER_ID MATCHES GNU)
   # According to the CMake docs, item names starting with '-', but not '-l' or 
   # '-framework', are treated as linker flags. This means "-Wl" type linker flags can be
-  # specified here.
+  # specified here. Use this to add the path of the executable to the library search 
+  # path. This way the LibOpenBLT shared library can simply be in the same directory as
+  # the BootCommander executable.
   target_link_libraries(BootCommander ${LIBOPENBLT_LIBNAME} "-Wl,-rpath,.")
 elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
   target_link_libraries(BootCommander ${LIBOPENBLT_LIBNAME})

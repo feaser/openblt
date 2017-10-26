@@ -33,8 +33,11 @@
 #include <stdint.h>                         /* for standard integer types              */
 #include <stddef.h>                         /* for NULL declaration                    */
 #include <stdbool.h>                        /* for boolean type                        */
+#include <stdlib.h>                         /* for standard library                    */
+#include <string.h>                         /* for string library                      */
 #include "session.h"                        /* Communication session module            */
 #include "xcploader.h"                      /* XCP loader module                       */
+#include "xcpprotect.h"                     /* XCP protection module                   */
 
 
 /****************************************************************************************
@@ -42,6 +45,9 @@
 ****************************************************************************************/
 /* XCP command codes as defined by the protocol currently supported by this module */
 #define XCPLOADER_CMD_CONNECT         (0xFFu)    /**< XCP connect command code.        */
+#define XCPLOADER_CMD_GET_STATUS      (0xFDu)    /**< XCP get status command code.     */
+#define XCPLOADER_CMD_GET_SEED        (0xF8u)    /**< XCP get seed command code.       */
+#define XCPLOADER_CMD_UNLOCK          (0xF7u)    /**< XCP unlock command code.         */
 #define XCPLOADER_CMD_SET_MTA         (0xF6u)    /**< XCP set mta command code.        */
 #define XCPLOADER_CMD_UPLOAD          (0xF5u)    /**< XCP upload command code.         */
 #define XCPLOADER_CMD_PROGRAM_START   (0xD2u)    /**< XCP program start command code.  */
@@ -73,8 +79,14 @@ static bool XcpLoaderWriteData(uint32_t address, uint32_t len, uint8_t const * d
 static bool XcpLoaderReadData(uint32_t address, uint32_t len, uint8_t * data);
 /* General module specific utility functions. */
 static void XcpLoaderSetOrderedLong(uint32_t value, uint8_t *data);
+static uint16_t XcpLoaderGetOrderedWord(uint8_t const * data);
 /* XCP command functions. */
 static bool XcpLoaderSendCmdConnect(void);
+static bool XcpLoaderSendCmdGetStatus(uint8_t * session, uint8_t * protectedResources,
+                                      uint16_t * configId);
+static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t * seed, uint8_t * seedLen);
+static bool XcpLoaderSendCmdUnlock(uint8_t const * key, uint8_t keyLen,
+                                   uint8_t * protectedResources);
 static bool XcpLoaderSendCmdSetMta(uint32_t address);
 static bool XcpLoaderSendCmdUpload(uint8_t * data, uint8_t length);
 static bool XcpLoaderSendCmdProgramStart(void);
@@ -143,6 +155,8 @@ tSessionProtocol const * XcpLoaderGetProtocol(void)
 ****************************************************************************************/
 static void XcpLoaderInit(void const * settings)
 {
+  char * seedNKeyFileName;
+
   /* Initialize locals. */
   xcpConnected = false;
   xcpSlaveIsIntel = false;
@@ -150,14 +164,39 @@ static void XcpLoaderInit(void const * settings)
   xcpMaxProgCto = 0;
   xcpMaxDto = 0;
 
+  /* Reset the XCP session layer settings. */
+  xcpSettings.timeoutT1 = 1000;
+  xcpSettings.timeoutT3 = 2000;
+  xcpSettings.timeoutT4 = 10000;
+  xcpSettings.timeoutT5 = 1000;
+  xcpSettings.timeoutT7 = 2000;
+  xcpSettings.connectMode = 0;
+  xcpSettings.seedKeyFile = NULL;
+  xcpSettings.transport = NULL;
+  xcpSettings.transportSettings = NULL;
+
   /* Check parameter. */
   assert(settings != NULL);
-  
   /* Only continue with valid parameter. */
   if (settings != NULL) /*lint !e774 */
   {
     /* shallow copy the XCP settings for later usage */
     xcpSettings = *(tXcpLoaderSettings *)settings;
+
+    /* The seedKeyFile is a pointer and it is not guaranteed that it stays valid so we
+     * need to deep copy this one. note the +1 for '\0' in malloc. Note that it is okay
+     * for this value to be NULL.
+     */
+    if (((tXcpLoaderSettings *)settings)->seedKeyFile != NULL) /*lint !e774 */
+    {
+      seedNKeyFileName = malloc(strlen(((tXcpLoaderSettings *)settings)->seedKeyFile) + 1);
+      assert(seedNKeyFileName != NULL);
+      if (seedNKeyFileName != NULL) /*lint !e774 */
+      {
+        strcpy(seedNKeyFileName, ((tXcpLoaderSettings *)settings)->seedKeyFile);
+        xcpSettings.seedKeyFile = seedNKeyFileName;
+      }
+    }
     /* Check that a valid transport layer was specified. */
     assert(xcpSettings.transport != NULL);
     /* Only access the transport layer if it is valid. */
@@ -171,6 +210,8 @@ static void XcpLoaderInit(void const * settings)
      */
     xcpSettings.transportSettings = NULL;
   }
+  /* Initialize the XCP protection module. */
+  XcpProtectInit(xcpSettings.seedKeyFile);
 } /*** end of XcpLoaderInit ***/
 
 
@@ -183,6 +224,8 @@ static void XcpLoaderTerminate(void)
   /* Make sure a valid transport layer is linked. */
   assert(xcpSettings.transport != NULL);
   
+  /* Terminate the XCP protection module. */
+  XcpProtectTerminate();
   /* Only continue with a valid transport layer. */
   if (xcpSettings.transport != NULL) /*lint !e774 */
   {
@@ -193,6 +236,21 @@ static void XcpLoaderTerminate(void)
     /* Unlink the transport layer. */
     xcpSettings.transport = NULL;
   }
+  /* Release memory that was allocated for storing the seedKeyFile. */
+  if (xcpSettings.seedKeyFile != NULL)
+  {
+    free((char *)xcpSettings.seedKeyFile);
+  }
+  /* Reset the XCP session layer settings. */
+  xcpSettings.timeoutT1 = 1000;
+  xcpSettings.timeoutT3 = 2000;
+  xcpSettings.timeoutT4 = 10000;
+  xcpSettings.timeoutT5 = 1000;
+  xcpSettings.timeoutT7 = 2000;
+  xcpSettings.connectMode = 0;
+  xcpSettings.seedKeyFile = NULL;
+  xcpSettings.transport = NULL;
+  xcpSettings.transportSettings = NULL;
 } /*** end of XcpLoaderTerminate ***/
 
 
@@ -206,6 +264,7 @@ static bool XcpLoaderStart(void)
 {
   bool result = false;
   uint8_t retryCnt;
+  uint8_t protectedResources = 0;
 
   /* Make sure a valid transport layer is linked. */
   assert(xcpSettings.transport != NULL);
@@ -248,7 +307,79 @@ static bool XcpLoaderStart(void)
         result = false;
       }
     }
-    
+    /* Obtain the current resource protection status. */
+    if (result)
+    {
+      if (!XcpLoaderSendCmdGetStatus(NULL, &protectedResources, NULL))
+      {
+        result = false;
+      }
+    }
+    /* Check if the programming resource needs to be unlocked. */
+    if ( (protectedResources & XCPPROTECT_RESOURCE_PGM) != 0)
+    {
+      uint8_t availableResources = 0;
+      uint8_t seed[XCPLOADER_PACKET_SIZE_MAX-2] = { 0 };
+      uint8_t seedLen = 0;
+      uint8_t key[XCPLOADER_PACKET_SIZE_MAX-2] = { 0 };
+      uint8_t keyLen = 0;
+      /* Make sure the XCP protection module contains an unlock algorithm for the
+       * programming resource.
+       */
+      if (result)
+      {
+        if (!XcpProtectGetPrivileges(&availableResources))
+        {
+          /* Could not obtain the supported resource privileges from the XCP protection
+           * module.
+           */
+          result = false;
+        }
+        else if ((availableResources & XCPPROTECT_RESOURCE_PGM) == 0)
+        {
+          /* No unlock algorithm available for the programming resource in the XCP
+           * protection module.
+           */
+          result = false;
+        }
+      }
+      /* Request the seed for unlocking the programming resources. */
+      if (result)
+      {
+        if (!XcpLoaderSendCmdGetSeed(XCPPROTECT_RESOURCE_PGM, seed, &seedLen))
+        {
+          result = false;
+        }
+      }
+      /* Only continue with resource unlock operation if not already unlocked, which
+       * is indicated by a seed length of 0.
+       */
+      if ( (result) && (seedLen > 0) )
+      {
+        /* Compute the key using the XCP protection module. */
+        if (!XCPProtectComputeKeyFromSeed(XCPPROTECT_RESOURCE_PGM, seedLen, seed,
+                                          &keyLen, key))
+        {
+          result = false;
+        }
+        /* Unlock the resource now that the key is available. */
+        if (result)
+        {
+          uint8_t currentlyProtectedResources = 0;
+          /* Send the key to unlock the resource. */
+          if (!XcpLoaderSendCmdUnlock(key, keyLen, &currentlyProtectedResources))
+          {
+            result = false;
+          }
+          /* Double-check that the programming resource is now unlocked. */
+          else if ((currentlyProtectedResources & XCPPROTECT_RESOURCE_PGM) != 0)
+          {
+            /* Programming resource unlock operation failed. */
+            result = false;
+          }
+        }
+      }
+    }
     /* Place the target in programming mode if connected. */
     if (result)
     {
@@ -509,6 +640,39 @@ static void XcpLoaderSetOrderedLong(uint32_t value, uint8_t *data)
 
 
 /************************************************************************************//**
+** \brief     Obtains a 16-bit value from a byte buffer taking into account Intel
+**            or Motorola byte ordering.
+** \param     data Array to the buffer with the word value stored as bytes.
+** \return    The 16-bit value.
+**
+****************************************************************************************/
+static uint16_t XcpLoaderGetOrderedWord(uint8_t const * data)
+{
+  uint16_t result = 0;
+
+  /* Check parameters. */
+  assert(data != NULL);
+
+  /* Only continue with valid parameters. */
+  if (data != NULL) /*lint !e774 */
+  {
+    if (xcpSlaveIsIntel)
+    {
+      result |= (uint16_t)data[0];
+      result |= (uint16_t)(data[1] << 8);
+    }
+    else
+    {
+      result |= (uint16_t)data[1];
+      result |= (uint16_t)(data[0] << 8);
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of XcpLoaderGetOrderedWord ***/
+
+
+/************************************************************************************//**
 ** \brief     Sends the XCP Connect command.
 ** \return    True if successful, false otherwise.
 **
@@ -590,6 +754,226 @@ static bool XcpLoaderSendCmdConnect(void)
   /* Give the result back to the caller. */
   return result;
 } /*** end of XcpLoaderSendCmdConnect ***/
+
+
+/************************************************************************************//**
+** \brief     Sends the XCP Get Status command. Note that it is okay to specify a NULL
+**            value for the parameters if you are not interested in a particular one.
+** \param     session Current session status.
+** \param     protectedResources Current resource protection status.
+** \param     configId Session configuration identifier.
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+static bool XcpLoaderSendCmdGetStatus(uint8_t * session, uint8_t * protectedResources,
+                                      uint16_t * configId)
+{
+  bool result = false;
+  tXcpTransportPacket cmdPacket;
+  tXcpTransportPacket resPacket;
+
+  /* Make sure a valid transport layer is linked. */
+  assert(xcpSettings.transport != NULL);
+
+  /* Only continue with a valid transport layer. */
+  if (xcpSettings.transport != NULL) /*lint !e774 */
+  {
+    /* Init the result value to okay and only set it to error when a problem occurred. */
+    result = true;
+    /* Prepare the command packet. */
+    cmdPacket.data[0] = XCPLOADER_CMD_GET_STATUS;
+    cmdPacket.len = 1;
+    /* Send the packet. */
+    if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket,
+                                           xcpSettings.timeoutT1))
+    {
+      /* Could not send packet or receive response within the specified timeout. */
+      result = false;
+    }
+    /* Only continue if a response was received. */
+    if (result)
+    {
+      /* Check if the response was valid. */
+      if ( (resPacket.len != 6) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      {
+        /* Not a valid or positive response. */
+        result = false;
+      }
+    }
+    /* Extract and store the received status information. */
+    if (result)
+    {
+      /* Store the current session status. */
+      if (session != NULL)
+      {
+        *session = resPacket.data[1];
+      }
+      /* Store the current resource protection status. */
+      if (protectedResources != NULL)
+      {
+        *protectedResources = resPacket.data[2];
+      }
+      /* Store the session configuration id. */
+      if (configId != NULL)
+      {
+        *configId = XcpLoaderGetOrderedWord(&resPacket.data[4]);
+      }
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of XcpLoaderSendCmdGetStatus ***/
+
+
+/************************************************************************************//**
+** \brief     Sends the XCP Get Seed command.
+** \param     resource The resource to unlock (XCPPROTECT_RESOURCE_xxx).
+** \param     seed Pointer to byte array where the received seed is stored.
+** \param     seedLen Length of the seed in bytes.
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t * seed, uint8_t * seedLen)
+{
+  bool result = false;
+  tXcpTransportPacket cmdPacket;
+  tXcpTransportPacket resPacket;
+
+  /* Make sure a valid transport layer is linked and that the parameters are valid. */
+  assert(xcpSettings.transport != NULL);
+  assert(seed != NULL);
+  assert(seedLen != NULL);
+
+  /* Only continue with a valid transport layer and parameters. */
+  if ( (xcpSettings.transport != NULL) && (seed != NULL) &&
+       (seedLen != NULL) ) /*lint !e774 */
+  {
+    /* Only continue with a valid resource value. */
+    if ( (resource == XCPPROTECT_RESOURCE_PGM) ||
+         (resource == XCPPROTECT_RESOURCE_STIM)||
+         (resource == XCPPROTECT_RESOURCE_DAQ) ||
+         (resource == XCPPROTECT_RESOURCE_CALPAG))
+    {
+      /* Init the result value to okay and only set it to error when a problem
+       * occurred.
+       */
+      result = true;
+      /* Prepare the command packet. */
+      cmdPacket.data[0] = XCPLOADER_CMD_GET_SEED;
+      /* Always use mode 0 because only seeds up to 48-bit are supported currently.
+       * This fits in 6-bytes, making it work with the all currently supported transport
+       * layers. CAN is the limiting one, because the max packet length is 8-bytes for
+       * this transport layer.
+       */
+      cmdPacket.data[1] = 0;
+      cmdPacket.data[2] = resource;
+      cmdPacket.len = 3;
+      /* Send the packet. */
+      if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket,
+                                             xcpSettings.timeoutT1))
+      {
+        /* Could not send packet or receive response within the specified timeout. */
+        result = false;
+      }
+      /* Only continue if a response was received. */
+      if (result)
+      {
+        /* Check if the response was valid. */
+        if ( (resPacket.len <= 2) || (resPacket.len > xcpMaxCto) ||
+             (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+        {
+          /* Not a valid or positive response. */
+          result = false;
+        }
+      }
+      /* Extract and store the seed. */
+      if (result)
+      {
+        /* Make sure the seed length is valid. */
+        if (resPacket.data[1] > (xcpMaxCto - 2))
+        {
+          result = false;
+        }
+        else
+        {
+          /* Store the seed length. */
+          *seedLen = resPacket.data[1];
+          /* Store the seed. */
+          for (uint8_t idx = 0; idx < *seedLen; idx++)
+          {
+            seed[idx] = resPacket.data[idx + 2];
+          }
+        }
+      }
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of XcpLoaderSendCmdGetSeed ***/
+
+
+/************************************************************************************//**
+** \brief     Sends the XCP Unlock command.
+** \param     key Pointer to a byte array containing the key.
+** \param     keyLen The length of the key in bytes.
+** \param     protectedResources Current resource protection status.
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+static bool XcpLoaderSendCmdUnlock(uint8_t const * key, uint8_t keyLen,
+                                   uint8_t * protectedResources)
+{
+  bool result = false;
+  tXcpTransportPacket cmdPacket;
+  tXcpTransportPacket resPacket;
+
+  /* Make sure a valid transport layer is linked and that the parameters are valid. */
+  assert(xcpSettings.transport != NULL);
+  assert(key != NULL);
+  assert(keyLen > 0);
+  assert(keyLen < (xcpMaxCto - 2));
+  assert(protectedResources != NULL);
+
+  /* Only continue with a valid transport layer and parameters. */
+  if ( (xcpSettings.transport != NULL) && (key != NULL) && (keyLen > 0) &&
+       (keyLen < (xcpMaxCto - 2)) && (protectedResources != NULL) ) /*lint !e774 */
+  {
+    /* Init the result value to okay and only set it to error when a problem occurred. */
+    result = true;
+    /* Prepare the command packet. */
+    cmdPacket.data[0] = XCPLOADER_CMD_UNLOCK;
+    cmdPacket.data[1] = keyLen;
+    for (uint8_t idx = 0; idx < keyLen; idx++)
+    {
+      cmdPacket.data[idx + 2] = key[idx];
+    }
+    cmdPacket.len = keyLen + 2;
+    /* Send the packet. */
+    if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket,
+                                           xcpSettings.timeoutT1))
+    {
+      /* Could not send packet or receive response within the specified timeout. */
+      result = false;
+    }
+    /* Only continue if a response was received. */
+    if (result)
+    {
+      /* Check if the response was valid. */
+      if ( (resPacket.len != 2) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      {
+        /* Not a valid or positive response. */
+        result = false;
+      }
+    }
+    /* Store the current resource protection status. */
+    if (result)
+    {
+      *protectedResources = resPacket.data[1];
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of XcpLoaderSendCmdUnlock ***/
 
 
 /************************************************************************************//**

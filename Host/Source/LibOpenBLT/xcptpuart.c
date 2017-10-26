@@ -108,7 +108,7 @@ static void XcpTpUartInit(void const * settings)
   {
     /* Shallow copy the transport layer settings for layer usage. */
     tpUartSettings = *((tXcpTpUartSettings *)settings);
-    /* The portname is a pointer and it is not gauranteed that it stays valid so we need
+    /* The portname is a pointer and it is not guaranteed that it stays valid so we need
      * to deep copy this one. note the +1 for '\0' in malloc.
      */
     assert(((tXcpTpUartSettings *)settings)->portname != NULL);

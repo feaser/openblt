@@ -144,8 +144,8 @@ set(
 # Only generate the static library taget if the option is enabled. Use 
 # "make openblt_static" to individually build the static library. 
 # Note that when you link your own application to the static library of LibOpenBLT under
-# Unix, you need to also link the LibUsb library by adding usb-1.0 to the linker library
-# dependencies.
+# Unix, you need to also link the LibUsb and LibDL libraries by adding usb-1.0 and dl to
+# the linker library dependencies.
 if(BUILD_STATIC)
   add_library(openblt_static STATIC ${LIB_SRCS})
   SET_TARGET_PROPERTIES(openblt_static PROPERTIES OUTPUT_NAME openblt CLEAN_DIRECT_OUTPUT 1)
@@ -160,7 +160,13 @@ if(BUILD_SHARED)
     # Make sure the libusb-1.0-0 and  libusb-1.0-0-dev packages are installed to be able to
     # build LibOpenBLT. Example under Debian/Ubuntu:
     #   sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev
-    target_link_libraries(openblt_shared usb-1.0)
+    # Additionally, the LibDL is needed for dynamic library loading.
+    # According to the CMake docs, item names starting with '-', but not '-l' or 
+    # '-framework', are treated as linker flags. This means "-Wl" type linker flags can be
+    # specified here. Use this to add the path of the shared library to the library search 
+    # path. This way an (optional) seed and key shared library file can simply be in the
+    # same directory as the LibOpenBLT shared library.
+    target_link_libraries(openblt_shared usb-1.0 dl "-Wl,-rpath,.")
   endif(UNIX)  
   if(CMAKE_C_COMPILER_ID MATCHES MSVC)
     # Microsoft Visual Studio does not add "lib" to the name of the DLL, whereas GCC

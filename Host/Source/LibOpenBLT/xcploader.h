@@ -94,6 +94,8 @@ typedef struct t_xcp_loader_settings
   uint16_t timeoutT7;     
   /** \brief Connection mode used in the XCP connect command. */
   uint8_t connectMode;
+  /** \brief Seed/key algorithm library filename. */
+  char const * seedKeyFile;
   /** \brief Pointer to the transport layer to use during protocol communications. */
   tXcpTransport const * transport;
   /** \brief Pointer to the settings for the transport layer. */
