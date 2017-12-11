@@ -431,7 +431,7 @@ int main(int argc, char const * const argv[])
 static void DisplayProgramInfo(void)
 {
   printf("--------------------------------------------------------------------------\n");
-  printf("BootCommander version 1.02. Performs firmware updates on a microcontroller\n");
+  printf("BootCommander version 1.03. Performs firmware updates on a microcontroller\n");
   printf("based system that runs the OpenBLT bootloader.\n\n");
   printf("Copyright (c) 2017 by Feaser  http://www.feaser.com\n");
   printf("-------------------------------------------------------------------------\n");
