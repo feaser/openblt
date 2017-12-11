@@ -168,6 +168,9 @@ if(BUILD_SHARED)
     # path. This way an (optional) seed and key shared library file can simply be in the
     # same directory as the LibOpenBLT shared library.
     target_link_libraries(openblt_shared usb-1.0 dl "-Wl,-rpath,.")
+  elseif(WIN32)
+    # Link the Winsock library
+    target_link_libraries(openblt_shared ws2_32)
   endif(UNIX)  
   if(CMAKE_C_COMPILER_ID MATCHES MSVC)
     # Microsoft Visual Studio does not add "lib" to the name of the DLL, whereas GCC
@@ -176,8 +179,6 @@ if(BUILD_SHARED)
   else()
     SET_TARGET_PROPERTIES(openblt_shared PROPERTIES OUTPUT_NAME openblt CLEAN_DIRECT_OUTPUT 1)
   endif()
-    # Link the Winsock library
-    target_link_libraries(openblt_shared ws2_32)
 endif(BUILD_SHARED)
 
 # Only generate the PC-lint taget if the option is enabled. Use "make openblt_LINT" to 
