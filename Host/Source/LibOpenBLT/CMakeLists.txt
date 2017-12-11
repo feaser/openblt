@@ -145,7 +145,8 @@ set(
 # "make openblt_static" to individually build the static library. 
 # Note that when you link your own application to the static library of LibOpenBLT under
 # Unix, you need to also link the LibUsb and LibDL libraries by adding usb-1.0 and dl to
-# the linker library dependencies.
+# the linker library dependencies. Under Windows, you need to also link the Winsock
+# library by adding ws2_32 to the linker library dependencies. 
 if(BUILD_STATIC)
   add_library(openblt_static STATIC ${LIB_SRCS})
   SET_TARGET_PROPERTIES(openblt_static PROPERTIES OUTPUT_NAME openblt CLEAN_DIRECT_OUTPUT 1)
@@ -175,6 +176,8 @@ if(BUILD_SHARED)
   else()
     SET_TARGET_PROPERTIES(openblt_shared PROPERTIES OUTPUT_NAME openblt CLEAN_DIRECT_OUTPUT 1)
   endif()
+    # Link the Winsock library
+    target_link_libraries(openblt_shared ws2_32)
 endif(BUILD_SHARED)
 
 # Only generate the PC-lint taget if the option is enabled. Use "make openblt_LINT" to 

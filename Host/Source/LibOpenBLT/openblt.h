@@ -108,6 +108,11 @@ LIBOPENBLT_EXPORT char const * BltVersionGetString(void);
  */
 #define BLT_TRANSPORT_XCP_V10_USB      ((uint32_t)2u)
 
+/** \brief Transport layer for the XCP v1.0 protocol that uses TCP/IP for data
+ *         exchange.
+ */
+#define BLT_TRANSPORT_XCP_V10_NET      ((uint32_t)3u)
+
 
 /****************************************************************************************
 * Type definitions
@@ -159,6 +164,17 @@ typedef struct t_blt_transport_settings_xcp_v10_can
   uint32_t receiveId;            /**< Receive CAN identifier.                          */
   uint32_t useExtended;          /**< Boolean to configure 29-bit CAN identifiers.     */
 } tBltTransportSettingsXcpV10Can;
+
+/** \brief Structure layout of the XCP version 1.0 RS232 transport layer settings. The
+ *         portName field is platform dependent. On Linux based systems this should be
+ *         the filename of the tty-device, such as "/dev/tty0". On Windows based systems
+ *         it should be the name of the COM-port, such as "COM1".
+ */
+typedef struct t_blt_transport_settings_xcp_v10_net
+{
+  char const * address;          /**< Target IP-address or hostname on the network.    */
+  uint16_t port;                 /**< TCP port to use.                                 */
+} tBltTransportSettingsXcpV10Net;
 
 
 /****************************************************************************************

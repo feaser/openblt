@@ -227,7 +227,7 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
   bool result = false;
   uint16_t byteIdx;
   /* uartBuffer is static to lower the stack load. +1 because the first byte for an XCP 
-   * packet on the UART transport layer contains the packet lenght. 
+   * packet on the UART transport layer contains the packet length.
    */
   static uint8_t uartBuffer[XCPLOADER_PACKET_SIZE_MAX + 1]; 
   uint32_t responseTimeoutTime = 0;

@@ -41,6 +41,7 @@
 #include "xcptpuart.h"                      /* XCP UART transport layer                */
 #include "xcptpcan.h"                       /* XCP CAN transport layer                 */
 #include "xcptpusb.h"                       /* XCP USB transport layer                 */
+#include "xcptpnet.h"                       /* XCP TCP/IP transport layer              */
 
 
 /****************************************************************************************
@@ -119,7 +120,8 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
   assert(sessionType == BLT_SESSION_XCP_V10);
   assert( (transportType == BLT_TRANSPORT_XCP_V10_RS232) || \
           (transportType == BLT_TRANSPORT_XCP_V10_CAN) || \
-          (transportType == BLT_TRANSPORT_XCP_V10_USB) );
+          (transportType == BLT_TRANSPORT_XCP_V10_USB) || \
+          (transportType == BLT_TRANSPORT_XCP_V10_NET) );
 
   /* Initialize the correct session. */
   if (sessionType == BLT_SESSION_XCP_V10) /*lint !e774 */
@@ -206,6 +208,32 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
         xcpLoaderSettings.transportSettings = NULL;
         /* Link the transport layer to the XCP loader settings. */
         xcpLoaderSettings.transport = XcpTpUsbGetTransport();
+      }
+      else if (transportType == BLT_TRANSPORT_XCP_V10_NET)
+      {
+        /* Verify transportSettings parameters because the XCP NET transport layer
+         * requires them.
+         */
+        assert(transportSettings != NULL);
+        /* Only continue if the transportSettings parameter is valid. */
+        if (transportSettings != NULL) /*lint !e774 */
+        {
+          /* Cast transport settings to the correct type. */
+          tBltTransportSettingsXcpV10Net * bltTransportSettingsXcpV10NetPtr;
+          bltTransportSettingsXcpV10NetPtr =
+            (tBltTransportSettingsXcpV10Net * )transportSettings;
+          /* Convert transport settings to the format supported by the XCP NET transport
+           * layer. It was made static to make sure it doesn't get out of scope when
+           * used in xcpLoaderSettings.
+           */
+          static tXcpTpNetSettings xcpTpNetSettings;
+          xcpTpNetSettings.address = bltTransportSettingsXcpV10NetPtr->address;
+          xcpTpNetSettings.port = bltTransportSettingsXcpV10NetPtr->port;
+          /* Store transport layer settings in the XCP loader settings. */
+          xcpLoaderSettings.transportSettings = &xcpTpNetSettings;
+          /* Link the transport layer to the XCP loader settings. */
+          xcpLoaderSettings.transport = XcpTpNetGetTransport();
+        }
       }
       /* Perform actual session initialization. */
       SessionInit(XcpLoaderGetProtocol(), &xcpLoaderSettings);

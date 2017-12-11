@@ -169,10 +169,6 @@ int main(int argc, char const * const argv[])
     if ( (appSessionSettings == NULL) || (!appTransportSettingsOkay) ||
         (appFirmwareFile == NULL) )
     {
-      /* Display program info */
-      DisplayProgramInfo();
-      /* Display program usage. */
-      DisplayProgramUsage();
       /* Set error code. */
       result = RESULT_ERROR_COMMANDLINE;
     }
@@ -460,6 +456,7 @@ static void DisplayProgramUsage(void)
   printf("                     xcp_rs232 (default) -> XCP on RS232.\n");
   printf("                     xcp_can             -> XCP on CAN.\n");
   printf("                     xcp_usb             -> XCP on USB.\n");
+  printf("                     xcp_net             -> XCP on TCP/IP.\n");
   printf("\n");                   
   printf("XCP version 1.0 settings (xcp):\n");
   printf("  -t1=[timeout]    Command response timeout in milliseconds as a 16-bit\n");
@@ -511,6 +508,12 @@ static void DisplayProgramUsage(void)
   printf("XCP on USB settings (xcp_usb):\n");
   printf("  No additional settings needed.\n");
   printf("\n");  
+  printf("XCP on TCP/IP settings (xcp_net):\n");
+  printf("  -a=[value]       The IP address or hostname of the target to connect to.\n");
+  printf("                   For example 192.168.178.23 (Mandatory).\n");
+  printf("  -p=[value]       The TCP port number to use, as a 16-bit value (Default\n");
+  printf("                   = 1000).\n");
+  printf("\n");
   printf("Program settings:\n");
   printf("  -sm              Silent mode switch. When specified, only minimal\n");
   printf("                   information is written to the output (Optional).\n");
@@ -606,6 +609,9 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
     case BLT_TRANSPORT_XCP_V10_USB:
       printf("XCP on USB\n");
       break;
+    case BLT_TRANSPORT_XCP_V10_NET:
+      printf("XCP on TCP/IP\n");
+      break;
     default:
       printf("Unknown\n");
       break;
@@ -686,6 +692,34 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
     case BLT_TRANSPORT_XCP_V10_USB:
     {
       printf("  -> No additional settings required.\n");
+      break;
+    }
+    case BLT_TRANSPORT_XCP_V10_NET:
+    {
+      /* Check settings pointer. */
+      assert(transportSettings);
+      if (transportSettings == NULL) /*lint !e774 */
+      {
+        /* No valid settings present. */
+        printf("  -> Invalid settings specified\n");
+      }
+      else
+      {
+        tBltTransportSettingsXcpV10Net * xcpNetSettings =
+          (tBltTransportSettingsXcpV10Net *)transportSettings;
+
+        /* Output the settings to the user. */
+        printf("  -> Address: ");
+        if (xcpNetSettings->address != NULL)
+        {
+          printf("%s\n", xcpNetSettings->address);
+        }
+        else
+        {
+          printf("Unknown\n");
+        }
+        printf("  -> Port: %hu \n", xcpNetSettings->port);
+      }
       break;
     }
     default:
@@ -974,7 +1008,8 @@ static uint32_t ExtractTransportTypeFromCommandLine(int argc, char const * const
   {
     { .name = "xcp_rs232", .value = BLT_TRANSPORT_XCP_V10_RS232 },
     { .name = "xcp_can", .value = BLT_TRANSPORT_XCP_V10_CAN },
-    { .name = "xcp_usb", .value = BLT_TRANSPORT_XCP_V10_USB }
+    { .name = "xcp_usb", .value = BLT_TRANSPORT_XCP_V10_USB },
+    { .name = "xcp_net", .value = BLT_TRANSPORT_XCP_V10_NET }
   };
   
   /* Set the default transport type in case nothing was specified on the command line. */
@@ -1182,6 +1217,49 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
          * layer. 
          */
         break;
+        /* -------------------------- XCP on TCP/IP ---------------------------------- */
+        case BLT_TRANSPORT_XCP_V10_NET:
+          /* The following transport layer specific command line parameters are supported:
+           *   -a=[value]     -> The IP address or hostname of the target to connect to.
+           *   -p=[value]     -> The TCP port number to use.
+           */
+          /* Allocate memory for storing the settings and check the result. */
+          result = malloc(sizeof(tBltTransportSettingsXcpV10Net));
+          assert(result != NULL);
+          if (result != NULL) /*lint !e774 */
+          {
+            /* Create typed pointer for easy reading. */
+            tBltTransportSettingsXcpV10Net * netSettings =
+              (tBltTransportSettingsXcpV10Net *)result;
+            /* Set default values. */
+            netSettings->address = NULL;
+            netSettings->port = 1000;
+            /* Loop through all the command line parameters, just skip the 1st one because
+             * this  is the name of the program, which we are not interested in.
+             */
+            for (paramIdx = 1; paramIdx < argc; paramIdx++)
+            {
+              /* Is this the -a=[name] parameter? */
+              if ( (strstr(argv[paramIdx], "-a=") != NULL) &&
+                   (strlen(argv[paramIdx]) > 3) )
+              {
+                /* Store the pointer to the network address. */
+                netSettings->address = &argv[paramIdx][3];
+                /* Continue with next loop iteration. */
+                continue;
+              }
+              /* Is this the -p=[value] parameter? */
+              if ( (strstr(argv[paramIdx], "-p=") != NULL) &&
+                   (strlen(argv[paramIdx]) > 3) )
+              {
+                /* Extract the port value. */
+                sscanf(&argv[paramIdx][3], "%hu", &(netSettings->port));
+                /* Continue with next loop iteration. */
+                continue;
+              }
+            }
+          }
+          break;
       /* -------------------------- Unknown ------------------------------------------ */
       default:
         /* Noting to extract. */
