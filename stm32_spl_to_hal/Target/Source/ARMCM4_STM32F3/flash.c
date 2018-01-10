@@ -30,7 +30,6 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f30x.h"                           /* STM32 registers                    */
 
 
 /****************************************************************************************
@@ -282,11 +281,9 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 blt_bool FlashErase(blt_addr addr, blt_int32u len)
 {
   blt_addr erase_base_addr;
-  blt_addr erase_current_addr;
   blt_int32u total_erase_len;
   blt_int16u nr_of_erase_sectors;
-  blt_int16u sector_cnt;
-  blt_bool result = BLT_TRUE;
+  blt_bool result = BLT_FALSE;
 
   /* determine the base address for the erase operation, by aligning to
    * FLASH_ERASE_SECTOR_SIZE.
@@ -309,41 +306,9 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
     nr_of_erase_sectors++;
   }
 
-  /* unlock the flash array */
-  FLASH_Unlock();
+  /* TODO ##Vg Implement FlashErase() using HAL. */
 
-  /* clear pending flags (if any) */
-  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPERR);
-
-  /* check that the flash peripheral is not busy */
-  if (FLASH_GetStatus() != FLASH_BUSY)
-  {
-    /* erase all sectors one by one */
-    for (sector_cnt=0; sector_cnt<nr_of_erase_sectors; sector_cnt++)
-    {
-      /* keep the watchdog happy */
-      CopService();
-      /* set the sector base address */
-      erase_current_addr = erase_base_addr + (sector_cnt * FLASH_ERASE_SECTOR_SIZE);
-      /* perform flash erase operation for this sector */
-      if (FLASH_ErasePage(erase_current_addr) != FLASH_COMPLETE)
-      {
-        /* flag error and stop erase operation */
-        result = BLT_FALSE;
-        break;
-      }
-    }
-  }
-  else
-  {
-    /* cannot operate on flash when it is already busy */
-    result = BLT_FALSE;
-  }
-
-  /* lock the flash array again */
-  FLASH_Lock();
-
-  /* erase operation complete. return the result to the caller */
+  /* Give the result back to the caller. */
   return result;
 } /*** end of FlashErase ***/
 
@@ -653,10 +618,7 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_addr   prog_addr;
-  blt_int32u prog_data;
-  blt_int32u word_cnt;
-  blt_bool   result = BLT_TRUE;
+  blt_bool   result = BLT_FALSE;
 
 #if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
   #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE == 0)
@@ -674,46 +636,9 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
-  /* unlock the flash array */
-  FLASH_Unlock();
+  /* TODO ##Vg Implement FlashWriteBlock() using HAL. */
 
-  /* clear pending flags (if any) */
-  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPERR);
-
-  /* check that the flash peripheral is not busy */
-  if (FLASH_GetStatus() != FLASH_BUSY)
-  {
-    /* program all words in the block one by one */
-    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
-    {
-      prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
-      prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
-      /* keep the watchdog happy */
-      CopService();
-      /* program the word */
-      if (FLASH_ProgramWord(prog_addr, prog_data) != FLASH_COMPLETE)
-      {
-        result = BLT_FALSE;
-        break;
-      }
-      /* verify that the written data is actually there */
-      if (*(volatile blt_int32u *)prog_addr != prog_data)
-      {
-        result = BLT_FALSE;
-        break;
-      }
-    }
-  }
-  else
-  {
-    /* cannot operate on flash when it is already busy */
-    result = BLT_FALSE;
-  }
-
-  /* lock the flash array again */
-  FLASH_Lock();
-
-  /* write operation complete. return the result to the caller */
+  /* Give the result back to the caller. */
   return result;
 } /*** end of FlashWriteBlock ***/
 

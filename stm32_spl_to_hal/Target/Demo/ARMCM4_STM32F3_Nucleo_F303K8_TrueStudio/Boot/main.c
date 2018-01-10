@@ -30,7 +30,6 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f30x.h"                           /* STM32 registers and drivers        */
 
 
 /****************************************************************************************
@@ -71,64 +70,16 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
+  /* TODO ##Vg Initialize the LED output. */
 
-  /* enable the GPIO_LED Clock */
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-
-  /* configure the GPIO_LED pin */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-  /* turn the LED off */
-  GPIO_ResetBits(GPIOB, GPIO_Pin_3);
-
-  /* configure the D1 (PA9) pin as digital input for backdoor entry */
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  /* TODO ##Vg Initialize the backdoor entry input. */
 
 #if (BOOT_COM_UART_ENABLE > 0)
-  /* enable UART peripheral clock */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-  /* enable GPIO peripheral clock for transmitter and receiver pins */
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-  /* connect the pin to the peripherals alternate function */
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_7);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource15, GPIO_AF_7);
-  /* configure USART Tx as alternate function  */
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-  /* configure USART Rx as alternate function */
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  /* TODO ##Vg Configure the UART GPIO. */
 #endif
 
 #if (BOOT_COM_CAN_ENABLE > 0)
-  /* enable clocks for CAN1 transmitter and receiver pins */
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-  /* select alternate function for the CAN1 pins */
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_9);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_9);
-  /* configure CAN1 RX and TX pins */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-  /* enable CAN1 clock */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
+  /* TODO ##Vg Configure the UART GPIO. */
 #endif
 } /*** end of Init ***/
 

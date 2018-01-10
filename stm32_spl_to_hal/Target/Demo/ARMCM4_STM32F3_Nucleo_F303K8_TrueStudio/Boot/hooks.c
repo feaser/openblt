@@ -31,35 +31,6 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* LED driver header                  */
-#include "stm32f30x.h"                           /* STM32 registers and drivers        */
-
-
-/****************************************************************************************
-*   B A C K D O O R   E N T R Y   H O O K   F U N C T I O N S
-****************************************************************************************/
-
-#if (BOOT_BACKDOOR_HOOKS_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Initializes the backdoor entry option.
-** \return    none.
-**
-****************************************************************************************/
-void BackDoorInitHook(void)
-{
-} /*** end of BackDoorInitHook ***/
-
-
-/************************************************************************************//**
-** \brief     Checks if a backdoor entry is requested.
-** \return    BLT_TRUE if the backdoor entry is requested, BLT_FALSE otherwise.
-**
-****************************************************************************************/
-blt_bool BackDoorEntryHook(void)
-{
-  /* default implementation always activates the bootloader after a reset */
-  return BLT_TRUE;
-} /*** end of BackDoorEntryHook ***/
-#endif /* BOOT_BACKDOOR_HOOKS_ENABLE > 0 */
 
 
 /****************************************************************************************
@@ -81,10 +52,12 @@ blt_bool CpuUserProgramStartHook(void)
   /* clean up the LED driver */
   LedBlinkExit();
 
+  /* TODO ##Vg Check if PA9 == 0 for backdoor entry. */
+
   /* additional and optional backdoor entry through the D1 digital input on the board. to
    * force the bootloader to stay active after reset, connect D1 to ground.
    */
-  if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_9) == Bit_RESET)
+  if (/*GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_9) == Bit_RESET*/1==0)
   {
     /* pushbutton pressed, so do not start the user program and keep the
      * bootloader active instead.
@@ -136,6 +109,34 @@ void CopServiceHook(void)
   LedBlinkTask();
 } /*** end of CopServiceHook ***/
 #endif /* BOOT_COP_HOOKS_ENABLE > 0 */
+
+
+/****************************************************************************************
+*   B A C K D O O R   E N T R Y   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_BACKDOOR_HOOKS_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Initializes the backdoor entry option.
+** \return    none.
+**
+****************************************************************************************/
+void BackDoorInitHook(void)
+{
+} /*** end of BackDoorInitHook ***/
+
+
+/************************************************************************************//**
+** \brief     Checks if a backdoor entry is requested.
+** \return    BLT_TRUE if the backdoor entry is requested, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+blt_bool BackDoorEntryHook(void)
+{
+  /* default implementation always activates the bootloader after a reset */
+  return BLT_TRUE;
+} /*** end of BackDoorEntryHook ***/
+#endif /* BOOT_BACKDOOR_HOOKS_ENABLE > 0 */
 
 
 /****************************************************************************************

@@ -101,7 +101,11 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the timer */
   TimerReset();
+  /* TODO ##Vg Maybe call a HAL deinit type function to reset all peripherals. */
   /* remap user program's vector table */
+  /* TODO ##Vg Perhaps I can use existing HAL macros or functions for the vector table
+   *           remapping.
+   */
   SCB_VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of
    * the 2nd entry in the user program's vector table. this address points to the

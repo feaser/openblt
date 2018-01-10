@@ -30,7 +30,6 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f30x.h"                           /* STM32 registers                    */
 
 
 /****************************************************************************************
@@ -52,12 +51,8 @@ void TimerInit(void)
   /* reset the timer configuration */
   TimerReset();
 
-  /* configure the systick frequency as a 1 ms event generator */
-  SysTick->LOAD = BOOT_CPU_SYSTEM_SPEED_KHZ - 1;
-  /* reset the current counter value */
-  SysTick->VAL = 0;
-  /* select core clock as source and enable the timer */
-  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
+  /* TODO ##Vg Configure system tick for 1 milliseconds events in polling mode. */
+
   /* reset the millisecond counter value */
   millisecond_counter = 0;
 } /*** end of TimerInit ***/
@@ -71,8 +66,7 @@ void TimerInit(void)
 ****************************************************************************************/
 void TimerReset(void)
 {
-  /* set the systick's status and control register back into the default reset value */
-  SysTick->CTRL = 0;
+  /* TODO ##Vg Reset the system tick peripheral into default reset mode. */
 } /* end of TimerReset */
 
 
@@ -83,12 +77,9 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* check if the millisecond event occurred */
-  if ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) != 0)
-  {
-    /* increment the millisecond counter */
-    millisecond_counter++;
-  }
+  /* TODO ##Vg Check if a millisecond passed and if so update the counter. */
+  /* increment the millisecond counter */
+  //millisecond_counter++;
 } /*** end of TimerUpdate ***/
 
 
