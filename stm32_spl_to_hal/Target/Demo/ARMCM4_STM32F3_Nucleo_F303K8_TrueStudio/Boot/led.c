@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* module header                      */
+#include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -70,14 +71,12 @@ void LedBlinkTask(void)
     if (ledOn == BLT_FALSE)
     {
       ledOn = BLT_TRUE;
-      /* TODO ##Vg PB3 = 1 to turn LED on. */
-      //GPIO_SetBits(GPIOB, GPIO_Pin_3);
+      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
     }
     else
     {
       ledOn = BLT_FALSE;
-      /* TODO ##Vg PB3 = 0 to turn LED off. */
-      //GPIO_ResetBits(GPIOB, GPIO_Pin_3);
+      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
     }
     /* schedule the next blink event */
     nextBlinkEvent = TimerGet() + ledBlinkIntervalMs;
@@ -94,8 +93,7 @@ void LedBlinkTask(void)
 void LedBlinkExit(void)
 {
   /* turn the LED off */
-  /* TODO ##Vg PB3 = 0 to turn LED off. */
-  //GPIO_ResetBits(GPIOB, GPIO_Pin_3);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
 } /*** end of LedBlinkExit ***/
 
 

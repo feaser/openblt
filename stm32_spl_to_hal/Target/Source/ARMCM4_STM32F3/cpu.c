@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -101,7 +102,8 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the timer */
   TimerReset();
-  /* TODO ##Vg Maybe call a HAL deinit type function to reset all peripherals. */
+  /* reset the HAL */
+  HAL_DeInit();
   /* remap user program's vector table */
   /* TODO ##Vg Perhaps I can use existing HAL macros or functions for the vector table
    *           remapping.

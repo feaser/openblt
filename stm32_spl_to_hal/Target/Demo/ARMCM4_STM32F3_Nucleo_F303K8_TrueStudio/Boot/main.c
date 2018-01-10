@@ -30,12 +30,14 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+static void SystemClock_Config(void);
 
 
 /************************************************************************************//**
@@ -70,18 +72,109 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  /* TODO ##Vg Initialize the LED output. */
-
-  /* TODO ##Vg Initialize the backdoor entry input. */
+  /* HAL library initialization */
+  HAL_Init();
+  /* configure system clock */
+  SystemClock_Config();
 
 #if (BOOT_COM_UART_ENABLE > 0)
-  /* TODO ##Vg Configure the UART GPIO. */
+  /* TODO ##Vg Configure the UART GPIO. Still will probably and up in an MSP function. */
 #endif
 
 #if (BOOT_COM_CAN_ENABLE > 0)
-  /* TODO ##Vg Configure the UART GPIO. */
+  /* TODO ##Vg Configure the UART GPIO. Still will probably and up in an MSP function. */
 #endif
 } /*** end of Init ***/
+
+
+/************************************************************************************//**
+** \brief     System Clock Configuration. This code was created by CubeMX and configures
+**            the system clock to match the configuration in the bootloader's
+**            configuration (blt_conf.h), specifically the macros:
+**            BOOT_CPU_SYSTEM_SPEED_KHZ and BOOT_CPU_XTAL_SPEED_KHZ.
+** \return    none.
+**
+****************************************************************************************/
+static void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+
+  /* Initializes the CPU, AHB and APB busses clocks. */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = 16;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    /* Initialization error. */
+    ASSERT_RT(BLT_FALSE);
+  }
+
+  /* Initializes the CPU, AHB and APB busses clocks. */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  {
+    /* Initialization error. */
+    ASSERT_RT(BLT_FALSE);
+  }
+} /*** end of SystemClock_Config ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the Global MSP. This function is called from HAL_Init()
+**            function to perform system level initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspInit(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* GPIO Ports Clock Enable. */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /* Configure GPIO pin for the LED. */
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
+
+  /* Configure GPIO pin for (optional) backdoor entry input. */
+  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+} /*** end of HAL_MspInit ***/
+
+
+/************************************************************************************//**
+** \brief     DeInitializes the Global MSP. This function is called from HAL_DeInit()
+**            function to perform system level de-initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspDeInit(void)
+{
+  /* Deconfigure GPIO pin for (optional) backdoor entry input. */
+  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9);
+
+  /* Deconfigure GPIO pin for the LED. */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_3);
+} /*** end of HAL_MspDeInit ***/
 
 
 /*********************************** end of main.c *************************************/

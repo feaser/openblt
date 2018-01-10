@@ -283,7 +283,7 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
   blt_addr erase_base_addr;
   blt_int32u total_erase_len;
   blt_int16u nr_of_erase_sectors;
-  blt_bool result = BLT_FALSE;
+  blt_bool result = BLT_TRUE;
 
   /* determine the base address for the erase operation, by aligning to
    * FLASH_ERASE_SECTOR_SIZE.
@@ -618,7 +618,7 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_bool   result = BLT_FALSE;
+  blt_bool   result = BLT_TRUE;
 
 #if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
   #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE == 0)

@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* LED driver header                  */
+#include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -52,12 +53,10 @@ blt_bool CpuUserProgramStartHook(void)
   /* clean up the LED driver */
   LedBlinkExit();
 
-  /* TODO ##Vg Check if PA9 == 0 for backdoor entry. */
-
   /* additional and optional backdoor entry through the D1 digital input on the board. to
    * force the bootloader to stay active after reset, connect D1 to ground.
    */
-  if (/*GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_9) == Bit_RESET*/1==0)
+  if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3) == GPIO_PIN_RESET)
   {
     /* pushbutton pressed, so do not start the user program and keep the
      * bootloader active instead.
