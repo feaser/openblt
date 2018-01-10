@@ -177,4 +177,45 @@ void HAL_MspDeInit(void)
 } /*** end of HAL_MspDeInit ***/
 
 
+/************************************************************************************//**
+** \brief     UART MSP Init.
+** \param     huart Pointer to a UART_HandleTypeDef structure that contains the
+**            configuration information for the specified UART module.
+** \return    none.
+**
+****************************************************************************************/
+void HAL_UART_MspInit(UART_HandleTypeDef* huart)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* Peripheral clock enable. */
+  __HAL_RCC_USART2_CLK_ENABLE();
+
+  /* UART TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+} /*** end of HAL_UART_MspInit ***/
+
+
+/************************************************************************************//**
+** \brief     UART MSP DeInit.
+** \param     huart Pointer to a UART_HandleTypeDef structure that contains  the
+**            configuration information for the specified UART module.
+** \return    none.
+**
+****************************************************************************************/
+void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
+{
+  /* Peripheral clock disable. */
+  __HAL_RCC_USART2_CLK_DISABLE();
+
+  /* Reset UART GPIO pin configuration. */
+  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2|GPIO_PIN_15);
+} /*** end of HAL_UART_MspDeInit ***/
+
+
 /*********************************** end of main.c *************************************/

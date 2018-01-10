@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
 
 
 #if (BOOT_COM_UART_ENABLE > 0)
@@ -40,6 +41,26 @@
  *         reception of the first packet byte.
  */
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+/** \brief Timeout for transmitting a byte. */
+#define UART_TX_TIMEOUT_MS            (5u)
+/* map the configured UART channel index to the STM32's USART peripheral */
+#if (BOOT_COM_UART_CHANNEL_INDEX == 0)
+/** \brief Set UART base address to USART1. */
+#define USART_CHANNEL   USART1
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 1)
+/** \brief Set UART base address to USART2. */
+#define USART_CHANNEL   USART2
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 2)
+/** \brief Set UART base address to USART3. */
+#define USART_CHANNEL   USART3
+#endif
+
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief UART handle to be used in API calls. */
+static UART_HandleTypeDef uartHandle;
 
 
 /****************************************************************************************
@@ -56,7 +77,25 @@ static void     UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  /* TODO ##Vg Implement UartInit() using HAL. */
+  HAL_StatusTypeDef result;
+  
+  /* the current implementation supports USART1 - USART5. throw an assertion error in
+   * case a different UART channel is configured.
+   */
+  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) ||
+            (BOOT_COM_UART_CHANNEL_INDEX == 1) ||
+            (BOOT_COM_UART_CHANNEL_INDEX == 2));
+  /* configure UART peripheral */
+  uartHandle.Instance        = USART_CHANNEL;
+  uartHandle.Init.BaudRate   = BOOT_COM_UART_BAUDRATE;
+  uartHandle.Init.WordLength = UART_WORDLENGTH_8B;
+  uartHandle.Init.StopBits   = UART_STOPBITS_1;
+  uartHandle.Init.Parity     = UART_PARITY_NONE;
+  uartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+  uartHandle.Init.Mode       = UART_MODE_TX_RX;
+  /* initialize the UART peripheral */
+  result = HAL_UART_Init(&uartHandle);
+  ASSERT_RT(result == HAL_OK); 
 } /*** end of UartInit ***/
 
 
@@ -162,12 +201,18 @@ blt_bool UartReceivePacket(blt_int8u *data)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
-  blt_bool result = BLT_FALSE;
+  HAL_StatusTypeDef result;
 
-  /* TODO ##Vg Implement UartReceiveByte() using HAL. */
-
-  /* Give the result back to the caller. */
-  return result;
+  /* receive a byte in a non-blocking manner */  
+  result = HAL_UART_Receive(&uartHandle, data, 1, 0);
+  /* process the result */
+  if (result == HAL_OK)
+  {
+    /* success */
+    return BLT_TRUE;
+  }
+  /* error occurred */
+  return BLT_FALSE;
 } /*** end of UartReceiveByte ***/
 
 
@@ -179,7 +224,8 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static void UartTransmitByte(blt_int8u data)
 {
-  /* TODO ##Vg Implement UartTransmitByte() using HAL. */
+  /* submit byte for transmission */
+  HAL_UART_Transmit(&uartHandle, &data, 1, UART_TX_TIMEOUT_MS);
 } /*** end of UartTransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 

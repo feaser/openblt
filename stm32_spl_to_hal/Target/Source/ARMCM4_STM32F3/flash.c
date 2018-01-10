@@ -143,7 +143,7 @@ static const tFlashSector flashLayout[] =
   /* { 0x08000800, 0x00800 },           flash sector  1 - 2kb (reserved for bootloader)*/
   /* { 0x08001000, 0x00800 },           flash sector  2 - 2kb (reserved for bootloader)*/
   /* { 0x08001800, 0x00800 },           flash sector  3 - 2kb (reserved for bootloader)*/
-  { 0x08002000, 0x00800 },              /* flash sector  4 - 2kb                       */
+  /* { 0x08002000, 0x00800 },           flash sector  4 - 2kb (reserved for bootloader)*/
   { 0x08002800, 0x00800 },              /* flash sector  5 - 2kb                       */
   { 0x08003000, 0x00800 },              /* flash sector  6 - 2kb                       */
   { 0x08003800, 0x00800 },              /* flash sector  7 - 2kb                       */
