@@ -43,13 +43,6 @@
 
 
 /****************************************************************************************
-* Register definitions
-****************************************************************************************/
-/** \brief Vector table offset register. */
-#define SCB_VTOR    (*((volatile blt_int32u *) 0xE000ED08))
-
-
-/****************************************************************************************
 * Hook functions
 ****************************************************************************************/
 #if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
@@ -105,10 +98,7 @@ void CpuStartUserProgram(void)
   /* reset the HAL */
   HAL_DeInit();
   /* remap user program's vector table */
-  /* TODO ##Vg Perhaps I can use existing HAL macros or functions for the vector table
-   *           remapping.
-   */
-  SCB_VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
+  SCB->VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of
    * the 2nd entry in the user program's vector table. this address points to the
    * user program's reset handler.

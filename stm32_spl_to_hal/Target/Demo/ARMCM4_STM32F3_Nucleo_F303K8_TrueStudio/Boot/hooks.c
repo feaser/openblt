@@ -56,7 +56,7 @@ blt_bool CpuUserProgramStartHook(void)
   /* additional and optional backdoor entry through the D1 digital input on the board. to
    * force the bootloader to stay active after reset, connect D1 to ground.
    */
-  if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3) == GPIO_PIN_RESET)
+  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9) == GPIO_PIN_RESET)
   {
     /* pushbutton pressed, so do not start the user program and keep the
      * bootloader active instead.

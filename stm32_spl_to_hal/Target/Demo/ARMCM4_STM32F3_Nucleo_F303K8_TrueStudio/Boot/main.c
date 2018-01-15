@@ -76,14 +76,6 @@ static void Init(void)
   HAL_Init();
   /* configure system clock */
   SystemClock_Config();
-
-#if (BOOT_COM_UART_ENABLE > 0)
-  /* TODO ##Vg Configure the UART GPIO. Still will probably and up in an MSP function. */
-#endif
-
-#if (BOOT_COM_CAN_ENABLE > 0)
-  /* TODO ##Vg Configure the UART GPIO. Still will probably and up in an MSP function. */
-#endif
 } /*** end of Init ***/
 
 

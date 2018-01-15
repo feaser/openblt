@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -77,7 +78,9 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Flash sector descriptor type. */
+/** \brief Flash sector descriptor type. Note that in this driver the word sector is
+ *         synonym to the word page, which is used in the HAL driver.
+ */
 typedef struct
 {
   blt_addr   sector_start;                       /**< sector start address             */
@@ -283,6 +286,9 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
   blt_addr erase_base_addr;
   blt_int32u total_erase_len;
   blt_int16u nr_of_erase_sectors;
+  blt_int32u pageError = 0;
+  blt_int16u sector_idx;
+  FLASH_EraseInitTypeDef eraseInitStruct;
   blt_bool result = BLT_TRUE;
 
   /* determine the base address for the erase operation, by aligning to
@@ -306,7 +312,34 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
     nr_of_erase_sectors++;
   }
 
-  /* TODO ##Vg Implement FlashErase() using HAL. */
+  /* prepare the erase initialization structure. */
+  eraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
+  eraseInitStruct.PageAddress = erase_base_addr;
+  eraseInitStruct.NbPages     = 1;
+
+  /* unlock the flash peripheral to enable the flash control register access. */
+  HAL_FLASH_Unlock();
+
+  /* loop through all sectors to erase them one by one. the HAL supports erasing multiple
+   * pages with one function call, but then the watchdog can't be updated in between.
+   */
+  for (sector_idx = 0; sector_idx < nr_of_erase_sectors; sector_idx++)
+  {
+    /* keep the watchdog happy */
+    CopService();
+    /* erase the sector. */
+    if (HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&pageError) != HAL_OK)
+    {
+      /* flag error and stop erase operation */
+      result = BLT_FALSE;
+      break;
+    }
+    /* update the page base address for the next sector. */
+    eraseInitStruct.PageAddress += FLASH_ERASE_SECTOR_SIZE;
+  }
+
+  /* lock the flash peripheral to disable the flash control register access. */
+  HAL_FLASH_Lock();
 
   /* Give the result back to the caller. */
   return result;
@@ -618,6 +651,9 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
+  blt_addr   prog_addr;
+  blt_int32u prog_data;
+  blt_int32u word_cnt;
   blt_bool   result = BLT_TRUE;
 
 #if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
@@ -636,7 +672,32 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
-  /* TODO ##Vg Implement FlashWriteBlock() using HAL. */
+  /* unlock the flash peripheral to enable the flash control register access. */
+  HAL_FLASH_Unlock();
+
+  /* program all words in the block one by one */
+  for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+  {
+    prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
+    prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+    /* keep the watchdog happy */
+    CopService();
+    /* program the word */
+    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, prog_addr, prog_data) != HAL_OK)
+    {
+      result = BLT_FALSE;
+      break;
+    }
+    /* verify that the written data is actually there */
+    if (*(volatile blt_int32u *)prog_addr != prog_data)
+    {
+      result = BLT_FALSE;
+      break;
+    }
+  }
+
+  /* lock the flash peripheral to disable the flash control register access. */
+  HAL_FLASH_Lock();
 
   /* Give the result back to the caller. */
   return result;
