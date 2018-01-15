@@ -70,7 +70,7 @@
  *
  */
 /** \brief Enable/disable CAN transport layer. */
-#define BOOT_COM_CAN_ENABLE             (0)
+#define BOOT_COM_CAN_ENABLE             (1)
 /** \brief Configure the desired CAN baudrate. */
 #define BOOT_COM_CAN_BAUDRATE           (500000)
 /** \brief Configure CAN message ID target->host. */
@@ -93,7 +93,7 @@
  *
  */
 /** \brief Enable/disable UART transport layer. */
-#define BOOT_COM_UART_ENABLE            (1)
+#define BOOT_COM_UART_ENABLE            (0)
 /** \brief Configure the desired communication speed. */
 #define BOOT_COM_UART_BAUDRATE          (57600)
 /** \brief Configure number of bytes in the target->host data packet. */
