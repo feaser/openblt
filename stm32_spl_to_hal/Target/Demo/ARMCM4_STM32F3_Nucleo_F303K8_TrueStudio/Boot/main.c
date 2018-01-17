@@ -31,6 +31,12 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f3xx_ll_rcc.h"                    /* STM32 LL RCC header                */
+#include "stm32f3xx_ll_bus.h"                    /* STM32 LL BUS header                */
+#include "stm32f3xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
+#include "stm32f3xx_ll_utils.h"                  /* STM32 LL UTILS header              */
+#include "stm32f3xx_ll_usart.h"                  /* STM32 LL USART header              */
+#include "stm32f3xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
 /****************************************************************************************
@@ -84,39 +90,51 @@ static void Init(void)
 **            the system clock to match the configuration in the bootloader's
 **            configuration (blt_conf.h), specifically the macros:
 **            BOOT_CPU_SYSTEM_SPEED_KHZ and BOOT_CPU_XTAL_SPEED_KHZ.
+**            Note that the Lower Layer drivers were selected in CubeMX for the RCC
+**            subsystem.
 ** \return    none.
 **
 ****************************************************************************************/
 static void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-
-  /* Initializes the CPU, AHB and APB busses clocks. */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = 16;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  /* Set flash latency. */
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_2);
+  /* Verify flash latency setting. */
+  if(LL_FLASH_GetLatency() != LL_FLASH_LATENCY_2)
   {
-    /* Initialization error. */
+    /* Error setting flash latency. */
     ASSERT_RT(BLT_FALSE);
   }
 
-  /* Initializes the CPU, AHB and APB busses clocks. */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  /* Enable the HSI clock. */
+  LL_RCC_HSI_Enable();
+   /* Wait till HSI is ready */
+  while(LL_RCC_HSI_IsReady() != 1)
   {
-    /* Initialization error. */
-    ASSERT_RT(BLT_FALSE);
+    ;
   }
+  LL_RCC_HSI_SetCalibTrimming(16);
+
+  /* Configure and enable the PLL. */
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI_DIV_2, LL_RCC_PLL_MUL_16);
+  LL_RCC_PLL_Enable();
+  /* Wait till PLL is ready */
+  while(LL_RCC_PLL_IsReady() != 1)
+  {
+    ;
+  }
+  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
+  LL_RCC_SetAPB2Prescaler(LL_RCC_APB1_DIV_1);
+  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
+  /* Wait till System clock is ready */
+  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
+  {
+    ;
+  }
+
+  /* Update the system clock speed setting. */
+  LL_SetSystemCoreClock(BOOT_CPU_SYSTEM_SPEED_KHZ * 1000u);
 } /*** end of SystemClock_Config ***/
 
 
@@ -129,25 +147,61 @@ static void SystemClock_Config(void)
 ****************************************************************************************/
 void HAL_MspInit(void)
 {
-  GPIO_InitTypeDef GPIO_InitStruct;
+  LL_GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* SYSCFG clock enable. */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
 
   /* GPIO ports clock enable. */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+
+#if (BOOT_COM_UART_ENABLE > 0)
+  /* UART clock enable. */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2);
+#endif
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock enable. */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_CAN);
+#endif
 
   /* Configure GPIO pin for the LED. */
-  GPIO_InitStruct.Pin = GPIO_PIN_3;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_3);
 
   /* Configure GPIO pin for (optional) backdoor entry input. */
-  GPIO_InitStruct.Pin = GPIO_PIN_9;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_9;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+#if (BOOT_COM_UART_ENABLE > 0)
+  /* UART TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_2 | LL_GPIO_PIN_15;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#endif
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_11 | LL_GPIO_PIN_12;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_9;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#endif
 } /*** end of HAL_MspInit ***/
 
 
@@ -160,103 +214,30 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
-  /* Deconfigure GPIO pin for (optional) backdoor entry input. */
-  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9);
+  /* Reset GPIO pin for the LED to turn it off. */
+  LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_3);
 
-  /* Deconfigure GPIO pin for the LED. */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
-  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_3);
+  /* Deinit used GPIOs. */
+  LL_GPIO_DeInit(GPIOB);
+  LL_GPIO_DeInit(GPIOA);
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_CAN);
+#endif
+
+#if (BOOT_COM_UART_ENABLE > 0)
+  /* UART clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USART2);
+#endif
 
   /* GPIO ports clock disable. */
-  __HAL_RCC_GPIOA_CLK_DISABLE();
-  __HAL_RCC_GPIOB_CLK_DISABLE();
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+
+  /* SYSCFG clock disable. */
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
 } /*** end of HAL_MspDeInit ***/
-
-
-/************************************************************************************//**
-** \brief     UART MSP Init.
-** \param     huart Pointer to a UART_HandleTypeDef structure that contains the
-**            configuration information for the specified UART module.
-** \return    none.
-**
-****************************************************************************************/
-void HAL_UART_MspInit(UART_HandleTypeDef* huart)
-{
-#if (BOOT_COM_UART_ENABLE > 0)
-  GPIO_InitTypeDef GPIO_InitStruct;
-
-  /* Peripheral clock enable. */
-  __HAL_RCC_USART2_CLK_ENABLE();
-  /* UART TX and RX GPIO pin configuration. */
-  GPIO_InitStruct.Pin = GPIO_PIN_2 | GPIO_PIN_15;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-#endif /* BOOT_COM_UART_ENABLE > 0 */
-} /*** end of HAL_UART_MspInit ***/
-
-
-/************************************************************************************//**
-** \brief     UART MSP DeInit.
-** \param     huart Pointer to a UART_HandleTypeDef structure that contains the
-**            configuration information for the specified UART module.
-** \return    none.
-**
-****************************************************************************************/
-void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
-{
-#if (BOOT_COM_UART_ENABLE > 0)
-  /* Reset UART GPIO pin configuration. */
-  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2 | GPIO_PIN_15);
-  /* Peripheral clock disable. */
-  __HAL_RCC_USART2_CLK_DISABLE();
-#endif /* BOOT_COM_UART_ENABLE > 0 */
-} /*** end of HAL_UART_MspDeInit ***/
-
-
-/************************************************************************************//**
-** \brief     CAN MSP Init.
-** \param     hcan Pointer to a CAN_HandleTypeDef structure that contains the
-**            configuration information for the specified CAN module.
-** \return    none.
-**
-****************************************************************************************/
-void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
-{
-#if (BOOT_COM_CAN_ENABLE > 0)
-  GPIO_InitTypeDef GPIO_InitStruct;
-
-  /* Peripheral clock enable. */
-  __HAL_RCC_CAN1_CLK_ENABLE();
-  /* CAN TX and RX GPIO pin configuration. */
-  GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF9_CAN;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-#endif /* BOOT_COM_CAN_ENABLE > 0 */
-} /*** end of HAL_CAN_MspInit ***/
-
-
-/************************************************************************************//**
-** \brief     CAN MSP DeInit.
-** \param     hcan Pointer to a CAN_HandleTypeDef structure that contains the
-**            configuration information for the specified CAN module.
-** \return    none.
-**
-****************************************************************************************/
-void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan)
-{
-#if (BOOT_COM_CAN_ENABLE > 0)
-  /* Reset CAN GPIO pin configuration. */
-  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11 | GPIO_PIN_12);
-  /* Peripheral clock enable. */
-  __HAL_RCC_CAN1_CLK_DISABLE();
-#endif /* BOOT_COM_CAN_ENABLE > 0 */
-} /*** end of HAL_CAN_MspDeInit ***/
 
 
 /*********************************** end of main.c *************************************/

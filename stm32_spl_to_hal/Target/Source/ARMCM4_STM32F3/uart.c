@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f3xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
 #if (BOOT_COM_UART_ENABLE > 0)
@@ -57,13 +58,6 @@
 
 
 /****************************************************************************************
-* Local data declarations
-****************************************************************************************/
-/** \brief UART handle to be used in API calls. */
-static UART_HandleTypeDef uartHandle;
-
-
-/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data);
@@ -77,25 +71,26 @@ static void     UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  HAL_StatusTypeDef result;
-  
+  LL_USART_InitTypeDef USART_InitStruct;
+
   /* the current implementation supports USART1 - USART5. throw an assertion error in
    * case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) ||
             (BOOT_COM_UART_CHANNEL_INDEX == 1) ||
             (BOOT_COM_UART_CHANNEL_INDEX == 2));
+
   /* configure UART peripheral */
-  uartHandle.Instance        = USART_CHANNEL;
-  uartHandle.Init.BaudRate   = BOOT_COM_UART_BAUDRATE;
-  uartHandle.Init.WordLength = UART_WORDLENGTH_8B;
-  uartHandle.Init.StopBits   = UART_STOPBITS_1;
-  uartHandle.Init.Parity     = UART_PARITY_NONE;
-  uartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
-  uartHandle.Init.Mode       = UART_MODE_TX_RX;
+  USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
+  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+  USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
+  USART_InitStruct.Parity = LL_USART_PARITY_NONE;
+  USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
+  USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
   /* initialize the UART peripheral */
-  result = HAL_UART_Init(&uartHandle);
-  ASSERT_RT(result == HAL_OK); 
+  LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
+  LL_USART_Enable(USART_CHANNEL);
 } /*** end of UartInit ***/
 
 
@@ -201,17 +196,14 @@ blt_bool UartReceivePacket(blt_int8u *data)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
-  HAL_StatusTypeDef result;
-
-  /* receive a byte in a non-blocking manner */  
-  result = HAL_UART_Receive(&uartHandle, data, 1, 0);
-  /* process the result */
-  if (result == HAL_OK)
+  if (LL_USART_IsActiveFlag_RXNE(USART_CHANNEL) != 0)
   {
-    /* success */
+    /* retrieve and store the newly received byte */
+    *data = LL_USART_ReceiveData8(USART_CHANNEL);
+    /* all done */
     return BLT_TRUE;
   }
-  /* error occurred */
+  /* still here to no new byte received */
   return BLT_FALSE;
 } /*** end of UartReceiveByte ***/
 
@@ -224,8 +216,22 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static void UartTransmitByte(blt_int8u data)
 {
-  /* submit byte for transmission */
-  HAL_UART_Transmit(&uartHandle, &data, 1, UART_TX_TIMEOUT_MS);
+  blt_int32u txTimeoutTime;
+
+  /* Determine timeout time for the transmit operation. */
+  txTimeoutTime = TimerGet() + UART_TX_TIMEOUT_MS;
+  /* write byte to transmit holding register */
+  LL_USART_TransmitData8(USART_CHANNEL, data);
+  /* wait for tx holding register to be empty */
+  while (LL_USART_IsActiveFlag_TXE(USART_CHANNEL) == 0)
+  {
+    /* Check if a timeout occurred to prevent lockup. */
+    if (TimerGet() > txTimeoutTime)
+    {
+      /* Cannot transmit so stop waiting for its completion. */
+      break;
+    }
+  }
 } /*** end of UartTransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 

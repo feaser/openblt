@@ -149,7 +149,7 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
 void CanInit(void)
 {
   blt_int16u prescaler;
-  blt_int8u  tseg1, tseg2;
+  blt_int8u  tseg1 = 0, tseg2 = 0;
   CAN_FilterConfTypeDef filterConfig;
   blt_int32u rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   blt_int32u rxFilterId, rxFilterMask;
