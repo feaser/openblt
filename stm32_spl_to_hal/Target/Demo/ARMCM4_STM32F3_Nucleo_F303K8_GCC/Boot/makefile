@@ -98,9 +98,9 @@ HEAP_SIZE   = 0x0000
 STACK_SIZE  = 0x0100
 STDFLAGS    = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
-OPTFLAGS    = -Og
+OPTFLAGS    = -Os
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-CFLAGS     += -DSTM32F303K8 -DSTM32F334x8 -DUSE_STDPERIPH_DRIVER
+CFLAGS     += -DUSE_HAL_DRIVER -DUSE_FULL_LL_DRIVER -DSTM32F303x8
 CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
