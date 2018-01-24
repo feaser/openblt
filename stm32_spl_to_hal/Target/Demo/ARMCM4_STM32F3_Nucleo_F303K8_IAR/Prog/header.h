@@ -32,7 +32,7 @@
 * Include files
 ****************************************************************************************/
 #include "../Boot/blt_conf.h"                          /* bootloader configuration     */
-#include "stm32f30x.h"                                 /* STM32 registers and drivers  */
+#include "stm32f3xx.h"                                 /* STM32 CPU and HAL header     */
 #include "boot.h"                                      /* bootloader interface driver  */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
