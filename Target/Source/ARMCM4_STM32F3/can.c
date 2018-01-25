@@ -31,95 +31,15 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
 
 
 #if (BOOT_COM_CAN_ENABLE > 0)
 /****************************************************************************************
-* Type definitions
-****************************************************************************************/
-/** \brief CAN transmission mailbox layout. */
-typedef struct
-{
-  volatile blt_int32u TIR;
-  volatile blt_int32u TDTR;
-  volatile blt_int32u TDLR;
-  volatile blt_int32u TDHR;
-} tCanTxMailBox;
-
-/** \brief CAN reception FIFO mailbox layout. */
-typedef struct
-{
-  volatile blt_int32u RIR;
-  volatile blt_int32u RDTR;
-  volatile blt_int32u RDLR;
-  volatile blt_int32u RDHR;
-} tCanRxFIFOMailBox;
-
-/** \brief CAN filter register layout. */
-typedef struct
-{
-  volatile blt_int32u FR1;
-  volatile blt_int32u FR2;
-} tCanFilter;
-
-/** \brief CAN controller register layout. */
-typedef struct
-{
-  volatile blt_int32u MCR;
-  volatile blt_int32u MSR;
-  volatile blt_int32u TSR;
-  volatile blt_int32u RF0R;
-  volatile blt_int32u RF1R;
-  volatile blt_int32u IER;
-  volatile blt_int32u ESR;
-  volatile blt_int32u BTR;
-  blt_int32u          RESERVED0[88];
-  tCanTxMailBox       sTxMailBox[3];
-  tCanRxFIFOMailBox   sFIFOMailBox[2];
-  blt_int32u          RESERVED1[12];
-  volatile blt_int32u FMR;
-  volatile blt_int32u FM1R;
-  blt_int32u          RESERVED2;
-  volatile blt_int32u FS1R;
-  blt_int32u          RESERVED3;
-  volatile blt_int32u FFA1R;
-  blt_int32u          RESERVED4;
-  volatile blt_int32u FA1R;
-  blt_int32u          RESERVED5[8];
-  tCanFilter          sFilterRegister[14];
-} tCanRegs;
-
-
-/****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-/** \brief Reset request bit. */
-#define CAN_BIT_RESET    ((blt_int32u)0x00008000)
-/** \brief Initialization request bit. */
-#define CAN_BIT_INRQ     ((blt_int32u)0x00000001)
-/** \brief Initialization acknowledge bit. */
-#define CAN_BIT_INAK     ((blt_int32u)0x00000001)
-/** \brief Sleep mode request bit. */
-#define CAN_BIT_SLEEP    ((blt_int32u)0x00000002)
-/** \brief Filter 0 selection bit. */
-#define CAN_BIT_FILTER0  ((blt_int32u)0x00000001)
-/** \brief Filter init mode bit. */
-#define CAN_BIT_FINIT    ((blt_int32u)0x00000001)
-/** \brief Transmit mailbox 0 empty bit. */
-#define CAN_BIT_TME0     ((blt_int32u)0x04000000)
-/** \brief Identifier extension bit. */
-#define CAN_BIT_IDE      ((blt_int32u)0x00000004)
-/** \brief Transmit mailbox request bit. */
-#define CAN_BIT_TXRQ     ((blt_int32u)0x00000001)
-/** \brief Release FIFO 0 mailbox bit. */
-#define CAN_BIT_RFOM0    ((blt_int32u)0x00000020)
-
-
-/****************************************************************************************
-* Register definitions
-****************************************************************************************/
-/** \brief Macro for accessing CAN controller registers. */
-#define CANx             ((tCanRegs *) (blt_int32u)0x40006400)
+/** \brief Timeout for transmitting a CAN message in milliseconds. */
+#define CAN_MSG_TX_TIMEOUT_MS          (50u)
 
 
 /****************************************************************************************
@@ -166,6 +86,19 @@ static const tCanBusTiming canTiming[] =
   { 16, 7 },          /*  24 |  16   |   7   | 71% */
   { 16, 8 }           /*  25 |  16   |   8   | 68% */
 };
+
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief CAN handle to be used in API calls. */
+static CAN_HandleTypeDef canHandle;
+
+/** \brief Message buffer for transmitting CAN messages. */
+static CanTxMsgTypeDef canTxMessage;
+
+/** \brief Message buffer for receiving CAN messages. */
+static CanRxMsgTypeDef canRxMessage;
 
 
 /************************************************************************************//**
@@ -216,65 +149,79 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
 void CanInit(void)
 {
   blt_int16u prescaler;
-  blt_int8u  tseg1, tseg2;
-  blt_bool   result;
+  blt_int8u  tseg1 = 0, tseg2 = 0;
+  CAN_FilterConfTypeDef filterConfig;
+  blt_int32u rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  blt_int32u rxFilterId, rxFilterMask;
 
   /* the current implementation supports CAN1. throw an assertion error in case a
    * different CAN channel is configured.
    */
   ASSERT_CT(BOOT_COM_CAN_CHANNEL_INDEX == 0);
-  /* obtain bittiming configuration information */
-  result = CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &tseg1, &tseg2);
-  ASSERT_RT(result == BLT_TRUE);
-  /* disable all can interrupt. this driver works in polling mode */
-  CANx->IER = (blt_int32u)0;
-  /* set request to reset the can controller */
-  CANx->MCR |= CAN_BIT_RESET ;
-  /* wait for acknowledge that the can controller was reset */
-  while ((CANx->MCR & CAN_BIT_RESET) != 0)
+  /* obtain bittiming configuration information. */
+  if (CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &tseg1, &tseg2) == BLT_FALSE)
   {
-    /* keep the watchdog happy */
-    CopService();
+    /* Incorrect configuration. The specified baudrate is not supported for the given
+     * clock configuration. Verify the following settings in blt_conf.h:
+     *   - BOOT_COM_CAN_BAUDRATE
+     *   - BOOT_CPU_XTAL_SPEED_KHZ
+     *   - BOOT_CPU_SYSTEM_SPEED_KHZ
+     */
+    ASSERT_RT(BLT_FALSE);
   }
-  /* exit from sleep mode, which is the default mode after reset */
-  CANx->MCR &= ~CAN_BIT_SLEEP;
-  /* set request to enter initialisation mode */
-  CANx->MCR |= CAN_BIT_INRQ ;
-  /* wait for acknowledge that initialization mode was entered */
-  while ((CANx->MSR & CAN_BIT_INAK) == 0)
+
+  /* set the CAN controller configuration. */
+  canHandle.Instance = CAN;
+  canHandle.pTxMsg = &canTxMessage;
+  canHandle.pRxMsg = &canRxMessage;
+  canHandle.Init.TTCM = DISABLE;
+  canHandle.Init.ABOM = DISABLE;
+  canHandle.Init.AWUM = DISABLE;
+  canHandle.Init.NART = DISABLE;
+  canHandle.Init.RFLM = DISABLE;
+  canHandle.Init.TXFP = DISABLE;
+  canHandle.Init.Mode = CAN_MODE_NORMAL;
+  canHandle.Init.SJW = CAN_SJW_1TQ;
+  canHandle.Init.BS1 = ((blt_int32u)tseg1 - 1) << CAN_BTR_TS1_Pos;
+  canHandle.Init.BS2 = ((blt_int32u)tseg2 - 1) << CAN_BTR_TS2_Pos;
+  canHandle.Init.Prescaler = prescaler;
+  /* initialize the CAN controller. this only fails if the CAN controller hardware is
+   * faulty. no need to evaluate the return value as there is nothing we can do about
+   * a faulty CAN controller.
+   */
+  (void)HAL_CAN_Init(&canHandle);
+  /* determine the reception filter mask and id values such that it only leaves one
+   * CAN identifier through (BOOT_COM_CAN_RX_MSG_ID).
+   */
+  if ((rxMsgId & 0x80000000) == 0)
   {
-    /* keep the watchdog happy */
-    CopService();
+    rxFilterId = rxMsgId << CAN_RI0R_STID_Pos;
+    rxFilterMask = (CAN_RI0R_STID_Msk) | CAN_RI0R_IDE;
   }
-  /* configure the bittming */
-  CANx->BTR = (blt_int32u)((blt_int32u)(tseg1 - 1) << 16) | \
-              (blt_int32u)((blt_int32u)(tseg2 - 1) << 20) | \
-              (blt_int32u)(prescaler - 1);
-  /* set request to leave initialisation mode */
-  CANx->MCR &= ~CAN_BIT_INRQ;
-  /* wait for acknowledge that initialization mode was exited */
-  while ((CANx->MSR & CAN_BIT_INAK) != 0)
+  else
   {
-    /* keep the watchdog happy */
-    CopService();
+    /* negate the ID-type bit */
+    rxMsgId &= ~0x80000000;
+    rxFilterId = (rxMsgId << CAN_RI0R_EXID_Pos) | CAN_RI0R_IDE;
+    rxFilterMask = (CAN_RI0R_EXID_Msk) | CAN_RI0R_IDE;
   }
-  /* enter initialisation mode for the acceptance filter */
-  CANx->FMR |= CAN_BIT_FINIT;
-  /* deactivate filter 0 */
-  CANx->FA1R &= ~CAN_BIT_FILTER0;
-  /* 32-bit scale for the filter */
-  CANx->FS1R |= CAN_BIT_FILTER0;
-  /* open up the acceptance filter to receive all messages */
-  CANx->sFilterRegister[0].FR1 = 0;
-  CANx->sFilterRegister[0].FR2 = 0;
-  /* select id/mask mode for the filter */
-  CANx->FM1R &= ~CAN_BIT_FILTER0;
-  /* FIFO 0 assignation for the filter */
-  CANx->FFA1R &= ~CAN_BIT_FILTER0;
-  /* filter activation */
-  CANx->FA1R |= CAN_BIT_FILTER0;
-  /* leave initialisation mode for the acceptance filter */
-  CANx->FMR &= ~CAN_BIT_FINIT;
+  /* configure the reception filter. note that the implementation of this function
+   * always returns HAL_OK, so no need to evaluate the return value.
+   */
+  filterConfig.FilterNumber = 0;
+  filterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+  filterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+  filterConfig.FilterIdHigh = (rxFilterId >> 16) & 0x0000FFFFu;
+  filterConfig.FilterIdLow = rxFilterId & 0x0000FFFFu;
+  filterConfig.FilterMaskIdHigh = (rxFilterMask >> 16) & 0x0000FFFFu;
+  filterConfig.FilterMaskIdLow = rxFilterMask & 0x0000FFFFu;
+  filterConfig.FilterFIFOAssignment = 0;
+  filterConfig.FilterActivation = ENABLE;
+  /* the bank number is don't care for STM32F3 devices as it only supports one CAN
+   * controller.
+   */
+  filterConfig.BankNumber = 14;
+  (void)HAL_CAN_ConfigFilter(&canHandle, &filterConfig);
 } /*** end of CanInit ***/
 
 
@@ -287,47 +234,35 @@ void CanInit(void)
 ****************************************************************************************/
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
+  blt_int8u byteIdx;
   blt_int32u txMsgId = BOOT_COM_CAN_TX_MSG_ID;
 
-  /* make sure that transmit mailbox 0 is available */
-  ASSERT_RT((CANx->TSR&CAN_BIT_TME0) == CAN_BIT_TME0);
-
-  /* reset all CAN identifier related bits */
-  CANx->sTxMailBox[0].TIR &= CAN_BIT_TXRQ;
-  /* is it a 11-bit standard CAN identifier? */
+  /* configure the message that should be transmitted. */
   if ((txMsgId & 0x80000000) == 0)
   {
-    /* store the 11-bit message identifier */
-    CANx->sTxMailBox[0].TIR |= ((blt_int32u)txMsgId << 21);
+    /* set the 11-bit CAN identifier. */
+    canHandle.pTxMsg->StdId = txMsgId;
+    canHandle.pTxMsg->IDE = CAN_ID_STD;
   }
-  /* it is a 29-bit extended CAN identifier */
   else
   {
     /* negate the ID-type bit */
     txMsgId &= ~0x80000000;
-    /* store the 29-bit message identifier */
-    CANx->sTxMailBox[0].TIR |= (((blt_int32u)txMsgId << 3) | CAN_BIT_IDE);
+    /* set the 29-bit CAN identifier. */
+    canHandle.pTxMsg->ExtId = txMsgId;
+    canHandle.pTxMsg->IDE = CAN_ID_EXT;
   }
-
-  /* store the message date length code (DLC) */
-  CANx->sTxMailBox[0].TDTR = len;
-  /* store the message data bytes */
-  CANx->sTxMailBox[0].TDLR = (((blt_int32u)data[3] << 24) | \
-                              ((blt_int32u)data[2] << 16) | \
-                              ((blt_int32u)data[1] <<  8) | \
-                              ((blt_int32u)data[0]));
-  CANx->sTxMailBox[0].TDHR = (((blt_int32u)data[7] << 24) | \
-                              ((blt_int32u)data[6] << 16) | \
-                              ((blt_int32u)data[5] <<  8) | \
-                              ((blt_int32u)data[4]));
-  /* request the start of message transmission */
-  CANx->sTxMailBox[0].TIR |= CAN_BIT_TXRQ;
-  /* wait for transmit completion */
-  while ((CANx->TSR&CAN_BIT_TME0) == 0)
+  canHandle.pTxMsg->RTR = CAN_RTR_DATA;
+  canHandle.pTxMsg->DLC = len;
+  /* copy the message data. */
+  for (byteIdx = 0; byteIdx < len; byteIdx++)
   {
-    /* keep the watchdog happy */
-    CopService();
+    canHandle.pTxMsg->Data[byteIdx] = data[byteIdx];
   }
+  /* submit the message for transmission. no need to check the return value. if the
+   * response cannot be transmitted, then the receiving node will detect a timeout.
+   */
+  (void)HAL_CAN_Transmit(&canHandle, CAN_MSG_TX_TIMEOUT_MS);
 } /*** end of CanTransmitPacket ***/
 
 
@@ -339,41 +274,51 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool CanReceivePacket(blt_int8u *data)
 {
-  blt_int32u rxMsgId;
-  blt_bool   result = BLT_FALSE;
+  blt_int32u rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  blt_bool result = BLT_FALSE;
+  blt_bool packetIdMatches = BLT_FALSE;
+  blt_int8u byteIdx;
 
-  /* check if a new message was received */
-  if ((CANx->RF0R&(blt_int32u)0x00000003) > 0)
+  /* poll for received CAN messages that await processing. */
+  if (HAL_CAN_Receive(&canHandle, CAN_FIFO0, 0) == HAL_OK)
   {
-    /* read out the CAN identifier */
-    if ((CANx->sFIFOMailBox[0].RIR & CAN_BIT_IDE) == 0)
+    /* check if this message has the configured CAN packet identifier. */
+    if ((rxMsgId & 0x80000000) == 0)
     {
-      /* read out the 11-bit standard CAN identifier */
-      rxMsgId = (blt_int32u)0x000007FF & (CANx->sFIFOMailBox[0].RIR >> 21);
+      /* was an 11-bit CAN message received that matches? */
+      if ( (canHandle.pRxMsg->StdId == rxMsgId) &&
+           (canHandle.pRxMsg->IDE == CAN_ID_STD) )
+      {
+        /* set flag that a packet with a matching CAN identifier was received. */
+        packetIdMatches = BLT_TRUE;
+      }
     }
     else
     {
-      /* read out the 29-bit extended CAN identifier */
-      rxMsgId = (blt_int32u)0x1FFFFFFF & (CANx->sFIFOMailBox[0].RIR >> 3);
-      rxMsgId |= 0x80000000;
+      /* negate the ID-type bit */
+      rxMsgId &= ~0x80000000;
+      /* was an 29-bit CAN message received that matches? */
+      if ( (canHandle.pRxMsg->ExtId == rxMsgId) &&
+           (canHandle.pRxMsg->IDE == CAN_ID_EXT) )
+      {
+        /* set flag that a packet with a matching CAN identifier was received. */
+        packetIdMatches = BLT_TRUE;
+      }
     }
-    /* is this the packet identifier */
-    if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)
+
+    /* only continue if a packet with a matching CAN identifier was received. */
+    if (packetIdMatches == BLT_TRUE)
     {
+      /* copy the received package data. */
+      for (byteIdx = 0; byteIdx < canHandle.pRxMsg->DLC; byteIdx++)
+      {
+        data[byteIdx] = canHandle.pRxMsg->Data[byteIdx];
+      }
+      /* update the return value to indicate that new packet data was received. */
       result = BLT_TRUE;
-      /* store the received packet data */
-      data[0] = (blt_int8u)0xFF & CANx->sFIFOMailBox[0].RDLR;
-      data[1] = (blt_int8u)0xFF & (CANx->sFIFOMailBox[0].RDLR >> 8);
-      data[2] = (blt_int8u)0xFF & (CANx->sFIFOMailBox[0].RDLR >> 16);
-      data[3] = (blt_int8u)0xFF & (CANx->sFIFOMailBox[0].RDLR >> 24);
-      data[4] = (blt_int8u)0xFF & CANx->sFIFOMailBox[0].RDHR;
-      data[5] = (blt_int8u)0xFF & (CANx->sFIFOMailBox[0].RDHR >> 8);
-      data[6] = (blt_int8u)0xFF & (CANx->sFIFOMailBox[0].RDHR >> 16);
-      data[7] = (blt_int8u)0xFF & (CANx->sFIFOMailBox[0].RDHR >> 24);
     }
-    /* release FIFO0 */
-    CANx->RF0R |= CAN_BIT_RFOM0;
   }
+  /* Give the result back to the caller. */
   return result;
 } /*** end of CanReceivePacket ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */

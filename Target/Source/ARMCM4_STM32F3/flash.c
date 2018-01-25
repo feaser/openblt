@@ -30,7 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f30x.h"                           /* STM32 registers                    */
+#include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -78,7 +78,9 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Flash sector descriptor type. */
+/** \brief Flash sector descriptor type. Note that in this driver the word sector is
+ *         synonym to the word page, which is used in the HAL driver.
+ */
 typedef struct
 {
   blt_addr   sector_start;                       /**< sector start address             */
@@ -137,7 +139,7 @@ static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static const tFlashSector flashLayout[] =
 {
   /* space is reserved for a bootloader configuration with all supported communication
-   * interfaces enabled. when for example only UART is needed, than the space required
+   * interfaces enabled. when for example only UART is needed, then the space required
    * for the bootloader can be made a lot smaller here.
    */
   /* { 0x08000000, 0x00800 },           flash sector  0 - 2kb (reserved for bootloader)*/
@@ -282,10 +284,11 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 blt_bool FlashErase(blt_addr addr, blt_int32u len)
 {
   blt_addr erase_base_addr;
-  blt_addr erase_current_addr;
   blt_int32u total_erase_len;
   blt_int16u nr_of_erase_sectors;
-  blt_int16u sector_cnt;
+  blt_int32u pageError = 0;
+  blt_int16u sector_idx;
+  FLASH_EraseInitTypeDef eraseInitStruct;
   blt_bool result = BLT_TRUE;
 
   /* determine the base address for the erase operation, by aligning to
@@ -309,41 +312,36 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
     nr_of_erase_sectors++;
   }
 
-  /* unlock the flash array */
-  FLASH_Unlock();
+  /* prepare the erase initialization structure. */
+  eraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
+  eraseInitStruct.PageAddress = erase_base_addr;
+  eraseInitStruct.NbPages     = 1;
 
-  /* clear pending flags (if any) */
-  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPERR);
+  /* unlock the flash peripheral to enable the flash control register access. */
+  HAL_FLASH_Unlock();
 
-  /* check that the flash peripheral is not busy */
-  if (FLASH_GetStatus() != FLASH_BUSY)
+  /* loop through all sectors to erase them one by one. the HAL supports erasing multiple
+   * pages with one function call, but then the watchdog can't be updated in between.
+   */
+  for (sector_idx = 0; sector_idx < nr_of_erase_sectors; sector_idx++)
   {
-    /* erase all sectors one by one */
-    for (sector_cnt=0; sector_cnt<nr_of_erase_sectors; sector_cnt++)
+    /* keep the watchdog happy */
+    CopService();
+    /* erase the sector. */
+    if (HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&pageError) != HAL_OK)
     {
-      /* keep the watchdog happy */
-      CopService();
-      /* set the sector base address */
-      erase_current_addr = erase_base_addr + (sector_cnt * FLASH_ERASE_SECTOR_SIZE);
-      /* perform flash erase operation for this sector */
-      if (FLASH_ErasePage(erase_current_addr) != FLASH_COMPLETE)
-      {
-        /* flag error and stop erase operation */
-        result = BLT_FALSE;
-        break;
-      }
+      /* flag error and stop erase operation */
+      result = BLT_FALSE;
+      break;
     }
-  }
-  else
-  {
-    /* cannot operate on flash when it is already busy */
-    result = BLT_FALSE;
+    /* update the page base address for the next sector. */
+    eraseInitStruct.PageAddress += FLASH_ERASE_SECTOR_SIZE;
   }
 
-  /* lock the flash array again */
-  FLASH_Lock();
+  /* lock the flash peripheral to disable the flash control register access. */
+  HAL_FLASH_Lock();
 
-  /* erase operation complete. return the result to the caller */
+  /* Give the result back to the caller. */
   return result;
 } /*** end of FlashErase ***/
 
@@ -674,46 +672,34 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
-  /* unlock the flash array */
-  FLASH_Unlock();
+  /* unlock the flash peripheral to enable the flash control register access. */
+  HAL_FLASH_Unlock();
 
-  /* clear pending flags (if any) */
-  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPERR);
-
-  /* check that the flash peripheral is not busy */
-  if (FLASH_GetStatus() != FLASH_BUSY)
+  /* program all words in the block one by one */
+  for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
   {
-    /* program all words in the block one by one */
-    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+    prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
+    prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+    /* keep the watchdog happy */
+    CopService();
+    /* program the word */
+    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, prog_addr, prog_data) != HAL_OK)
     {
-      prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
-      prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
-      /* keep the watchdog happy */
-      CopService();
-      /* program the word */
-      if (FLASH_ProgramWord(prog_addr, prog_data) != FLASH_COMPLETE)
-      {
-        result = BLT_FALSE;
-        break;
-      }
-      /* verify that the written data is actually there */
-      if (*(volatile blt_int32u *)prog_addr != prog_data)
-      {
-        result = BLT_FALSE;
-        break;
-      }
+      result = BLT_FALSE;
+      break;
+    }
+    /* verify that the written data is actually there */
+    if (*(volatile blt_int32u *)prog_addr != prog_data)
+    {
+      result = BLT_FALSE;
+      break;
     }
   }
-  else
-  {
-    /* cannot operate on flash when it is already busy */
-    result = BLT_FALSE;
-  }
 
-  /* lock the flash array again */
-  FLASH_Lock();
+  /* lock the flash peripheral to disable the flash control register access. */
+  HAL_FLASH_Lock();
 
-  /* write operation complete. return the result to the caller */
+  /* Give the result back to the caller. */
   return result;
 } /*** end of FlashWriteBlock ***/
 

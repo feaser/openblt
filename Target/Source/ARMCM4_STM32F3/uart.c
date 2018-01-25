@@ -30,7 +30,8 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f30x.h"                           /* STM32 registers                    */
+#include "stm32f3xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f3xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
 #if (BOOT_COM_UART_ENABLE > 0)
@@ -41,6 +42,8 @@
  *         reception of the first packet byte.
  */
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+/** \brief Timeout for transmitting a byte. */
+#define UART_TX_TIMEOUT_MS            (5u)
 /* map the configured UART channel index to the STM32's USART peripheral */
 #if (BOOT_COM_UART_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to USART1. */
@@ -51,15 +54,6 @@
 #elif (BOOT_COM_UART_CHANNEL_INDEX == 2)
 /** \brief Set UART base address to USART3. */
 #define USART_CHANNEL   USART3
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 3)
-/** \brief Set UART base address to USART4. */
-#define USART_CHANNEL   USART4
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 4)
-/** \brief Set UART base address to USART5. */
-#define USART_CHANNEL   USART5
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 5)
-/** \brief Set UART base address to USART6. */
-#define USART_CHANNEL   USART6
 #endif
 
 
@@ -67,7 +61,7 @@
 * Function prototypes
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data);
-static blt_bool UartTransmitByte(blt_int8u data);
+static void     UartTransmitByte(blt_int8u data);
 
 
 /************************************************************************************//**
@@ -77,27 +71,26 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  USART_InitTypeDef USART_InitStructure;
+  LL_USART_InitTypeDef USART_InitStruct;
 
-  /* the current implementation supports USART1 - USART6. throw an assertion error in
+  /* the current implementation supports USART1 - USART5. throw an assertion error in
    * case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) ||
             (BOOT_COM_UART_CHANNEL_INDEX == 1) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 2) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 3) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 4) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 5));
-  /* initialize the uart for the specified communication speed */
-  USART_InitStructure.USART_BaudRate = BOOT_COM_UART_BAUDRATE;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_Init(USART_CHANNEL, &USART_InitStructure);
-  /* enable UART */
-  USART_Cmd(USART_CHANNEL, ENABLE);
+            (BOOT_COM_UART_CHANNEL_INDEX == 2));
+
+  /* configure UART peripheral */
+  USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
+  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+  USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
+  USART_InitStruct.Parity = LL_USART_PARITY_NONE;
+  USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
+  USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
+  /* initialize the UART peripheral */
+  LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
+  LL_USART_Enable(USART_CHANNEL);
 } /*** end of UartInit ***/
 
 
@@ -111,14 +104,12 @@ void UartInit(void)
 void UartTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int16u data_index;
-  blt_bool result;
 
   /* verify validity of the len-paramenter */
   ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
-  result = UartTransmitByte(len);
-  ASSERT_RT(result == BLT_TRUE);
+  UartTransmitByte(len);
 
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
@@ -126,8 +117,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     /* keep the watchdog happy */
     CopService();
     /* write byte */
-    result = UartTransmitByte(data[data_index]);
-    ASSERT_RT(result == BLT_TRUE);
+    UartTransmitByte(data[data_index]);
   }
 } /*** end of UartTransmitPacket ***/
 
@@ -206,11 +196,10 @@ blt_bool UartReceivePacket(blt_int8u *data)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
-  /* check flag to see if a byte was received */
-  if (USART_GetFlagStatus(USART_CHANNEL, USART_FLAG_RXNE) == SET)
+  if (LL_USART_IsActiveFlag_RXNE(USART_CHANNEL) != 0)
   {
     /* retrieve and store the newly received byte */
-    *data = (blt_int8u)USART_ReceiveData(USART_CHANNEL);
+    *data = LL_USART_ReceiveData8(USART_CHANNEL);
     /* all done */
     return BLT_TRUE;
   }
@@ -222,26 +211,27 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 /************************************************************************************//**
 ** \brief     Transmits a communication interface byte.
 ** \param     data Value of byte that is to be transmitted.
-** \return    BLT_TRUE if the byte was transmitted, BLT_FALSE otherwise.
+** \return    none.
 **
 ****************************************************************************************/
-static blt_bool UartTransmitByte(blt_int8u data)
+static void UartTransmitByte(blt_int8u data)
 {
-  /* check if tx holding register can accept new data */
-  if (USART_GetFlagStatus(USART_CHANNEL, USART_FLAG_TXE) == RESET)
-  {
-    /* UART not ready. should not happen */
-    return BLT_FALSE;
-  }
+  blt_int32u txTimeoutTime;
+
+  /* Determine timeout time for the transmit operation. */
+  txTimeoutTime = TimerGet() + UART_TX_TIMEOUT_MS;
   /* write byte to transmit holding register */
-  USART_SendData(USART_CHANNEL, data);
+  LL_USART_TransmitData8(USART_CHANNEL, data);
   /* wait for tx holding register to be empty */
-  while (USART_GetFlagStatus(USART_CHANNEL, USART_FLAG_TXE) == RESET)
+  while (LL_USART_IsActiveFlag_TXE(USART_CHANNEL) == 0)
   {
-    ;
+    /* Check if a timeout occurred to prevent lockup. */
+    if (TimerGet() > txTimeoutTime)
+    {
+      /* Cannot transmit so stop waiting for its completion. */
+      break;
+    }
   }
-  /* byte transmitted */
-  return BLT_TRUE;
 } /*** end of UartTransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
