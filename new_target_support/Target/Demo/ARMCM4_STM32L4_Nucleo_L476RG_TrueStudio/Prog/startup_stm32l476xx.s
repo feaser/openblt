@@ -242,6 +242,7 @@ g_pfnVectors:
 	.word 0
 	.word	RNG_IRQHandler
 	.word	FPU_IRQHandler
+	.word 0x55AA11EE        /* Reserved for OpenBLT checksum. */
 
 
 /*******************************************************************************
