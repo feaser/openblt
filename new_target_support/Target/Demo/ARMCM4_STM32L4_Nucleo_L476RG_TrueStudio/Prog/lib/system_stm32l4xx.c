@@ -144,7 +144,7 @@
  * address. Note that this value needs adjustment, if more space in flash is
  * reserved for the bootloader.
  */
-#define VECT_TAB_OFFSET  0x2000 /*!< Vector Table base offset field.
+#define VECT_TAB_OFFSET  0x2800 /*!< Vector Table base offset field.
                                    This value must be a multiple of 0x200. */
 /******************************************************************************/
 /**

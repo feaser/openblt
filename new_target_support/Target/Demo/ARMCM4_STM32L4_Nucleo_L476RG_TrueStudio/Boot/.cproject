@@ -29,7 +29,7 @@
 								<option id="com.atollic.truestudio.as.symbols.defined.1991143237" name="Defined symbols" superClass="com.atollic.truestudio.as.symbols.defined" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="STM32L476xx"/>
 								</option>
-								<option id="com.atollic.truestudio.as.general.incpath.428496301" name="Include path" superClass="com.atollic.truestudio.as.general.incpath" useByScannerDiscovery="false" valueType="includePath"/>
+								<option id="com.atollic.truestudio.as.general.incpath.428496301" name="Include path" superClass="com.atollic.truestudio.as.general.incpath" useByScannerDiscovery="false"/>
 								<inputType id="com.atollic.truestudio.as.input.1169501319" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
 							<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1344683742" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc">
@@ -56,7 +56,8 @@
 								<option id="com.atollic.truestudio.common_options.target.fpu.583153259" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated"/>
 								<option id="com.atollic.truestudio.gcc.optimization.prep_garbage.801489695" name="Prepare dead code removal " superClass="com.atollic.truestudio.gcc.optimization.prep_garbage" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.atollic.truestudio.gcc.optimization.prep_data.638750543" name="Prepare dead data removal" superClass="com.atollic.truestudio.gcc.optimization.prep_data" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="com.atollic.truestudio.exe.debug.toolchain.gcc.optimization.level.2093397065" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.optimization.level" useByScannerDiscovery="false" value="com.atollic.truestudio.gcc.optimization.level.0g" valueType="enumerated"/>
+								<option id="com.atollic.truestudio.exe.debug.toolchain.gcc.optimization.level.2093397065" name="Optimization Level" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.optimization.level" useByScannerDiscovery="false" value="com.atollic.truestudio.gcc.optimization.level.0g" valueType="enumerated"/>
+								<option id="com.atollic.truestudio.gcc.misc.otherflags.1026673130" name="Other options" superClass="com.atollic.truestudio.gcc.misc.otherflags" useByScannerDiscovery="false" value="-Wno-strict-aliasing" valueType="string"/>
 								<inputType id="com.atollic.truestudio.gcc.input.1660005003" superClass="com.atollic.truestudio.gcc.input"/>
 							</tool>
 							<tool id="com.atollic.truestudio.exe.debug.toolchain.ld.167053473" name="C Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ld">

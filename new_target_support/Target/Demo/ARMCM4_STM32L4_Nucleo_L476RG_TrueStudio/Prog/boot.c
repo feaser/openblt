@@ -287,9 +287,6 @@ static const tCanBusTiming canTiming[] =
 /** \brief CAN handle to be used in API calls. */
 static CAN_HandleTypeDef canHandle;
 
-/** \brief Message buffer for receiving CAN messages. */
-static CanRxMsgTypeDef canRxMessage;
-
 
 /************************************************************************************//**
 ** \brief     Search algorithm to match the desired baudrate to a possible bus
@@ -309,10 +306,10 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
   /* loop through all possible time quanta configurations to find a match */
   for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
   {
-    if (((BOOT_CPU_SYSTEM_SPEED_KHZ/2) % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
+    if (((BOOT_CPU_SYSTEM_SPEED_KHZ) % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
     {
       /* compute the prescaler that goes with this TQ configuration */
-      *prescaler = (BOOT_CPU_SYSTEM_SPEED_KHZ/2)/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
+      *prescaler = (BOOT_CPU_SYSTEM_SPEED_KHZ)/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
 
       /* make sure the prescaler is valid */
       if ( (*prescaler > 0) && (*prescaler <= 1024) )
@@ -339,7 +336,7 @@ static void BootComCanInit(void)
 {
   unsigned short prescaler;
   unsigned char tseg1 = 0, tseg2 = 0;
-  CAN_FilterConfTypeDef filterConfig;
+  CAN_FilterTypeDef filterConfig;
   unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   unsigned long rxFilterId, rxFilterMask;
 
@@ -348,18 +345,16 @@ static void BootComCanInit(void)
 
   /* set the CAN controller configuration. */
   canHandle.Instance = CAN;
-  canHandle.pTxMsg = NULL;
-  canHandle.pRxMsg = &canRxMessage;
-  canHandle.Init.TTCM = DISABLE;
-  canHandle.Init.ABOM = DISABLE;
-  canHandle.Init.AWUM = DISABLE;
-  canHandle.Init.NART = DISABLE;
-  canHandle.Init.RFLM = DISABLE;
-  canHandle.Init.TXFP = DISABLE;
+  canHandle.Init.TimeTriggeredMode = DISABLE;
+  canHandle.Init.AutoBusOff = DISABLE;
+  canHandle.Init.AutoWakeUp = DISABLE;
+  canHandle.Init.AutoRetransmission = DISABLE;
+  canHandle.Init.ReceiveFifoLocked = DISABLE;
+  canHandle.Init.TransmitFifoPriority = DISABLE;
   canHandle.Init.Mode = CAN_MODE_NORMAL;
-  canHandle.Init.SJW = CAN_SJW_1TQ;
-  canHandle.Init.BS1 = ((unsigned long)tseg1 - 1) << CAN_BTR_TS1_Pos;
-  canHandle.Init.BS2 = ((unsigned long)tseg2 - 1) << CAN_BTR_TS2_Pos;
+  canHandle.Init.SyncJumpWidth = CAN_SJW_1TQ;
+  canHandle.Init.TimeSeg1 = ((unsigned long)tseg1 - 1) << CAN_BTR_TS1_Pos;
+  canHandle.Init.TimeSeg2 = ((unsigned long)tseg2 - 1) << CAN_BTR_TS2_Pos;
   canHandle.Init.Prescaler = prescaler;
   /* initialize the CAN controller. this only fails if the CAN controller hardware is
    * faulty. no need to evaluate the return value as there is nothing we can do about
@@ -384,20 +379,20 @@ static void BootComCanInit(void)
   /* configure the reception filter. note that the implementation of this function
    * always returns HAL_OK, so no need to evaluate the return value.
    */
-  filterConfig.FilterNumber = 0;
+  filterConfig.FilterBank = 0;
   filterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
   filterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
   filterConfig.FilterIdHigh = (rxFilterId >> 16) & 0x0000FFFFu;
   filterConfig.FilterIdLow = rxFilterId & 0x0000FFFFu;
   filterConfig.FilterMaskIdHigh = (rxFilterMask >> 16) & 0x0000FFFFu;
   filterConfig.FilterMaskIdLow = rxFilterMask & 0x0000FFFFu;
-  filterConfig.FilterFIFOAssignment = 0;
+  filterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
   filterConfig.FilterActivation = ENABLE;
-  /* the bank number is don't care for STM32F3 devices as it only supports one CAN
-   * controller.
-   */
-  filterConfig.BankNumber = 14;
+  filterConfig.SlaveStartFilterBank = 14;
   (void)HAL_CAN_ConfigFilter(&canHandle, &filterConfig);
+  /* start the CAN peripheral. no need to evaluate the return value as there is nothing
+   * we can do about a faulty CAN controller. */
+  (void)HAL_CAN_Start(&canHandle);
 } /*** end of BootComCanInit ***/
 
 
@@ -411,16 +406,18 @@ static void BootComCanCheckActivationRequest(void)
 {
   unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   unsigned char packetIdMatches = 0;
+  CAN_RxHeaderTypeDef rxMsgHeader;
+  unsigned char rxMsgData[8];
 
   /* poll for received CAN messages that await processing. */
-  if (HAL_CAN_Receive(&canHandle, CAN_FIFO0, 0) == HAL_OK)
+  if (HAL_CAN_GetRxMessage(&canHandle, CAN_RX_FIFO0, &rxMsgHeader, rxMsgData) == HAL_OK)
   {
     /* check if this message has the configured CAN packet identifier. */
     if ((rxMsgId & 0x80000000) == 0)
     {
       /* was an 11-bit CAN message received that matches? */
-      if ( (canHandle.pRxMsg->StdId == rxMsgId) &&
-           (canHandle.pRxMsg->IDE == CAN_ID_STD) )
+      if ( (rxMsgHeader.StdId == rxMsgId) &&
+           (rxMsgHeader.IDE == CAN_ID_STD) )
       {
         /* set flag that a packet with a matching CAN identifier was received. */
         packetIdMatches = 1;
@@ -431,8 +428,8 @@ static void BootComCanCheckActivationRequest(void)
       /* negate the ID-type bit */
       rxMsgId &= ~0x80000000;
       /* was an 29-bit CAN message received that matches? */
-      if ( (canHandle.pRxMsg->ExtId == rxMsgId) &&
-           (canHandle.pRxMsg->IDE == CAN_ID_EXT) )
+      if ( (rxMsgHeader.ExtId == rxMsgId) &&
+           (rxMsgHeader.IDE == CAN_ID_EXT) )
       {
         /* set flag that a packet with a matching CAN identifier was received. */
         packetIdMatches = 1;
@@ -443,7 +440,7 @@ static void BootComCanCheckActivationRequest(void)
     if (packetIdMatches == 1)
     {
       /* check if this was an XCP CONNECT command */
-      if ((canHandle.pRxMsg->Data[0] == 0xff) && (canHandle.pRxMsg->Data[1] == 0x00))
+      if ((rxMsgData[0] == 0xff) && (rxMsgData[1] == 0x00))
       {
         /* connection request received so start the bootloader */
         BootActivate();
