@@ -254,6 +254,12 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 {
   blt_addr base_addr;
 
+  /* validate the len parameter */
+  if ((len - 1) > (FLASH_END_ADDRESS - addr))
+  {
+    return BLT_FALSE;
+  }
+
   /* make sure the addresses are within the flash device */
   if ((addr < FLASH_START_ADDRESS) || ((addr+len-1) > FLASH_END_ADDRESS))
   {
@@ -291,11 +297,17 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
   FLASH_EraseInitTypeDef eraseInitStruct;
   blt_bool result = BLT_TRUE;
 
+  /* validate the len parameter */
+  if ((len - 1) > (FLASH_END_ADDRESS - addr))
+  {
+    return BLT_FALSE;
+  }
+
   /* determine the base address for the erase operation, by aligning to
    * FLASH_ERASE_SECTOR_SIZE.
    */
   erase_base_addr = (addr/FLASH_ERASE_SECTOR_SIZE)*FLASH_ERASE_SECTOR_SIZE;
-
+  
   /* make sure the addresses are within the flash device */
   if ((erase_base_addr < FLASH_START_ADDRESS) || ((addr+len-1) > FLASH_END_ADDRESS))
   {

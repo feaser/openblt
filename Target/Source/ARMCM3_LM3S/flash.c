@@ -46,6 +46,9 @@
 #define FLASH_WRITE_BLOCK_SIZE          (512)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
+/** \brief End address of the bootloader programmable flash. */
+#define FLASH_END_ADDRESS               (flashLayout[FLASH_TOTAL_SECTORS-1].sector_start + \
+                                         flashLayout[FLASH_TOTAL_SECTORS-1].sector_size - 1)
 /** \brief Number of bytes to erase per erase operation. */
 #define FLASH_ERASE_BLOCK_SIZE          (0x400)
 /** \brief Offset into the user program's vector table where the checksum is located. 
@@ -267,6 +270,12 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 {
   blt_addr base_addr;
 
+  /* validate the len parameter */
+  if ((len - 1) > (FLASH_END_ADDRESS - addr))
+  {
+    return BLT_FALSE;
+  }
+
   /* make sure the addresses are within the flash device */
   if ((FlashGetSector(addr) == FLASH_INVALID_SECTOR) || \
       (FlashGetSector(addr+len-1) == FLASH_INVALID_SECTOR))
@@ -299,6 +308,12 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
 {
   blt_int8u first_sector;
   blt_int8u last_sector;
+
+  /* validate the len parameter */
+  if ((len - 1) > (FLASH_END_ADDRESS - addr))
+  {
+    return BLT_FALSE;
+  }
 
   /* obtain the first and last sector number */
   first_sector = FlashGetSector(addr);

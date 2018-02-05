@@ -30,7 +30,8 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32l4xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32l4xx.h"                           /* STM32 CPU and HAL header           */
+
 
 
 /****************************************************************************************
@@ -268,6 +269,12 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 {
   blt_addr base_addr;
 
+  /* validate the len parameter */
+  if ((len - 1) > (FLASH_END_ADDRESS - addr))
+  {
+    return BLT_FALSE;
+  }
+
   /* make sure the addresses are within the flash device */
   if ((addr < FLASH_START_ADDRESS) || ((addr+len-1) > FLASH_END_ADDRESS))
   {
@@ -306,6 +313,12 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
   blt_int16u sector_cnt;
   blt_int32u dummy;
   FLASH_EraseInitTypeDef eraseInitStruct;
+  
+  /* validate the len parameter */
+  if ((len - 1) > (FLASH_END_ADDRESS - addr))
+  {
+    return BLT_FALSE;
+  }
   
   /* determine the base address for the erase operation, by aligning to
    * FLASH_ERASE_SECTOR_SIZE.
