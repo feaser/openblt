@@ -141,7 +141,8 @@ blt_bool UartReceivePacket(blt_int8u *data)
     /* store the message length when received */
     if (UartReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
-      if (xcpCtoReqPacket[0] > 0)
+      if ( (xcpCtoReqPacket[0] > 0) &&
+           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();

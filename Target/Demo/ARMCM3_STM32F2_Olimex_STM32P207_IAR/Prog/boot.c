@@ -171,7 +171,8 @@ static void BootComUartCheckActivationRequest(void)
     if (UartReceiveByte(&xcpCtoReqPacket[0]) == 1)
     {
       /* check that the length has a valid value. it should not be 0 */
-      if (xcpCtoReqPacket[0] > 0)
+      if ( (xcpCtoReqPacket[0] > 0) &&
+           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
