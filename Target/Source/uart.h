@@ -34,7 +34,7 @@
 ****************************************************************************************/
 void     UartInit(void);
 void     UartTransmitPacket(blt_int8u *data, blt_int8u len);
-blt_bool UartReceivePacket(blt_int8u *data);
+blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len);
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 

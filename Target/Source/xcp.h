@@ -235,7 +235,7 @@
 void     XcpInit(void);
 blt_bool XcpIsConnected(void);
 void     XcpPacketTransmitted(void);
-void     XcpPacketReceived(blt_int8u *data);
+void     XcpPacketReceived(blt_int8u *data, blt_int8u len);
 
 
 /****************************************************************************************

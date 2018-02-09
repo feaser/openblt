@@ -278,10 +278,11 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 /************************************************************************************//**
 ** \brief     Receives a communication interface packet if one is present.
 ** \param     data Pointer to byte array where the data is to be stored.
+** \param     len Pointer where the length of the packet is to be stored.
 ** \return    BLT_TRUE is a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-blt_bool CanReceivePacket(blt_int8u *data)
+blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
 {
   blt_int32u rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   blt_bool result = BLT_FALSE;
@@ -302,7 +303,7 @@ blt_bool CanReceivePacket(blt_int8u *data)
     }
     else
     {
-      /* negate the ID-type bit */
+      /* negate the ID-type bit. */
       rxMsgId &= ~0x80000000;
       /* was an 29-bit CAN message received that matches? */
       if ( (rxMsgHeader.ExtId == rxMsgId) &&
@@ -312,6 +313,11 @@ blt_bool CanReceivePacket(blt_int8u *data)
         result = BLT_TRUE;
       }
     }
+  }
+  /* store the data length. */
+  if (result == BLT_TRUE)
+  {
+    *len = rxMsgHeader.DLC;
   }
   /* Give the result back to the caller. */
   return result;

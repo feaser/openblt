@@ -104,7 +104,7 @@ static void XcpCmdProgramPrepare(blt_int8u *data);
 * Hook functions
 ****************************************************************************************/
 #if (XCP_PACKET_RECEIVED_HOOK_EN == 1)
-extern blt_bool XcpPacketReceivedHook(blt_int8u *data);
+extern blt_bool XcpPacketReceivedHook(blt_int8u *data, blt_int8u len);
 #endif
 
 #if (XCP_RES_PAGING_EN == 1)
@@ -193,17 +193,22 @@ void XcpPacketTransmitted(void)
 /************************************************************************************//**
 ** \brief     Informs the core that a new packet was received by the transport layer.
 ** \param     data Pointer to byte buffer with packet data.
+** \param     len Number of bytes in the packet.
 ** \return    none
 **
 ****************************************************************************************/
-void XcpPacketReceived(blt_int8u *data)
+void XcpPacketReceived(blt_int8u *data, blt_int8u len)
 {
-#if (XCP_PACKET_RECEIVED_HOOK_EN == 1)
+
+#if (XCP_PACKET_RECEIVED_HOOK_EN == 0)
+  /* suppress compiler warning due to unused parameter. */
+  (void)len;
+#else
   /* give the hook function a chance to process this packet. A return value of BLT_TRUE
    * indicates that the hook function processed the packet and that no further processing
    * is required.
    */
-  if (XcpPacketReceivedHook(data) == BLT_TRUE)
+  if (XcpPacketReceivedHook(data, len) == BLT_TRUE)
   {
     /* packet processed by hook function so no need to continue. */
     return;

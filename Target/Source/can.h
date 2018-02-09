@@ -34,7 +34,7 @@
 ****************************************************************************************/
 void     CanInit(void);
 void     CanTransmitPacket(blt_int8u *data, blt_int8u len);
-blt_bool CanReceivePacket(blt_int8u *data);
+blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len);
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 

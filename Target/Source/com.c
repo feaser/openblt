@@ -97,43 +97,44 @@ void ComInit(void)
 ****************************************************************************************/
 void ComTask(void)
 {
+  blt_int8u xcpPacketLen;
   /* make xcpCtoReqPacket static for runtime efficiency */
   static blt_int8u xcpCtoReqPacket[BOOT_COM_RX_MAX_DATA];
 
 #if (BOOT_COM_CAN_ENABLE > 0)
-  if (CanReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+  if (CanReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
   {
     /* make this the active interface */
     comActiveInterface = COM_IF_CAN;
     /* process packet */
-    XcpPacketReceived(&xcpCtoReqPacket[0]);
+    XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
   }
 #endif
 #if (BOOT_COM_UART_ENABLE > 0)
-  if (UartReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+  if (UartReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
   {
     /* make this the active interface */
     comActiveInterface = COM_IF_UART;
     /* process packet */
-    XcpPacketReceived(&xcpCtoReqPacket[0]);
+    XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
   }
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
-  if (UsbReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+  if (UsbReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
   {
     /* make this the active interface */
     comActiveInterface = COM_IF_USB;
     /* process packet */
-    XcpPacketReceived(&xcpCtoReqPacket[0]);
+    XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
   }
 #endif
 #if (BOOT_COM_NET_ENABLE > 0)
-  if (NetReceivePacket(&xcpCtoReqPacket[0]) == BLT_TRUE)
+  if (NetReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
   {
     /* make this the active interface */
     comActiveInterface = COM_IF_NET;
     /* process packet */
-    XcpPacketReceived(&xcpCtoReqPacket[0]);
+    XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
   }
 #endif
 } /*** end of ComTask ***/

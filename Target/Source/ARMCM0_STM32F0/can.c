@@ -222,10 +222,11 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 /************************************************************************************//**
 ** \brief     Receives a communication interface packet if one is present.
 ** \param     data Pointer to byte array where the data is to be stored.
+** \param     len Pointer where the length of the packet is to be stored.
 ** \return    BLT_TRUE is a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-blt_bool CanReceivePacket(blt_int8u *data)
+blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
 {
   CanRxMsg rxMsg;
   blt_int8u byteIdx;
@@ -252,6 +253,7 @@ blt_bool CanReceivePacket(blt_int8u *data)
     /* is the identifier a match to the bootloader reception message identifier? */
     if (canIdMatched == BLT_TRUE)
     {
+      *len = rxMsg.DLC;
       for (byteIdx=0; byteIdx<rxMsg.DLC; byteIdx++)
       {
         data[byteIdx] = rxMsg.Data[byteIdx];

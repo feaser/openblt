@@ -58,7 +58,7 @@ typedef struct net_state
 void     NetInit(void);
 void     NetApp(void);
 void     NetTransmitPacket(blt_int8u *data, blt_int8u len);
-blt_bool NetReceivePacket(blt_int8u *data);
+blt_bool NetReceivePacket(blt_int8u *data, blt_int8u *len);
 #else /* BOOT_COM_NET_ENABLE > 0 */
 
 typedef struct net_state

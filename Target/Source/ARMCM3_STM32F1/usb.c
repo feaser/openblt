@@ -171,10 +171,11 @@ void UsbTransmitPacket(blt_int8u *data, blt_int8u len)
 /************************************************************************************//**
 ** \brief     Receives a communication interface packet if one is present.
 ** \param     data Pointer to byte array where the data is to be stored.
+** \param     len Pointer where the length of the packet is to be stored.
 ** \return    BLT_TRUE if a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-blt_bool UsbReceivePacket(blt_int8u *data)
+blt_bool UsbReceivePacket(blt_int8u *data, blt_int8u *len)
 {
   static blt_int8u xcpCtoReqPacket[BOOT_COM_USB_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
@@ -214,7 +215,8 @@ blt_bool UsbReceivePacket(blt_int8u *data)
         CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);
         /* done with cto packet reception */
         xcpCtoRxInProgress = BLT_FALSE;
-
+        /* set the packet length */
+        *len = xcpCtoRxLength;
         /* packet reception complete */
         return BLT_TRUE;
       }

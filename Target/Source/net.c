@@ -171,10 +171,11 @@ void NetTransmitPacket(blt_int8u *data, blt_int8u len)
 /************************************************************************************//**
 ** \brief     Receives a communication interface packet if one is present.
 ** \param     data Pointer to byte array where the data is to be stored.
+** \param     len Pointer where the length of the packet is to be stored.
 ** \return    BLT_TRUE if a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-blt_bool NetReceivePacket(blt_int8u *data)
+blt_bool NetReceivePacket(blt_int8u *data, blt_int8u *len)
 {
   /* run the TCP/IP server task function, which will handle the reception and
    * transmission of XCP packets
@@ -238,7 +239,7 @@ void NetApp(void)
     s->dto_len = 0;
     /* the first 4 bytes contain a counter value in which we are not really interested */
     newDataPtr = uip_appdata;
-    XcpPacketReceived(&newDataPtr[4]);
+    XcpPacketReceived(&newDataPtr[4], (blt_int8u)(uip_datalen() - 4));
   }
 } /*** end of NetApp ***/
 

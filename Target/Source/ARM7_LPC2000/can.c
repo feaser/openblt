@@ -246,12 +246,14 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 /************************************************************************************//**
 ** \brief     Receives a communication interface packet if one is present.
 ** \param     data Pointer to byte array where the data is to be stored.
+** \param     len Pointer where the length of the packet is to be stored.
 ** \return    BLT_TRUE is a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-blt_bool CanReceivePacket(blt_int8u *data)
+blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
 {
   blt_int32u rxMsgId;
+  blt_int8u rxMsgDlc;
   blt_bool result = BLT_FALSE;
   
   /* check if a new message was received */
@@ -268,6 +270,13 @@ blt_bool CanReceivePacket(blt_int8u *data)
     /* see if this is the message identifier that we are interested in */
     if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)
     {
+      /* store the message data length */
+      rxMsgDlc = ((blt_int8u)(CAN1RFS >> 16)) & 0x0Fu;
+      if (rxMsgDlc > 8)
+      {
+        rxMsgDlc = 8;
+      }
+      *len = rxMsgDlc;
       /* store the message data */
       data[0] = (blt_int8u)CAN1RDA;
       data[1] = (blt_int8u)(CAN1RDA >> 8);

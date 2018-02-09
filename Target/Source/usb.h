@@ -35,7 +35,7 @@
 void     UsbInit(void);
 void     UsbFree(void);
 void     UsbTransmitPacket(blt_int8u *data, blt_int8u len);
-blt_bool UsbReceivePacket(blt_int8u *data);
+blt_bool UsbReceivePacket(blt_int8u *data, blt_int8u *len);
 
 /****************************************************************************************
 * Hook functions

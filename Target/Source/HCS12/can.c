@@ -354,10 +354,11 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 /************************************************************************************//**
 ** \brief     Receives a communication interface packet if one is present.
 ** \param     data Pointer to byte array where the data is to be stored.
+** \param     len Pointer where the length of the packet is to be stored.
 ** \return    BLT_TRUE is a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-blt_bool CanReceivePacket(blt_int8u *data)
+blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
 {
   blt_int32u rxMsgId;
   blt_int8u  rxMsgLen;
@@ -391,6 +392,7 @@ blt_bool CanReceivePacket(blt_int8u *data)
       {
         data[byte_idx] = CAN->rxSlot.dsr[byte_idx];
       }
+      *len = rxMsgLen;
     }
     /* release the receive object by clearing the rx flag */
     CAN->crflg &= RXF_BIT;
