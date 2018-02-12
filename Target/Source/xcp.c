@@ -359,12 +359,16 @@ static blt_int8u XcpComputeChecksum(blt_int32u address, blt_int32u length,
   /* this example computes the checksum using the add byte to byte algorithm */
   while (length-- > 0)
   {
+    /* add the next byte value */
     cs += *((blt_int8u *)(blt_addr)address);
+    /* increment address */
     address++;
+    /* service the watchdog */
+    CopService();
   }
-
+  /* store the computed checksum value */
   *checksum = cs;
-
+  /* inform the caller of the uses checksum computation algorithm */
   return XCP_CS_ADD11;
 } /*** end of XcpComputeChecksum ***/
 
