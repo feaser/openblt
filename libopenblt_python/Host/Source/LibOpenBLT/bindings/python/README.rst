@@ -15,7 +15,7 @@ Run the following command from the directory that contains the **setup.py** file
 
 Using the package
 -----------------
-Basic code snippet to call the BltVersionGetNumber()-function whcih display the version of LibOpenBLT:
+Basic code snippet to call the BltVersionGetNumber()-function which displays the version of LibOpenBLT:
 
 ::
 
