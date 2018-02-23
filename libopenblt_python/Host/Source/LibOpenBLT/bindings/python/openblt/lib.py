@@ -59,22 +59,48 @@ sharedLibrary = 'libopenblt' + sharedLibraryExt
 sharedLibraryHandle = ctypes.CDLL(sharedLibrary)
 
 
+class c_utf8_p(ctypes.c_char_p):
+    """
+    Custom c_char_p class that can be used for c-functions that return a "char *" as 
+    a string. This class then automatically decodes it to a UTF-8 string.
+    """
+    @classmethod
+    def _check_retval_(cls, result):
+        value = result.value
+        return value.decode('utf-8')
+
+
 # ***************************************************************************************
 #              V E R S I O N   I N F O R M A T I O N
 # ***************************************************************************************
 
 # ***************************************************************************************
-#  \brief     Import specification for BltVersionGetNumber
+#  \brief     Obtains the version number of the library as an integer. The number has two
+#             digits for major-, minor-, and patch-version. Version 1.05.12 would for
+#             example return 10512.
 #  \return    Library version number as an integer.
 #  \details   Example:
 #               print('LibOpenBLT version:', openblt.lib.BltVersionGetNumber())
 #
 # ***************************************************************************************
 if hasattr(sharedLibraryHandle, 'BltVersionGetNumber'):
-
     BltVersionGetNumber = sharedLibraryHandle.BltVersionGetNumber
     BltVersionGetNumber.argtypes = []
     BltVersionGetNumber.restype = ctypes.c_uint32
+
+
+# ***************************************************************************************
+#  \brief     Obtains the version number of the library as a null-terminated string.
+#             Version 1.05.12 would for example return "1.05.12".
+#  \return    Library version number as a UTF-8 decoded string.
+#  \details   Example:
+#               print('LibOpenBLT version:', openblt.lib.BltVersionGetString())
+#
+# ***************************************************************************************
+if hasattr(sharedLibraryHandle, 'BltVersionGetString'):
+    BltVersionGetString = sharedLibraryHandle.BltVersionGetString
+    BltVersionGetString.argtypes = []
+    BltVersionGetString.restype = c_utf8_p
 
 
 # ********************************* end of lib.py ***************************************
