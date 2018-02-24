@@ -1,5 +1,7 @@
 """
-Module initialization.
+Package **openblt** is a python wrapper for the OpenBLT Host Library (`LibOpenBLT <https://www.feaser.com/openblt/doku.php?id=manual:libopenblt>`_).  
+
+Have a look at the function headers inside openblt.lib for details on how to call the functions, including examples.
 """
 __docformat__ = 'reStructuredText'
 # ***************************************************************************************
@@ -31,9 +33,30 @@ __docformat__ = 'reStructuredText'
 # ***************************************************************************************
 #  Imports
 # ***************************************************************************************
+from openblt.lib import BLT_RESULT_OK
+from openblt.lib import BLT_RESULT_ERROR_GENERIC
+
+
+# ***************************************************************************************
+#              V E R S I O N   I N F O R M A T I O N
+# ***************************************************************************************
 from openblt.lib import version_get_number
 from openblt.lib import version_get_string
 
 
-# ********************************* end of __init__.py **********************************
+# ***************************************************************************************
+#              F I R M W A R E   D A T A
+# ***************************************************************************************
+from openblt.lib import BLT_FIRMWARE_PARSER_SRECORD
+from openblt.lib import firmware_terminate
+from openblt.lib import firmware_init
+from openblt.lib import firmware_load_from_file
+from openblt.lib import firmware_save_to_file
+from openblt.lib import firmware_get_segment_count
+from openblt.lib import firmware_get_segment
+from openblt.lib import firmware_add_data
+from openblt.lib import firmware_remove_data
+from openblt.lib import firmware_clear_data
 
+
+# ********************************* end of __init__.py **********************************

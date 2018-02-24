@@ -1,16 +1,22 @@
 Python wrapper for LibOpenBLT
 =============================
-The OpenBLT Host Library (LibOpenBLT) contains an application programming interface (API) for communicating with a microcontroller target, running the OpenBLT bootloader, for making firmware updates on the target. The goal of the OpenBLT Host Library is to empower you to quickly and efficiently create your own firmware update tool, in case you don’t prefer the standard MicroBoot and BootCommander tools that are included in the OpenBLT bootloader package.
+The OpenBLT Host Library (`LibOpenBLT <https://www.feaser.com/openblt/doku.php?id=manual:libopenblt>`_) contains an application programming interface (API) for communicating with a microcontroller target, running the OpenBLT bootloader, for making firmware updates on the target. The goal of the OpenBLT Host Library is to empower you to quickly and efficiently create your own firmware update tool, in case you don’t prefer the standard MicroBoot and BootCommander tools that are included in the OpenBLT bootloader package.
 
 This package contains the python wrapper for LibOpenBLT, which enables you to quickly develop your own firmware update tool in the Python programming language.
 
 Install the package
------------------
-Run the following command from the directory that contains the **setup.py** file:
+-------------------
+Run the following command from the directory that contains the **setup.py** file (assuming setuptools is installed):
 
 ::
 
     python setup.py install
+
+Alternatively, you can use **pip** by running this command from the directory that contains the **setup.py** file:
+
+::
+
+    pip install .
 
 
 Using the package
@@ -22,6 +28,8 @@ Basic code snippet to call the BltVersionGetString()-function which displays the
     import openblt
 
     print('LibOpenBLT version:', openblt.version_get_string())
+
+Have a look at the function headers inside openblt.lib for details on how to call the functions, including examples.
 
 
 Run-time libraries
