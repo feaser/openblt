@@ -46,61 +46,76 @@ else:
     sharedLibraryExt = '.so'
 
 
-# Initialize the share library to just its filename without a path. This assumes that the
-# LibOpenBLT shared library file and possible other run-time libraries that it depends on
-# are located in the directory from where your program runs or somewhere on the system's
-# library path. Refer to the section on the OpenBLT Wiki for an overview of these run-
-# time libraries:
+# Initialize the shared library to just its filename without a path. This assumes that
+# the LibOpenBLT shared library file and possible other run-time libraries that it
+# depends on are located in the directory from where your program runs or somewhere on
+# the system's library path. Refer to the section on the OpenBLT Wiki for an overview of
+# these run-time libraries:
 #   https://www.feaser.com/openblt/doku.php?id=manual:libopenblt#run-time_libraries.
 sharedLibrary = 'libopenblt' + sharedLibraryExt
 
 
-# Get a handle to the shared library
+# Get a handle to the shared library.
 sharedLibraryHandle = ctypes.CDLL(sharedLibrary)
 
 
-class c_utf8_p(ctypes.c_char_p):
-    """
-    Custom c_char_p class that can be used for c-functions that return a "char *" as 
-    a string. This class then automatically decodes it to a UTF-8 string.
-    """
-    @classmethod
-    def _check_retval_(cls, result):
-        value = result.value
-        return value.decode('utf-8')
-
-
 # ***************************************************************************************
-#              V E R S I O N   I N F O R M A T I O N
+#  Ctypes function import specifications
 # ***************************************************************************************
-
-# ***************************************************************************************
-#  \brief     Obtains the version number of the library as an integer. The number has two
-#             digits for major-, minor-, and patch-version. Version 1.05.12 would for
-#             example return 10512.
-#  \return    Library version number as an integer.
-#  \details   Example:
-#               print('LibOpenBLT version:', openblt.lib.BltVersionGetNumber())
-#
-# ***************************************************************************************
+BltVersionGetNumber = None
 if hasattr(sharedLibraryHandle, 'BltVersionGetNumber'):
     BltVersionGetNumber = sharedLibraryHandle.BltVersionGetNumber
     BltVersionGetNumber.argtypes = []
     BltVersionGetNumber.restype = ctypes.c_uint32
 
 
-# ***************************************************************************************
-#  \brief     Obtains the version number of the library as a null-terminated string.
-#             Version 1.05.12 would for example return "1.05.12".
-#  \return    Library version number as a UTF-8 decoded string.
-#  \details   Example:
-#               print('LibOpenBLT version:', openblt.lib.BltVersionGetString())
-#
-# ***************************************************************************************
+BltVersionGetString = None
 if hasattr(sharedLibraryHandle, 'BltVersionGetString'):
     BltVersionGetString = sharedLibraryHandle.BltVersionGetString
     BltVersionGetString.argtypes = []
-    BltVersionGetString.restype = c_utf8_p
+    BltVersionGetString.restype = ctypes.c_char_p
+
+
+# ***************************************************************************************
+#              V E R S I O N   I N F O R M A T I O N
+# ***************************************************************************************
+def version_get_number():
+    """
+    Obtains the version number of the library as an integer. The number has two digits
+    for major-, minor-, and patch-version. Version 1.05.12 would for example return 
+    10512.
+    
+    :returns: Library version number as an integer.
+    :rtype: int
+    """
+    # Initialize the result.
+    result = 0
+    # Check if the shared library function could be imported.
+    if BltVersionGetNumber is not None:
+        # Call the function in the shared library.
+        result = BltVersionGetNumber()
+    # Give the result back to the caller.
+    return result
+
+
+def version_get_string():
+    """
+    Obtains the version number of the library as a string. Version 1.05.12 would for 
+    example return "1.05.12".
+
+    :returns: Library version number as a string.
+    :rtype: string
+    """
+    # Initialize the result
+    result = ''
+    # Check if the shared library function could be imported.
+    if BltVersionGetString is not None:
+        # Call the function in the shared library
+        result = BltVersionGetString()
+        # Decode the null terminated character string to a UTF-8 string.
+        result = result.decode('utf-8')
+    # Give the result back to the caller.
+    return result
 
 
 # ********************************* end of lib.py ***************************************

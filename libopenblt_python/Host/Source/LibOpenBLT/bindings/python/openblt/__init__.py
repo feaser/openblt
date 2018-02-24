@@ -31,7 +31,8 @@ __docformat__ = 'reStructuredText'
 # ***************************************************************************************
 #  Imports
 # ***************************************************************************************
-from openblt import lib
+from openblt.lib import version_get_number
+from openblt.lib import version_get_string
 
 
 # ********************************* end of __init__.py **********************************

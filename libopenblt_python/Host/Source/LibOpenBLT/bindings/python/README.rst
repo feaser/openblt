@@ -15,13 +15,13 @@ Run the following command from the directory that contains the **setup.py** file
 
 Using the package
 -----------------
-Basic code snippet to call the BltVersionGetNumber()-function which displays the version of LibOpenBLT:
+Basic code snippet to call the BltVersionGetString()-function which displays the version of LibOpenBLT:
 
 ::
 
     import openblt
 
-    print('LibOpenBLT version:', openblt.lib.BltVersionGetNumber())
+    print('LibOpenBLT version:', openblt.version_get_string())
 
 
 Run-time libraries
