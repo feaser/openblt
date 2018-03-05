@@ -141,6 +141,52 @@ if hasattr(sharedLibraryHandle, 'BltFirmwareClearData'):
     BltFirmwareClearData.restype = None
 
 
+BltUtilCrc16Calculate = None
+if hasattr(sharedLibraryHandle, 'BltUtilCrc16Calculate'):
+    BltUtilCrc16Calculate = sharedLibraryHandle.BltUtilCrc16Calculate
+    BltUtilCrc16Calculate.argtypes = [ctypes.POINTER(ctypes.c_uint8), ctypes.c_uint32]
+    BltUtilCrc16Calculate.restype = ctypes.c_uint16
+
+
+BltUtilCrc32Calculate = None
+if hasattr(sharedLibraryHandle, 'BltUtilCrc32Calculate'):
+    BltUtilCrc32Calculate = sharedLibraryHandle.BltUtilCrc32Calculate
+    BltUtilCrc32Calculate.argtypes = [ctypes.POINTER(ctypes.c_uint8), ctypes.c_uint32]
+    BltUtilCrc32Calculate.restype = ctypes.c_uint32
+
+
+BltUtilTimeGetSystemTime = None
+if hasattr(sharedLibraryHandle, 'BltUtilTimeGetSystemTime'):
+    BltUtilTimeGetSystemTime = sharedLibraryHandle.BltUtilTimeGetSystemTime
+    BltUtilTimeGetSystemTime.argtypes = []
+    BltUtilTimeGetSystemTime.restype = ctypes.c_uint32
+
+
+BltUtilTimeDelayMs = None
+if hasattr(sharedLibraryHandle, 'BltUtilTimeDelayMs'):
+    BltUtilTimeDelayMs = sharedLibraryHandle.BltUtilTimeDelayMs
+    BltUtilTimeDelayMs.argtypes = [ctypes.c_uint16]
+    BltUtilTimeDelayMs.restype = None
+
+
+BltUtilCryptoAes256Encrypt = None
+if hasattr(sharedLibraryHandle, 'BltUtilCryptoAes256Encrypt'):
+    BltUtilCryptoAes256Encrypt = sharedLibraryHandle.BltUtilCryptoAes256Encrypt
+    BltUtilCryptoAes256Encrypt.argtypes = [ctypes.POINTER(ctypes.c_uint8),
+                                           ctypes.c_uint32,
+                                           ctypes.POINTER(ctypes.c_uint8)]
+    BltUtilCryptoAes256Encrypt.restype = ctypes.c_uint32
+
+
+BltUtilCryptoAes256Decrypt = None
+if hasattr(sharedLibraryHandle, 'BltUtilCryptoAes256Decrypt'):
+    BltUtilCryptoAes256Decrypt = sharedLibraryHandle.BltUtilCryptoAes256Decrypt
+    BltUtilCryptoAes256Decrypt.argtypes = [ctypes.POINTER(ctypes.c_uint8),
+                                           ctypes.c_uint32,
+                                           ctypes.POINTER(ctypes.c_uint8)]
+    BltUtilCryptoAes256Decrypt.restype = ctypes.c_uint32
+
+
 # ***************************************************************************************
 #  Constant declarations
 # ***************************************************************************************
@@ -470,6 +516,225 @@ def firmware_clear_data():
     if BltFirmwareClearData is not None:
         # Call the function in the shared library
         BltFirmwareClearData()
+
+
+# ***************************************************************************************
+#              G E N E R I C   U T I L I T I E S
+# ***************************************************************************************
+# ***************************************************************************************
+#  Functions
+# ***************************************************************************************
+def util_crc16_calculate(data, len):
+    """
+    Calculates a 16-bit CRC value over the specified data.
+
+    :param data: List with data bytes over which the CRC16 should be calculated.
+    :param len: Number of bytes in the list.
+    :returns: The 16-bit CRC value.
+    :rtype: int
+
+    :Example:
+    ::
+
+        import openblt
+
+        test_data = [ 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80 ]
+        crc16_value = openblt.util_crc16_calculate(test_data, len(test_data))
+        print('CRC16 value:', crc16_value)
+    """
+    # Initialize the result.
+    result = 0
+    # Check if the shared library function could be imported.
+    if BltUtilCrc16Calculate is not None:
+        # Convert the list to a c-byte array
+        src_data_type = ctypes.c_uint8 * len
+        src_data = src_data_type()
+        for i in range(0, len):
+            src_data[i] = ctypes.c_uint8(data[i])
+        # Call the function in the shared library
+        result = BltUtilCrc16Calculate(src_data, ctypes.c_uint32(len))
+    # Give the result back to the caller.
+    return result
+
+
+def util_crc32_calculate(data, len):
+    """
+    Calculates a 32-bit CRC value over the specified data.
+
+    :param data: List with data bytes over which the CRC32 should be calculated.
+    :param len: Number of bytes in the list.
+    :returns: The 32-bit CRC value.
+    :rtype: int
+
+    :Example:
+    ::
+
+        import openblt
+
+        test_data = [ 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80 ]
+        crc32_value = openblt.util_crc32_calculate(test_data, len(test_data))
+        print('CRC32 value:', crc32_value)
+    """
+    # Initialize the result.
+    result = 0
+    # Check if the shared library function could be imported.
+    if BltUtilCrc32Calculate is not None:
+        # Convert the list to a c-byte array
+        src_data_type = ctypes.c_uint8 * len
+        src_data = src_data_type()
+        for i in range(0, len):
+            src_data[i] = ctypes.c_uint8(data[i])
+        # Call the function in the shared library
+        result = BltUtilCrc32Calculate(src_data, ctypes.c_uint32(len))
+    # Give the result back to the caller.
+    return result
+
+
+def util_time_get_system_time():
+    """
+    Get the system time in milliseconds.
+
+    :returns: Time in milliseconds.
+    :rtype: int
+
+    :Example:
+    ::
+
+        import openblt
+
+        print('Current system time:', openblt.util_time_get_system_time(), 'ms')
+    """
+    # Initialize the result.
+    result = 0
+    # Check if the shared library function could be imported.
+    if BltUtilTimeGetSystemTime is not None:
+        # Call the function in the shared library.
+        result = BltUtilTimeGetSystemTime()
+    # Give the result back to the caller.
+    return result
+
+
+def util_time_delay_ms(delay):
+    """
+    Performs a delay of the specified amount of milliseconds.
+
+    :param delay: Delay time in milliseconds.
+
+    :Example:
+    ::
+
+        import openblt
+
+        openblt.util_time_delay_ms(1000)
+    """
+    # Check if the shared library function could be imported.
+    if BltUtilTimeDelayMs is not None:
+        # Call the function in the shared library
+        BltUtilTimeDelayMs(ctypes.c_uint16(delay))
+
+
+def util_crypto_aes256_encrypt(data, len, key):
+    """
+    Encrypts the len-bytes in the specified data list, using the specified 256-bit 
+    (32 bytes) key. The results are written back into the same list.
+
+    :param data: List with data bytes to encrypt. The encrypted bytes are stored in the
+           same list.
+    :param len: The number of bytes in the data list to encrypt. It must be a multiple
+           of 16, as this is the AES256 minimal block size.
+    :param key: The 256-bit encryption key as a list with 32 bytes.
+    :returns: BLT_RESULT_OK if successful, BLT_RESULT_ERROR_xxx otherwise.
+    :rtype: int
+
+    :Example:
+    ::
+
+        import openblt
+
+        crypto_key  = [0xCB, 0x81, 0xA5, 0x9A, 0x80, 0x2C, 0x98, 0x1C,
+                       0xF8, 0x8C, 0x5D, 0x59, 0x1B, 0x48, 0x5C, 0xAD,
+                       0xE5, 0xC0, 0xD5, 0x98, 0xD8, 0x89, 0xD4, 0xC9,
+                       0xC4, 0x66, 0x4B, 0x09, 0x2D, 0x19, 0xF8, 0xF6]
+        crypto_data = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                       0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F]
+        print('Original data =')
+        crypto_data_str = '\t'
+        for byte_value in crypto_data:
+            crypto_data_str += '{:02x}'.format(byte_value) + ' '
+        print(crypto_data_str)
+        openblt.util_crypto_aes256_encrypt(crypto_data, 16, crypto_key)
+        print('Encrypted data =')
+        crypto_data_str = '\t'
+        for byte_value in crypto_data:
+            crypto_data_str += '{:02x}'.format(byte_value) + ' '
+        print(crypto_data_str)
+    """
+    # Initialize the result.
+    result = BLT_RESULT_ERROR_GENERIC
+    # Check if the shared library function could be imported.
+    if BltUtilCryptoAes256Encrypt is not None:
+        # Convert the list with source data to a c-byte array.
+        src_data_type = ctypes.c_uint8 * len
+        src_data = src_data_type()
+        for i in range(0, len):
+            src_data[i] = ctypes.c_uint8(data[i])
+        # Convert the list with key data to a c-byte array.
+        key_data_type = ctypes.c_uint8 * 32
+        key_data = key_data_type()
+        for i in range(0, 32):
+            key_data[i] = ctypes.c_uint8(key[i])
+        # Call the function in the shared library.
+        result = BltUtilCryptoAes256Encrypt(src_data, ctypes.c_uint32(len), key_data)
+        # Now write the encrypted data back into the list
+        if result == BLT_RESULT_OK:
+            for i in range(0, len):
+                data[i] = src_data[i]
+    # Give the result back to the caller.
+    return result
+
+
+def util_crypto_aes256_decrypt(data, len, key):
+    """
+    Decrypts the len-bytes in the specified data list, using the specified 256-bit 
+    (32 bytes) key. The results are written back into the same list.
+
+    :param data: List with data bytes to decrypt. The decrypted bytes are stored in the
+           same list.
+    :param len: The number of bytes in the data list to decrypt. It must be a multiple
+           of 16, as this is the AES256 minimal block size.
+    :param key: The 256-bit decryption key as a list with 32 bytes.
+    :returns: BLT_RESULT_OK if successful, BLT_RESULT_ERROR_xxx otherwise.
+    :rtype: int
+
+    :Example:
+    ::
+
+        import openblt
+
+        TODO
+    """
+    # Initialize the result.
+    result = BLT_RESULT_ERROR_GENERIC
+    # Check if the shared library function could be imported.
+    if BltUtilCryptoAes256Decrypt is not None:
+        # Convert the list with source data to a c-byte array.
+        src_data_type = ctypes.c_uint8 * len
+        src_data = src_data_type()
+        for i in range(0, len):
+            src_data[i] = ctypes.c_uint8(data[i])
+        # Convert the list with key data to a c-byte array.
+        key_data_type = ctypes.c_uint8 * 32
+        key_data = key_data_type()
+        for i in range(0, 32):
+            key_data[i] = ctypes.c_uint8(key[i])
+        # Call the function in the shared library.
+        result = BltUtilCryptoAes256Decrypt(src_data, ctypes.c_uint32(len), key_data)
+        # Now write the decrypted data back into the list
+        if result == BLT_RESULT_OK:
+            for i in range(0, len):
+                data[i] = src_data[i]
+    # Give the result back to the caller.
+    return result
 
 
 # ********************************* end of lib.py ***************************************

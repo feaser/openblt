@@ -59,4 +59,15 @@ from openblt.lib import firmware_remove_data
 from openblt.lib import firmware_clear_data
 
 
+# ***************************************************************************************
+#              G E N E R I C   U T I L I T I E S
+# ***************************************************************************************
+from openblt.lib import util_crc16_calculate
+from openblt.lib import util_crc32_calculate
+from openblt.lib import util_time_get_system_time
+from openblt.lib import util_time_delay_ms
+from openblt.lib import util_crypto_aes256_encrypt
+from openblt.lib import util_crypto_aes256_decrypt
+
+
 # ********************************* end of __init__.py **********************************
