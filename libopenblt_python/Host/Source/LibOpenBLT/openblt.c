@@ -69,7 +69,7 @@ char const bltVersionString[] = BLT_VERSION_STRING;
 ****************************************************************************************/
 /************************************************************************************//**
 ** \brief     Obtains the version number of the library as an integer. The number has two
-**            digits for major-, minor-, and build-version. Version 1.05.12 would for
+**            digits for major-, minor-, and patch-version. Version 1.05.12 would for
 **            example return 10512.
 ** \return    Library version number as an integer.
 **
