@@ -45,6 +45,27 @@ from openblt.lib import version_get_string
 
 
 # ***************************************************************************************
+#              S E S S I O N   /   T R A N S P O R T   L A Y E R S
+# ***************************************************************************************
+from openblt.lib import BLT_SESSION_XCP_V10
+from openblt.lib import BLT_TRANSPORT_XCP_V10_RS232
+from openblt.lib import BLT_TRANSPORT_XCP_V10_CAN
+from openblt.lib import BLT_TRANSPORT_XCP_V10_USB
+from openblt.lib import BLT_TRANSPORT_XCP_V10_NET
+from openblt.lib import BltSessionSettingsXcpV10
+from openblt.lib import BltTransportSettingsXcpV10Rs232
+from openblt.lib import BltTransportSettingsXcpV10Can
+from openblt.lib import BltTransportSettingsXcpV10Net
+from openblt.lib import session_init
+from openblt.lib import session_terminate
+from openblt.lib import session_start
+from openblt.lib import session_stop
+from openblt.lib import session_clear_memory
+from openblt.lib import session_write_data
+from openblt.lib import session_read_data
+
+
+# ***************************************************************************************
 #              F I R M W A R E   D A T A
 # ***************************************************************************************
 from openblt.lib import BLT_FIRMWARE_PARSER_SRECORD

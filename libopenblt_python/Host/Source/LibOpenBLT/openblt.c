@@ -290,7 +290,7 @@ LIBOPENBLT_EXPORT void BltSessionStop(void)
 /************************************************************************************//**
 ** \brief     Requests the target to erase the specified range of memory on the target.
 **            Note that the target automatically aligns this to the erasable memory
-**            block sizes. This typically results in more memory being erased that the
+**            block sizes. This typically results in more memory being erased than the
 **            range that was specified here. Refer to the target implementation for
 **            details.
 ** \param     address The starting memory address for the erase operation.
