@@ -122,8 +122,8 @@ typedef struct t_blt_session_settings_xcp_v10
 {
   uint16_t timeoutT1;            /**< Command response timeout in milliseconds.        */
   uint16_t timeoutT3;            /**< Start programming timeout in milliseconds.       */
-  uint16_t timeoutT4;            /**< Erase memory timeout in milliseonds.             */
-  uint16_t timeoutT5;            /**< Program memory and reset timeout in milliseonds. */
+  uint16_t timeoutT4;            /**< Erase memory timeout in milliseconds.            */
+  uint16_t timeoutT5;            /**< Program memory and reset timeout in milliseconds.*/
   uint16_t timeoutT7;            /**< Busy wait timer timeout in milliseonds.          */
   char const * seedKeyFile;      /**< Seed/key algorithm library filename.             */
   uint8_t connectMode;           /**< Connection mode parameter in XCP connect command.*/
@@ -165,10 +165,10 @@ typedef struct t_blt_transport_settings_xcp_v10_can
   uint32_t useExtended;          /**< Boolean to configure 29-bit CAN identifiers.     */
 } tBltTransportSettingsXcpV10Can;
 
-/** \brief Structure layout of the XCP version 1.0 RS232 transport layer settings. The
- *         portName field is platform dependent. On Linux based systems this should be
- *         the filename of the tty-device, such as "/dev/tty0". On Windows based systems
- *         it should be the name of the COM-port, such as "COM1".
+/** \brief Structure layout of the XCP version 1.0 NET transport layer settings. The
+ *         address field can be set to either the IP address or the hostname, such as
+ *         "192.168.178.23" or "mymicro.mydomain.com". The port should be set to the 
+ *         TCP port number that the bootloader target listens on.
  */
 typedef struct t_blt_transport_settings_xcp_v10_net
 {
