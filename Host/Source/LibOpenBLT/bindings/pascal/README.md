@@ -1,12 +1,12 @@
 ### Pascal wrapper for LibOpenBLT
 The OpenBLT Host Library ([LibOpenBLT](https://www.feaser.com/openblt/doku.php?id=manual:libopenblt)) contains an application programming interface (API) for communicating with a microcontroller target, running the OpenBLT bootloader, for making firmware updates on the target. The goal of the OpenBLT Host Library is to empower you to quickly and efficiently create your own firmware update tool, in case you don’t prefer the standard MicroBoot and BootCommander tools that are included in the OpenBLT bootloader package.
 
-This directory contains the pascal wrapper for LibOpenBLT, which enables you to quickly develop your own firmware update tool in the Pascal programming language, for example with the [Lazarus IDE](https://www.lazarus-ide.org/) or [Delphi](https://www.embarcadero.com/products/delphi).
+This directory contains the Pascal wrapper for LibOpenBLT, which enables you to quickly develop your own firmware update tool in the Pascal programming language, for example with the [Lazarus IDE](https://www.lazarus-ide.org/) or [Delphi](https://www.embarcadero.com/products/delphi).
 
 ### Using the wrapper
 To use the Pascal wrapper for LibOpenBLT, copy the file **openblt.pas** from this directory to where you have the sources of your Lazarus or Delphi project. Next, add **OpenBlt** to your unit's **uses** section. Now you can call all the **BltXxx** functions and procedures of LibOpenBLT.
 
-Here is a minimal pascal console program that demonstrates how to display the version of LibOpenBLT:
+Here is a minimal Pascal console program that demonstrates how to display the version of LibOpenBLT:
 
 ```pascal
 program MyBootTool;
@@ -21,7 +21,7 @@ end.
 ### Run-time libraries
 Copy the LibOpenBLT related run-time libraries into the directory where your program's executable is located. Refer to the following section on the OpenBLT Wiki for a overview of these run-time libraries:
 
-https://www.feaser.com/openblt/doku.php?id=manual:libopenblt#run-time_libraries.
+https://www.feaser.com/openblt/doku.php?id=manual:libopenblt#run-time_libraries
 
 These run-time libraries can be found in the ./Host directory of the OpenBLT bootloader package. These run-time libraries should also be included, when distributing your program.
 
