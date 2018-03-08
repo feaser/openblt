@@ -34,6 +34,7 @@ __docformat__ = 'reStructuredText'
 # ***************************************************************************************
 import ctypes
 import sys
+import os
 
 
 # ***************************************************************************************
@@ -55,8 +56,13 @@ else:
 sharedLibrary = 'libopenblt' + sharedLibraryExt
 
 
-# Get a handle to the shared library.
-sharedLibraryHandle = ctypes.CDLL(sharedLibrary)
+# Get a handle to the shared library. First assume that the shared library is in the
+# current working directory. If not, then assume that it is located somewhere on the
+# LD_LIBRARY_PATH.
+if os.path.exists(os.path.join(os.getcwd(), sharedLibrary)):
+    sharedLibraryHandle = ctypes.CDLL(os.path.join(os.getcwd(), sharedLibrary))
+else:
+    sharedLibraryHandle = ctypes.CDLL(sharedLibrary)
 
 
 # ***************************************************************************************
