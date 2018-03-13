@@ -54,7 +54,6 @@ type
     BtnExit: TButton;
     BtnSettings: TButton;
     LblLibOpenBltVersion: TLabel;
-    PnlFooterSpacer: TPanel;
     PnlFooterButtons: TPanel;
     PnlFooter: TPanel;
     PnlBody: TPanel;
@@ -95,7 +94,6 @@ begin
   // Clear panel captions as these are only needed as hint during design time.
   PnlBody.Caption := '';
   PnlFooter.Caption := '';
-  PnlFooterSpacer.Caption := '';
   PnlFooterButtons.Caption := '';
   // Create instance to manage the program's configuration and add the configuration
   // group instances.

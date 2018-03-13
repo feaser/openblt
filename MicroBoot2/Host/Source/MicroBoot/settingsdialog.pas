@@ -38,8 +38,8 @@ interface
 // Includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, CurrentConfig,
-  ConfigGroups;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  StdCtrls, ComCtrls, CurrentConfig;
 
 
 //***************************************************************************************
@@ -47,7 +47,31 @@ uses
 //***************************************************************************************
 //------------------------------ TSettingsForm ------------------------------------------
 type
+
+  { TSettingsForm }
+
   TSettingsForm = class(TForm)
+    BtnCancel: TButton;
+    BtnOk: TButton;
+    CmbProtocol: TComboBox;
+    CmbInterface: TComboBox;
+    LblProtocol: TLabel;
+    LblInterface: TLabel;
+    PageCtrlSettings: TPageControl;
+    PnlMiscellaneousBody: TPanel;
+    PnlCommunicationBody: TPanel;
+    PnlCommunicationTop: TPanel;
+    PnlSessionBody: TPanel;
+    PnlSessionTop: TPanel;
+    PnlBody: TPanel;
+    PnlFooterButtons: TPanel;
+    PnlFooter: TPanel;
+    TabSessionProtocol: TTabSheet;
+    TabCommunicationInterface: TTabSheet;
+    TabMiscellaneous: TTabSheet;
+    procedure BtnCancelClick(Sender: TObject);
+    procedure BtnOkClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FCurrentConfig: TCurrentConfig;
   public
@@ -58,6 +82,58 @@ type
 implementation
 
 {$R *.lfm}
+
+//***************************************************************************************
+// NAME:           FormCreate
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Form constructor.
+//
+//***************************************************************************************
+procedure TSettingsForm.FormCreate(Sender: TObject);
+begin
+  // Clear panel captions as these are only needed as hint during design time.
+  PnlBody.Caption := '';
+  PnlFooter.Caption := '';
+  PnlFooterButtons.Caption := '';
+  PnlSessionTop.Caption := '';
+  PnlSessionBody.Caption := '';
+  PnlCommunicationTop.Caption := '';
+  PnlCommunicationBody.Caption := '';
+  PnlMiscellaneousBody.Caption := '';
+  // Set the active page on the page control.
+  PageCtrlSettings.ActivePage := TabSessionProtocol;
+end; //*** end of FormCreate ***
+
+
+//***************************************************************************************
+// NAME:           BtnOkClick
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the button is clicked.
+//
+//***************************************************************************************
+procedure TSettingsForm.BtnOkClick(Sender: TObject);
+begin
+  { TODO : Update the settings in FCurrentConfig based on the dialog configured settings. }
+  // Set the modal result value, which also closes the dialog.
+  ModalResult := mrOK;
+end; //*** end of BtnOkClick ***
+
+
+//***************************************************************************************
+// NAME:           BtnCancelClick
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the button is clicked.
+//
+//***************************************************************************************
+procedure TSettingsForm.BtnCancelClick(Sender: TObject);
+begin
+  // Set the modal result value, which also closes the dialog.
+  ModalResult := mrCancel;
+end; //*** end of BtnCancelClick ***
+
 
 //---------------------------------------------------------------------------------------
 //-------------------------------- TSettingsForm ----------------------------------------
@@ -73,6 +149,8 @@ constructor TSettingsForm.Create(TheOwner: TComponent; CurrentConfig: TCurrentCo
 begin
   // Call the inherited constructor.
   inherited Create(TheOwner);
+  // Check parameters.
+  Assert(CurrentConfig <> nil, 'Current configuration instance cannot be null');
   // Store the configuration instance.
   FCurrentConfig := CurrentConfig;
 end; //*** end of Create ***
