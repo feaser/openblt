@@ -60,9 +60,46 @@ type
     property Height: Integer read FHeight write FHeight;
   end;
 
+  //------------------------------ TSessionConfig ---------------------------------------
+  TSessionConfig = class (TConfigGroup)
+  private
+    FSession: String;
+  public
+    const GROUP_NAME='Session';
+    constructor Create;
+    procedure Defaults; override;
+    procedure LoadFromFile(xmlConfig: TXMLConfig); override;
+    procedure SaveToFile(xmlConfig: TXMLConfig); override;
+    property Session: String read FSession write FSession;
+  end;
+
+  //------------------------------ TSessionXcpConfig ------------------------------------
+  TSessionXcpConfig = class (TConfigGroup)
+  private
+    FTimeoutT1: Integer;
+    FTimeoutT3: Integer;
+    FTimeoutT4: Integer;
+    FTimeoutT5: Integer;
+    FTimeoutT7: Integer;
+    FConnectMode: Integer;
+    FSeedKey: String;
+  public
+    const GROUP_NAME='Session/Xcp';
+    constructor Create;
+    procedure Defaults; override;
+    procedure LoadFromFile(xmlConfig: TXMLConfig); override;
+    procedure SaveToFile(xmlConfig: TXMLConfig); override;
+    property TimeoutT1: Integer read FTimeoutT1 write FTimeoutT1;
+    property TimeoutT3: Integer read FTimeoutT3 write FTimeoutT3;
+    property TimeoutT4: Integer read FTimeoutT4 write FTimeoutT4;
+    property TimeoutT5: Integer read FTimeoutT5 write FTimeoutT5;
+    property TimeoutT7: Integer read FTimeoutT7 write FTimeoutT7;
+    property ConnectMode: Integer read FConnectMode write FConnectMode;
+    property SeedKey: String read FSeedKey write FSeedKey;
+  end;
+
 
 implementation
-
 //---------------------------------------------------------------------------------------
 //-------------------------------- TMainWindowConfig ------------------------------------
 //---------------------------------------------------------------------------------------
@@ -108,7 +145,7 @@ end; //*** end of Defaults ***
 procedure TMainWindowConfig.LoadFromFile(xmlConfig: TXMLConfig);
 begin
   // Open this group's key.
-  xmlConfig.OpenKey(WideString(Self.Name));
+  xmlConfig.OpenKey(UnicodeString(Self.Name));
   // Load all settings.
   FWidth := xmlConfig.GetValue('width', FWidth);
   FHeight := xmlConfig.GetValue('height', FHeight);
@@ -128,10 +165,170 @@ end; //*** end of LoadFromFile ***/
 procedure TMainWindowConfig.SaveToFile(xmlConfig: TXMLConfig);
 begin
   // Open this group's key.
-  xmlConfig.OpenKey(WideString(Self.Name));
+  xmlConfig.OpenKey(UnicodeString(Self.Name));
   // Store all settings.
   xmlConfig.SetValue('width', FWidth);
   xmlConfig.SetValue('height', FHeight);
+  // Close this group's key.
+  xmlConfig.CloseKey;
+end; //*** end of SaveToFile ***
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TSessionConfig ---------------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TSessionConfig.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Set fields.
+  FName := GROUP_NAME;
+  Defaults;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Defaults
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Sets default values for this group's settings.
+//
+//***************************************************************************************
+procedure TSessionConfig.Defaults;
+begin
+  FSession := 'xcp';
+end; //*** end of Defaults ***
+
+
+//***************************************************************************************
+// NAME:           LoadFromFile
+// PARAMETER:      xmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TSessionConfig.LoadFromFile(xmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  xmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Load all settings.
+  FSession := String(xmlConfig.GetValue('session', UnicodeString(FSession)));
+  // Close this group's key.
+  xmlConfig.CloseKey;
+end; //*** end of LoadFromFile ***/
+
+
+//***************************************************************************************
+// NAME:           SaveToFile
+// PARAMETER:      xmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Saves this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TSessionConfig.SaveToFile(xmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  xmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Store all settings.
+  xmlConfig.SetValue('session', UnicodeString(FSession));
+  // Close this group's key.
+  xmlConfig.CloseKey;
+end; //*** end of SaveToFile ***
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TSessionXcpConfig ------------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TSessionXcpConfig.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Set fields.
+  FName := GROUP_NAME;
+  Defaults;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Defaults
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Sets default values for this group's settings.
+//
+//***************************************************************************************
+procedure TSessionXcpConfig.Defaults;
+begin
+  FTimeoutT1 := 1000;
+  FTimeoutT3 := 2000;
+  FTimeoutT4 := 10000;
+  FTimeoutT5 := 1000;
+  FTimeoutT7 := 2000;
+  FConnectMode := 0;
+  FSeedKey := '';
+end; //*** end of Defaults ***
+
+
+//***************************************************************************************
+// NAME:           LoadFromFile
+// PARAMETER:      xmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TSessionXcpConfig.LoadFromFile(xmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  xmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Load all settings.
+  FTimeoutT1 := xmlConfig.GetValue('timeout_t1', FTimeoutT1);
+  FTimeoutT3 := xmlConfig.GetValue('timeout_t3', FTimeoutT3);
+  FTimeoutT4 := xmlConfig.GetValue('timeout_t4', FTimeoutT4);
+  FTimeoutT5 := xmlConfig.GetValue('timeout_t5', FTimeoutT5);
+  FTimeoutT7 := xmlConfig.GetValue('timeout_t7', FTimeoutT7);
+  FConnectMode := xmlConfig.GetValue('connect_mode', FConnectMode);
+  FSeedKey := String(xmlConfig.GetValue('seed_key', UnicodeString(FSeedKey)));
+  // Close this group's key.
+  xmlConfig.CloseKey;
+end; //*** end of LoadFromFile ***/
+
+
+//***************************************************************************************
+// NAME:           SaveToFile
+// PARAMETER:      xmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Saves this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TSessionXcpConfig.SaveToFile(xmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  xmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Store all settings.
+  xmlConfig.SetValue('timeout_t1', FTimeoutT1);
+  xmlConfig.SetValue('timeout_t3', FTimeoutT3);
+  xmlConfig.SetValue('timeout_t4', FTimeoutT4);
+  xmlConfig.SetValue('timeout_t5', FTimeoutT5);
+  xmlConfig.SetValue('timeout_t7', FTimeoutT7);
+  xmlConfig.SetValue('connect_mode', FConnectMode);
+  xmlConfig.SetValue('seed_key', UnicodeString(FSeedKey));
   // Close this group's key.
   xmlConfig.CloseKey;
 end; //*** end of SaveToFile ***

@@ -41,7 +41,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, MainUnit, CurrentConfig, ConfigGroups, SettingsDialog
+  Forms, MainUnit, CurrentConfig, ConfigGroups, SettingsDialog, SessionXcpDialog
   { you can add units after this };
 
 {$R *.res}

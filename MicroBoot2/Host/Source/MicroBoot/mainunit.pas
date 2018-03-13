@@ -47,9 +47,6 @@ uses
 //***************************************************************************************
 //------------------------------ TMainForm ----------------------------------------------
 type
-
-  { TMainForm }
-
   TMainForm = class(TForm)
     BtnExit: TButton;
     BtnSettings: TButton;
@@ -99,6 +96,8 @@ begin
   // group instances.
   FCurrentConfig := TCurrentConfig.Create;
   FCurrentConfig.AddGroup(TMainWindowConfig.Create);
+  FCurrentConfig.AddGroup(TSessionConfig.Create);
+  FCurrentConfig.AddGroup(TSessionXcpConfig.Create);
   // Load the program's configuration from the configuration file.
   FCurrentConfig.LoadFromFile;
   // Read and show the LibOpenBLT version in a label.

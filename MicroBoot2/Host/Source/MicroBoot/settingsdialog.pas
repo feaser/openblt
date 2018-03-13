@@ -39,7 +39,7 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, ComCtrls, CurrentConfig;
+  StdCtrls, ComCtrls, CurrentConfig, ConfigGroups, SessionXcpDialog;
 
 
 //***************************************************************************************
@@ -71,9 +71,14 @@ type
     TabMiscellaneous: TTabSheet;
     procedure BtnCancelClick(Sender: TObject);
     procedure BtnOkClick(Sender: TObject);
+    procedure CmbProtocolChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FCurrentConfig: TCurrentConfig;
+    FSessionConfig: TSessionConfig;
+    FSessionXcpForm: TSessionXcpForm;
+    procedure UpdateSessionPanel;
   public
     constructor Create(TheOwner: TComponent; CurrentConfig: TCurrentConfig); reintroduce;
   end;
@@ -83,6 +88,9 @@ implementation
 
 {$R *.lfm}
 
+//---------------------------------------------------------------------------------------
+//-------------------------------- TSettingsForm ----------------------------------------
+//---------------------------------------------------------------------------------------
 //***************************************************************************************
 // NAME:           FormCreate
 // PARAMETER:      Sender Source of the event.
@@ -106,10 +114,46 @@ begin
   // Set fixed space between labels and the related controls.
   CmbProtocol.Left := LblProtocol.Left + LblProtocol.Width + 8;
   CmbInterface.Left := LblInterface.Left + LblInterface.Width + 8;
-  //LblProtocol.Left := CmbProtocol.Left - LblProtocol.Width - 5;
-  //LblInterface.Left := CmbInterface.Left - LblInterface.Width - 5;
-
+  // Construct the session configuration instance and initialize its settings.
+  FSessionConfig := TSessionConfig.Create;
+  with FCurrentConfig.Groups[TSessionConfig.GROUP_NAME] as TSessionConfig do
+  begin
+    FSessionConfig.Session := Session;
+  end;
+  { TODO : Construct the transport configuration instance and initialize its settings. }
+  // Construct all embeddable dialogs and initialize their configuration settings.
+  FSessionXcpForm := TSessionXcpForm.Create(Self);
+  FSessionXcpForm.Parent := PnlSessionBody;
+  FSessionXcpForm.BorderStyle := bsNone;
+  FSessionXcpForm.Align := alClient;
+  with FCurrentConfig.Groups[TSessionXcpConfig.GROUP_NAME] as TSessionXcpConfig do
+  begin
+    FSessionXcpForm.Config.TimeoutT1 := TimeoutT1;
+    FSessionXcpForm.Config.TimeoutT3 := TimeoutT3;
+    FSessionXcpForm.Config.TimeoutT4 := TimeoutT4;
+    FSessionXcpForm.Config.TimeoutT5 := TimeoutT5;
+    FSessionXcpForm.Config.TimeoutT7 := TimeoutT7;
+    FSessionXcpForm.Config.ConnectMode := ConnectMode;
+    FSessionXcpForm.Config.SeedKey := SeedKey;
+  end;
+  // Embed the correct session dialog based on the currently configured session.
+  UpdateSessionPanel;
+  { TODO : Continue with constructing the transport settings embeddable dialogs and init their settings. }
 end; //*** end of FormCreate ***
+
+
+//***************************************************************************************
+// NAME:           FormDestroy
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Form destructor.
+//
+//***************************************************************************************
+procedure TSettingsForm.FormDestroy(Sender: TObject);
+begin
+  // Release the session configuration instance.
+  FSessionConfig.Free;
+end; //*** end of FormDestroy ***
 
 
 //***************************************************************************************
@@ -121,10 +165,51 @@ end; //*** end of FormCreate ***
 //***************************************************************************************
 procedure TSettingsForm.BtnOkClick(Sender: TObject);
 begin
-  { TODO : Update the settings in FCurrentConfig based on the dialog configured settings. }
+  // Update the session settings in current config.
+  with FCurrentConfig.Groups[TSessionConfig.GROUP_NAME] as TSessionConfig do
+  begin
+    Session := FSessionConfig.Session;
+  end;
+  // Update the XCP session settings in current config.
+  with FCurrentConfig.Groups[TSessionXcpConfig.GROUP_NAME] as TSessionXcpConfig do
+  begin
+    TimeoutT1 := FSessionXcpForm.Config.TimeoutT1;
+    TimeoutT3 := FSessionXcpForm.Config.TimeoutT3;
+    TimeoutT4 := FSessionXcpForm.Config.TimeoutT4;
+    TimeoutT5 := FSessionXcpForm.Config.TimeoutT5;
+    TimeoutT7 := FSessionXcpForm.Config.TimeoutT7;
+    ConnectMode := FSessionXcpForm.Config.ConnectMode;
+    SeedKey := FSessionXcpForm.Config.SeedKey;
+  end;
+  { TODO : Update the settings in FCurrentConfig based on the other configured settings. }
   // Set the modal result value, which also closes the dialog.
   ModalResult := mrOK;
 end; //*** end of BtnOkClick ***
+
+
+//***************************************************************************************
+// NAME:           CmbProtocolChange
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the selected entry in the combobox
+//                 changed.
+//
+//***************************************************************************************
+procedure TSettingsForm.CmbProtocolChange(Sender: TObject);
+begin
+  // Configure the correct protocol session based on the selected combobox entry.
+  if CmbProtocol.Text = 'XCP version 1.0' then
+  begin
+    FSessionConfig.Session := 'xcp';
+  end
+  // Unknown protocol session
+  else
+  begin
+    Assert(False, 'Unknown session protocol encountered in the combobox.');
+  end;
+  // Embed the correct session dialog based on the currently configured session.
+  UpdateSessionPanel;
+end; //*** end of CmbProtocolChange ***
 
 
 //***************************************************************************************
@@ -141,9 +226,32 @@ begin
 end; //*** end of BtnCancelClick ***
 
 
-//---------------------------------------------------------------------------------------
-//-------------------------------- TSettingsForm ----------------------------------------
-//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           UpdateSessionPanel
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Embeds the correct protocol session configuration dialog.
+//
+//***************************************************************************************
+procedure TSettingsForm.UpdateSessionPanel;
+begin
+  // First hide all protocol session related forms.
+  FSessionXcpForm.Hide;
+  // Show the correct protocol session form.
+  if FSessionConfig.Session = 'xcp' then
+  begin
+    CmbProtocol.ItemIndex := 0;
+    FSessionXcpForm.Show;
+  end
+  // Default configuration
+  else
+  begin
+    CmbProtocol.ItemIndex := 0;
+    FSessionXcpForm.Show;
+  end;
+end; //*** end of UpdateSessionPanel ***
+
+
 //***************************************************************************************
 // NAME:           Create
 // PARAMETER:      CurrentConfig Current configuration instance.
