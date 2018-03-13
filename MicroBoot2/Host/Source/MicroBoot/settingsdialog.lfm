@@ -1,7 +1,7 @@
 object SettingsForm: TSettingsForm
-  Left = 705
+  Left = 1272
   Height = 358
-  Top = 401
+  Top = 431
   Width = 422
   ActiveControl = BtnOk
   Caption = 'Settings'
@@ -107,9 +107,10 @@ object SettingsForm: TSettingsForm
           object LblProtocol: TLabel
             Left = 24
             Height = 17
-            Top = 12
+            Top = 11
             Width = 102
             Alignment = taRightJustify
+            AutoSize = False
             Caption = 'Protocol selection:'
             ParentColor = False
           end
@@ -143,7 +144,7 @@ object SettingsForm: TSettingsForm
           object LblInterface: TLabel
             Left = 19
             Height = 17
-            Top = 12
+            Top = 11
             Width = 107
             Alignment = taRightJustify
             Caption = 'Interface selection:'

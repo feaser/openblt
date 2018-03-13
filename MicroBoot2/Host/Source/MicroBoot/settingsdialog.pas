@@ -103,6 +103,10 @@ begin
   PnlMiscellaneousBody.Caption := '';
   // Set the active page on the page control.
   PageCtrlSettings.ActivePage := TabSessionProtocol;
+  // Set fixed space between labels and the related controls.
+  LblProtocol.Left := CmbProtocol.Left - LblProtocol.Width - 5;
+  LblInterface.Left := CmbInterface.Left - LblInterface.Width - 5;
+
 end; //*** end of FormCreate ***
 
 
