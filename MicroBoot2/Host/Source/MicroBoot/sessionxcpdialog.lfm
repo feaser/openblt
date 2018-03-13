@@ -22,7 +22,7 @@ object SessionXcpForm: TSessionXcpForm
   object LblTimeoutT1: TLabel
     Left = 23
     Height = 17
-    Top = 188
+    Top = 187
     Width = 17
     Caption = 'T1:'
     ParentColor = False
@@ -40,7 +40,7 @@ object SessionXcpForm: TSessionXcpForm
   object LblTimeoutT3: TLabel
     Left = 23
     Height = 17
-    Top = 228
+    Top = 227
     Width = 17
     Caption = 'T3:'
     ParentColor = False
@@ -58,7 +58,7 @@ object SessionXcpForm: TSessionXcpForm
   object LblTimeoutT4: TLabel
     Left = 23
     Height = 17
-    Top = 268
+    Top = 267
     Width = 17
     Caption = 'T4:'
     ParentColor = False
@@ -76,7 +76,7 @@ object SessionXcpForm: TSessionXcpForm
   object LblTimeoutT5: TLabel
     Left = 240
     Height = 17
-    Top = 188
+    Top = 187
     Width = 17
     Caption = 'T5:'
     ParentColor = False
@@ -94,7 +94,7 @@ object SessionXcpForm: TSessionXcpForm
   object LblTimeoutT7: TLabel
     Left = 240
     Height = 17
-    Top = 228
+    Top = 227
     Width = 17
     Caption = 'T7:'
     ParentColor = False
@@ -122,7 +122,7 @@ object SessionXcpForm: TSessionXcpForm
   object LblConnectMode: TLabel
     Left = 23
     Height = 17
-    Top = 36
+    Top = 35
     Width = 35
     Caption = 'Mode:'
     ParentColor = False
@@ -133,7 +133,6 @@ object SessionXcpForm: TSessionXcpForm
     Hint = 'Connection mode value sent in the XCP connect command as a 8-bit value (Default=0)'
     Top = 32
     Width = 120
-    DropDownCount = 4
     ItemHeight = 0
     ItemIndex = 0
     Items.Strings = (
@@ -421,7 +420,7 @@ object SessionXcpForm: TSessionXcpForm
   object EdtSeedKey: TEdit
     Left = 23
     Height = 29
-    Hint = 'Seed/key algorithm shared library filename (Optional).'
+    Hint = 'Seed/key algorithm shared library filename (Optional)'
     Top = 120
     Width = 281
     ParentShowHint = False
@@ -430,7 +429,7 @@ object SessionXcpForm: TSessionXcpForm
   end
   object BtnSeedKey: TButton
     Left = 312
-    Height = 29
+    Height = 28
     Top = 120
     Width = 83
     Caption = 'Browse..'
