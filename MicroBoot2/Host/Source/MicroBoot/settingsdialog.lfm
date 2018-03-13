@@ -11,7 +11,7 @@ object SettingsForm: TSettingsForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poOwnerFormCenter
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.6.4.0'
   object PnlFooter: TPanel
     Left = 0
     Height = 46
@@ -29,6 +29,7 @@ object SettingsForm: TSettingsForm
       Top = 0
       Width = 194
       Align = alRight
+      BevelOuter = bvNone
       Caption = 'PnlFooterButtons'
       ClientHeight = 46
       ClientWidth = 194
@@ -75,27 +76,27 @@ object SettingsForm: TSettingsForm
       TabOrder = 0
       object TabSessionProtocol: TTabSheet
         Caption = 'Session Protocol'
-        ClientHeight = 364
-        ClientWidth = 412
+        ClientHeight = 367
+        ClientWidth = 414
         object PnlSessionTop: TPanel
           Left = 0
           Height = 44
           Top = 0
-          Width = 412
+          Width = 414
           Align = alTop
           BevelOuter = bvNone
           Caption = 'PnlSessionTop'
           ClientHeight = 44
-          ClientWidth = 412
+          ClientWidth = 414
           TabOrder = 0
           object CmbProtocol: TComboBox
             Left = 120
-            Height = 31
+            Height = 23
             Hint = 'Select the communication protocol to use during firmware updates'
             Top = 8
             Width = 200
             DropDownCount = 4
-            ItemHeight = 0
+            ItemHeight = 15
             Items.Strings = (
               'XCP version 1.0'
             )
@@ -107,18 +108,18 @@ object SettingsForm: TSettingsForm
           end
           object LblProtocol: TLabel
             Left = 8
-            Height = 17
+            Height = 15
             Top = 11
-            Width = 102
+            Width = 98
             Caption = 'Protocol selection:'
             ParentColor = False
           end
         end
         object PnlSessionBody: TPanel
           Left = 0
-          Height = 320
+          Height = 323
           Top = 44
-          Width = 412
+          Width = 414
           Align = alClient
           BevelOuter = bvNone
           Caption = 'PnlSessionBody'
@@ -150,12 +151,12 @@ object SettingsForm: TSettingsForm
           end
           object CmbInterface: TComboBox
             Left = 120
-            Height = 27
+            Height = 23
             Hint = 'Select the communication hardware interface to use during firmware updates'
             Top = 8
             Width = 200
             DropDownCount = 4
-            ItemHeight = 0
+            ItemHeight = 15
             ItemIndex = 0
             Items.Strings = (
               'XCP on RS232'
