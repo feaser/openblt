@@ -1,7 +1,7 @@
-program MicroBoot;
+unit SettingsDialog;
 //***************************************************************************************
-//  Description: Contains the main program entry.
-//    File Name: MicroBoot.lpr
+//  Description: Implements the settings dialog for configuring MicroBoot.
+//    File Name: settingsdialog.pas
 //
 //---------------------------------------------------------------------------------------
 //                          C O P Y R I G H T
@@ -33,24 +33,50 @@ program MicroBoot;
 {$MODE objfpc}{$H+}
 {$ENDIF}
 
+interface
 //***************************************************************************************
 // Includes
 //***************************************************************************************
 uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
-  cthreads,
-  {$ENDIF}{$ENDIF}
-  Interfaces, // this includes the LCL widgetset
-  Forms, MainUnit, CurrentConfig, ConfigGroups, SettingsDialog
-  { you can add units after this };
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, CurrentConfig,
+  ConfigGroups;
 
-{$R *.res}
 
+//***************************************************************************************
+// Type Definitions
+//***************************************************************************************
+//------------------------------ TSettingsForm ------------------------------------------
+type
+  TSettingsForm = class(TForm)
+  private
+    FCurrentConfig: TCurrentConfig;
+  public
+    constructor Create(TheOwner: TComponent; CurrentConfig: TCurrentConfig); reintroduce;
+  end;
+
+
+implementation
+
+{$R *.lfm}
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TSettingsForm ----------------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      CurrentConfig Current configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TSettingsForm.Create(TheOwner: TComponent; CurrentConfig: TCurrentConfig);
 begin
-  RequireDerivedFormResource:=True;
-  Application.Initialize;
-  Application.CreateForm(TMainForm, MainForm);
-  Application.Run;
+  // Call the inherited constructor.
+  inherited Create(TheOwner);
+  // Store the configuration instance.
+  FCurrentConfig := CurrentConfig;
+end; //*** end of Create ***
+
 end.
-//******************************** end of MicroBoot.lpr *********************************
+//******************************** end of settingsdialog.pas ****************************
 

@@ -39,7 +39,7 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, CurrentConfig, ConfigGroups, OpenBlt;
+  ExtCtrls, CurrentConfig, ConfigGroups, OpenBlt, SettingsDialog;
 
 
 //***************************************************************************************
@@ -47,6 +47,9 @@ uses
 //***************************************************************************************
 //------------------------------ TMainForm ----------------------------------------------
 type
+
+  { TMainForm }
+
   TMainForm = class(TForm)
     BtnExit: TButton;
     BtnSettings: TButton;
@@ -56,6 +59,7 @@ type
     PnlFooter: TPanel;
     PnlBody: TPanel;
     procedure BtnExitClick(Sender: TObject);
+    procedure BtnSettingsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -144,6 +148,26 @@ begin
   // Exit the program.
   Close;
 end; //*** end of BtnExitClick ***
+
+
+//***************************************************************************************
+// NAME:           BtnSettingsClick
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the button is clicked.
+//
+//***************************************************************************************
+procedure TMainForm.BtnSettingsClick(Sender: TObject);
+var
+  settingsDialog: TSettingsForm;
+begin
+  // Create the dialog and make us the owner.
+  settingsDialog := TSettingsForm.Create(Self, FCurrentConfig);
+  // Show the dialog in the modal state.
+  settingsDialog.ShowModal;
+  // Release the dialog.
+  settingsDialog.Free;
+end; //*** end of BtnSettingsClick ***
 
 end.
 //******************************** end of mainunit.pas **********************************
