@@ -96,6 +96,9 @@ procedure TSessionXcpForm.FormCreate(Sender: TObject);
 begin
   // Create configuration group instance.
   FSessionXcpConfig := TSessionXcpConfig.Create;
+  // Align browse button vertically to the related edit box.
+  BtnSeedKey.Top := EdtSeedKey.Top;
+  BtnSeedKey.Height := EdtSeedKey.Height;
 end; //*** end of FormCreate ***
 
 
