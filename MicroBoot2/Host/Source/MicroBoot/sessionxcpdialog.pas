@@ -98,7 +98,7 @@ begin
   FSessionXcpConfig := TSessionXcpConfig.Create;
   // Align browse button vertically to the related edit box.
   BtnSeedKey.Top := EdtSeedKey.Top;
-  BtnSeedKey.Height := EdtSeedKey.Height;
+  BtnSeedKey.Height := EdtSeedKey.Height + 1;
 end; //*** end of FormCreate ***
 
 

@@ -8,12 +8,12 @@ object SessionXcpForm: TSessionXcpForm
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '1.6.2.0'
   object LblTimeouts: TLabel
     Left = 8
-    Height = 15
+    Height = 17
     Top = 160
-    Width = 52
+    Width = 56
     Caption = 'Timeouts'
     Font.Style = [fsBold]
     ParentColor = False
@@ -21,15 +21,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT1: TLabel
     Left = 23
-    Height = 15
+    Height = 17
     Top = 187
-    Width = 16
+    Width = 17
     Caption = 'T1:'
     ParentColor = False
   end
   object EdtTimeoutT1: TEdit
     Left = 64
-    Height = 23
+    Height = 29
     Hint = 'Command response timeout in milliseconds as a 16-bit value (Default = 1000 ms)'
     Top = 184
     Width = 120
@@ -39,15 +39,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT3: TLabel
     Left = 23
-    Height = 15
+    Height = 17
     Top = 227
-    Width = 16
+    Width = 17
     Caption = 'T3:'
     ParentColor = False
   end
   object EdtTimeoutT3: TEdit
     Left = 64
-    Height = 23
+    Height = 29
     Hint = 'Start programming timeout in milliseconds as a 16-bit value (Default = 2000 ms)'
     Top = 224
     Width = 120
@@ -57,15 +57,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT4: TLabel
     Left = 23
-    Height = 15
+    Height = 17
     Top = 267
-    Width = 16
+    Width = 17
     Caption = 'T4:'
     ParentColor = False
   end
   object EdtTimeoutT4: TEdit
     Left = 64
-    Height = 23
+    Height = 29
     Hint = 'Erase memory timeout in milliseconds as a 16-bit value (Default = 10000 ms)'
     Top = 264
     Width = 120
@@ -75,15 +75,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT5: TLabel
     Left = 240
-    Height = 15
+    Height = 17
     Top = 187
-    Width = 16
+    Width = 17
     Caption = 'T5:'
     ParentColor = False
   end
   object EdtTimeoutT5: TEdit
     Left = 275
-    Height = 23
+    Height = 29
     Hint = 'Program memory and target reset timeout in milliseconds as a 16-bit value (Default = 1000 ms)'
     Top = 184
     Width = 120
@@ -93,15 +93,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT7: TLabel
     Left = 240
-    Height = 15
+    Height = 17
     Top = 227
-    Width = 16
+    Width = 17
     Caption = 'T7:'
     ParentColor = False
   end
   object EdtTimeoutT7: TEdit
     Left = 275
-    Height = 23
+    Height = 29
     Hint = 'Busy wait timer timeout in milliseconds as a 16-bit value (Default = 2000 ms)'
     Top = 224
     Width = 120
@@ -111,9 +111,9 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblConnection: TLabel
     Left = 8
-    Height = 15
+    Height = 17
     Top = 8
-    Width = 63
+    Width = 68
     Caption = 'Connection'
     Font.Style = [fsBold]
     ParentColor = False
@@ -121,19 +121,19 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblConnectMode: TLabel
     Left = 23
-    Height = 15
+    Height = 17
     Top = 35
-    Width = 34
+    Width = 35
     Caption = 'Mode:'
     ParentColor = False
   end
   object CmbConnectMode: TComboBox
     Left = 64
-    Height = 23
+    Height = 27
     Hint = 'Connection mode value sent in the XCP connect command as a 8-bit value (Default=0)'
     Top = 32
     Width = 120
-    ItemHeight = 15
+    ItemHeight = 0
     ItemIndex = 0
     Items.Strings = (
       '0'
@@ -401,9 +401,9 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblSecurity: TLabel
     Left = 8
-    Height = 15
+    Height = 17
     Top = 72
-    Width = 46
+    Width = 49
     Caption = 'Security'
     Font.Style = [fsBold]
     ParentColor = False
@@ -411,15 +411,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblSeedKey: TLabel
     Left = 23
-    Height = 15
+    Height = 17
     Top = 96
-    Width = 259
+    Width = 276
     Caption = 'Select your seed/key algorithm shared library file:'
     ParentColor = False
   end
   object EdtSeedKey: TEdit
     Left = 23
-    Height = 23
+    Height = 29
     Hint = 'Seed/key algorithm shared library filename (Optional)'
     Top = 120
     Width = 281
