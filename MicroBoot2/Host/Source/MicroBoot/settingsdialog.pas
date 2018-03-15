@@ -45,11 +45,8 @@ uses
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
-//------------------------------ TSettingsForm ------------------------------------------
 type
-
-  { TSettingsForm }
-
+  //------------------------------ TSettingsForm ------------------------------------------
   TSettingsForm = class(TForm)
     BtnCancel: TButton;
     BtnOk: TButton;
@@ -99,6 +96,9 @@ implementation
 //
 //***************************************************************************************
 procedure TSettingsForm.FormCreate(Sender: TObject);
+var
+  sessionConfig: TSessionConfig;
+  sessionXcpConfig: TSessionXcpConfig;
 begin
   // Clear panel captions as these are only needed as hint during design time.
   PnlBody.Caption := '';
@@ -116,29 +116,21 @@ begin
   CmbInterface.Left := LblInterface.Left + LblInterface.Width + 8;
   // Construct the session configuration instance and initialize its settings.
   FSessionConfig := TSessionConfig.Create;
-  with FCurrentConfig.Groups[TSessionConfig.GROUP_NAME] as TSessionConfig do
-  begin
-    FSessionConfig.Session := Session;
-  end;
+  sessionConfig := FCurrentConfig.Groups[TSessionConfig.GROUP_NAME] as TSessionConfig;
+  FSessionConfig.Session := sessionConfig.Session;
   { TODO : Construct the transport configuration instance and initialize its settings. }
   // Construct all embeddable dialogs and initialize their configuration settings.
   FSessionXcpForm := TSessionXcpForm.Create(Self);
   FSessionXcpForm.Parent := PnlSessionBody;
   FSessionXcpForm.BorderStyle := bsNone;
   FSessionXcpForm.Align := alClient;
-  with FCurrentConfig.Groups[TSessionXcpConfig.GROUP_NAME] as TSessionXcpConfig do
-  begin
-    FSessionXcpForm.Config.TimeoutT1 := TimeoutT1;
-    FSessionXcpForm.Config.TimeoutT3 := TimeoutT3;
-    FSessionXcpForm.Config.TimeoutT4 := TimeoutT4;
-    FSessionXcpForm.Config.TimeoutT5 := TimeoutT5;
-    FSessionXcpForm.Config.TimeoutT7 := TimeoutT7;
-    FSessionXcpForm.Config.ConnectMode := ConnectMode;
-    FSessionXcpForm.Config.SeedKey := SeedKey;
-  end;
+  sessionXcpConfig := FCurrentConfig.Groups[TSessionXcpConfig.GROUP_NAME]
+                      as TSessionXcpConfig;
+  FSessionXcpForm.LoadConfig(sessionXcpConfig);
+  { TODO : Continue with constructing the transport settings embeddable dialogs and init their settings. }
   // Embed the correct session dialog based on the currently configured session.
   UpdateSessionPanel;
-  { TODO : Continue with constructing the transport settings embeddable dialogs and init their settings. }
+  { TODO : Embed the corret transport dialog based on the currently configured transport layer. }
 end; //*** end of FormCreate ***
 
 
@@ -164,27 +156,35 @@ end; //*** end of FormDestroy ***
 //
 //***************************************************************************************
 procedure TSettingsForm.BtnOkClick(Sender: TObject);
+var
+  sessionConfig: TSessionConfig;
+  sessionXcpConfig: TSessionXcpConfig;
 begin
   // Update the session settings in current config.
-  with FCurrentConfig.Groups[TSessionConfig.GROUP_NAME] as TSessionConfig do
-  begin
-    Session := FSessionConfig.Session;
-  end;
+  sessionConfig := FCurrentConfig.Groups[TSessionConfig.GROUP_NAME] as TSessionConfig;
+  sessionConfig.Session := FSessionConfig.Session;
   // Update the XCP session settings in current config.
-  with FCurrentConfig.Groups[TSessionXcpConfig.GROUP_NAME] as TSessionXcpConfig do
-  begin
-    TimeoutT1 := FSessionXcpForm.Config.TimeoutT1;
-    TimeoutT3 := FSessionXcpForm.Config.TimeoutT3;
-    TimeoutT4 := FSessionXcpForm.Config.TimeoutT4;
-    TimeoutT5 := FSessionXcpForm.Config.TimeoutT5;
-    TimeoutT7 := FSessionXcpForm.Config.TimeoutT7;
-    ConnectMode := FSessionXcpForm.Config.ConnectMode;
-    SeedKey := FSessionXcpForm.Config.SeedKey;
-  end;
+  sessionXcpConfig := FCurrentConfig.Groups[TSessionXcpConfig.GROUP_NAME]
+                      as TSessionXcpConfig;
+  FSessionXcpForm.SaveConfig(sessionXcpConfig);
   { TODO : Update the settings in FCurrentConfig based on the other configured settings. }
   // Set the modal result value, which also closes the dialog.
   ModalResult := mrOK;
 end; //*** end of BtnOkClick ***
+
+
+//***************************************************************************************
+// NAME:           BtnCancelClick
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the button is clicked.
+//
+//***************************************************************************************
+procedure TSettingsForm.BtnCancelClick(Sender: TObject);
+begin
+  // Set the modal result value, which also closes the dialog.
+  ModalResult := mrCancel;
+end; //*** end of BtnCancelClick ***
 
 
 //***************************************************************************************
@@ -210,20 +210,6 @@ begin
   // Embed the correct session dialog based on the currently configured session.
   UpdateSessionPanel;
 end; //*** end of CmbProtocolChange ***
-
-
-//***************************************************************************************
-// NAME:           BtnCancelClick
-// PARAMETER:      Sender Source of the event.
-// RETURN VALUE:   none
-// DESCRIPTION:    Event handler that gets called when the button is clicked.
-//
-//***************************************************************************************
-procedure TSettingsForm.BtnCancelClick(Sender: TObject);
-begin
-  // Set the modal result value, which also closes the dialog.
-  ModalResult := mrCancel;
-end; //*** end of BtnCancelClick ***
 
 
 //***************************************************************************************

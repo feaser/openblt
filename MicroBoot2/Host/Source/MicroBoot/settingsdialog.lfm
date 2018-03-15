@@ -11,7 +11,7 @@ object SettingsForm: TSettingsForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poOwnerFormCenter
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '1.6.2.0'
   object PnlFooter: TPanel
     Left = 0
     Height = 46
@@ -76,27 +76,27 @@ object SettingsForm: TSettingsForm
       TabOrder = 0
       object TabSessionProtocol: TTabSheet
         Caption = 'Session Protocol'
-        ClientHeight = 367
-        ClientWidth = 414
+        ClientHeight = 364
+        ClientWidth = 412
         object PnlSessionTop: TPanel
           Left = 0
           Height = 44
           Top = 0
-          Width = 414
+          Width = 412
           Align = alTop
           BevelOuter = bvNone
           Caption = 'PnlSessionTop'
           ClientHeight = 44
-          ClientWidth = 414
+          ClientWidth = 412
           TabOrder = 0
           object CmbProtocol: TComboBox
             Left = 120
-            Height = 23
+            Height = 31
             Hint = 'Select the communication protocol to use during firmware updates'
             Top = 8
             Width = 200
             DropDownCount = 4
-            ItemHeight = 15
+            ItemHeight = 0
             Items.Strings = (
               'XCP version 1.0'
             )
@@ -108,18 +108,18 @@ object SettingsForm: TSettingsForm
           end
           object LblProtocol: TLabel
             Left = 8
-            Height = 15
+            Height = 17
             Top = 11
-            Width = 98
+            Width = 102
             Caption = 'Protocol selection:'
             ParentColor = False
           end
         end
         object PnlSessionBody: TPanel
           Left = 0
-          Height = 323
+          Height = 320
           Top = 44
-          Width = 414
+          Width = 412
           Align = alClient
           BevelOuter = bvNone
           Caption = 'PnlSessionBody'
@@ -156,7 +156,7 @@ object SettingsForm: TSettingsForm
             Top = 8
             Width = 200
             DropDownCount = 4
-            ItemHeight = 15
+            ItemHeight = 0
             ItemIndex = 0
             Items.Strings = (
               'XCP on RS232'

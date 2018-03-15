@@ -1,7 +1,7 @@
 object SessionXcpForm: TSessionXcpForm
-  Left = 1280
+  Left = 1283
   Height = 308
-  Top = 241
+  Top = 418
   Width = 407
   Caption = 'XCP Session'
   ClientHeight = 308
@@ -23,16 +23,18 @@ object SessionXcpForm: TSessionXcpForm
     Left = 23
     Height = 17
     Top = 187
-    Width = 17
-    Caption = 'T1:'
+    Width = 45
+    Caption = 'T1 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT1: TEdit
-    Left = 64
+    Left = 80
     Height = 29
     Hint = 'Command response timeout in milliseconds as a 16-bit value (Default = 1000 ms)'
     Top = 184
-    Width = 120
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
@@ -41,16 +43,18 @@ object SessionXcpForm: TSessionXcpForm
     Left = 23
     Height = 17
     Top = 227
-    Width = 17
-    Caption = 'T3:'
+    Width = 45
+    Caption = 'T3 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT3: TEdit
-    Left = 64
+    Left = 80
     Height = 29
     Hint = 'Start programming timeout in milliseconds as a 16-bit value (Default = 2000 ms)'
     Top = 224
-    Width = 120
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
@@ -59,52 +63,58 @@ object SessionXcpForm: TSessionXcpForm
     Left = 23
     Height = 17
     Top = 267
-    Width = 17
-    Caption = 'T4:'
+    Width = 45
+    Caption = 'T4 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT4: TEdit
-    Left = 64
+    Left = 80
     Height = 29
     Hint = 'Erase memory timeout in milliseconds as a 16-bit value (Default = 10000 ms)'
     Top = 264
-    Width = 120
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
     ParentShowHint = False
     ShowHint = True
     TabOrder = 5
   end
   object LblTimeoutT5: TLabel
-    Left = 240
+    Left = 226
     Height = 17
     Top = 187
-    Width = 17
-    Caption = 'T5:'
+    Width = 45
+    Caption = 'T5 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT5: TEdit
-    Left = 275
+    Left = 280
     Height = 29
     Hint = 'Program memory and target reset timeout in milliseconds as a 16-bit value (Default = 1000 ms)'
     Top = 184
-    Width = 120
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
     ParentShowHint = False
     ShowHint = True
     TabOrder = 6
   end
   object LblTimeoutT7: TLabel
-    Left = 240
+    Left = 226
     Height = 17
     Top = 227
-    Width = 17
-    Caption = 'T7:'
+    Width = 45
+    Caption = 'T7 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT7: TEdit
-    Left = 275
+    Left = 280
     Height = 29
     Hint = 'Busy wait timer timeout in milliseconds as a 16-bit value (Default = 2000 ms)'
     Top = 224
-    Width = 120
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7
@@ -128,10 +138,10 @@ object SessionXcpForm: TSessionXcpForm
     ParentColor = False
   end
   object CmbConnectMode: TComboBox
-    Left = 64
+    Left = 80
     Height = 27
     Hint = 'Connection mode value sent in the XCP connect command as a 8-bit value (Default=0)'
-    Top = 32
+    Top = 35
     Width = 120
     ItemHeight = 0
     ItemIndex = 0
@@ -433,6 +443,13 @@ object SessionXcpForm: TSessionXcpForm
     Top = 120
     Width = 83
     Caption = 'Browse..'
+    OnClick = BtnSeedKeyClick
     TabOrder = 2
+  end
+  object OpenDialog: TOpenDialog
+    Filter = 'Shared libraries (*.dll;*.so)|*.dll;*.so|All files (*.*)|*.*'
+    Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 344
+    top = 31
   end
 end

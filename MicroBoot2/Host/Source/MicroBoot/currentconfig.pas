@@ -51,8 +51,8 @@ type
     FName: String;
   public
     procedure Defaults; virtual; abstract;
-    procedure LoadFromFile(xmlConfig: TXMLConfig); virtual; abstract;
-    procedure SaveToFile(xmlConfig: TXMLConfig); virtual; abstract;
+    procedure LoadFromFile(XmlConfig: TXMLConfig); virtual; abstract;
+    procedure SaveToFile(XmlConfig: TXMLConfig); virtual; abstract;
     property Name: String read FName;
   end;
 
@@ -64,15 +64,15 @@ type
   private
     FConfigFile: String;
     FGroups: TConfigGroupList;
-    function    GetGroup(name: String): TConfigGroup;
+    function    GetGroup(Name: String): TConfigGroup;
   public
     constructor Create;
     destructor  Destroy; override;
     procedure   LoadFromFile;
     procedure   SaveToFile;
-    procedure   AddGroup(group: TConfigGroup);
+    procedure   AddGroup(Group: TConfigGroup);
     property    ConfigFile: String read FConfigFile;
-    property    Groups[name: String]: TConfigGroup read GetGroup;
+    property    Groups[Name: String]: TConfigGroup read GetGroup;
   end;
 
 
@@ -199,41 +199,41 @@ end; //*** end of SaveToFile ***
 
 //***************************************************************************************
 // NAME:           AddGroup
-// PARAMETER:      group The configuration group to add.
+// PARAMETER:      Group The configuration group to add.
 // RETURN VALUE:   none
 // DESCRIPTION:    Adds a configuration group under management of the current
 //                 configuration.
 //
 //***************************************************************************************
-procedure TCurrentConfig.AddGroup(group: TConfigGroup);
+procedure TCurrentConfig.AddGroup(Group: TConfigGroup);
 begin
   // Check parameters.
-  Assert(group <> nil, 'Invalid group specified as a parameter.');
+  Assert(Group <> nil, 'Invalid group specified as a parameter.');
   // Add the group.
-  FGroups.Add(group);
+  FGroups.Add(Group);
 end; //*** end of AddGroup ***
 
 
 //***************************************************************************************
 // NAME:           GetGroup
-// PARAMETER:      name Name of the configuration group to obtain.
+// PARAMETER:      Name Name of the configuration group to obtain.
 // RETURN VALUE:   Configuration group.
 // DESCRIPTION:    Obtains the configuration group based on the specified name.
 //
 //***************************************************************************************
-function TCurrentConfig.GetGroup(name: String): TConfigGroup;
+function TCurrentConfig.GetGroup(Name: String): TConfigGroup;
 var
   idx: Integer;
 begin
   // Initialize the result value.
   Result := nil;
   // Check parameters.
-  Assert(name <> '', 'Group name can not be empty.');
+  Assert(Name <> '', 'Group name can not be empty.');
   // Loop through all groups.
   for idx := 0 to (FGroups.Count - 1) do
   begin
     // Is this the group we are looking for?
-    if FGroups[idx].Name = name then
+    if FGroups[idx].Name = Name then
     begin
       // Set the result value.
       Result := FGroups[idx];

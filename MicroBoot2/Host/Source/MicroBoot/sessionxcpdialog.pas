@@ -39,17 +39,14 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, ConfigGroups;
+  ExtCtrls, ConfigGroups, StrUtils, CustomUtil;
 
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
-//------------------------------ TSessionXcpForm ----------------------------------------
 type
-
-  { TSessionXcpForm }
-
+  //------------------------------ TSessionXcpForm ----------------------------------------
   TSessionXcpForm = class(TForm)
     BtnSeedKey: TButton;
     CmbConnectMode: TComboBox;
@@ -69,12 +66,17 @@ type
     LblTimeoutT4: TLabel;
     LblTimeoutT5: TLabel;
     LblTimeoutT7: TLabel;
+    OpenDialog: TOpenDialog;
+    procedure BtnSeedKeyClick(Sender: TObject);
+    procedure EdtTimeoutChange(Sender: TObject);
+    procedure EdtTimeoutKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
     FSessionXcpConfig: TSessionXcpConfig;
   public
-    property Config: TSessionXcpConfig read FSessionXcpConfig;
+    procedure LoadConfig(Config: TSessionXcpConfig);
+    procedure SaveConfig(Config: TSessionXcpConfig);
   end;
 
 
@@ -103,6 +105,84 @@ end; //*** end of FormCreate ***
 
 
 //***************************************************************************************
+// NAME:           BtnSeedKeyClick
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the button is clicked.
+//
+//***************************************************************************************
+procedure TSessionXcpForm.BtnSeedKeyClick(Sender: TObject);
+var
+  initialDir: String;
+  sharedLibrary: String;
+begin
+  // If a file is already specified in the associated edit box, then use that directory.
+  // Otherwise use the program's current working directory as the initial directory.
+  initialDir := GetCurrentDir;
+  if EdtSeedKey.Text <> '' then
+  begin
+    if DirectoryExists(ExtractFileDir(EdtSeedKey.Text)) then
+      initialDir := ExtractFileDir(EdtSeedKey.Text);
+  end;
+  OpenDialog.InitialDir := initialDir;
+
+  // Display the dialog to prompt the user to pick a file.
+  if OpenDialog.Execute then
+  begin
+    // Read out the selected file.
+    sharedLibrary := OpenDialog.FileName;
+    // Make it a relative path if it is in the current working directory or a
+    // subdirectory there of.
+    if AnsiStartsText(GetCurrentDir, sharedLibrary) then
+    begin
+      sharedLibrary := ExtractRelativepath(GetCurrentDir + PathDelim,
+                       ExtractFilePath(sharedLibrary)) + ExtractFileName(sharedLibrary);
+    end;
+    // Set the filename in the associated edit box.
+    EdtSeedKey.Text := sharedLibrary;
+  end;
+end; //*** end of BtnSeedKeyClick ***
+
+
+//***************************************************************************************
+// NAME:           EdtTimeoutKeyPress
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the contents in one of the Timeout
+//                 edit boxes changed.
+//
+//***************************************************************************************
+procedure TSessionXcpForm.EdtTimeoutChange(Sender: TObject);
+var
+  timeoutEdtBox: TEdit;
+begin
+  // Make sure the event source is an instance of class TEdit.
+  Assert(Sender.InheritsFrom(TEdit), 'Event is triggered by an invalid sender.');
+  timeoutEdtBox := Sender as TEdit;
+  // Validate the edit box contents to make sure that it is a number within an allowed
+  // range.
+  if timeoutEdtBox.Text <> '' then
+    timeoutEdtBox.Text := CustomUtilValidateNumberRange(timeoutEdtBox.Text, 0, 65535)
+end;
+
+
+//***************************************************************************************
+// NAME:           EdtTimeoutKeyPress
+// PARAMETER:      Sender Source of the event.
+//                 Key Key that was pressed.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when a key on one or the Timeout edit
+//                 boxes was pressed.
+//
+//***************************************************************************************
+procedure TSessionXcpForm.EdtTimeoutKeyPress(Sender: TObject; var Key: char);
+begin
+  // Validate the key to make sure it is a character that is part of a number.
+  CustomUtilValidateKeyAsInt(Key);
+end; //*** end of EdtTimeoutKeyPress ***
+
+
+//***************************************************************************************
 // NAME:           FormDestroy
 // PARAMETER:      Sender Source of the event.
 // RETURN VALUE:   none
@@ -114,6 +194,71 @@ begin
   // Release the configuration group instance.
   FSessionXcpConfig.Free;
 end; //*** end of FormDestroy ***
+
+
+//***************************************************************************************
+// NAME:           LoadConfig
+// PARAMETER:      Config Configuration instance to load from.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads the configuration values from the specified instance and
+//                 initializes the user interface accordingly.
+//
+//***************************************************************************************
+procedure TSessionXcpForm.LoadConfig(Config: TSessionXcpConfig);
+begin
+  // Load configuration.
+  FSessionXcpConfig.TimeoutT1 := Config.TimeoutT1;
+  FSessionXcpConfig.TimeoutT3 := Config.TimeoutT3;
+  FSessionXcpConfig.TimeoutT4 := Config.TimeoutT4;
+  FSessionXcpConfig.TimeoutT5 := Config.TimeoutT5;
+  FSessionXcpConfig.TimeoutT7 := Config.TimeoutT7;
+  FSessionXcpConfig.ConnectMode := Config.ConnectMode;
+  FSessionXcpConfig.SeedKey := Config.SeedKey;
+  // Initialize user interface.
+  CmbConnectMode.ItemIndex := FSessionXcpConfig.ConnectMode;
+  EdtSeedKey.Text := FSessionXcpConfig.SeedKey;
+  EdtTimeoutT1.Text := IntToStr(FSessionXcpConfig.TimeoutT1);
+  EdtTimeoutT3.Text := IntToStr(FSessionXcpConfig.TimeoutT3);
+  EdtTimeoutT4.Text := IntToStr(FSessionXcpConfig.TimeoutT4);
+  EdtTimeoutT5.Text := IntToStr(FSessionXcpConfig.TimeoutT5);
+  EdtTimeoutT7.Text := IntToStr(FSessionXcpConfig.TimeoutT7);
+end; //*** end of LoadConfig ***
+
+
+//***************************************************************************************
+// NAME:           SaveConfig
+// PARAMETER:      Config Configuration instance to save to.
+// RETURN VALUE:   none
+// DESCRIPTION:    Reads the configuration values from the user interface and stores them
+//                 in the specified instance.
+//
+//***************************************************************************************
+procedure TSessionXcpForm.SaveConfig(Config: TSessionXcpConfig);
+begin
+  // Start out with default configuration settings.
+  FSessionXcpConfig.Defaults;
+  // Read configuration from the user interface.
+  FSessionXcpConfig.ConnectMode := CmbConnectMode.ItemIndex;
+  FSessionXcpConfig.SeedKey := EdtSeedKey.Text;
+  if EdtTimeoutT1.Text <> '' then
+    FSessionXcpConfig.TimeoutT1 := StrToInt(EdtTimeoutT1.Text);
+  if EdtTimeoutT3.Text <> '' then
+    FSessionXcpConfig.TimeoutT3 := StrToInt(EdtTimeoutT3.Text);
+  if EdtTimeoutT4.Text <> '' then
+    FSessionXcpConfig.TimeoutT4 := StrToInt(EdtTimeoutT4.Text);
+  if EdtTimeoutT5.Text <> '' then
+    FSessionXcpConfig.TimeoutT5 := StrToInt(EdtTimeoutT5.Text);
+  if EdtTimeoutT7.Text <> '' then
+    FSessionXcpConfig.TimeoutT7 := StrToInt(EdtTimeoutT7.Text);
+  // Store configuration.
+  Config.TimeoutT1 := FSessionXcpConfig.TimeoutT1;
+  Config.TimeoutT3 := FSessionXcpConfig.TimeoutT3;
+  Config.TimeoutT4 := FSessionXcpConfig.TimeoutT4;
+  Config.TimeoutT5 := FSessionXcpConfig.TimeoutT5;
+  Config.TimeoutT7 := FSessionXcpConfig.TimeoutT7;
+  Config.ConnectMode := FSessionXcpConfig.ConnectMode;
+  Config.SeedKey := FSessionXcpConfig.SeedKey;
+end; //*** end of SaveConfig ***
 
 
 end.
