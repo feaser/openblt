@@ -105,6 +105,20 @@ end; //*** end of FormCreate ***
 
 
 //***************************************************************************************
+// NAME:           FormDestroy
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Form destructor.
+//
+//***************************************************************************************
+procedure TSessionXcpForm.FormDestroy(Sender: TObject);
+begin
+  // Release the configuration group instance.
+  FSessionXcpConfig.Free;
+end; //*** end of FormDestroy ***
+
+
+//***************************************************************************************
 // NAME:           BtnSeedKeyClick
 // PARAMETER:      Sender Source of the event.
 // RETURN VALUE:   none
@@ -180,20 +194,6 @@ begin
   // Validate the key to make sure it is a character that is part of a number.
   CustomUtilValidateKeyAsInt(Key);
 end; //*** end of EdtTimeoutKeyPress ***
-
-
-//***************************************************************************************
-// NAME:           FormDestroy
-// PARAMETER:      Sender Source of the event.
-// RETURN VALUE:   none
-// DESCRIPTION:    Form destructor.
-//
-//***************************************************************************************
-procedure TSessionXcpForm.FormDestroy(Sender: TObject);
-begin
-  // Release the configuration group instance.
-  FSessionXcpConfig.Free;
-end; //*** end of FormDestroy ***
 
 
 //***************************************************************************************

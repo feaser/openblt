@@ -39,7 +39,9 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, ComCtrls, CurrentConfig, ConfigGroups, SessionXcpDialog;
+  StdCtrls, ComCtrls, CurrentConfig, ConfigGroups, SessionXcpDialog,
+  TransportXcpRs232Dialog, TransportXcpCanDialog, TransportXcpUsbDialog,
+  TransportXcpTcpIpDialog;
 
 
 //***************************************************************************************
@@ -71,10 +73,15 @@ type
     procedure CmbProtocolChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: char);
   private
     FCurrentConfig: TCurrentConfig;
     FSessionConfig: TSessionConfig;
     FSessionXcpForm: TSessionXcpForm;
+    FTransportXcpRs232Form: TTransportXcpRs232Form;
+    FTransportXcpCanForm: TTransportXcpCanForm;
+    FTransportXcpUsbForm: TTransportXcpUsbForm;
+    FTransportXcpTcpIpForm: TTransportXcpTcpIpForm;
     procedure UpdateSessionPanel;
   public
     constructor Create(TheOwner: TComponent; CurrentConfig: TCurrentConfig); reintroduce;
@@ -146,6 +153,35 @@ begin
   // Release the session configuration instance.
   FSessionConfig.Free;
 end; //*** end of FormDestroy ***
+
+
+//***************************************************************************************
+// NAME:           FormKeyPress
+// PARAMETER:      Sender Signal source.
+//                 Key The key's character code that was pressed
+// RETURN VALUE:   None.
+// DESCRIPTION:    Called when a key is pressed.
+//
+//***************************************************************************************
+procedure TSettingsForm.FormKeyPress(Sender: TObject; var Key: char);
+begin
+  // Was the escape key pressed?
+  if Key = Char(27) then
+  begin
+    // Simulate button cancel click.
+    BtnCancelClick(Sender)
+  end
+  // Was the enter key pressed?
+  else if Key = Char(13) then
+  begin
+    if ActiveControl.Name = 'BtnCancel' then
+      // Simulate button cancel click.
+      BtnCancelClick(Sender)
+    else
+      // Simulate button ok click.
+      BtnOKClick(Sender);
+  end;
+end; //*** end of FormKeyPress ***
 
 
 //***************************************************************************************

@@ -98,6 +98,83 @@ type
     property SeedKey: String read FSeedKey write FSeedKey;
   end;
 
+  //------------------------------ TTransportConfig -------------------------------------
+  TTransportConfig = class (TConfigGroup)
+  private
+    FTransport: String;
+  public
+    const GROUP_NAME='Transport';
+    constructor Create;
+    procedure Defaults; override;
+    procedure LoadFromFile(XmlConfig: TXMLConfig); override;
+    procedure SaveToFile(XmlConfig: TXMLConfig); override;
+    property Transport: String read FTransport write FTransport;
+  end;
+
+  //------------------------------ TTransportXcpRs232Config -----------------------------
+  TTransportXcpRs232Config = class (TConfigGroup)
+  private
+    FDevice: String;
+    FBaudrate: Integer;
+  public
+    const GROUP_NAME='Transport/Xcp/Rs232';
+    constructor Create;
+    procedure Defaults; override;
+    procedure LoadFromFile(XmlConfig: TXMLConfig); override;
+    procedure SaveToFile(XmlConfig: TXMLConfig); override;
+    property Device: String read FDevice write FDevice;
+    property Baudrate: Integer read FBaudrate write FBaudrate;
+  end;
+
+  //------------------------------ TTransportXcpCanConfig -------------------------------
+  TTransportXcpCanConfig = class (TConfigGroup)
+  private
+    FDevice: String;
+    FChannel: LongWord;
+    FBaudrate: Integer;
+    FTransmitId: LongWord;
+    FReceiveId: LongWord;
+    FExtendedId: Integer;
+  public
+    const GROUP_NAME='Transport/Xcp/Can';
+    constructor Create;
+    procedure Defaults; override;
+    procedure LoadFromFile(XmlConfig: TXMLConfig); override;
+    procedure SaveToFile(XmlConfig: TXMLConfig); override;
+    property Device: String read FDevice write FDevice;
+    property Channel: LongWord read FChannel write FChannel;
+    property Baudrate: Integer read FBaudrate write FBaudrate;
+    property TransmitId: LongWord read FTransmitId write FTransmitId;
+    property ReceiveId: LongWord read FReceiveId write FReceiveId;
+    property ExtendedId: Integer read FExtendedId write FExtendedId;
+  end;
+
+  //------------------------------ TTransportXcpUsbConfig -------------------------------
+  TTransportXcpUsbConfig = class (TConfigGroup)
+  private
+  public
+    const GROUP_NAME='Transport/Xcp/Usb';
+    constructor Create;
+    procedure Defaults; override;
+    procedure LoadFromFile(XmlConfig: TXMLConfig); override;
+    procedure SaveToFile(XmlConfig: TXMLConfig); override;
+  end;
+
+  //------------------------------ TTransportXcpTcpIpConfig -----------------------------
+  TTransportXcpTcpIpConfig = class (TConfigGroup)
+  private
+    FAddress: String;
+    FPort: Word;
+  public
+    const GROUP_NAME='Transport/Xcp/TcpIp';
+    constructor Create;
+    procedure Defaults; override;
+    procedure LoadFromFile(XmlConfig: TXMLConfig); override;
+    procedure SaveToFile(XmlConfig: TXMLConfig); override;
+    property Address: String read FAddress write FAddress;
+    property Port: Word read FPort write FPort;
+  end;
+
 
 implementation
 //---------------------------------------------------------------------------------------
@@ -329,6 +406,382 @@ begin
   XmlConfig.SetValue('timeout_t7', FTimeoutT7);
   XmlConfig.SetValue('connect_mode', FConnectMode);
   XmlConfig.SetValue('seed_key', UnicodeString(FSeedKey));
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of SaveToFile ***
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TTransportConfig -------------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TTransportConfig.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Set fields.
+  FName := GROUP_NAME;
+  Defaults;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Defaults
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Sets default values for this group's settings.
+//
+//***************************************************************************************
+procedure TTransportConfig.Defaults;
+begin
+  FTransport := 'xcp_rs232';
+end; //*** end of Defaults ***
+
+
+//***************************************************************************************
+// NAME:           LoadFromFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportConfig.LoadFromFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Load all settings.
+  FTransport := String(XmlConfig.GetValue('transport', UnicodeString(FTransport)));
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of LoadFromFile ***/
+
+
+//***************************************************************************************
+// NAME:           SaveToFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Saves this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportConfig.SaveToFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Store all settings.
+  XmlConfig.SetValue('transport', UnicodeString(FTransport));
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of SaveToFile ***
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TTransportXcpRs232Config -----------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TTransportXcpRs232Config.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Set fields.
+  FName := GROUP_NAME;
+  Defaults;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Defaults
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Sets default values for this group's settings.
+//
+//***************************************************************************************
+procedure TTransportXcpRs232Config.Defaults;
+begin
+  FDevice := '';
+  FBaudrate := 57600;
+end; //*** end of Defaults ***
+
+
+//***************************************************************************************
+// NAME:           LoadFromFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpRs232Config.LoadFromFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Load all settings.
+  FDevice := String(XmlConfig.GetValue('device', UnicodeString(FDevice)));
+  FBaudrate := XmlConfig.GetValue('baudrate', FBaudrate);
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of LoadFromFile ***/
+
+
+//***************************************************************************************
+// NAME:           SaveToFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Saves this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpRs232Config.SaveToFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Store all settings.
+  XmlConfig.SetValue('device', UnicodeString(FDevice));
+  XmlConfig.SetValue('baudrate', FBaudrate);
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of SaveToFile ***
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TTransportXcpCanConfig -------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TTransportXcpCanConfig.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Set fields.
+  FName := GROUP_NAME;
+  Defaults;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Defaults
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Sets default values for this group's settings.
+//
+//***************************************************************************************
+procedure TTransportXcpCanConfig.Defaults;
+begin
+  FDevice := '';
+  FChannel := 0;
+  FBaudrate := 500000;
+  FTransmitId := $667;
+  FReceiveId := $7E1;
+  FExtendedId := 0;
+end; //*** end of Defaults ***
+
+
+//***************************************************************************************
+// NAME:           LoadFromFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpCanConfig.LoadFromFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Load all settings.
+  FDevice := String(XmlConfig.GetValue('device', UnicodeString(FDevice)));
+  FChannel := XmlConfig.GetValue('channel', FChannel);
+  FBaudrate := XmlConfig.GetValue('baudrate', FBaudrate);
+  FTransmitId := XmlConfig.GetValue('transmit_id', FTransmitId);
+  FReceiveId := XmlConfig.GetValue('receive_id', FReceiveId);
+  FExtendedId := XmlConfig.GetValue('extended_id', FExtendedId);
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of LoadFromFile ***/
+
+
+//***************************************************************************************
+// NAME:           SaveToFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Saves this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpCanConfig.SaveToFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Store all settings.
+  XmlConfig.SetValue('device', UnicodeString(FDevice));
+  XmlConfig.SetValue('channel', FChannel);
+  XmlConfig.SetValue('baudrate', FBaudrate);
+  XmlConfig.SetValue('transmit_id', FTransmitId);
+  XmlConfig.SetValue('receive_id', FReceiveId);
+  XmlConfig.SetValue('extended_id', FExtendedId);
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of SaveToFile ***
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TTransportXcpUsbConfig -------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TTransportXcpUsbConfig.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Set fields.
+  FName := GROUP_NAME;
+  Defaults;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Defaults
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Sets default values for this group's settings.
+//
+//***************************************************************************************
+procedure TTransportXcpUsbConfig.Defaults;
+begin
+  // USB transport layer currently does not require any additional settings.
+end; //*** end of Defaults ***
+
+
+//***************************************************************************************
+// NAME:           LoadFromFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpUsbConfig.LoadFromFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Load all settings.
+  // USB transport layer currently does not require any additional settings.
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of LoadFromFile ***/
+
+
+//***************************************************************************************
+// NAME:           SaveToFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Saves this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpUsbConfig.SaveToFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Store all settings.
+  // USB transport layer currently does not require any additional settings.
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of SaveToFile ***
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TTransportXcpTcpIpConfig -----------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TTransportXcpTcpIpConfig.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Set fields.
+  FName := GROUP_NAME;
+  Defaults;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Defaults
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Sets default values for this group's settings.
+//
+//***************************************************************************************
+procedure TTransportXcpTcpIpConfig.Defaults;
+begin
+  FAddress := '192.168.178.23';
+  FPort := 1000;
+end; //*** end of Defaults ***
+
+
+//***************************************************************************************
+// NAME:           LoadFromFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpTcpIpConfig.LoadFromFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Load all settings.
+  FAddress := String(XmlConfig.GetValue('address', UnicodeString(FAddress)));
+  FPort := XmlConfig.GetValue('port', FPort);
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of LoadFromFile ***/
+
+
+//***************************************************************************************
+// NAME:           SaveToFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Saves this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpTcpIpConfig.SaveToFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Store all settings.
+  XmlConfig.SetValue('address', UnicodeString(FAddress));
+  XmlConfig.SetValue('port', FPort);
   // Close this group's key.
   XmlConfig.CloseKey;
 end; //*** end of SaveToFile ***

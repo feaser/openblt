@@ -1,7 +1,7 @@
-unit MainUnit;
+unit TransportXcpRs232Dialog;
 //***************************************************************************************
-//  Description: Contains the main user interface for MicroBoot.
-//    File Name: mainunit.pas
+//  Description: Implements the XCP on RS232 transport layer dialog.
+//    File Name: transportxcprs232dialog.pas
 //
 //---------------------------------------------------------------------------------------
 //                          C O P Y R I G H T
@@ -39,43 +39,32 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, CurrentConfig, ConfigGroups, OpenBlt, SettingsDialog;
+  ConfigGroups;
 
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
-  //------------------------------ TMainForm --------------------------------------------
-  TMainForm = class(TForm)
-    BtnExit: TButton;
-    BtnSettings: TButton;
-    LblLibOpenBltVersion: TLabel;
-    PnlFooterButtons: TPanel;
-    PnlFooter: TPanel;
-    PnlBody: TPanel;
-    procedure BtnExitClick(Sender: TObject);
-    procedure BtnSettingsClick(Sender: TObject);
+  //------------------------------ TTransportXcpRs232Form -------------------------------
+  TTransportXcpRs232Form = class(TForm)
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    FCurrentConfig: TCurrentConfig;
+    FTransportXcpRs232Config: TTransportXcpRs232Config;
   public
+    procedure LoadConfig(Config: TTransportXcpRs232Config);
+    procedure SaveConfig(Config: TTransportXcpRs232Config);
   end;
 
-
-//***************************************************************************************
-// Global Variables
-//***************************************************************************************
-var
-  MainForm: TMainForm;
 
 implementation
 
 {$R *.lfm}
 
 //---------------------------------------------------------------------------------------
-//-------------------------------- TMainForm --------------------------------------------
+//-------------------------------- TTransportXcpRs232Form -------------------------------
 //---------------------------------------------------------------------------------------
 //***************************************************************************************
 // NAME:           FormCreate
@@ -84,30 +73,11 @@ implementation
 // DESCRIPTION:    Form constructor.
 //
 //***************************************************************************************
-procedure TMainForm.FormCreate(Sender: TObject);
-var
-  mainWindowConfig: TMainWindowConfig;
+procedure TTransportXcpRs232Form.FormCreate(Sender: TObject);
 begin
-  // Clear panel captions as these are only needed as hint during design time.
-  PnlBody.Caption := '';
-  PnlFooter.Caption := '';
-  PnlFooterButtons.Caption := '';
-  // Create instance to manage the program's configuration and add the configuration
-  // group instances.
-  FCurrentConfig := TCurrentConfig.Create;
-  FCurrentConfig.AddGroup(TMainWindowConfig.Create);
-  FCurrentConfig.AddGroup(TSessionConfig.Create);
-  FCurrentConfig.AddGroup(TSessionXcpConfig.Create);
-  // Load the program's configuration from the configuration file.
-  FCurrentConfig.LoadFromFile;
-  // Read and show the LibOpenBLT version in a label.
-  LblLibOpenBltVersion.Caption := 'LibOpenBLT version: ' + BltVersionGetString;
-  // Set main window configuration settings.
-  mainWindowConfig := FCurrentConfig.Groups[TMainWindowConfig.GROUP_NAME]
-                      as TMainWindowConfig;
-  MainForm.Width := mainWindowConfig.Width;
-  MainForm.Height := mainWindowConfig.Height;
-end; //*** end of FormCreate
+  // Create configuration group instance.
+  FTransportXcpRs232Config := TTransportXcpRs232Config.Create;
+end; //*** end of FormCreate ***
 
 
 //***************************************************************************************
@@ -117,55 +87,49 @@ end; //*** end of FormCreate
 // DESCRIPTION:    Form destructor.
 //
 //***************************************************************************************
-procedure TMainForm.FormDestroy(Sender: TObject);
-var
-  mainWindowConfig: TMainWindowConfig;
+procedure TTransportXcpRs232Form.FormDestroy(Sender: TObject);
 begin
-  // Store main window configuration settings.
-  mainWindowConfig := FCurrentConfig.Groups[TMainWindowConfig.GROUP_NAME]
-                      as TMainWindowConfig;
-  mainWindowConfig.Width := MainForm.Width;
-  mainWindowConfig.Height := MainForm.Height;
-  // Save the program's configuration to the configuration file.
-  FCurrentConfig.SaveToFile;
-  // Release the instance that manages the program's configuration.
-  FCurrentConfig.Free;
+  // Release the configuration group instance.
+  FTransportXcpRs232Config.Free;
 end; //*** end of FormDestroy ***
 
 
 //***************************************************************************************
-// NAME:           BtnExitClick
-// PARAMETER:      Sender Source of the event.
+// NAME:           LoadConfig
+// PARAMETER:      Config Configuration instance to load from.
 // RETURN VALUE:   none
-// DESCRIPTION:    Event handler that gets called when the button is clicked.
+// DESCRIPTION:    Loads the configuration values from the specified instance and
+//                 initializes the user interface accordingly.
 //
 //***************************************************************************************
-procedure TMainForm.BtnExitClick(Sender: TObject);
+procedure TTransportXcpRs232Form.LoadConfig(Config: TTransportXcpRs232Config);
 begin
-  // Exit the program.
-  Close;
-end; //*** end of BtnExitClick ***
+  // Load configuration.
+  FTransportXcpRs232Config.Device := Config.Device;
+  FTransportXcpRs232Config.Baudrate := Config.Baudrate;
+  { TODO : Initialize user interface. }
+end; //*** end of LoadConfig ***
 
 
 //***************************************************************************************
-// NAME:           BtnSettingsClick
-// PARAMETER:      Sender Source of the event.
+// NAME:           SaveConfig
+// PARAMETER:      Config Configuration instance to save to.
 // RETURN VALUE:   none
-// DESCRIPTION:    Event handler that gets called when the button is clicked.
+// DESCRIPTION:    Reads the configuration values from the user interface and stores them
+//                 in the specified instance.
 //
 //***************************************************************************************
-procedure TMainForm.BtnSettingsClick(Sender: TObject);
-var
-  settingsDialog: TSettingsForm;
+procedure TTransportXcpRs232Form.SaveConfig(Config: TTransportXcpRs232Config);
 begin
-  // Create the dialog and make us the owner.
-  settingsDialog := TSettingsForm.Create(Self, FCurrentConfig);
-  // Show the dialog in the modal state.
-  settingsDialog.ShowModal;
-  // Release the dialog.
-  settingsDialog.Free;
-end; //*** end of BtnSettingsClick ***
+  // Start out with default configuration settings.
+  FTransportXcpRs232Config.Defaults;
+  { TODO : Read configuration from the user interface. }
+  // Store configuration.
+  Config.Device := FTransportXcpRs232Config.Device;
+  Config.Baudrate := FTransportXcpRs232Config.Baudrate;
+end; //*** end of SaveConfig ***
+
 
 end.
-//******************************** end of mainunit.pas **********************************
+//******************************** end of transportxcprs232dialog.pas *******************
 

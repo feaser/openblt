@@ -1,7 +1,7 @@
-unit MainUnit;
+unit TransportXcpCanDialog;
 //***************************************************************************************
-//  Description: Contains the main user interface for MicroBoot.
-//    File Name: mainunit.pas
+//  Description: Implements the XCP on CAN transport layer dialog.
+//    File Name: transportxcpcandialog.pas
 //
 //---------------------------------------------------------------------------------------
 //                          C O P Y R I G H T
@@ -39,43 +39,35 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, CurrentConfig, ConfigGroups, OpenBlt, SettingsDialog;
+  ConfigGroups;
 
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
-  //------------------------------ TMainForm --------------------------------------------
-  TMainForm = class(TForm)
-    BtnExit: TButton;
-    BtnSettings: TButton;
-    LblLibOpenBltVersion: TLabel;
-    PnlFooterButtons: TPanel;
-    PnlFooter: TPanel;
-    PnlBody: TPanel;
-    procedure BtnExitClick(Sender: TObject);
-    procedure BtnSettingsClick(Sender: TObject);
+  //------------------------------ TTransportXcpCanForm ---------------------------------
+
+  { TTransportXcpCanForm }
+
+  TTransportXcpCanForm = class(TForm)
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    FCurrentConfig: TCurrentConfig;
+    FTransportXcpCanConfig: TTransportXcpCanConfig;
   public
+    procedure LoadConfig(Config: TTransportXcpCanConfig);
+    procedure SaveConfig(Config: TTransportXcpCanConfig);
   end;
 
-
-//***************************************************************************************
-// Global Variables
-//***************************************************************************************
-var
-  MainForm: TMainForm;
 
 implementation
 
 {$R *.lfm}
 
 //---------------------------------------------------------------------------------------
-//-------------------------------- TMainForm --------------------------------------------
+//-------------------------------- TTransportXcpCanForm ---------------------------------
 //---------------------------------------------------------------------------------------
 //***************************************************************************************
 // NAME:           FormCreate
@@ -84,30 +76,11 @@ implementation
 // DESCRIPTION:    Form constructor.
 //
 //***************************************************************************************
-procedure TMainForm.FormCreate(Sender: TObject);
-var
-  mainWindowConfig: TMainWindowConfig;
+procedure TTransportXcpCanForm.FormCreate(Sender: TObject);
 begin
-  // Clear panel captions as these are only needed as hint during design time.
-  PnlBody.Caption := '';
-  PnlFooter.Caption := '';
-  PnlFooterButtons.Caption := '';
-  // Create instance to manage the program's configuration and add the configuration
-  // group instances.
-  FCurrentConfig := TCurrentConfig.Create;
-  FCurrentConfig.AddGroup(TMainWindowConfig.Create);
-  FCurrentConfig.AddGroup(TSessionConfig.Create);
-  FCurrentConfig.AddGroup(TSessionXcpConfig.Create);
-  // Load the program's configuration from the configuration file.
-  FCurrentConfig.LoadFromFile;
-  // Read and show the LibOpenBLT version in a label.
-  LblLibOpenBltVersion.Caption := 'LibOpenBLT version: ' + BltVersionGetString;
-  // Set main window configuration settings.
-  mainWindowConfig := FCurrentConfig.Groups[TMainWindowConfig.GROUP_NAME]
-                      as TMainWindowConfig;
-  MainForm.Width := mainWindowConfig.Width;
-  MainForm.Height := mainWindowConfig.Height;
-end; //*** end of FormCreate
+  // Create configuration group instance.
+  FTransportXcpCanConfig := TTransportXcpCanConfig.Create;
+end; //*** end of FormCreate ***
 
 
 //***************************************************************************************
@@ -117,55 +90,57 @@ end; //*** end of FormCreate
 // DESCRIPTION:    Form destructor.
 //
 //***************************************************************************************
-procedure TMainForm.FormDestroy(Sender: TObject);
-var
-  mainWindowConfig: TMainWindowConfig;
+procedure TTransportXcpCanForm.FormDestroy(Sender: TObject);
 begin
-  // Store main window configuration settings.
-  mainWindowConfig := FCurrentConfig.Groups[TMainWindowConfig.GROUP_NAME]
-                      as TMainWindowConfig;
-  mainWindowConfig.Width := MainForm.Width;
-  mainWindowConfig.Height := MainForm.Height;
-  // Save the program's configuration to the configuration file.
-  FCurrentConfig.SaveToFile;
-  // Release the instance that manages the program's configuration.
-  FCurrentConfig.Free;
+  // Release the configuration group instance.
+  FTransportXcpCanConfig.Free;
 end; //*** end of FormDestroy ***
 
 
 //***************************************************************************************
-// NAME:           BtnExitClick
-// PARAMETER:      Sender Source of the event.
+// NAME:           LoadConfig
+// PARAMETER:      Config Configuration instance to load from.
 // RETURN VALUE:   none
-// DESCRIPTION:    Event handler that gets called when the button is clicked.
+// DESCRIPTION:    Loads the configuration values from the specified instance and
+//                 initializes the user interface accordingly.
 //
 //***************************************************************************************
-procedure TMainForm.BtnExitClick(Sender: TObject);
+procedure TTransportXcpCanForm.LoadConfig(Config: TTransportXcpCanConfig);
 begin
-  // Exit the program.
-  Close;
-end; //*** end of BtnExitClick ***
+  // Load configuration.
+  FTransportXcpCanConfig.Device := Config.Device;
+  FTransportXcpCanConfig.Channel := Config.Channel;
+  FTransportXcpCanConfig.Baudrate := Config.Baudrate;
+  FTransportXcpCanConfig.TransmitId := Config.TransmitId;
+  FTransportXcpCanConfig.ReceiveId := Config.ReceiveId;
+  FTransportXcpCanConfig.ExtendedId := Config.ExtendedId;
+  { TODO : Initialize user interface. }
+end; //*** end of LoadConfig ***
 
 
 //***************************************************************************************
-// NAME:           BtnSettingsClick
-// PARAMETER:      Sender Source of the event.
+// NAME:           SaveConfig
+// PARAMETER:      Config Configuration instance to save to.
 // RETURN VALUE:   none
-// DESCRIPTION:    Event handler that gets called when the button is clicked.
+// DESCRIPTION:    Reads the configuration values from the user interface and stores them
+//                 in the specified instance.
 //
 //***************************************************************************************
-procedure TMainForm.BtnSettingsClick(Sender: TObject);
-var
-  settingsDialog: TSettingsForm;
+procedure TTransportXcpCanForm.SaveConfig(Config: TTransportXcpCanConfig);
 begin
-  // Create the dialog and make us the owner.
-  settingsDialog := TSettingsForm.Create(Self, FCurrentConfig);
-  // Show the dialog in the modal state.
-  settingsDialog.ShowModal;
-  // Release the dialog.
-  settingsDialog.Free;
-end; //*** end of BtnSettingsClick ***
+  // Start out with default configuration settings.
+  FTransportXcpCanConfig.Defaults;
+  { TODO : Read configuration from the user interface. }
+  // Store configuration.
+  Config.Device := FTransportXcpCanConfig.Device;
+  Config.Channel := FTransportXcpCanConfig.Channel;
+  Config.Baudrate := FTransportXcpCanConfig.Baudrate;
+  Config.TransmitId := FTransportXcpCanConfig.TransmitId;
+  Config.ReceiveId := FTransportXcpCanConfig.ReceiveId;
+  Config.ExtendedId := FTransportXcpCanConfig.ExtendedId;
+end; //*** end of SaveConfig ***
+
 
 end.
-//******************************** end of mainunit.pas **********************************
+//******************************** end of transportxcpcandialog.pas *********************
 

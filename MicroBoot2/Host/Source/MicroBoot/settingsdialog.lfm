@@ -8,8 +8,10 @@ object SettingsForm: TSettingsForm
   Caption = 'Settings'
   ClientHeight = 441
   ClientWidth = 422
+  KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyPress = FormKeyPress
   Position = poOwnerFormCenter
   LCLVersion = '1.6.2.0'
   object PnlFooter: TPanel
@@ -22,7 +24,7 @@ object SettingsForm: TSettingsForm
     Caption = 'PnlFooter'
     ClientHeight = 46
     ClientWidth = 422
-    TabOrder = 0
+    TabOrder = 1
     object PnlFooterButtons: TPanel
       Left = 228
       Height = 46
@@ -64,7 +66,7 @@ object SettingsForm: TSettingsForm
     Caption = 'PnlBody'
     ClientHeight = 395
     ClientWidth = 422
-    TabOrder = 1
+    TabOrder = 0
     object PageCtrlSettings: TPageControl
       Left = 0
       Height = 395
