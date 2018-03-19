@@ -49,6 +49,9 @@ uses
 //***************************************************************************************
 type
   //------------------------------ TSettingsForm ------------------------------------------
+
+  { TSettingsForm }
+
   TSettingsForm = class(TForm)
     BtnCancel: TButton;
     BtnOk: TButton;
@@ -70,6 +73,7 @@ type
     TabMiscellaneous: TTabSheet;
     procedure BtnCancelClick(Sender: TObject);
     procedure BtnOkClick(Sender: TObject);
+    procedure CmbInterfaceChange(Sender: TObject);
     procedure CmbProtocolChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -77,12 +81,14 @@ type
   private
     FCurrentConfig: TCurrentConfig;
     FSessionConfig: TSessionConfig;
+    FTransportConfig: TTransportConfig;
     FSessionXcpForm: TSessionXcpForm;
     FTransportXcpRs232Form: TTransportXcpRs232Form;
     FTransportXcpCanForm: TTransportXcpCanForm;
     FTransportXcpUsbForm: TTransportXcpUsbForm;
     FTransportXcpTcpIpForm: TTransportXcpTcpIpForm;
     procedure UpdateSessionPanel;
+    procedure UpdateCommunicationPanel;
   public
     constructor Create(TheOwner: TComponent; CurrentConfig: TCurrentConfig); reintroduce;
   end;
@@ -105,7 +111,12 @@ implementation
 procedure TSettingsForm.FormCreate(Sender: TObject);
 var
   sessionConfig: TSessionConfig;
+  transportConfig: TTransportConfig;
   sessionXcpConfig: TSessionXcpConfig;
+  transportXcpRs232Config: TTransportXcpRs232Config;
+  transportXcpCanConfig: TTransportXcpCanConfig;
+  transportXcpUsbConfig: TTransportXcpUsbConfig;
+  transportXcpTcpIpConfig: TTransportXcpTcpIpConfig;
 begin
   // Clear panel captions as these are only needed as hint during design time.
   PnlBody.Caption := '';
@@ -125,8 +136,13 @@ begin
   FSessionConfig := TSessionConfig.Create;
   sessionConfig := FCurrentConfig.Groups[TSessionConfig.GROUP_NAME] as TSessionConfig;
   FSessionConfig.Session := sessionConfig.Session;
-  { TODO : Construct the transport configuration instance and initialize its settings. }
+  // Construct the transport configuration instance and initialize its settings.
+  FTransportConfig := TTransportConfig.Create;
+  transportConfig := FCurrentConfig.Groups[TTransportConfig.GROUP_NAME]
+                     as TTransportConfig;
+  FTransportConfig.Transport := transportConfig.Transport;
   // Construct all embeddable dialogs and initialize their configuration settings.
+  // XCP session embeddable dialog.
   FSessionXcpForm := TSessionXcpForm.Create(Self);
   FSessionXcpForm.Parent := PnlSessionBody;
   FSessionXcpForm.BorderStyle := bsNone;
@@ -134,10 +150,43 @@ begin
   sessionXcpConfig := FCurrentConfig.Groups[TSessionXcpConfig.GROUP_NAME]
                       as TSessionXcpConfig;
   FSessionXcpForm.LoadConfig(sessionXcpConfig);
-  { TODO : Continue with constructing the transport settings embeddable dialogs and init their settings. }
+  // XCP on RS232 transport layer embeddable dialog.
+  FTransportXcpRs232Form := TTransportXcpRs232Form.Create(Self);
+  FTransportXcpRs232Form.Parent := PnlCommunicationBody;
+  FTransportXcpRs232Form.BorderStyle := bsNone;
+  FTransportXcpRs232Form.Align := alClient;
+  transportXcpRs232Config := FCurrentConfig.Groups[TTransportXcpRs232Config.GROUP_NAME]
+                             as TTransportXcpRs232Config;
+  FTransportXcpRs232Form.LoadConfig(transportXcpRs232Config);
+  // XCP on CAN transport layer embeddable dialog.
+  FTransportXcpCanForm := TTransportXcpCanForm.Create(Self);
+  FTransportXcpCanForm.Parent := PnlCommunicationBody;
+  FTransportXcpCanForm.BorderStyle := bsNone;
+  FTransportXcpCanForm.Align := alClient;
+  transportXcpCanConfig := FCurrentConfig.Groups[TTransportXcpCanConfig.GROUP_NAME]
+                           as TTransportXcpCanConfig;
+  FTransportXcpCanForm.LoadConfig(transportXcpCanConfig);
+  // XCP on USB transport layer embeddable dialog.
+  FTransportXcpUsbForm := TTransportXcpUsbForm.Create(Self);
+  FTransportXcpUsbForm.Parent := PnlCommunicationBody;
+  FTransportXcpUsbForm.BorderStyle := bsNone;
+  FTransportXcpUsbForm.Align := alClient;
+  transportXcpUsbConfig := FCurrentConfig.Groups[TTransportXcpUsbConfig.GROUP_NAME]
+                           as TTransportXcpUsbConfig;
+  FTransportXcpUsbForm.LoadConfig(transportXcpUsbConfig);
+  // XCP on TCP/IP transport layer embeddable dialog.
+  FTransportXcpTcpIpForm := TTransportXcpTcpIpForm.Create(Self);
+  FTransportXcpTcpIpForm.Parent := PnlCommunicationBody;
+  FTransportXcpTcpIpForm.BorderStyle := bsNone;
+  FTransportXcpTcpIpForm.Align := alClient;
+  transportXcpTcpIpConfig := FCurrentConfig.Groups[TTransportXcpTcpIpConfig.GROUP_NAME]
+                             as TTransportXcpTcpIpConfig;
+  FTransportXcpTcpIpForm.LoadConfig(transportXcpTcpIpConfig);
   // Embed the correct session dialog based on the currently configured session.
   UpdateSessionPanel;
-  { TODO : Embed the corret transport dialog based on the currently configured transport layer. }
+  // Embed the correct transport dialog based on the currently configured transport
+  // layer.
+  UpdateCommunicationPanel;
 end; //*** end of FormCreate ***
 
 
@@ -150,7 +199,8 @@ end; //*** end of FormCreate ***
 //***************************************************************************************
 procedure TSettingsForm.FormDestroy(Sender: TObject);
 begin
-  // Release the session configuration instance.
+  // Release the configuration instances.
+  FTransportConfig.Free;
   FSessionConfig.Free;
 end; //*** end of FormDestroy ***
 
@@ -195,6 +245,11 @@ procedure TSettingsForm.BtnOkClick(Sender: TObject);
 var
   sessionConfig: TSessionConfig;
   sessionXcpConfig: TSessionXcpConfig;
+  transportConfig: TTransportConfig;
+  transportXcpRs232Config: TTransportXcpRs232Config;
+  transportXcpCanConfig: TTransportXcpCanConfig;
+  transportXcpUsbConfig: TTransportXcpUsbConfig;
+  transportXcpTcpIpConfig: TTransportXcpTcpIpConfig;
 begin
   // Update the session settings in current config.
   sessionConfig := FCurrentConfig.Groups[TSessionConfig.GROUP_NAME] as TSessionConfig;
@@ -203,7 +258,26 @@ begin
   sessionXcpConfig := FCurrentConfig.Groups[TSessionXcpConfig.GROUP_NAME]
                       as TSessionXcpConfig;
   FSessionXcpForm.SaveConfig(sessionXcpConfig);
-  { TODO : Update the settings in FCurrentConfig based on the other configured settings. }
+  // Update the transport layer settings in current config.
+  transportConfig := FCurrentConfig.Groups[TTransportConfig.GROUP_NAME]
+                     as TTransportConfig;
+  transportConfig.Transport := FTransportConfig.Transport;
+  // Update the XCP on RS232 transport layer settings in current config.
+  transportXcpRs232Config := FCurrentConfig.Groups[TTransportXcpRs232Config.GROUP_NAME]
+                             as TTransportXcpRs232Config;
+  FTransportXcpRs232Form.SaveConfig(transportXcpRs232Config);
+  // Update the XCP on CAN transport layer settings in current config.
+  transportXcpCanConfig := FCurrentConfig.Groups[TTransportXcpCanConfig.GROUP_NAME]
+                           as TTransportXcpCanConfig;
+  FTransportXcpCanForm.SaveConfig(transportXcpCanConfig);
+  // Update the XCP on USB transport layer settings in current config.
+  transportXcpUsbConfig := FCurrentConfig.Groups[TTransportXcpUsbConfig.GROUP_NAME]
+                           as TTransportXcpUsbConfig;
+  FTransportXcpUsbForm.SaveConfig(transportXcpUsbConfig);
+  // Update the XCP on TCP/IP transport layer settings in current config.
+  transportXcpTcpIpConfig := FCurrentConfig.Groups[TTransportXcpTcpIpConfig.GROUP_NAME]
+                             as TTransportXcpTcpIpConfig;
+  FTransportXcpTcpIpForm.SaveConfig(transportXcpTcpIpConfig);
   // Set the modal result value, which also closes the dialog.
   ModalResult := mrOK;
 end; //*** end of BtnOkClick ***
@@ -249,6 +323,44 @@ end; //*** end of CmbProtocolChange ***
 
 
 //***************************************************************************************
+// NAME:           CmbInterfaceChange
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the selected entry in the combobox
+//                 changed.
+//
+//***************************************************************************************
+procedure TSettingsForm.CmbInterfaceChange(Sender: TObject);
+begin
+  // Configure the correct communication interface based on the selected combobox entry.
+  if CmbInterface.Text = 'XCP on RS232' then
+  begin
+    FTransportConfig.Transport := 'xcp_rs232';
+  end
+  else if CmbInterface.Text = 'XCP on CAN' then
+  begin
+    FTransportConfig.Transport := 'xcp_can';
+  end
+  else if CmbInterface.Text = 'XCP on USB' then
+  begin
+    FTransportConfig.Transport := 'xcp_usb';
+  end
+  else if CmbInterface.Text = 'XCP on TCP/IP' then
+  begin
+    FTransportConfig.Transport := 'xcp_net';
+  end
+  // Unknown protocol session
+  else
+  begin
+    Assert(False, 'Unknown communication interface encountered in the combobox.');
+  end;
+  // Embed the correct transport layer dialog based on the currently configured transport
+  // layer
+  UpdateCommunicationPanel;
+end; //*** end of CmbInterfaceChange ***
+
+
+//***************************************************************************************
 // NAME:           UpdateSessionPanel
 // PARAMETER:      none
 // RETURN VALUE:   none
@@ -272,6 +384,50 @@ begin
     FSessionXcpForm.Show;
   end;
 end; //*** end of UpdateSessionPanel ***
+
+
+//***************************************************************************************
+// NAME:           UpdateCommunicationPanel
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Embeds the correct communication interface configuration dialog.
+//
+//***************************************************************************************
+procedure TSettingsForm.UpdateCommunicationPanel;
+begin
+  // First hide all communication interface related forms.
+  FTransportXcpRs232Form.Hide;
+  FTransportXcpCanForm.Hide;
+  FTransportXcpUsbForm.Hide;
+  FTransportXcpTcpIpForm.Hide;
+  // Show the correct communication interface form.
+  if FTransportConfig.Transport = 'xcp_rs232' then
+  begin
+    CmbInterface.ItemIndex := 0;
+    FTransportXcpRs232Form.Show;
+  end
+  else if FTransportConfig.Transport = 'xcp_can' then
+  begin
+    CmbInterface.ItemIndex := 1;
+    FTransportXcpCanForm.Show;
+  end
+  else if FTransportConfig.Transport = 'xcp_usb' then
+  begin
+    CmbInterface.ItemIndex := 2;
+    FTransportXcpUsbForm.Show;
+  end
+  else if FTransportConfig.Transport = 'xcp_net' then
+  begin
+    CmbInterface.ItemIndex := 3;
+    FTransportXcpTcpIpForm.Show;
+  end
+  // Default configuration
+  else
+  begin
+    CmbInterface.ItemIndex := 0;
+    FTransportXcpRs232Form.Show;
+  end;
+end; //*** end of UpdateCommunicationPanel ***
 
 
 //***************************************************************************************

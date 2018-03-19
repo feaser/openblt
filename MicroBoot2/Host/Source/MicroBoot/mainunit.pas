@@ -98,6 +98,11 @@ begin
   FCurrentConfig.AddGroup(TMainWindowConfig.Create);
   FCurrentConfig.AddGroup(TSessionConfig.Create);
   FCurrentConfig.AddGroup(TSessionXcpConfig.Create);
+  FCurrentConfig.AddGroup(TTransportConfig.Create);
+  FCurrentConfig.AddGroup(TTransportXcpRs232Config.Create);
+  FCurrentConfig.AddGroup(TTransportXcpCanConfig.Create);
+  FCurrentConfig.AddGroup(TTransportXcpUsbConfig.Create);
+  FCurrentConfig.AddGroup(TTransportXcpTcpIpConfig.Create);
   // Load the program's configuration from the configuration file.
   FCurrentConfig.LoadFromFile;
   // Read and show the LibOpenBLT version in a label.
