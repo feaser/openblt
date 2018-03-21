@@ -8,12 +8,12 @@ object TransportXcpUsbForm: TTransportXcpUsbForm
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.6.4.0'
   object LblCommunication: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 8
-    Width = 96
+    Width = 87
     Caption = 'Communication'
     Font.Style = [fsBold]
     ParentColor = False
@@ -21,10 +21,11 @@ object TransportXcpUsbForm: TTransportXcpUsbForm
   end
   object EdtVID: TEdit
     Left = 128
-    Height = 29
+    Height = 23
     Hint = 'The vendor identifier of the USB device (read only)'
     Top = 35
     Width = 168
+    Enabled = False
     ParentShowHint = False
     ReadOnly = True
     ShowHint = True
@@ -33,10 +34,11 @@ object TransportXcpUsbForm: TTransportXcpUsbForm
   end
   object EdtPID: TEdit
     Left = 128
-    Height = 29
+    Height = 23
     Hint = 'The product identifier of the USB device (read only)'
     Top = 75
     Width = 168
+    Enabled = False
     ParentShowHint = False
     ReadOnly = True
     ShowHint = True
@@ -45,17 +47,17 @@ object TransportXcpUsbForm: TTransportXcpUsbForm
   end
   object LblVID: TLabel
     Left = 24
-    Height = 17
+    Height = 15
     Top = 38
-    Width = 90
+    Width = 83
     Caption = 'Vendor ID (hex):'
     ParentColor = False
   end
   object LblPID: TLabel
     Left = 24
-    Height = 17
+    Height = 15
     Top = 78
-    Width = 93
+    Width = 88
     Caption = 'Product ID (hex):'
     ParentColor = False
   end

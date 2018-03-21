@@ -89,8 +89,10 @@ implementation
 //
 //***************************************************************************************
 procedure TTransportXcpCanForm.FormCreate(Sender: TObject);
+{$IFDEF UNIX}
 var
   idx: Integer;
+{$ENDIF}
 begin
   // Create configuration group instance.
   FTransportXcpCanConfig := TTransportXcpCanConfig.Create;
@@ -219,7 +221,7 @@ begin
     CmbDevice.ItemIndex := 2;
   {$ENDIF}
   CmbChannel.ItemIndex := 0;
-  if FTransportXcpCanConfig.Channel <= CmbChannel.Items.Count then
+  if FTransportXcpCanConfig.Channel <= LongWord(CmbChannel.Items.Count) then
     CmbChannel.ItemIndex := FTransportXcpCanConfig.Channel;
   case FTransportXcpCanConfig.Baudrate of
     1000000: CmbBaudrate.ItemIndex := 0;
