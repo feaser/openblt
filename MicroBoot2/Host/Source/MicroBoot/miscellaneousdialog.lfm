@@ -1,7 +1,7 @@
 object MiscellaneousForm: TMiscellaneousForm
-  Left = 1288
+  Left = 1305
   Height = 308
-  Top = 469
+  Top = 322
   Width = 407
   Caption = 'Miscellaneous Settings'
   ClientHeight = 308
@@ -9,12 +9,61 @@ object MiscellaneousForm: TMiscellaneousForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '1.6.2.0'
-  object Label1: TLabel
-    Left = 97
+  object LblLogging: TLabel
+    Left = 8
     Height = 17
-    Top = 63
-    Width = 65
-    Caption = 'Misc Dialog'
+    Top = 8
+    Width = 50
+    Caption = 'Logging'
+    Font.Style = [fsBold]
     ParentColor = False
+    ParentFont = False
+  end
+  object CbxLogging: TCheckBox
+    Left = 23
+    Height = 23
+    Hint = 'Check this box to generate a log-file during a firmware update'
+    Top = 35
+    Width = 128
+    Caption = 'Enable file logging'
+    OnChange = CbxLoggingChange
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+  end
+  object EdtLogFile: TEdit
+    Left = 48
+    Height = 29
+    Hint = 'Specify the name and location of the log-file to write to'
+    Top = 93
+    Width = 256
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    Text = 'EdtLogFile'
+  end
+  object BtnLogFile: TButton
+    Left = 312
+    Height = 28
+    Top = 93
+    Width = 83
+    Caption = 'Browse..'
+    OnClick = BtnLogFileClick
+    TabOrder = 2
+  end
+  object LblLogFile: TLabel
+    Left = 48
+    Height = 17
+    Top = 69
+    Width = 150
+    Caption = 'Log-file name and location:'
+    ParentColor = False
+  end
+  object SaveDialog: TSaveDialog
+    Title = 'Log-file selection'
+    DefaultExt = '.*.log'
+    Filter = 'Log files (*.log)|*.log|All files (*.*)|*.*'
+    left = 340
+    top = 32
   end
 end

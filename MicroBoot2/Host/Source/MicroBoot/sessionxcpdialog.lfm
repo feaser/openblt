@@ -448,7 +448,7 @@ object SessionXcpForm: TSessionXcpForm
   end
   object OpenDialog: TOpenDialog
     Filter = 'Shared libraries (*.dll;*.so)|*.dll;*.so|All files (*.*)|*.*'
-    Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 344
     top = 31
   end

@@ -38,7 +38,7 @@ interface
 // Includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, StrUtils,
   ConfigGroups;
 
 //***************************************************************************************
@@ -46,12 +46,23 @@ uses
 //***************************************************************************************
 type
   //------------------------------ TMiscellaneousForm -----------------------------------
+
+  { TMiscellaneousForm }
+
   TMiscellaneousForm = class(TForm)
-    Label1: TLabel;
+    BtnLogFile: TButton;
+    CbxLogging: TCheckBox;
+    EdtLogFile: TEdit;
+    LblLogFile: TLabel;
+    LblLogging: TLabel;
+    SaveDialog: TSaveDialog;
+    procedure BtnLogFileClick(Sender: TObject);
+    procedure CbxLoggingChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
     FMiscellaneousConfig: TMiscellaneousConfig;
+    procedure UpdateUserInterface;
   public
     procedure LoadConfig(Config: TMiscellaneousConfig);
     procedure SaveConfig(Config: TMiscellaneousConfig);
@@ -76,7 +87,66 @@ procedure TMiscellaneousForm.FormCreate(Sender: TObject);
 begin
   // Create configuration group instance.
   FMiscellaneousConfig := TMiscellaneousConfig.Create;
+  // Align browse button vertically to the related edit box.
+  BtnLogFile.Top := EdtLogFile.Top;
+  BtnLogFile.Height := EdtLogFile.Height + 1;
+  // Empty the log-file edit box.
+  EdtLogFile.Text := '';
 end; //*** end of FormCreate ***
+
+
+//***************************************************************************************
+// NAME:           CbxLoggingChange
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the checkbox changes.
+//
+//***************************************************************************************
+procedure TMiscellaneousForm.CbxLoggingChange(Sender: TObject);
+begin
+  // Update the user interface.
+  UpdateUserInterface;
+end; //*** end of CbxLoggingChange ***
+
+
+//***************************************************************************************
+// NAME:           BtnLogFileClick
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the button is clicked.
+//
+//***************************************************************************************
+procedure TMiscellaneousForm.BtnLogFileClick(Sender: TObject);
+var
+  initialDir: String;
+  logFile: String;
+begin
+  // If a file is already specified in the associated edit box, then use that directory.
+  // Otherwise use the program's current working directory as the initial directory.
+  initialDir := GetCurrentDir;
+  if EdtLogFile.Text <> '' then
+  begin
+    if DirectoryExists(ExtractFileDir(EdtLogFile.Text)) then
+      initialDir := ExtractFileDir(EdtLogFile.Text);
+  end;
+  SaveDialog.InitialDir := initialDir;
+
+  // Display the dialog to prompt the user to pick a file.
+  if SaveDialog.Execute then
+  begin
+    // Read out the selected file.
+    logFile := SaveDialog.FileName;
+    // Make it a relative path if it is in the current working directory or a
+    // subdirectory there of.
+    if AnsiStartsText(GetCurrentDir, logFile) then
+    begin
+      logFile := ExtractRelativepath(GetCurrentDir + PathDelim,
+                 ExtractFilePath(logFile)) + ExtractFileName(logFile);
+    end;
+    // Set the filename in the associated edit box.
+    EdtLogFile.Text := logFile;
+  end;
+end; //*** end of BtnLogFileClick ***
 
 
 //***************************************************************************************
@@ -94,6 +164,20 @@ end; //*** end of FormDestroy ***
 
 
 //***************************************************************************************
+// NAME:           UpdateUserInterface
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Refreshes the user interface.
+//
+//***************************************************************************************
+procedure TMiscellaneousForm.UpdateUserInterface;
+begin
+  EdtLogFile.Enabled := CbxLogging.Checked;
+  BtnLogFile.Enabled := CbxLogging.Checked;
+end; //*** end of UpdateUserInterface ***
+
+
+//***************************************************************************************
 // NAME:           LoadConfig
 // PARAMETER:      Config Configuration instance to load from.
 // RETURN VALUE:   none
@@ -106,7 +190,14 @@ begin
   // Load configuration.
   FMiscellaneousConfig.Logging := Config.Logging;
   FMiscellaneousConfig.LogFile := Config.LogFile;
-  { TODO : Initialize user interface. }
+  // Initialize user interface.
+  if FMiscellaneousConfig.Logging = 0 then
+    CbxLogging.Checked := False
+  else
+    CbxLogging.Checked := True;
+  EdtLogFile.Text := FMiscellaneousConfig.LogFile;
+  // Update the user interface.
+  UpdateUserInterface;
 end; //*** end of LoadConfig ***
 
 
@@ -122,7 +213,12 @@ procedure TMiscellaneousForm.SaveConfig(Config: TMiscellaneousConfig);
 begin
   // Start out with default configuration settings.
   FMiscellaneousConfig.Defaults;
-  { TODO : Read configuration from the user interface. }
+  // Read configuration from the user interface.
+  if CbxLogging.Checked then
+    FMiscellaneousConfig.Logging := 1
+  else
+    FMiscellaneousConfig.Logging := 0;
+  FMiscellaneousConfig.LogFile := EdtLogFile.Text;
   // Store configuration.
   Config.Logging := FMiscellaneousConfig.Logging;
   Config.LogFile := FMiscellaneousConfig.LogFile;
