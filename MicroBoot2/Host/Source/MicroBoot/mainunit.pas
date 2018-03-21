@@ -96,6 +96,7 @@ begin
   // group instances.
   FCurrentConfig := TCurrentConfig.Create;
   FCurrentConfig.AddGroup(TMainWindowConfig.Create);
+  FCurrentConfig.AddGroup(TMiscellaneousConfig.Create);
   FCurrentConfig.AddGroup(TSessionConfig.Create);
   FCurrentConfig.AddGroup(TSessionXcpConfig.Create);
   FCurrentConfig.AddGroup(TTransportConfig.Create);

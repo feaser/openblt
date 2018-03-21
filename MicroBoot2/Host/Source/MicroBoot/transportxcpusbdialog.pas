@@ -47,11 +47,12 @@ uses
 //***************************************************************************************
 type
   //------------------------------ TTransportXcpUsbForm ---------------------------------
-
-  { TTransportXcpUsbForm }
-
   TTransportXcpUsbForm = class(TForm)
-    Label1: TLabel;
+    EdtPID: TEdit;
+    EdtVID: TEdit;
+    LblPID: TLabel;
+    LblVID: TLabel;
+    LblCommunication: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private

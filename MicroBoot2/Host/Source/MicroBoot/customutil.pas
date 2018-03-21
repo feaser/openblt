@@ -44,7 +44,7 @@ uses
 //***************************************************************************************
 // Prototypes
 //***************************************************************************************
-function  CustomUtilValidateNumberRange(Source: String; Min: Integer; Max: Integer): String;
+function  CustomUtilValidateNumberRange(Source: String; Min: Integer; Max: Integer; IsHex: Boolean = False): String;
 procedure CustomUtilValidateKeyAsInt(var Key: Char);
 procedure CustomUtilValidateKeyAsHex(var Key: Char);
 
@@ -60,7 +60,7 @@ implementation
 // DESCRIPTION:    Validates if the string contains a number in the specified range.
 //
 //***************************************************************************************
-function CustomUtilValidateNumberRange(Source: String; Min: Integer; Max: Integer): String;
+function CustomUtilValidateNumberRange(Source: String; Min: Integer; Max: Integer; IsHex: Boolean): String;
 var
   Value: Int64;
 begin
@@ -69,18 +69,33 @@ begin
   Assert(Min < Max, 'Invalid range specified.');
   // Attempt to convert the contents of the string to a number.
   try
-    Value := StrToInt64(Source);
-    // Set initial result.
-    Result := IntToStr(Value);
+    if IsHex then
+    begin
+      Value := StrToInt64('$' + Source);
+      // Set initial result.
+      Result := Format('%.x', [Value]);
+    end
+    else
+    begin
+      Value := StrToInt64(Source);
+      // Set initial result.
+      Result := IntToStr(Value);
+    end;
     // Check lower range.
     if Value < Min then
     begin
-      Result := IntToStr(Min);
+      if IsHex then
+        Result := Format('%.x', [Min])
+      else
+        Result := IntToStr(Min);
     end
     // Check upper range
     else if Value > Max then
     begin
-      Result := IntToStr(Max);
+      if IsHex then
+        Result := Format('%.x', [Max])
+      else
+        Result := IntToStr(Max);
     end;
   except
     // Default to 0 in case the string could not be converted to a number.

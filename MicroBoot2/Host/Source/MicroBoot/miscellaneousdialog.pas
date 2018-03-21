@@ -1,7 +1,7 @@
-unit TransportXcpRs232Dialog;
+unit MiscellaneousDialog;
 //***************************************************************************************
-//  Description: Implements the XCP on RS232 transport layer dialog.
-//    File Name: transportxcprs232dialog.pas
+//  Description: Implements the miscellaneous settings dialog.
+//    File Name: miscellaneousdialog.pas
 //
 //---------------------------------------------------------------------------------------
 //                          C O P Y R I G H T
@@ -41,25 +41,20 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ConfigGroups;
 
-
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
-  //------------------------------ TTransportXcpRs232Form -------------------------------
-  TTransportXcpRs232Form = class(TForm)
-    CmbDevice: TComboBox;
-    CmbBaudrate: TComboBox;
-    LblBaudrate: TLabel;
-    LblDevice: TLabel;
-    LlbCommunication: TLabel;
+  //------------------------------ TMiscellaneousForm -----------------------------------
+  TMiscellaneousForm = class(TForm)
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    FTransportXcpRs232Config: TTransportXcpRs232Config;
+    FMiscellaneousConfig: TMiscellaneousConfig;
   public
-    procedure LoadConfig(Config: TTransportXcpRs232Config);
-    procedure SaveConfig(Config: TTransportXcpRs232Config);
+    procedure LoadConfig(Config: TMiscellaneousConfig);
+    procedure SaveConfig(Config: TMiscellaneousConfig);
   end;
 
 
@@ -68,7 +63,7 @@ implementation
 {$R *.lfm}
 
 //---------------------------------------------------------------------------------------
-//-------------------------------- TTransportXcpRs232Form -------------------------------
+//-------------------------------- TMiscellaneousForm -----------------------------------
 //---------------------------------------------------------------------------------------
 //***************************************************************************************
 // NAME:           FormCreate
@@ -77,34 +72,10 @@ implementation
 // DESCRIPTION:    Form constructor.
 //
 //***************************************************************************************
-procedure TTransportXcpRs232Form.FormCreate(Sender: TObject);
-var
-  portIdx: Integer;
+procedure TMiscellaneousForm.FormCreate(Sender: TObject);
 begin
   // Create configuration group instance.
-  FTransportXcpRs232Config := TTransportXcpRs232Config.Create;
-  // Populate the device combobox with platform specific items.
-  CmbDevice.Items.Clear;
-  {$IFDEF UNIX}
-  for portIdx := 0 to 3 do
-  begin
-    CmbDevice.Items.Add('/dev/ttyUSB' + IntToStr(portIdx));
-  end;
-  for portIdx := 0 to 3 do
-  begin
-    CmbDevice.Items.Add('/dev/ttyACM' + IntToStr(portIdx));
-  end;
-  for portIdx := 0 to 7 do
-  begin
-    CmbDevice.Items.Add('/dev/ttyS' + IntToStr(portIdx));
-  end;
-  {$ELSE}
-  for portIdx := 1 to 16 do
-  begin
-    CmbDevice.Items.Add('COM' + IntToStr(portIdx));
-  end;
-  {$ENDIF}
-  CmbDevice.ItemIndex := 0;
+  FMiscellaneousConfig := TMiscellaneousConfig.Create;
 end; //*** end of FormCreate ***
 
 
@@ -115,10 +86,10 @@ end; //*** end of FormCreate ***
 // DESCRIPTION:    Form destructor.
 //
 //***************************************************************************************
-procedure TTransportXcpRs232Form.FormDestroy(Sender: TObject);
+procedure TMiscellaneousForm.FormDestroy(Sender: TObject);
 begin
   // Release the configuration group instance.
-  FTransportXcpRs232Config.Free;
+  FMiscellaneousConfig.Free;
 end; //*** end of FormDestroy ***
 
 
@@ -130,30 +101,12 @@ end; //*** end of FormDestroy ***
 //                 initializes the user interface accordingly.
 //
 //***************************************************************************************
-procedure TTransportXcpRs232Form.LoadConfig(Config: TTransportXcpRs232Config);
-var
-  baudIdx: Integer;
+procedure TMiscellaneousForm.LoadConfig(Config: TMiscellaneousConfig);
 begin
   // Load configuration.
-  FTransportXcpRs232Config.Device := Config.Device;
-  FTransportXcpRs232Config.Baudrate := Config.Baudrate;
-  // Initialize user interface.
-  if FTransportXcpRs232Config.Device = '' then
-    CmbDevice.Text := CmbDevice.Items[0]
-  else
-    CmbDevice.Text := FTransportXcpRs232Config.Device;
-  CmbBaudrate.ItemIndex := 0;
-  for baudIdx := 0 to (CmbDevice.Items.Count - 1) do
-  begin
-    // Is this combobox entry the currently configured value?
-    if StrToInt(CmbBaudrate.Items[baudIdx]) = FTransportXcpRs232Config.Baudrate then
-    begin
-      // Select this item in the combobox.
-      CmbBaudrate.ItemIndex := baudIdx;
-      // Match found so no need to continue looping.
-      Break;
-    end;
-  end;
+  FMiscellaneousConfig.Logging := Config.Logging;
+  FMiscellaneousConfig.LogFile := Config.LogFile;
+  { TODO : Initialize user interface. }
 end; //*** end of LoadConfig ***
 
 
@@ -165,19 +118,16 @@ end; //*** end of LoadConfig ***
 //                 in the specified instance.
 //
 //***************************************************************************************
-procedure TTransportXcpRs232Form.SaveConfig(Config: TTransportXcpRs232Config);
+procedure TMiscellaneousForm.SaveConfig(Config: TMiscellaneousConfig);
 begin
   // Start out with default configuration settings.
-  FTransportXcpRs232Config.Defaults;
-  // Read configuration from the user interface.
-  FTransportXcpRs232Config.Device := CmbDevice.Text;
-  FTransportXcpRs232Config.Baudrate := StrToInt(CmbBaudrate.Text);
+  FMiscellaneousConfig.Defaults;
+  { TODO : Read configuration from the user interface. }
   // Store configuration.
-  Config.Device := FTransportXcpRs232Config.Device;
-  Config.Baudrate := FTransportXcpRs232Config.Baudrate;
+  Config.Logging := FMiscellaneousConfig.Logging;
+  Config.LogFile := FMiscellaneousConfig.LogFile;
 end; //*** end of SaveConfig ***
 
-
 end.
-//******************************** end of transportxcprs232dialog.pas *******************
+//******************************** end of miscellaneousdialog.pas ***********************
 

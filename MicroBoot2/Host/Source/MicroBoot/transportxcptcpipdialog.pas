@@ -39,18 +39,21 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ConfigGroups;
+  ConfigGroups, CustomUtil;
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
   //------------------------------ TTransportXcpTcpIpForm -------------------------------
-
-  { TTransportXcpTcpIpForm }
-
   TTransportXcpTcpIpForm = class(TForm)
-    Label1: TLabel;
+    EdtPort: TEdit;
+    EdtAddress: TEdit;
+    LblPort: TLabel;
+    LblAddress: TLabel;
+    LblCommunication: TLabel;
+    procedure EdtPortChange(Sender: TObject);
+    procedure EdtPortKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -83,6 +86,44 @@ end; //*** end of FormCreate ***
 
 
 //***************************************************************************************
+// NAME:           EdtPortChange
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the contents in one of the Timeout
+//                 edit boxes changed.
+//
+//***************************************************************************************
+procedure TTransportXcpTcpIpForm.EdtPortChange(Sender: TObject);
+var
+  portEdtBox: TEdit;
+begin
+  // Make sure the event source is an instance of class TEdit.
+  Assert(Sender.InheritsFrom(TEdit), 'Event is triggered by an invalid sender.');
+  portEdtBox := Sender as TEdit;
+  // Validate the edit box contents to make sure that it is a number within an allowed
+  // range.
+  if portEdtBox.Text <> '' then
+    portEdtBox.Text := CustomUtilValidateNumberRange(portEdtBox.Text, 0, 65535)
+end; //*** end of EdtPortChange ***
+
+
+//***************************************************************************************
+// NAME:           EdtPortKeyPress
+// PARAMETER:      Sender Source of the event.
+//                 Key Key that was pressed.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when a key on one or the Timeout edit
+//                 boxes was pressed.
+//
+//***************************************************************************************
+procedure TTransportXcpTcpIpForm.EdtPortKeyPress(Sender: TObject; var Key: char);
+begin
+  // Validate the key to make sure it is a character that is part of a number.
+  CustomUtilValidateKeyAsInt(Key);
+end; //*** end of EdtPortKeyPress ***
+
+
+//***************************************************************************************
 // NAME:           FormDestroy
 // PARAMETER:      Sender Source of the event.
 // RETURN VALUE:   none
@@ -109,7 +150,12 @@ begin
   // Load configuration.
   FTransportXcpTcpIpConfig.Address := Config.Address;
   FTransportXcpTcpIpConfig.Port := Config.Port;
-  { TODO : Initialize user interface. }
+  // Initialize user interface.
+  if FTransportXcpTcpIpConfig.Address = '' then
+    EdtAddress.Text := '192.168.178.23'
+  else
+    EdtAddress.Text := FTransportXcpTcpIpConfig.Address;
+  EdtPort.Text := IntToStr(FTransportXcpTcpIpConfig.Port);
 end; //*** end of LoadConfig ***
 
 
@@ -125,7 +171,9 @@ procedure TTransportXcpTcpIpForm.SaveConfig(Config: TTransportXcpTcpIpConfig);
 begin
   // Start out with default configuration settings.
   FTransportXcpTcpIpConfig.Defaults;
-  { TODO : Read configuration from the user interface. }
+  // Read configuration from the user interface.
+  FTransportXcpTcpIpConfig.Address := EdtAddress.Text;
+  FTransportXcpTcpIpConfig.Port := StrToInt(EdtPort.Text);
   // Store configuration.
   Config.Address := FTransportXcpTcpIpConfig.Address;
   Config.Port := FTransportXcpTcpIpConfig.Port;

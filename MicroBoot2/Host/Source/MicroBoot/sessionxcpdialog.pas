@@ -159,7 +159,7 @@ end; //*** end of BtnSeedKeyClick ***
 
 
 //***************************************************************************************
-// NAME:           EdtTimeoutKeyPress
+// NAME:           EdtTimeoutChange
 // PARAMETER:      Sender Source of the event.
 // RETURN VALUE:   none
 // DESCRIPTION:    Event handler that gets called when the contents in one of the Timeout
@@ -177,7 +177,7 @@ begin
   // range.
   if timeoutEdtBox.Text <> '' then
     timeoutEdtBox.Text := CustomUtilValidateNumberRange(timeoutEdtBox.Text, 0, 65535)
-end;
+end;  //*** end of EdtTimeoutChange ***
 
 
 //***************************************************************************************

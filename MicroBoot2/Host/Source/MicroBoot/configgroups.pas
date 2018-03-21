@@ -60,6 +60,21 @@ type
     property Height: Integer read FHeight write FHeight;
   end;
 
+  //------------------------------ TMiscellaneousConfig ---------------------------------
+  TMiscellaneousConfig = class (TConfigGroup)
+  private
+    FLogging: Integer;
+    FLogFile: String;
+  public
+    const GROUP_NAME='Miscellaneus';
+    constructor Create;
+    procedure Defaults; override;
+    procedure LoadFromFile(XmlConfig: TXMLConfig); override;
+    procedure SaveToFile(XmlConfig: TXMLConfig); override;
+    property Logging: Integer read FLogging write FLogging;
+    property LogFile: String read FLogFile write FLogFile;
+  end;
+
   //------------------------------ TSessionConfig ---------------------------------------
   TSessionConfig = class (TConfigGroup)
   private
@@ -248,6 +263,80 @@ begin
   XmlConfig.SetValue('height', FHeight);
   // Close this group's key.
   xmlConfig.CloseKey;
+end; //*** end of SaveToFile ***
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TMiscellaneousConfig ---------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TMiscellaneousConfig.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Set fields.
+  FName := GROUP_NAME;
+  Defaults;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Defaults
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Sets default values for this group's settings.
+//
+//***************************************************************************************
+procedure TMiscellaneousConfig.Defaults;
+begin
+  FLogging := 0;
+  FLogFile := '';
+end; //*** end of Defaults ***
+
+
+//***************************************************************************************
+// NAME:           LoadFromFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TMiscellaneousConfig.LoadFromFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Load all settings.
+  FLogging := XmlConfig.GetValue('logging', FLogging);
+  FLogFile := String(XmlConfig.GetValue('log_file', UnicodeString(FLogFile)));
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of LoadFromFile ***/
+
+
+//***************************************************************************************
+// NAME:           SaveToFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Saves this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TMiscellaneousConfig.SaveToFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Store all settings.
+  XmlConfig.SetValue('logging', FLogging);
+  XmlConfig.SetValue('log_file', UnicodeString(FLogFile));
+  // Close this group's key.
+  XmlConfig.CloseKey;
 end; //*** end of SaveToFile ***
 
 

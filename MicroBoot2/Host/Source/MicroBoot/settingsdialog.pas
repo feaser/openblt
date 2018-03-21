@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, ComCtrls, CurrentConfig, ConfigGroups, SessionXcpDialog,
   TransportXcpRs232Dialog, TransportXcpCanDialog, TransportXcpUsbDialog,
-  TransportXcpTcpIpDialog;
+  TransportXcpTcpIpDialog, MiscellaneousDialog;
 
 
 //***************************************************************************************
@@ -49,9 +49,6 @@ uses
 //***************************************************************************************
 type
   //------------------------------ TSettingsForm ------------------------------------------
-
-  { TSettingsForm }
-
   TSettingsForm = class(TForm)
     BtnCancel: TButton;
     BtnOk: TButton;
@@ -87,6 +84,7 @@ type
     FTransportXcpCanForm: TTransportXcpCanForm;
     FTransportXcpUsbForm: TTransportXcpUsbForm;
     FTransportXcpTcpIpForm: TTransportXcpTcpIpForm;
+    FMiscellaneousForm: TMiscellaneousForm;
     procedure UpdateSessionPanel;
     procedure UpdateCommunicationPanel;
   public
@@ -112,6 +110,7 @@ procedure TSettingsForm.FormCreate(Sender: TObject);
 var
   sessionConfig: TSessionConfig;
   transportConfig: TTransportConfig;
+  miscellaneousConfig: TMiscellaneousConfig;
   sessionXcpConfig: TSessionXcpConfig;
   transportXcpRs232Config: TTransportXcpRs232Config;
   transportXcpCanConfig: TTransportXcpCanConfig;
@@ -128,7 +127,7 @@ begin
   PnlCommunicationBody.Caption := '';
   PnlMiscellaneousBody.Caption := '';
   // Set the active page on the page control.
-  PageCtrlSettings.ActivePage := TabSessionProtocol;
+  PageCtrlSettings.ActivePage := TabCommunicationInterface;
   // Set fixed space between labels and the related controls.
   CmbProtocol.Left := LblProtocol.Left + LblProtocol.Width + 8;
   CmbInterface.Left := LblInterface.Left + LblInterface.Width + 8;
@@ -142,6 +141,14 @@ begin
                      as TTransportConfig;
   FTransportConfig.Transport := transportConfig.Transport;
   // Construct all embeddable dialogs and initialize their configuration settings.
+  // Miscellaneous settings embeddable dialog.
+  FMiscellaneousForm := TMiscellaneousForm.Create(Self);
+  FMiscellaneousForm.Parent := PnlMiscellaneousBody;
+  FMiscellaneousForm.BorderStyle := bsNone;
+  FMiscellaneousForm.Align := alClient;
+  miscellaneousConfig := FCurrentConfig.Groups[TMiscellaneousConfig.GROUP_NAME]
+                         as TMiscellaneousConfig;
+  FMiscellaneousForm.LoadConfig(miscellaneousConfig);
   // XCP session embeddable dialog.
   FSessionXcpForm := TSessionXcpForm.Create(Self);
   FSessionXcpForm.Parent := PnlSessionBody;
@@ -182,6 +189,8 @@ begin
   transportXcpTcpIpConfig := FCurrentConfig.Groups[TTransportXcpTcpIpConfig.GROUP_NAME]
                              as TTransportXcpTcpIpConfig;
   FTransportXcpTcpIpForm.LoadConfig(transportXcpTcpIpConfig);
+  // Embed the miscellaneous setting dialog.
+  FMiscellaneousForm.Show;
   // Embed the correct session dialog based on the currently configured session.
   UpdateSessionPanel;
   // Embed the correct transport dialog based on the currently configured transport
@@ -245,6 +254,7 @@ procedure TSettingsForm.BtnOkClick(Sender: TObject);
 var
   sessionConfig: TSessionConfig;
   sessionXcpConfig: TSessionXcpConfig;
+  miscellaneousConfig: TMiscellaneousConfig;
   transportConfig: TTransportConfig;
   transportXcpRs232Config: TTransportXcpRs232Config;
   transportXcpCanConfig: TTransportXcpCanConfig;
@@ -262,6 +272,10 @@ begin
   transportConfig := FCurrentConfig.Groups[TTransportConfig.GROUP_NAME]
                      as TTransportConfig;
   transportConfig.Transport := FTransportConfig.Transport;
+  // Update the miscellanouse settings in the current config.
+  miscellaneousConfig := FCurrentConfig.Groups[TMiscellaneousConfig.GROUP_NAME]
+                         as TMiscellaneousConfig;
+  FMiscellaneousForm.SaveConfig(miscellaneousConfig);
   // Update the XCP on RS232 transport layer settings in current config.
   transportXcpRs232Config := FCurrentConfig.Groups[TTransportXcpRs232Config.GROUP_NAME]
                              as TTransportXcpRs232Config;
