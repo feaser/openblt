@@ -42,7 +42,8 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, MainUnit, CurrentConfig, ConfigGroups, SettingsDialog,
-  SessionXcpDialog, CustomUtil, TransportXcpTcpIpDialog, MiscellaneousDialog
+  SessionXcpDialog, CustomUtil, TransportXcpTcpIpDialog, MiscellaneousDialog,
+  FirmwareUpdate
   { you can add units after this };
 
 {$R *.res}

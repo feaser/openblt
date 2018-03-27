@@ -446,7 +446,8 @@ end; //*** end of UpdateCommunicationPanel ***
 
 //***************************************************************************************
 // NAME:           Create
-// PARAMETER:      CurrentConfig Current configuration instance.
+// PARAMETER:      TheOwner Owner of the settings form instance.
+//                 CurrentConfig Current configuration instance.
 // RETURN VALUE:   none
 // DESCRIPTION:    Class constructor.
 //
