@@ -39,7 +39,7 @@ interface
 //***************************************************************************************
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, CurrentConfig, ConfigGroups, OpenBlt, SettingsDialog;
+  ExtCtrls, CurrentConfig, ConfigGroups, SettingsDialog, FirmwareUpdate;
 
 
 //***************************************************************************************
@@ -47,19 +47,34 @@ uses
 //***************************************************************************************
 type
   //------------------------------ TMainForm --------------------------------------------
+
+  { TMainForm }
+
   TMainForm = class(TForm)
     BtnExit: TButton;
     BtnSettings: TButton;
-    LblLibOpenBltVersion: TLabel;
+    BtnStart: TButton;
+    BtnStop: TButton;
+    EdtFirmwareFile: TEdit;
+    MmoLog: TMemo;
     PnlFooterButtons: TPanel;
     PnlFooter: TPanel;
     PnlBody: TPanel;
     procedure BtnExitClick(Sender: TObject);
     procedure BtnSettingsClick(Sender: TObject);
+    procedure BtnStartClick(Sender: TObject);
+    procedure BtnStopClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
     FCurrentConfig: TCurrentConfig;
+    FFirmwareUpdate: TFirmwareUpdate;
+    procedure FirmwareUpdateStarted(Sender: TObject);
+    procedure FirmwareUpdateStopped(Sender: TObject);
+    procedure FirmwareUpdateDone(Sender: TObject);
+    procedure FirmwareUpdateInfo(Sender: TObject; InfoString: String);
+    procedure FirmwareUpdateProgress(Sender: TObject; Percentage: Integer);
+    procedure FirmwareUpdateError(Sender: TObject; ErrorString: String);
   public
   end;
 
@@ -106,13 +121,20 @@ begin
   FCurrentConfig.AddGroup(TTransportXcpTcpIpConfig.Create);
   // Load the program's configuration from the configuration file.
   FCurrentConfig.LoadFromFile;
-  // Read and show the LibOpenBLT version in a label.
-  LblLibOpenBltVersion.Caption := 'LibOpenBLT version: ' + BltVersionGetString;
   // Set main window configuration settings.
   mainWindowConfig := FCurrentConfig.Groups[TMainWindowConfig.GROUP_NAME]
                       as TMainWindowConfig;
   MainForm.Width := mainWindowConfig.Width;
   MainForm.Height := mainWindowConfig.Height;
+  // Create instance of the firmware update class.
+  FFirmwareUpdate := TFirmwareUpdate.Create(FCurrentConfig);
+  // Register its event handlers.
+  FFirmwareUpdate.OnStarted := @FirmwareUpdateStarted;
+  FFirmwareUpdate.OnStopped := @FirmwareUpdateStopped;
+  FFirmwareUpdate.OnDone := @FirmwareUpdateDone;
+  FFirmwareUpdate.OnInfo := @FirmwareUpdateInfo;
+  FFirmwareUpdate.OnProgress := @FirmwareUpdateProgress;
+  FFirmwareUpdate.OnError := @FirmwareUpdateError;
 end; //*** end of FormCreate
 
 
@@ -127,6 +149,8 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 var
   mainWindowConfig: TMainWindowConfig;
 begin
+  // Release instance of the firmware update class.
+  FFirmwareUpdate.Free;
   // Store main window configuration settings.
   mainWindowConfig := FCurrentConfig.Groups[TMainWindowConfig.GROUP_NAME]
                       as TMainWindowConfig;
@@ -137,6 +161,96 @@ begin
   // Release the instance that manages the program's configuration.
   FCurrentConfig.Free;
 end; //*** end of FormDestroy ***
+
+
+//***************************************************************************************
+// NAME:           FirmwareUpdateStarted
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when a firmware update just started.
+//
+//***************************************************************************************
+procedure TMainForm.FirmwareUpdateStarted(Sender: TObject);
+begin
+  MmoLog.Lines.Add('[EVENT] OnStarted');
+  { TODO : Implement firmware update OnStarted event handler. }
+end; //*** end of FirmwareUpdateStarted ***
+
+
+//***************************************************************************************
+// NAME:           FirmwareUpdateStopped
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when a firmware update was stopped.
+//
+//***************************************************************************************
+procedure TMainForm.FirmwareUpdateStopped(Sender: TObject);
+begin
+  MmoLog.Lines.Add('[EVENT] OnStopped');
+  { TODO : Implement firmware update OnStopped event handler. }
+end; //*** end of FirmwareUpdateStopped ***
+
+
+//***************************************************************************************
+// NAME:           FirmwareUpdateDone
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when a firmware update finished.
+//
+//***************************************************************************************
+procedure TMainForm.FirmwareUpdateDone(Sender: TObject);
+begin
+  MmoLog.Lines.Add('[EVENT] OnDone');
+  { TODO : Implement firmware update OnDone event handler. }
+end; //*** end of FirmwareUpdateDone ***
+
+
+//***************************************************************************************
+// NAME:           FirmwareUpdateInfo
+// PARAMETER:      Sender Source of the event.
+//                 InfoString One liner with info text.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when a firmware update process has new
+//                 info to report.
+//
+//***************************************************************************************
+procedure TMainForm.FirmwareUpdateInfo(Sender: TObject; InfoString: String);
+begin
+  MmoLog.Lines.Add('[EVENT] OnInfo: ' + InfoString);
+  { TODO : Implement firmware update OnInfo event handler. }
+end; //*** end of FirmwareUpdateInfo ***
+
+
+//***************************************************************************************
+// NAME:           FirmwareUpdateProgress
+// PARAMETER:      Sender Source of the event.
+//                 Percentage Firmware update progress as a percentage (0..100).
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when a firmware update process has new
+//                 progress to report.
+//
+//***************************************************************************************
+procedure TMainForm.FirmwareUpdateProgress(Sender: TObject; Percentage: Integer);
+begin
+  MmoLog.Lines.Add('[EVENT] OnProgress: ' + IntToStr(Percentage));
+  { TODO : Implement firmware update OnProgress event handler. }
+end; //*** end of FirmwareUpdateProgress ***
+
+
+//***************************************************************************************
+// NAME:           FirmwareUpdateError
+// PARAMETER:      Sender Source of the event.
+//                 ErrorString Descriptive text regarding the error that occurred.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when an error was detected during the
+//                 firmware update process.
+//
+//***************************************************************************************
+procedure TMainForm.FirmwareUpdateError(Sender: TObject; ErrorString: String);
+begin
+  MmoLog.Lines.Add('[EVENT] OnError: ' + ErrorString);
+  { TODO : Implement firmware update OnError event handler. }
+end; //*** end of FirmwareUpdateError ***
 
 
 //***************************************************************************************
@@ -171,6 +285,39 @@ begin
   // Release the dialog.
   settingsDialog.Free;
 end; //*** end of BtnSettingsClick ***
+
+
+//***************************************************************************************
+// NAME:           BtnStartClick
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the button is clicked.
+//
+//***************************************************************************************
+procedure TMainForm.BtnStartClick(Sender: TObject);
+begin
+  // Clear the memo.
+  MmoLog.Clear;
+  // Start the firmware update.
+  if not FFirmwareUpdate.Start(EdtFirmwareFile.Text) then
+  begin
+    MmoLog.Lines.Add('[ERROR] Could not start firmware update.');
+  end;
+end; //*** end of BtnStartClick ***
+
+
+//***************************************************************************************
+// NAME:           BtnStopClick
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the button is clicked.
+//
+//***************************************************************************************
+procedure TMainForm.BtnStopClick(Sender: TObject);
+begin
+  // Stop the firmware update.
+  FFirmwareUpdate.Stop;
+end; //*** end of BtnStopClick ***
 
 end.
 //******************************** end of mainunit.pas **********************************

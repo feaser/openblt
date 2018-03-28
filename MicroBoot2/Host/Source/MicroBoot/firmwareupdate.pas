@@ -38,6 +38,10 @@ interface
 // Includes
 //***************************************************************************************
 uses
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
+    cthreads,
+    cmem, // the c memory manager is on some systems much faster for multi-threading
+  {$ENDIF}{$ENDIF}
   Classes, SysUtils, CurrentConfig, ConfigGroups, OpenBlt;
 
 
@@ -45,6 +49,9 @@ uses
 // Type Definitions
 //***************************************************************************************
 type
+  // Forward declarations
+  TFirmwareUpdate = class;
+
   //------------------------------ TFirmwareUpdateStartedEvent --------------------------
   TFirmwareUpdateStartedEvent = procedure(Sender: TObject) of object;
 
@@ -63,11 +70,33 @@ type
   //------------------------------ TFirmwareUpdateErrorEvent ----------------------------
   TFirmwareUpdateErrorEvent = procedure(Sender: TObject; ErrorString: String) of object;
 
+  //------------------------------ TFirmwareUpdateState ---------------------------------
+  TFirmwareUpdateState = ( FUS_IDLE = 0,
+                           FUS_INITIALIZING,
+                           FUS_LOADING_FIRMWARE,
+                           FUS_ERASING_MEMORY,
+                           FUS_PROGRAMMING_MEMORY,
+                           FUS_CLEANING_UP );
+
+  //------------------------------ TFirmwareUpdateThread --------------------------------
+  TFirmwareUpdateThread = class(TThread)
+    private
+      FFirmwareUpdate: TFirmwareUpdate;
+      FFirmwareFile: String;
+      FState: TFirmwareUpdateState;
+    protected
+      procedure Execute; override;
+    public
+      constructor Create(CreateSuspended : Boolean; FirmwareUpdate: TFirmwareUpdate); reintroduce;
+      property FirmwareFile: String read FFirmwareFile write FFirmwareFile;
+      property State: TFirmwareUpdateState read FState write FState;
+    end;
+
   //------------------------------ TFirmwareUpdate --------------------------------------
   TFirmwareUpdate = class (TObject)
   private
     FCurrentConfig: TCurrentConfig;
-    FInProgress: Boolean;
+    FWorkerThread: TFirmwareUpdateThread;
     FStartedEvent: TFirmwareUpdateStartedEvent;
     FStoppedEvent: TFirmwareUpdateStoppedEvent;
     FDoneEvent: TFirmwareUpdateDoneEvent;
@@ -76,6 +105,7 @@ type
     FErrorEvent: TFirmwareUpdateErrorEvent;
   public
     constructor Create(CurrentConfig: TCurrentConfig); reintroduce;
+    destructor  Destroy; override;
     function Start(FirmwareFile: String): Boolean;
     procedure Stop;
     property OnStarted: TFirmwareUpdateStartedEvent read FStartedEvent write FStartedEvent;
@@ -88,6 +118,49 @@ type
 
 
 implementation
+//---------------------------------------------------------------------------------------
+//-------------------------------- TFirmwareUpdateThread --------------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      CreateSuspended True to suspend the thread after creation.
+//                 FirmwareUpdate Instance of the TFirmwareUpdate class, needed to
+//                 trigger its events.
+// RETURN VALUE:   none
+// DESCRIPTION:    Thread constructor.
+//
+//***************************************************************************************
+constructor TFirmwareUpdateThread.Create(CreateSuspended : Boolean; FirmwareUpdate: TFirmwareUpdate);
+begin
+  // Call inherited constructor.
+  inherited Create(CreateSuspended);
+  // Configure the thread to not automatically free itself upon termination.
+  FreeOnTerminate := False;
+  // Initialize fields.
+  FFirmwareUpdate := FirmwareUpdate;
+  FFirmwareFile := '';
+  FState := FUS_IDLE;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Execute
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Thread execution function.
+//
+//***************************************************************************************
+procedure TFirmwareUpdateThread.Execute;
+begin
+  // Enter thread's execution loop.
+  while not Terminated do
+  begin
+    { TODO : Implement thread's execution method. }
+    Sleep(50);
+  end;
+end; //*** end of Execute ***
+
+
 //---------------------------------------------------------------------------------------
 //-------------------------------- TFirmwareUpdate --------------------------------------
 //---------------------------------------------------------------------------------------
@@ -107,14 +180,38 @@ begin
   // Store the configuration instance.
   FCurrentConfig := CurrentConfig;
   // Initialize fields.
-  FInProgress := False;
   FStartedEvent := nil;
   FStoppedEvent := nil;
   FDoneEvent := nil;
   FInfoEvent := nil;
   FProgressEvent := nil;
   FErrorEvent := nil;
+  FWorkerThread := nil;
 end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Destroy
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class destructor.
+//
+//***************************************************************************************
+destructor TFirmwareUpdate.Destroy;
+begin
+  // Check if the worker thread is instanced.
+  if Assigned(FWorkerThread) then
+  begin
+    // Set termination request for the worker thread.
+    FWorkerThread.Terminate;
+    // Wait for thread termination to complete.
+    FWorkerThread.WaitFor;
+    // Release the thread instance.
+    FWorkerThread.Free;
+  end;
+  // call inherited destructor
+  inherited Destroy;
+end; //*** end of Destroy ***
 
 
 //***************************************************************************************
@@ -128,10 +225,30 @@ end; //*** end of Create ***
 function TFirmwareUpdate.Start(FirmwareFile: String): Boolean;
 begin
   // Initialize the result.
-  Result := True;
-  { TODO : Start the firmware update }
-  // ##Vg Probably want to use a background thread for doing the actual firmware update.
-  //      Note that this means the events need to be synchronized somehow I think.
+  Result := False;
+  // Only start the firmware update if the specified file exists.
+  if FileExists(FirmwareFile) then
+  begin
+    // Create the worker thread in a suspended state.
+    FWorkerThread := TFirmwareUpdateThread.Create(True, Self);
+    // Only continue if the worker thread could be instanced.
+    if Assigned(FWorkerThread) then
+    begin
+      // Pass the firmware file on to the worker thread.
+      FWorkerThread.FirmwareFile := FirmwareFile;
+      // Set the initial state for the worker thread so it knows where to start.
+      FWorkerThread.State := FUS_INITIALIZING;
+      // Start the worker thread, which handles the actual firmware update.
+      FWorkerThread.Start;
+      // Update the result.
+      Result := True;
+      // Trigger the OnStarted event, if assigned.
+      if Assigned(FStartedEvent) then
+      begin
+        FStartedEvent(Self);
+      end;
+    end;
+  end;
 end; //*** end of Start ***
 
 
@@ -144,7 +261,21 @@ end; //*** end of Start ***
 //***************************************************************************************
 procedure TFirmwareUpdate.Stop;
 begin
-  { TODO : Stop the firmware update }
+  // No need to stop the worker thread if it is not instanced.
+  if Assigned(FWorkerThread) then
+  begin
+    // Set worker thread state to idle.
+    FWorkerThread.State := FUS_IDLE;
+    // Set termination request for the worker thread.
+    FWorkerThread.Terminate;
+    // Wait for thread termination to complete.
+    FWorkerThread.WaitFor;
+  end;
+  // Trigger the OnStopped event, if assigned.
+  if Assigned(FStoppedEvent) then
+  begin
+    FStoppedEvent(Self);
+  end;
 end;  //*** end of Stop ***
 
 end.

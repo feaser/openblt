@@ -38,7 +38,8 @@ program MicroBoot;
 //***************************************************************************************
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
-  cthreads,
+    cthreads,
+    cmem, // the c memory manager is on some systems much faster for multi-threading
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, MainUnit, CurrentConfig, ConfigGroups, SettingsDialog,
