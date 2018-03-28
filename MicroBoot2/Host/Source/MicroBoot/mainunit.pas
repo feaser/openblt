@@ -56,6 +56,7 @@ type
     BtnStart: TButton;
     BtnStop: TButton;
     EdtFirmwareFile: TEdit;
+    LblInfo: TLabel;
     MmoLog: TMemo;
     PnlFooterButtons: TPanel;
     PnlFooter: TPanel;
@@ -73,6 +74,7 @@ type
     procedure FirmwareUpdateStopped(Sender: TObject);
     procedure FirmwareUpdateDone(Sender: TObject);
     procedure FirmwareUpdateInfo(Sender: TObject; InfoString: String);
+    procedure FirmwareUpdateLog(Sender: TObject; LogString: String);
     procedure FirmwareUpdateProgress(Sender: TObject; Percentage: Integer);
     procedure FirmwareUpdateError(Sender: TObject; ErrorString: String);
   public
@@ -133,6 +135,7 @@ begin
   FFirmwareUpdate.OnStopped := @FirmwareUpdateStopped;
   FFirmwareUpdate.OnDone := @FirmwareUpdateDone;
   FFirmwareUpdate.OnInfo := @FirmwareUpdateInfo;
+  FFirmwareUpdate.OnLog := @FirmwareUpdateLog;
   FFirmwareUpdate.OnProgress := @FirmwareUpdateProgress;
   FFirmwareUpdate.OnError := @FirmwareUpdateError;
 end; //*** end of FormCreate
@@ -186,6 +189,7 @@ end; //*** end of FirmwareUpdateStarted ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateStopped(Sender: TObject);
 begin
+  LblInfo.Caption := '';
   MmoLog.Lines.Add('[EVENT] OnStopped');
   { TODO : Implement firmware update OnStopped event handler. }
 end; //*** end of FirmwareUpdateStopped ***
@@ -200,6 +204,7 @@ end; //*** end of FirmwareUpdateStopped ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateDone(Sender: TObject);
 begin
+  LblInfo.Caption := '';
   MmoLog.Lines.Add('[EVENT] OnDone');
   { TODO : Implement firmware update OnDone event handler. }
 end; //*** end of FirmwareUpdateDone ***
@@ -211,14 +216,34 @@ end; //*** end of FirmwareUpdateDone ***
 //                 InfoString One liner with info text.
 // RETURN VALUE:   none
 // DESCRIPTION:    Event handler that gets called when a firmware update process has new
-//                 info to report.
+//                 info to report. The info string can be used to update a label on the
+//                 user interface to inform the user of what the firmware updater is
+//                 currently working on.
 //
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateInfo(Sender: TObject; InfoString: String);
 begin
-  MmoLog.Lines.Add('[EVENT] OnInfo: ' + InfoString);
-  { TODO : Implement firmware update OnInfo event handler. }
+  // Display info on the user interface.
+  LblInfo.Caption := InfoString;
 end; //*** end of FirmwareUpdateInfo ***
+
+
+//***************************************************************************************
+// NAME:           FirmwareUpdateLog
+// PARAMETER:      Sender Source of the event.
+//                 LogString Text for logging purposes.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when a firmware update process has new
+//                 log information to report. The log string can be used to display
+//                 details regarding the firmware update process to the user or to write
+//                 this information to a log-file.
+//
+//***************************************************************************************
+procedure TMainForm.FirmwareUpdateLog(Sender: TObject; LogString: String);
+begin
+  MmoLog.Lines.Add(LogString);
+  { TODO : Implement firmware update OnLog event handler. }
+end; //*** end of FirmwareUpdateLog ***
 
 
 //***************************************************************************************
@@ -227,7 +252,8 @@ end; //*** end of FirmwareUpdateInfo ***
 //                 Percentage Firmware update progress as a percentage (0..100).
 // RETURN VALUE:   none
 // DESCRIPTION:    Event handler that gets called when a firmware update process has new
-//                 progress to report.
+//                 progress to report. The progress information can be used to update
+//                 a progress bar for example.
 //
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateProgress(Sender: TObject; Percentage: Integer);
@@ -243,11 +269,13 @@ end; //*** end of FirmwareUpdateProgress ***
 //                 ErrorString Descriptive text regarding the error that occurred.
 // RETURN VALUE:   none
 // DESCRIPTION:    Event handler that gets called when an error was detected during the
-//                 firmware update process.
+//                 firmware update process. This information can be used for logging
+//                 purposes and also to stop the firmware update process.
 //
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateError(Sender: TObject; ErrorString: String);
 begin
+  LblInfo.Caption := '';
   MmoLog.Lines.Add('[EVENT] OnError: ' + ErrorString);
   { TODO : Implement firmware update OnError event handler. }
 end; //*** end of FirmwareUpdateError ***

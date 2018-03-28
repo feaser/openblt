@@ -73,7 +73,11 @@ const
   // Transport layer for the XCP v1.0 protocol that uses Controller Area Network (CAN)
   // for data exchange.
   BLT_TRANSPORT_XCP_V10_CAN: LongWord = 1;
+  // Transport layer for the XCP v1.0 protocol that uses USB for data exchange.
   BLT_TRANSPORT_XCP_V10_USB: LongWord = 2;
+  // Transport layer for the XCP v1.0 protocol that uses TCP/IP for data exchange.
+  BLT_TRANSPORT_XCP_V10_NET: LongWord = 3;
+
 
 type
   // Structure layout of the XCP version 1.0 session settings.
@@ -102,6 +106,13 @@ type
     receiveId: LongWord;          // Receive CAN identifier.
     useExtended: LongWord;        // Boolean to configure 29-bit CAN identifiers.
   end;
+
+  // Structure layout of the XCP version 1.0 NET transport layer settings.
+  tBltTransportSettingsXcpV10Net = record
+    address: PAnsiChar;           // Target IP-address or hostname on the network.
+    port: Word;                   // TCP port to use.
+  end;
+
 
 procedure BltSessionInit(sessionType: LongWord;
                          sessionSettings: Pointer;
