@@ -302,6 +302,9 @@ end; //*** end of Create ***
 //
 //***************************************************************************************
 procedure TFirmwareUpdateThread.Execute;
+const
+  ERASE_SIZE_MAX = 32768;
+  PROGRAM_SIZE_MAX = 256;
 var
   initialized: Boolean;
   errorDetected: Boolean;
@@ -312,6 +315,17 @@ var
   segmentLen: LongWord;
   segmentBase: LongWord;
   segmentData: PByte;
+  eraseCurrentLen: LongWord;
+  eraseCurrentBase: LongWord;
+  eraseStillLeft: LongWord;
+  eraseProgressPct: Integer;
+  eraseProgressLen: LongWord;
+  programCurrentLen: LongWord;
+  programCurrentBase: LongWord;
+  programCurrentDataPtr: PByte;
+  programStillLeft: LongWord;
+  programProgressPct: Integer;
+  programProgressLen: LongWord;
 begin
   // Initialize locals.
   initialized := False;
@@ -504,27 +518,84 @@ begin
     begin
       // Initialize error flag.
       errorDetected := False;
-
-      { TODO : Implement memory erasing state. }
-      for segmentIdx := 0 to 9 do
+      // Reset progress variables
+      eraseProgressPct := 0;
+      eraseProgressLen := 0;
+      // Loop through all segments.
+      for segmentIdx := 0 to (firmwareDataTotalSegments - 1) do
       begin
-        Sleep(100);
-        if Terminated then
+        // Don't bother looping if an error was detected.
+        if errorDetected then
         begin
-          // Set error flag to force idle mode after breaking this loop.
-          errorDetected := True;
-          // Update the log.
-          FLogString := 'Cancellation request detected, so stopping firmware update';
-          Synchronize(@SynchronizeLogEvent);
-          // Trigger the stopped event.
-          Synchronize(@SynchronizeStoppedEvent);
-          // Cancel firmware update procedure by transitioning to the idle state.
-          FState := FUS_IDLE;
-          // Stop looping.
           Break;
         end;
+        // Extract segment info.
+        eraseCurrentBase := 0;
+        eraseStillLeft := 0;
+        segmentData := BltFirmwareGetSegment(segmentIdx, eraseCurrentBase, eraseStillLeft);
+        // Perform erase in chunks of maximum ERASE_SIZE_MAX. Otherwise the erase
+        // operation can take a long time, which would lead to a non-responsive user
+        // interface.
+        while eraseStillLeft > 0 do
+        begin
+          // Check for cancellation request.
+          if Terminated then
+          begin
+            // Set error flag to force idle mode after breaking this loop.
+            errorDetected := True;
+            // Update the log.
+            FLogString := 'Cancellation request detected, so stopping firmware update';
+            Synchronize(@SynchronizeLogEvent);
+            // Trigger the stopped event.
+            Synchronize(@SynchronizeStoppedEvent);
+            // Cancel firmware update procedure by transitioning to the idle state.
+            FState := FUS_IDLE;
+            // Stop looping.
+            Break;
+          end;
+          // Determine chunk size.
+          eraseCurrentLen := ERASE_SIZE_MAX;
+          if eraseCurrentLen > eraseStillLeft then
+          begin
+            eraseCurrentLen := eraseStillLeft;
+          end;
+          // Update the info.
+          FInfoString := Format('Erasing %u bytes starting at %.8xh', [eraseCurrentLen, eraseCurrentBase]);
+          Synchronize(@SynchronizeInfoEvent);
+          // Update the log.
+          FLogString := FInfoString;
+          Synchronize(@SynchronizeLogEvent);
+          // Perform the erase operation.
+          if BltSessionClearMemory(eraseCurrentBase, eraseCurrentLen) <> BLT_RESULT_OK then
+          begin
+            // Set error flag.
+            errorDetected := True;
+            // Cancel firmware update procedure by transitioning to the idle state.
+            FState := FUS_IDLE;
+            // Update the log.
+            FLogString := Format('Could not erase memory at %.8xh', [eraseCurrentBase]);
+            Synchronize(@SynchronizeLogEvent);
+            // Trigger error.
+            FErrorString := FLogString;
+            Synchronize(@SynchronizeErrorEvent);
+            // Stop looping
+            Break;
+          end
+          // Erase operation was successful. Update loop variables for the next chunk.
+          else
+          begin
+            eraseStillLeft := eraseStillLeft - eraseCurrentLen;
+            eraseCurrentBase := eraseCurrentBase + eraseCurrentLen;
+            // Update erase progress
+            eraseProgressLen := eraseProgressLen + eraseCurrentLen;
+            eraseProgressPct := (Int64(eraseProgressLen) * 100) div firmwareDataTotalSize;
+            // Dedicate the first 20% of the total firmware update progress to the
+            // erase operation.
+            FPercentage := (eraseProgressPct * 20) div 100;
+            Synchronize(@SynchronizeProgressEvent);
+          end;
+        end;
       end;
-
       // Transition to the next state if all is okay.
       if not errorDetected then
       begin
@@ -536,9 +607,85 @@ begin
     begin
       // Initialize error flag.
       errorDetected := False;
-
-      { TODO : Implement memory programming state. }
-
+      // Reset progress variables
+      programProgressPct := 0;
+      programProgressLen := 0;
+      // Loop through all segments.
+      for segmentIdx := 0 to (firmwareDataTotalSegments - 1) do
+      begin
+        // Don't bother looping if an error was detected.
+        if errorDetected then
+        begin
+          Break;
+        end;
+        // Extract segment info.
+        programCurrentBase := 0;
+        programStillLeft := 0;
+        programCurrentDataPtr := BltFirmwareGetSegment(segmentIdx, programCurrentBase, programStillLeft);
+        // Perform programming in chunks of maximum PROGRAM_SIZE_MAX. Otherwise the
+        // programming operation can take a long time, which would lead to a non-
+        // responsive user interface.
+        while programStillLeft > 0 do
+        begin
+          // Check for cancellation request.
+          if Terminated then
+          begin
+            // Set error flag to force idle mode after breaking this loop.
+            errorDetected := True;
+            // Update the log.
+            FLogString := 'Cancellation request detected, so stopping firmware update';
+            Synchronize(@SynchronizeLogEvent);
+            // Trigger the stopped event.
+            Synchronize(@SynchronizeStoppedEvent);
+            // Cancel firmware update procedure by transitioning to the idle state.
+            FState := FUS_IDLE;
+            // Stop looping.
+            Break;
+          end;
+          // Determine chunk size.
+          programCurrentLen := PROGRAM_SIZE_MAX;
+          if programCurrentLen > programStillLeft then
+          begin
+            programCurrentLen := programStillLeft;
+          end;
+          // Update the info.
+          FInfoString := Format('Programming %u bytes starting at %.8xh', [programCurrentLen, programCurrentBase]);
+          Synchronize(@SynchronizeInfoEvent);
+          // Update the log.
+          FLogString := FInfoString;
+          Synchronize(@SynchronizeLogEvent);
+          // Perform the programming operation.
+          if BltSessionWriteData(programCurrentBase, programCurrentLen, programCurrentDataPtr) <> BLT_RESULT_OK then
+          begin
+            // Set error flag.
+            errorDetected := True;
+            // Cancel firmware update procedure by transitioning to the idle state.
+            FState := FUS_IDLE;
+            // Update the log.
+            FLogString := Format('Could not program memory at %.8xh', [programCurrentBase]);
+            Synchronize(@SynchronizeLogEvent);
+            // Trigger error.
+            FErrorString := FLogString;
+            Synchronize(@SynchronizeErrorEvent);
+            // Stop looping
+            Break;
+          end
+          // Program operation was successful. Update loop variables for the next chunk.
+          else
+          begin
+            programStillLeft := programStillLeft - programCurrentLen;
+            programCurrentBase := programCurrentBase + programCurrentLen;
+            programCurrentDataPtr := programCurrentDataPtr + programCurrentLen;
+            // Update programming progress
+            programProgressLen := programProgressLen + programCurrentLen;
+            programProgressPct := (Int64(programProgressLen) * 100) div firmwareDataTotalSize;
+            // Dedicate the remaining 80% of the total firmware update progress to the
+            // programing operation.
+            FPercentage := 20 + ((programProgressPct * 80) div 100);
+            Synchronize(@SynchronizeProgressEvent);
+          end;
+        end;
+      end;
       // Transition to the next state if all is okay.
       if not errorDetected then
       begin
@@ -564,6 +711,9 @@ begin
       // Update the log.
       FLogString := FInfoString;
       Synchronize(@SynchronizeLogEvent);
+      // Set the progress to 100%
+      FPercentage := 100;
+      Synchronize(@SynchronizeProgressEvent);
       // Trigger the OnDone event
       Synchronize(@SynchronizeDoneEvent);
       // Transition back to the idle state.

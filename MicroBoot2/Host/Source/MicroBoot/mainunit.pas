@@ -56,6 +56,7 @@ type
     BtnStart: TButton;
     BtnStop: TButton;
     EdtFirmwareFile: TEdit;
+    LblProgress: TLabel;
     LblInfo: TLabel;
     MmoLog: TMemo;
     PnlFooterButtons: TPanel;
@@ -190,6 +191,7 @@ end; //*** end of FirmwareUpdateStarted ***
 procedure TMainForm.FirmwareUpdateStopped(Sender: TObject);
 begin
   LblInfo.Caption := '';
+  LblProgress.Caption := '0%';
   MmoLog.Lines.Add('[EVENT] OnStopped');
   { TODO : Implement firmware update OnStopped event handler. }
 end; //*** end of FirmwareUpdateStopped ***
@@ -205,6 +207,7 @@ end; //*** end of FirmwareUpdateStopped ***
 procedure TMainForm.FirmwareUpdateDone(Sender: TObject);
 begin
   LblInfo.Caption := '';
+  LblProgress.Caption := '0%';
   MmoLog.Lines.Add('[EVENT] OnDone');
   { TODO : Implement firmware update OnDone event handler. }
 end; //*** end of FirmwareUpdateDone ***
@@ -258,7 +261,7 @@ end; //*** end of FirmwareUpdateLog ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateProgress(Sender: TObject; Percentage: Integer);
 begin
-  MmoLog.Lines.Add('[EVENT] OnProgress: ' + IntToStr(Percentage));
+  LblProgress.Caption := IntToStr(Percentage) + '%';
   { TODO : Implement firmware update OnProgress event handler. }
 end; //*** end of FirmwareUpdateProgress ***
 

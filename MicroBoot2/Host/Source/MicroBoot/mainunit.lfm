@@ -116,7 +116,7 @@ object MainForm: TMainForm
       Left = 8
       Height = 29
       Top = 8
-      Width = 304
+      Width = 248
       TabOrder = 2
       Text = 'demoprog_stm32f091.srec'
     end
@@ -127,6 +127,14 @@ object MainForm: TMainForm
       Width = 480
       ScrollBars = ssAutoBoth
       TabOrder = 3
+    end
+    object LblProgress: TLabel
+      Left = 264
+      Height = 17
+      Top = 8
+      Width = 38
+      Caption = '0%       '
+      ParentColor = False
     end
   end
   object PnlFooter: TPanel
