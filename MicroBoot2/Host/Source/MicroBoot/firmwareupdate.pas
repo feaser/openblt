@@ -207,22 +207,35 @@ function TFirmwareUpdate.Start(FirmwareFile: String): Boolean;
 begin
   // Initialize the result.
   Result := False;
-  // Only start the firmware update if the specified file exists.
-  if FileExists(FirmwareFile) then
+  // Check if the worker thread is terminated but not yet freed from a previous update.
+  if Assigned(FWorkerThread) then
   begin
-    // Create the worker thread in a suspended state.
-    FWorkerThread := TFirmwareUpdateThread.Create(True, Self);
-    // Only continue if the worker thread could be instanced.
-    if Assigned(FWorkerThread) then
+    if FWorkerThread.Finished then
     begin
-      // Pass the firmware file on to the worker thread.
-      FWorkerThread.FirmwareFile := FirmwareFile;
-      // Set the initial state for the worker thread so it knows where to start.
-      FWorkerThread.State := FUS_INITIALIZING;
-      // Start the worker thread, which handles the actual firmware update.
-      FWorkerThread.Start;
-      // Update the result.
-      Result := True;
+      // Free it.
+      FreeAndNil(FWorkerThread);
+    end;
+  end;
+  // Only start a firmware update if another one is not already in progress.
+  if not Assigned(FWorkerThread) then
+  begin
+    // Only start the firmware update if the specified file exists.
+    if FileExists(FirmwareFile) then
+    begin
+      // Create the worker thread in a suspended state.
+      FWorkerThread := TFirmwareUpdateThread.Create(True, Self);
+      // Only continue if the worker thread could be instanced.
+      if Assigned(FWorkerThread) then
+      begin
+        // Pass the firmware file on to the worker thread.
+        FWorkerThread.FirmwareFile := FirmwareFile;
+        // Set the initial state for the worker thread so it knows where to start.
+        FWorkerThread.State := FUS_INITIALIZING;
+        // Start the worker thread, which handles the actual firmware update.
+        FWorkerThread.Start;
+        // Update the result.
+        Result := True;
+      end;
     end;
   end;
 end; //*** end of Start ***
@@ -246,6 +259,8 @@ begin
     FWorkerThread.Terminate;
     // Wait for thread termination to complete.
     FWorkerThread.WaitFor;
+    // Release the thread instance.
+    FreeAndNil(FWorkerThread);
   end;
 end;  //*** end of Stop ***
 
@@ -308,6 +323,8 @@ begin
     // --------------------------- Initializing -----------------------------------------
     if FState = FUS_INITIALIZING then
     begin
+      // Initialize error flag.
+      errorDetected := False;
       // Update the info.
       FInfoString := 'Starting firmware update';
       Synchronize(@SynchronizeInfoEvent);
@@ -326,8 +343,11 @@ begin
       // Initialize LibOpenBLT modules.
       Initialize;
       initialized := True;
-      // Transition to the next state.
-      FState := FUS_LOADING_FIRMWARE;
+      // Transition to the next state if all is okay.
+      if not errorDetected then
+      begin
+        FState := FUS_LOADING_FIRMWARE;
+      end;
     end
     // --------------------------- Loading firmware data --------------------------------
     else if FState = FUS_LOADING_FIRMWARE then
@@ -427,34 +447,133 @@ begin
       // Transition to the next state if all is okay.
       if not errorDetected then
       begin
-        FState := FUS_IDLE;
+        FState := FUS_CONNECTING;
       end;
     end
     // --------------------------- Connecting to target ---------------------------------
     else if FState = FUS_CONNECTING then
     begin
-      { TODO : Implement connecting state. }
+      // Initialize error flag.
+      errorDetected := False;
+      // Update the info.
+      FInfoString := 'Connecting to the target';
+      Synchronize(@SynchronizeInfoEvent);
+      // Update the log.
+      FLogString := FInfoString;
+      Synchronize(@SynchronizeLogEvent);
+      // Attempt connection with the target.
+      if BltSessionStart() <> BLT_RESULT_OK then
+      begin
+        // Not yet successful. Request the user to reset the system if it takes too long.
+        FInfoString := 'Connecting to the target (Reset your target if this takes  long time)';
+        Synchronize(@SynchronizeInfoEvent);
+        // Update the log.
+        FLogString := 'First connection attempt failed' + sLineBreak;
+        FLogString := FLogString + 'Switching to backdoor entry mode';
+        Synchronize(@SynchronizeLogEvent);
+        // Now keep retrying until successful
+        while BltSessionStart() <> BLT_RESULT_OK do
+        begin
+          // Check for thread termination request
+          if Terminated then
+          begin
+            // Set error flag to force idle mode after breaking this loop.
+            errorDetected := True;
+            // Update the log.
+            FLogString := 'Cancellation request detected, so stopping firmware update';
+            Synchronize(@SynchronizeLogEvent);
+            // Trigger the stopped event.
+            Synchronize(@SynchronizeStoppedEvent);
+            // Cancel firmware update procedure by transitioning to the idle state.
+            FState := FUS_IDLE;
+            // Stop looping.
+            Break;
+          end;
+          // Delay a bit to not starve the CPU.
+          Sleep(20);
+        end;
+      end;
+      // Transition to the next state if all is okay.
+      if not errorDetected then
+      begin
+        FState := FUS_ERASING_MEMORY;
+      end;
     end
     // --------------------------- Erasing memory ---------------------------------------
     else if FState = FUS_ERASING_MEMORY then
     begin
+      // Initialize error flag.
+      errorDetected := False;
+
       { TODO : Implement memory erasing state. }
+      for segmentIdx := 0 to 9 do
+      begin
+        Sleep(100);
+        if Terminated then
+        begin
+          // Set error flag to force idle mode after breaking this loop.
+          errorDetected := True;
+          // Update the log.
+          FLogString := 'Cancellation request detected, so stopping firmware update';
+          Synchronize(@SynchronizeLogEvent);
+          // Trigger the stopped event.
+          Synchronize(@SynchronizeStoppedEvent);
+          // Cancel firmware update procedure by transitioning to the idle state.
+          FState := FUS_IDLE;
+          // Stop looping.
+          Break;
+        end;
+      end;
+
+      // Transition to the next state if all is okay.
+      if not errorDetected then
+      begin
+        FState := FUS_PROGRAMMING_MEMORY;
+      end;
     end
     // --------------------------- Programming memory -----------------------------------
     else if FState = FUS_PROGRAMMING_MEMORY then
     begin
+      // Initialize error flag.
+      errorDetected := False;
+
       { TODO : Implement memory programming state. }
+
+      // Transition to the next state if all is okay.
+      if not errorDetected then
+      begin
+        FState := FUS_FINISHING_UP;
+      end;
     end
     // --------------------------- Finishing up -----------------------------------------
     else if FState = FUS_FINISHING_UP then
     begin
-      { TODO : Implement finishin up state. }
+      // Initialize error flag.
+      errorDetected := False;
+      // Update the info.
+      FInfoString := 'Finishing programming session';
+      Synchronize(@SynchronizeInfoEvent);
+      // Update the log.
+      FLogString := FInfoString;
+      Synchronize(@SynchronizeLogEvent);
+      // Stop the session
+      BltSessionStop();
+      // Update the info.
+      FInfoString := 'Firmware update completed successfully';
+      Synchronize(@SynchronizeInfoEvent);
+      // Update the log.
+      FLogString := FInfoString;
+      Synchronize(@SynchronizeLogEvent);
+      // Trigger the OnDone event
+      Synchronize(@SynchronizeDoneEvent);
+      // Transition back to the idle state.
+      FState := FUS_IDLE;
     end
     // --------------------------- Idle -------------------------------------------------
     else
     begin
-      // Do nothing while also not starting the CPU.
-      Sleep(50);
+      // Idle mode means that the worker thread is all done and can be exited.
+      Break;
     end;
   end;
   // Cleanup LibOpenBLT modules if initialized.
@@ -465,8 +584,6 @@ begin
     initialized := False;
     Cleanup;
   end;
-  // Trigger the stopped event.
-  Synchronize(@SynchronizeStoppedEvent);
 end; //*** end of Execute ***
 
 

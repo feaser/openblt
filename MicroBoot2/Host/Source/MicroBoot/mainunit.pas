@@ -309,7 +309,11 @@ begin
   // Create the dialog and make us the owner.
   settingsDialog := TSettingsForm.Create(Self, FCurrentConfig);
   // Show the dialog in the modal state.
-  settingsDialog.ShowModal;
+  if settingsDialog.ShowModal = mrOK then
+  begin
+    // Save the new settings to the file.
+    FCurrentConfig.SaveToFile;
+  end;
   // Release the dialog.
   settingsDialog.Free;
 end; //*** end of BtnSettingsClick ***
