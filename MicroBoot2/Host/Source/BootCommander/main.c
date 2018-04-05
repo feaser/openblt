@@ -496,10 +496,10 @@ static void DisplayProgramUsage(void)
   printf("                   Supported values: 1000000, 800000, 500000, 250000,\n");
   printf("                   125000, 100000, 50000, 20000, 10000.\n");
   printf("  -tid=[value]     CAN identifier for transmitting XCP command messages\n");
-  printf("                   from the host to the target, as a 32-bit hexadecimal.\n");
+  printf("                   from the host to the target, as a 32-bit hexadecimal\n");
   printf("                   value (Default = 667h).\n");
   printf("  -rid=[value]     CAN identifier for receiving XCP response messages\n");
-  printf("                   from the target to the host, as a 32-bit hexadecimal.\n");
+  printf("                   from the target to the host, as a 32-bit hexadecimal\n");
   printf("                   value (Default = 7E1h).\n");
   printf("  -xid=[value]     Configures the 'tid' and 'rid' CAN identifier values\n");
   printf("                   as 29-bit CAN identifiers, if this 8-bit value is > 0\n");
@@ -567,7 +567,7 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
         printf("  -> Timeout T3: %hu ms\n", xcpSettings->timeoutT3);
         printf("  -> Timeout T4: %hu ms\n", xcpSettings->timeoutT4);
         printf("  -> Timeout T5: %hu ms\n", xcpSettings->timeoutT5);
-        printf("  -> Timeout T6: %hu ms\n", xcpSettings->timeoutT7);
+        printf("  -> Timeout T7: %hu ms\n", xcpSettings->timeoutT7);
         printf("  -> Seed/Key file: ");
         if (xcpSettings->seedKeyFile != NULL)
         {

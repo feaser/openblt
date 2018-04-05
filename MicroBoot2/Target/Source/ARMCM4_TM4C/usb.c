@@ -33,6 +33,7 @@
 #if (BOOT_COM_USB_ENABLE > 0)
 #include <stdbool.h>
 #include <stdint.h>
+#include "usb.h"
 #include "usblib.h"
 #include "usbdevice.h"
 #include "usbdbulk.h"
@@ -72,14 +73,6 @@ typedef struct
   blt_int8u handle;                                /**< fifo handle                    */
   blt_int8u data[FIFO_PIPE_SIZE];                  /**< fifo data buffer               */
 } tFifoPipe;                                       /**< USB pipe fifo type             */
-
-
-/****************************************************************************************
-* Hook functions
-****************************************************************************************/
-extern void UsbEnterLowPowerModeHook(void);
-extern void UsbLeaveLowPowerModeHook(void);
-extern void UsbConnectHook(blt_bool connect);
 
 
 /****************************************************************************************

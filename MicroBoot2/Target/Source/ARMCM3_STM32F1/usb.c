@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_USB_ENABLE > 0)
+#include "usb.h"                                 /* USB driver module                  */
 #include "usb_lib.h"                             /* USB library driver header          */
 #include "usb_desc.h"                            /* USB descriptor header              */
 #include "usb_pwr.h"                             /* USB power management header        */
@@ -70,14 +71,6 @@ typedef struct
   blt_int8u handle;                                /**< fifo handle                    */
   blt_int8u data[FIFO_PIPE_SIZE];                  /**< fifo data buffer               */
 } tFifoPipe;                                       /**< USB pipe fifo type             */
-
-
-/****************************************************************************************
-* Hook functions
-****************************************************************************************/
-extern void UsbEnterLowPowerModeHook(void);
-extern void UsbLeaveLowPowerModeHook(void);
-extern void UsbConnectHook(blt_bool connect);
 
 
 /****************************************************************************************
