@@ -3,6 +3,7 @@ object MainForm: TMainForm
   Height = 180
   Top = 293
   Width = 500
+  ActiveControl = BtnBrowse
   Caption = 'MicroBoot'
   ClientHeight = 180
   ClientWidth = 500
@@ -178,7 +179,7 @@ object MainForm: TMainForm
         Width = 83
         Caption = 'Exit'
         OnClick = BtnExitClick
-        TabOrder = 0
+        TabOrder = 1
       end
       object BtnSettings: TButton
         Left = 8
@@ -187,7 +188,7 @@ object MainForm: TMainForm
         Width = 83
         Caption = 'Settings..'
         OnClick = BtnSettingsClick
-        TabOrder = 1
+        TabOrder = 0
       end
     end
     object LblElapsedTime: TLabel
