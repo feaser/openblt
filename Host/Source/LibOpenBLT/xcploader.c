@@ -229,8 +229,6 @@ static void XcpLoaderTerminate(void)
   /* Only continue with a valid transport layer. */
   if (xcpSettings.transport != NULL) /*lint !e774 */
   {
-    /* Stop the session. */
-    XcpLoaderStop();
     /* Terminate the transport layer. */
     xcpSettings.transport->Terminate();
     /* Unlink the transport layer. */

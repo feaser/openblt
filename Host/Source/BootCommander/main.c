@@ -567,7 +567,7 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
         printf("  -> Timeout T3: %hu ms\n", xcpSettings->timeoutT3);
         printf("  -> Timeout T4: %hu ms\n", xcpSettings->timeoutT4);
         printf("  -> Timeout T5: %hu ms\n", xcpSettings->timeoutT5);
-        printf("  -> Timeout T6: %hu ms\n", xcpSettings->timeoutT7);
+        printf("  -> Timeout T7: %hu ms\n", xcpSettings->timeoutT7);
         printf("  -> Seed/Key file: ");
         if (xcpSettings->seedKeyFile != NULL)
         {
