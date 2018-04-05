@@ -38,39 +38,68 @@ interface
 // Includes
 //***************************************************************************************
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, CurrentConfig, ConfigGroups, SettingsDialog, FirmwareUpdate;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, LCLType,
+  ExtCtrls, ComCtrls, CurrentConfig, ConfigGroups, SettingsDialog, FirmwareUpdate,
+  StopWatch;
+
+
+//***************************************************************************************
+// Constant declarations.
+//***************************************************************************************
+const
+  PROGRAM_NAME_STR = 'MicroBoot';
+  PROGRAM_VERSION_STR = 'v2.00';
 
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
+  //------------------------------ TUserInterfaceSetting --------------------------------
+  TUserInterfaceSetting = ( UIS_DEFAULT = 0,
+                            UIS_FIRMWARE_UPDATE );
+
   //------------------------------ TMainForm --------------------------------------------
-
-  { TMainForm }
-
   TMainForm = class(TForm)
     BtnExit: TButton;
     BtnSettings: TButton;
-    BtnStart: TButton;
-    BtnStop: TButton;
-    EdtFirmwareFile: TEdit;
-    LblProgress: TLabel;
-    LblInfo: TLabel;
-    MmoLog: TMemo;
+    BtnBrowse: TButton;
+    ImgHeader: TImage;
+    LblElapsedTime: TLabel;
+    LblFirmwareUpdateInfo: TLabel;
+    LblProgramConfig: TLabel;
+    LblProgramName: TLabel;
+    OpenDialog: TOpenDialog;
+    PnlBodyMain: TPanel;
+    PnlBodyRight: TPanel;
+    PnlHeader: TPanel;
     PnlFooterButtons: TPanel;
     PnlFooter: TPanel;
     PnlBody: TPanel;
+    PgbFirmwareUpdate: TProgressBar;
+    TmrStopWatch: TTimer;
+    TmrClose: TTimer;
+    procedure BtnBrowseClick(Sender: TObject);
     procedure BtnExitClick(Sender: TObject);
     procedure BtnSettingsClick(Sender: TObject);
-    procedure BtnStartClick(Sender: TObject);
-    procedure BtnStopClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure PnlBodyMainResize(Sender: TObject);
+    procedure TmrCloseTimer(Sender: TObject);
+    procedure TmrStopWatchTimer(Sender: TObject);
   private
     FCurrentConfig: TCurrentConfig;
     FFirmwareUpdate: TFirmwareUpdate;
+    FUISetting: TUserInterfaceSetting;
+    FStopWatch: TStopWatch;
+    FHFreeSpaceProgressBar: Integer;
+    FFirmwareFile: String;
+    function  StartFirmwareUpdate: Boolean;
+    procedure FinishFirmwareUpdate(CloseProgram: Boolean);
+    procedure CancelFirmwareUpdate;
+    procedure HandleFirmwareUpdateError(ErrorString: String);
+    procedure UpdateUserInterface;
+    procedure UpdateElapsedTime;
     procedure FirmwareUpdateStarted(Sender: TObject);
     procedure FirmwareUpdateStopped(Sender: TObject);
     procedure FirmwareUpdateDone(Sender: TObject);
@@ -78,6 +107,7 @@ type
     procedure FirmwareUpdateLog(Sender: TObject; LogString: String);
     procedure FirmwareUpdateProgress(Sender: TObject; Percentage: Integer);
     procedure FirmwareUpdateError(Sender: TObject; ErrorString: String);
+    function  GetConfigSummary: String;
   public
   end;
 
@@ -107,9 +137,17 @@ var
   mainWindowConfig: TMainWindowConfig;
 begin
   // Clear panel captions as these are only needed as hint during design time.
+  PnlHeader.Caption := '';
   PnlBody.Caption := '';
+  PnlBodyMain.Caption := '';
+  PnlBodyRight.Caption := '';
   PnlFooter.Caption := '';
   PnlFooterButtons.Caption := '';
+  // Store the default difference in width between the progress bar and its parent panel.
+  FHFreeSpaceProgressBar := PnlBodyMain.Width - PgbFirmwareUpdate.Width;
+  // Initialize the user interface.
+  FUISetting := UIS_DEFAULT;
+  UpdateUserInterface();
   // Create instance to manage the program's configuration and add the configuration
   // group instances.
   FCurrentConfig := TCurrentConfig.Create;
@@ -124,6 +162,8 @@ begin
   FCurrentConfig.AddGroup(TTransportXcpTcpIpConfig.Create);
   // Load the program's configuration from the configuration file.
   FCurrentConfig.LoadFromFile;
+  // Update the program configuration label.
+  LblProgramConfig.Caption := GetConfigSummary;
   // Set main window configuration settings.
   mainWindowConfig := FCurrentConfig.Groups[TMainWindowConfig.GROUP_NAME]
                       as TMainWindowConfig;
@@ -139,6 +179,8 @@ begin
   FFirmwareUpdate.OnLog := @FirmwareUpdateLog;
   FFirmwareUpdate.OnProgress := @FirmwareUpdateProgress;
   FFirmwareUpdate.OnError := @FirmwareUpdateError;
+  // Create stopwatch instance.
+  FStopWatch := TStopWatch.Create;
 end; //*** end of FormCreate
 
 
@@ -153,6 +195,8 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 var
   mainWindowConfig: TMainWindowConfig;
 begin
+  // Release stopwatch instance.
+  FStopWatch.Free;
   // Release instance of the firmware update class.
   FFirmwareUpdate.Free;
   // Store main window configuration settings.
@@ -168,6 +212,201 @@ end; //*** end of FormDestroy ***
 
 
 //***************************************************************************************
+// NAME:           PnlBodyMainResize
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the panel is resized.
+//
+//***************************************************************************************
+procedure TMainForm.PnlBodyMainResize(Sender: TObject);
+begin
+  // Also resize the progress bar.
+  PgbFirmwareUpdate.Width := PnlBodyMain.Width - FHFreeSpaceProgressBar;
+end; //*** end of PnlBodyMainResize ***
+
+
+//***************************************************************************************
+// NAME:           TmrCloseTimer
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the timer expires.
+//
+//***************************************************************************************
+procedure TMainForm.TmrCloseTimer(Sender: TObject);
+begin
+  // Disable the timer, because it is a one-shot timer.
+  TmrClose.Enabled := False;
+  // Close the program.
+  Close;
+end; //*** end of TmrCloseTimer ***
+
+//***************************************************************************************
+// NAME:           TmrStopWatchTimer
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the timer expires.
+//
+//***************************************************************************************
+procedure TMainForm.TmrStopWatchTimer(Sender: TObject);
+begin
+  // Update the elapsed time on the user interface.
+  UpdateElapsedTime;
+end; //*** end of TmrStopWatchTimer ***
+
+
+//***************************************************************************************
+// NAME:           StartFirmwareUpdate
+// PARAMETER:      none
+// RETURN VALUE:   True if successful, False otherwise.
+// DESCRIPTION:    Starts the firmware update procedure.
+//***************************************************************************************
+function  TMainForm.StartFirmwareUpdate: Boolean;
+begin
+  // Initialize the result.
+  Result := False;
+  // Attempt to start the firmware update.
+  if FFirmwareUpdate.Start(FFirmwareFile) then
+  begin
+    // Update the user interface setting.
+    FUISetting := UIS_FIRMWARE_UPDATE;
+    // Update the user interface.
+    UpdateUserInterface;
+    // Start the stop watch refresh timer.
+    FStopWatch.Start;
+    TmrStopWatch.Enabled := True;
+  end;
+end; //*** end of StartFirmwareUpdate ***
+
+
+//***************************************************************************************
+// NAME:           FinishFirmwareUpdate
+// PARAMETER:      CloseProgram True if the program should be closed, false otherwise.
+// RETURN VALUE:   none
+// DESCRIPTION:    Finished the firmware update after the firmware update procedure
+//                 completed.
+//***************************************************************************************
+procedure TMainForm.FinishFirmwareUpdate(CloseProgram: Boolean);
+begin
+  // Close the program if requested.
+  if CloseProgram then
+  begin
+    // Start timer to perform a delayed closing of the program. This procedure could be
+    // called from one of the OnXxx event handlers of the firmware update class. These
+    // events are synchronized to the main loop, meaning that the internal thread of the
+    // firmware update class is suspended until the event function completes. When you
+    // close the program, it will also free the firmware update class, which in turn
+    // terminates its internal thread. This could deadlock, because it might still be
+    // suspended. The timer makes it possible for the internal thread of the firmware
+    // update class to complete and terminate itself, preventing the deadlock situation.
+    TmrClose.Enabled := True;
+  end
+  else
+  begin
+    // Stop the stop watch refresh timer.
+    FStopWatch.Stop;
+    TmrStopWatch.Enabled := False;
+    // Update the user interface setting.
+    FUISetting := UIS_DEFAULT;
+    // Update the user interface.
+    UpdateUserInterface;
+  end;
+end; //*** end of FinishFirmwareUpdate ***
+
+
+//***************************************************************************************
+// NAME:           CancelFirmwareUpdate
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Cancels an ongoing firmware update procedure.
+//***************************************************************************************
+procedure TMainForm.CancelFirmwareUpdate;
+begin
+  // Stop the stop watch refresh timer.
+  FStopWatch.Stop;
+  TmrStopWatch.Enabled := False;
+  // Cancel the firmware update.
+  FFirmwareUpdate.Stop;
+  // Update the user interface setting.
+  FUISetting := UIS_DEFAULT;
+  // Update the user interface.
+  UpdateUserInterface;
+end; //*** end of CancelFirmwareUpdate ***
+
+
+//***************************************************************************************
+// NAME:           HandleFirmwareUpdateError
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Handles the situation when an error was detected during a firmware
+//                 update.
+//***************************************************************************************
+procedure TMainForm.HandleFirmwareUpdateError(ErrorString: String);
+var
+  boxStyle: Integer;
+begin
+  // Stop the stop watch refresh timer.
+  FStopWatch.Stop;
+  TmrStopWatch.Enabled := False;
+  // Configure the message box.
+  boxStyle := MB_ICONERROR + MB_OK;
+  // Display the message box.
+  Application.MessageBox(PAnsiChar(AnsiString(ErrorString)), 'Error detected', boxStyle);
+  // Update the user interface setting.
+  FUISetting := UIS_DEFAULT;
+  // Update the user interface.
+  UpdateUserInterface;
+end; //*** end of HandleFirmwareUpdateError ***
+
+
+//***************************************************************************************
+// NAME:           UpdateUserInterface
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Updates the user interface look and layout based on the current
+//                 setting.
+//
+//***************************************************************************************
+procedure TMainForm.UpdateUserInterface;
+begin
+  // Update look and layout for the default setting.
+  if FUISetting = UIS_DEFAULT then
+  begin
+    Caption := PROGRAM_NAME_STR + ' ' + PROGRAM_VERSION_STR;
+    LblFirmwareUpdateInfo.Caption := 'Select file to start the firmware update';
+    LblElapsedTime.Caption := '';
+    PgbFirmwareUpdate.Position := 0;
+    BtnBrowse.Enabled := True;
+    BtnSettings.Enabled := True;
+    BtnExit.Caption := 'Exit';
+  end
+  // Update look and layout for the firmware update setting.
+  else if FUISetting = UIS_FIRMWARE_UPDATE then
+  begin
+    Caption := PROGRAM_NAME_STR +' ' + PROGRAM_VERSION_STR + ' - ' +
+               ExtractFileName(FFirmwareFile) + '..';
+    UpdateElapsedTime;
+    PgbFirmwareUpdate.Position := 0;
+    BtnBrowse.Enabled := False;
+    BtnSettings.Enabled := False;
+    BtnExit.Caption := 'Cancel';
+  end;
+end; //*** end of UpdateUserInterface ***
+
+
+//***************************************************************************************
+// NAME:           UpdateElapsedTime
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Updates the elapsed time on the user interface.
+//
+//***************************************************************************************
+procedure TMainForm.UpdateElapsedTime;
+begin
+  LblElapsedTime.Caption := 'Elapsed time: ' + FStopWatch.Interval;
+end; //*** end of UpdateElapsedTime ***
+
+
+//***************************************************************************************
 // NAME:           FirmwareUpdateStarted
 // PARAMETER:      Sender Source of the event.
 // RETURN VALUE:   none
@@ -176,8 +415,7 @@ end; //*** end of FormDestroy ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateStarted(Sender: TObject);
 begin
-  MmoLog.Lines.Add('[EVENT] OnStarted');
-  { TODO : Implement firmware update OnStarted event handler. }
+  // Nothing need to be done here for now.
 end; //*** end of FirmwareUpdateStarted ***
 
 
@@ -190,10 +428,9 @@ end; //*** end of FirmwareUpdateStarted ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateStopped(Sender: TObject);
 begin
-  LblInfo.Caption := '';
-  LblProgress.Caption := '0%';
-  MmoLog.Lines.Add('[EVENT] OnStopped');
-  { TODO : Implement firmware update OnStopped event handler. }
+  // Finish up to firmware update but do not close the program, because the firmware
+  // update was cancelled. This makes if possible for the user to retry.
+  FinishFirmwareUpdate(False);
 end; //*** end of FirmwareUpdateStopped ***
 
 
@@ -206,10 +443,8 @@ end; //*** end of FirmwareUpdateStopped ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateDone(Sender: TObject);
 begin
-  LblInfo.Caption := '';
-  LblProgress.Caption := '0%';
-  MmoLog.Lines.Add('[EVENT] OnDone');
-  { TODO : Implement firmware update OnDone event handler. }
+  // Finish firmware update and close the program
+  FinishFirmwareUpdate(True);
 end; //*** end of FirmwareUpdateDone ***
 
 
@@ -226,8 +461,8 @@ end; //*** end of FirmwareUpdateDone ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateInfo(Sender: TObject; InfoString: String);
 begin
-  // Display info on the user interface.
-  LblInfo.Caption := InfoString;
+  // Display the info on the user interface.
+  LblFirmwareUpdateInfo.Caption := InfoString;
 end; //*** end of FirmwareUpdateInfo ***
 
 
@@ -244,8 +479,7 @@ end; //*** end of FirmwareUpdateInfo ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateLog(Sender: TObject; LogString: String);
 begin
-  MmoLog.Lines.Add(LogString);
-  { TODO : Implement firmware update OnLog event handler. }
+  // Nothing need to be done here for now.
 end; //*** end of FirmwareUpdateLog ***
 
 
@@ -261,8 +495,12 @@ end; //*** end of FirmwareUpdateLog ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateProgress(Sender: TObject; Percentage: Integer);
 begin
-  LblProgress.Caption := IntToStr(Percentage) + '%';
-  { TODO : Implement firmware update OnProgress event handler. }
+  // Display the progress on the user interface.
+  PgbFirmwareUpdate.Position := Percentage;
+  // Fix for progress bar not going 100%
+  PgbFirmwareUpdate.Position := Percentage - 1;
+  // Update progress bar one more time.
+  PgbFirmwareUpdate.Position := Percentage;
 end; //*** end of FirmwareUpdateProgress ***
 
 
@@ -278,10 +516,54 @@ end; //*** end of FirmwareUpdateProgress ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateError(Sender: TObject; ErrorString: String);
 begin
-  LblInfo.Caption := '';
-  MmoLog.Lines.Add('[EVENT] OnError: ' + ErrorString);
-  { TODO : Implement firmware update OnError event handler. }
+  // Handle the error.
+  HandleFirmwareUpdateError(ErrorString);
 end; //*** end of FirmwareUpdateError ***
+
+
+//***************************************************************************************
+// NAME:           GetConfigSummary
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   Configuration summary.
+// DESCRIPTION:    Obtains a string that contains a summary of the current active
+//                 configuration, for example: 'for OpenBLT using XCP on UART'.
+//
+//***************************************************************************************
+function TMainForm.GetConfigSummary: String;
+var
+  sessionConfig: TSessionConfig;
+  transportConfig: TTransportConfig;
+begin
+  // Initialize the result.
+  Result := 'Unknown configuration';
+  // Obtain access to the session configuration group.
+  sessionConfig := FCurrentConfig.Groups[TSessionConfig.GROUP_NAME]
+                   as TSessionConfig;
+  // Obtain access to the transport configuration group.
+  transportConfig := FCurrentConfig.Groups[TTransportConfig.GROUP_NAME]
+                     as TTransportConfig;
+  // Filter on the configured session protocol.
+  if sessionConfig.Session = 'xcp' then
+  begin
+    Result := 'for OpenBLT using XCP ';
+    if transportConfig.Transport = 'xcp_rs232' then
+    begin
+      Result := Result +  'on RS232';
+    end
+    else if transportConfig.Transport = 'xcp_can' then
+    begin
+      Result := Result +  'on CAN';
+    end
+    else if transportConfig.Transport = 'xcp_usb' then
+    begin
+      Result := Result +  'on USB';
+    end
+    else if transportConfig.Transport = 'xcp_net' then
+    begin
+      Result := Result +  'on TCP/IP';
+    end;
+  end;
+end; //*** end of GetConfigSummary ***
 
 
 //***************************************************************************************
@@ -293,9 +575,39 @@ end; //*** end of FirmwareUpdateError ***
 //***************************************************************************************
 procedure TMainForm.BtnExitClick(Sender: TObject);
 begin
-  // Exit the program.
-  Close;
+  if BtnExit.Caption = 'Exit' then
+  begin
+    // Exit the program.
+    Close;
+  end
+  else
+  begin
+    // Cancel the firmware update.
+    CancelFirmwareUpdate;
+  end;
 end; //*** end of BtnExitClick ***
+
+
+//***************************************************************************************
+// NAME:           BtnBrowseClick
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the button is clicked.
+//
+//***************************************************************************************
+procedure TMainForm.BtnBrowseClick(Sender: TObject);
+begin
+  // Reset firmware file name.
+  FFirmwareFile := '';
+  // Display the dialog to prompt the user to pick a file.
+  if OpenDialog.Execute then
+  begin
+    // Read out the selected file.
+    FFirmwareFile := OpenDialog.FileName;
+    // Start the actual firmware update.
+    StartFirmwareUpdate;
+  end;
+end; //*** end of BtnBrowseClick ***
 
 
 //***************************************************************************************
@@ -316,43 +628,12 @@ begin
   begin
     // Save the new settings to the file.
     FCurrentConfig.SaveToFile;
+    // Update the program configuration label.
+    LblProgramConfig.Caption := GetConfigSummary;
   end;
   // Release the dialog.
   settingsDialog.Free;
 end; //*** end of BtnSettingsClick ***
-
-
-//***************************************************************************************
-// NAME:           BtnStartClick
-// PARAMETER:      Sender Source of the event.
-// RETURN VALUE:   none
-// DESCRIPTION:    Event handler that gets called when the button is clicked.
-//
-//***************************************************************************************
-procedure TMainForm.BtnStartClick(Sender: TObject);
-begin
-  // Clear the memo.
-  MmoLog.Clear;
-  // Start the firmware update.
-  if not FFirmwareUpdate.Start(EdtFirmwareFile.Text) then
-  begin
-    MmoLog.Lines.Add('[ERROR] Could not start firmware update.');
-  end;
-end; //*** end of BtnStartClick ***
-
-
-//***************************************************************************************
-// NAME:           BtnStopClick
-// PARAMETER:      Sender Source of the event.
-// RETURN VALUE:   none
-// DESCRIPTION:    Event handler that gets called when the button is clicked.
-//
-//***************************************************************************************
-procedure TMainForm.BtnStopClick(Sender: TObject);
-begin
-  // Stop the firmware update.
-  FFirmwareUpdate.Stop;
-end; //*** end of BtnStopClick ***
 
 end.
 //******************************** end of mainunit.pas **********************************

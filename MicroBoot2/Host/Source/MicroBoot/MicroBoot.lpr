@@ -44,7 +44,7 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, MainUnit, CurrentConfig, ConfigGroups, SettingsDialog,
   SessionXcpDialog, CustomUtil, TransportXcpTcpIpDialog, MiscellaneousDialog,
-  FirmwareUpdate
+  FirmwareUpdate, StopWatch
   { you can add units after this };
 
 {$R *.res}

@@ -479,7 +479,7 @@ begin
       if BltSessionStart() <> BLT_RESULT_OK then
       begin
         // Not yet successful. Request the user to reset the system if it takes too long.
-        FInfoString := 'Connecting to the target (Reset your target if this takes  long time)';
+        FInfoString := 'Connecting to the target (reset your target if this takes  long time)';
         Synchronize(@SynchronizeInfoEvent);
         // Update the log.
         FLogString := 'First connection attempt failed' + sLineBreak;
