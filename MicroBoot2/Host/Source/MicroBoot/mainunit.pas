@@ -91,7 +91,9 @@ type
     FUISetting: TUserInterfaceSetting;
     FStopWatch: TStopWatch;
     FHFreeSpaceProgressBar: Integer;
+    FCmdOptionFileFound: Boolean;
     FFirmwareFile: String;
+    procedure ParseCommandLine;
     function  StartFirmwareUpdate: Boolean;
     procedure FinishFirmwareUpdate(CloseProgram: Boolean);
     procedure CancelFirmwareUpdate;
@@ -147,6 +149,11 @@ begin
   // Initialize the user interface.
   FUISetting := UIS_DEFAULT;
   UpdateUserInterface();
+  // Initialize fields.
+  FCmdOptionFileFound := False;
+  FFirmwareFile := '';
+  // Parse the command line.
+  ParseCommandLine;
   // Create instance to manage the program's configuration and add the configuration
   // group instances.
   FCurrentConfig := TCurrentConfig.Create;
@@ -181,6 +188,12 @@ begin
   // Create and configure stopwatch instance.
   FStopWatch := TStopWatch.Create;
   FStopWatch.OnUpdate := @StopWatchUpdateEvent;
+  // Automatically kick off the firmware update procedure if a firmware file was
+  // specified on the command line.
+  if FCmdOptionFileFound then
+  begin
+    StartFirmwareUpdate;
+  end;
 end; //*** end of FormCreate
 
 
@@ -209,6 +222,31 @@ begin
   // Release the instance that manages the program's configuration.
   FCurrentConfig.Free;
 end; //*** end of FormDestroy ***
+
+
+//***************************************************************************************
+// NAME:           ParseCommandLine
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Parses the command line parameters.
+//
+//***************************************************************************************
+procedure TMainForm.ParseCommandLine;
+begin
+  // The program currently support one command line parameter, which is the firmware
+  // file. If a valid file is specified, the firmware update should start automatically.
+  if ParamCount = 1 then
+  begin
+    // Check if parameter contains an existing file.
+    if FileExists(ParamStr(1)) then
+    begin
+      // Store the filename.
+      FFirmwareFile := ParamStr(1);
+      // Set flag for later processing.
+      FCmdOptionFileFound := True;
+    end;
+  end;
+end; //*** end of ParseCommandLine ***
 
 
 //***************************************************************************************
