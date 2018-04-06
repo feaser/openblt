@@ -77,7 +77,6 @@ type
     PnlFooter: TPanel;
     PnlBody: TPanel;
     PgbFirmwareUpdate: TProgressBar;
-    TmrStopWatch: TTimer;
     TmrClose: TTimer;
     procedure BtnBrowseClick(Sender: TObject);
     procedure BtnExitClick(Sender: TObject);
@@ -86,7 +85,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure PnlBodyMainResize(Sender: TObject);
     procedure TmrCloseTimer(Sender: TObject);
-    procedure TmrStopWatchTimer(Sender: TObject);
   private
     FCurrentConfig: TCurrentConfig;
     FFirmwareUpdate: TFirmwareUpdate;
@@ -99,7 +97,8 @@ type
     procedure CancelFirmwareUpdate;
     procedure HandleFirmwareUpdateError(ErrorString: String);
     procedure UpdateUserInterface;
-    procedure UpdateElapsedTime;
+    procedure UpdateElapsedTime(Interval: String);
+    procedure StopWatchUpdateEvent(Sender: TObject; Interval: String);
     procedure FirmwareUpdateStarted(Sender: TObject);
     procedure FirmwareUpdateStopped(Sender: TObject);
     procedure FirmwareUpdateDone(Sender: TObject);
@@ -179,8 +178,9 @@ begin
   FFirmwareUpdate.OnLog := @FirmwareUpdateLog;
   FFirmwareUpdate.OnProgress := @FirmwareUpdateProgress;
   FFirmwareUpdate.OnError := @FirmwareUpdateError;
-  // Create stopwatch instance.
+  // Create and configure stopwatch instance.
   FStopWatch := TStopWatch.Create;
+  FStopWatch.OnUpdate := @StopWatchUpdateEvent;
 end; //*** end of FormCreate
 
 
@@ -240,19 +240,6 @@ begin
   Close;
 end; //*** end of TmrCloseTimer ***
 
-//***************************************************************************************
-// NAME:           TmrStopWatchTimer
-// PARAMETER:      Sender Source of the event.
-// RETURN VALUE:   none
-// DESCRIPTION:    Event handler that gets called when the timer expires.
-//
-//***************************************************************************************
-procedure TMainForm.TmrStopWatchTimer(Sender: TObject);
-begin
-  // Update the elapsed time on the user interface.
-  UpdateElapsedTime;
-end; //*** end of TmrStopWatchTimer ***
-
 
 //***************************************************************************************
 // NAME:           StartFirmwareUpdate
@@ -273,7 +260,6 @@ begin
     UpdateUserInterface;
     // Start the stop watch refresh timer.
     FStopWatch.Start;
-    TmrStopWatch.Enabled := True;
   end;
 end; //*** end of StartFirmwareUpdate ***
 
@@ -304,7 +290,6 @@ begin
   begin
     // Stop the stop watch refresh timer.
     FStopWatch.Stop;
-    TmrStopWatch.Enabled := False;
     // Update the user interface setting.
     FUISetting := UIS_DEFAULT;
     // Update the user interface.
@@ -323,7 +308,6 @@ procedure TMainForm.CancelFirmwareUpdate;
 begin
   // Stop the stop watch refresh timer.
   FStopWatch.Stop;
-  TmrStopWatch.Enabled := False;
   // Cancel the firmware update.
   FFirmwareUpdate.Stop;
   // Update the user interface setting.
@@ -346,7 +330,6 @@ var
 begin
   // Stop the stop watch refresh timer.
   FStopWatch.Stop;
-  TmrStopWatch.Enabled := False;
   // Configure the message box.
   boxStyle := MB_ICONERROR + MB_OK;
   // Display the message box.
@@ -384,7 +367,7 @@ begin
   begin
     Caption := PROGRAM_NAME_STR +' ' + PROGRAM_VERSION_STR + ' - ' +
                ExtractFileName(FFirmwareFile) + '..';
-    UpdateElapsedTime;
+    UpdateElapsedTime('');
     PgbFirmwareUpdate.Position := 0;
     BtnBrowse.Enabled := False;
     BtnSettings.Enabled := False;
@@ -400,10 +383,24 @@ end; //*** end of UpdateUserInterface ***
 // DESCRIPTION:    Updates the elapsed time on the user interface.
 //
 //***************************************************************************************
-procedure TMainForm.UpdateElapsedTime;
+procedure TMainForm.UpdateElapsedTime(Interval: String);
 begin
-  LblElapsedTime.Caption := 'Elapsed time: ' + FStopWatch.Interval;
+  LblElapsedTime.Caption := 'Elapsed time: ' + Interval;
 end; //*** end of UpdateElapsedTime ***
+
+
+//***************************************************************************************
+// NAME:           StopWatchUpdateEvent
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the stopwatch got updated.
+//
+//***************************************************************************************
+procedure TMainForm.StopWatchUpdateEvent(Sender: TObject; Interval: String);
+begin
+  // Update the elapsed time on the user interface.
+  UpdateElapsedTime(Interval);
+end; //*** end of StopWatchUpdateEvent ***
 
 
 //***************************************************************************************

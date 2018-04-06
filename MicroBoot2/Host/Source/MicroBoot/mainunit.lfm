@@ -322,10 +322,4 @@ object MainForm: TMainForm
     OnTimer = TmrCloseTimer
     left = 312
   end
-  object TmrStopWatch: TTimer
-    Enabled = False
-    Interval = 500
-    OnTimer = TmrStopWatchTimer
-    left = 248
-  end
 end

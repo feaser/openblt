@@ -38,25 +38,33 @@ interface
 // Includes
 //***************************************************************************************
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, ExtCtrls;
 
 
 //***************************************************************************************
 // Type Definitions
 //***************************************************************************************
 type
+  //------------------------------ TStopWatchUpdateEvent --------------------------------
+  TStopWatchUpdateEvent = procedure(Sender: TObject; Interval: String) of object;
+
   //------------------------------ TStopWatch -------------------------------------------
   TStopWatch = class(TObject)
   private
     FStartTime: TDateTime;
     FRunning: Boolean;
     FInterval: String;
-    function GetInterval: String;
+    FInternalTimer: TTimer;
+    FUpdateEvent: TStopWatchUpdateEvent;
+    function    GetInterval: String;
+    procedure   InternalTimerOnTimer(Sender: TObject);
   public
     constructor Create;
-    procedure Start;
-    procedure Stop;
-    property Interval: String read GetInterval;
+    destructor  Destroy; override;
+    procedure   Start;
+    procedure   Stop;
+    property    Interval: String read GetInterval;
+    property    OnUpdate: TStopWatchUpdateEvent read FUpdateEvent write FUpdateEvent;
   end;
 
 
@@ -75,7 +83,32 @@ begin
   // Initialize variables.
   FRunning := False;
   FInterval := '';
+  FUpdateEvent := nil;
+  // Create timer instance.
+  FInternalTimer := TTimer.Create(nil);
+  // Configure the timer instance.
+  FInternalTimer.Enabled := False;
+  FInternalTimer.Interval := 100;
+  FInternalTimer.OnTimer := @InternalTimerOnTimer;
 end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Destroy
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class destructor.
+//
+//***************************************************************************************
+destructor TStopWatch.Destroy;
+begin
+  // Stop the stopwatch.
+  Stop;
+  // Release timer instance.
+  FInternalTimer.Free;
+  // Call inherited destructor.
+  inherited Destroy;
+end; //*** end of Destroy ***
 
 
 //***************************************************************************************
@@ -91,6 +124,8 @@ begin
   FStartTime := Time;
   // Start the stopwatch.
   FRunning := True;
+  // Start the internal timer.
+  FInternalTimer.Enabled := True;
 end; //*** end of Start ***
 
 
@@ -103,6 +138,8 @@ end; //*** end of Start ***
 //***************************************************************************************
 procedure TStopWatch.Stop;
 begin
+  // Stop the internal timer.
+  FInternalTimer.Enabled := False;
   // Stop the stopwatch.
   FRunning := False;
 end; //*** end of Stop ***
@@ -133,6 +170,23 @@ begin
   // Update the formatted stopwatch time string.
   Result := Format('%2.2d:%2.2d', [min, sec]);
 end; //*** end of GetInterval ***
+
+
+//***************************************************************************************
+// NAME:           InternalTimerOnTimer
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when the timer expires.
+//
+//***************************************************************************************
+procedure TStopWatch.InternalTimerOnTimer(Sender: TObject);
+begin
+  // Trigger the OnUpdate method.
+  if Assigned(FUpdateEvent) then
+  begin
+    FUpdateEvent(Self, GetInterval);
+  end;
+end; //*** end of InternalTimerOnTimer ***
 
 
 end.
