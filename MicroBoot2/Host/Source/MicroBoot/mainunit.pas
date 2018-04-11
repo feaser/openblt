@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, LCLType,
   ExtCtrls, ComCtrls, CurrentConfig, ConfigGroups, SettingsDialog, FirmwareUpdate,
-  StopWatch;
+  StopWatch, FileLogger;
 
 
 //***************************************************************************************
@@ -90,6 +90,7 @@ type
     FFirmwareUpdate: TFirmwareUpdate;
     FUISetting: TUserInterfaceSetting;
     FStopWatch: TStopWatch;
+    FFileLogger: TFileLogger;
     FHFreeSpaceProgressBar: Integer;
     FCmdOptionFileFound: Boolean;
     FFirmwareFile: String;
@@ -188,6 +189,8 @@ begin
   // Create and configure stopwatch instance.
   FStopWatch := TStopWatch.Create;
   FStopWatch.OnUpdate := @StopWatchUpdateEvent;
+  // Create the file logger instance.
+  FFileLogger := TFileLogger.Create;
   // Automatically kick off the firmware update procedure if a firmware file was
   // specified on the command line.
   if FCmdOptionFileFound then
@@ -208,6 +211,8 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 var
   mainWindowConfig: TMainWindowConfig;
 begin
+  // Release the file logger instance.
+  FFileLogger.Free;
   // Release stopwatch instance.
   FStopWatch.Free;
   // Release instance of the firmware update class.
@@ -286,6 +291,8 @@ end; //*** end of TmrCloseTimer ***
 // DESCRIPTION:    Starts the firmware update procedure.
 //***************************************************************************************
 function  TMainForm.StartFirmwareUpdate: Boolean;
+var
+  miscellaneousConfig: TMiscellaneousConfig;
 begin
   // Initialize the result.
   Result := False;
@@ -296,6 +303,15 @@ begin
     FUISetting := UIS_FIRMWARE_UPDATE;
     // Update the user interface.
     UpdateUserInterface;
+    // Determine if file logging is requested.
+    miscellaneousConfig := FCurrentConfig.Groups[TMiscellaneousConfig.GROUP_NAME]
+                           as TMiscellaneousConfig;
+    if (miscellaneousConfig.Logging <> 0) and (miscellaneousConfig.LogFile <> '') then
+    begin
+      // Configure and start file logging.
+      FFileLogger.LogFile := miscellaneousConfig.LogFile;
+      FFileLogger.Start;
+    end;
     // Start the stop watch refresh timer.
     FStopWatch.Start;
   end;
@@ -311,6 +327,8 @@ end; //*** end of StartFirmwareUpdate ***
 //***************************************************************************************
 procedure TMainForm.FinishFirmwareUpdate(CloseProgram: Boolean);
 begin
+  // Stop file logging.
+  FFileLogger.Stop;
   // Close the program if requested.
   if CloseProgram then
   begin
@@ -514,7 +532,11 @@ end; //*** end of FirmwareUpdateInfo ***
 //***************************************************************************************
 procedure TMainForm.FirmwareUpdateLog(Sender: TObject; LogString: String);
 begin
-  // Nothing need to be done here for now.
+  // Pass the log event on to the file logger, if active.
+  if FFileLogger.Started then
+  begin
+    FFileLogger.Log(LogString);
+  end;
 end; //*** end of FirmwareUpdateLog ***
 
 

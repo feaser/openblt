@@ -95,9 +95,9 @@ type
       procedure Initialize;
       procedure Cleanup;
       function GetSessionProtocolName: String;
-      function GetSessionProtocolSettings: String;
+      procedure LogSessionProtocolSettings;
       function GetTransportLayerName: String;
-      function GetTransportLayerSettings: String;
+      procedure LogTransportLayerSettings;
       procedure SynchronizeStartedEvent;
       procedure SynchronizeStoppedEvent;
       procedure SynchronizeDoneEvent;
@@ -343,16 +343,23 @@ begin
       FInfoString := 'Starting firmware update';
       Synchronize(@SynchronizeInfoEvent);
       // Update the log.
-      FLogString := FInfoString + sLineBreak;
-      FLogString := FLogString + 'Specified firmware file: ' + FFirmwareFile + sLineBreak;
-      FLogString := FLogString + 'Using LibOpenBLT version ' + BltVersionGetString + sLineBreak;
-      FLogString := FLogString + 'Detected session protocol: ' + GetSessionProtocolName + sLineBreak;
-      FLogString := FLogString + 'Using session protocol settings:' + sLineBreak;
-      FLogString := FLogString + GetSessionProtocolSettings + sLineBreak;
-      FLogString := FLogString + 'Detected transport layer: ' + GetTransportLayerName + sLineBreak;
-      FLogString := FLogString + 'Using transport layer settings:' + sLineBreak;
-      FLogString := FLogString + GetTransportLayerSettings + sLineBreak;
-      FLogString := FLogString + 'Initializing firmware update engine';
+      FLogString := FInfoString;
+      Synchronize(@SynchronizeLogEvent);
+      FLogString := 'Specified firmware file: ' + FFirmwareFile;
+      Synchronize(@SynchronizeLogEvent);
+      FLogString := 'Using LibOpenBLT version ' + BltVersionGetString;
+      Synchronize(@SynchronizeLogEvent);
+      FLogString := 'Detected session protocol: ' + GetSessionProtocolName;
+      Synchronize(@SynchronizeLogEvent);
+      FLogString := 'Using session protocol settings:';
+      Synchronize(@SynchronizeLogEvent);
+      LogSessionProtocolSettings;
+      FLogString := 'Detected transport layer: ' + GetTransportLayerName;
+      Synchronize(@SynchronizeLogEvent);
+      FLogString := 'Using transport layer settings:';
+      Synchronize(@SynchronizeLogEvent);
+      LogTransportLayerSettings;
+      FLogString := 'Initializing firmware update engine';
       Synchronize(@SynchronizeLogEvent);
       // Initialize LibOpenBLT modules.
       Initialize;
@@ -452,10 +459,11 @@ begin
       if not errorDetected then
       begin
         // Update the log.
-        FLogString := '';
-        FLogString := FLogString + '  -> Number of segments: ' + IntToStr(firmwareDataTotalSegments) + sLineBreak;
-        FLogString := FLogString + '  -> Base memory address: ' + Format('%.8xh', [firmwareDataBaseAddress]) + sLineBreak;
-        FLogString := FLogString + '  -> Total data size: ' + IntToStr(firmwareDataTotalSize);
+        FLogString := '  -> Number of segments: ' + IntToStr(firmwareDataTotalSegments);
+        Synchronize(@SynchronizeLogEvent);
+        FLogString := '  -> Base memory address: ' + Format('%.8xh', [firmwareDataBaseAddress]);
+        Synchronize(@SynchronizeLogEvent);
+        FLogString := '  -> Total data size: ' + IntToStr(firmwareDataTotalSize);
         Synchronize(@SynchronizeLogEvent);
       end;
       // Transition to the next state if all is okay.
@@ -482,8 +490,9 @@ begin
         FInfoString := 'Connecting to the target (reset your target if this takes  long time)';
         Synchronize(@SynchronizeInfoEvent);
         // Update the log.
-        FLogString := 'First connection attempt failed' + sLineBreak;
-        FLogString := FLogString + 'Switching to backdoor entry mode';
+        FLogString := 'First connection attempt failed';
+        Synchronize(@SynchronizeLogEvent);
+        FLogString := 'Switching to backdoor entry mode';
         Synchronize(@SynchronizeLogEvent);
         // Now keep retrying until successful
         while BltSessionStart() <> BLT_RESULT_OK do
@@ -891,20 +900,18 @@ end; //*** end of GetSessionProtocolName ***
 
 
 //***************************************************************************************
-// NAME:           GetSessionProtocolSettings
+// NAME:           LogSessionProtocolSettings
 // PARAMETER:      none
-// RETURN VALUE:   Settings of the configured session protocol.
-// DESCRIPTION:    Obtains the settings of the session protocol that will be used for the
+// RETURN VALUE:   none
+// DESCRIPTION:    Logs the settings of the session protocol that will be used for the
 //                 firmware update.
 //
 //***************************************************************************************
-function TFirmwareUpdateThread.GetSessionProtocolSettings: String;
+procedure TFirmwareUpdateThread.LogSessionProtocolSettings;
 var
   sessionConfig: TSessionConfig;
   sessionXcpConfig: TSessionXcpConfig;
 begin
-  // Initialize the result.
-  Result := '  -> Unknown session protocol settings';
   // Obtain access to the related configuration group.
   sessionConfig := FFirmwareUpdate.FCurrentConfig.Groups[TSessionConfig.GROUP_NAME]
                    as TSessionConfig;
@@ -914,19 +921,30 @@ begin
     // Obtain access to the related configuration group.
     sessionXcpConfig := FFirmwareUpdate.FCurrentConfig.Groups[TSessionXcpConfig.GROUP_NAME]
                         as TSessionXcpConfig;
-    Result := '';
-    Result := Result + '  -> Timeout T1: ' + IntToStr(sessionXcpConfig.TimeoutT1) + ' ms' + sLineBreak;
-    Result := Result + '  -> Timeout T3: ' + IntToStr(sessionXcpConfig.TimeoutT3) + ' ms' + sLineBreak;
-    Result := Result + '  -> Timeout T4: ' + IntToStr(sessionXcpConfig.TimeoutT4) + ' ms' + sLineBreak;
-    Result := Result + '  -> Timeout T5: ' + IntToStr(sessionXcpConfig.TimeoutT5) + ' ms' + sLineBreak;
-    Result := Result + '  -> Timeout T7: ' + IntToStr(sessionXcpConfig.TimeoutT7) + ' ms' + sLineBreak;
+    FLogString := '  -> Timeout T1: ' + IntToStr(sessionXcpConfig.TimeoutT1) + ' ms';
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Timeout T3: ' + IntToStr(sessionXcpConfig.TimeoutT3) + ' ms';
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Timeout T4: ' + IntToStr(sessionXcpConfig.TimeoutT4) + ' ms';
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Timeout T5: ' + IntToStr(sessionXcpConfig.TimeoutT5) + ' ms';
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Timeout T7: ' + IntToStr(sessionXcpConfig.TimeoutT7) + ' ms';
+    Synchronize(@SynchronizeLogEvent);
     if sessionXcpConfig.SeedKey <> '' then
-      Result := Result + '  -> Seed/Key file: ' + sessionXcpConfig.SeedKey + sLineBreak
+      FLogString := '  -> Seed/Key file: ' + sessionXcpConfig.SeedKey
     else
-      Result := Result + '  -> Seed/Key file: ' + 'None' + sLineBreak;
-    Result := Result + '  -> Connection mode: ' + IntToStr(sessionXcpConfig.ConnectMode);
+      FLogString := '  -> Seed/Key file: ' + 'None';
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Connection mode: ' + IntToStr(sessionXcpConfig.ConnectMode);
+    Synchronize(@SynchronizeLogEvent);
+  end
+  else
+  begin
+    FLogString := '  -> Unknown session protocol settings';
+    Synchronize(@SynchronizeLogEvent);
   end;
-end; //*** end of GetSessionProtocolSettings ***
+end; //*** end of LogSessionProtocolSettings ***
 
 
 //***************************************************************************************
@@ -967,22 +985,20 @@ end; //*** end of GetTransportLayerName ***
 
 
 //***************************************************************************************
-// NAME:           GetTransportLayerSettings
+// NAME:           LogTransportLayerSettings
 // PARAMETER:      none
-// RETURN VALUE:   Settings of the configured transport layer.
-// DESCRIPTION:    Obtains the settings of the transport layer that will be used for the
+// RETURN VALUE:   none
+// DESCRIPTION:    Logs the settings of the transport layer that will be used for the
 //                 firmware update.
 //
 //***************************************************************************************
-function TFirmwareUpdateThread.GetTransportLayerSettings: String;
+procedure TFirmwareUpdateThread.LogTransportLayerSettings;
 var
   transportConfig: TTransportConfig;
   transportXcpRs232Config: TTransportXcpRs232Config;
   transportXcpCanConfig: TTransportXcpCanConfig;
   transportXcpTcpIpConfig: TTransportXcpTcpIpConfig;
 begin
-  // Initialize the result.
-  Result := '  -> Unknown transport layer settings';
   // Obtain access to the related configuration group.
   transportConfig := FFirmwareUpdate.FCurrentConfig.Groups[TTransportConfig.GROUP_NAME]
                      as TTransportConfig;
@@ -993,9 +1009,10 @@ begin
     // Obtain access to the related configuration group.
     transportXcpRs232Config := FFirmwareUpdate.FCurrentConfig.Groups[TTransportXcpRs232Config.GROUP_NAME]
                                as TTransportXcpRs232Config;
-    Result := '';
-    Result := Result + '  -> Device: ' + transportXcpRs232Config.Device + sLineBreak;
-    Result := Result + '  -> Baudrate: ' + IntToStr(transportXcpRs232Config.Baudrate) + ' bit/sec';
+    FLogString := '  -> Device: ' + transportXcpRs232Config.Device;
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Baudrate: ' + IntToStr(transportXcpRs232Config.Baudrate) + ' bit/sec';
+    Synchronize(@SynchronizeLogEvent);
   end
   // ------------------------------------ XCP on CAN ------------------------------------
   else if transportConfig.Transport = 'xcp_can' then
@@ -1003,22 +1020,27 @@ begin
     // Obtain access to the related configuration group.
     transportXcpCanConfig := FFirmwareUpdate.FCurrentConfig.Groups[TTransportXcpCanConfig.GROUP_NAME]
                              as TTransportXcpCanConfig;
-    Result := '';
-    Result := Result + '  -> Device: ' + transportXcpCanConfig.Device + ' (channel ' +
-              IntToStr(transportXcpCanConfig.Channel) +  ' )' + sLineBreak;
-    Result := Result + '  -> Baudrate: ' + IntToStr(transportXcpCanConfig.Baudrate) + ' bit/sec' + sLineBreak;
-    Result := Result + '  -> Transmit CAN identifer: ' + Format('%.xh', [transportXcpCanConfig.TransmitId]) + sLineBreak;
-    Result := Result + '  -> Receive CAN identifer: ' + Format('%.xh', [transportXcpCanConfig.ReceiveId]) + sLineBreak;
-    Result := Result + '  -> Use 29-bit CAN identifiers: ';
+    FLogString := '  -> Device: ' + transportXcpCanConfig.Device + ' (channel ' +
+                  IntToStr(transportXcpCanConfig.Channel) +  ' )';
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Baudrate: ' + IntToStr(transportXcpCanConfig.Baudrate) + ' bit/sec';
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Transmit CAN identifer: ' + Format('%.xh', [transportXcpCanConfig.TransmitId]);
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Receive CAN identifer: ' + Format('%.xh', [transportXcpCanConfig.ReceiveId]);
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Use 29-bit CAN identifiers: ';
     if transportXcpCanConfig.ExtendedId > 0 then
-      Result := Result + 'Yes'
+      FLogString := FLogString + 'Yes'
     else
-      Result := Result + 'No';
+      FLogString := FLogString + 'No';
+    Synchronize(@SynchronizeLogEvent);
   end
   // ------------------------------------ XCP on USB ------------------------------------
   else if transportConfig.Transport = 'xcp_usb' then
   begin
-    Result := '  -> No additional settings required';
+    FLogString := '  -> No additional settings required';
+    Synchronize(@SynchronizeLogEvent);
   end
   // ------------------------------------ XCP on TCP/IP ---------------------------------
   else if transportConfig.Transport = 'xcp_net' then
@@ -1026,11 +1048,17 @@ begin
     // Obtain access to the related configuration group.
     transportXcpTcpIpConfig := FFirmwareUpdate.FCurrentConfig.Groups[TTransportXcpTcpIpConfig.GROUP_NAME]
                                as TTransportXcpTcpIpConfig;
-    Result := '';
-    Result := Result + '  -> Address: ' + transportXcpTcpIpConfig.Address + sLineBreak;
-    Result := Result + '  -> Port: ' + IntToStr(transportXcpTcpIpConfig.Port);
+    FLogString := '  -> Address: ' + transportXcpTcpIpConfig.Address;
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Port: ' + IntToStr(transportXcpTcpIpConfig.Port);
+    Synchronize(@SynchronizeLogEvent);
+  end
+  else
+  begin
+    FLogString := '  -> Unknown transport layer settings';
+    Synchronize(@SynchronizeLogEvent);
   end;
-end; //*** end of GetTransportLayerSettings ***
+end; //*** end of LogTransportLayerSettings ***
 
 
 //***************************************************************************************
