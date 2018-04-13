@@ -720,9 +720,6 @@ begin
       // Update the log.
       FLogString := FInfoString;
       Synchronize(@SynchronizeLogEvent);
-      // Set the progress to 100%
-      FPercentage := 100;
-      Synchronize(@SynchronizeProgressEvent);
       // Trigger the OnDone event
       Synchronize(@SynchronizeDoneEvent);
       // Transition back to the idle state.
