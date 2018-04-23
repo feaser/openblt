@@ -298,12 +298,51 @@ int main(int argc, char const * const argv[])
       if ((segmentData != NULL) && (segmentLen > 0)) /*lint !e774 */
       {
         /* Perform erase operation. */
-        printf("Erasing %u bytes starting at 0x%08x...", segmentLen, segmentBase);
+        printf("Erasing %u bytes starting at 0x%08x...%s", segmentLen, segmentBase,
+            GetLineTrailerByPercentage(0));
         (void)fflush(stdout);
-        if (BltSessionClearMemory(segmentBase, segmentLen) != BLT_RESULT_OK)
+        /* Perform erase operation in chunks, so that a progress update can be shown
+         * and no erase timeout occurs due to erasing too big of a memory range.
+         */
+        uint32_t const eraseChunkSize = 32768;
+        uint32_t currentEraseCnt;
+        uint32_t currentEraseBase;
+        uint32_t currentEraseResult;
+        uint32_t stillToEraseCnt;
+
+        stillToEraseCnt = segmentLen;
+        currentEraseBase = segmentBase;
+        while (stillToEraseCnt > 0)
         {
-          /* Set error code. */
-          result = RESULT_ERROR_MEMORY_ERASE;
+          /* Determine chunk size. */
+          if (stillToEraseCnt >= eraseChunkSize)
+          {
+            currentEraseCnt = eraseChunkSize;
+          }
+          else
+          {
+            currentEraseCnt = stillToEraseCnt;
+          }
+          /* Erase the next chunk from the target's memory. */
+          currentEraseResult = BltSessionClearMemory(currentEraseBase, currentEraseCnt);
+          if (currentEraseResult != BLT_RESULT_OK)
+          {
+            /* Set error code. */
+            result = RESULT_ERROR_MEMORY_ERASE;
+            /* Error detected so abort erase operation. */
+            break;
+          }
+          /* Update loop variables. */
+          currentEraseBase += currentEraseCnt;
+          stillToEraseCnt -= currentEraseCnt;
+          /* Display progress. */
+          uint8_t progressPct;
+
+          /* First backspace the old percentage trailer. */
+          ErasePercentageTrailer();
+          /* Now add the new percentage trailer. */
+          progressPct = (uint8_t)(((segmentLen - stillToEraseCnt) * 100ul) / segmentLen);
+          printf("%s", GetLineTrailerByPercentage(progressPct)); (void)fflush(stdout);
         }
       }
       else
@@ -311,6 +350,7 @@ int main(int argc, char const * const argv[])
         /* Set error code because sanity check failed. */
         result = RESULT_ERROR_MEMORY_ERASE;
       }
+      ErasePercentageTrailer();
       printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK))); 
       /* Do not continue loop if an error was detected. */
       if (result != RESULT_OK)
@@ -431,7 +471,7 @@ int main(int argc, char const * const argv[])
 static void DisplayProgramInfo(void)
 {
   printf("--------------------------------------------------------------------------\n");
-  printf("BootCommander version 1.03. Performs firmware updates on a microcontroller\n");
+  printf("BootCommander version 1.04. Performs firmware updates on a microcontroller\n");
   printf("based system that runs the OpenBLT bootloader.\n\n");
   printf("Copyright (c) 2017 by Feaser  http://www.feaser.com\n");
   printf("-------------------------------------------------------------------------\n");
