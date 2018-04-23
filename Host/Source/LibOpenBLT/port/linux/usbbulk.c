@@ -104,7 +104,11 @@ void UsbBulkInit(void)
   if (libUsbCtx != NULL)
   {
     /* Set the log message verbosity as advised by the documentation. */
+#if LIBUSB_API_VERSION >= 0x01000106
+    (void)libusb_set_option(libUsbCtx, LIBUSB_OPTION_LOG_LEVEL, (int)LIBUSB_LOG_LEVEL_WARNING);
+#else
     libusb_set_debug(libUsbCtx, (int)LIBUSB_LOG_LEVEL_WARNING);
+#endif
   }
 } /*** end of UsbBulkInit ***/
 
