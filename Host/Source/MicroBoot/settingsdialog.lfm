@@ -1,7 +1,7 @@
 object SettingsForm: TSettingsForm
-  Left = 1349
+  Left = 533
   Height = 441
-  Top = 344
+  Top = 323
   Width = 422
   ActiveControl = BtnOk
   BorderStyle = bsDialog
@@ -13,7 +13,7 @@ object SettingsForm: TSettingsForm
   OnDestroy = FormDestroy
   OnKeyPress = FormKeyPress
   Position = poOwnerFormCenter
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.8.2.0'
   object PnlFooter: TPanel
     Left = 0
     Height = 46
@@ -24,6 +24,8 @@ object SettingsForm: TSettingsForm
     Caption = 'PnlFooter'
     ClientHeight = 46
     ClientWidth = 422
+    Color = clForm
+    ParentColor = False
     TabOrder = 1
     object PnlFooterButtons: TPanel
       Left = 228
@@ -66,6 +68,8 @@ object SettingsForm: TSettingsForm
     Caption = 'PnlBody'
     ClientHeight = 395
     ClientWidth = 422
+    Color = clForm
+    ParentColor = False
     TabOrder = 0
     object PageCtrlSettings: TPageControl
       Left = 0
@@ -90,6 +94,8 @@ object SettingsForm: TSettingsForm
           Caption = 'PnlCommunicationTop'
           ClientHeight = 44
           ClientWidth = 412
+          Color = clForm
+          ParentColor = False
           TabOrder = 0
           object LblInterface: TLabel
             Left = 8
@@ -130,6 +136,8 @@ object SettingsForm: TSettingsForm
           Align = alClient
           BevelOuter = bvNone
           Caption = 'PnlCommunicationBody'
+          Color = clForm
+          ParentColor = False
           TabOrder = 1
         end
       end

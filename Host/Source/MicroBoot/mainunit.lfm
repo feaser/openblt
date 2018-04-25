@@ -85,7 +85,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.8.2.0'
   object PnlBody: TPanel
     Left = 0
     Height = 84
@@ -128,6 +128,8 @@ object MainForm: TMainForm
       Caption = 'PnlBodyMain'
       ClientHeight = 80
       ClientWidth = 398
+      Color = clForm
+      ParentColor = False
       TabOrder = 1
       OnResize = PnlBodyMainResize
       object PgbFirmwareUpdate: TProgressBar
@@ -160,6 +162,8 @@ object MainForm: TMainForm
     Caption = 'PnlFooter'
     ClientHeight = 46
     ClientWidth = 500
+    Color = clForm
+    ParentColor = False
     TabOrder = 1
     object PnlFooterButtons: TPanel
       Left = 306
@@ -210,6 +214,8 @@ object MainForm: TMainForm
     Caption = 'PnlHeader'
     ClientHeight = 50
     ClientWidth = 500
+    Color = clForm
+    ParentColor = False
     TabOrder = 2
     object ImgHeader: TImage
       Left = 448
