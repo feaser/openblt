@@ -48,6 +48,8 @@
  *         reception of the first packet byte.
  */
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+/** \brief Timeout for transmitting a byte in milliseconds. */
+#define UART_BYTE_TX_TIMEOUT_MS       (10u)
 
 
 /****************************************************************************************
@@ -211,20 +213,31 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static blt_bool UartTransmitByte(blt_int8u data)
 {
+  blt_int32u timeout;
+  blt_bool result = BLT_TRUE;
+
   /* write byte to transmit holding register */
   if (UARTCharPutNonBlocking(UART0_BASE, data) == false)
   {
     /* tx holding register can accept new data */
     return BLT_FALSE;
   }
+  /* set timeout time to wait for transmit completion. */
+  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
   /* wait for tx holding register to be empty */
   while (UARTSpaceAvail(UART0_BASE) == false)
   {
     /* keep the watchdog happy */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      result = BLT_FALSE;
+      break;
+    }
   }
-  /* byte transmitted */
-  return BLT_TRUE;
+  /* give the result back to the caller */
+  return result;
 } /*** end of UartTransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 

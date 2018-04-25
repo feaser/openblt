@@ -42,6 +42,9 @@
  */
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
 
+/** \brief Timeout for transmitting a byte in milliseconds. */
+#define UART_BYTE_TX_TIMEOUT_MS       (10u)
+
 /** \brief Macro for accessing the UART channel handle in the format that is expected
  *         by the XMClib UART driver.
  */
@@ -232,6 +235,9 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static blt_bool UartTransmitByte(blt_int8u data)
 {
+  blt_int32u timeout;
+  blt_bool result = BLT_TRUE;
+
   /* check if tx fifo can accept new data */
   if (XMC_USIC_CH_TXFIFO_IsFull(UART_CHANNEL) != 0)
   {
@@ -240,15 +246,24 @@ static blt_bool UartTransmitByte(blt_int8u data)
   }
   /* submit data for transmission */
   XMC_UART_CH_Transmit(UART_CHANNEL, data);
+  /* set timeout time to wait for transmit completion. */
+  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
   /* wait for transmission to be done */
   while( (XMC_USIC_CH_TXFIFO_GetEvent(UART_CHANNEL) & XMC_USIC_CH_TXFIFO_EVENT_STANDARD) == 0)
   {
-    ;
+    /* keep the watchdog happy */
+    CopService();
+    /* break loop upon timeout. this would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      result = BLT_FALSE;
+      break;
+    }
   }
   /* reset event */
   XMC_USIC_CH_TXFIFO_ClearEvent(UART_CHANNEL, XMC_USIC_CH_TXFIFO_EVENT_STANDARD);
-  /* byte transmitted */
-  return BLT_TRUE;
+  /* give the result back to the caller */
+  return result;
 } /*** end of UartTransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 

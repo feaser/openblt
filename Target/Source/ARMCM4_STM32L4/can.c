@@ -229,7 +229,7 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   blt_int32u txMsgId = BOOT_COM_CAN_TX_MSG_ID;
   CAN_TxHeaderTypeDef txMsgHeader;
   blt_int32u txMsgMailbox;
-  blt_int32u txMsgTimeout;
+  blt_int32u timeout;
   HAL_StatusTypeDef txStatus;
 
   /* configure the message that should be transmitted. */
@@ -256,18 +256,17 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   if (txStatus == HAL_OK)
   {
     /* determine timeout time for the transmit completion. */
-    txMsgTimeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
+    timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
     /* poll for completion of the transmit operation. */
     while (HAL_CAN_IsTxMessagePending(&canHandle, txMsgMailbox) != 0)
     {
       /* service the watchdog. */
       CopService();
-      /* did a timeout occur? */
-      if (TimerGet() > txMsgTimeout)
+      /* break loop upon timeout. this would indicate a hardware failure or no other
+       * nodes connected to the bus.
+       */
+      if (TimerGet() > timeout)
       {
-        /* stop waiting. no need for further action. if the response cannot be
-         * transmitted, then the receiving node will detect a timeout.
-         */
         break;
       }
     }

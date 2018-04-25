@@ -42,8 +42,8 @@
  *         reception of the first packet byte.
  */
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
-/** \brief Timeout for transmitting a byte. */
-#define UART_TX_TIMEOUT_MS            (5u)
+/** \brief Timeout for transmitting a byte in milliseconds. */
+#define UART_BYTE_TX_TIMEOUT_MS       (10u)
 /* map the configured UART channel index to the STM32's USART peripheral */
 #if (BOOT_COM_UART_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to USART1. */
@@ -228,19 +228,20 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static void UartTransmitByte(blt_int8u data)
 {
-  blt_int32u txTimeoutTime;
+  blt_int32u timeout;
 
-  /* Determine timeout time for the transmit operation. */
-  txTimeoutTime = TimerGet() + UART_TX_TIMEOUT_MS;
   /* write byte to transmit holding register */
   LL_USART_TransmitData8(USART_CHANNEL, data);
+  /* set timeout time to wait for transmit completion. */
+  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
   /* wait for tx holding register to be empty */
   while (LL_USART_IsActiveFlag_TXE(USART_CHANNEL) == 0)
   {
-    /* Check if a timeout occurred to prevent lockup. */
-    if (TimerGet() > txTimeoutTime)
+    /* keep the watchdog happy */
+    CopService();
+    /* break loop upon timeout. this would indicate a hardware failure. */
+    if (TimerGet() > timeout)
     {
-      /* Cannot transmit so stop waiting for its completion. */
       break;
     }
   }

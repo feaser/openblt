@@ -36,6 +36,13 @@
 
 #if (BOOT_COM_CAN_ENABLE > 0)
 /****************************************************************************************
+* Macro definitions
+****************************************************************************************/
+/** \brief Timeout for transmitting a CAN message in milliseconds. */
+#define CAN_MSG_TX_TIMEOUT_MS          (50u)
+
+
+/****************************************************************************************
 * Type definitions
 ****************************************************************************************/
 /** \brief Structure type for grouping CAN bus timing related information. */
@@ -186,8 +193,9 @@ void CanInit(void)
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   CanTxMsg txMsg;
-  uint8_t byteIdx;
-  uint8_t txMailbox;
+  blt_int8u byteIdx;
+  blt_int8u txMailbox;
+  blt_int32u timeout;
 
   /* prepare message */
   if ((BOOT_COM_CAN_TX_MSG_ID & 0x80000000) == 0)
@@ -210,11 +218,20 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
     txMsg.Data[byteIdx] = data[byteIdx];
   }
   txMailbox = CAN_Transmit(CAN, &txMsg);
+  /* set timeout time to wait for transmission completion */
+  timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
   /* wait for transmit completion */
   while (CAN_TransmitStatus(CAN, txMailbox) == CAN_TxStatus_Pending)
   {
     /* keep the watchdog happy */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure or no other
+     * nodes connected to the bus.
+     */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
 } /*** end of CanTransmitPacket ***/
 

@@ -35,6 +35,16 @@
 
 #if (BOOT_COM_CAN_ENABLE > 0)
 /****************************************************************************************
+* Macro definitions
+****************************************************************************************/
+/** \brief Timeout for entering/leaving CAN initialization mode in milliseconds. */
+#define CAN_INIT_TIMEOUT_MS            (250u)
+
+/** \brief Timeout for transmitting a CAN message in milliseconds. */
+#define CAN_MSG_TX_TIMEOUT_MS          (50u)
+
+
+/****************************************************************************************
 * Type definitions
 ****************************************************************************************/
 /** \brief CAN transmission mailbox layout. */
@@ -227,6 +237,7 @@ void CanInit(void)
   blt_int16u prescaler=0;
   blt_int8u  tseg1=0, tseg2=0;
   blt_bool   result;
+  blt_int32u timeout;
 
   /* the current implementation supports CAN1 and 2. throw an assertion error in case a
    * different CAN channel is configured.
@@ -240,21 +251,35 @@ void CanInit(void)
   CANx->IER = (blt_int32u)0;
   /* set request to reset the can controller */
   CANx->MCR |= CAN_BIT_RESET ;
+  /* set timeout time to wait for can controller reset */
+  timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
   /* wait for acknowledge that the can controller was reset */
   while ((CANx->MCR & CAN_BIT_RESET) != 0)
   {
     /* keep the watchdog happy */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
   /* exit from sleep mode, which is the default mode after reset */
   CANx->MCR &= ~CAN_BIT_SLEEP;
   /* set request to enter initialisation mode */
   CANx->MCR |= CAN_BIT_INRQ ;
+  /* set timeout time to wait for entering initialization mode */
+  timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
   /* wait for acknowledge that initialization mode was entered */
   while ((CANx->MSR & CAN_BIT_INAK) == 0)
   {
     /* keep the watchdog happy */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
   /* configure the bittming */
   CANx->BTR = (blt_int32u)((blt_int32u)(tseg1 - 1) << 16) | \
@@ -262,11 +287,18 @@ void CanInit(void)
               (blt_int32u)(prescaler - 1);
   /* set request to leave initialisation mode */
   CANx->MCR &= ~CAN_BIT_INRQ;
+  /* set timeout time to wait for exiting initialization mode */
+  timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
   /* wait for acknowledge that initialization mode was exited */
   while ((CANx->MSR & CAN_BIT_INAK) != 0)
   {
     /* keep the watchdog happy */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
 
 #if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
@@ -319,6 +351,7 @@ void CanInit(void)
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int32u txMsgId = BOOT_COM_CAN_TX_MSG_ID;
+  blt_int32u timeout;
 
   /* make sure that transmit mailbox 0 is available */
   ASSERT_RT((CANx->TSR&CAN_BIT_TME0) == CAN_BIT_TME0);
@@ -353,11 +386,20 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
                               ((blt_int32u)data[4]));
   /* request the start of message transmission */
   CANx->sTxMailBox[0].TIR |= CAN_BIT_TXRQ;
+  /* set timeout time to wait for transmission completion */
+  timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
   /* wait for transmit completion */
   while ((CANx->TSR&CAN_BIT_TME0) == 0)
   {
     /* keep the watchdog happy */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure or no other
+     * nodes connected to the bus.
+     */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
 } /*** end of CanTransmitPacket ***/
 

@@ -107,6 +107,11 @@ typedef struct
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Timeout for entering/leaving CAN initialization mode in milliseconds. */
+#define CAN_INIT_TIMEOUT_MS            (250u)
+/** \brief Timeout for transmitting a CAN message in milliseconds. */
+#define CAN_MSG_TX_TIMEOUT_MS          (50u)
+
 #if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
 /** \brief Set CAN base address to CAN0. */
 #define CAN_REGS_BASE_ADDRESS  (0x0140)
@@ -217,6 +222,7 @@ void CanInit(void)
   blt_bool  result;
   blt_int32u accept_code;
   blt_int32u accept_mask;
+  blt_int32u timeout;
 
   /* the current implementation supports CAN0..4. throw an assertion error in case a
    * different CAN channel is configured.
@@ -225,10 +231,18 @@ void CanInit(void)
 
   /* enter initialization mode. note that this automatically disables CAN interrupts */
   CAN->cctl0 = INITRQ_BIT;
+  /* set timeout time for entering init mode */
+  timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
   /* wait for initialization mode entry handshake from the hardware */
   while ((CAN->cctl1 & INITAK_BIT) == 0)
   {
-    ;
+    /* keep the watchdog happy */
+    CopService();
+    /* break loop upon timeout. this would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
 
   /* enable the CAN controller, disable wake up and listen modes and set the
@@ -278,10 +292,18 @@ void CanInit(void)
 
   /* leave initialization mode and synchronize to the CAN bus */
   CAN->cctl0 &= ~INITRQ_BIT;
+  /* set timeout time for leaving init mode */
+  timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
   /* wait for CAN bus synchronization handshake from the hardware */
   while ((CAN->cctl1 & INITAK_BIT) != 0)
   {
-    ;
+    /* keep the watchdog happy */
+    CopService();
+    /* break loop upon timeout. this would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
 
   /* bring transmit buffer 0 in the foreground as this is the only one used by this
@@ -302,6 +324,7 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int8u byte_idx;
   blt_int32u txMsgId;
+  blt_int32u timeout;
 
   /* double check that the transmit slot is really available */
   ASSERT_RT((CAN->ctflg & TXE0_BIT) != 0);
@@ -342,11 +365,21 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
    */
   CAN->ctflg = TXE0_BIT;
 
+  /* set timeout time to wait for transmission completion */
+  timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
+
   /* wait for transmit completion */
   while ((CAN->ctflg & TXE0_BIT) == 0)
   {
     /* keep the watchdog happy */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure or no other
+     * nodes connected to the bus.
+     */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
 } /*** end of CanTransmitPacket ***/
 

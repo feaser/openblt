@@ -43,6 +43,8 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Timeout for transmitting a CAN message in milliseconds. */
+#define CAN_MSG_TX_TIMEOUT_MS          (50u)
 /** \brief Index of the used reception message object. */
 #define CAN_RX_MSGOBJECT_IDX   (0)
 /** \brief Index of the used transmission message object. */
@@ -167,6 +169,7 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int32u    status;
   tCANMsgObject msgObject;
+  blt_int32u timeout;
 
   /* get bitmask of message objects that are busy transmitting messages */
   status = CANStatusGet(CAN0_BASE, CAN_STS_TXREQUEST);
@@ -184,12 +187,21 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   msgObject.ulMsgLen = len;
   msgObject.pucMsgData = data;
   CANMessageSet(CAN0_BASE, CAN_TX_MSGOBJECT_IDX+1, &msgObject, MSG_OBJ_TYPE_TX);
+  /* set timeout time to wait for transmission completion */
+  timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
   /* now wait for the transmission to complete */
   do
   {
     status = CANStatusGet(CAN0_BASE, CAN_STS_TXREQUEST);
     /* service the watchdog */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure or no other
+     * nodes connected to the bus.
+     */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
   while ((status & canBitNum2Mask[CAN_TX_MSGOBJECT_IDX]) != 0);
 } /*** end of CanTransmitPacket ***/

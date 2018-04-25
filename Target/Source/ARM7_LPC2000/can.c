@@ -37,6 +37,8 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Timeout for transmitting a CAN message in milliseconds. */
+#define CAN_MSG_TX_TIMEOUT_MS          (50u)
 /** \brief Transmit buffer 1 idle bit. */
 #define CAN_TBS1        (0x00000004)
 /** \brief Transmit buffer 1 complete bit. */
@@ -214,6 +216,8 @@ void CanInit(void)
 ****************************************************************************************/
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
+  blt_int32u timeout;
+
   /* check that transmit buffer 1 is ready to accept a new message */
   ASSERT_RT((CAN1SR & CAN_TBS1) != 0);
   /* write dlc and configure message as a standard message with 11-bit identifier */
@@ -234,11 +238,20 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   CAN1TDB1 = (data[7] << 24) + (data[6] << 16) + (data[5] << 8) + data[4];
   /* write transmission request for transmit buffer 1 */
   CAN1CMR = CAN_TR | CAN_STB1;
+  /* set timeout time to wait for transmission completion */
+  timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
   /* wait for transmit completion */
   while ((CAN1SR & CAN_TCS1) == 0)
   {
     /* keep the watchdog happy */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure or no other
+     * nodes connected to the bus.
+     */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
 } /*** end of CanTransmitPacket ***/
 

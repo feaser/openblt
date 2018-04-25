@@ -39,6 +39,9 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Timeout for transmitting a CAN message in milliseconds. */
+#define CAN_MSG_TX_TIMEOUT_MS          (50u)
+
 /** \brief Macro for accessing the CAN channel handle in the format that is expected
  *         by the XMClib CAN driver.
  */
@@ -112,11 +115,15 @@ void CanInit(void)
   while (canModuleFreqHz < 12000000)
   {
     canModuleFreqHz *= 2;
+    /* keep the watchdog happy */
+    CopService();
   }
   /* decrease if too high */
   while (canModuleFreqHz > 120000000)
   {
     canModuleFreqHz /= 2;
+    /* keep the watchdog happy */
+    CopService();
   }
 
   /* configure CAN module*/
@@ -220,6 +227,7 @@ void CanInit(void)
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int8u byteIdx;
+  blt_int32u timeout;
 
   /* copy message data */
   transmitMsgObj.can_data_length = len;
@@ -233,11 +241,20 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   XMC_CAN_MO_ResetStatus(&transmitMsgObj, XMC_CAN_MO_RESET_STATUS_TX_PENDING);
   /* submit message for transmission */
   XMC_CAN_MO_Transmit(&transmitMsgObj);
+  /* set timeout time to wait for transmission completion */
+  timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
   /* wait for transmit completion */
   while ((XMC_CAN_MO_GetStatus(&transmitMsgObj) & XMC_CAN_MO_STATUS_TX_PENDING) != 0)
   {
     /* keep the watchdog happy */
     CopService();
+    /* break loop upon timeout. this would indicate a hardware failure or no other
+     * nodes connected to the bus.
+     */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
   }
 } /*** end of CanTransmitPacket ***/
 

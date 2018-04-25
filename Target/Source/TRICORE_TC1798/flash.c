@@ -103,6 +103,16 @@
 #define FLASH_CS_RANGE_TOTAL_WORDS    ((FLASH_WRITE_BLOCK_SIZE/4u) - \
                                        (FLASH_CS_RANGE_START_OFFSET/4u))
 
+/** \brief Maximum time for a sector erase operation as specified by the Tricore data-
+ *         sheet with an added margin of at least 20%.
+ */
+#define FLASH_ERASE_TIME_MAX_MS         (5100)
+
+/** \brief Maximum time for a page program operation as specified by the Tricore data-
+ *         sheet with an added margin of at least 20%.
+ */
+#define FLASH_PROGRAM_TIME_MAX_MS       (40)
+
                                        
 /****************************************************************************************
 * Plausibility checks
@@ -818,6 +828,7 @@ static blt_bool FlashTricoreProgramPage(blt_addr start_addr, blt_int8u *data)
   blt_int8u *readPtr;
   blt_int32u idx;
   FLASHn_FSR_t *pflashFSR;
+  blt_int32u timeout;
 
   /* check address alignment to a page in PFLASH */
   if ((start_addr % FLASH_WRITE_BLOCK_SIZE) != 0)
@@ -834,6 +845,8 @@ static blt_bool FlashTricoreProgramPage(blt_addr start_addr, blt_int8u *data)
   FLASH_WRITE_TO_U32_PTR_BY_ADDR(baseAddr + 0x5554u, 0x00000050u);
   /* perform DSYNC */
   CpuSetDSYNC();
+  /* set timeout time for hardware handshake */
+  timeout = TimerGet() + FLASH_PROGRAM_TIME_MAX_MS;
   /* wait until FSR.xFPAGE = '1' */
   while (pflashFSR->bits.PFPAGE != 1)
   {
@@ -849,6 +862,11 @@ static blt_bool FlashTricoreProgramPage(blt_addr start_addr, blt_int8u *data)
     }
     /* keep the watchdog happy */
     CopService();
+    /* fail in case of timeout */
+    if (TimerGet() > timeout)
+    {
+      return BLT_FALSE;
+    }
   }
   /* load FLASH_WRITE_BLOCK_SIZE bytes of program data into the assembly buffer */
   dataPtr = (blt_int32u *)data;
@@ -868,6 +886,8 @@ static blt_bool FlashTricoreProgramPage(blt_addr start_addr, blt_int8u *data)
   FLASH_WRITE_TO_U32_PTR_BY_ADDR(start_addr, 0x000000AAu);
   /* perform DSYNC */
   CpuSetDSYNC();
+  /* set timeout time for hardware handshake */
+  timeout = TimerGet() + FLASH_PROGRAM_TIME_MAX_MS;
   /* wait until FSR.PROG = '1' */
   while (pflashFSR->bits.PROG != 1)
   {
@@ -883,7 +903,14 @@ static blt_bool FlashTricoreProgramPage(blt_addr start_addr, blt_int8u *data)
     }
     /* keep the watchdog happy */
     CopService();
+    /* fail in case of timeout */
+    if (TimerGet() > timeout)
+    {
+      return BLT_FALSE;
+    }
   }
+  /* set timeout time for hardware handshake */
+  timeout = TimerGet() + FLASH_PROGRAM_TIME_MAX_MS;
   /* wait until FSR.xBUSY = '0' */
   while (pflashFSR->bits.PBUSY == 1)
   {
@@ -896,6 +923,11 @@ static blt_bool FlashTricoreProgramPage(blt_addr start_addr, blt_int8u *data)
     }
     /* keep the watchdog happy */
     CopService();
+    /* fail in case of timeout */
+    if (TimerGet() > timeout)
+    {
+      return BLT_FALSE;
+    }
   }
   /* check FSR.VER flag */
   if (pflashFSR->bits.VER != 0)
@@ -948,6 +980,7 @@ static blt_bool FlashTricoreEraseSector(blt_addr start_addr)
   blt_int8u sectorNum;
   blt_int32u *readPtr;
   blt_int32u idx;
+  blt_int32u timeout;
 
   /* determine base address of the PFLASH module */
   baseAddr = FLASH_GET_PFLASH_BASE(start_addr);
@@ -964,6 +997,8 @@ static blt_bool FlashTricoreEraseSector(blt_addr start_addr)
   FLASH_WRITE_TO_U32_PTR_BY_ADDR(start_addr, 0x00000030u);
   /* perform DSYNC */
   CpuSetDSYNC();
+  /* set timeout time for hardware handshake */
+  timeout = TimerGet() + FLASH_ERASE_TIME_MAX_MS;
   /* wait until FSR.ERASE = '1' */
   while (pflashFSR->bits.ERASE != 1)
   {
@@ -979,7 +1014,14 @@ static blt_bool FlashTricoreEraseSector(blt_addr start_addr)
     }
     /* keep the watchdog happy */
     CopService();
+    /* fail in case of timeout */
+    if (TimerGet() > timeout)
+    {
+      return BLT_FALSE;
+    }
   }
+  /* set timeout time for hardware handshake */
+  timeout = TimerGet() + FLASH_ERASE_TIME_MAX_MS;
   /* wait until FSR.xBUSY = '0' */
   while (pflashFSR->bits.PBUSY == 1)
   {
@@ -992,6 +1034,11 @@ static blt_bool FlashTricoreEraseSector(blt_addr start_addr)
     }
     /* keep the watchdog happy */
     CopService();
+    /* fail in case of timeout */
+    if (TimerGet() > timeout)
+    {
+      return BLT_FALSE;
+    }
   }
   /* check FSR.VER flag */
   if (pflashFSR->bits.VER != 0)
