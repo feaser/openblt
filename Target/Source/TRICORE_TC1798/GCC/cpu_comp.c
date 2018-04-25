@@ -30,7 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include <machine/intrinsics.h>
+#include "cpu_comp.h"                            /* compiler specific CPU definitions  */
 
 
 /****************************************************************************************
