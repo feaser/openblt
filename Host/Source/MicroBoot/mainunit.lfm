@@ -85,7 +85,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.6.2.0'
   object PnlBody: TPanel
     Left = 0
     Height = 84
@@ -107,6 +107,8 @@ object MainForm: TMainForm
       Caption = 'PnlBodyRight'
       ClientHeight = 80
       ClientWidth = 98
+      Color = clForm
+      ParentColor = False
       TabOrder = 0
       object BtnBrowse: TButton
         Left = 10
