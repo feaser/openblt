@@ -92,13 +92,8 @@ blt_bool CpuUserProgramStartHook(void)
      */
     return BLT_FALSE;
   }
-  /* keep bootloader active for testing purposes */
-  return BLT_FALSE;
-  /* TODO ##Vg Allow starting of the user program */
-#if 0
   /* okay to start the user program.*/
   return BLT_TRUE;
-#endif
 } /*** end of CpuUserProgramStartHook ***/
 #endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */
 

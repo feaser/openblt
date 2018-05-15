@@ -30,6 +30,9 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f0xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f0xx_ll_bus.h"                    /* STM32 LL BUS header                */
+#include "stm32f0xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
 
 
 /****************************************************************************************
@@ -100,22 +103,17 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the timer */
   TimerReset();
-
-  /* TODO ##Vg Update system configuration peripheral enable */
-#if 0
+  /* reset the HAL */
+  HAL_DeInit();
   /* enable system configuration peripheral, which is needed to remap the RAM later on */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-#endif
+  LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_SYSCFG);
   /* copy user program vector's to RAM */
   CpuMemCopy(CPU_USER_PROGRAM_RAM_BASEADDR, CPU_USER_PROGRAM_VECTABLE_OFFSET,
              CPU_USER_PROGRAM_VECTABLE_SIZE);
-  /* TODO ##Vg Update vector table remapping */
-#if 0
   /* remap RAM so that it also appears at address 0x00000000. this way the user program's
    * vector table in RAM is used instead of the bootloader's vector table in flash.
    */
-  SYSCFG_MemoryRemapConfig(SYSCFG_MemoryRemap_SRAM);
-#endif
+  LL_SYSCFG_SetRemapMemory(LL_SYSCFG_REMAP_SRAM);
   /* set the address where the bootloader needs to jump to. this is the address of
    * the 2nd entry in the user program's vector table. this address points to the
    * user program's reset handler.
