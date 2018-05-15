@@ -1,0 +1,116 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="lm3s8962_crossworks" target="8" version="2">
+  <project Name="demoprog_ek_lm3s8962">
+    <configuration Name="Common" Placement="Flash" Target="lm3s8962" arm_architecture="v7M" arm_core_type="Cortex-M3" arm_gcc_target="arm-unknown-eabi" arm_linker_heap_size="128" arm_linker_process_stack_size="0" arm_linker_stack_size="128" arm_long_calls="Yes" arm_simulator_memory_simulation_filename="$(TargetsDir)/LM3S/LM3SSimulatorMemory.dll" arm_simulator_memory_simulation_parameter="0x40000;0x10000" arm_target_debug_interface_type="ADIv5" arm_target_loader_applicable_loaders="Flash" arm_target_loader_default_loader="Flash" arm_use_gcc_libraries="Yes" build_intermediate_directory="$(Configuration)/../../obj" build_output_directory="$(ProjectDir)/../bin" c_preprocessor_definitions="gcc" c_user_include_directories="$(ProjectDir)/..;$(ProjectDir)/../lib;$(ProjectDir)/../lib/inc;$(ProjectDir)/../lib/driverlib" gcc_entry_point="reset_handler" gcc_optimization_level="None" linker_additional_files="" linker_memory_map_file="$(TargetsDir)/LM3S/lm3s8962_MemoryMap.xml" linker_output_format="srec" linker_printf_width_precision_supported="No" linker_scanf_fmt_level="int" linker_section_placement_file="$(StudioDir)/targets/Cortex_M/flash_placement.xml" project_directory="" project_type="Executable" property_groups_file_path="$(TargetsDir)/LM3S/propertyGroups.xml" target_get_partname_script="GetPartName()" target_reset_script="Reset()"/>
+    <configuration Name="Flash" arm_target_flash_loader_file_path="$(TargetsDir)/LM3S/Release/Loader.elf" arm_target_flash_loader_type="LIBMEM RPC Loader" target_reset_script="FLASHReset()"/>
+    <folder Name="Source Files">
+      <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc"/>
+      <folder Name="Demo">
+        <folder Name="Prog">
+          <file file_name="../boot.c"/>
+          <file file_name="../boot.h"/>
+          <file file_name="../cstart.s"/>
+          <file file_name="../header.h"/>
+          <file file_name="../led.c"/>
+          <file file_name="../led.h"/>
+          <file file_name="../main.c"/>
+          <file file_name="../vectors.c"/>
+          <file file_name="../time.c"/>
+          <file file_name="../time.h"/>
+        </folder>
+      </folder>
+    </folder>
+    <folder Name="System Files">
+      <file file_name="$(TargetsDir)/LM3S/LM3S_Target.js">
+        <configuration Name="Common" file_type="Reset Script"/>
+      </file>
+      <file file_name="../memory.x">
+        <configuration Name="Common" file_type="Linker Script"/>
+      </file>
+    </folder>
+    <folder Name="Library Files">
+      <folder Name="Inc">
+        <file file_name="../lib/inc/asmdefs.h"/>
+        <file file_name="../lib/inc/hw_adc.h"/>
+        <file file_name="../lib/inc/hw_comp.h"/>
+        <file file_name="../lib/inc/hw_epi.h"/>
+        <file file_name="../lib/inc/hw_ethernet.h"/>
+        <file file_name="../lib/inc/hw_flash.h"/>
+        <file file_name="../lib/inc/hw_gpio.h"/>
+        <file file_name="../lib/inc/hw_hibernate.h"/>
+        <file file_name="../lib/inc/hw_i2c.h"/>
+        <file file_name="../lib/inc/hw_i2s.h"/>
+        <file file_name="../lib/inc/hw_ints.h"/>
+        <file file_name="../lib/inc/hw_memmap.h"/>
+        <file file_name="../lib/inc/hw_nvic.h"/>
+        <file file_name="../lib/inc/hw_pwm.h"/>
+        <file file_name="../lib/inc/hw_qei.h"/>
+        <file file_name="../lib/inc/hw_ssi.h"/>
+        <file file_name="../lib/inc/hw_sysctl.h"/>
+        <file file_name="../lib/inc/hw_timer.h"/>
+        <file file_name="../lib/inc/hw_types.h"/>
+        <file file_name="../lib/inc/hw_uart.h"/>
+        <file file_name="../lib/inc/hw_udma.h"/>
+        <file file_name="../lib/inc/hw_usb.h"/>
+        <file file_name="../lib/inc/hw_watchdog.h"/>
+        <file file_name="../lib/inc/lm3s8962.h"/>
+        <file file_name="../lib/inc/hw_can.h"/>
+      </folder>
+      <folder Name="Driverlib">
+        <file file_name="../lib/driverlib/adc.c"/>
+        <file file_name="../lib/driverlib/adc.h"/>
+        <file file_name="../lib/driverlib/comp.c"/>
+        <file file_name="../lib/driverlib/comp.h"/>
+        <file file_name="../lib/driverlib/cpu.c"/>
+        <file file_name="../lib/driverlib/cpu.h"/>
+        <file file_name="../lib/driverlib/debug.h"/>
+        <file file_name="../lib/driverlib/epi.c"/>
+        <file file_name="../lib/driverlib/epi.h"/>
+        <file file_name="../lib/driverlib/ethernet.c"/>
+        <file file_name="../lib/driverlib/ethernet.h"/>
+        <file file_name="../lib/driverlib/flash.c"/>
+        <file file_name="../lib/driverlib/flash.h"/>
+        <file file_name="../lib/driverlib/gpio.c"/>
+        <file file_name="../lib/driverlib/gpio.h"/>
+        <file file_name="../lib/driverlib/hibernate.c"/>
+        <file file_name="../lib/driverlib/hibernate.h"/>
+        <file file_name="../lib/driverlib/i2c.c"/>
+        <file file_name="../lib/driverlib/i2c.h"/>
+        <file file_name="../lib/driverlib/i2s.c"/>
+        <file file_name="../lib/driverlib/i2s.h"/>
+        <file file_name="../lib/driverlib/interrupt.c"/>
+        <file file_name="../lib/driverlib/interrupt.h"/>
+        <file file_name="../lib/driverlib/mpu.c"/>
+        <file file_name="../lib/driverlib/mpu.h"/>
+        <file file_name="../lib/driverlib/pin_map.h"/>
+        <file file_name="../lib/driverlib/pwm.c"/>
+        <file file_name="../lib/driverlib/pwm.h"/>
+        <file file_name="../lib/driverlib/qei.c"/>
+        <file file_name="../lib/driverlib/qei.h"/>
+        <file file_name="../lib/driverlib/rom.h"/>
+        <file file_name="../lib/driverlib/rom_map.h"/>
+        <file file_name="../lib/driverlib/ssi.c"/>
+        <file file_name="../lib/driverlib/ssi.h"/>
+        <file file_name="../lib/driverlib/sysctl.c"/>
+        <file file_name="../lib/driverlib/sysctl.h"/>
+        <file file_name="../lib/driverlib/systick.c"/>
+        <file file_name="../lib/driverlib/systick.h"/>
+        <file file_name="../lib/driverlib/timer.c"/>
+        <file file_name="../lib/driverlib/timer.h"/>
+        <file file_name="../lib/driverlib/uart.c"/>
+        <file file_name="../lib/driverlib/uart.h"/>
+        <file file_name="../lib/driverlib/udma.c"/>
+        <file file_name="../lib/driverlib/udma.h"/>
+        <file file_name="../lib/driverlib/usb.c"/>
+        <file file_name="../lib/driverlib/usb.h"/>
+        <file file_name="../lib/driverlib/watchdog.c"/>
+        <file file_name="../lib/driverlib/watchdog.h"/>
+        <file file_name="../lib/driverlib/can.c"/>
+        <file file_name="../lib/driverlib/can.h"/>
+      </folder>
+    </folder>
+  </project>
+  <configuration Name="THUMB Debug" inherited_configurations="THUMB;Debug"/>
+  <configuration Name="THUMB" Platform="ARM" arm_instruction_set="THUMB" arm_library_instruction_set="THUMB" c_preprocessor_definitions="__THUMB" hidden="Yes"/>
+  <configuration Name="Debug" build_debug_information="Yes" c_preprocessor_definitions="DEBUG" gcc_optimization_level="None" hidden="Yes" link_include_startup_code="No"/>
+</solution>
