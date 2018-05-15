@@ -31,7 +31,6 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f0xx.h"                           /* STM32 registers and drivers        */
 
 
 #if (BOOT_COM_CAN_ENABLE > 0)
@@ -88,6 +87,7 @@ static const tCanBusTiming canTiming[] =
 };
 
 
+
 /************************************************************************************//**
 ** \brief     Search algorithm to match the desired baudrate to a possible bus
 **            timing configuration.
@@ -97,6 +97,8 @@ static const tCanBusTiming canTiming[] =
 ** \return    TRUE if the CAN bustiming register values were found, FALSE otherwise.
 **
 ****************************************************************************************/
+/* TODO ##Vg Update CanGetSpeedConfig */
+#if 0
 static blt_bool CanGetSpeedConfig(blt_int32u baud, blt_int16u *prescaler, tCanBusTiming *bitTiming)
 
 {
@@ -130,6 +132,7 @@ static blt_bool CanGetSpeedConfig(blt_int32u baud, blt_int16u *prescaler, tCanBu
   /* could not find a good bus timing configuration */
   return BLT_FALSE;
 } /*** end of CanGetSpeedConfig ***/
+#endif
 
 
 /************************************************************************************//**
@@ -139,6 +142,8 @@ static blt_bool CanGetSpeedConfig(blt_int32u baud, blt_int16u *prescaler, tCanBu
 ****************************************************************************************/
 void CanInit(void)
 {
+  /* TODO ##Vg Update CanInit */
+#if 0
   CAN_InitTypeDef CAN_InitStructure;
   CAN_FilterInitTypeDef CAN_FilterInitStructure;
   blt_int16u prescaler = 1;
@@ -180,6 +185,7 @@ void CanInit(void)
   CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
   CAN_FilterInitStructure.CAN_FilterActivation = ENABLE;
   CAN_FilterInit(&CAN_FilterInitStructure);
+#endif
 } /*** end of CanInit ***/
 
 
@@ -192,6 +198,8 @@ void CanInit(void)
 ****************************************************************************************/
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
+  /* TODO ##Vg Update CanTransmitPacket */
+#if 0
   CanTxMsg txMsg;
   blt_int8u byteIdx;
   blt_int8u txMailbox;
@@ -233,6 +241,7 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
       break;
     }
   }
+#endif
 } /*** end of CanTransmitPacket ***/
 
 
@@ -245,9 +254,11 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
 {
+  blt_bool result = BLT_FALSE;
+  /* TODO ##Vg Update CanReceivePacket */
+#if 0
   CanRxMsg rxMsg;
   blt_int8u byteIdx;
-  blt_bool result = BLT_FALSE;
   blt_bool canIdMatched = BLT_FALSE;
 
   /* check if a new message was received */
@@ -278,6 +289,7 @@ blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
       result = BLT_TRUE;
     }
   }
+#endif
   return result;
 } /*** end of CanReceivePacket ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */

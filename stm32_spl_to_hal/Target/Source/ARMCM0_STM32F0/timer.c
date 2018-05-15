@@ -30,7 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f0xx.h"                           /* for STM32F0 registers and drivers  */
+#include "stm32f0xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -105,6 +105,39 @@ blt_int32u TimerGet(void)
   /* read and return the amount of milliseconds that passed since initialization */
   return millisecond_counter;
 } /*** end of TimerGet ***/
+
+
+/************************************************************************************//**
+** \brief     Override for the HAL driver's GetTick() functionality. This is needed
+**            because the bootloader doesn't use interrupts, but the HAL's tick
+**            functionality assumes that it does. This will cause the HAL_Delay()
+**            function to not work properly. As a result of this override, the HAL's
+**            tick functionality works in polling mode.
+** \return    Current value of the millisecond timer.
+**
+****************************************************************************************/
+uint32_t HAL_GetTick(void)
+{
+  /* Link to the bootloader's 1ms timer. */
+  return TimerGet();
+} /*** end of HAL_GetTick ***/
+
+
+/************************************************************************************//**
+** \brief     This function handles the SysTick interrupt. The HAL driver is initialized
+**            before this timer driver. The HAL driver configures the SysTick for
+**            interrupt driven mode, which is afterwards disabled by the timer driver
+**            initialization. It is theoretically possible that the SysTick interrupt
+**            still fires before the timer driver disables it. Therefore the handler
+**            is implemented here. If not, then the default handler from cstart.s is
+**            used, which hangs the system.
+** \return    none.
+**
+****************************************************************************************/
+void SysTick_Handler(void)
+{
+  /* Nothing to do here. */
+} /*** end of SysTick_Handler ***/
 
 
 /*********************************** end of timer.c ************************************/

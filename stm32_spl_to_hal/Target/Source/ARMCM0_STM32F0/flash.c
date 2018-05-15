@@ -30,7 +30,6 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f0xx.h"                           /* for STM32F0 registers and drivers  */
 
 
 /****************************************************************************************
@@ -635,8 +634,10 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_int8u  sector_num;
   blt_bool   result = BLT_TRUE;
+  /* TODO ##Vg Update FlashWriteBlock */
+#if 0
+  blt_int8u  sector_num;
   blt_addr   prog_addr;
   blt_int32u prog_data;
   blt_int32u word_cnt;
@@ -699,6 +700,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
   /* lock the flash array again */
   FLASH_Lock();
+#endif
   /* still here so all is okay */
   return result;
 } /*** end of FlashWriteBlock ***/
@@ -713,6 +715,9 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 ****************************************************************************************/
 static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 {
+  blt_bool result = BLT_FALSE;
+  /* TODO ##Vg Update FlashEraseSectors */
+#if 0
   blt_int16u nr_of_blocks;
   blt_int16u block_cnt;
   blt_addr   start_addr;
@@ -762,6 +767,9 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
   FLASH_Lock();
   /* still here so all went okay */
   return BLT_TRUE;
+#endif
+  /* give the result back to the caller */
+  return result;
 } /*** end of FlashEraseSectors ***/
 
 

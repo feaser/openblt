@@ -30,7 +30,6 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f0xx.h"                           /* for STM32F0 registers and drivers  */
 
 
 #if (BOOT_COM_UART_ENABLE > 0)
@@ -86,6 +85,8 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
+  /* TODO ##Vg Update UartInit */
+#if 0
   USART_InitTypeDef USART_InitStructure;
 
   /* the current implementation supports USART1 - USART8. throw an assertion error in
@@ -111,6 +112,7 @@ void UartInit(void)
   USART_OverrunDetectionConfig(USART_CHANNEL, USART_OVRDetection_Disable);
   /* enable UART */
   USART_Cmd(USART_CHANNEL, ENABLE);
+#endif
 } /*** end of UartInit ***/
 
 
@@ -223,6 +225,9 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
+  blt_bool result = BLT_FALSE;
+  /* TODO ##Vg Update UartReceiveByte */
+#if 0
   /* check flag to see if a byte was received */
   if (USART_GetFlagStatus(USART_CHANNEL, USART_FLAG_RXNE) == SET)
   {
@@ -233,6 +238,9 @@ static blt_bool UartReceiveByte(blt_int8u *data)
   }
   /* still here to no new byte received */
   return BLT_FALSE;
+#endif
+  /* give the result back to the caller */
+  return result;
 } /*** end of UartReceiveByte ***/
 
 
@@ -244,8 +252,10 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static blt_bool UartTransmitByte(blt_int8u data)
 {
-  blt_int32u timeout;
   blt_bool result = BLT_TRUE;
+  /* TODO ##Vg Ypdate UartTransmitByte */
+#if 0
+  blt_int32u timeout;
 
   /* check if tx holding register can accept new data */
   if (USART_GetFlagStatus(USART_CHANNEL, USART_FLAG_TXE) == RESET)
@@ -269,6 +279,7 @@ static blt_bool UartTransmitByte(blt_int8u data)
       break;
     }
   }
+#endif
   /* give the result back to the caller */
   return result;
 } /*** end of UartTransmitByte ***/
