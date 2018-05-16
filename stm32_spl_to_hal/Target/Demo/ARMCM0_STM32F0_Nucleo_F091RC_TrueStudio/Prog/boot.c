@@ -335,7 +335,7 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
 ****************************************************************************************/
 static void BootComCanInit(void)
 {
-  unsigned short prescaler;
+  unsigned short prescaler = 0;
   unsigned char tseg1 = 0, tseg2 = 0;
   CAN_FilterConfTypeDef filterConfig;
   unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;

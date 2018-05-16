@@ -38,7 +38,7 @@ SEARCH_DIR(.)
 MEMORY
 {
     /* The first part in flash is reserved for OpenBLT */
-    ROM  (rx) : ORIGIN = 0x08000000, LENGTH = 8K
+    ROM  (rx) : ORIGIN = 0x08000000, LENGTH = 10K
     /* do not use the first 192 bytes because this is where
      * the bootloader copies the user program vector table
      * right before it starts the user program.

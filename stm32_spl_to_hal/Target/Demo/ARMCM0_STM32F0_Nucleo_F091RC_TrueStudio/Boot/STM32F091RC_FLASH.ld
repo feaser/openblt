@@ -40,9 +40,13 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 32K
-/* The first part in flash is reserved for OpenBLT */
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 10K
+  /* do not use the first 192 bytes because this is where
+   * the bootloader copies the user program vector table
+   * right before it starts the user program.
+   */
+  RAM (xrw)      : ORIGIN = 0x200000C0, LENGTH = 32K - 192
+  /* The first part in flash is reserved for OpenBLT */
+  FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 10K
 }
 
 /* Define output sections */

@@ -90,7 +90,7 @@ STDFLAGS    = -mcpu=cortex-m0 -mthumb -mfloat-abi=soft -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
 OPTFLAGS    = -O1
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-CFLAGS     += -DSTM32F091 -DUSE_STDPERIPH_DRIVER
+CFLAGS     += -DSTM32F091xC -DUSE_HAL_DRIVER
 CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)

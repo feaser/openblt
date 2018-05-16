@@ -38,7 +38,7 @@ SEARCH_DIR(.)
 MEMORY
 {
     /* The first part in flash is reserved for OpenBLT */
-    ROM  (rx) : ORIGIN = 0x08002000, LENGTH = 256K - 8K
+    ROM  (rx) : ORIGIN = 0x08002800, LENGTH = 256K - 10K
     /* The first 192 bytes in RAM are reserved for OpenBLT. Right before
      * starting this program, OpenBLT copies our interrupt vector table
      * to the start of RAM and remap the RAM to also appear at address
