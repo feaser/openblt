@@ -42,7 +42,7 @@ MEMORY
 {
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 32K
 /* The first part in flash is reserved for OpenBLT */
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 8K
+FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 10K
 }
 
 /* Define output sections */

@@ -44,7 +44,7 @@ _Min_Stack_Size = 0x100; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-  FLASH (rx)      : ORIGIN = 0x08002000, LENGTH = 256K - 8K
+  FLASH (rx)      : ORIGIN = 0x08002800, LENGTH = 256K - 10K
   /* do not use the first 192 bytes because this is where
    * the bootloader copies the user program vector table
    * right before it starts the user program.
