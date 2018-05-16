@@ -73,7 +73,6 @@ void LedBlinkTask(void)
     {
       ledOn = BLT_TRUE;
       LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_5);
-
     }
     else
     {

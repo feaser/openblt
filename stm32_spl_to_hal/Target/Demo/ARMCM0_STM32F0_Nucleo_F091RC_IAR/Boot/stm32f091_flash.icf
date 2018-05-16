@@ -3,7 +3,7 @@
 define symbol __ICFEDIT_intvec_start__ = 0x08000000;
 /*-Memory Regions-*/
 define symbol __ICFEDIT_region_ROM_start__ = 0x08000000;
-define symbol __ICFEDIT_region_ROM_end__   = 0x08001FFF;
+define symbol __ICFEDIT_region_ROM_end__   = 0x080027FF;
 /* do not use the first 192 bytes because this is where
  * the bootloader copies the user program vector table
  * right before it starts the user program.
