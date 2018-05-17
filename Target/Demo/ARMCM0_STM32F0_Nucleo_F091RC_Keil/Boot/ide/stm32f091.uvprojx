@@ -334,9 +334,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--diag_suppress=111</MiscControls>
-              <Define>STM32F091,USE_STDPERIPH_DRIVER</Define>
+              <Define>USE_HAL_DRIVER,USE_FULL_LL_DRIVER,STM32F091xC</Define>
               <Undefine></Undefine>
-              <IncludePath>..\lib;..\lib\cmsis;..\lib\SPL\inc;..\..\Boot;..\..\..\..\Source;..\..\..\..\Source\ARMCM0_STM32F0;..\..\..\..\Source\ARMCM0_STM32F0\Keil</IncludePath>
+              <IncludePath>..\lib;..\lib\CMSIS\Device\ST\STM32F0xx\Include;..\lib\CMSIS\Include;..\lib\STM32F0xx_HAL_Driver\Inc;..\lib\STM32F0xx_HAL_Driver\Inc\Legacy;..\..\Boot;..\..\..\..\Source;..\..\..\..\Source\ARMCM0_STM32F0;..\..\..\..\Source\ARMCM0_STM32F0\Keil</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -381,14 +381,9 @@
           <GroupName>Lib</GroupName>
           <Files>
             <File>
-              <FileName>stm32f0xx.h</FileName>
+              <FileName>stm32f0xx_hal_conf.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\stm32f0xx.h</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_conf.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\stm32f0xx_conf.h</FilePath>
+              <FilePath>..\lib\stm32f0xx_hal_conf.h</FilePath>
             </File>
             <File>
               <FileName>system_stm32f0xx.c</FileName>
@@ -396,269 +391,354 @@
               <FilePath>..\lib\system_stm32f0xx.c</FilePath>
             </File>
             <File>
+              <FileName>stm32f0xx.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Device\ST\STM32F0xx\Include\stm32f0xx.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f091xc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Device\ST\STM32F0xx\Include\stm32f091xc.h</FilePath>
+            </File>
+            <File>
               <FileName>system_stm32f0xx.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\system_stm32f0xx.h</FilePath>
+              <FilePath>..\lib\CMSIS\Device\ST\STM32F0xx\Include\system_stm32f0xx.h</FilePath>
             </File>
             <File>
               <FileName>arm_common_tables.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\cmsis\arm_common_tables.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\arm_common_tables.h</FilePath>
             </File>
             <File>
               <FileName>arm_const_structs.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\cmsis\arm_const_structs.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\arm_const_structs.h</FilePath>
             </File>
             <File>
               <FileName>arm_math.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\cmsis\arm_math.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\arm_math.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmsis_armcc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\cmsis_armcc.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmsis_armcc_V6.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\cmsis_armcc_V6.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmsis_gcc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\cmsis_gcc.h</FilePath>
             </File>
             <File>
               <FileName>core_cm0.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\cmsis\core_cm0.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\core_cm0.h</FilePath>
+            </File>
+            <File>
+              <FileName>core_cm0plus.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\core_cm0plus.h</FilePath>
+            </File>
+            <File>
+              <FileName>core_cm3.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\core_cm3.h</FilePath>
+            </File>
+            <File>
+              <FileName>core_cm4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\core_cm4.h</FilePath>
+            </File>
+            <File>
+              <FileName>core_cm7.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\core_cm7.h</FilePath>
             </File>
             <File>
               <FileName>core_cmFunc.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\cmsis\core_cmFunc.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\core_cmFunc.h</FilePath>
             </File>
             <File>
               <FileName>core_cmInstr.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\cmsis\core_cmInstr.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\core_cmInstr.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_can.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_cec.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_cec.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_comp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_comp.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_crc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_crc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_crs.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_crs.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_dac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_dac.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_dbgmcu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_dbgmcu.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_exti.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_exti.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_iwdg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_iwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_misc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_misc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_pwr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_pwr.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_rcc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_rcc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_rtc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_syscfg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_syscfg.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_tim.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_wwdg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\SPL\src\stm32f0xx_wwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_adc.h</FileName>
+              <FileName>core_cmSimd.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_adc.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\core_cmSimd.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_can.h</FileName>
+              <FileName>core_sc000.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_can.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\core_sc000.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_cec.h</FileName>
+              <FileName>core_sc300.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_cec.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\core_sc300.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_comp.h</FileName>
+              <FileName>stm32f0xx_hal.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_comp.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_crc.h</FileName>
+              <FileName>stm32f0xx_hal_can.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_crc.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_can.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_crs.h</FileName>
+              <FileName>stm32f0xx_hal_cortex.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_crs.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_cortex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_dac.h</FileName>
+              <FileName>stm32f0xx_hal_def.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_dac.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_def.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_dbgmcu.h</FileName>
+              <FileName>stm32f0xx_hal_dma.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_dbgmcu.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_dma.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_dma.h</FileName>
+              <FileName>stm32f0xx_hal_dma_ex.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_dma.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_dma_ex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_exti.h</FileName>
+              <FileName>stm32f0xx_hal_flash.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_exti.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_flash.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_flash.h</FileName>
+              <FileName>stm32f0xx_hal_flash_ex.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_flash.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_flash_ex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_gpio.h</FileName>
+              <FileName>stm32f0xx_hal_gpio.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_gpio.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_gpio.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_i2c.h</FileName>
+              <FileName>stm32f0xx_hal_gpio_ex.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_i2c.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_gpio_ex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_iwdg.h</FileName>
+              <FileName>stm32f0xx_hal_i2c.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_iwdg.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_i2c.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_misc.h</FileName>
+              <FileName>stm32f0xx_hal_i2c_ex.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_misc.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_i2c_ex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_pwr.h</FileName>
+              <FileName>stm32f0xx_hal_pwr.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_pwr.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_pwr.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_rcc.h</FileName>
+              <FileName>stm32f0xx_hal_pwr_ex.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_rcc.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_pwr_ex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_rtc.h</FileName>
+              <FileName>stm32f0xx_hal_rcc.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_rtc.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_rcc.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_spi.h</FileName>
+              <FileName>stm32f0xx_hal_rcc_ex.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_spi.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_rcc_ex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_syscfg.h</FileName>
+              <FileName>stm32f0xx_hal_tim.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_syscfg.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_tim.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_tim.h</FileName>
+              <FileName>stm32f0xx_hal_tim_ex.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_tim.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_tim_ex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_usart.h</FileName>
+              <FileName>stm32f0xx_ll_bus.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_usart.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_bus.h</FilePath>
             </File>
             <File>
-              <FileName>stm32f0xx_wwdg.h</FileName>
+              <FileName>stm32f0xx_ll_cortex.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\SPL\inc\stm32f0xx_wwdg.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_cortex.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_crs.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_crs.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_dma.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_dma.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_exti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_exti.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_gpio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_gpio.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_pwr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_pwr.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_rcc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_rcc.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_system.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_system.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_usart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_usart.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_utils.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_hal_legacy.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_cortex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_cortex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_flash_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_flash_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_i2c_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pwr.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_pwr_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pwr_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_rcc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rcc_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_tim_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_utils.c</FilePath>
             </File>
           </Files>
         </Group>

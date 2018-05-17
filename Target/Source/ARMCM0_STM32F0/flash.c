@@ -30,7 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f0xx.h"                           /* for STM32F0 registers and drivers  */
+#include "stm32f0xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -161,7 +161,7 @@ static const tFlashSector flashLayout[] =
   /* { 0x08000800, 0x00800,  1},           flash sector  1 - reserved for bootloader   */
   /* { 0x08001000, 0x00800,  2},           flash sector  2 - reserved for bootloader   */
   /* { 0x08001800, 0x00800,  3},           flash sector  3 - reserved for bootloader   */
-  { 0x08002000, 0x00800,  4},           /* flash sector  4 - 2kb                       */
+  /* { 0x08002000, 0x00800,  4},           flash sector  4 - reserved for bootloader   */
   { 0x08002800, 0x00800,  5},           /* flash sector  5 - 2kb                       */
   { 0x08003000, 0x00800,  6},           /* flash sector  6 - 2kb                       */
   { 0x08003800, 0x00800,  7},           /* flash sector  7 - 2kb                       */
@@ -635,8 +635,8 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_int8u  sector_num;
   blt_bool   result = BLT_TRUE;
+  blt_int8u  sector_num;
   blt_addr   prog_addr;
   blt_int32u prog_data;
   blt_int32u word_cnt;
@@ -664,19 +664,8 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
-  /* unlock the flash array */
-  FLASH_Unlock();
-  /* clear pending flags (if any) */
-  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_WRPERR | FLASH_FLAG_PGERR);
-  /* check that the flash peripheral is not busy */
-  if (FLASH_GetStatus() == FLASH_BUSY)
-  {
-    /* lock the flash array again */
-    FLASH_Lock();
-    /* could not perform erase operation */
-    return BLT_FALSE;
-  }
-
+  /* unlock the flash peripheral to enable the flash control register access. */
+  HAL_FLASH_Unlock();
   /* program all words in the block one by one */
   for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
   {
@@ -685,7 +674,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
     /* keep the watchdog happy */
     CopService();
     /* program the word */
-    if (FLASH_ProgramWord(prog_addr, prog_data) != FLASH_COMPLETE)
+    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, prog_addr, prog_data) != HAL_OK)
     {
       result = BLT_FALSE;
       break;
@@ -697,9 +686,9 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
       break;
     }
   }
-  /* lock the flash array again */
-  FLASH_Lock();
-  /* still here so all is okay */
+  /* lock the flash peripheral to disable the flash control register access. */
+  HAL_FLASH_Lock();
+  /* give the result back to the caller */
   return result;
 } /*** end of FlashWriteBlock ***/
 
@@ -713,55 +702,57 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 ****************************************************************************************/
 static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 {
+  blt_bool   result = BLT_TRUE;
   blt_int16u nr_of_blocks;
   blt_int16u block_cnt;
   blt_addr   start_addr;
   blt_addr   end_addr;
+  blt_int32u pageError = 0;
+  FLASH_EraseInitTypeDef eraseInitStruct;
 
   /* validate the sector numbers */
   if (first_sector > last_sector)
   {
-    return BLT_FALSE;
+    result = BLT_FALSE;
   }
   if ((first_sector < flashLayout[0].sector_num) || \
       (last_sector > flashLayout[FLASH_TOTAL_SECTORS-1].sector_num))
   {
-    return BLT_FALSE;
+    result = BLT_FALSE;
   }
-  /* unlock the flash array */
-  FLASH_Unlock();
-  /* clear pending flags (if any) */
-  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_WRPERR | FLASH_FLAG_PGERR);
-  /* check that the flash peripheral is not busy */
-  if (FLASH_GetStatus() == FLASH_BUSY)
+  /* only continue if everything is okay so far */
+  if (result == BLT_TRUE)
   {
-    /* lock the flash array again */
-    FLASH_Lock();
-    /* could not perform erase operation */
-    return BLT_FALSE;
-  }
-  /* determine how many blocks need to be erased */
-  start_addr = FlashGetSectorBaseAddr(first_sector);
-  end_addr = FlashGetSectorBaseAddr(last_sector) + FlashGetSectorSize(last_sector) - 1;
-  nr_of_blocks = (end_addr - start_addr + 1) / FLASH_ERASE_BLOCK_SIZE;
-  /* erase all blocks one by one */
-  for (block_cnt=0; block_cnt<nr_of_blocks; block_cnt++)
-  {
-    /* keep the watchdog happy */
-    CopService();
-    /* erase block */
-    if (FLASH_ErasePage(start_addr + (block_cnt * FLASH_ERASE_BLOCK_SIZE)) != FLASH_COMPLETE)
+    /* determine how many blocks need to be erased */
+    start_addr = FlashGetSectorBaseAddr(first_sector);
+    end_addr = FlashGetSectorBaseAddr(last_sector) + FlashGetSectorSize(last_sector) - 1;
+    nr_of_blocks = (end_addr - start_addr + 1) / FLASH_ERASE_BLOCK_SIZE;
+    /* prepare the erase initialization structure. */
+    eraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
+    eraseInitStruct.PageAddress = start_addr;
+    eraseInitStruct.NbPages     = 1;
+    /* unlock the flash array */
+    HAL_FLASH_Unlock();
+    /* erase all blocks one by one */
+    for (block_cnt=0; block_cnt<nr_of_blocks; block_cnt++)
     {
-      /* lock the flash array again */
-      FLASH_Lock();
-      /* could not perform erase operation */
-      return BLT_FALSE;
+      /* keep the watchdog happy */
+      CopService();
+      /* erase block */
+      if (HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&pageError) != HAL_OK)
+      {
+        /* could not perform erase operation. update result and stop loop. */
+        result = BLT_FALSE;
+        break;
+      }
+      /* update the page base address for the next sector. */
+      eraseInitStruct.PageAddress += FLASH_ERASE_BLOCK_SIZE;
     }
+    /* lock the flash array again */
+    HAL_FLASH_Lock();
   }
-  /* lock the flash array again */
-  FLASH_Lock();
-  /* still here so all went okay */
-  return BLT_TRUE;
+  /* give the result back to the caller */
+  return result;
 } /*** end of FlashEraseSectors ***/
 
 

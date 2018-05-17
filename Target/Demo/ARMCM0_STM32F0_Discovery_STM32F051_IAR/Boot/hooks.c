@@ -31,7 +31,8 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* LED driver header                  */
-#include "stm32f0xx.h"                           /* for STM32F0 registers and drivers  */
+#include "stm32f0xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f0xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
 /****************************************************************************************
@@ -83,7 +84,7 @@ blt_bool CpuUserProgramStartHook(void)
   /* additional and optional backdoor entry through the pushbutton on the board. to
    * force the bootloader to stay active after reset, keep it pressed during reset.
    */
-  if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == Bit_SET)
+  if (LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0) != 0)
   {
     /* pushbutton pressed, so do not start the user program and keep the
      * bootloader active instead.

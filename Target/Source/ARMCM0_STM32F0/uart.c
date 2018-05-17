@@ -30,7 +30,8 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f0xx.h"                           /* for STM32F0 registers and drivers  */
+#include "stm32f0xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f0xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
 #if (BOOT_COM_UART_ENABLE > 0)
@@ -76,7 +77,7 @@
 * Function prototypes
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data);
-static blt_bool UartTransmitByte(blt_int8u data);
+static void     UartTransmitByte(blt_int8u data);
 
 
 /************************************************************************************//**
@@ -86,7 +87,7 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  USART_InitTypeDef USART_InitStructure;
+  LL_USART_InitTypeDef USART_InitStruct;
 
   /* the current implementation supports USART1 - USART8. throw an assertion error in
    * case a different UART channel is configured.
@@ -99,18 +100,17 @@ void UartInit(void)
             (BOOT_COM_UART_CHANNEL_INDEX == 5) ||
             (BOOT_COM_UART_CHANNEL_INDEX == 6) ||
             (BOOT_COM_UART_CHANNEL_INDEX == 7));
-  /* initialize the uart for the specified communication speed */
-  USART_InitStructure.USART_BaudRate = BOOT_COM_UART_BAUDRATE;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_Init(USART_CHANNEL, &USART_InitStructure);
-  /* Overrun is ignored in BLT code, it is better to switch OVR detection off. */
-  USART_OverrunDetectionConfig(USART_CHANNEL, USART_OVRDetection_Disable);
-  /* enable UART */
-  USART_Cmd(USART_CHANNEL, ENABLE);
+  /* configure UART peripheral */
+  USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
+  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+  USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
+  USART_InitStruct.Parity = LL_USART_PARITY_NONE;
+  USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
+  USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
+  /* initialize the UART peripheral */
+  LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
+  LL_USART_Enable(USART_CHANNEL);
 } /*** end of UartInit ***/
 
 
@@ -124,14 +124,12 @@ void UartInit(void)
 void UartTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int16u data_index;
-  blt_bool result;
 
   /* verify validity of the len-paramenter */
   ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
-  result = UartTransmitByte(len);
-  ASSERT_RT(result == BLT_TRUE);
+  UartTransmitByte(len);
 
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
@@ -139,8 +137,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     /* keep the watchdog happy */
     CopService();
     /* write byte */
-    result = UartTransmitByte(data[data_index]);
-    ASSERT_RT(result == BLT_TRUE);
+    UartTransmitByte(data[data_index]);
   }
 } /*** end of UartTransmitPacket ***/
 
@@ -223,54 +220,46 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
+  blt_bool result = BLT_FALSE;
+
   /* check flag to see if a byte was received */
-  if (USART_GetFlagStatus(USART_CHANNEL, USART_FLAG_RXNE) == SET)
+  if (LL_USART_IsActiveFlag_RXNE(USART_CHANNEL) != 0)
   {
     /* retrieve and store the newly received byte */
-    *data = (unsigned char)USART_ReceiveData(USART_CHANNEL);
-    /* all done */
-    return BLT_TRUE;
+    *data = LL_USART_ReceiveData8(USART_CHANNEL);
+    /* update the result for success */
+    result = BLT_TRUE;
   }
-  /* still here to no new byte received */
-  return BLT_FALSE;
+  /* give the result back to the caller */
+  return result;
 } /*** end of UartReceiveByte ***/
 
 
 /************************************************************************************//**
 ** \brief     Transmits a communication interface byte.
 ** \param     data Value of byte that is to be transmitted.
-** \return    BLT_TRUE if the byte was transmitted, BLT_FALSE otherwise.
+** \return    none.
 **
 ****************************************************************************************/
-static blt_bool UartTransmitByte(blt_int8u data)
+static void UartTransmitByte(blt_int8u data)
 {
   blt_int32u timeout;
-  blt_bool result = BLT_TRUE;
 
-  /* check if tx holding register can accept new data */
-  if (USART_GetFlagStatus(USART_CHANNEL, USART_FLAG_TXE) == RESET)
-  {
-    /* UART not ready. should not happen */
-    return BLT_FALSE;
-  }
   /* write byte to transmit holding register */
-  USART_SendData(USART_CHANNEL, data);
+  LL_USART_TransmitData8(USART_CHANNEL, data);
   /* set timeout time to wait for transmit completion. */
   timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
   /* wait for tx holding register to be empty */
-  while (USART_GetFlagStatus(USART_CHANNEL, USART_FLAG_TXE) == RESET)
+  while (LL_USART_IsActiveFlag_TXE(USART_CHANNEL) == 0)
   {
     /* keep the watchdog happy */
     CopService();
     /* break loop upon timeout. this would indicate a hardware failure. */
     if (TimerGet() > timeout)
     {
-      result = BLT_FALSE;
       break;
     }
   }
-  /* give the result back to the caller */
-  return result;
 } /*** end of UartTransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
