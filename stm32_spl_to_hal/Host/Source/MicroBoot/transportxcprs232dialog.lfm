@@ -1,0 +1,78 @@
+object TransportXcpRs232Form: TTransportXcpRs232Form
+  Left = 1297
+  Height = 308
+  Top = 271
+  Width = 407
+  Caption = 'XCP on RS232'
+  ClientHeight = 308
+  ClientWidth = 407
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.6.2.0'
+  object LlbCommunication: TLabel
+    Left = 8
+    Height = 17
+    Top = 8
+    Width = 96
+    Caption = 'Communication'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object CmbDevice: TComboBox
+    Left = 96
+    Height = 29
+    Hint = 'Name of the communication device'
+    Top = 35
+    Width = 192
+    ItemHeight = 0
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    Text = 'CmbDevice'
+  end
+  object LblDevice: TLabel
+    Left = 24
+    Height = 17
+    Top = 38
+    Width = 41
+    Caption = 'Device:'
+    ParentColor = False
+  end
+  object CmbBaudrate: TComboBox
+    Left = 96
+    Height = 27
+    Hint = 'The communication speed in bits per second, as a 32-bit value (Default = 57600)'
+    Top = 75
+    Width = 192
+    ItemHeight = 0
+    ItemIndex = 0
+    Items.Strings = (
+      '1200'
+      '2400'
+      '4800'
+      '9600'
+      '14400'
+      '19200'
+      '38400'
+      '56000'
+      '57600'
+      '115200'
+      '128000'
+      '256000'
+    )
+    ParentShowHint = False
+    ShowHint = True
+    Style = csDropDownList
+    TabOrder = 1
+    Text = '1200'
+  end
+  object LblBaudrate: TLabel
+    Left = 24
+    Height = 17
+    Top = 78
+    Width = 55
+    Caption = 'Baudrate:'
+    ParentColor = False
+  end
+end
