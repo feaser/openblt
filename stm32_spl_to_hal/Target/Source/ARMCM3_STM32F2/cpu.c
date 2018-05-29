@@ -101,7 +101,12 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the timer */
   TimerReset();
+  /* reset the HAL */
+  /* TODO ##Vg HAL_DeInit(); */
   /* remap user program's vector table */
+  /* TODO ##Vg Try to find a LL equivalent for this. If found then also update the 
+   *           STM32F3 port.
+   */
   SCB_VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of
    * the 2nd entry in the user program's vector table. this address points to the
