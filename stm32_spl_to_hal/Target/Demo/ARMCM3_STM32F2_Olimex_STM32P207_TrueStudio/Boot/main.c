@@ -163,7 +163,9 @@ void HAL_MspInit(void)
 #endif
 
 #if (BOOT_COM_CAN_ENABLE > 0)
-  /* CAN clock enable. */
+  /* CAN clock enable. Note that when using CAN2, the clock for peripheral CAN1 must
+   * also be enabled, because CAN2 is a slave of CAN1.
+   */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_CAN1);
 #endif
 
