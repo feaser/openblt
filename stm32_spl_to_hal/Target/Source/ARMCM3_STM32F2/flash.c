@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f2xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -603,7 +604,10 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_bool   result = BLT_FALSE;
+  blt_addr   prog_addr;
+  blt_int32u prog_data;
+  blt_int32u word_cnt;
+  blt_bool   result = BLT_TRUE;
 
 #if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
   #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE == 0)
@@ -621,9 +625,34 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
-  /* TODO ##Vg Implement FlashWriteBlock */
+  /* unlock the flash peripheral to enable the flash control register access. */
+  HAL_FLASH_Unlock();
 
-  /* give the result back to the caller */
+  /* program all words in the block one by one */
+  for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+  {
+    prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
+    prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+    /* keep the watchdog happy */
+    CopService();
+    /* program the word */
+    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, prog_addr, prog_data) != HAL_OK)
+    {
+      result = BLT_FALSE;
+      break;
+    }
+    /* verify that the written data is actually there */
+    if (*(volatile blt_int32u *)prog_addr != prog_data)
+    {
+      result = BLT_FALSE;
+      break;
+    }
+  }
+
+  /* lock the flash peripheral to disable the flash control register access. */
+  HAL_FLASH_Lock();
+
+  /* Give the result back to the caller. */
   return result;
 } /*** end of FlashWriteBlock ***/
 
@@ -637,9 +666,53 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 ****************************************************************************************/
 static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 {
-  blt_bool result = BLT_FALSE;
+  blt_bool result = BLT_TRUE;
+  blt_int8u sectorIdx;
+  FLASH_EraseInitTypeDef eraseInitStruct;
+  blt_int32u eraseSectorError = 0;
 
-  /* TODO ##Vg Implement FlashEraseSectors */
+  /* validate the sector numbers */
+  if (first_sector > last_sector)
+  {
+    result = BLT_FALSE;
+  }
+  if ((first_sector < flashLayout[0].sector_num) || \
+      (last_sector > flashLayout[FLASH_TOTAL_SECTORS-1].sector_num))
+  {
+    result = BLT_FALSE;
+  }
+
+  /* only move forward with the erase operation if all is okay so far */
+  if (result == BLT_TRUE)
+  {
+    /* intialize the sector erase info structure */
+    eraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
+    eraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+    eraseInitStruct.NbSectors = 1;
+
+    /* unlock the flash array */
+    HAL_FLASH_Unlock();
+
+    /* erase all sectors one by one */
+    for (sectorIdx=first_sector; sectorIdx<= last_sector; sectorIdx++)
+    {
+      /* keep the watchdog happy */
+      CopService();
+      /* set the sector to erase */
+      eraseInitStruct.Sector = sectorIdx;
+      /* submit the sector erase request */
+      if(HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&eraseSectorError) != HAL_OK)
+      {
+        /* could not perform erase operation */
+        result = BLT_FALSE;
+        /* error detected so don't bother continuing with the loop */
+        break;
+      }
+    }
+
+    /* lock the flash array again */
+    HAL_FLASH_Lock();
+  }
 
   /* give the result back to the caller */
   return result;
@@ -654,6 +727,7 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 ****************************************************************************************/
 static blt_int8u FlashGetSector(blt_addr address)
 {
+  blt_int8u result = FLASH_INVALID_SECTOR;
   blt_int8u sectorIdx;
 
   /* search through the sectors to find the right one */
@@ -666,12 +740,14 @@ static blt_int8u FlashGetSector(blt_addr address)
         (address < (flashLayout[sectorIdx].sector_start + \
                     flashLayout[sectorIdx].sector_size)))
     {
-      /* return the sector number */
-      return flashLayout[sectorIdx].sector_num;
+      /* found the sector we are looking for so store it */
+      result = flashLayout[sectorIdx].sector_num;
+      /* all done so no need to continue looping */
+      break;
     }
   }
-  /* still here so no valid sector found */
-  return FLASH_INVALID_SECTOR;
+  /* give the result back to the caller */
+  return result;
 } /*** end of FlashGetSector ***/
 
 

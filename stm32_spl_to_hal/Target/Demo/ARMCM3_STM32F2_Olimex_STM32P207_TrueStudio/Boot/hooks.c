@@ -93,8 +93,7 @@ blt_bool CpuUserProgramStartHook(void)
     return BLT_FALSE;
   }
   /*  okay to start the user program.*/
-  /* TODO ##Vg Restore to BLT_TRUE again once it is okay to start the user program */
-  return BLT_FALSE;
+  return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/
 #endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */
 

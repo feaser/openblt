@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f2xx.h"                           /* STM32 registers and drivers        */
 
 
 /****************************************************************************************
@@ -39,13 +40,6 @@
 #define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)(NvmGetUserProgBaseAddress() + 0x00000004))
 /** \brief Pointer to the user program's vector table. */
 #define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)NvmGetUserProgBaseAddress())
-
-
-/****************************************************************************************
-* Register definitions
-****************************************************************************************/
-/** \brief Vector table offset register. */
-#define SCB_VTOR    (*((volatile blt_int32u *) 0xE000ED08))
 
 
 /****************************************************************************************
@@ -102,12 +96,9 @@ void CpuStartUserProgram(void)
   /* reset the timer */
   TimerReset();
   /* reset the HAL */
-  /* TODO ##Vg HAL_DeInit(); */
+  HAL_DeInit();
   /* remap user program's vector table */
-  /* TODO ##Vg Try to find a LL equivalent for this. If found then also update the 
-   *           STM32F3 port.
-   */
-  SCB_VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
+  SCB->VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of
    * the 2nd entry in the user program's vector table. this address points to the
    * user program's reset handler.
