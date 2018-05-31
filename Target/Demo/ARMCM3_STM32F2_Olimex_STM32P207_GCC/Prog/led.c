@@ -46,19 +46,10 @@
 ****************************************************************************************/
 void LedInit(void)
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  /* GPIOF peripheral clock enable for LED_STAT1 */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF, ENABLE);
-
-  /* configure PF6 with as output with internal pull-up */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_Init(GPIOF, &GPIO_InitStructure);
-  GPIO_ResetBits(GPIOF, GPIO_Pin_8);
+  /* Note that the initialization of the LED GPIO pin is done in HAL_MspInit(). All that
+   * is left to do here is to make sure the LED is turned off after initialization.
+   */
+  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET);
 } /*** end of LedInit ***/
 
 
@@ -86,13 +77,13 @@ void LedToggle(void)
   {
     led_toggle_state = 1;
     /* turn the LED on */
-    GPIO_SetBits(GPIOF, GPIO_Pin_8);
+    HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);
   }
   else
   {
     led_toggle_state = 0;
     /* turn the LED off */
-    GPIO_ResetBits(GPIOF, GPIO_Pin_8);
+    HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET);
   }
 
   /* store toggle time to determine next toggle interval */
