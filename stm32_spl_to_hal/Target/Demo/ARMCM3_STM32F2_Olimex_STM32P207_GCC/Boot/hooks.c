@@ -32,6 +32,8 @@
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* LED driver header                  */
 #include "stm32f2xx.h"                           /* STM32 registers and drivers        */
+#include "stm32f2xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
+#include "stm32f2xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
 /****************************************************************************************
@@ -84,7 +86,7 @@ blt_bool CpuUserProgramStartHook(void)
   /* additional and optional backdoor entry through the pushbutton on the board. to
    * force the bootloader to stay active after reset, keep it pressed during reset.
    */
-  if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13) == Bit_RESET)
+  if (LL_GPIO_IsInputPinSet(GPIOC, LL_GPIO_PIN_13) == 0)
   {
     /* pushbutton pressed, so do not start the user program and keep the
      * bootloader active instead.
@@ -359,7 +361,7 @@ void FileFirmwareUpdateCompletedHook(void)
    * 100ms.
    */
   timeoutTime = TimerGet() + 100;
-  while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET)
+  while (LL_USART_IsActiveFlag_TC(USART3) == 0)
   {
     /* check for timeout */
     if (TimerGet() > timeoutTime)
@@ -404,6 +406,8 @@ void FileFirmwareUpdateErrorHook(blt_int8u error_code)
 ****************************************************************************************/
 void FileFirmwareUpdateLogHook(blt_char *info_string)
 {
+  blt_int32u timeoutTime;
+
   /* write the string to the log file */
   if (logfile.canUse == BLT_TRUE)
   {
@@ -416,10 +420,21 @@ void FileFirmwareUpdateLogHook(blt_char *info_string)
   /* echo all characters in the string on UART */
   while(*info_string != '\0')
   {
-    /* write character to transmit holding register */
-    USART_SendData(USART3, *info_string);
+    /* write byte to transmit holding register */
+    LL_USART_TransmitData8(USART3, *info_string);
+    /* set timeout time to wait for transmit completion. */
+    timeoutTime = TimerGet() + 10;
     /* wait for tx holding register to be empty */
-    while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);
+    while (LL_USART_IsActiveFlag_TXE(USART3) == 0)
+    {
+      /* keep the watchdog happy */
+      CopService();
+      /* break loop upon timeout. this would indicate a hardware failure. */
+      if (TimerGet() > timeoutTime)
+      {
+        break;
+      }
+    }
     /* point to the next character in the string */
     info_string++;
   }
