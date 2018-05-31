@@ -181,9 +181,8 @@
         <debug>1</debug>
         <option>
           <name>CCDefines</name>
-          <state>STM32F207ZE</state>
-          <state>STM32F2XX</state>
-          <state>USE_STDPERIPH_DRIVER</state>
+          <state>USE_HAL_DRIVER</state>
+          <state>STM32F207xx</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -314,8 +313,10 @@
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..</state>
           <state>$PROJ_DIR$\..\lib</state>
-          <state>$PROJ_DIR$\..\lib\cmsis</state>
-          <state>$PROJ_DIR$\..\lib\SPL\inc</state>
+          <state>$PROJ_DIR$\..\lib\CMSIS\Include</state>
+          <state>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F2xx\Include</state>
+          <state>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc</state>
+          <state>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\Legacy</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1938,202 +1939,172 @@
     <group>
       <name>lib</name>
       <group>
-        <name>cmsis</name>
+        <name>CMSIS</name>
         <file>
-          <name>$PROJ_DIR$\..\lib\cmsis\core_cm3.h</name>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_common_tables.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\cmsis\core_cmFunc.h</name>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_const_structs.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\cmsis\core_cmInstr.h</name>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_math.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_armcc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_armcc_V6.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_gcc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm0.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm0plus.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm3.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm4.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm7.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmFunc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmInstr.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmSimd.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_sc000.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_sc300.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F2xx\Include\stm32f207xx.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F2xx\Include\stm32f2xx.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F2xx\Include\system_stm32f2xx.h</name>
         </file>
       </group>
       <group>
-        <name>spl</name>
+        <name>HAL</name>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\misc.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\misc.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_adc.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_adc.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_can.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_can.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_can.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_can.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_cortex.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_crc.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_cortex.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_crc.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_def.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_cryp.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_dma.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_cryp.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_dma.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_cryp_aes.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_dma_ex.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_cryp_des.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_dma_ex.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_cryp_tdes.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_flash.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_dac.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_flash.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_dac.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_flash_ex.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_dbgmcu.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_flash_ex.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_dbgmcu.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_gpio.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_dcmi.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_gpio.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_dcmi.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_gpio_ex.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_dma.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_pwr.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_dma.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_pwr.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_exti.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_pwr_ex.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_exti.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_pwr_ex.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_flash.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_rcc.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_flash.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_rcc.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_fsmc.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_rcc_ex.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_fsmc.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_rcc_ex.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_gpio.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_tim.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_gpio.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_tim.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_hash.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_tim_ex.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_hash.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_tim_ex.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_hash_md5.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_uart.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_hash_sha1.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_i2c.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_i2c.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_iwdg.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_iwdg.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_pwr.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_pwr.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_rcc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_rcc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_rng.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_rng.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_rtc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_rtc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_sdio.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_sdio.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_spi.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_spi.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_syscfg.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_syscfg.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_tim.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_tim.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_usart.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_usart.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\src\stm32f2xx_wwdg.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\SPL\inc\stm32f2xx_wwdg.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_uart.h</name>
         </file>
       </group>
       <file>
-        <name>$PROJ_DIR$\..\lib\stm32f2xx.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\lib\stm32f2xx_conf.h</name>
+        <name>$PROJ_DIR$\..\lib\stm32f2xx_hal_conf.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\lib\system_stm32f2xx.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\lib\system_stm32f2xx.h</name>
       </file>
     </group>
     <file>
