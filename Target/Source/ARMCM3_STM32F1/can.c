@@ -123,6 +123,14 @@ typedef struct
 #define CAN_BIT_TXRQ     ((blt_int32u)0x00000001)
 /** \brief Release FIFO 0 mailbox bit. */
 #define CAN_BIT_RFOM0    ((blt_int32u)0x00000020)
+/** \brief Standard 11-bit identifier bit mask. */
+#define CAN_BIT_STDID_MASK (0x7FFu << CAN_BIT_STDID_POS)
+/** \brief Standard 11-bit identifier bits position. */
+#define CAN_BIT_STDID_POS  (21u)
+/** \brief Extended 29-bit identifier bit mask. */
+#define CAN_BIT_EXTID_MASK (0x1FFFFFFFu << CAN_BIT_EXTID_POS)
+/** \brief Extended 29-bit identifier bits position. */
+#define CAN_BIT_EXTID_POS  (3u)
 
 
 /****************************************************************************************
@@ -229,6 +237,8 @@ void CanInit(void)
   blt_int8u  tseg1, tseg2;
   blt_bool   result;
   blt_int32u timeout;
+  blt_int32u rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  blt_int32u rxFilterId, rxFilterMask;
 
   /* the current implementation supports CAN1. throw an assertion error in case a
    * different CAN channel is configured.
@@ -290,15 +300,34 @@ void CanInit(void)
       break;
     }
   }
+
+  /* determine the reception filter mask and id values such that it only leaves one
+   * CAN identifier through (BOOT_COM_CAN_RX_MSG_ID).
+   */
+  if ((rxMsgId & 0x80000000) == 0)
+  {
+    rxFilterId = rxMsgId << CAN_BIT_STDID_POS;
+    rxFilterMask = (CAN_BIT_STDID_MASK) | CAN_BIT_IDE;
+  }
+  else
+  {
+    /* negate the ID-type bit */
+    rxMsgId &= ~0x80000000;
+    rxFilterId = (rxMsgId << CAN_BIT_EXTID_POS) | CAN_BIT_IDE;
+    rxFilterMask = (CAN_BIT_EXTID_MASK) | CAN_BIT_IDE;
+  }
+
   /* enter initialisation mode for the acceptance filter */
   CANx->FMR |= CAN_BIT_FINIT;
   /* deactivate filter 0 */
   CANx->FA1R &= ~CAN_BIT_FILTER0;
   /* 32-bit scale for the filter */
   CANx->FS1R |= CAN_BIT_FILTER0;
-  /* open up the acceptance filter to receive all messages */
-  CANx->sFilterRegister[0].FR1 = 0;
-  CANx->sFilterRegister[0].FR2 = 0;
+  /* Configure identifier mask mode for the filter */
+  CANx->FM1R &= ~CAN_BIT_FILTER0;
+  /* configure the acceptance filter to receive just one message */
+  CANx->sFilterRegister[0].FR1 = rxFilterId;
+  CANx->sFilterRegister[0].FR2 = rxFilterMask;
   /* select id/mask mode for the filter */
   CANx->FM1R &= ~CAN_BIT_FILTER0;
   /* FIFO 0 assignation for the filter */
