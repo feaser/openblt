@@ -260,12 +260,19 @@ void SystemInit (void)
   /* Configure the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers */
   /* Configure the Flash Latency cycles and enable prefetch buffer */
   SetSysClock();
-
-#ifdef VECT_TAB_SRAM
-  SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
-#else
-  SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH. */
-#endif 
+  /* vector table initialization disabled because this is handled by the OpenBLT
+   * bootloader, right before this program is started. Alternatively, you can
+   * enable this code again as long as you set VECT_TAB_OFFSET to the actual start
+   * address of the vector table. This is not the default start in flash because this
+   * is where the OpenBLT bootloader resides.
+   */
+#if 0
+  #ifdef VECT_TAB_SRAM
+    SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
+  #else
+    SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH. */
+  #endif
+#endif
 }
 
 /**

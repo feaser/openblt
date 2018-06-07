@@ -11,7 +11,7 @@ Program Header:
     LOAD off    0x00000000 vaddr 0x08000000 paddr 0x08000000 align 2**16
          filesz 0x000045d0 memsz 0x000045d0 flags r-x
     LOAD off    0x00010000 vaddr 0x20000000 paddr 0x080045d0 align 2**16
-         filesz 0x00000068 memsz 0x00000090 flags rw-
+         filesz 0x00000068 memsz 0x0000008d flags rw-
 private flags = 5000200: [Version5 EABI] [soft-float ABI]
 
 Sections:
@@ -22,7 +22,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   2 .data         00000068  20000000  080045d0  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  3 .bss          00000028  20000068  08004638  00010068  2**2
+  3 .bss          00000025  20000068  08004638  00010068  2**2
                   ALLOC
   4 .heap         00000800  20000090  20000090  00010068  2**3
                   CONTENTS, READONLY
@@ -40,15 +40,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  11 .debug_aranges 00000290  00000000  00000000  000155e8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000210  00000000  00000000  00015878  2**0
+ 12 .debug_loc    00000c49  00000000  00000000  00015878  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_macro  0000db31  00000000  00000000  00015a88  2**0
+ 13 .debug_ranges 00000210  00000000  00000000  000164c1  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    00050aaa  00000000  00000000  000235b9  2**0
+ 14 .debug_macro  0000db31  00000000  00000000  000166d1  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_frame  00000520  00000000  00000000  00074064  2**2
+ 15 .debug_str    00050aaf  00000000  00000000  00024202  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_loc    00000c49  00000000  00000000  00074584  2**0
+ 16 .debug_frame  00000520  00000000  00000000  00074cb4  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08004000 l    d  .text	00000000 .text
@@ -63,11 +63,11 @@ SYMBOL TABLE:
 00000000 l    d  .debug_info	00000000 .debug_info
 00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
 00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    d  .debug_ranges	00000000 .debug_ranges
 00000000 l    d  .debug_macro	00000000 .debug_macro
 00000000 l    d  .debug_str	00000000 .debug_str
 00000000 l    d  .debug_frame	00000000 .debug_frame
-00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    df *ABS*	00000000 obj/startup_stm32f10x_md.o
 00000800 l       *ABS*	00000000 Stack_Size
 00000800 l       *ABS*	00000000 Heap_Size
@@ -83,16 +83,16 @@ SYMBOL TABLE:
 2000006c l       .bss	00000000 object.8608
 20000060 l     O .data	00000000 __frame_dummy_init_array_entry
 00000000 l    df *ABS*	00000000 /opt/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m/crt0.o
-00000000 l    df *ABS*	00000000 main.c
-08004278 l     F .text	00000104 Init
-00000000 l    df *ABS*	00000000 led.c
-20000084 l     O .bss	00000004 timer_counter_last.6544
-20000088 l     O .bss	00000001 led_toggle_state.6543
 00000000 l    df *ABS*	00000000 timer.c
-2000008c l     O .bss	00000004 millisecond_counter
+20000084 l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 main.c
+080042cc l     F .text	00000104 Init
 00000000 l    df *ABS*	00000000 stm32f10x_rcc.c
 00000000 l    df *ABS*	00000000 stm32f10x_gpio.c
 00000000 l    df *ABS*	00000000 _exit.c
+00000000 l    df *ABS*	00000000 led.c
+20000088 l     O .bss	00000004 timer_counter_last.6544
+2000008c l     O .bss	00000001 led_toggle_state.6543
 00000000 l    df *ABS*	00000000 exit.c
 00000000 l    df *ABS*	00000000 init.c
 00000000 l    df *ABS*	00000000 memset.c
@@ -114,7 +114,7 @@ SYMBOL TABLE:
 20000000 g       .data	00000000 __data_start__
 08004250  w    F .text	00000002 TIM1_CC_IRQHandler
 08004208  w    F .text	00000002 HardFault_Handler
-08004450 g     F .text	00000010 SysTick_Handler
+080042bc g     F .text	00000010 SysTick_Handler
 0800421c  w    F .text	00000002 PVD_IRQHandler
 08004214  w    F .text	00000002 PendSV_Handler
 08004206  w    F .text	00000002 NMI_Handler
@@ -124,9 +124,9 @@ SYMBOL TABLE:
 08004226  w    F .text	00000002 EXTI0_IRQHandler
 0800425c  w    F .text	00000002 I2C2_EV_IRQHandler
 0800420e  w    F .text	00000002 UsageFault_Handler
-08004460 g     F .text	0000001c RCC_APB2PeriphClockCmd
+080043dc g     F .text	0000001c RCC_APB2PeriphClockCmd
 0800423e  w    F .text	00000002 ADC1_2_IRQHandler
-0800447c g     F .text	0000009a GPIO_Init
+080043f8 g     F .text	0000009a GPIO_Init
 20000890 g       .heap	00000000 __HeapLimit
 20000068 g       .bss	00000000 __bss_start__
 08004260  w    F .text	00000002 SPI1_IRQHandler
@@ -143,8 +143,8 @@ SYMBOL TABLE:
 0800423c  w    F .text	00000002 DMA1_Channel7_IRQHandler
 080041c0 g     F .text	00000030 Reset_Handler
 08004244  w    F .text	00000002 CAN1_RX1_IRQHandler
-08004388 g     F .text	00000034 LedInit
-08004518 g     F .text	00000004 GPIO_SetBits
+080044a0 g     F .text	00000034 LedInit
+08004494 g     F .text	00000004 GPIO_SetBits
 08004256  w    F .text	00000002 TIM4_IRQHandler
 00000000  w      *UND*	00000000 __sf_fake_stderr
 00000000  w      *UND*	00000000 __deregister_frame_info
@@ -152,7 +152,7 @@ SYMBOL TABLE:
 08004258  w    F .text	00000002 I2C1_EV_IRQHandler
 20000068 g       .data	00000000 __data_end__
 0800423a  w    F .text	00000002 DMA1_Channel6_IRQHandler
-20000090 g       .bss	00000000 __bss_end__
+2000008d g       .bss	00000000 __bss_end__
 00000800 g       *ABS*	00000000 __STACK_SIZE
 08004254  w    F .text	00000002 TIM3_IRQHandler
 08004224  w    F .text	00000002 RCC_IRQHandler
@@ -163,20 +163,20 @@ SYMBOL TABLE:
 0800414c g     F .text	00000000 _start
 0800426a  w    F .text	00000002 EXTI15_10_IRQHandler
 00000000  w      *UND*	00000000 software_init_hook
-0800451c g     F .text	00000004 GPIO_ResetBits
+08004498 g     F .text	00000004 GPIO_ResetBits
 08004248  w    F .text	00000002 EXTI9_5_IRQHandler
 08004262  w    F .text	00000002 SPI2_IRQHandler
 00000000  w      *UND*	00000000 __sf_fake_stdin
 08004598 g     F .text	00000010 memset
 0800420a  w    F .text	00000002 MemManage_Handler
 08004000 g       .text	000000f0 __isr_vector
-0800437c g     F .text	0000000c main
+080043d0 g     F .text	0000000c main
 08004210  w    F .text	00000002 SVC_Handler
 00000000  w      *UND*	00000000 hardware_init_hook
 20000090 g       .heap	00000000 __end__
 08004238  w    F .text	00000002 DMA1_Channel5_IRQHandler
 0800422e  w    F .text	00000002 EXTI4_IRQHandler
-0800440c g     F .text	0000000c TimerSet
+08004278 g     F .text	0000000c TimerSet
 08004242  w    F .text	00000002 USB_LP_CAN1_RX0_IRQHandler
 080045b4 g     F .text	00000000 _fini
 08004240  w    F .text	00000002 USB_HP_CAN1_TX_IRQHandler
@@ -185,7 +185,7 @@ SYMBOL TABLE:
 20005000 g       .bss	00000000 __StackTop
 0800424c  w    F .text	00000002 TIM1_UP_IRQHandler
 0800421a  w    F .text	00000002 WWDG_IRQHandler
-080043bc g     F .text	00000050 LedToggle
+080044d4 g     F .text	00000050 LedToggle
 08004252  w    F .text	00000002 TIM2_IRQHandler
 0800424a  w    F .text	00000002 TIM1_BRK_IRQHandler
 20005000 g       *ABS*	00000000 __stack
@@ -199,13 +199,13 @@ SYMBOL TABLE:
 00000000  w      *UND*	00000000 __sf_fake_stdout
 08004246  w    F .text	00000002 CAN1_SCE_IRQHandler
 08004222  w    F .text	00000002 FLASH_IRQHandler
-08004520  w    F .text	00000002 _exit
+0800449c  w    F .text	00000002 _exit
 0800420c  w    F .text	00000002 BusFault_Handler
 08004264  w    F .text	00000002 USART1_IRQHandler
 0800425a  w    F .text	00000002 I2C1_ER_IRQHandler
-08004444 g     F .text	0000000c TimerGet
+080042b0 g     F .text	0000000c TimerGet
 00000000  w      *UND*	00000000 _Jv_RegisterClasses
-08004418 g     F .text	0000002c TimerInit
+08004284 g     F .text	0000002c TimerInit
 00000000  w      *UND*	00000000 __register_frame_info
 0800426e  w    F .text	00000002 USBWakeUp_IRQHandler
 
