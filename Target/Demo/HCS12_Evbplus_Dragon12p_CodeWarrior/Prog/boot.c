@@ -449,7 +449,6 @@ static void BootComCanCheckActivationRequest(void)
         /* connection request received so start the bootloader */
         BootActivate();
       }
-      
     }
     /* release the receive object by clearing the rx flag */
     CAN0RFLG &= CAN0RFLG_RXF_MASK;

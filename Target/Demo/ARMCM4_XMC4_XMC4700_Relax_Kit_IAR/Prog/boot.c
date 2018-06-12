@@ -394,7 +394,7 @@ static void BootComCanCheckActivationRequest(void)
     {
       /* connection request received so start the bootloader */
       BootActivate();
-     }
+    }
   }
 } /*** end of BootComCanCheckActivationRequest ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */

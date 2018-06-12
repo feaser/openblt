@@ -265,7 +265,7 @@ static void BootComCanCheckActivationRequest(void)
       {
         /* connection request received so start the bootloader */
         BootActivate();
-       }
+      }
     }
   }
 } /*** end of BootComCanCheckActivationRequest ***/
