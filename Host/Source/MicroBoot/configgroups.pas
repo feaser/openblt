@@ -221,7 +221,7 @@ end; //*** end of Create ***
 //***************************************************************************************
 procedure TMainWindowConfig.Defaults;
 begin
-  FWidth := 500;
+  FWidth := 520;
   FHeight := 180;
 end; //*** end of Defaults ***
 
