@@ -678,6 +678,9 @@ static void XcpCmdSetMta(blt_int8u *data)
 ****************************************************************************************/
 static void XcpCmdUpload(blt_int8u *data)
 {
+  blt_int16u len;
+  blt_int8u *destPtr;
+
   /* validate length of upload request */
   if (data[1] > (XCP_CTO_PACKET_LEN-1))
   {
@@ -686,8 +689,44 @@ static void XcpCmdUpload(blt_int8u *data)
     return;
   }
 
+  /* read out the length of the requested upload operation */
+  len = data[1];
+  /* set the destination pointer */
+  destPtr = (blt_int8u *)((blt_addr)(blt_int32u)&xcpInfo.ctoData[1]);
+
+  /* according to the XCP specification memory read/upload functionality is always
+   * available. This behavior is unwanted in the case of a bootloader that has the
+   * seed/key security feature enabled. The default XCP behavior is deviated in this
+   * situation. The deviation is such that all zero values are returned if the seed/key
+   * security feature is enabled and the programming resource is not yet unlocked.
+   */
+#if (XCP_SEED_KEY_PROTECTION_EN == 1)
+  /* check if PGM resource is unlocked */
+  if ((xcpInfo.protection & XCP_RES_PGM) == XCP_RES_PGM)
+  {
+    /* resource is locked so memory read access is denied. zero values are returned
+     * instead.
+     */
+    while (len > 0)
+    {
+      /* write a zero value */
+      *destPtr = 0;
+      /* update write pointer and loop counter */
+      destPtr++;
+      len--;
+      /* keep the watchdog happy */
+      CopService();
+    }
+  }
+  else
+  {
+    /* copy the data from memory to the data packet */
+    CpuMemCopy((blt_addr)destPtr,(blt_addr)xcpInfo.mta, len);
+  }
+#else
   /* copy the data from memory to the data packet */
-  CpuMemCopy(((blt_addr)(blt_int32u)&xcpInfo.ctoData[1]),(blt_addr)xcpInfo.mta, data[1]);
+  CpuMemCopy((blt_addr)destPtr,(blt_addr)xcpInfo.mta, len);
+#endif
 
   /* set packet id to command response packet */
   xcpInfo.ctoData[0] = XCP_PID_RES;
@@ -709,6 +748,9 @@ static void XcpCmdUpload(blt_int8u *data)
 ****************************************************************************************/
 static void XcpCmdShortUpload(blt_int8u *data)
 {
+  blt_int16u len;
+  blt_int8u *destPtr;
+
   /* validate length of upload request */
   if (data[1] > (XCP_CTO_PACKET_LEN-1))
   {
@@ -719,9 +761,45 @@ static void XcpCmdShortUpload(blt_int8u *data)
 
   /* update mta. current implementation ignores address extension */
   xcpInfo.mta = *(blt_int32u *)&data[4];
+  /* read out the length of the requested upload operation */
+  len = data[1];
+  /* set the destination pointer */
+  destPtr = (blt_int8u *)((blt_addr)(blt_int32u)&xcpInfo.ctoData[1]);
 
+  /* according to the XCP specification memory read/upload functionality is always
+   * available. This behavior is unwanted in the case of a bootloader that has the
+   * seed/key security feature enabled. The default XCP behavior is deviated in this
+   * situation. The deviation is such that all zero values are returned if the seed/key
+   * security feature is enabled and the programming resource is not yet unlocked.
+   */
+#if (XCP_SEED_KEY_PROTECTION_EN == 1)
+  /* check if PGM resource is unlocked */
+  if ((xcpInfo.protection & XCP_RES_PGM) == XCP_RES_PGM)
+  {
+    /* resource is locked so memory read access is denied. zero values are returned
+     * instead.
+     */
+    while (len > 0)
+    {
+      /* write a zero value */
+      *destPtr = 0;
+      /* update write pointer and loop counter */
+      destPtr++;
+      len--;
+      /* keep the watchdog happy */
+      CopService();
+    }
+  }
+  else
+  {
+    /* copy the data from memory to the data packet */
+    CpuMemCopy((blt_addr)destPtr,(blt_addr)xcpInfo.mta, len);
+  }
+#else
   /* copy the data from memory to the data packet */
-  CpuMemCopy((blt_addr)((blt_int32u)&xcpInfo.ctoData[1]),(blt_addr)xcpInfo.mta, data[1]);
+  CpuMemCopy((blt_addr)destPtr,(blt_addr)xcpInfo.mta, len);
+#endif
+
   /* set packet id to command response packet */
   xcpInfo.ctoData[0] = XCP_PID_RES;
 
