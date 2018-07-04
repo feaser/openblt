@@ -487,7 +487,7 @@ blt_int8u XcpVerifyKeyHook(blt_int8u resource, blt_int8u *key, blt_int8u len)
   /* suppress compiler warning for unused parameter */
   len = len;
 
-  /* the example key algorithm in "FeaserKey.dll" works as follows:
+  /* the example key algorithm in "libseednkey.dll" works as follows:
    *  - PGM will be unlocked if key = seed - 1
    */
 

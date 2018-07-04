@@ -152,7 +152,7 @@
  * operations can be performed, access to this resource need to be unlocked. 
  * In the Microboot settings on tab "XCP Protection" you need to specify a DLL that 
  * implements the unlocking algorithm. The demo programs are configured for the (simple) 
- * algorithm in "FeaserKey.dll". The source code for this DLL is available so it can be 
+ * algorithm in "libseednkey.dll". The source code for this DLL is available so it can be 
  * customized to your needs. 
  * During the unlock sequence, Microboot requests a seed from the bootloader, which is in
  * the format of a byte array. Using this seed the unlock algorithm in the DLL computes 

@@ -36,7 +36,7 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Struture type for grouping XCP internal module information. */
+/** \brief Structure type for grouping XCP internal module information. */
 typedef struct
 {
   blt_int8u  connected;                             /**< connection established        */
@@ -900,7 +900,7 @@ static void XcpCmdGetSeed(blt_int8u *data)
   /* seed cannot be longer than XCP_CTO_PACKET_LEN-2 */
   if (xcpInfo.ctoData[1] > (XCP_CTO_PACKET_LEN-2))
   {
-    /* seed length length is too long */
+    /* seed length is too long */
     XcpSetCtoError(XCP_ERR_OUT_OF_RANGE);
     return;
   }
