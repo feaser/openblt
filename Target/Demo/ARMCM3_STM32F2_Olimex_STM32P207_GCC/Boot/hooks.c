@@ -1,7 +1,7 @@
 /************************************************************************************//**
 * \file         Demo\ARMCM3_STM32F2_Olimex_STM32P207_GCC\Boot\hooks.c
 * \brief        Bootloader callback source file.
-* \ingroup      Boot_ARMCM3_STM32F2_Olimex_STM32F207_GCC
+* \ingroup      Boot_ARMCM3_STM32F2_Olimex_STM32P207_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
