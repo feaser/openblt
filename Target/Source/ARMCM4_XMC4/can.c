@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_XMC4\can.c
+* \file         Source/ARMCM4_XMC4/can.c
 * \brief        Bootloader CAN communication interface source file.
 * \ingroup      Target_ARMCM4_XMC4
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Boot\led.c
+* \file         Demo/ARMCM0_STM32F0_Nucleo_F091RC_IAR/Boot/led.c
 * \brief        LED driver source file.
 * \ingroup      Boot_ARMCM0_STM32F0_Nucleo_F091RC_IAR
 * \internal

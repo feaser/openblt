@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\file.h
+* \file         Source/file.h
 * \brief        Bootloader file system interface header file.
 * \ingroup      Core
 * \internal

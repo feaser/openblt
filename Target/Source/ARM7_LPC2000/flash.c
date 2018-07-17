@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARM7_LPC2000\GCC\flash.c
+* \file         Source/ARM7_LPC2000/GCC/flash.c
 * \brief        Bootloader flash driver source file.
 * \ingroup      Target_ARM7_LPC2000
 * \internal

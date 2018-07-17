@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_GCC\Prog\boot.c
+* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_GCC/Prog/boot.c
 * \brief        Demo program bootloader interface source file.
 * \ingroup      Prog_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal

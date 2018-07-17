@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_XMC1_XMC1400_Boot_Kit_GCC\Prog\boot.c
+* \file         Demo/ARMCM0_XMC1_XMC1400_Boot_Kit_GCC/Prog/boot.c
 * \brief        Demo program bootloader interface source file.
 * \ingroup      Prog_ARMCM0_XMC1_XMC1400_Boot_Kit_GCC
 * \internal

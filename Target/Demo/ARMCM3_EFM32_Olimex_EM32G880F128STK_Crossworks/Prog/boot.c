@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_Crossworks\Prog\boot.c
+* \file         Demo/ARMCM3_EFM32_Olimex_EM32G880F128STK_Crossworks/Prog/boot.c
 * \brief        Demo program bootloader interface source file.
 * \ingroup      Prog_ARMCM3_EFM32_Olimex_EM32G880F128STK_Crossworks
 * \internal

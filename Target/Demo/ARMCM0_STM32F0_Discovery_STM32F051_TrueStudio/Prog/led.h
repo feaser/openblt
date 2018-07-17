@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_ARMCM0_STM32F0_Discovery_STM32F051_TrueStudio\Prog\led.h
+* \file         Demo/ARMCM0_ARMCM0_STM32F0_Discovery_STM32F051_TrueStudio/Prog/led.h
 * \brief        LED driver header file.
 * \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_TrueStudio
 * \internal

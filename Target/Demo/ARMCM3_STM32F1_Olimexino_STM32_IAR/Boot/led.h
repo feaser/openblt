@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimexino_STM32_IAR\Boot\led.h
+* \file         Demo/ARMCM3_STM32F1_Olimexino_STM32_IAR/Boot/led.h
 * \brief        LED driver header file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimexino_STM32_IAR
 * \internal

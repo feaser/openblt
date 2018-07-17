@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM0_XMC1\nvm.c
+* \file         Source/ARMCM0_XMC1/nvm.c
 * \brief        Bootloader non-volatile memory driver source file.
 * \ingroup      Target_ARMCM0_XMC1
 * \internal

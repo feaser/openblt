@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_GCC\Boot\extflash.h
+* \file         Demo/ARM7_LPC2000_Olimex_LPC_L2294_GCC/Boot/extflash.h
 * \brief        Bootloader external flash driver header file.
 * \ingroup      Boot_ARM7_LPC2000_Olimex_LPC_L2294_GCC
 * \internal

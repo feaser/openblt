@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_XMC1_XMC1400_Boot_Kit_IAR\Boot\blt_conf.h
+* \file         Demo/ARMCM0_XMC1_XMC1400_Boot_Kit_IAR/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_ARMCM0_XMC1_XMC1400_Boot_Kit_IAR
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_Crossworks\Prog\main.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/Prog/main.c
 * \brief        Demo program application source file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_Crossworks
 * \internal

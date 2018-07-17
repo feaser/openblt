@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimex_STM32H103_Crossworks\Boot\usb_prop.h
+* \file         Demo/ARMCM3_STM32F1_Olimex_STM32H103_Crossworks/Boot/usb_prop.h
 * \brief        Bootloader USB device properties header file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimex_STM32H103_Crossworks
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_EFM32\types.h
+* \file         Source/ARMCM3_EFM32/types.h
 * \brief        Bootloader types header file.
 * \ingroup      Target_ARMCM3_EFM32
 * \internal

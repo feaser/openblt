@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARM7_LPC2000\GCC\cpu_comp.c
+* \file         Source/ARM7_LPC2000/GCC/cpu_comp.c
 * \brief        Bootloader cpu module source file.
 * \ingroup      Target_ARM7_LPC2000
 * \internal

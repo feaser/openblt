@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\boot.h
+* \file         Demo/HCS12_Evbplus_Dragon12p_CodeWarrior/Prog/boot.h
 * \brief        Demo program bootloader interface header file.
 * \ingroup      Prog_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

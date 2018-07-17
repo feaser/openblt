@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32L4_Nucleo_L476RG_GCC\Prog\main.c
+* \file         Demo/ARMCM4_STM32L4_Nucleo_L476RG_GCC/Prog/main.c
 * \brief        Demo program application source file.
 * \ingroup      Prog_ARMCM4_STM32L4_Nucleo_L476RG_GCC
 * \internal

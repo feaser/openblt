@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F4_Olimex_STM32E407_IAR\Prog\led.h
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32E407_IAR/Prog/led.h
 * \brief        LED driver header file.
 * \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32E407_IAR
 * \internal

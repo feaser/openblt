@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Boot\hooks.c
+* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_IAR/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM4_XMC4_XMC4700_Relax_Kit_IAR
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Prog\timer.h
+* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_IAR/Prog/timer.h
 * \brief        Timer driver header file.
 * \ingroup      Prog_ARMCM4_XMC4_XMC4700_Relax_Kit_IAR
 * \internal

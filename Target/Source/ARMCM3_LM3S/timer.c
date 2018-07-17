@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_LM3S\timer.c
+* \file         Source/ARMCM3_LM3S/timer.c
 * \brief        Bootloader timer driver source file.
 * \ingroup      Target_ARMCM3_LM3S
 * \internal

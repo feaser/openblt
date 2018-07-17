@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_LM3S\types.h
+* \file         Source/ARMCM3_LM3S/types.h
 * \brief        Bootloader types header file.
 * \ingroup      Target_ARMCM3_LM3S
 * \internal

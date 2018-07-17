@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_IAR\Boot\hooks.c
+* \file         Demo/ARMCM3_EFM32_Olimex_EM32G880F128STK_IAR/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM3_EFM32_Olimex_EM32G880F128STK_IAR
 * \internal

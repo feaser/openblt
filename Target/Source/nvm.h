@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\nvm.h
+* \file         Source/nvm.h
 * \brief        Bootloader non-volatile memory driver header file.
 * \ingroup      Core
 * \internal

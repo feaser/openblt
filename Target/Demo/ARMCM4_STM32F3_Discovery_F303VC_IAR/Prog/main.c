@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Prog\main.c
+* \file         Demo/ARMCM4_STM32F3_Discovery_F303VC_IAR/Prog/main.c
 * \brief        Demo program application source file.
 * \ingroup      Prog_ARMCM4_STM32F3_Discovery_F303VC_IAR
 * \internal

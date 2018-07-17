@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_XMC4\flash.c
+* \file         Source/ARMCM4_XMC4/flash.c
 * \brief        Bootloader flash driver source file.
 * \ingroup      Target_ARMCM4_XMC4
 * \internal

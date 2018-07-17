@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_STM32F4\nvm.c
+* \file         Source/ARMCM4_STM32F4/nvm.c
 * \brief        Bootloader non-volatile memory driver source file.
 * \ingroup      Target_ARMCM4_STM32F4
 * \internal

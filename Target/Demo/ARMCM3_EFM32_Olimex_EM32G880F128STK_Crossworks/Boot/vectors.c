@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_Crossworks\Boot\vectors.c
+* \file         Demo/ARMCM3_EFM32_Olimex_EM32G880F128STK_Crossworks/Boot/vectors.c
 * \brief        Bootloader interrupt vector table source file.
 * \ingroup      Boot_ARMCM3_EFM32_Olimex_EM32G880F128STK_Crossworks
 * \internal

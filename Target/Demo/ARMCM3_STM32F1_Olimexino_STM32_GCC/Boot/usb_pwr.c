@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32_Olimex_STM32H103_GCC\Boot\usb_pwr.c
+* \file         Demo/ARMCM3_STM32_Olimex_STM32H103_GCC/Boot/usb_pwr.c
 * \brief        Bootloader USB device power management source file.
 * \ingroup      Boot_ARMCM3_STM32_Olimex_STM32H103_GCC
 * \internal

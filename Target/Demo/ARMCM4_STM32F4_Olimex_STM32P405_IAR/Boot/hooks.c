@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F4_Olimex_STM32P405_IAR\Boot\hooks.c
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_IAR/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM4_STM32F4_Olimex_STM32P405_IAR
 * \internal

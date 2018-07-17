@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_GCC\Boot\cstart.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_GCC/Boot/cstart.c
 * \brief        Bootloader C startup source file.
 * \ingroup      Boot_ARMCM3_LM3S_EK_LM3S6965_GCC
 * \internal

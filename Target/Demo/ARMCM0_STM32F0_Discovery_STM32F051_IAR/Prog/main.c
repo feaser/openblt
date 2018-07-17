@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\main.c
+* \file         Demo/ARMCM0_STM32F0_Discovery_STM32F051_IAR/Prog/main.c
 * \brief        Demo program application source file.
 * \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC\Boot\cstart.c
+* \file         Demo/ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC/Boot/cstart.c
 * \brief        Bootloader C startup source file.
 * \ingroup      Boot_ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC
 * \internal

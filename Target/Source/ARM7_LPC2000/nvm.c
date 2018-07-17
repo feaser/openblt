@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARM7_LPC2000\nvm.c
+* \file         Source/ARM7_LPC2000/nvm.c
 * \brief        Bootloader non-volatile memory driver source file.
 * \ingroup      Target_ARM7_LPC2000
 * \internal

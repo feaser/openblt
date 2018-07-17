@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\assert.c
+* \file         Source/assert.c
 * \brief        Bootloader assertion module source file.
 * \ingroup      Core
 * \internal

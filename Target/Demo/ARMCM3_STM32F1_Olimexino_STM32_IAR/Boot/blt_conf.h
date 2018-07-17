@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimexino_STM32_IAR\Boot\blt_conf.h
+* \file         Demo/ARMCM3_STM32F1_Olimexino_STM32_IAR/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimexino_STM32_IAR
 * \internal

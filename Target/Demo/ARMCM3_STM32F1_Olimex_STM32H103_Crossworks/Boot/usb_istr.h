@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimex_STM32H103_Crossworks\Boot\usb_istr.h
+* \file         Demo/ARMCM3_STM32F1_Olimex_STM32H103_Crossworks/Boot/usb_istr.h
 * \brief        Bootloader USB device interrupt/event handler header file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimex_STM32H103_Crossworks
 * \internal

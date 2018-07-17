@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\TRICORE_TC1798\flash.c
+* \file         Source/TRICORE_TC1798/flash.c
 * \brief        Bootloader flash driver source file.
 * \ingroup      Target_TRICORE_TC1798
 * \internal

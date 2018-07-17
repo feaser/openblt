@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimex_STM32H103_IAR\Boot\usb_pwr.h
+* \file         Demo/ARMCM3_STM32F1_Olimex_STM32H103_IAR/Boot/usb_pwr.h
 * \brief        Bootloader USB device power management header file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimex_STM32H103_IAR
 * \internal

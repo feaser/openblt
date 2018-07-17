@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_STM32F4\timer.c
+* \file         Source/ARMCM4_STM32F4/timer.c
 * \brief        Bootloader timer driver source file.
 * \ingroup      Target_ARMCM4_STM32F4
 * \internal

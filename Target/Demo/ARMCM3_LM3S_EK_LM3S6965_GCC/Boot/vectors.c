@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_GCC\Boot\vectors.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_GCC/Boot/vectors.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARMCM3_LM3S_EK_LM3S6965_GCC
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimex_STM32H103_TrueStudio\Boot\hooks.c
+* \file         Demo/ARMCM3_STM32F1_Olimex_STM32H103_TrueStudio/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimex_STM32H103_TrueStudio
 * \internal

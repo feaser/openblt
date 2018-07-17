@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F4_Olimex_STM32P405_GCC\Boot\led.c
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_GCC/Boot/led.c
 * \brief        LED driver source file.
 * \ingroup      Boot_ARMCM4_STM32F4_Olimex_STM32P405_GCC
 * \internal

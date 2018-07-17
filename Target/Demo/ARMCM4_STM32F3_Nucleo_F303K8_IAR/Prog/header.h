@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Nucleo_F303K8_IAR\Prog\header.h
+* \file         Demo/ARMCM4_STM32F3_Nucleo_F303K8_IAR/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM4_STM32F3_Nucleo_F303K8_IAR
 * \internal

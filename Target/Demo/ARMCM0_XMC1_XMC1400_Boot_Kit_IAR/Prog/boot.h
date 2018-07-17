@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_XMC1_XMC1400_Boot_Kit_IAR\Prog\boot.h
+* \file         Demo/ARMCM0_XMC1_XMC1400_Boot_Kit_IAR/Prog/boot.h
 * \brief        Demo program bootloader interface header file.
 * \ingroup      Prog_ARMCM0_XMC1_XMC1400_Boot_Kit_IAR
 * \internal

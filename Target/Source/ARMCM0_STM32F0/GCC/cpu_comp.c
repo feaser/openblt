@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM0_STM32F0\GCC\cpu_comp.c
+* \file         Source/ARMCM0_STM32F0/GCC/cpu_comp.c
 * \brief        Bootloader cpu module source file.
 * \ingroup      Target_ARMCM0_STM32F0
 * \internal

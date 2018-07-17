@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S8962_Crossworks\Boot\flash_layout.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/Boot/flash_layout.c
 * \brief        Custom flash layout table source file.
 * \ingroup      Boot_ARMCM3_LM3S_EK_LM3S8962_Crossworks
 * \internal

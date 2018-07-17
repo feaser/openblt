@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\timer.h
+* \file         Source/timer.h
 * \brief        Bootloader timer driver header file.
 * \ingroup      Core
 * \internal

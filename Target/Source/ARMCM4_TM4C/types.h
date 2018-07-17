@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_TM4C\types.h
+* \file         Source/ARMCM4_TM4C/types.h
 * \brief        Bootloader types header file.
 * \ingroup      Target_ARMCM4_TM4C
 * \internal

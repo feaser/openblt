@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\uart.h
+* \file         Source/uart.h
 * \brief        Bootloader UART communication interface header file.
 * \ingroup      Core
 * \internal

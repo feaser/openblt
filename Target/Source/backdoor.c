@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\backdoor.c
+* \file         Source/backdoor.c
 * \brief        Bootloader backdoor entry source file.
 * \ingroup      Core
 * \internal

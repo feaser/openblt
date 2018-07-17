@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_IAR\Prog\boot.h
+* \file         Demo/ARMCM0_STM32F0_Discovery_STM32F051_IAR/Prog/boot.h
 * \brief        Demo program bootloader interface header file.
 * \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_IAR
 * \internal

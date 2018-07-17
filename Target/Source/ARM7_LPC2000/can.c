@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARM7_LPC2000\can.c
+* \file         Source/ARM7_LPC2000/can.c
 * \brief        Bootloader CAN communication interface source file.
 * \ingroup      Target_ARM7_LPC2000
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC\Prog\main.c
+* \file         Demo/ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC/Prog/main.c
 * \brief        Demo program application source file.
 * \ingroup      Prog_ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC
 * \internal

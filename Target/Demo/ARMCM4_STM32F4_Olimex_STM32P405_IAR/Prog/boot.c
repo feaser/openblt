@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F4_Olimex_STM32P405_IAR\Prog\boot.c
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_IAR/Prog/boot.c
 * \brief        Demo program bootloader interface source file.
 * \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_IAR
 * \internal

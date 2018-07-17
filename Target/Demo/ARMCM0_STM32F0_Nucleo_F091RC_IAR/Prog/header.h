@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Prog\header.h
+* \file         Demo/ARMCM0_STM32F0_Nucleo_F091RC_IAR/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM0_STM32F0_Nucleo_F091RC_IAR
 * \internal

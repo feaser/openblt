@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Discovery_F303VC_GCC\Boot\flash_layout.c
+* \file         Demo/ARMCM4_STM32F3_Discovery_F303VC_GCC/Boot/flash_layout.c
 * \brief        Custom flash layout table source file.
 * \ingroup      Boot_ARMCM4_STM32F3_Discovery_F303VC_GCC
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARM7_LPC2000\timer.c
+* \file         Source/ARM7_LPC2000/timer.c
 * \brief        Bootloader timer driver source file.
 * \ingroup      Target_ARM7_LPC2000
 * \internal

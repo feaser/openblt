@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimex_STM32H103_GCC\Boot\usb_endp.c
+* \file         Demo/ARMCM3_STM32F1_Olimex_STM32H103_GCC/Boot/usb_endp.c
 * \brief        Bootloader USB device endpoint routines source file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimex_STM32H103_GCC
 * \internal

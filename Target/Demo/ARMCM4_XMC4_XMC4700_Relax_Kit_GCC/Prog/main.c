@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_GCC\Prog\main.c
+* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_GCC/Prog/main.c
 * \brief        Demo program application source file.
 * \ingroup      Prog_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal

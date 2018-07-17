@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Nucleo_F103RB_GCC\Boot\flash_layout.c
+* \file         Demo/ARMCM3_STM32F1_Nucleo_F103RB_GCC/Boot/flash_layout.c
 * \brief        Custom flash layout table source file.
 * \ingroup      Boot_ARMCM3_STM32F1_Nucleo_F103RB_GCC
 * \internal

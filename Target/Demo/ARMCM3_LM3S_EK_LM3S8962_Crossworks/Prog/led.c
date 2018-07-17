@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S8962_Crossworks\Prog\led.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S8962_Crossworks/Prog/led.c
 * \brief        LED driver source file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S8962_Crossworks
 * \internal

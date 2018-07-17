@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S8962_GCC\Prog\header.h
+* \file         Demo/ARMCM3_LM3S_EK_LM3S8962_GCC/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S8962_GCC
 * \internal

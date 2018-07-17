@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Discovery_F303VC_GCC\Prog\led.h
+* \file         Demo/ARMCM4_STM32F3_Discovery_F303VC_GCC/Prog/led.h
 * \brief        LED driver header file.
 * \ingroup      Prog_ARMCM4_STM32F3_Discovery_F303VC_GCC
 * \internal

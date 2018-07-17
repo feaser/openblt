@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_TM4C_DK_TM4C123G_IAR\Prog\main.c
+* \file         Demo/ARMCM4_TM4C_DK_TM4C123G_IAR/Prog/main.c
 * \brief        Demo program application source file.
 * \ingroup      Prog_ARMCM4_TM4C_DK_TM4C123G_IAR
 * \internal

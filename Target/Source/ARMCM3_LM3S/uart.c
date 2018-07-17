@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_LM3S\uart.c
+* \file         Source/ARMCM3_LM3S/uart.c
 * \brief        Bootloader UART communication interface source file.
 * \ingroup      Target_ARMCM3_LM3S
 * \internal

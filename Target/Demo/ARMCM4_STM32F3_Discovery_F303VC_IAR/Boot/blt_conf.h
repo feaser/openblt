@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\blt_conf.h
+* \file         Demo/ARMCM4_STM32F3_Discovery_F303VC_IAR/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_ARMCM4_STM32F3_Discovery_F303VC_IAR
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Nucleo_F091RC_GCC\Boot\main.c
+* \file         Demo/ARMCM0_STM32F0_Nucleo_F091RC_GCC/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARMCM0_STM32F0_Nucleo_F091RC_GCC
 * \internal

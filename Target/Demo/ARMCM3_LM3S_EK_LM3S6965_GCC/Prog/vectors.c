@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_GCC\Prog\vectors.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_GCC/Prog/vectors.c
 * \brief        Demo program interrupt vectors source file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_GCC
 * \internal

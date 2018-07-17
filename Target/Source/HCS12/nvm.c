@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\HCS12\nvm.c
+* \file         Source/HCS12/nvm.c
 * \brief        Bootloader non-volatile memory driver source file.
 * \ingroup      Target_HCS12
 * \internal

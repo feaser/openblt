@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_TM4C_DK_TM4C123G_IAR\Boot\blt_conf.h
+* \file         Demo/ARMCM4_TM4C_DK_TM4C123G_IAR/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_ARMCM4_TM4C_DK_TM4C123G_IAR
 * \internal

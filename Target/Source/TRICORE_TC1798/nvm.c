@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\TRICORE_TC1798\nvm.c
+* \file         Source/TRICORE_TC1798/nvm.c
 * \brief        Bootloader non-volatile memory driver source file.
 * \ingroup      Target_TRICORE_TC1798
 * \internal

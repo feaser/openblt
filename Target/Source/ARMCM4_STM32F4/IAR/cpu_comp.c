@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_STM32F4\IAR\cpu_comp.c
+* \file         Source/ARMCM4_STM32F4/IAR/cpu_comp.c
 * \brief        Bootloader cpu module source file.
 * \ingroup      Target_ARMCM4_STM32F4
 * \internal

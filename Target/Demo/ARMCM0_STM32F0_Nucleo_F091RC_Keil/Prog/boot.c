@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Nucleo_F091RC_Keil\Prog\boot.c
+* \file         Demo/ARMCM0_STM32F0_Nucleo_F091RC_Keil/Prog/boot.c
 * \brief        Demo program bootloader interface source file.
 * \ingroup      Prog_ARMCM0_STM32F0_Nucleo_F091RC_Keil
 * \internal

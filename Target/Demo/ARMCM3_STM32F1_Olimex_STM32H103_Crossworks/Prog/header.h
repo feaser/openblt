@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimex_STM32H103_Crossworks\Prog\header.h
+* \file         Demo/ARMCM3_STM32F1_Olimex_STM32H103_Crossworks/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM3_STM32F1_Olimex_STM32H103_Crossworks
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_GCC\Prog\header.h
+* \file         Demo/ARM7_LPC2000_Olimex_LPC_L2294_GCC/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARM7_LPC2000_Olimex_LPC_L2294_GCC
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_Crossworks\Prog\time.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/Prog/time.c
 * \brief        Timer driver source file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_Crossworks
 * \internal

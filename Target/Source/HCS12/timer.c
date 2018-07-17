@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\HCS12\timer.c
+* \file         Source/HCS12/timer.c
 * \brief        Bootloader timer driver source file.
 * \ingroup      Target_HCS12
 * \internal

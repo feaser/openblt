@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Nucleo_F303K8_GCC\Boot\led.h
+* \file         Demo/ARMCM4_STM32F3_Nucleo_F303K8_GCC/Boot/led.h
 * \brief        LED driver header file.
 * \ingroup      Boot_ARMCM4_STM32F3_Nucleo_F303K8_GCC
 * \internal

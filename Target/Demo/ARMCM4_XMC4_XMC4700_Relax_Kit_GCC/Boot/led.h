@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_GCC\Boot\led.h
+* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_GCC/Boot/led.h
 * \brief        LED driver header file.
 * \ingroup      Boot_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal

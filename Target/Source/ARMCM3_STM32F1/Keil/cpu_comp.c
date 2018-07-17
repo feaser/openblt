@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_STM32F1\Keil\cpu_comp.c
+* \file         Source/ARMCM3_STM32F1/Keil/cpu_comp.c
 * \brief        Bootloader cpu module source file.
 * \ingroup      Target_ARMCM3_STM32F1
 * \internal

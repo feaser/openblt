@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimexino_STM32_IAR\Boot\usb_istr.h
+* \file         Demo/ARMCM3_STM32F1_Olimexino_STM32_IAR/Boot/usb_istr.h
 * \brief        Bootloader USB device interrupt/event handler header file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimexino_STM32_IAR
 * \internal

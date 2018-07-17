@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_LM3S\cpu.c
+* \file         Source/ARMCM3_LM3S/cpu.c
 * \brief        Bootloader cpu module source file.
 * \ingroup      Target_ARMCM3_LM3S
 * \internal

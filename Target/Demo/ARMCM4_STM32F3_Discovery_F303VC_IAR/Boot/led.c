@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\led.c
+* \file         Demo/ARMCM4_STM32F3_Discovery_F303VC_IAR/Boot/led.c
 * \brief        LED driver source file.
 * \ingroup      Boot_ARMCM4_STM32F3_Discovery_F303VC_IAR
 * \internal

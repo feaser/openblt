@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\cpu.h
+* \file         Source/cpu.h
 * \brief        Bootloader cpu module header file.
 * \ingroup      Core
 * \internal

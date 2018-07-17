@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\header.h
+* \file         Demo/HCS12_Evbplus_Dragon12p_CodeWarrior/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

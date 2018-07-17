@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_GCC\Prog\net.h
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_GCC/Prog/net.h
 * \brief        Network application for the uIP TCP/IP stack.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_GCC
 * \internal

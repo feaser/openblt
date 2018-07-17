@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\HCS12\flash_ecc.c
+* \file         Source/HCS12/flash_ecc.c
 * \brief        Bootloader flash driver source file for HCS12 derivatives with error
 *               correction code in flash memory, such as the HCS12Pxx. This flash memory
 *               uses a different addressing scheme than other HCS12 derivatives.

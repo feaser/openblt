@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F2_Olimex_STM32P207_GCC\Boot\main.c
+* \file         Demo/ARMCM3_STM32F2_Olimex_STM32P207_GCC/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARMCM3_STM32F2_Olimex_STM32P207_GCC
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\com.c
+* \file         Source/com.c
 * \brief        Bootloader communication interface source file.
 * \ingroup      Core
 * \internal

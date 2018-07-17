@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Nucleo_F091RC_GCC\Boot\hooks.c
+* \file         Demo/ARMCM0_STM32F0_Nucleo_F091RC_GCC/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM0_STM32F0_Nucleo_F091RC_GCC
 * \internal

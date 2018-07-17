@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32_Olimex_STM32H103_GCC\Boot\usb_prop.h
+* \file         Demo/ARMCM3_STM32_Olimex_STM32H103_GCC/Boot/usb_prop.h
 * \brief        Bootloader USB device properties header file.
 * \ingroup      Boot_ARMCM3_STM32_Olimex_STM32H103_GCC
 * \internal

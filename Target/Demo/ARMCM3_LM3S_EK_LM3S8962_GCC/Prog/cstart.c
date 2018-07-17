@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S8962_GCC\Prog\cstart.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S8962_GCC/Prog/cstart.c
 * \brief        Demo program C startup source file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S8962_GCC
 * \internal

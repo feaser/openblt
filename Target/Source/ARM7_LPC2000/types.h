@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARM7_LPC2000\types.h
+* \file         Source/ARM7_LPC2000/types.h
 * \brief        Bootloader types header file.
 * \ingroup      Target_ARM7_LPC2000
 * \internal

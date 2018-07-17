@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_Keil\Boot\main.c
+* \file         Demo/ARMCM0_STM32F0_Discovery_STM32F051_Keil/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARMCM0_STM32F0_Discovery_STM32F051_Keil
 * \internal

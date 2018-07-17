@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_LM3S\can.c
+* \file         Source/ARMCM3_LM3S/can.c
 * \brief        Bootloader CAN communication interface source file.
 * \ingroup      Target_ARMCM3_LM3S
 * \internal

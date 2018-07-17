@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\TRICORE_TC1798\GCC\cpu_comp.h
+* \file         Source/TRICORE_TC1798/GCC/cpu_comp.h
 * \brief        Bootloader compiler specific cpu module header file.
 * \ingroup      Target_TRICORE_TC1798
 * \internal

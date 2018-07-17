@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Boot\blt_conf.h
+* \file         Demo/HCS12_Evbplus_Dragon12p_CodeWarrior/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Nucleo_F103RB_IAR\Prog\boot.c
+* \file         Demo/ARMCM3_STM32F1_Nucleo_F103RB_IAR/Prog/boot.c
 * \brief        Demo program bootloader interface source file.
 * \ingroup      Prog_ARMCM3_STM32F1_Nucleo_F103RB_IAR
 * \internal

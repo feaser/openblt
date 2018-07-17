@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\HCS12\uart.c
+* \file         Source/HCS12/uart.c
 * \brief        Bootloader UART communication interface source file.
 * \ingroup      Target_HCS12
 * \internal

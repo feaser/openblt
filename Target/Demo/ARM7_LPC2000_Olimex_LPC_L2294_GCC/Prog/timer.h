@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_GCC\Prog\timer.h
+* \file         Demo/ARM7_LPC2000_Olimex_LPC_L2294_GCC/Prog/timer.h
 * \brief        Timer driver header file.
 * \ingroup      Prog_ARM7_LPC2000_Olimex_LPC_L2294_GCC
 * \internal

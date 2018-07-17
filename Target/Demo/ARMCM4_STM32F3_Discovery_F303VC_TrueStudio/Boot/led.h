@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Discovery_F303VC_TrueStudio\Boot\led.h
+* \file         Demo/ARMCM4_STM32F3_Discovery_F303VC_TrueStudio/Boot/led.h
 * \brief        LED driver header file.
 * \ingroup      Boot_ARMCM4_STM32F3_Discovery_F303VC_TrueStudio
 * \internal

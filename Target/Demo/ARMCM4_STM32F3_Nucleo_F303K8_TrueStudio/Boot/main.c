@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Nucleo_F303K8_TrueStudio\Boot\main.c
+* \file         Demo/ARMCM4_STM32F3_Nucleo_F303K8_TrueStudio/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARMCM4_STM32F3_Nucleo_F303K8_TrueStudio
 * \internal

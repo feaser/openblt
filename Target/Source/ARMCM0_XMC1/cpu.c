@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM0_XMC1\cpu.c
+* \file         Source/ARMCM0_XMC1/cpu.c
 * \brief        Bootloader cpu module source file.
 * \ingroup      Target_ARMCM0_XMC1
 * \internal

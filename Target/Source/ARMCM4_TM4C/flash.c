@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_TM4C\flash.c
+* \file         Source/ARMCM4_TM4C/flash.c
 * \brief        Bootloader flash driver source file.
 * \ingroup      Target_ARMCM4_TM4C
 * \internal

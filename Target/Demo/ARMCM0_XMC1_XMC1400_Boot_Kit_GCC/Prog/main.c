@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_XMC1_XMC1400_Boot_Kit_GCC\Prog\main.c
+* \file         Demo/ARMCM0_XMC1_XMC1400_Boot_Kit_GCC/Prog/main.c
 * \brief        Demo program application source file.
 * \ingroup      Prog_ARMCM0_XMC1_XMC1400_Boot_Kit_GCC
 * \internal

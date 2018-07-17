@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_XMC1_XMC1400_Boot_Kit_GCC\Boot\led.c
+* \file         Demo/ARMCM0_XMC1_XMC1400_Boot_Kit_GCC/Boot/led.c
 * \brief        LED driver source file.
 * \ingroup      Boot_ARMCM0_XMC1_XMC1400_Boot_Kit_GCC
 * \internal

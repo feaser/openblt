@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_Keil\Prog\timer.c
+* \file         Demo/ARMCM0_STM32F0_Discovery_STM32F051_Keil/Prog/timer.c
 * \brief        Timer driver source file.
 * \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_Keil
 * \internal

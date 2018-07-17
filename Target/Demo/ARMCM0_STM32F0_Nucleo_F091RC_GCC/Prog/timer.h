@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Nucleo_F091RC_GCC\Prog\timer.h
+* \file         Demo/ARMCM0_STM32F0_Nucleo_F091RC_GCC/Prog/timer.h
 * \brief        Timer driver header file.
 * \ingroup      Prog_ARMCM0_STM32F0_Nucleo_F091RC_GCC
 * \internal

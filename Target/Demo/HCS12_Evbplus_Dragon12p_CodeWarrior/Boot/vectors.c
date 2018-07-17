@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Boot\vectors.c
+* \file         Demo/HCS12_Evbplus_Dragon12p_CodeWarrior/Boot/vectors.c
 * \brief        Bootloader interrupt vector table source file.
 * \ingroup      Boot_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Prog\header.h
+* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_IAR/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM4_XMC4_XMC4700_Relax_Kit_IAR
 * \internal

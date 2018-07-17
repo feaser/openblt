@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_STM32F1\Crossworks\vectors.c
+* \file         Source/ARMCM3_STM32F1/Crossworks/vectors.c
 * \brief        Bootloader interrupt vector table source file.
 * \ingroup      Target_ARMCM3_STM32F1
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Nucleo_F303K8_TrueStudio\Boot\led.c
+* \file         Demo/ARMCM4_STM32F3_Nucleo_F303K8_TrueStudio/Boot/led.c
 * \brief        LED driver source file.
 * \ingroup      Boot_ARMCM4_STM32F3_Nucleo_F303K8_TrueStudio
 * \internal

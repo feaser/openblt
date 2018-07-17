@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\cop.h
+* \file         Source/cop.h
 * \brief        Bootloader watchdog module header file.
 * \ingroup      Core
 * \internal

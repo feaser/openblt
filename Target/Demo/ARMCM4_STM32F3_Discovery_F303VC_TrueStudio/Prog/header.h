@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Discovery_F303VC_TrueStudio\Prog\header.h
+* \file         Demo/ARMCM4_STM32F3_Discovery_F303VC_TrueStudio/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM4_STM32F3_Discovery_F303VC_TrueStudio
 * \internal

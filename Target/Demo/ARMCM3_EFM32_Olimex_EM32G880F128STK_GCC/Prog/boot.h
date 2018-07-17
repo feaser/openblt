@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC\Prog\boot.h
+* \file         Demo/ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC/Prog/boot.h
 * \brief        Demo program bootloader interface header file.
 * \ingroup      Prog_ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Nucleo_F103RB_TrueStudio\Prog\main.c
+* \file         Demo/ARMCM3_STM32F1_Nucleo_F103RB_TrueStudio/Prog/main.c
 * \brief        Demo program application source file.
 * \ingroup      Prog_ARMCM3_STM32F1_Nucleo_F103RB_TrueStudio
 * \internal

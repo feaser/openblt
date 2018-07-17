@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_XMC1_XMC1400_Boot_Kit_GCC\Prog\timer.c
+* \file         Demo/ARMCM0_XMC1_XMC1400_Boot_Kit_GCC/Prog/timer.c
 * \brief        Timer driver source file.
 * \ingroup      Prog_ARMCM0_XMC1_XMC1400_Boot_Kit_GCC
 * \internal

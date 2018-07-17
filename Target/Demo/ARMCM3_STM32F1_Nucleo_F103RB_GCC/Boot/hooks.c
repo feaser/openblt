@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Nucleo_F103RB_GCC\Boot\hooks.c
+* \file         Demo/ARMCM3_STM32F1_Nucleo_F103RB_GCC/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM3_STM32F1_Nucleo_F103RB_GCC
 * \internal

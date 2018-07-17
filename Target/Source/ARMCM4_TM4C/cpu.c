@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_TM4C\cpu.c
+* \file         Source/ARMCM4_TM4C/cpu.c
 * \brief        Bootloader cpu module source file.
 * \ingroup      Target_ARMCM4_TM4C
 * \internal

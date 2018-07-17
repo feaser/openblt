@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Boot\main.c
+* \file         Demo/HCS12_Evbplus_Dragon12p_CodeWarrior/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

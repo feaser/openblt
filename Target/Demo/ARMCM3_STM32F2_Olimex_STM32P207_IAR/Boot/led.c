@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F2_Olimex_STM32P207_IAR\Boot\led.c
+* \file         Demo/ARMCM3_STM32F2_Olimex_STM32P207_IAR/Boot/led.c
 * \brief        LED driver source file.
 * \ingroup      Boot_ARMCM3_STM32F2_Olimex_STM32P207_IAR
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Nucleo_F303K8_TrueStudio\Boot\hooks.c
+* \file         Demo/ARMCM4_STM32F3_Nucleo_F303K8_TrueStudio/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM4_STM32F3_Nucleo_F303K8_TrueStudio
 * \internal

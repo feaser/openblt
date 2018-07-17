@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\HCS12\cpu.c
+* \file         Source/HCS12/cpu.c
 * \brief        Bootloader cpu module source file.
 * \ingroup      Target_HCS12
 * \internal

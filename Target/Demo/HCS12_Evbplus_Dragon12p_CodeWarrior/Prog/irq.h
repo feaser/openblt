@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\irq.h
+* \file         Demo/HCS12_Evbplus_Dragon12p_CodeWarrior/Prog/irq.h
 * \brief        IRQ driver header file.
 * \ingroup      Prog_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

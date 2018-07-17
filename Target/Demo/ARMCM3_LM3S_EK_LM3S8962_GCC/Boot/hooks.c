@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S8962_GCC\Boot\hooks.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S8962_GCC/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM3_LM3S_EK_LM3S8962_GCC
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F4_Olimex_STM32P405_IAR\Prog\header.h
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_IAR/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_IAR
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Discovery_F303VC_TrueStudio\Boot\main.c
+* \file         Demo/ARMCM4_STM32F3_Discovery_F303VC_TrueStudio/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARMCM4_STM32F3_Discovery_F303VC_TrueStudio
 * \internal

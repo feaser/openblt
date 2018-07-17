@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_Crossworks\Prog\led.h
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_Crossworks/Prog/led.h
 * \brief        LED driver header file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_Crossworks
 * \internal

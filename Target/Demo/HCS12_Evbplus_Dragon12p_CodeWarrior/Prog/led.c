@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\led.c
+* \file         Demo/HCS12_Evbplus_Dragon12p_CodeWarrior/Prog/led.c
 * \brief        LED driver source file.
 * \ingroup      Prog_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

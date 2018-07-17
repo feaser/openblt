@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_GCC\Prog\boot.c
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_GCC/Prog/boot.c
 * \brief        Demo program bootloader interface source file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_GCC
 * \internal

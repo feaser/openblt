@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F4_Olimex_STM32E407_TrueStudio\Prog\net.c
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32E407_TrueStudio/Prog/net.c
 * \brief        Network application for the uIP TCP/IP stack.
 * \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32E407_TrueStudio
 * \internal

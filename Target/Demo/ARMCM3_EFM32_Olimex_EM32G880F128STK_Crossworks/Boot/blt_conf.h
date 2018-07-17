@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_Crossworks\Boot\blt_conf.h
+* \file         Demo/ARMCM3_EFM32_Olimex_EM32G880F128STK_Crossworks/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_ARMCM3_EFM32_Olimex_EM32G880F128STK_Crossworks
 * \internal

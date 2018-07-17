@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\HCS12\CodeWarrior\cpu_comp.c
+* \file         Source/HCS12/CodeWarrior/cpu_comp.c
 * \brief        Bootloader cpu module source file.
 * \ingroup      Target_HCS12
 * \internal

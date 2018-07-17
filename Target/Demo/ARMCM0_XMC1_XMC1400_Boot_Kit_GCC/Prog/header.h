@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_XMC1_XMC1400_Boot_Kit_GCC\Prog\header.h
+* \file         Demo/ARMCM0_XMC1_XMC1400_Boot_Kit_GCC/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM0_XMC1_XMC1400_Boot_Kit_GCC
 * \internal

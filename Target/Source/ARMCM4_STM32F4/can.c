@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_STM32F4\can.c
+* \file         Source/ARMCM4_STM32F4/can.c
 * \brief        Bootloader CAN communication interface source file.
 * \ingroup      Target_ARMCM4_STM32F4
 * \internal

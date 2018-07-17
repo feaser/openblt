@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\plausibility.h
+* \file         Source/plausibility.h
 * \brief        Bootloader plausibility check header file, for checking the configuration
 *               at compile time.
 * \ingroup      Core

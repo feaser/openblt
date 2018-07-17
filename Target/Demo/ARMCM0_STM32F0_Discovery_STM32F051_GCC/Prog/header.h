@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Prog\header.h
+* \file         Demo/ARMCM0_STM32F0_Discovery_STM32F051_GCC/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal

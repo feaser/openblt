@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S6965_IAR\Boot\blt_conf.h
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_IAR/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_ARMCM3_LM3S_EK_LM3S6965_IAR
 * \internal

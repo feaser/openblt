@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\HCS12\flash.c
+* \file         Source/HCS12/flash.c
 * \brief        Bootloader flash driver source file.
 * \ingroup      Target_HCS12
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\TRICORE_TC1798\timer.c
+* \file         Source/TRICORE_TC1798/timer.c
 * \brief        Bootloader timer driver source file.
 * \ingroup      Target_TRICORE_TC1798
 * \internal

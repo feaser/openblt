@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Boot\hooks.c
+* \file         Demo/HCS12_Evbplus_Dragon12p_CodeWarrior/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

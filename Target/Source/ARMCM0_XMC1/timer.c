@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM0_XMC1\timer.c
+* \file         Source/ARMCM0_XMC1/timer.c
 * \brief        Bootloader timer driver source file.
 * \ingroup      Target_ARMCM0_XMC1
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_STM32L4\flash.h
+* \file         Source/ARMCM4_STM32L4/flash.h
 * \brief        Bootloader flash driver header file.
 * \ingroup      Target_ARMCM4_STM32L4
 * \internal

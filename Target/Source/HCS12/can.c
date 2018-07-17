@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\HCS12\can.c
+* \file         Source/HCS12/can.c
 * \brief        Bootloader CAN communication interface source file.
 * \ingroup      Target_HCS12
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimexino_STM32_TrueStudio\Boot\led.c
+* \file         Demo/ARMCM3_STM32F1_Olimexino_STM32_TrueStudio/Boot/led.c
 * \brief        LED driver source file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimexino_STM32_TrueStudio
 * \internal

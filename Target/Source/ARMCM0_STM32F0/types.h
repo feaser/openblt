@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM0_STM32F0\types.h
+* \file         Source/ARMCM0_STM32F0/types.h
 * \brief        Bootloader types header file.
 * \ingroup      Target_ARMCM0_STM32F0
 * \internal

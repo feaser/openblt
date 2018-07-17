@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32L4_Nucleo_L476RG_TrueStudio\Boot\hooks.c
+* \file         Demo/ARMCM4_STM32L4_Nucleo_L476RG_TrueStudio/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM4_STM32L4_Nucleo_L476RG_TrueStudio
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Boot\blt_conf.h
+* \file         Demo/ARMCM0_STM32F0_Discovery_STM32F051_GCC/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal

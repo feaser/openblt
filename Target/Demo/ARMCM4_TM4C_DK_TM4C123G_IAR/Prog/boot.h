@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_TM4C_DK_TM4C123G_IAR\Prog\boot.h
+* \file         Demo/ARMCM4_TM4C_DK_TM4C123G_IAR/Prog/boot.h
 * \brief        Demo program bootloader interface header file.
 * \ingroup      Prog_ARMCM4_TM4C_DK_TM4C123G_IAR
 * \internal

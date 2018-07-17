@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\can.h
+* \file         Source/can.h
 * \brief        Bootloader CAN communication interface header file.
 * \ingroup      Core
 * \internal

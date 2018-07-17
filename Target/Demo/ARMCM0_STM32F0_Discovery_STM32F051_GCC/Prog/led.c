@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_GCC\Prog\led.c
+* \file         Demo/ARMCM0_STM32F0_Discovery_STM32F051_GCC/Prog/led.c
 * \brief        LED driver source file.
 * \ingroup      Prog_ARMCM0_STM32F0_Discovery_STM32F051_GCC
 * \internal

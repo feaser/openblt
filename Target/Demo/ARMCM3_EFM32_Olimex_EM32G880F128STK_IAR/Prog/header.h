@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_IAR\Prog\header.h
+* \file         Demo/ARMCM3_EFM32_Olimex_EM32G880F128STK_IAR/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM3_EFM32_Olimex_EM32G880F128STK_IAR
 * \internal

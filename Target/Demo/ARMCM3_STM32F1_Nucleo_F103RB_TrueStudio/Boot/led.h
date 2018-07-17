@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Nucleo_F103RB_TrueStudio\Boot\led.h
+* \file         Demo/ARMCM3_STM32F1_Nucleo_F103RB_TrueStudio/Boot/led.h
 * \brief        LED driver header file.
 * \ingroup      Boot_ARMCM3_STM32F1_Nucleo_F103RB_TrueStudio
 * \internal

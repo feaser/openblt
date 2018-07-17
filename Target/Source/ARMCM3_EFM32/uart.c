@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM3_EFM32\uart.c
+* \file         Source/ARMCM3_EFM32/uart.c
 * \brief        Bootloader UART communication interface source file.
 * \ingroup      Target_ARMCM3_EFM32
 * \internal

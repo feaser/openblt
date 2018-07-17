@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_STM32F4\usb.c
+* \file         Source/ARMCM4_STM32F4/usb.c
 * \brief        Bootloader USB communication interface source file.
 * \ingroup      Target_ARMCM4_STM32F4
 * \internal

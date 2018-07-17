@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\usb.h
+* \file         Source/usb.h
 * \brief        Bootloader USB communication interface header file.
 * \ingroup      Core
 * \internal

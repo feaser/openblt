@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_TM4C_DK_TM4C123G_IAR\Boot\hooks.c
+* \file         Demo/ARMCM4_TM4C_DK_TM4C123G_IAR/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM4_TM4C_DK_TM4C123G_IAR
 * \internal

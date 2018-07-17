@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM4_TM4C\uart.c
+* \file         Source/ARMCM4_TM4C/uart.c
 * \brief        Bootloader UART communication interface source file.
 * \ingroup      Target_ARMCM4_TM4C
 * \internal

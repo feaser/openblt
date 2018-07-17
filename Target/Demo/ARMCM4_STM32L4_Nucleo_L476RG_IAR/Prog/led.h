@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32L4_Nucleo_L476RG_IAR\Prog\led.h
+* \file         Demo/ARMCM4_STM32L4_Nucleo_L476RG_IAR/Prog/led.h
 * \brief        LED driver header file.
 * \ingroup      Prog_ARMCM4_STM32L4_Nucleo_L476RG_IAR
 * \internal

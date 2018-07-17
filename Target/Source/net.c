@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\net.c
+* \file         Source/net.c
 * \brief        Bootloader TCP/IP network communication interface source file.
 * \ingroup      Core
 * \internal

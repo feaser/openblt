@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_XMC1_XMC1400_Boot_Kit_IAR\Prog\led.h
+* \file         Demo/ARMCM0_XMC1_XMC1400_Boot_Kit_IAR/Prog/led.h
 * \brief        LED driver header file.
 * \ingroup      Prog_ARMCM0_XMC1_XMC1400_Boot_Kit_IAR
 * \internal

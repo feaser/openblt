@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_LM3S_EK_LM3S8962_IAR\Prog\time.h
+* \file         Demo/ARMCM3_LM3S_EK_LM3S8962_IAR/Prog/time.h
 * \brief        Timer driver header file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S8962_IAR
 * \internal

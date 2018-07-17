@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F1_Olimexino_STM32_IAR\Boot\main.c
+* \file         Demo/ARMCM3_STM32F1_Olimexino_STM32_IAR/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARMCM3_STM32F1_Olimexino_STM32_IAR
 * \internal

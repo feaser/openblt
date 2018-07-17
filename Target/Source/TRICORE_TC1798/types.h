@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\TRICORE_TC1798\types.h
+* \file         Source/TRICORE_TC1798/types.h
 * \brief        Bootloader types header file.
 * \ingroup      Target_TRICORE_TC1798
 * \internal

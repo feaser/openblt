@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\ARMCM0_STM32F0\flash.h
+* \file         Source/ARMCM0_STM32F0/flash.h
 * \brief        Bootloader flash driver header file.
 * \ingroup      Target_ARMCM0_STM32F0
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\file.c
+* \file         Source/file.c
 * \brief        Bootloader file system interface source file.
 * \ingroup      Core
 * \internal

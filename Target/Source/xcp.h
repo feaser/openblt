@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\xcp.h
+* \file         Source/xcp.h
 * \brief        XCP 1.0 protocol core header file.
 * \ingroup      Core
 * \internal

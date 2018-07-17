@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F3_Discovery_F303VC_GCC\Prog\timer.c
+* \file         Demo/ARMCM4_STM32F3_Discovery_F303VC_GCC/Prog/timer.c
 * \brief        Timer driver source file.
 * \ingroup      Prog_ARMCM4_STM32F3_Discovery_F303VC_GCC
 * \internal

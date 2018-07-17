@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_GCC\Boot\main.c
+* \file         Demo/ARM7_LPC2000_Olimex_LPC_L2294_GCC/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARM7_LPC2000_Olimex_LPC_L2294_GCC
 * \internal

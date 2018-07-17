@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM0_STM32F0_Discovery_STM32F051_Keil\Boot\led.h
+* \file         Demo/ARMCM0_STM32F0_Discovery_STM32F051_Keil/Boot/led.h
 * \brief        LED driver header file.
 * \ingroup      Boot_ARMCM0_STM32F0_Discovery_STM32F051_Keil
 * \internal

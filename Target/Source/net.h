@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\net.h
+* \file         Source/net.h
 * \brief        Bootloader TCP/IP network communication interface header file.
 * \ingroup      Core
 * \internal

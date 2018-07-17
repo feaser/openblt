@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_TM4C_DK_TM4C123G_IAR\Boot\vectors.c
+* \file         Demo/ARMCM4_TM4C_DK_TM4C123G_IAR/Boot/vectors.c
 * \brief        Bootloader interrupt vector table source file.
 * \ingroup      Boot_ARMCM4_TM4C_DK_TM4C123G_IAR
 * \internal

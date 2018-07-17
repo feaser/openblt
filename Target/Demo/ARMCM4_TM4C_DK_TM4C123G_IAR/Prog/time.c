@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_TM4C_DK_TM4C123G_IAR\Prog\time.c
+* \file         Demo/ARMCM4_TM4C_DK_TM4C123G_IAR/Prog/time.c
 * \brief        Timer driver source file.
 * \ingroup      Prog_ARMCM4_TM4C_DK_TM4C123G_IAR
 * \internal

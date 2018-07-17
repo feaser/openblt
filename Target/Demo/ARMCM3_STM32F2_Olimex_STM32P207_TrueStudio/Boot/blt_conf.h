@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_STM32F2_Olimex_STM32P207_TrueStudio\Boot\blt_conf.h
+* \file         Demo/ARMCM3_STM32F2_Olimex_STM32P207_TrueStudio/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_ARMCM3_STM32F2_Olimex_STM32P207_TrueStudio
 * \internal

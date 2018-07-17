@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARM7_LPC2000_Olimex_LPC_L2294_GCC\Prog\led.c
+* \file         Demo/ARM7_LPC2000_Olimex_LPC_L2294_GCC/Prog/led.c
 * \brief        LED driver source file.
 * \ingroup      Prog_ARM7_LPC2000_Olimex_LPC_L2294_GCC
 * \internal

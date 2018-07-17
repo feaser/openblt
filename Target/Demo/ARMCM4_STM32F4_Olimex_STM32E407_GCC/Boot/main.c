@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32F4_Olimex_STM32E407_GCC\Boot\main.c
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32E407_GCC/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARMCM4_STM32F4_Olimex_STM32E407_GCC
 * \internal

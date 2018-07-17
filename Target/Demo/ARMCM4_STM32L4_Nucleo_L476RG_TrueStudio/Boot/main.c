@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32L4_Nucleo_L476RG_TrueStudio\Boot\main.c
+* \file         Demo/ARMCM4_STM32L4_Nucleo_L476RG_TrueStudio/Boot/main.c
 * \brief        Bootloader application source file.
 * \ingroup      Boot_ARMCM4_STM32L4_Nucleo_L476RG_TrueStudio
 * \internal

@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM4_STM32L4_Nucleo_L476RG_GCC\Boot\led.h
+* \file         Demo/ARMCM4_STM32L4_Nucleo_L476RG_GCC/Boot/led.h
 * \brief        LED driver header file.
 * \ingroup      Boot_ARMCM4_STM32L4_Nucleo_L476RG_GCC
 * \internal

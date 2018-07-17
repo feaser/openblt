@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source\HCS12\types.h
+* \file         Source/HCS12/types.h
 * \brief        Bootloader types header file.
 * \ingroup      Target_HCS12
 * \internal

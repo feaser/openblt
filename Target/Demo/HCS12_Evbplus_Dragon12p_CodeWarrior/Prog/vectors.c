@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\HCS12_Evbplus_Dragon12p_CodeWarrior\Prog\vectors.c
+* \file         Demo/HCS12_Evbplus_Dragon12p_CodeWarrior/Prog/vectors.c
 * \brief        Demo program interrupt vectors source file.
 * \ingroup      Prog_HCS12_Evbplus_Dragon12p_CodeWarrior
 * \internal

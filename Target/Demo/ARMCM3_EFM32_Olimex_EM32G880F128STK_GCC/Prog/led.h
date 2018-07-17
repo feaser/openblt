@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo\ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC\Prog\led.h
+* \file         Demo/ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC/Prog/led.h
 * \brief        LED driver header file.
 * \ingroup      Prog_ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC
 * \internal
