@@ -11,9 +11,9 @@
 #                                           texlive-latex-extra
 # On openSUSE based systems: sudo zypper install make doxygen graphviz texlive-latex 
 #                                        texlive-tabu texlive-tocloft
-rm -rf ../RM_LibOpenBLT.pdf
+rm -rf ../ReferenceManuals/RM_LibOpenBLT.pdf
 doxygen DoxyfileLibOpenBLT
 cd output/LibOpenBLT/latex/
 make
-cp refman.pdf ../../../../RM_LibOpenBLT.pdf
+cp refman.pdf ../../../../ReferenceManuals/RM_LibOpenBLT.pdf
 cd ../../../

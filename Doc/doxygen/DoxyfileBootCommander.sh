@@ -11,9 +11,9 @@
 #                                           texlive-latex-extra
 # On openSUSE based systems: sudo zypper install make doxygen graphviz texlive-latex 
 #                                        texlive-tabu texlive-tocloft
-rm -rf ../RM_BootCommander.pdf
+rm -rf ../ReferenceManuals/RM_BootCommander.pdf
 doxygen DoxyfileBootCommander
 cd output/BootCommander/latex/
 make
-cp refman.pdf ../../../../RM_BootCommander.pdf
+cp refman.pdf ../../../../ReferenceManuals/RM_BootCommander.pdf
 cd ../../../

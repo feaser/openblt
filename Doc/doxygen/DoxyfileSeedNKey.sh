@@ -11,9 +11,9 @@
 #                                           texlive-latex-extra
 # On openSUSE based systems: sudo zypper install make doxygen graphviz texlive-latex 
 #                                        texlive-tabu texlive-tocloft
-rm -rf ../RM_SeedNKey.pdf
+rm -rf ../ReferenceManuals/RM_SeedNKey.pdf
 doxygen DoxyfileSeedNKey
 cd output/SeedNKey/latex/
 make
-cp refman.pdf ../../../../RM_SeedNKey.pdf
+cp refman.pdf ../../../../ReferenceManuals/RM_SeedNKey.pdf
 cd ../../../

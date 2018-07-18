@@ -3,9 +3,8 @@
 :: - DoxyGen (doxygen.exe)
 :: - Graphviz (dot.exe)
 :: - MikTex (pdflatex.exe)
-if exist ..\RM_LibOpenBLT.pdf del ..\RM_LibOpenBLT.pdf
-if exist ..\RM_LibOpenBLT.chm del ..\RM_LibOpenBLT.chm
+if exist ..\ReferenceManuals\RM_LibOpenBLT.pdf del ..\ReferenceManuals\RM_LibOpenBLT.pdf
 doxygen.exe DoxyfileLibOpenBLT
 call .\output\LibOpenBLT\latex\make.bat
-call copy .\output\LibOpenBLT\latex\refman.pdf ..\RM_LibOpenBLT.pdf
+call copy .\output\LibOpenBLT\latex\refman.pdf ..\ReferenceManuals\RM_LibOpenBLT.pdf
 
