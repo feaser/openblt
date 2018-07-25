@@ -66,13 +66,13 @@ typedef struct t_xcp_transport_packet
 /** \brief XCP transport layer. */
 typedef struct t_xcp_transport
 {
-  /** \brief Initialization of the XCP transpor layer. */
+  /** \brief Initialization of the XCP transport layer. */
   void (*Init) (void const * settings);
-  /** \brief Termination the XCP transpor layer. */
+  /** \brief Termination the XCP transport layer. */
   void (*Terminate) (void);
-  /** \brief Connects the XCP transpor layer. */
+  /** \brief Connects the XCP transport layer. */
   bool (*Connect) (void);
-  /** \brief Disconnects the XCP transpor layer. */
+  /** \brief Disconnects the XCP transport layer. */
   void (*Disconnect) (void);
   /** \brief Sends an XCP packet and waits for the response to come back. */
   bool (*SendPacket) (tXcpTransportPacket const * txPacket, 
@@ -86,12 +86,16 @@ typedef struct t_xcp_loader_settings
   uint16_t timeoutT1;            
   /** \brief Start programming timeout in milliseconds. */
   uint16_t timeoutT3;            
-  /** \brief Erase memory timeout in milliseonds. */
+  /** \brief Erase memory timeout in milliseconds. */
   uint16_t timeoutT4;            
-  /** \brief Program memory and reset timeout in milliseonds. */
+  /** \brief Program memory and reset timeout in milliseconds. */
   uint16_t timeoutT5;            
-  /** \brief Busy wait timer timeout in milliseonds. */
-  uint16_t timeoutT7;            
+  /** \brief Busy wait timer timeout in milliseconds. */
+  uint16_t timeoutT7;     
+  /** \brief Connection mode used in the XCP connect command. */
+  uint8_t connectMode;
+  /** \brief Seed/key algorithm library filename. */
+  char const * seedKeyFile;
   /** \brief Pointer to the transport layer to use during protocol communications. */
   tXcpTransport const * transport;
   /** \brief Pointer to the settings for the transport layer. */

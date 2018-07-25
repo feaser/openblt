@@ -39,19 +39,22 @@
 #include "session.h"                        /* Communication session module            */
 #include "xcploader.h"                      /* XCP loader module                       */
 #include "xcptpuart.h"                      /* XCP UART transport layer                */
+#include "xcptpcan.h"                       /* XCP CAN transport layer                 */
+#include "xcptpusb.h"                       /* XCP USB transport layer                 */
+#include "xcptpnet.h"                       /* XCP TCP/IP transport layer              */
 
 
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief The version number of the library as an integer. The number has two digits
- *         for major-, minor-, and build-version. Version 1.05.12 would for example be
+ *         for major-, minor-, and patch-version. Version 1.05.12 would for example be
  *         10512.
  */
-#define BLT_VERSION_NUMBER   (10000u)
+#define BLT_VERSION_NUMBER   (10301u)
 
 /** \brief The version number of the library as a null-terminated string. */
-#define BLT_VERSION_STRING   "1.00.00"
+#define BLT_VERSION_STRING   "1.03.01"
 
 
 /****************************************************************************************
@@ -66,7 +69,7 @@ char const bltVersionString[] = BLT_VERSION_STRING;
 ****************************************************************************************/
 /************************************************************************************//**
 ** \brief     Obtains the version number of the library as an integer. The number has two
-**            digits for major-, minor-, and build-version. Version 1.05.12 would for
+**            digits for major-, minor-, and patch-version. Version 1.05.12 would for
 **            example return 10512.
 ** \return    Library version number as an integer.
 **
@@ -116,7 +119,9 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
    */
   assert(sessionType == BLT_SESSION_XCP_V10);
   assert( (transportType == BLT_TRANSPORT_XCP_V10_RS232) || \
-          (transportType == BLT_TRANSPORT_XCP_V10_CAN) );
+          (transportType == BLT_TRANSPORT_XCP_V10_CAN) || \
+          (transportType == BLT_TRANSPORT_XCP_V10_USB) || \
+          (transportType == BLT_TRANSPORT_XCP_V10_NET) );
 
   /* Initialize the correct session. */
   if (sessionType == BLT_SESSION_XCP_V10) /*lint !e774 */
@@ -136,6 +141,8 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
       xcpLoaderSettings.timeoutT4 = bltSessionSettingsXcpV10Ptr->timeoutT4;
       xcpLoaderSettings.timeoutT5 = bltSessionSettingsXcpV10Ptr->timeoutT5;
       xcpLoaderSettings.timeoutT7 = bltSessionSettingsXcpV10Ptr->timeoutT7;
+      xcpLoaderSettings.seedKeyFile = bltSessionSettingsXcpV10Ptr->seedKeyFile;
+      xcpLoaderSettings.connectMode = bltSessionSettingsXcpV10Ptr->connectMode;
       xcpLoaderSettings.transport = NULL;
       xcpLoaderSettings.transportSettings = NULL;
       /* Link the correct transport layer. */
@@ -163,6 +170,69 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
           xcpLoaderSettings.transportSettings = &xcpTpUartSettings;
           /* Link the transport layer to the XCP loader settings. */
           xcpLoaderSettings.transport = XcpTpUartGetTransport();
+        }
+      }
+      else if (transportType == BLT_TRANSPORT_XCP_V10_CAN)
+      {
+        /* Verify transportSettings parameters because the XCP CAN transport layer 
+         * requires them.
+         */
+        assert(transportSettings != NULL);
+        /* Only continue if the transportSettings parameter is valid. */
+        if (transportSettings != NULL) /*lint !e774 */
+        {
+          /* Cast transport settings to the correct type. */
+          tBltTransportSettingsXcpV10Can * bltTransportSettingsXcpV10CanPtr;
+          bltTransportSettingsXcpV10CanPtr =
+            (tBltTransportSettingsXcpV10Can *)transportSettings;
+          /* Convert transport settings to the format supported by the XCP CAN transport
+            * layer. It was made static to make sure it doesn't get out of scope when
+            * used in xcpLoaderSettings.
+            */
+          static tXcpTpCanSettings xcpTpCanSettings;
+          xcpTpCanSettings.device = bltTransportSettingsXcpV10CanPtr->deviceName;
+          xcpTpCanSettings.channel = bltTransportSettingsXcpV10CanPtr->deviceChannel;
+          xcpTpCanSettings.baudrate = bltTransportSettingsXcpV10CanPtr->baudrate;
+          xcpTpCanSettings.transmitId = bltTransportSettingsXcpV10CanPtr->transmitId;
+          xcpTpCanSettings.receiveId = bltTransportSettingsXcpV10CanPtr->receiveId;
+          xcpTpCanSettings.useExtended = (bltTransportSettingsXcpV10CanPtr->useExtended != 0);
+          /* Store transport layer settings in the XCP loader settings. */
+          xcpLoaderSettings.transportSettings = &xcpTpCanSettings;
+          /* Link the transport layer to the XCP loader settings. */
+          xcpLoaderSettings.transport = XcpTpCanGetTransport();
+        }
+      }
+      else if (transportType == BLT_TRANSPORT_XCP_V10_USB)
+      {
+        /* Store transport layer settings in the XCP loader settings. */
+        xcpLoaderSettings.transportSettings = NULL;
+        /* Link the transport layer to the XCP loader settings. */
+        xcpLoaderSettings.transport = XcpTpUsbGetTransport();
+      }
+      else if (transportType == BLT_TRANSPORT_XCP_V10_NET)
+      {
+        /* Verify transportSettings parameters because the XCP NET transport layer
+         * requires them.
+         */
+        assert(transportSettings != NULL);
+        /* Only continue if the transportSettings parameter is valid. */
+        if (transportSettings != NULL) /*lint !e774 */
+        {
+          /* Cast transport settings to the correct type. */
+          tBltTransportSettingsXcpV10Net * bltTransportSettingsXcpV10NetPtr;
+          bltTransportSettingsXcpV10NetPtr =
+            (tBltTransportSettingsXcpV10Net * )transportSettings;
+          /* Convert transport settings to the format supported by the XCP NET transport
+           * layer. It was made static to make sure it doesn't get out of scope when
+           * used in xcpLoaderSettings.
+           */
+          static tXcpTpNetSettings xcpTpNetSettings;
+          xcpTpNetSettings.address = bltTransportSettingsXcpV10NetPtr->address;
+          xcpTpNetSettings.port = bltTransportSettingsXcpV10NetPtr->port;
+          /* Store transport layer settings in the XCP loader settings. */
+          xcpLoaderSettings.transportSettings = &xcpTpNetSettings;
+          /* Link the transport layer to the XCP loader settings. */
+          xcpLoaderSettings.transport = XcpTpNetGetTransport();
         }
       }
       /* Perform actual session initialization. */
@@ -220,7 +290,7 @@ LIBOPENBLT_EXPORT void BltSessionStop(void)
 /************************************************************************************//**
 ** \brief     Requests the target to erase the specified range of memory on the target.
 **            Note that the target automatically aligns this to the erasable memory
-**            block sizes. This typically results in more memory being erased that the
+**            block sizes. This typically results in more memory being erased than the
 **            range that was specified here. Refer to the target implementation for
 **            details.
 ** \param     address The starting memory address for the erase operation.
@@ -357,10 +427,14 @@ LIBOPENBLT_EXPORT void BltFirmwareTerminate(void)
 ** \brief     Loads firmware data from the specified file using the firmware file parser
 **            that was specified during the initialization of this module.
 ** \param     firmwareFile Filename of the firmware file to load.
+** \param     addressOffset Optional memory address offset to add when loading the 
+**            firmware data from the file. This is typically only useful when loading
+**            firmware data from a binary formatted firmware file.
 ** \return    BLT_RESULT_OK if successful, BLT_RESULT_ERROR_xxx otherwise.
 **
 ****************************************************************************************/
-LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile)
+LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile, 
+                                                   uint32_t addressOffset)
 {
   uint32_t result = BLT_RESULT_ERROR_GENERIC;
   
@@ -371,7 +445,7 @@ LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile)
   if (firmwareFile != NULL) /*lint !e774 */
   {
     /* Pass the request on to the firmware data module. */
-    if (FirmwareLoadFromFile(firmwareFile))
+    if (FirmwareLoadFromFile(firmwareFile, addressOffset))
     {
       result = BLT_RESULT_OK;
     }
@@ -618,6 +692,74 @@ LIBOPENBLT_EXPORT void BltUtilTimeDelayMs(uint16_t delay)
   /* Pass the request on to the utility module. */
   UtilTimeDelayMs(delay);
 } /*** end of BltUtilTimeDelayMs ***/
+
+
+/************************************************************************************//**
+** \brief     Encrypts the len-bytes in the specified data-array, using the specified
+**            256-bit (32 bytes) key. The results are written back into the same array.
+** \param     data Pointer to the byte array with data to encrypt. The encrypted bytes
+**            are stored in the same array.
+** \param     len The number of bytes in the data-array to encrypt. It must be a multiple
+**            of 16, as this is the AES256 minimal block size.
+** \param     key The 256-bit encryption key as a array of 32 bytes.
+** \return    BLT_RESULT_OK if successful, BLT_RESULT_ERROR_xxx otherwise.
+**
+****************************************************************************************/
+LIBOPENBLT_EXPORT uint32_t BltUtilCryptoAes256Encrypt(uint8_t * data, uint32_t len,
+                                                      uint8_t const * key)
+{
+  uint32_t result = BLT_RESULT_ERROR_GENERIC;
+
+  /* Check parameters */
+  assert(data != NULL);
+  assert(key != NULL);
+
+  /* Only continue with valid parameters. Also add a block size check for 'len'. */
+  if ( (data != NULL) && (key != NULL) && ((len % 16u) == 0) ) /*lint !e774 */
+  {
+    /* Pass the request on to the utility module. */
+    if (UtilCryptoAes256Encrypt(data, len, key))
+    {
+      result = BLT_RESULT_OK;
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of BltUtilCryptoAes256Encrypt ***/
+
+
+/************************************************************************************//**
+** \brief     Decrypts the len-bytes in the specified data-array, using the specified 256-
+**            bit (32 bytes) key. The results are written back into the same array.
+** \param     data Pointer to the byte array with data to decrypt. The decrypted bytes
+**            are stored in the same array.
+** \param     len The number of bytes in the data-array to decrypt. It must be a multiple
+**            of 16, as this is the AES256 minimal block size.
+** \param     key The 256-bit decryption key as a array of 32 bytes.
+** \return    BLT_RESULT_OK if successful, BLT_RESULT_ERROR_xxx otherwise.
+**
+****************************************************************************************/
+LIBOPENBLT_EXPORT uint32_t BltUtilCryptoAes256Decrypt(uint8_t * data, uint32_t len,
+                                                      uint8_t const * key)
+{
+  uint32_t result = BLT_RESULT_ERROR_GENERIC;
+
+  /* Check parameters */
+  assert(data != NULL);
+  assert(key != NULL);
+
+  /* Only continue with valid parameters. Also add a block size check for 'len'. */
+  if ( (data != NULL) && (key != NULL) && ((len % 16u) == 0) ) /*lint !e774 */
+  {
+    /* Pass the request on to the utility module. */
+    if (UtilCryptoAes256Decrypt(data, len, key))
+    {
+      result = BLT_RESULT_OK;
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of BltUtilCryptoAes256Decrypt ***/
 
 
 /*********************************** end of openblt.c **********************************/

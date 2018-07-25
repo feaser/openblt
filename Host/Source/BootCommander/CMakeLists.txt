@@ -69,14 +69,19 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 set(LIBOPENBLT_INC ${PROJECT_SOURCE_DIR}/../LibOpenBLT)
 set(LIBOPENBLT_LIB ${PROJECT_OUTPUT_DIRECTORY})
 
+
 #****************************************************************************************
 # Compiler flags
 #****************************************************************************************
 # Set platform specific compiler macro PLATFORM_XXX
 if(WIN32)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
+  if(CMAKE_C_COMPILER_ID MATCHES GNU)  
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS -std=gnu99")
+  elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
+  endif()
 elseif(UNIX)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -pthread -std=gnu99")
 endif(WIN32)
 
 
@@ -105,11 +110,11 @@ set(
   ${INCS}
 )
 
-# Set library name. When GNU GCC is used, the name to the static library file is used,
-# otherwise the shared library is used by default. This works fine too, but the static
-# library makes it a bit easier to move the target executable around on the file system.
-if(CMAKE_C_COMPILER_ID MATCHES GNU)
-  set (LIBOPENBLT_LIBNAME libopenblt.a)
+# Set library name of the OpenBLT Host Library
+if(CMAKE_C_COMPILER_ID MATCHES MSVC)
+  # When building LibOpenBLT with Microsoft Visual Studio, "lib" was added to the name
+  # of the DLL. This needs to be done as well when linking the library.
+  set (LIBOPENBLT_LIBNAME libopenblt)
 else()
   set (LIBOPENBLT_LIBNAME openblt)
 endif()
@@ -124,8 +129,21 @@ add_executable(
   ${PROG_SRCS}
 )
 
-# Add libraries
-target_link_libraries(BootCommander ${LIBOPENBLT_LIBNAME})
+# Add libraries. Note that when compiling with GNU GCC the path of the executable is
+# added to the run-time search path for libraries. This way LibOpenBLT's shared
+# object file (.so) does not have to be installed in the Linux's library path as long
+# as it is located in the same directory as BootCommander's executable.
+if(CMAKE_C_COMPILER_ID MATCHES GNU)
+  # According to the CMake docs, item names starting with '-', but not '-l' or 
+  # '-framework', are treated as linker flags. This means "-Wl" type linker flags can be
+  # specified here. Use this to add the path of the executable to the library search 
+  # path. This way the LibOpenBLT shared library can simply be in the same directory as
+  # the BootCommander executable.
+  target_link_libraries(BootCommander ${LIBOPENBLT_LIBNAME} "-Wl,-rpath,.")
+elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
+  target_link_libraries(BootCommander ${LIBOPENBLT_LIBNAME})
+endif()
+
 
 # Only generate the PC-lint taget if the option is enabled. Use "make BootCommander_LINT"
 # to lint the project sources

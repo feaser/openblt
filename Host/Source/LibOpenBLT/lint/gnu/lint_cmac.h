@@ -1,3 +1,4 @@
+#define __SSP_STRONG__ 3
 #define __DBL_MIN_EXP__ (-1021)
 #define __UINT_LEAST16_MAX__ 0xffff
 #define __ATOMIC_ACQUIRE 2
@@ -27,7 +28,7 @@
 #define __SIG_ATOMIC_TYPE__ int
 #define __DBL_MIN_10_EXP__ (-307)
 #define __FINITE_MATH_ONLY__ 0
-#define __GNUC_PATCHLEVEL__ 1
+#define __GNUC_PATCHLEVEL__ 0
 #define __UINT_FAST8_MAX__ 0xff
 #define __has_include(STR) __has_include__(STR)
 #define __DEC64_MAX_EXP__ 385
@@ -68,7 +69,7 @@
 #define __gnu_linux__ 1
 #define __has_include_next(STR) __has_include_next__(STR)
 #define __LDBL_HAS_QUIET_NAN__ 1
-#define __GNUC__ 6
+#define __GNUC__ 5
 #define __MMX__ 1
 #define __FLT_HAS_DENORM__ 1
 #define __SIZEOF_LONG_DOUBLE__ 16
@@ -94,7 +95,7 @@
 #define __SIZEOF_SIZE_T__ 8
 #define __SIZEOF_WINT_T__ 4
 #define __GCC_HAVE_DWARF2_CFI_ASM 1
-#define __GXX_ABI_VERSION 1010
+#define __GXX_ABI_VERSION 1009
 #define __FLT_MIN_EXP__ (-125)
 #define __INT_FAST64_TYPE__ long int
 #define __DBL_MIN__ ((double)2.22507385850720138309e-308L)
@@ -107,7 +108,7 @@
 #define __UINT8_TYPE__ unsigned char
 #define __NO_INLINE__ 1
 #define __FLT_MANT_DIG__ 24
-#define __VERSION__ "6.3.1 20170306"
+#define __VERSION__ "5.4.0 20160609"
 #define __UINT64_C(c) c ## UL
 #define _STDC_PREDEF_H 1
 #define __GCC_ATOMIC_INT_LOCK_FREE 2
@@ -125,7 +126,6 @@
 #define __UINT64_MAX__ 0xffffffffffffffffUL
 #define __INT8_TYPE__ signed char
 #define __ELF__ 1
-#define __GCC_ASM_FLAG_OUTPUTS__ 1
 #define __FLT_RADIX__ 2
 #define __INT_LEAST16_TYPE__ short int
 #define __LDBL_EPSILON__ 1.08420217248550443401e-19L
@@ -149,12 +149,10 @@
 #define __DEC64_MAX__ 9.999999999999999E384DD
 #define __CHAR16_TYPE__ short unsigned int
 #define __PRAGMA_REDEFINE_EXTNAME 1
-#define __SEG_FS 1
 #define __INT_LEAST16_MAX__ 0x7fff
 #define __DEC64_MANT_DIG__ 16
 #define __INT64_MAX__ 0x7fffffffffffffffL
 #define __UINT_LEAST32_MAX__ 0xffffffffU
-#define __SEG_GS 1
 #define __GCC_ATOMIC_LONG_LOCK_FREE 2
 #define __INT_LEAST64_TYPE__ long int
 #define __INT16_TYPE__ short int
@@ -225,7 +223,7 @@
 #define __INTMAX_TYPE__ long int
 #define __DEC128_MAX_EXP__ 6145
 #define __ATOMIC_CONSUME 1
-#define __GNUC_MINOR__ 3
+#define __GNUC_MINOR__ 4
 #define __UINTMAX_MAX__ 0xffffffffffffffffUL
 #define __DEC32_MANT_DIG__ 7
 #define __DBL_MAX_10_EXP__ 308

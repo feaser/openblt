@@ -1,7 +1,7 @@
 /************************************************************************************//**
 * \file         xcptpuart.h
 * \brief        XCP UART transport layer header file.
-* \ingroup      XcpLoader
+* \ingroup      XcpTpUart
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -24,6 +24,11 @@
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
+****************************************************************************************/
+/************************************************************************************//**
+* \defgroup   XcpTpUart XCP UART transport layer
+* \brief      This module implements the XCP transport layer for UART.
+* \ingroup    XcpLoader
 ****************************************************************************************/
 #ifndef XCPTPUART_H
 #define XCPTPUART_H

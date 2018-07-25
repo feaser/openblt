@@ -41,15 +41,15 @@ set(CMAKE_BUILD_TYPE "Debug")
 #****************************************************************************************
 # Options
 #****************************************************************************************
-# Add option with default value to enable the generation and building of the static
-# library. It can be overridden on the command line when CMake is called using the 
-# following parameter: -DBUILD_STATIC=OFF
-option(BUILD_STATIC "Configurable to enable/disable building of the static library" ON)
-
 # Add option with default value to enable the generation and building of the shared
-# library. It can be overridden on the command line when CMake is called using the 
-# following parameter: -DBUILD_SHARED=OFF
+# library. By default it is turned on. It can be overridden on the command line when 
+# CMake is called using the following parameter: -DBUILD_SHARED=OFF
 option(BUILD_SHARED "Configurable to enable/disable building of the shared library" ON)
+
+# Add option with default value to enable the generation and building of the static
+# library. By default it is turned off. It can be overridden on the command line when 
+# CMake is called using the following parameter: -DBUILD_STATIC=ON
+option(BUILD_STATIC "Configurable to enable/disable building of the static library" OFF)
 
 # Add option with default value to disable the generation of the PC-lint target. It can 
 # be overridden on the command line when CMake is called using the following parameter:
@@ -63,10 +63,8 @@ option(LINT_ENABLED "Configurable to enable/disable the PC-lint target" OFF)
 # Set the port directory, which is platform specific
 if(WIN32)
   set(PROJECT_PORT_DIR ${PROJECT_SOURCE_DIR}/port/windows)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
 elseif(UNIX)
   set(PROJECT_PORT_DIR ${PROJECT_SOURCE_DIR}/port/linux)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX")
 endif(WIN32)
 
 # Set the output directory
@@ -84,12 +82,39 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_OUTPUT_DIRECTORY} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
+#****************************************************************************************
+# Compiler flags
+#****************************************************************************************
+# Set platform specific compiler macro PLATFORM_XXX
+if(WIN32)
+  if(CMAKE_C_COMPILER_ID MATCHES GNU)  
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS -std=gnu99")
+  elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
+  endif()
+elseif(UNIX)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -pthread -std=gnu99")
+endif(WIN32)
+
 
 #***************************************************************************************
 # Includes
 #****************************************************************************************
+# Source: http://www.vtk.org/Wiki/CMake/Examples
+macro (header_directories return_list dir)
+  file(GLOB_RECURSE new_list ${dir}/*.h)
+  set(dir_list "")
+  foreach(file_path ${new_list})
+    get_filename_component(dir_path ${file_path} PATH)
+    set(dir_list ${dir_list} ${dir_path})
+  endforeach()
+  list(REMOVE_DUPLICATES dir_list)
+  set(${return_list} ${dir_list})
+endmacro()
+
 # Set include directories
-include_directories("${PROJECT_SOURCE_DIR}" "${PROJECT_PORT_DIR}")
+header_directories(PROJECT_PORT_INC_DIRS "${PROJECT_PORT_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}" "${PROJECT_PORT_INC_DIRS}")
 
 
 #***************************************************************************************
@@ -97,21 +122,18 @@ include_directories("${PROJECT_SOURCE_DIR}" "${PROJECT_PORT_DIR}")
 #****************************************************************************************
 # Get header files from the root directory and the port directory.
 file(GLOB INCS_ROOT "*.h")
-file(GLOB INCS_PORT "${PROJECT_PORT_DIR}/*.h")
+file(GLOB_RECURSE INCS_PORT "${PROJECT_PORT_DIR}/*.h")
 set(INCS ${INCS_ROOT} ${INCS_PORT})
+
+# Get source files from the root directory and the port directory.
+file(GLOB SRCS_ROOT "*.c")
+file(GLOB_RECURSE SRCS_PORT "${PROJECT_PORT_DIR}/*.c")
+set(SRCS ${SRCS_ROOT} ${SRCS_PORT})
 
 # Add sources
 set(
   LIB_SRCS 
-  openblt.c
-  session.c
-  xcploader.c
-  xcptpuart.c
-  firmware.c
-  srecparser.c
-  util.c
-  ${PROJECT_PORT_DIR}/timeutil.c
-  ${PROJECT_PORT_DIR}/serialport.c
+  ${SRCS}
   ${INCS}
 )
 
@@ -121,6 +143,10 @@ set(
 #****************************************************************************************
 # Only generate the static library taget if the option is enabled. Use 
 # "make openblt_static" to individually build the static library. 
+# Note that when you link your own application to the static library of LibOpenBLT under
+# Unix, you need to also link the LibUsb and LibDL libraries by adding usb-1.0 and dl to
+# the linker library dependencies. Under Windows, you need to also link the Winsock
+# library by adding ws2_32 to the linker library dependencies. 
 if(BUILD_STATIC)
   add_library(openblt_static STATIC ${LIB_SRCS})
   SET_TARGET_PROPERTIES(openblt_static PROPERTIES OUTPUT_NAME openblt CLEAN_DIRECT_OUTPUT 1)
@@ -130,6 +156,22 @@ endif(BUILD_STATIC)
 # "make openblt_shared" to build individually  shared library.
 if(BUILD_SHARED)
   add_library(openblt_shared SHARED ${LIB_SRCS})
+  if(UNIX)
+    # Under Unix the LibUsb library (http://libusb.info/) is needed for the USB support.
+    # Make sure the libusb-1.0-0 and  libusb-1.0-0-dev packages are installed to be able to
+    # build LibOpenBLT. Example under Debian/Ubuntu:
+    #   sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev
+    # Additionally, the LibDL is needed for dynamic library loading.
+    # According to the CMake docs, item names starting with '-', but not '-l' or 
+    # '-framework', are treated as linker flags. This means "-Wl" type linker flags can be
+    # specified here. Use this to add the path of the shared library to the library search 
+    # path. This way an (optional) seed and key shared library file can simply be in the
+    # same directory as the LibOpenBLT shared library.
+    target_link_libraries(openblt_shared usb-1.0 dl "-Wl,-rpath,.")
+  elseif(WIN32)
+    # Link the Winsock library
+    target_link_libraries(openblt_shared ws2_32)
+  endif(UNIX)  
   if(CMAKE_C_COMPILER_ID MATCHES MSVC)
     # Microsoft Visual Studio does not add "lib" to the name of the DLL, whereas GCC
     # (including MinGW) does. Correct this here.

@@ -103,6 +103,16 @@ LIBOPENBLT_EXPORT char const * BltVersionGetString(void);
  */
 #define BLT_TRANSPORT_XCP_V10_CAN      ((uint32_t)1u)
 
+/** \brief Transport layer for the XCP v1.0 protocol that uses USB Bulk for data 
+ *         exchange.
+ */
+#define BLT_TRANSPORT_XCP_V10_USB      ((uint32_t)2u)
+
+/** \brief Transport layer for the XCP v1.0 protocol that uses TCP/IP for data
+ *         exchange.
+ */
+#define BLT_TRANSPORT_XCP_V10_NET      ((uint32_t)3u)
+
 
 /****************************************************************************************
 * Type definitions
@@ -112,10 +122,11 @@ typedef struct t_blt_session_settings_xcp_v10
 {
   uint16_t timeoutT1;            /**< Command response timeout in milliseconds.        */
   uint16_t timeoutT3;            /**< Start programming timeout in milliseconds.       */
-  uint16_t timeoutT4;            /**< Erase memory timeout in milliseonds.             */
-  uint16_t timeoutT5;            /**< Program memory and reset timeout in milliseonds. */
+  uint16_t timeoutT4;            /**< Erase memory timeout in milliseconds.            */
+  uint16_t timeoutT5;            /**< Program memory and reset timeout in milliseconds.*/
   uint16_t timeoutT7;            /**< Busy wait timer timeout in milliseonds.          */
   char const * seedKeyFile;      /**< Seed/key algorithm library filename.             */
+  uint8_t connectMode;           /**< Connection mode parameter in XCP connect command.*/
 } tBltSessionSettingsXcpV10;
 
 /** \brief Structure layout of the XCP version 1.0 RS232 transport layer settings. The
@@ -146,13 +157,24 @@ typedef struct t_blt_transport_settings_xcp_v10_rs232
  */
 typedef struct t_blt_transport_settings_xcp_v10_can
 {
-  char const * deviceName;       /**< Device name such as can0.                        */
+  char const * deviceName;       /**< Device name such as can0, peak_pcanusb etc.      */
   uint32_t deviceChannel;        /**< Channel on the device to use.                    */
   uint32_t baudrate;             /**< Communication speed in bits/sec.                 */
   uint32_t transmitId;           /**< Transmit CAN identifier.                         */
   uint32_t receiveId;            /**< Receive CAN identifier.                          */
   uint32_t useExtended;          /**< Boolean to configure 29-bit CAN identifiers.     */
 } tBltTransportSettingsXcpV10Can;
+
+/** \brief Structure layout of the XCP version 1.0 NET transport layer settings. The
+ *         address field can be set to either the IP address or the hostname, such as
+ *         "192.168.178.23" or "mymicro.mydomain.com". The port should be set to the 
+ *         TCP port number that the bootloader target listens on.
+ */
+typedef struct t_blt_transport_settings_xcp_v10_net
+{
+  char const * address;          /**< Target IP-address or hostname on the network.    */
+  uint16_t port;                 /**< TCP port to use.                                 */
+} tBltTransportSettingsXcpV10Net;
 
 
 /****************************************************************************************
@@ -191,7 +213,8 @@ LIBOPENBLT_EXPORT uint32_t BltSessionReadData(uint32_t address, uint32_t len,
 ****************************************************************************************/
 LIBOPENBLT_EXPORT void BltFirmwareInit(uint32_t parserType);
 LIBOPENBLT_EXPORT void BltFirmwareTerminate(void);
-LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile);
+LIBOPENBLT_EXPORT uint32_t BltFirmwareLoadFromFile(char const * firmwareFile, 
+                                                   uint32_t addressOffset);
 LIBOPENBLT_EXPORT uint32_t BltFirmwareSaveToFile(char const * firmwareFile);
 LIBOPENBLT_EXPORT uint32_t BltFirmwareGetSegmentCount(void);
 LIBOPENBLT_EXPORT uint8_t * BltFirmwareGetSegment(uint32_t idx, uint32_t * address, 
@@ -212,6 +235,10 @@ LIBOPENBLT_EXPORT uint16_t BltUtilCrc16Calculate(uint8_t const * data, uint32_t 
 LIBOPENBLT_EXPORT uint32_t BltUtilCrc32Calculate(uint8_t const * data, uint32_t len);
 LIBOPENBLT_EXPORT uint32_t BltUtilTimeGetSystemTime(void);
 LIBOPENBLT_EXPORT void BltUtilTimeDelayMs(uint16_t delay);
+LIBOPENBLT_EXPORT uint32_t BltUtilCryptoAes256Encrypt(uint8_t * data, uint32_t len,
+                                                      uint8_t const * key);
+LIBOPENBLT_EXPORT uint32_t BltUtilCryptoAes256Decrypt(uint8_t * data, uint32_t len,
+                                                      uint8_t const * key);
 
 
 #ifdef __cplusplus

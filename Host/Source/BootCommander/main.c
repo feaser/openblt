@@ -74,12 +74,29 @@
 
 
 /****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Type for program settings. */
+typedef struct t_program_settings
+{
+  /* \brief Controls what gets written to the standard output. If set to false then all
+   *        information is written. If set to true then only the most basic progress
+   *        information is shows.
+   */
+  bool silentMode;
+} tProgramSettings;
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void DisplayProgramInfo(void);
 static void DisplayProgramUsage(void);
 static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSettings);
 static void DisplayTransportInfo(uint32_t transportType, void const * transportSettings);
+static void DisplayFirmwareDataInfo(uint32_t segments, uint32_t base, uint32_t size);
+static void ExtractProgramSettingsFromCommandLine(int argc, char const * const argv[],
+                                                  tProgramSettings * programSettings);
 static uint32_t ExtractSessionTypeFromCommandLine(int argc, char const * const argv[]);
 static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const argv[],
                                                     uint32_t sessionType);
@@ -104,22 +121,22 @@ static void ErasePercentageTrailer(void);
 int main(int argc, char const * const argv[])
 {
   int result = RESULT_OK;
+  tProgramSettings appProgramSettings = { 0 };
   uint32_t appSessionType = 0;
   void * appSessionSettings = NULL;
   uint32_t appTransportType = 0;;
   void * appTransportSettings = NULL;
   char const * appFirmwareFile = NULL;
-  uint32_t firmwareDataTotalSize;
 
   /* -------------------- Display info ----------------------------------------------- */
-  /* Display program info */
-  DisplayProgramInfo();
   /* Check that at least enough command line arguments were specified. The first one is
    * always the name of the executable. Additionally, the firmware file must at least 
    * be specified.
    */
   if (argc < 2)
   {
+    /* Display program info */
+    DisplayProgramInfo();
     /* Display program usage. */
     DisplayProgramUsage();
     /* Set error code. */
@@ -129,10 +146,13 @@ int main(int argc, char const * const argv[])
   /* -------------------- Process command line --------------------------------------- */
   if (result == RESULT_OK)
   {
+    /* Extract program specific settings from the command line. */
+    ExtractProgramSettingsFromCommandLine(argc, argv, &appProgramSettings);
     /* Extract the session type from the command line. */
     appSessionType = ExtractSessionTypeFromCommandLine(argc, argv);
     /* Extract the session type specific settings from the command line. */
-    appSessionSettings = ExtractSessionSettingsFromCommandLine(argc, argv, appSessionType);
+    appSessionSettings = ExtractSessionSettingsFromCommandLine(argc, argv,
+                                                               appSessionType);
     /* Extract the transport type from the command line. */
     appTransportType = ExtractTransportTypeFromCommandLine(argc, argv);
     /* Extract the transport type specific settings from the command line. */
@@ -140,21 +160,29 @@ int main(int argc, char const * const argv[])
                                                                   appTransportType);
     /* Extract the firmware filename from the command line. */
     appFirmwareFile = ExtractFirmwareFileFromCommandLine(argc, argv);
+    /* Note that the transport settings are allowed to be NULL in case of 
+     * BLT_TRANSPORT_XCP_V10_USB. 
+     */
+    bool appTransportSettingsOkay = (appTransportType == BLT_TRANSPORT_XCP_V10_USB) ?
+      true : (appTransportSettings != NULL);
     /* Check the settings that were detected so far. */
-    if ( (appSessionSettings == NULL) || (appTransportSettings == NULL) ||
+    if ( (appSessionSettings == NULL) || (!appTransportSettingsOkay) ||
         (appFirmwareFile == NULL) )
     {
-      /* Display program usage. */
-      DisplayProgramUsage();
       /* Set error code. */
       result = RESULT_ERROR_COMMANDLINE;
+    }
+    if ((!appProgramSettings.silentMode))
+    {
+      /* Display program info */
+      DisplayProgramInfo();
     }
     printf("Processing command line parameters..."); 
     printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));
   }
   
   /* -------------------- Display detected parameters -------------------------------- */
-  if (result == RESULT_OK)
+  if ( (result == RESULT_OK) && (!appProgramSettings.silentMode) )
   {
     /* Display firmware file. */
     printf("Detected firmware file: %s\n", appFirmwareFile);
@@ -170,8 +198,8 @@ int main(int argc, char const * const argv[])
     printf("Loading firmware data from file..."); (void)fflush(stdout); 
     /* Initialize the firmware data module using the S-record parser. */
     BltFirmwareInit(BLT_FIRMWARE_PARSER_SRECORD);
-    /* Load firmware data from the firmware file. */
-    if (BltFirmwareLoadFromFile(appFirmwareFile) != BLT_RESULT_OK)
+    /* Load firmware data from the firmware file without memory address offset. */
+    if (BltFirmwareLoadFromFile(appFirmwareFile, 0) != BLT_RESULT_OK)
     {
       /* Set error code. */
       result = RESULT_ERROR_FIRMWARE_LOAD;
@@ -191,16 +219,19 @@ int main(int argc, char const * const argv[])
     /* Determine and output firmware data statistics. */
     if (result == RESULT_OK)
     {
+      uint32_t firmwareDataTotalSize;
+      uint32_t firmwareDataTotalSegments;
+      uint32_t firmwareDataBaseAddress = 0;
       uint32_t segmentIdx;
       uint32_t segmentLen;
       uint32_t segmentBase;
       uint8_t const * segmentData;
       
-      /* Output number of segments. */
-      printf("  -> Number of segments: %u\n", BltFirmwareGetSegmentCount());
+      /* Store the number of segments. */
+      firmwareDataTotalSegments = BltFirmwareGetSegmentCount();
       /* Loop through all segments. */
       firmwareDataTotalSize = 0;
-      for (segmentIdx = 0; segmentIdx < BltFirmwareGetSegmentCount(); segmentIdx++) 
+      for (segmentIdx = 0; segmentIdx < firmwareDataTotalSegments; segmentIdx++)
       {
         /* Extract segment info. */
         segmentData = BltFirmwareGetSegment(segmentIdx, &segmentBase, &segmentLen);
@@ -208,16 +239,20 @@ int main(int argc, char const * const argv[])
         assert( (segmentData != NULL) && (segmentLen > 0) );
         /* Update total size. */
         firmwareDataTotalSize += segmentLen;
-        /* If it is the first segment, then output the base address. */
+        /* If it is the first segment, then store the base address. */
         if (segmentIdx == 0)
         {
-          printf("  -> Base memory address: 0x%08x\n", segmentBase);
+          firmwareDataBaseAddress = segmentBase;
         }
       }
       /* Sanity check. */
       assert(firmwareDataTotalSize > 0);
-      /* Ouput total firmware data size. */
-      printf("  -> Total data size: %u bytes\n", firmwareDataTotalSize);
+      /* Output firmware data information. */
+      if (!appProgramSettings.silentMode)
+      {
+        DisplayFirmwareDataInfo(firmwareDataTotalSegments, firmwareDataBaseAddress,
+                                firmwareDataTotalSize);
+      }
     }
   }
   
@@ -263,12 +298,51 @@ int main(int argc, char const * const argv[])
       if ((segmentData != NULL) && (segmentLen > 0)) /*lint !e774 */
       {
         /* Perform erase operation. */
-        printf("Erasing %u bytes starting at 0x%08x...", segmentLen, segmentBase);
+        printf("Erasing %u bytes starting at 0x%08x...%s", segmentLen, segmentBase,
+            GetLineTrailerByPercentage(0));
         (void)fflush(stdout);
-        if (BltSessionClearMemory(segmentBase, segmentLen) != BLT_RESULT_OK)
+        /* Perform erase operation in chunks, so that a progress update can be shown
+         * and no erase timeout occurs due to erasing too big of a memory range.
+         */
+        uint32_t const eraseChunkSize = 32768;
+        uint32_t currentEraseCnt;
+        uint32_t currentEraseBase;
+        uint32_t currentEraseResult;
+        uint32_t stillToEraseCnt;
+
+        stillToEraseCnt = segmentLen;
+        currentEraseBase = segmentBase;
+        while (stillToEraseCnt > 0)
         {
-          /* Set error code. */
-          result = RESULT_ERROR_MEMORY_ERASE;
+          /* Determine chunk size. */
+          if (stillToEraseCnt >= eraseChunkSize)
+          {
+            currentEraseCnt = eraseChunkSize;
+          }
+          else
+          {
+            currentEraseCnt = stillToEraseCnt;
+          }
+          /* Erase the next chunk from the target's memory. */
+          currentEraseResult = BltSessionClearMemory(currentEraseBase, currentEraseCnt);
+          if (currentEraseResult != BLT_RESULT_OK)
+          {
+            /* Set error code. */
+            result = RESULT_ERROR_MEMORY_ERASE;
+            /* Error detected so abort erase operation. */
+            break;
+          }
+          /* Update loop variables. */
+          currentEraseBase += currentEraseCnt;
+          stillToEraseCnt -= currentEraseCnt;
+          /* Display progress. */
+          uint8_t progressPct;
+
+          /* First backspace the old percentage trailer. */
+          ErasePercentageTrailer();
+          /* Now add the new percentage trailer. */
+          progressPct = (uint8_t)(((segmentLen - stillToEraseCnt) * 100ul) / segmentLen);
+          printf("%s", GetLineTrailerByPercentage(progressPct)); (void)fflush(stdout);
         }
       }
       else
@@ -276,6 +350,7 @@ int main(int argc, char const * const argv[])
         /* Set error code because sanity check failed. */
         result = RESULT_ERROR_MEMORY_ERASE;
       }
+      ErasePercentageTrailer();
       printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK))); 
       /* Do not continue loop if an error was detected. */
       if (result != RESULT_OK)
@@ -293,7 +368,7 @@ int main(int argc, char const * const argv[])
     uint32_t segmentBase;
     uint8_t const * segmentData;
 
-    /* Program the memory segments on the target with the firmwware data. */
+    /* Program the memory segments on the target with the firmware data. */
     for (segmentIdx = 0; segmentIdx < BltFirmwareGetSegmentCount(); segmentIdx++) 
     {
       /* Extract segment info. */
@@ -396,7 +471,7 @@ int main(int argc, char const * const argv[])
 static void DisplayProgramInfo(void)
 {
   printf("--------------------------------------------------------------------------\n");
-  printf("BootCommander version 1.00. Performs firmware updates on a microcontroller\n");
+  printf("BootCommander version 1.04. Performs firmware updates on a microcontroller\n");
   printf("based system that runs the OpenBLT bootloader.\n\n");
   printf("Copyright (c) 2017 by Feaser  http://www.feaser.com\n");
   printf("-------------------------------------------------------------------------\n");
@@ -419,6 +494,9 @@ static void DisplayProgramUsage(void)
   printf("                     xcp (default) -> XCP version 1.0.\n");
   printf("  -t=[name]        Name of the communication transport layer:\n");
   printf("                     xcp_rs232 (default) -> XCP on RS232.\n");
+  printf("                     xcp_can             -> XCP on CAN.\n");
+  printf("                     xcp_usb             -> XCP on USB.\n");
+  printf("                     xcp_net             -> XCP on TCP/IP.\n");
   printf("\n");                   
   printf("XCP version 1.0 settings (xcp):\n");
   printf("  -t1=[timeout]    Command response timeout in milliseconds as a 16-bit\n");
@@ -432,6 +510,8 @@ static void DisplayProgramUsage(void)
   printf("  -t7=[timeout]    Busy wait timer timeout in milliseconds as a 16-bit\n"); 
   printf("                   value (Default = 2000 ms).\n");
   printf("  -sk=[file]       Seed/key algorithm library filename (Optional).\n");
+  printf("  -cm=[value]      Connection mode value sent in the XCP connect command,\n");
+  printf("                   as a 8-bit value (Default=0).\n");
   printf("\n");  
   printf("XCP on RS232 settings (xcp_rs232):\n");
   printf("  -d=[name]        Name of the communication device. For example COM1 or\n");
@@ -439,7 +519,45 @@ static void DisplayProgramUsage(void)
   printf("  -b=[value]       The communication speed, a.k.a baudrate in bits per\n");
   printf("                   second, as a 32-bit value (Default = 57600).\n");
   printf("                   Supported values: 9600, 19200, 38400, 57600, 115200.\n");
+  printf("\n");  
+  printf("XCP on CAN settings (xcp_can):\n");
+  printf("  -d=[name]        Name of the CAN device (Mandatory). On Linux this is\n");
+  printf("                   the name of the SocketCAN network interface, such as\n");
+  printf("                   can0, slcan0. On Windows it specifies the CAN adapter.\n");
+  printf("                   Currently supported CAN adapters:\n");
+  printf("                     peak_pcanusb     -> Peak System PCAN-USB.\n");
+  printf("                     kvaser_leaflight -> Kvaser Leaf Light V2.\n");
+  printf("                     lawicel_canusb   -> Lawicel CANUSB.\n");
+  printf("  -c=[value]       Zero based index of the CAN channel if multiple CAN\n");
+  printf("                   channels are supported for the CAN adapter, as a 32-\n");
+  printf("                   bit value (Default = 0).\n");
+  printf("  -b=[value]       The communication speed, a.k.a baudrate in bits per\n");
+  printf("                   second, as a 32-bit value (Default = 500000).\n");
+  printf("                   Supported values: 1000000, 800000, 500000, 250000,\n");
+  printf("                   125000, 100000, 50000, 20000, 10000.\n");
+  printf("  -tid=[value]     CAN identifier for transmitting XCP command messages\n");
+  printf("                   from the host to the target, as a 32-bit hexadecimal\n");
+  printf("                   value (Default = 667h).\n");
+  printf("  -rid=[value]     CAN identifier for receiving XCP response messages\n");
+  printf("                   from the target to the host, as a 32-bit hexadecimal\n");
+  printf("                   value (Default = 7E1h).\n");
+  printf("  -xid=[value]     Configures the 'tid' and 'rid' CAN identifier values\n");
+  printf("                   as 29-bit CAN identifiers, if this 8-bit value is > 0\n");
+  printf("                   (Default = 0).\n");
   printf("\n");                   
+  printf("XCP on USB settings (xcp_usb):\n");
+  printf("  No additional settings needed.\n");
+  printf("\n");  
+  printf("XCP on TCP/IP settings (xcp_net):\n");
+  printf("  -a=[value]       The IP address or hostname of the target to connect to.\n");
+  printf("                   For example 192.168.178.23 (Mandatory).\n");
+  printf("  -p=[value]       The TCP port number to use, as a 16-bit value (Default\n");
+  printf("                   = 1000).\n");
+  printf("\n");
+  printf("Program settings:\n");
+  printf("  -sm              Silent mode switch. When specified, only minimal\n");
+  printf("                   information is written to the output (Optional).\n");
+  printf("\n");
   printf("Note that it is not necessary to specify an option if its default value\n");
   printf("is already the desired value.\n");
   printf("-------------------------------------------------------------------------\n");
@@ -477,7 +595,7 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
       if (sessionSettings == NULL) /*lint !e774 */
       {
         /* No valid settings present. */
-        printf("  -> Invalid setings specified\n");
+        printf("  -> Invalid settings specified\n");
       }
       else
       {
@@ -489,7 +607,7 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
         printf("  -> Timeout T3: %hu ms\n", xcpSettings->timeoutT3);
         printf("  -> Timeout T4: %hu ms\n", xcpSettings->timeoutT4);
         printf("  -> Timeout T5: %hu ms\n", xcpSettings->timeoutT5);
-        printf("  -> Timeout T6: %hu ms\n", xcpSettings->timeoutT7);
+        printf("  -> Timeout T7: %hu ms\n", xcpSettings->timeoutT7);
         printf("  -> Seed/Key file: ");
         if (xcpSettings->seedKeyFile != NULL)
         {
@@ -499,6 +617,7 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
         {
           printf("None\n");
         }
+        printf("  -> Connection mode: %hhu\n", xcpSettings->connectMode);
       }
       break;
     }
@@ -524,13 +643,22 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
     case BLT_TRANSPORT_XCP_V10_RS232:
       printf("XCP on RS232\n");
       break;
+    case BLT_TRANSPORT_XCP_V10_CAN:
+      printf("XCP on CAN\n");
+      break;
+    case BLT_TRANSPORT_XCP_V10_USB:
+      printf("XCP on USB\n");
+      break;
+    case BLT_TRANSPORT_XCP_V10_NET:
+      printf("XCP on TCP/IP\n");
+      break;
     default:
       printf("Unknown\n");
       break;
   }
   
   /* Output transport settings info. */
-  printf("Using transort layer settings:\n");
+  printf("Using transport layer settings:\n");
   switch (transportType) 
   {
     case BLT_TRANSPORT_XCP_V10_RS232:
@@ -540,7 +668,7 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
       if (transportSettings == NULL) /*lint !e774 */
       {
         /* No valid settings present. */
-        printf("  -> Invalid setings specified\n");
+        printf("  -> Invalid settings specified\n");
       }
       else
       {
@@ -561,11 +689,145 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
       }
       break;
     }
+    case BLT_TRANSPORT_XCP_V10_CAN:
+    {
+      /* Check settings pointer. */
+      assert(transportSettings);
+      if (transportSettings == NULL) /*lint !e774 */
+      {
+        /* No valid settings present. */
+        printf("  -> Invalid settings specified\n");
+      }
+      else
+      {
+        tBltTransportSettingsXcpV10Can * xcpCanSettings = 
+          (tBltTransportSettingsXcpV10Can *)transportSettings;
+        
+        /* Output the settings to the user. */
+        printf("  -> Device: ");
+        if (xcpCanSettings->deviceName != NULL)
+        {
+          printf("%s (channel %u)\n", xcpCanSettings->deviceName,
+                 xcpCanSettings->deviceChannel);
+        }
+        else
+        {
+          printf("Unknown\n");
+        }
+        printf("  -> Baudrate: %u bit/sec\n", xcpCanSettings->baudrate);
+        printf("  -> Transmit CAN identifier: %Xh\n", xcpCanSettings->transmitId);
+        printf("  -> Receive CAN identifier: %Xh\n", xcpCanSettings->receiveId);
+        printf("  -> Use 29-bit CAN identifiers: ");
+        if (xcpCanSettings->useExtended)
+        {
+          printf("Yes\n");
+        }
+        else
+        {
+          printf("No\n");
+        }
+      }
+      break;
+    }
+    case BLT_TRANSPORT_XCP_V10_USB:
+    {
+      printf("  -> No additional settings required.\n");
+      break;
+    }
+    case BLT_TRANSPORT_XCP_V10_NET:
+    {
+      /* Check settings pointer. */
+      assert(transportSettings);
+      if (transportSettings == NULL) /*lint !e774 */
+      {
+        /* No valid settings present. */
+        printf("  -> Invalid settings specified\n");
+      }
+      else
+      {
+        tBltTransportSettingsXcpV10Net * xcpNetSettings =
+          (tBltTransportSettingsXcpV10Net *)transportSettings;
+
+        /* Output the settings to the user. */
+        printf("  -> Address: ");
+        if (xcpNetSettings->address != NULL)
+        {
+          printf("%s\n", xcpNetSettings->address);
+        }
+        else
+        {
+          printf("Unknown\n");
+        }
+        printf("  -> Port: %hu \n", xcpNetSettings->port);
+      }
+      break;
+    }
     default:
       printf("  -> No settings specified\n");
       break;
   }
 } /*** end of DisplayTransportInfo ***/
+
+
+/************************************************************************************//**
+** \brief     Displays firmware data information on the standard output.
+** \param     segments Total number of firmware data segments
+** \param     base The base memory address of the firmware data.
+** \param     size Total number of firmware data bytes.
+**
+****************************************************************************************/
+static void DisplayFirmwareDataInfo(uint32_t segments, uint32_t base, uint32_t size)
+{
+  /* Output number of segments. */
+  printf("  -> Number of segments: %u\n", segments);
+  /* Output the base address. */
+  printf("  -> Base memory address: 0x%08x\n", base);
+  /* Ouput total firmware data size. */
+  printf("  -> Total data size: %u bytes\n", size);
+} /*** end of DisplayFirmwareDataInfo ***/
+
+
+/************************************************************************************//**
+** \brief     Parses the command line to extract the program settings. Note that this
+**            function allocates the memory necessary to store the settings. It is the
+**            caller's responsibility to free this memory after it is done with it.
+** \param     argc Number of program arguments.
+** \param     argv Array with program parameter strings.
+** \param     programSettings Pointer to the setting structure where the program settings
+**            should be written to.
+**
+****************************************************************************************/
+static void ExtractProgramSettingsFromCommandLine(int argc, char const * const argv[],
+                                                  tProgramSettings * programSettings)
+{
+  uint8_t paramIdx;
+
+  /* Check parameters. */
+  assert(argv != NULL);
+  assert(programSettings != NULL);
+
+  /* Only continue if parameters are valid. */
+  if ( (argv != NULL) && (programSettings != NULL) ) /*lint !e774 */
+  {
+    /* Set default program settings. */
+    programSettings->silentMode = false;
+    /* Loop through all the command line parameters, just skip the 1st one because
+     * this  is the name of the program, which we are not interested in.
+     */
+    for (paramIdx = 1; paramIdx < argc; paramIdx++)
+    {
+      /* Is this the -sm parameter? */
+      if ( (strstr(argv[paramIdx], "-sm") != NULL) &&
+           (strlen(argv[paramIdx]) == 3) )
+      {
+        /* Activate silent mode. */
+        programSettings->silentMode = true;
+        /* Continue with next loop iteration. */
+        continue;
+      }
+    }
+  }
+} /*** end of ExtractProgramSettingsFromCommandLine ***/
 
 
 /************************************************************************************//**
@@ -664,7 +926,8 @@ static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const
          *   -t4=[timeout]  -> Erase memory timeout in milliseconds.
          *   -t5=[timeout]  -> Program memory and reset timeout in milliseconds.
          *   -t7=[timeout]  -> Busy wait timer timeout in milliseconds.
-         *   -sk=[file]     -> Seed/key algorithm library filename.  
+         *   -sk=[file]     -> Seed/key algorithm library filename. 
+         *   -cm=[value]    -> Connection mode parameter in XCP connect command.
          */
         /* Allocate memory for storing the settings and check the result. */
         result = malloc(sizeof(tBltSessionSettingsXcpV10));
@@ -680,6 +943,7 @@ static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const
           xcpSettings->timeoutT5 = 1000;
           xcpSettings->timeoutT7 = 2000;
           xcpSettings->seedKeyFile = NULL;
+          xcpSettings->connectMode = 0;
           /* Loop through all the command line parameters, just skip the 1st one because 
            * this  is the name of the program, which we are not interested in.
            */
@@ -739,6 +1003,15 @@ static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const
               /* Continue with next loop iteration. */
               continue;
             }
+            /* Is this the -cm=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-cm=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 4) )
+            {
+              /* Extract the connection mode value. */
+              sscanf(&argv[paramIdx][4], "%hhu", &(xcpSettings->connectMode));
+              /* Continue with next loop iteration. */
+              continue;
+            }
           }
         }
         break;
@@ -773,7 +1046,10 @@ static uint32_t ExtractTransportTypeFromCommandLine(int argc, char const * const
     uint32_t value;
   } transportMap[] =
   {
-    { .name = "xcp_rs232", .value = BLT_TRANSPORT_XCP_V10_RS232 }
+    { .name = "xcp_rs232", .value = BLT_TRANSPORT_XCP_V10_RS232 },
+    { .name = "xcp_can", .value = BLT_TRANSPORT_XCP_V10_CAN },
+    { .name = "xcp_usb", .value = BLT_TRANSPORT_XCP_V10_USB },
+    { .name = "xcp_net", .value = BLT_TRANSPORT_XCP_V10_NET }
   };
   
   /* Set the default transport type in case nothing was specified on the command line. */
@@ -885,6 +1161,145 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
           }
         }
         break;
+      /* -------------------------- XCP on CAN --------------------------------------- */
+      case BLT_TRANSPORT_XCP_V10_CAN:
+        /* The following transport layer specific command line parameters are supported:
+         *   -d=[name]      -> Device name: peak_pcanusb, can0, etc.
+         *   -c=[value]     -> CAN channel index (32-bit).
+         *   -b=[value]     -> Baudrate in bits per second (32-bit).
+         *   -tid=[value]   -> Transmit CAN identifier (32-bit hexadecimal).
+         *   -rid=[value]   -> Receive CAN identifier (32-bit hexadecimal).
+         *   -xid=[value]   -> Flag for configuring extended CAN identifiers (8-bit).
+         */
+        /* Allocate memory for storing the settings and check the result. */
+        result = malloc(sizeof(tBltTransportSettingsXcpV10Can));
+        assert(result != NULL);
+        if (result != NULL) /*lint !e774 */
+        {
+          /* Create typed pointer for easy reading. */
+          tBltTransportSettingsXcpV10Can * canSettings =
+            (tBltTransportSettingsXcpV10Can *)result;
+          /* Set default values. */
+          canSettings->deviceName = NULL;
+          canSettings->deviceChannel = 0;
+          canSettings->baudrate = 500000;
+          canSettings->transmitId = 0x667;
+          canSettings->receiveId = 0x7E1;
+          canSettings->useExtended = false;
+          /* Loop through all the command line parameters, just skip the 1st one because 
+           * this  is the name of the program, which we are not interested in.
+           */
+          for (paramIdx = 1; paramIdx < argc; paramIdx++)
+          {
+            /* Is this the -d=[name] parameter? */
+            if ( (strstr(argv[paramIdx], "-d=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 3) )
+            {
+              /* Store the pointer to the device name. */
+              canSettings->deviceName = &argv[paramIdx][3];
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -c=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-c=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 3) )
+            {
+              /* Extract the channel index value. */
+              sscanf(&argv[paramIdx][3], "%u", &(canSettings->deviceChannel));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -b=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-b=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 3) )
+            {
+              /* Extract the baudrate value. */
+              sscanf(&argv[paramIdx][3], "%u", &(canSettings->baudrate));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -tid=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-tid=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 5) )
+            {
+              /* Extract the hexadecimal transmit CAN identifier value. */
+              sscanf(&argv[paramIdx][5], "%x", &(canSettings->transmitId));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -rid=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-rid=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 5) )
+            {
+              /* Extract the hexadecimal receive CAN identifier value. */
+              sscanf(&argv[paramIdx][5], "%x", &(canSettings->receiveId));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -xid=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-xid=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 5) )
+            {
+              /* Extract the extended CAN identifier configuration value. */
+              static uint8_t xidValue;
+              sscanf(&argv[paramIdx][5], "%hhu", &xidValue);
+              /* Convert to boolean. */
+              canSettings->useExtended = ((xidValue > 0) ? true : false);
+              /* Continue with next loop iteration. */
+              continue;
+            }
+          }
+        }
+        break;
+      /* -------------------------- XCP on USB --------------------------------------- */
+      case BLT_TRANSPORT_XCP_V10_USB:
+        /* No additional command line parameters are neede for the USB transport
+         * layer. 
+         */
+        break;
+        /* -------------------------- XCP on TCP/IP ---------------------------------- */
+        case BLT_TRANSPORT_XCP_V10_NET:
+          /* The following transport layer specific command line parameters are supported:
+           *   -a=[value]     -> The IP address or hostname of the target to connect to.
+           *   -p=[value]     -> The TCP port number to use.
+           */
+          /* Allocate memory for storing the settings and check the result. */
+          result = malloc(sizeof(tBltTransportSettingsXcpV10Net));
+          assert(result != NULL);
+          if (result != NULL) /*lint !e774 */
+          {
+            /* Create typed pointer for easy reading. */
+            tBltTransportSettingsXcpV10Net * netSettings =
+              (tBltTransportSettingsXcpV10Net *)result;
+            /* Set default values. */
+            netSettings->address = NULL;
+            netSettings->port = 1000;
+            /* Loop through all the command line parameters, just skip the 1st one because
+             * this  is the name of the program, which we are not interested in.
+             */
+            for (paramIdx = 1; paramIdx < argc; paramIdx++)
+            {
+              /* Is this the -a=[name] parameter? */
+              if ( (strstr(argv[paramIdx], "-a=") != NULL) &&
+                   (strlen(argv[paramIdx]) > 3) )
+              {
+                /* Store the pointer to the network address. */
+                netSettings->address = &argv[paramIdx][3];
+                /* Continue with next loop iteration. */
+                continue;
+              }
+              /* Is this the -p=[value] parameter? */
+              if ( (strstr(argv[paramIdx], "-p=") != NULL) &&
+                   (strlen(argv[paramIdx]) > 3) )
+              {
+                /* Extract the port value. */
+                sscanf(&argv[paramIdx][3], "%hu", &(netSettings->port));
+                /* Continue with next loop iteration. */
+                continue;
+              }
+            }
+          }
+          break;
       /* -------------------------- Unknown ------------------------------------------ */
       default:
         /* Noting to extract. */

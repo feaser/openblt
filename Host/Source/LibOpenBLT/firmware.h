@@ -68,7 +68,7 @@ typedef struct t_firmware_parser
   /** \brief Extract the firmware segments from the firmware file and add them as nodes
    *         to the linked list.
    */
-  bool (* LoadFromFile) (char const * firmwareFile);
+  bool (* LoadFromFile) (char const * firmwareFile, uint32_t addressOffset);
   /** \brief Write all the firmware segments from the linked list to the specified
    *         firmware file.
    */
@@ -81,7 +81,7 @@ typedef struct t_firmware_parser
 ****************************************************************************************/
 void FirmwareInit(tFirmwareParser const * parser);
 void FirmwareTerminate(void);
-bool FirmwareLoadFromFile(char const * firmwareFile);
+bool FirmwareLoadFromFile(char const * firmwareFile, uint32_t addressOffset);
 bool FirmwareSaveToFile(char const * firmwareFile);
 uint32_t FirmwareGetSegmentCount(void);
 tFirmwareSegment * FirmwareGetSegment(uint32_t segmentIdx);

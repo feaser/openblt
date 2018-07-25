@@ -1,7 +1,7 @@
 /************************************************************************************//**
 * \file         serialport.h
 * \brief        Serial port header file.
-* \ingroup      Session
+* \ingroup      SerialPort
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,6 +25,11 @@
 *
 * \endinternal
 ****************************************************************************************/
+/************************************************************************************//**
+* \defgroup   SerialPort Serial port driver
+* \brief      This module implements a generic serial port driver.
+* \ingroup    Session
+****************************************************************************************/
 #ifndef SERIALPORT_H
 #define SERIALPORT_H
 
@@ -35,7 +40,7 @@ extern "C" {
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Enumaration of the supported baudrates. */
+/** \brief Enumeration of the supported baudrates. */
 typedef enum
 {
   SERIALPORT_BR9600   = 0,                  /**< 9600 bits/sec                         */

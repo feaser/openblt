@@ -1,7 +1,7 @@
 /************************************************************************************//**
 * \file         xcptpuart.c
 * \brief        XCP UART transport layer source file.
-* \ingroup      XcpLoader
+* \ingroup      XcpTpUart
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -83,7 +83,7 @@ static tXcpTpUartSettings tpUartSettings;
 tXcpTransport const * XcpTpUartGetTransport(void)
 {
   return &uartTransport;
-} /*** end of XcpLoaderGetProtocol ***/
+} /*** end of XcpTpUartGetTransport ***/
 
 
 /************************************************************************************//**
@@ -108,7 +108,7 @@ static void XcpTpUartInit(void const * settings)
   {
     /* Shallow copy the transport layer settings for layer usage. */
     tpUartSettings = *((tXcpTpUartSettings *)settings);
-    /* The portname is a pointer and it is not gauranteed that it stays valid so we need
+    /* The portname is a pointer and it is not guaranteed that it stays valid so we need
      * to deep copy this one. note the +1 for '\0' in malloc.
      */
     assert(((tXcpTpUartSettings *)settings)->portname != NULL);
@@ -227,7 +227,7 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
   bool result = false;
   uint16_t byteIdx;
   /* uartBuffer is static to lower the stack load. +1 because the first byte for an XCP 
-   * packet on the UART transport layer contains the packet lenght. 
+   * packet on the UART transport layer contains the packet length.
    */
   static uint8_t uartBuffer[XCPLOADER_PACKET_SIZE_MAX + 1]; 
   uint32_t responseTimeoutTime = 0;
