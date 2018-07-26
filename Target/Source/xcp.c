@@ -124,7 +124,7 @@ extern blt_int8u XcpVerifyKeyHook(blt_int8u resource, blt_int8u *key, blt_int8u 
 #if (BOOT_COM_ENABLE == 0)
 /* in case no internally supported communication interface is used, a custom
  * communication module can be added. In order to use the XCP protocol in the custom
- * communication module, this hook function needs to be implemented. In the XCP protocol
+ * communication module, this hook function needs to be implemented. If the XCP protocol
  * is not needed, then simply remove the xcp.c source from the project.
  */
 extern void XcpTransmitPacketHook(blt_int8u *data, blt_int16u len);
@@ -694,13 +694,14 @@ static void XcpCmdUpload(blt_int8u *data)
   /* set the destination pointer */
   destPtr = (blt_int8u *)((blt_addr)(blt_int32u)&xcpInfo.ctoData[1]);
 
+#if (XCP_UPLOAD_EN == 1)
   /* according to the XCP specification memory read/upload functionality is always
    * available. This behavior is unwanted in the case of a bootloader that has the
    * seed/key security feature enabled. The default XCP behavior is deviated in this
    * situation. The deviation is such that all zero values are returned if the seed/key
    * security feature is enabled and the programming resource is not yet unlocked.
    */
-#if (XCP_SEED_KEY_PROTECTION_EN == 1)
+  #if (XCP_SEED_KEY_PROTECTION_EN == 1)
   /* check if PGM resource is unlocked */
   if ((xcpInfo.protection & XCP_RES_PGM) == XCP_RES_PGM)
   {
@@ -714,10 +715,14 @@ static void XcpCmdUpload(blt_int8u *data)
     /* copy the data from memory to the data packet */
     CpuMemCopy((blt_addr)destPtr,(blt_addr)xcpInfo.mta, len);
   }
-#else
+  #else
   /* copy the data from memory to the data packet */
   CpuMemCopy((blt_addr)destPtr,(blt_addr)xcpInfo.mta, len);
-#endif
+  #endif /* XCP_SEED_KEY_PROTECTION_EN == 1 */
+#else
+  /* uploads are disabled, so return zero values for memory read operations */
+  CpuMemSet((blt_addr)destPtr, 0, len);
+#endif /* XCP_UPLOAD_EN == 1 */
 
   /* set packet id to command response packet */
   xcpInfo.ctoData[0] = XCP_PID_RES;
@@ -757,13 +762,14 @@ static void XcpCmdShortUpload(blt_int8u *data)
   /* set the destination pointer */
   destPtr = (blt_int8u *)((blt_addr)(blt_int32u)&xcpInfo.ctoData[1]);
 
+#if (XCP_UPLOAD_EN == 1)
   /* according to the XCP specification memory read/upload functionality is always
    * available. This behavior is unwanted in the case of a bootloader that has the
    * seed/key security feature enabled. The default XCP behavior is deviated in this
    * situation. The deviation is such that all zero values are returned if the seed/key
    * security feature is enabled and the programming resource is not yet unlocked.
    */
-#if (XCP_SEED_KEY_PROTECTION_EN == 1)
+  #if (XCP_SEED_KEY_PROTECTION_EN == 1)
   /* check if PGM resource is unlocked */
   if ((xcpInfo.protection & XCP_RES_PGM) == XCP_RES_PGM)
   {
@@ -777,10 +783,14 @@ static void XcpCmdShortUpload(blt_int8u *data)
     /* copy the data from memory to the data packet */
     CpuMemCopy((blt_addr)destPtr,(blt_addr)xcpInfo.mta, len);
   }
-#else
+  #else
   /* copy the data from memory to the data packet */
   CpuMemCopy((blt_addr)destPtr,(blt_addr)xcpInfo.mta, len);
-#endif
+  #endif /* XCP_SEED_KEY_PROTECTION_EN == 1 */
+#else
+  /* uploads are disabled, so return zero values for memory read operations */
+  CpuMemSet((blt_addr)destPtr, 0, len);
+#endif /* XCP_UPLOAD_EN == 1 */
 
   /* set packet id to command response packet */
   xcpInfo.ctoData[0] = XCP_PID_RES;

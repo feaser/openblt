@@ -99,6 +99,17 @@
 #define XCP_SEED_KEY_PROTECTION_EN     (0)
 #endif
 
+/** \brief Enable (=1) or disable (=0) uploading. By default, XCP always allows memory
+ *         read operations using the commands UPLOAD and SHORT_UPLOAD. This is not
+ *         always desired for security reasons. If disabled, memory reads via XCP always
+ *         return zero values.
+ */
+#if (BOOT_XCP_UPLOAD_EN > 0)
+#define XCP_UPLOAD_EN                  (1)
+#else
+#define XCP_UPLOAD_EN                  (0)
+#endif
+
 /** \brief Enable (=1) or disable the hook function that gets called each time an XCP
  *         packet was received from the host.
  *  \details A master-slave bootloader can be realized by using this hook-function. The
@@ -117,6 +128,7 @@
 #else
 #define XCP_PACKET_RECEIVED_HOOK_EN    (0)
 #endif
+
 
 
 /****************************************************************************************
@@ -319,6 +331,13 @@ void     XcpPacketReceived(blt_int8u *data, blt_int8u len);
 #error  "XCP.H, XCP_SEED_KEY_PROTECTION_EN must be 0 or 1."
 #endif
 
+#ifndef XCP_UPLOAD_EN
+#error  "XCP.H, Configuration macro XCP_UPLOAD_EN is missing."
+#endif
+
+#if     (XCP_UPLOAD_EN < 0) || (XCP_UPLOAD_EN > 1)
+#error  "XCP.H, XCP_UPLOAD_EN must be 0 or 1."
+#endif
 
 #ifndef XCP_PACKET_RECEIVED_HOOK_EN
 #error  "XCP.H, Configuration macro XCP_PACKET_RECEIVED_HOOK_EN is missing."
