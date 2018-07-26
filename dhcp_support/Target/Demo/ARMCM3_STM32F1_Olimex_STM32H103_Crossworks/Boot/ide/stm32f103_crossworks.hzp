@@ -1,0 +1,177 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="stm32f103_crossworks" target="8" version="2">
+  <project Name="openblt_olimex_stm32h103">
+    <configuration
+      Name="Common"
+      Placement="Flash"
+      Target="STM32F103RB"
+      arm_architecture="v7M"
+      arm_core_type="Cortex-M3"
+      arm_linker_heap_size="128"
+      arm_linker_jtag_pad_pre_dr="1"
+      arm_linker_jtag_pad_pre_ir="5"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="128"
+      arm_simulator_memory_simulation_filename="$(TargetsDir)/STM32/STM32SimulatorMemory.dll"
+      arm_simulator_memory_simulation_parameter="STM32F103RB;0x20000;0x5000"
+      arm_target_debug_interface_type="ADIv5"
+      arm_target_loader_applicable_loaders="Flash"
+      arm_target_loader_default_loader="Flash"
+      arm_target_loader_parameter="8000000"
+      arm_use_gcc_libraries="Yes"
+      build_intermediate_directory="$(Configuration)/../../obj"
+      build_output_directory="$(ProjectDir)/../bin"
+      c_only_additional_options="-I./..;-I./../lib/CMSIS/CM3/CoreSupport;-I./../lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x;-I./../lib/USB_FS_DEVICE/inc;-I./../../../../Source;-I./../../../../Source/ARMCM3_STM32F1;-I./../../../../Source/ARMCM3_STM32F1/Crossworks"
+      c_preprocessor_definitions=""
+      c_user_include_directories="$(TargetsDir)/STM32/include"
+      gcc_optimization_level="Level 1"
+      link_include_standard_libraries="Yes"
+      linker_keep_symbols="_vectors;EntryFromProg"
+      linker_memory_map_file="$(TargetsDir)/STM32/STM32F103RB_MemoryMap.xml"
+      linker_output_format="srec"
+      linker_printf_enabled="No"
+      linker_printf_width_precision_supported="No"
+      linker_scanf_enabled="No"
+      linker_section_placement_file="$(StudioDir)/targets/Cortex_M/flash_placement.xml"
+      oscillator_frequency="8MHz"
+      project_directory=""
+      project_type="Executable"
+      property_groups_file_path="$(TargetsDir)/STM32/propertyGroups.xml"
+      target_get_partname_script="GetPartName()"
+      target_match_partname_script="MatchPartName(&quot;$(Target)&quot;)"
+      target_reset_script="Reset()" />
+    <configuration
+      Name="Flash"
+      arm_target_flash_loader_file_path="$(TargetsDir)/STM32/Release/Loader_rpc.elf"
+      arm_target_flash_loader_type="LIBMEM RPC Loader"
+      arm_target_loader_can_lock_all="No"
+      arm_target_loader_can_lock_range="No"
+      arm_target_loader_can_unlock_all="No"
+      arm_target_loader_can_unlock_range="No"
+      target_reset_script="FLASHReset()" />
+    <folder Name="Source Files">
+      <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
+      <folder Name="Demo">
+        <folder Name="Boot">
+          <file file_name="../hooks.c" />
+          <file file_name="../main.c" />
+          <folder Name="lib">
+            <folder Name="CoreSupport">
+              <file file_name="../lib/CMSIS/CM3/CoreSupport/core_cm3.h" />
+            </folder>
+            <folder Name="DeviceSupport">
+              <file file_name="../lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h" />
+              <file file_name="../lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c" />
+              <file file_name="../lib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h" />
+            </folder>
+            <folder Name="UsbFullspeed">
+              <file file_name="../lib/USB_FS_DEVICE/inc/usb_core.h" />
+              <file file_name="../lib/USB_FS_DEVICE/inc/usb_def.h" />
+              <file file_name="../lib/USB_FS_DEVICE/inc/usb_init.h" />
+              <file file_name="../lib/USB_FS_DEVICE/inc/usb_int.h" />
+              <file file_name="../lib/USB_FS_DEVICE/inc/usb_lib.h" />
+              <file file_name="../lib/USB_FS_DEVICE/inc/usb_mem.h" />
+              <file file_name="../lib/USB_FS_DEVICE/inc/usb_regs.h" />
+              <file file_name="../lib/USB_FS_DEVICE/inc/usb_sil.h" />
+              <file file_name="../lib/USB_FS_DEVICE/inc/usb_type.h" />
+              <file file_name="../lib/USB_FS_DEVICE/src/usb_core.c" />
+              <file file_name="../lib/USB_FS_DEVICE/src/usb_init.c" />
+              <file file_name="../lib/USB_FS_DEVICE/src/usb_int.c" />
+              <file file_name="../lib/USB_FS_DEVICE/src/usb_mem.c" />
+              <file file_name="../lib/USB_FS_DEVICE/src/usb_regs.c" />
+              <file file_name="../lib/USB_FS_DEVICE/src/usb_sil.c" />
+            </folder>
+          </folder>
+          <file file_name="../usb_conf.h" />
+          <file file_name="../usb_desc.c" />
+          <file file_name="../usb_desc.h" />
+          <file file_name="../usb_endp.c" />
+          <file file_name="../usb_istr.c" />
+          <file file_name="../usb_istr.h" />
+          <file file_name="../usb_prop.c" />
+          <file file_name="../usb_prop.h" />
+          <file file_name="../usb_pwr.c" />
+          <file file_name="../usb_pwr.h" />
+          <file file_name="../blt_conf.h" />
+          <file file_name="../cstart.s" />
+          <file file_name="../vectors.c" />
+          <file file_name="../flash_layout.c">
+            <configuration
+              Name="THUMB Debug"
+              build_exclude_from_build="Yes" />
+          </file>
+        </folder>
+      </folder>
+      <folder Name="Source">
+        <folder Name="ARMCM3_STM32F1">
+          <file file_name="../../../../Source/ARMCM3_STM32F1/can.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/cpu.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/flash.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/flash.h" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/nvm.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/timer.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/types.h" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/uart.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/usb.c" />
+          <folder Name="GCC">
+            <file file_name="../../../../Source/ARMCM3_STM32F1/GCC/cpu_comp.c" />
+          </folder>
+        </folder>
+        <file file_name="../../../../Source/assert.c" />
+        <file file_name="../../../../Source/assert.h" />
+        <file file_name="../../../../Source/backdoor.c" />
+        <file file_name="../../../../Source/backdoor.h" />
+        <file file_name="../../../../Source/boot.c" />
+        <file file_name="../../../../Source/boot.h" />
+        <file file_name="../../../../Source/com.c" />
+        <file file_name="../../../../Source/com.h" />
+        <file file_name="../../../../Source/cop.c" />
+        <file file_name="../../../../Source/cop.h" />
+        <file file_name="../../../../Source/plausibility.h" />
+        <file file_name="../../../../Source/xcp.c" />
+        <file file_name="../../../../Source/xcp.h" />
+        <file file_name="../../../../Source/can.h" />
+        <file file_name="../../../../Source/cpu.h" />
+        <file file_name="../../../../Source/nvm.h" />
+        <file file_name="../../../../Source/timer.h" />
+        <file file_name="../../../../Source/uart.h" />
+        <file file_name="../../../../Source/usb.h" />
+      </folder>
+    </folder>
+    <folder Name="System Files">
+      <file file_name="$(TargetsDir)/STM32/STM32_Target.js">
+        <configuration Name="Common" file_type="Reset Script" />
+      </file>
+      <file file_name="../memory.x">
+        <configuration Name="Common" file_type="Linker Script" />
+      </file>
+    </folder>
+    <configuration Name="Debug" c_only_additional_options="" />
+  </project>
+  <configuration Name="THUMB Debug" inherited_configurations="THUMB;Debug" />
+  <configuration
+    Name="THUMB"
+    Platform="ARM"
+    arm_instruction_set="THUMB"
+    arm_library_instruction_set="THUMB"
+    c_preprocessor_definitions="__THUMB"
+    hidden="Yes" />
+  <configuration
+    Name="Debug"
+    build_debug_information="Yes"
+    c_preprocessor_definitions="DEBUG"
+    gcc_optimization_level="None"
+    hidden="Yes"
+    link_include_startup_code="No" />
+  <configuration
+    Name="THUMB Release"
+    inherited_configurations="THUMB;Release" />
+  <configuration
+    Name="Release"
+    build_debug_information="No"
+    c_additional_options="-g1"
+    c_preprocessor_definitions="NDEBUG"
+    gcc_optimization_level="Level 1"
+    hidden="Yes"
+    link_include_startup_code="No" />
+</solution>

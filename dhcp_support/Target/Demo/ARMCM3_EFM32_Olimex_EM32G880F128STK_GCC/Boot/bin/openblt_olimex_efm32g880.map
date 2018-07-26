@@ -1,0 +1,249 @@
+
+bin/openblt_olimex_efm32g880.elf:     file format elf32-littlearm
+bin/openblt_olimex_efm32g880.elf
+architecture: arm, flags 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+start address 0x00000000
+
+Program Header:
+    LOAD off    0x00010000 vaddr 0x00000000 paddr 0x00000000 align 2**16
+         filesz 0x000018c8 memsz 0x000018c8 flags r-x
+    LOAD off    0x00020000 vaddr 0x20000000 paddr 0x000018c8 align 2**16
+         filesz 0x00000158 memsz 0x00000a48 flags rwx
+private flags = 5000200: [Version5 EABI] [soft-float ABI]
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000018c8  00000000  00000000  00010000  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000158  20000000  000018c8  00020000  2**2
+                  CONTENTS, ALLOC, LOAD, CODE
+  2 .bss          000008f0  20000158  00001a20  00020158  2**2
+                  ALLOC
+  3 .ARM.attributes 00000029  00000000  00000000  00020158  2**0
+                  CONTENTS, READONLY
+  4 .comment      0000006e  00000000  00000000  00020181  2**0
+                  CONTENTS, READONLY
+  5 .debug_info   00006138  00000000  00000000  000201ef  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00001cd1  00000000  00000000  00026327  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_aranges 000006d0  00000000  00000000  00027ff8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_ranges 00000570  00000000  00000000  000286c8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_macro  00014a1d  00000000  00000000  00028c38  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_line   000037b1  00000000  00000000  0003d655  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    0007427c  00000000  00000000  00040e06  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_frame  00000e38  00000000  00000000  000b5084  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_loc    00002e1a  00000000  00000000  000b5ebc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+SYMBOL TABLE:
+00000000 l    d  .text	00000000 .text
+20000000 l    d  .data	00000000 .data
+20000158 l    d  .bss	00000000 .bss
+00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .debug_info	00000000 .debug_info
+00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
+00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_ranges	00000000 .debug_ranges
+00000000 l    d  .debug_macro	00000000 .debug_macro
+00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_str	00000000 .debug_str
+00000000 l    d  .debug_frame	00000000 .debug_frame
+00000000 l    d  .debug_loc	00000000 .debug_loc
+00000000 l    df *ABS*	00000000 vectors.c
+00000000 l    df *ABS*	00000000 main.c
+000000c8 l     F .text	000001e4 Init
+00000000 l    df *ABS*	00000000 cstart.c
+000002de l     F .text	00000000 zero_loop
+00000000 l    df *ABS*	00000000 efm32_leuart.c
+00000000 l    df *ABS*	00000000 efm32_system.c
+00000000 l    df *ABS*	00000000 efm32_cmu.c
+00000424 l     F .text	00000030 CMU_FlashWaitStateMax
+00000454 l     F .text	0000000c CMU_DivToLog2
+00000460 l     F .text	00000060 CMU_FlashWaitStateControl
+000004c0 l     F .text	00000008 CMU_AUXClkGet
+000004c8 l     F .text	00000038 CMU_LFClkGet
+00000760 l     F .text	00000024 CMU_DBGClkGet
+00000000 l    df *ABS*	00000000 efm32_msc.c
+00000000 l    df *ABS*	00000000 efm32_gpio.c
+00000000 l    df *ABS*	00000000 efm32_emu.c
+20000158 l     O .bss	00000002 cmuStatus
+00000000 l    df *ABS*	00000000 system_efm32.c
+20000000 l     O .data	00000004 SystemLFXOClock
+20000004 l     O .data	00000004 SystemHFXOClock
+00000000 l    df *ABS*	00000000 xcp.c
+00000bac l     F .text	0000001e XcpComputeChecksum
+00000bcc l     F .text	0000000c XcpProtectResources
+00000bd8 l     F .text	00000014 XcpSetCtoError
+00000bec l     F .text	0000001c XcpCmdDisconnect
+00000c08 l     F .text	00000020 XcpCmdGetStatus
+00000c28 l     F .text	0000000a XcpCmdSynch
+00000c34 l     F .text	0000002c XcpCmdGetId
+00000c60 l     F .text	00000018 XcpCmdSetMta
+00000c78 l     F .text	00000028 XcpCmdBuildCheckSum
+00000ca0 l     F .text	0000000a XcpCmdProgramPrepare
+00000cac l     F .text	00000028 XcpCmdProgramStart
+00000cd4 l     F .text	00000044 XcpCmdConnect
+00000d18 l     F .text	00000040 XcpCmdUpload
+00000d58 l     F .text	00000040 XcpCmdShortUpload
+00000d98 l     F .text	00000040 XcpCmdProgramMax
+00000dd8 l     F .text	0000005c XcpCmdProgram
+00000e34 l     F .text	00000028 XcpCmdProgramClear
+00000e5c l     F .text	00000018 XcpCmdProgramReset
+00000e74 l     F .text	0000000a XcpTransmitPacket
+000017d4 l     O .text	00000008 xcpStationId
+2000015c l     O .bss	0000004c xcpInfo
+00000000 l    df *ABS*	00000000 com.c
+200001a8 l     O .bss	00000040 xcpCtoReqPacket.4268
+20000008 l     O .data	00000001 comActiveInterface
+00000000 l    df *ABS*	00000000 backdoor.c
+200001e8 l     O .bss	00000001 backdoorOpen
+200001ec l     O .bss	00000004 backdoorOpenTime
+00000000 l    df *ABS*	00000000 boot.c
+00000000 l    df *ABS*	00000000 cop.c
+00000000 l    df *ABS*	00000000 assert.c
+00000000 l    df *ABS*	00000000 uart.c
+000010c4 l     F .text	00000030 UartTransmitByte
+000010f4 l     F .text	00000024 UartReceiveByte
+200001f0 l     O .bss	00000004 xcpCtoRxStartTime.5593
+200001f4 l     O .bss	00000041 xcpCtoReqPacket.5590
+20000235 l     O .bss	00000001 xcpCtoRxLength.5591
+20000236 l     O .bss	00000001 xcpCtoRxInProgress.5592
+00000000 l    df *ABS*	00000000 nvm.c
+00000000 l    df *ABS*	00000000 cpu.c
+00000000 l    df *ABS*	00000000 flash.c
+00001338 l     F .text	0000002c FlashCalcPageSize
+00001364 l     F .text	00000048 FlashGetSector
+000013ac l     F .text	0000005c FlashWriteBlock
+00001408 l     F .text	00000038 FlashGetSectorBaseAddr
+00001440 l     F .text	00000038 FlashGetSectorSize
+00001478 l     F .text	00000068 FlashEraseSectors
+000014e0 l     F .text	00000026 FlashInitBlock
+00001508 l     F .text	0000003c FlashSwitchBlock
+00001544 l     F .text	0000007a FlashAddToBlock
+00001810 l     O .text	000000b4 flashLayout
+20000238 l     O .bss	00000204 bootBlockInfo
+2000043c l     O .bss	00000204 blockInfo
+00000000 l    df *ABS*	00000000 timer.c
+20000640 l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 cpu_comp.c
+00000000 l    df *ABS*	00000000 /opt/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7-m/crti.o
+00000000 l    df *ABS*	00000000 /opt/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7-m/crtn.o
+00000000 l    df *ABS*	00000000 crtstuff.c
+000018c4 l     O .text	00000000 __EH_FRAME_BEGIN__
+00000000 l    df *ABS*	00000000 crtstuff.c
+000018c4 l     O .text	00000000 __FRAME_END__
+00000000 l    df *ABS*	00000000 
+00000000 l       *UND*	00000000 __bss_start__
+00000000 l       *UND*	00000000 __libc_fini_array
+00000000 l       *UND*	00000000 __sf_fake_stderr
+00000000 l       *UND*	00000000 __deregister_frame_info
+00000000 l       *UND*	00000000 __bss_end__
+00000000 l       *UND*	00000000 __call_exitprocs
+00000000 l       *UND*	00000000 software_init_hook
+00000000 l       *UND*	00000000 __sf_fake_stdin
+00000000 l       *UND*	00000000 __init_array_end
+00000000 l       *UND*	00000000 hardware_init_hook
+00000000 l       *UND*	00000000 atexit
+00000000 l       *UND*	00000000 __preinit_array_end
+00000000 l       *UND*	00000000 __stack
+00000000 l       *UND*	00000000 __sf_fake_stdout
+00000000 l       *UND*	00000000 __init_array_start
+00000000 l       *UND*	00000000 _exit
+00000000 l       *UND*	00000000 _Jv_RegisterClasses
+00000000 l       *UND*	00000000 __preinit_array_start
+00000000 l       *UND*	00000000 __register_frame_info
+000017b8 l     F .text	00000008 __MSC_WriteWord_veneer
+000017c0 l     F .text	00000008 __MSC_ErasePage_veneer
+00000f9c g     F .text	00000018 ComInit
+000015dc g     F .text	00000058 FlashWrite
+000009dc g     F .text	00000020 GPIO_DriveModeSet
+000010bc g     F .text	00000008 AssertFailure
+00000ac4 g     F .text	00000014 EMU_UpdateOscConfig
+000002bc g     F .text	00000040 reset_handler
+00000784 g     F .text	00000118 CMU_ClockFreqGet
+0000176c g     F .text	0000001c TimerUpdate
+00000eac g     F .text	00000010 XcpPacketTransmitted
+00000354 g     F .text	0000001e LEUART_Enable
+00000374 g     F .text	00000014 LEUART_FreezeEnable
+00000fb4 g     F .text	00000024 ComTask
+00001084 g     F .text	0000001c BootInit
+00001064 g     F .text	00000020 BackDoorInit
+0000089c g     F .text	00000050 CMU_OscillatorEnable
+000010b8 g     F .text	00000002 CopService
+000018c8 g       .text	00000000 _etext
+00001798 g     F .text	00000004 CpuIrqDisable
+00001734 g     F .text	00000006 FlashGetUserProgBaseAddress
+000006cc g     F .text	00000094 CMU_ClockSelectGet
+0000173c g     F .text	0000000c TimerReset
+20000644 g     O .bss	00000004 SystemCoreClock
+000010a0 g     F .text	00000014 BootTask
+00001664 g     F .text	0000004c FlashWriteChecksum
+00000fdc g     F .text	00000018 ComTransmitPacket
+00000ba0 g     F .text	0000000c SystemLFXOClockGet
+00000650 g     F .text	0000007c CMU_ClockEnable
+000003d8 g     F .text	0000000e LEUART_Rx
+00000e9c g     F .text	00000010 XcpIsConnected
+000017a0 g     F .text	00000000 _init
+000012a0 g     F .text	00000008 NvmInit
+000015c0 g     F .text	0000001c FlashInit
+000012c0 g     F .text	00000008 NvmGetUserProgBaseAddress
+20000648 g       .bss	00000000 _ebss
+00000400 g       *ABS*	00000000 __STACKSIZE__
+000000b8 g     F .text	00000010 UnusedISR
+00000fd8 g     F .text	00000002 ComFree
+00000388 g     F .text	0000004e LEUART_Init
+2000000c g     F .data	000000c4 MSC_WriteWord
+00001118 g     F .text	00000098 UartInit
+000009c0 g     F .text	0000001c MSC_Deinit
+000008ec g     F .text	000000b4 CMU_ClockSelectSet
+000012b0 g     F .text	00000008 NvmErase
+20000158 g       .bss	00000000 _bss
+00000ad8 g     F .text	0000009c SystemHFClockGet
+00000ebc g     F .text	000000e0 XcpPacketReceived
+000012dc g     F .text	00000008 CpuInit
+200000d0 g     F .data	00000084 MSC_ErasePage
+000016f8 g     F .text	0000003c FlashDone
+00000e80 g     F .text	0000001c XcpInit
+00001634 g     F .text	0000002e FlashErase
+000002ac g     F .text	00000010 main
+000012c8 g     F .text	00000014 NvmDone
+000011b0 g     F .text	00000050 UartTransmitPacket
+000012b8 g     F .text	00000008 NvmVerifyChecksum
+00001318 g     F .text	00000020 CpuMemCopy
+000009fc g     F .text	000000c8 GPIO_PinModeSet
+00000b94 g     F .text	00000002 SystemInit
+000017ac g     F .text	00000000 _fini
+000003e8 g     F .text	0000001c LEUART_Tx
+00000500 g     F .text	00000150 CMU_ClockDivSet
+0000100c g     F .text	00000018 ComGetActiveInterfaceMaxTxLen
+00001200 g     F .text	000000a0 UartReceivePacket
+0000179c g     F .text	00000004 CpuIrqEnable
+20000000 g       .data	00000000 _data
+000010b4 g     F .text	00000002 CopInit
+00000b98 g     F .text	00000006 SystemLFRCOClockGet
+00000308 g     F .text	0000004c LEUART_BaudrateSet
+00000404 g     F .text	00000020 SYSTEM_ChipRevisionGet
+00000b74 g     F .text	00000020 SystemCoreClockGet
+000012a8 g     F .text	00000008 NvmWrite
+000012e4 g     F .text	00000034 CpuStartUserProgram
+20000a48 g       .bss	00000000 _estack
+000016b0 g     F .text	00000048 FlashVerifyChecksum
+20000158 g       .data	00000000 _edata
+00000000 g     O .text	000000b8 _vectab
+00001024 g     F .text	00000008 ComIsConnected
+00000ff4 g     F .text	00000018 ComGetActiveInterfaceMaxRxLen
+0000102c g     F .text	00000038 BackDoorCheck
+20000648 g       .bss	00000000 _stack
+00001788 g     F .text	00000010 TimerGet
+00001748 g     F .text	00000024 TimerInit
+000009a0 g     F .text	00000020 MSC_Init
+
+
