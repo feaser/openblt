@@ -141,4 +141,30 @@ void CpuMemCopy(blt_addr dest, blt_addr src, blt_int16u len)
 } /*** end of CpuMemCopy ***/
 
 
+/************************************************************************************//**
+** \brief     Sets the bytes at the destination address to the specified value.
+** \param     dest Destination address for the data.
+** \param     value Value to write.
+** \param     len  Number of bytes to write.
+** \return    none.
+**
+****************************************************************************************/
+void CpuMemSet(blt_addr dest, blt_int8u value, blt_int16u len)
+{
+  blt_int8u *to;
+
+  /* set casted pointer */
+  to = (blt_int8u *)dest;
+
+  /* set all bytes at the destination address to the specified value */
+  while (len-- > 0)
+  {
+    /* set byte value */
+    *to++ = value;
+    /* keep the watchdog happy */
+    CopService();
+  }
+} /*** end of CpuMemSet ***/
+
+
 /*********************************** end of cpu.c **************************************/

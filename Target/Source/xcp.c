@@ -707,16 +707,7 @@ static void XcpCmdUpload(blt_int8u *data)
     /* resource is locked so memory read access is denied. zero values are returned
      * instead.
      */
-    while (len > 0)
-    {
-      /* write a zero value */
-      *destPtr = 0;
-      /* update write pointer and loop counter */
-      destPtr++;
-      len--;
-      /* keep the watchdog happy */
-      CopService();
-    }
+    CpuMemSet((blt_addr)destPtr, 0, len);
   }
   else
   {
@@ -779,16 +770,7 @@ static void XcpCmdShortUpload(blt_int8u *data)
     /* resource is locked so memory read access is denied. zero values are returned
      * instead.
      */
-    while (len > 0)
-    {
-      /* write a zero value */
-      *destPtr = 0;
-      /* update write pointer and loop counter */
-      destPtr++;
-      len--;
-      /* keep the watchdog happy */
-      CopService();
-    }
+    CpuMemSet((blt_addr)destPtr, 0, len);
   }
   else
   {
