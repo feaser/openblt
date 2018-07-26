@@ -106,20 +106,18 @@
 #endif
 
 #if (BOOT_COM_CAN_ENABLE > 0)
+/* Note that the value check was disabled for the following configuration macros, which
+ * makes it possible to link them to a function, allowing a more dynamic configuration:
+ * - BOOT_COM_CAN_BAUDRATE
+ * - BOOT_COM_CAN_TX_MSG_ID
+ * - BOOT_COM_CAN_RX_MSG_ID
+ */
 #ifndef BOOT_COM_CAN_BAUDRATE
 #error "BOOT_COM_CAN_BAUDRATE is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_CAN_BAUDRATE <= 0)
-#error "BOOT_COM_CAN_BAUDRATE must be > 0"
-#endif
-
 #ifndef BOOT_COM_CAN_TX_MSG_ID
 #error "BOOT_COM_CAN_TX_MSG_ID is missing in blt_conf.h"
-#endif
-
-#if (BOOT_COM_CAN_TX_MSG_ID <= 0)
-#error "BOOT_COM_CAN_TX_MSG_ID must be > 0"
 #endif
 
 #ifndef BOOT_COM_CAN_TX_MAX_DATA
@@ -136,10 +134,6 @@
 
 #ifndef BOOT_COM_CAN_RX_MSG_ID
 #error "BOOT_COM_CAN_RX_MSG_ID is missing in blt_conf.h"
-#endif
-
-#if (BOOT_COM_CAN_RX_MSG_ID <= 0)
-#error "BOOT_COM_CAN_RX_MSG_ID must be > 0"
 #endif
 
 #ifndef BOOT_COM_CAN_RX_MAX_DATA
@@ -168,12 +162,12 @@
 #endif
 
 #if (BOOT_COM_UART_ENABLE > 0)
+/* Note that the value check was disabled for the following configuration macros, which
+ * makes it possible to link them to a function, allowing a more dynamic configuration:
+ * - BOOT_COM_UART_BAUDRATE
+ */
 #ifndef BOOT_COM_UART_BAUDRATE
 #error "BOOT_COM_UART_BAUDRATE is missing in blt_conf.h"
-#endif
-
-#if (BOOT_COM_UART_BAUDRATE <= 0)
-#error "BOOT_COM_UART_BAUDRATE must be > 0"
 #endif
 
 #ifndef BOOT_COM_UART_TX_MAX_DATA
@@ -231,13 +225,27 @@
 #endif
 #endif /* BOOT_COM_USB_ENABLE > 0 */
 
-
-
 #ifndef BOOT_COM_NET_ENABLE
 #define BOOT_COM_NET_ENABLE             (0)
 #endif
 
 #if (BOOT_COM_NET_ENABLE > 0)
+/* Note that the value check was disabled for the following configuration macros, which
+ * makes it possible to link them to a function, allowing a more dynamic configuration:
+ * - BOOT_COM_NET_IPADDR0
+ * - BOOT_COM_NET_IPADDR1
+ * - BOOT_COM_NET_IPADDR2
+ * - BOOT_COM_NET_IPADDR3
+ * - BOOT_COM_NET_NETMASK0
+ * - BOOT_COM_NET_NETMASK1
+ * - BOOT_COM_NET_NETMASK2
+ * - BOOT_COM_NET_NETMASK3
+ * - BOOT_COM_NET_GATEWAY0
+ * - BOOT_COM_NET_GATEWAY1
+ * - BOOT_COM_NET_GATEWAY2
+ * - BOOT_COM_NET_GATEWAY3
+ * - BOOT_COM_NET_PORT
+ */
 #ifndef BOOT_COM_NET_TX_MAX_DATA
 #error "BOOT_COM_NET_TX_MAX_DATA is missing in blt_conf.h"
 #endif
@@ -258,104 +266,52 @@
 #error "BOOT_COM_NET_IPADDR0 is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_NET_IPADDR0 < 0)
-#error "BOOT_COM_NET_IPADDR0 must be >= 0"
-#endif
-
 #ifndef BOOT_COM_NET_IPADDR1
 #error "BOOT_COM_NET_IPADDR1 is missing in blt_conf.h"
-#endif
-
-#if (BOOT_COM_NET_IPADDR1 < 0)
-#error "BOOT_COM_NET_IPADDR1 must be >= 0"
 #endif
 
 #ifndef BOOT_COM_NET_IPADDR2
 #error "BOOT_COM_NET_IPADDR2 is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_NET_IPADDR2 < 0)
-#error "BOOT_COM_NET_IPADDR2 must be >= 0"
-#endif
-
 #ifndef BOOT_COM_NET_IPADDR3
 #error "BOOT_COM_NET_IPADDR3 is missing in blt_conf.h"
-#endif
-
-#if (BOOT_COM_NET_IPADDR3 < 0)
-#error "BOOT_COM_NET_IPADDR3 must be >= 0"
 #endif
 
 #ifndef BOOT_COM_NET_NETMASK0
 #error "BOOT_COM_NET_NETMASK0 is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_NET_NETMASK0 < 0)
-#error "BOOT_COM_NET_NETMASK0 must be >= 0"
-#endif
-
 #ifndef BOOT_COM_NET_NETMASK1
 #error "BOOT_COM_NET_NETMASK1 is missing in blt_conf.h"
-#endif
-
-#if (BOOT_COM_NET_NETMASK1 < 0)
-#error "BOOT_COM_NET_NETMASK1 must be >= 0"
 #endif
 
 #ifndef BOOT_COM_NET_NETMASK2
 #error "BOOT_COM_NET_NETMASK2 is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_NET_NETMASK2 < 0)
-#error "BOOT_COM_NET_NETMASK2 must be >= 0"
-#endif
-
 #ifndef BOOT_COM_NET_NETMASK3
 #error "BOOT_COM_NET_NETMASK3 is missing in blt_conf.h"
-#endif
-
-#if (BOOT_COM_NET_NETMASK3 < 0)
-#error "BOOT_COM_NET_NETMASK3 must be >= 0"
 #endif
 
 #ifndef BOOT_COM_NET_GATEWAY0
 #error "BOOT_COM_NET_GATEWAY0 is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_NET_GATEWAY0 < 0)
-#error "BOOT_COM_NET_GATEWAY0 must be >= 0"
-#endif
-
 #ifndef BOOT_COM_NET_GATEWAY1
 #error "BOOT_COM_NET_GATEWAY1 is missing in blt_conf.h"
-#endif
-
-#if (BOOT_COM_NET_GATEWAY1 < 0)
-#error "BOOT_COM_NET_GATEWAY1 must be >= 0"
 #endif
 
 #ifndef BOOT_COM_NET_GATEWAY2
 #error "BOOT_COM_NET_GATEWAY2 is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_NET_GATEWAY2 < 0)
-#error "BOOT_COM_NET_GATEWAY2 must be >= 0"
-#endif
-
 #ifndef BOOT_COM_NET_GATEWAY3
 #error "BOOT_COM_NET_GATEWAY3 is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_NET_GATEWAY3 < 0)
-#error "BOOT_COM_NET_GATEWAY3 must be >= 0"
-#endif
-
 #ifndef BOOT_COM_NET_PORT
 #error "BOOT_COM_NET_PORT is missing in blt_conf.h"
-#endif
-
-#if (BOOT_COM_NET_PORT < 0)
-#error "BOOT_COM_NET_PORT must be >= 0"
 #endif
 
 #ifndef BOOT_COM_NET_IPADDR_HOOK_ENABLE
