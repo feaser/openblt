@@ -39,6 +39,20 @@
 
 #if (BOOT_COM_NET_ENABLE > 0)
 /****************************************************************************************
+* Configuration macros
+****************************************************************************************/
+/* Extend the default time that the backdoor is open if firmware updates via TCP/IP
+ * are supported. in this case an activation of the bootloader results in an
+ * initialization of the ethernet MAC. when connected to the network via a router this
+ * can take several seconds. Feel free to shorten/lengthen this time for finetuning,
+ * Note that adding this configuration macro to blt_conf.h overrides the value here.
+ */
+#ifndef BOOT_COM_NET_BACKDOOR_EXTENSION_MS
+#define BOOT_COM_NET_BACKDOOR_EXTENSION_MS   (10000)
+#endif
+
+
+/****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief Delta time for the uIP periodic timer. */
@@ -96,6 +110,15 @@ void NetInit(void)
   uip_listen(HTONS(BOOT_COM_NET_PORT));
   /* initialize the MAC and set the MAC address */
   netdev_init_mac();
+  /* extend the time that the backdoor is open in case the default timed backdoor
+   * mechanism is used.
+   */
+#if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+  if (BackDoorGetExtension() < BOOT_COM_NET_BACKDOOR_EXTENSION_MS)
+  {
+    BackDoorSetExtension(BOOT_COM_NET_BACKDOOR_EXTENSION_MS);
+  }
+#endif /* BOOT_BACKDOOR_HOOKS_ENABLE == 0 */
 } /*** end of NetInit ***/
 
 

@@ -117,35 +117,6 @@
 #define BOOT_COM_NET_GATEWAY2            (19)
 /** \brief Configure the 4th byte of the gateway address */
 #define BOOT_COM_NET_GATEWAY3            (1)
-/** \brief Enable/disable a hook function that is called when the IP address is about
- *         to be set. This allows a dynamic override of the BOOT_COM_NET_IPADDRx values.
- */
-#define BOOT_COM_NET_IPADDR_HOOK_ENABLE  (0)
-/** \brief Enable/disable a hook function that is called when the netmask is about
- *         to be set. This allows a dynamic override of the BOOT_COM_NET_NETMASKx values.
- */
-#define BOOT_COM_NET_NETMASK_HOOK_ENABLE (0)
-/** \brief Enable/disable a hook function that is called when the gateway address is 
- *         about to be set. This allows a dynamic override of the BOOT_COM_NET_GATEWAYx 
- *         values.
- */
-#define BOOT_COM_NET_GATEWAY_HOOK_ENABLE (0)
-
-
-/****************************************************************************************
-*   B A C K D O O R    C O N F I G U R A T I O N
-****************************************************************************************/
-#if (BOOT_COM_NET_ENABLE > 0)
-/* Override the default time that the backdoor is open if firmware updates via TCP/IP
- * are supported. in this case a reactivation of the bootloader results in a re-
- * initialization of the ethernet MAC. when directly connected to the ethernet port of 
- * a PC this will go relatively fast (depending on what MS Windows is being used), but 
- * when connected to the network via a router this can take several seconds. feel free to
- * shorten/lengthen this time for finetuning. the only downside of a long backdoor open 
- * time is that the starting of the user program will also be delayed for this time.
- */
-#define BOOT_BACKDOOR_ENTRY_TIMEOUT_MS  (10000)
-#endif
 
 
 /****************************************************************************************

@@ -38,6 +38,23 @@
 
 
 /****************************************************************************************
+* Configuration macros
+****************************************************************************************/
+/* For a USB bootloader, the backdoor needs to stay open long enough for the USB device
+ * to enumerate on the host PC. Therefore the default backdoor open time needs to be
+ * extended. Note that this won't be long enough for a first time USB driver install
+ * on the host PC. In this case the bootloader should be started with the backup backdoor
+ * that uses, for example, a digital input to force the bootloader to stay active. This
+ * can be implemented in CpuUserProgramStartHook(). Feel free to shorten/lengthen this
+ * time for finetuning. Note that adding this configuration macro to blt_conf.h overrides
+ * the value here.
+ */
+#ifndef BOOT_COM_USB_BACKDOOR_EXTENSION_MS
+#define BOOT_COM_USB_BACKDOOR_EXTENSION_MS   (2000)
+#endif
+
+
+/****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief Total number of fifo buffers. */
@@ -122,6 +139,15 @@ void UsbInit(void)
   USBD_Start(&hUsbDeviceFS);
   /* perform low level connect of the device */
   HAL_PCD_DevConnect((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
+  /* extend the time that the backdoor is open in case the default timed backdoor
+   * mechanism is used.
+   */
+#if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+  if (BackDoorGetExtension() < BOOT_COM_USB_BACKDOOR_EXTENSION_MS)
+  {
+    BackDoorSetExtension(BOOT_COM_USB_BACKDOOR_EXTENSION_MS);
+  }
+#endif /* BOOT_BACKDOOR_HOOKS_ENABLE == 0 */
 } /*** end of UsbInit ***/
 
 

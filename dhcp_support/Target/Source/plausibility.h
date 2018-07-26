@@ -155,6 +155,7 @@
 #if (BOOT_COM_CAN_CHANNEL_INDEX < 0)
 #error "BOOT_COM_CAN_CHANNEL_INDEX must be >= 0"
 #endif
+
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 #ifndef BOOT_COM_UART_ENABLE
@@ -201,6 +202,7 @@
 #if (BOOT_COM_UART_CHANNEL_INDEX < 0)
 #error "BOOT_COM_UART_CHANNEL_INDEX must be >= 0"
 #endif
+
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 #ifndef BOOT_COM_USB_ENABLE
@@ -223,6 +225,13 @@
 #if (BOOT_COM_USB_RX_MAX_DATA <= 0)
 #error "BOOT_COM_USB_RX_MAX_DATA must be > 0"
 #endif
+
+#ifdef BOOT_COM_USB_BACKDOOR_EXTENSION_MS
+#if (BOOT_COM_USB_BACKDOOR_EXTENSION_MS < 0)
+#error "BOOT_COM_USB_BACKDOOR_EXTENSION_MS must be >= 0"
+#endif
+#endif
+
 #endif /* BOOT_COM_USB_ENABLE > 0 */
 
 #ifndef BOOT_COM_NET_ENABLE
@@ -324,6 +333,12 @@
 
 #ifndef BOOT_COM_NET_GATEWAY_HOOK_ENABLE
 #define BOOT_COM_NET_GATEWAY_HOOK_ENABLE (0)
+#endif
+
+#ifdef BOOT_COM_NET_BACKDOOR_EXTENSION_MS
+#if (BOOT_COM_NET_BACKDOOR_EXTENSION_MS < 0)
+#error "BOOT_COM_NET_BACKDOOR_EXTENSION_MS must be >= 0"
+#endif
 #endif
 
 #endif /* BOOT_COM_NET_ENABLE > 0 */
