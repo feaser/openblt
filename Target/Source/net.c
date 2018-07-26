@@ -50,20 +50,6 @@
 
 
 /****************************************************************************************
-* Hook functions
-****************************************************************************************/
-#if (BOOT_COM_NET_IPADDR_HOOK_ENABLE > 0)
-extern void NetIpAddressHook(blt_int8u *ipAddrArray);
-#endif
-#if (BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0)
-extern void NetNetworkMaskHook(blt_int8u *netMaskArray);
-#endif
-#if (BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0)
-extern void NetGatewayAddressHook(blt_int8u *gatewayAddrArray);
-#endif
-
-
-/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void NetServerTask(void);
@@ -86,15 +72,6 @@ static blt_int32u ARPTimerTimeOut;
 void NetInit(void)
 {
   uip_ipaddr_t ipaddr;
-#if (BOOT_COM_NET_IPADDR_HOOK_ENABLE > 0)
-  blt_int8u ipAddrArray[4];
-#endif
-#if (BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0)
-  blt_int8u netMaskArray[4];
-#endif
-#if (BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0)
-  blt_int8u gatewayAddrArray[4];
-#endif
 
   /* initialize the network device */
   netdev_init();
@@ -104,31 +81,16 @@ void NetInit(void)
   /* initialize the uIP TCP/IP stack. */
   uip_init();
   /* set the IP address */
-#if (BOOT_COM_NET_IPADDR_HOOK_ENABLE > 0)
-  NetIpAddressHook(ipAddrArray);
-  uip_ipaddr(ipaddr, ipAddrArray[0], ipAddrArray[1], ipAddrArray[2], ipAddrArray[3]);
-#else
   uip_ipaddr(ipaddr, BOOT_COM_NET_IPADDR0, BOOT_COM_NET_IPADDR1, BOOT_COM_NET_IPADDR2,
              BOOT_COM_NET_IPADDR3);
-#endif
   uip_sethostaddr(ipaddr);
   /* set the network mask */
-#if (BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0)
-  NetNetworkMaskHook(netMaskArray);
-  uip_ipaddr(ipaddr, netMaskArray[0], netMaskArray[1], netMaskArray[2], netMaskArray[3]);
-#else
   uip_ipaddr(ipaddr, BOOT_COM_NET_NETMASK0, BOOT_COM_NET_NETMASK1, BOOT_COM_NET_NETMASK2,
              BOOT_COM_NET_NETMASK3);
-#endif
   uip_setnetmask(ipaddr);
   /* set the gateway address */
-#if (BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0)
-  NetGatewayAddressHook(gatewayAddrArray);
-  uip_ipaddr(ipaddr, gatewayAddrArray[0], gatewayAddrArray[1], gatewayAddrArray[2], gatewayAddrArray[3]);
-#else
   uip_ipaddr(ipaddr, BOOT_COM_NET_GATEWAY0, BOOT_COM_NET_GATEWAY1, BOOT_COM_NET_GATEWAY2,
              BOOT_COM_NET_GATEWAY3);
-#endif
   uip_setdraddr(ipaddr);
   /* start listening on the configured port for XCP transfers on TCP/IP */
   uip_listen(HTONS(BOOT_COM_NET_PORT));
