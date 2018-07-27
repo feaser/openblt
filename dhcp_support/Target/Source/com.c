@@ -81,10 +81,12 @@ void ComInit(void)
   comActiveInterface = COM_IF_USB;
 #endif
 #if (BOOT_COM_NET_ENABLE > 0)
+  #if (BOOT_COM_NET_DEFERRED_INIT_ENABLE == 0)
   /* initialize the TCP/IP interface */
   NetInit();
   /* set it as active */
   comActiveInterface = COM_IF_NET;
+  #endif
 #endif
 } /*** end of ComInit ***/
 
@@ -286,6 +288,51 @@ blt_bool ComIsConnected(void)
 {
   return XcpIsConnected();
 } /*** end of ComIsConnected ***/
+
+
+#if (BOOT_COM_DEFERRED_INIT_ENABLE == 1)
+/************************************************************************************//**
+** \brief     The deferred init feature makes it possible to bypass the initialization of
+**            a communication interface until this function is called. This feature can
+**            be enabled for a specific communication interface via macro
+**            BOOT_COM_XXX_DEFERRED_INIT_ENABLE in blt_conf.h. At this point only the NET
+**            communication interface supports this feature, as its initialization can
+**            take quite a long time. If there is a valid user program present, then this
+**            would cause an unwanted delay after each reset before the user program can
+**            be started.
+** \attention Note that when this feature is enabled for a communication interface, the
+**            communication interface is only enabled when: (a) no valid user program is
+**            present or (b) when CpuUserProgramStartHook() returns BLT_FALSE. This means
+**            that after a normal reactivation of the bootloader from the user program,
+**            the communication interface is not initialized and firmware updates are
+**            not possible! In this case it is recommended to somehow pass on the
+**            communication initialization request from the user program to the
+**            bootloader. When this request detected by the bootloader application, this
+**            function should be called. EEPROM or shared RAM can be used to pass on such
+**            a request.
+** \return    none
+**
+****************************************************************************************/
+void ComDeferredInit(void)
+{
+#if (BOOT_COM_NET_ENABLE > 0)
+  #if (BOOT_COM_NET_DEFERRED_INIT_ENABLE == 1)
+  /* perform deferred initialization the TCP/IP interface */
+  NetDeferredInit();
+  /* set it as active */
+  comActiveInterface = COM_IF_NET;
+  #endif
+#endif
+#if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+  /* the default internal timed backdoor mechanism should start its timer after the
+   * communication interfaces are initialized. since a deferred initialization was now
+   * performed, the backdoor timer should be restarted.
+   */
+  BackDoorRestartTimer();
+#endif
+} /*** end of ComDeferredInit ***/
+#endif /* BOOT_COM_DEFERRED_INIT_ENABLE == 1 */
+
 
 #endif /* BOOT_COM_ENABLE > 0 */
 

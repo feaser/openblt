@@ -106,7 +106,7 @@ void BackDoorInit(void)
 #else
   /* open the backdoor after a reset */
   backdoorOpen = BLT_TRUE;
-  backdoorOpenTime = TimerGet();
+  BackDoorRestartTimer();
 #endif
   /* perform the first check that open/closes the backdoor */
   BackDoorCheck();
@@ -197,7 +197,25 @@ blt_int32u BackDoorGetExtension(void)
   /* read out and reutrn the currently configured extension time */
   return backdoorExtensionTime;
 } /*** end of BackDoorGetExtension ***/
-#endif
+
+
+/************************************************************************************//**
+** \brief     Restarts the timed backdoor timer. It uses the current system time as the
+**            start time. The backdoor stays open for BOOT_BACKDOOR_ENTRY_TIMEOUT_MS
+**            after this start time, possibly extended in case BackDoorSetExtension() was
+**            called.
+** \return    none
+**
+****************************************************************************************/
+void BackDoorRestartTimer(void)
+{
+  /* only restart the time if the backdoor is actually still open */
+  if (backdoorOpen == BLT_TRUE)
+  {
+    backdoorOpenTime = TimerGet();
+  }
+} /*** end of BackDoorRestartTimer ***/
+#endif /* BOOT_BACKDOOR_HOOKS_ENABLE == 0 */
 
 
 /*********************************** end of backdoor.c *********************************/

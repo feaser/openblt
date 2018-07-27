@@ -324,15 +324,15 @@
 #endif
 
 #ifndef BOOT_COM_NET_IPADDR_HOOK_ENABLE
-#define BOOT_COM_NET_IPADDR_HOOK_ENABLE  (0)
+#define BOOT_COM_NET_IPADDR_HOOK_ENABLE     (0)
 #endif
 
 #ifndef BOOT_COM_NET_NETMASK_HOOK_ENABLE
-#define BOOT_COM_NET_NETMASK_HOOK_ENABLE (0)
+#define BOOT_COM_NET_NETMASK_HOOK_ENABLE    (0)
 #endif
 
 #ifndef BOOT_COM_NET_GATEWAY_HOOK_ENABLE
-#define BOOT_COM_NET_GATEWAY_HOOK_ENABLE (0)
+#define BOOT_COM_NET_GATEWAY_HOOK_ENABLE    (0)
 #endif
 
 #ifdef BOOT_COM_NET_BACKDOOR_EXTENSION_MS
@@ -341,8 +341,32 @@
 #endif
 #endif
 
+#ifndef BOOT_COM_NET_DEFERRED_INIT_ENABLE
+#define BOOT_COM_NET_DEFERRED_INIT_ENABLE   (0)
+#endif
+
+#if (BOOT_COM_NET_DEFERRED_INIT_ENABLE < 0) || (BOOT_COM_NET_DEFERRED_INIT_ENABLE > 1)
+#error "BOOT_COM_NET_DEFERRED_INIT_ENABLE must be 0 or 1"
+#endif
+
 #endif /* BOOT_COM_NET_ENABLE > 0 */
 
+#if (BOOT_COM_NET_DEFERRED_INIT_ENABLE == 1)
+#define BOOT_COM_DEFERRED_INIT_ENABLE       (1)
+#else
+#define BOOT_COM_DEFERRED_INIT_ENABLE       (0)
+#endif
+
+#if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_NET_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
+#define BOOT_COM_ENABLE   (1)
+#else
+#define BOOT_COM_ENABLE   (0)
+#endif
+
+
+/****************************************************************************************
+*   F I L E   S Y S T E M   I N T E R F A C E   C O N F I G U R A T I O N   C H E C K
+****************************************************************************************/
 #ifndef BOOT_FILE_SYS_ENABLE
 #define BOOT_FILE_SYS_ENABLE      (0)
 #endif
@@ -384,12 +408,6 @@
 #error "BOOT_FILE_COMPLETED_HOOK_ENABLE must be 0 or 1"
 #endif
 #endif /* BOOT_FILE_SYS_ENABLE > 0 */
-
-#if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_NET_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
-#define BOOT_COM_ENABLE   (1)
-#else
-#define BOOT_COM_ENABLE   (0)
-#endif
 
 
 /****************************************************************************************

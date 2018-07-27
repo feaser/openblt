@@ -36,6 +36,7 @@ void       BackDoorCheck(void);
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
 void       BackDoorSetExtension(blt_int32u extension_ms);
 blt_int32u BackDoorGetExtension(void);
+void       BackDoorRestartTimer(void);
 #endif
 
 #endif /* BACKDOOR_H */
