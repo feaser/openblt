@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32F4_Olimex_STM32E407_GCC/Prog/header.h
-* \brief        Generic header file.
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32E407_GCC/Prog/shared_params.h
+* \brief        Shared RAM parameters header file.
 * \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32E407_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2018  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -25,21 +25,33 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef SHARED_PARAMS_H
+#define SHARED_PARAMS_H
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "../Boot/blt_conf.h"                          /* bootloader configuration     */
-#include "stm32f4xx.h"                                 /* STM32 registers              */
-#include "stm32f4xx_conf.h"                            /* STM32 peripheral drivers     */
-#include "boot.h"                                      /* bootloader interface driver  */
-#include "led.h"                                       /* LED driver                   */
-#include "timer.h"                                     /* Timer driver                 */
-#include "net.h"                                       /* TCP/IP server application    */
-#include "shared_params.h"                             /* Shared parameters header.    */
+#include <stdint.h>                                    /* Standard integer types.      */
+#include <stdbool.h>                                   /* Standard boolean types.      */
 
 
-#endif /* HEADER_H */
-/*********************************** end of header.h ***********************************/
+/****************************************************************************************
+* Configuration macros
+****************************************************************************************/
+/** \brief Configuration macro for specifying the size of the data inside the parameter
+ *         buffer. This is the length in bytes of the actual parameter data, so
+ *         excluding the bufferId and checksum.
+ */
+#define SHARED_PARAMS_CFG_BUFFER_DATA_LEN        (56u)
+
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+void SharedParamsInit(void);
+bool SharedParamsReadByIndex(uint32_t idx, uint8_t * value);
+bool SharedParamsWriteByIndex(uint32_t idx, uint8_t value);
+
+
+#endif /* SHARED_PARAMS_H */
+/*********************************** end of shared_params.h ****************************/
