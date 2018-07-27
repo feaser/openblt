@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_IAR/Prog/header.h
-* \brief        Generic header file.
+* \file         Demo/ARMCM3_LM3S_EK_LM3S6965_IAR/Prog/shared_params.h
+* \brief        Shared RAM parameters header file.
 * \ingroup      Prog_ARMCM3_LM3S_EK_LM3S6965_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2018  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -25,30 +25,33 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef SHARED_PARAMS_H
+#define SHARED_PARAMS_H
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "../Boot/blt_conf.h"                          /* bootloader configuration     */
-#include "boot.h"                                      /* bootloader interface driver  */
-#include "led.h"                                       /* LED driver                   */
-#include "time.h"                                      /* Timer driver                 */
-#include "net.h"                                       /* TCP/IP server application    */
-#include "shared_params.h"                             /* Shared parameters header.    */
-#include "inc/hw_ints.h"
-#include "inc/hw_memmap.h"
-#include "inc/hw_nvic.h"
-#include "inc/hw_sysctl.h"
-#include "inc/hw_types.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/gpio.h"
-#include "driverlib/uart.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/systick.h"
+#include <stdint.h>                                    /* Standard integer types.      */
+#include <stdbool.h>                                   /* Standard boolean types.      */
 
 
+/****************************************************************************************
+* Configuration macros
+****************************************************************************************/
+/** \brief Configuration macro for specifying the size of the data inside the parameter
+ *         buffer. This is the length in bytes of the actual parameter data, so
+ *         excluding the bufferId and checksum.
+ */
+#define SHARED_PARAMS_CFG_BUFFER_DATA_LEN        (56u)
 
-#endif /* HEADER_H */
-/*********************************** end of header.h ***********************************/
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+void SharedParamsInit(void);
+bool SharedParamsReadByIndex(uint32_t idx, uint8_t * value);
+bool SharedParamsWriteByIndex(uint32_t idx, uint8_t value);
+
+
+#endif /* SHARED_PARAMS_H */
+/*********************************** end of shared_params.h ****************************/

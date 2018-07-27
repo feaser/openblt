@@ -206,11 +206,14 @@ void NetTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool NetReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  /* run the TCP/IP server task function, which will handle the reception and
-   * transmission of XCP packets
-   */
-  NetServerTask();
-
+  /* no need to check for newly received packets if this module is not initialized */
+  if (netInitializedFlag == BLT_TRUE)
+  {
+    /* run the TCP/IP server task function, which will handle the reception and
+     * transmission of XCP packets
+     */
+    NetServerTask();
+  }
   /* packet reception and transmission is completely handled by the NetServerTask so
    * always return BLT_FALSE here.
    */

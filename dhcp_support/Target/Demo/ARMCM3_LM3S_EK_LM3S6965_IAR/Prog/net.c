@@ -117,6 +117,13 @@ void NetApp(void)
     /* check if this was an XCP CONNECT command */
     if ((newDataPtr[0] == 0xff) && (newDataPtr[1] == 0x00))
     {
+      /* the shared parameter at index 0 is used as a boolean flag to indicate if the
+       * bootloader should initialize the TCP/IP network stack. we just received a
+       * firmware update request from the TCP/IP network and we are about to active
+       * the bootloader for a firmware update via TCP/IP. At this point we should
+       * set the flag to make sure the bootloader initializes its TCP/IP network stack.
+       */
+      SharedParamsWriteByIndex(0, 1);
       /* connection request received so start the bootloader */
       BootActivate();
     }
