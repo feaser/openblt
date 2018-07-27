@@ -45,7 +45,8 @@ _Min_Stack_Size = 0x800; /* required amount of stack */
 MEMORY
 {
   FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 48K
-  RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 128K
+  SHARED (xrw)    : ORIGIN = 0x20000000, LENGTH = 64
+  RAM (xrw)       : ORIGIN = 0x20000040, LENGTH = 128K - 64
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
   CCMRAM (rw)     : ORIGIN = 0x10000000, LENGTH = 64K
 }
@@ -53,6 +54,20 @@ MEMORY
 /* Define output sections */
 SECTIONS
 {
+  /* Shared data section that also shouldn't get zeroed */
+  .shared (NOLOAD) :
+  {
+    . = ALIGN(4);
+    _sshared = .;         /* define a global symbol at shared start */
+    __shared_start__ = _sshared;
+    *(.shared)
+    *(.shared.*)
+    KEEP(*(.shared)) 
+    . = ALIGN(4);
+    _eshared = .;         /* define a global symbol at shared end */
+    __shared_end__ = _eshared;
+  } >SHARED
+
   /* The startup code goes first into FLASH */
   .isr_vector :
   {
