@@ -929,12 +929,12 @@ static bool XcpLoaderSendCmdUnlock(uint8_t const * key, uint8_t keyLen,
   assert(xcpSettings.transport != NULL);
   assert(key != NULL);
   assert(keyLen > 0);
-  assert(keyLen < (xcpMaxCto - 2));
+  assert(keyLen <= (xcpMaxCto - 2));
   assert(protectedResources != NULL);
 
   /* Only continue with a valid transport layer and parameters. */
   if ( (xcpSettings.transport != NULL) && (key != NULL) && (keyLen > 0) &&
-       (keyLen < (xcpMaxCto - 2)) && (protectedResources != NULL) ) /*lint !e774 */
+       (keyLen <= (xcpMaxCto - 2)) && (protectedResources != NULL) ) /*lint !e774 */
   {
     /* Init the result value to okay and only set it to error when a problem occurred. */
     result = true;
