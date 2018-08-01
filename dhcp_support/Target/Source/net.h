@@ -62,6 +62,17 @@ void     NetDeferredInit(void);
 void     NetApp(void);
 void     NetTransmitPacket(blt_int8u *data, blt_int8u len);
 blt_bool NetReceivePacket(blt_int8u *data, blt_int8u *len);
+
+#if (BOOT_COM_NET_DHCP_ENABLE == 0)
+typedef struct dhcpc_state
+{
+  blt_int8u  unused;
+} uip_udp_appstate_t;
+
+#define UIP_UDP_APPCALL();
+
+#endif /* BOOT_COM_NET_DHCP_ENABLE == 0 */
+
 #else /* BOOT_COM_NET_ENABLE > 0 */
 
 typedef struct net_state
@@ -71,8 +82,14 @@ typedef struct net_state
 
 #define UIP_APPCALL();
 
-#endif /* BOOT_COM_NET_ENABLE > 0 */
+typedef struct dhcpc_state
+{
+  blt_int8u  unused;
+} uip_udp_appstate_t;
 
+#define UIP_UDP_APPCALL();
+
+#endif /* BOOT_COM_NET_ENABLE > 0 */
 
 #endif /* NET_H */
 /*********************************** end of net.h **************************************/

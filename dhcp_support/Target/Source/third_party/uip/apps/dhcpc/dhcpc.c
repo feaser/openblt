@@ -35,6 +35,7 @@
 #include <string.h>
 
 #include "uip.h"
+#if (BOOT_COM_NET_ENABLE > 0) && (BOOT_COM_NET_DHCP_ENABLE > 0)
 #include "dhcpc.h"
 #include "uip_timer.h"
 #include "pt.h"
@@ -373,3 +374,5 @@ dhcpc_request(void)
   }
 }
 /*---------------------------------------------------------------------------*/
+#endif /* (BOOT_COM_NET_ENABLE > 0) && (BOOT_COM_NET_DHCP_ENABLE > 0) */
+

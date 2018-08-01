@@ -271,6 +271,15 @@
 #error "BOOT_COM_NET_RX_MAX_DATA must be > 0"
 #endif
 
+#ifndef BOOT_COM_NET_DHCP_ENABLE
+#define BOOT_COM_NET_DHCP_ENABLE        (0)
+#endif
+
+#if (BOOT_COM_NET_DHCP_ENABLE < 0) || (BOOT_COM_NET_DHCP_ENABLE > 1)
+#error "BOOT_COM_NET_DHCP_ENABLE must be 0 or 1"
+#endif
+
+#if (BOOT_COM_NET_DHCP_ENABLE == 0)
 #ifndef BOOT_COM_NET_IPADDR0
 #error "BOOT_COM_NET_IPADDR0 is missing in blt_conf.h"
 #endif
@@ -322,18 +331,7 @@
 #ifndef BOOT_COM_NET_PORT
 #error "BOOT_COM_NET_PORT is missing in blt_conf.h"
 #endif
-
-#ifndef BOOT_COM_NET_IPADDR_HOOK_ENABLE
-#define BOOT_COM_NET_IPADDR_HOOK_ENABLE     (0)
-#endif
-
-#ifndef BOOT_COM_NET_NETMASK_HOOK_ENABLE
-#define BOOT_COM_NET_NETMASK_HOOK_ENABLE    (0)
-#endif
-
-#ifndef BOOT_COM_NET_GATEWAY_HOOK_ENABLE
-#define BOOT_COM_NET_GATEWAY_HOOK_ENABLE    (0)
-#endif
+#endif /* BOOT_COM_NET_DHCP_ENABLE == 0 */
 
 #ifdef BOOT_COM_NET_BACKDOOR_EXTENSION_MS
 #if (BOOT_COM_NET_BACKDOOR_EXTENSION_MS < 0)

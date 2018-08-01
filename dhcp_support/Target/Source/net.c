@@ -100,6 +100,9 @@ static blt_bool netInitializationDeferred = BLT_FALSE;
 void NetInit(void)
 {
   uip_ipaddr_t ipaddr;
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+  static struct uip_eth_addr macAddress;
+#endif
 
   /* only perform the initialization if there is no request to defer it */
   if (netInitializationDeferred == BLT_FALSE)
@@ -111,6 +114,7 @@ void NetInit(void)
     ARPTimerTimeOut = TimerGet() + NET_UIP_ARP_TIMER_MS;
     /* initialize the uIP TCP/IP stack. */
     uip_init();
+#if (BOOT_COM_NET_DHCP_ENABLE == 0)
     /* set the IP address */
     uip_ipaddr(ipaddr, BOOT_COM_NET_IPADDR0, BOOT_COM_NET_IPADDR1, BOOT_COM_NET_IPADDR2,
                BOOT_COM_NET_IPADDR3);
@@ -123,10 +127,29 @@ void NetInit(void)
     uip_ipaddr(ipaddr, BOOT_COM_NET_GATEWAY0, BOOT_COM_NET_GATEWAY1, BOOT_COM_NET_GATEWAY2,
                BOOT_COM_NET_GATEWAY3);
     uip_setdraddr(ipaddr);
+#else
+    /* set the IP address */
+    uip_ipaddr(ipaddr, 0, 0, 0, 0);
+    uip_sethostaddr(ipaddr);
+    /* set the network mask */
+    uip_ipaddr(ipaddr, 0, 0, 0, 0);
+    uip_setnetmask(ipaddr);
+    /* set the gateway address */
+    uip_ipaddr(ipaddr, 0, 0, 0, 0);
+    uip_setdraddr(ipaddr);
+#endif
     /* start listening on the configured port for XCP transfers on TCP/IP */
     uip_listen(HTONS(BOOT_COM_NET_PORT));
     /* initialize the MAC and set the MAC address */
     netdev_init_mac();
+
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+    /* initialize the DHCP client application and send the initial request. */
+    netdev_get_mac(&macAddress.addr[0]);
+    dhcpc_init(&macAddress.addr[0], 6);
+    dhcpc_request();
+#endif
+
     /* extend the time that the backdoor is open in case the default timed backdoor
      * mechanism is used.
      */
@@ -350,6 +373,23 @@ static void NetServerTask(void)
         uip_len = 0;
       }
     }
+
+#if UIP_UDP
+    for (connection = 0; connection < UIP_UDP_CONNS; connection++)
+    {
+      uip_udp_periodic(connection);
+      /* If the above function invocation resulted in data that
+       * should be sent out on the network, the global variable
+       * uip_len is set to a value > 0.
+       */
+      if(uip_len > 0)
+      {
+        uip_arp_out();
+        netdev_send();
+        uip_len = 0;
+      }
+    }
+#endif
   }
 
   /* process ARP Timer here. */
@@ -359,6 +399,25 @@ static void NetServerTask(void)
     uip_arp_timer();
   }
 } /*** end of NetServerTask ***/
+
+
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback for when DHCP client has been configured.
+** \return    none.
+**
+****************************************************************************************/
+void dhcpc_configured(const struct dhcpc_state *s)
+{
+  /* Set the IP address received from the DHCP server. */
+  uip_sethostaddr(&s->ipaddr);
+  /* Set the network mask received from the DHCP server. */
+  uip_setnetmask(&s->netmask);
+  /* Set the gateway address received from the DHCP server. */
+  uip_setdraddr(&s->default_router);
+} /*** end of dhcpc_configured ***/
+#endif /* BOOT_COM_NET_DHCP_ENABLE > 0 */
+
 #endif /* BOOT_COM_NET_ENABLE > 0 */
 
 

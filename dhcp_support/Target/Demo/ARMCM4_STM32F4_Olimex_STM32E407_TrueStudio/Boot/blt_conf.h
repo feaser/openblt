@@ -122,11 +122,16 @@
  * the BOOT_COM_NET_ENABLE configurable to 1. The maximum amount of data bytes in a 
  * message for data transmission and reception is set through BOOT_COM_NET_TX_MAX_DATA 
  * and BOOT_COM_NET_RX_MAX_DATA, respectively. The default IP address is configured 
- * with the macros BOOT_COM_NET_IPADDRx. The default netmask is configued with the macros
- * BOOT_COM_NET_NETMASKx. The default gateway is configured with the macros
+ * with the macros BOOT_COM_NET_IPADDRx. The default netmask is configured with the
+ * macro BOOT_COM_NET_NETMASKx. The default gateway is configured with the macros
  * BOOT_COM_NET_GATEWAYx. The bootloader acts and a TCP/IP server. The port the server
  * listen on for connections is configured with BOOT_COM_NET_PORT.
+ * In case the network switch/router supports a DHCP server, you can set configuration
+ * macro BOOT_COM_NET_DHCP_ENABLE to 1 to enable the DHCP client. In this case the
+ * DHCP client handles the automatic IP address assignment. In this case the macros for
+ * configuring the IP address, network mask and gateway address are no longer needed.
  */
+
 /** \brief Enable/disable the NET transport layer. */
 #define BOOT_COM_NET_ENABLE               (1)
 /** \brief Configure number of bytes in the target->host data packet. */
@@ -135,6 +140,8 @@
 #define BOOT_COM_NET_RX_MAX_DATA          (64)
 /** \brief Configure the port that the TCP/IP server listens on */
 #define BOOT_COM_NET_PORT                 (1000)
+/** \brief Enable/disable DHCP client for automatically obtaining an IP address. */
+#define BOOT_COM_NET_DHCP_ENABLE          (1)
 /** \brief Configure the 1st byte of the IP address */
 #define BOOT_COM_NET_IPADDR0              (192)
 /** \brief Configure the 2nd byte of the IP address */
