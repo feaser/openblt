@@ -416,6 +416,18 @@ void dhcpc_configured(const struct dhcpc_state *s)
   /* Set the gateway address received from the DHCP server. */
   uip_setdraddr(&s->default_router);
 } /*** end of dhcpc_configured ***/
+
+
+/************************************************************************************//**
+** \brief     Callback for when DHCP client lost its configuration. This is typically
+**            temporary while the DHCP client is attempting to renew the lease.
+** \return    none.
+**
+****************************************************************************************/
+void dhcpc_unconfigured(void)
+{
+  /* No need to do anything here. */
+} /*** end of dhcpc_unconfigured ***/
 #endif /* BOOT_COM_NET_DHCP_ENABLE > 0 */
 
 #endif /* BOOT_COM_NET_ENABLE > 0 */

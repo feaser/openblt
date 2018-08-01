@@ -33,6 +33,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 #include "uip.h"
 #if (BOOT_COM_NET_ENABLE > 0) && (BOOT_COM_NET_DHCP_ENABLE > 0)
@@ -252,6 +253,8 @@ parse_msg(void)
 static
 PT_THREAD(handle_dhcp(void))
 {
+  unsigned long lease_renew_time;
+
   PT_BEGIN(&s.pt);
 
   /* try_again:*/
@@ -304,36 +307,88 @@ PT_THREAD(handle_dhcp(void))
   }
   while (s.state != STATE_CONFIG_RECEIVED);
 
-#if 0
-  printf("Got IP address %d.%d.%d.%d\n",
-         uip_ipaddr1(s.ipaddr), uip_ipaddr2(s.ipaddr),
-         uip_ipaddr3(s.ipaddr), uip_ipaddr4(s.ipaddr));
-  printf("Got netmask %d.%d.%d.%d\n",
-         uip_ipaddr1(s.netmask), uip_ipaddr2(s.netmask),
-         uip_ipaddr3(s.netmask), uip_ipaddr4(s.netmask));
-  printf("Got DNS server %d.%d.%d.%d\n",
-         uip_ipaddr1(s.dnsaddr), uip_ipaddr2(s.dnsaddr),
-         uip_ipaddr3(s.dnsaddr), uip_ipaddr4(s.dnsaddr));
-  printf("Got default router %d.%d.%d.%d\n",
-         uip_ipaddr1(s.default_router), uip_ipaddr2(s.default_router),
-         uip_ipaddr3(s.default_router), uip_ipaddr4(s.default_router));
-  printf("Lease expires in %ld seconds\n",
-         ntohs(s.lease_time[0])*65536ul + ntohs(s.lease_time[1]));
-#endif
-
+  /* inform the application that a DHCP configuration was received such that it can
+   * handle further processing of it.
+   */
   dhcpc_configured(&s);
 
-  /*  timer_stop(&s.timer);*/
-
-  /*
-   * PT_END restarts the thread so we do this instead. Eventually we
-   * should reacquire expired leases here.
-   */
+  /* keep renewing the lease each time 50% of the lease time expired. */
   while (1)
   {
+    /* calculate 50% lease time in seconds. */
+    lease_renew_time  = ((unsigned long)(ntohs(s.lease_time[0])) << 16u);
+    lease_renew_time |= (ntohs(s.lease_time[1]));
+    lease_renew_time /= 2;
+
+    /* the internal timer (s.timer) is of type clock_time_t, so make sure the clock ticks
+     * equivalent to 50% of the lease renewal time would actually fit. note that
+     * clock_time_t is type defined as an int.
+     */
+    if ((lease_renew_time * CLOCK_SECOND) <= INT_MAX)
+    {
+      s.ticks = lease_renew_time * CLOCK_SECOND;
+    }
+    else
+    {
+      s.ticks = INT_MAX;
+    }
+
+    /* now wait for the timer to expire. */
+    timer_set(&s.timer, s.ticks);
     PT_YIELD(&s.pt);
+    PT_WAIT_UNTIL(&s.pt, timer_expired(&s.timer));
+    /* since a lease is already available, there is no need to request a new offer via
+     * the discover message. it suffices to sent the request message and wait for the
+     * acknowledge.
+     */
+    s.state = STATE_OFFER_RECEIVED;
+    s.ticks = CLOCK_SECOND;
+
+    /* Keep in mind that DHCP request messages must come for source address 0.0.0.0, so
+     * reinitialize the DHCP request messages and inform the application that the
+     * DHCP configuration is now temporarily reset until the lease was successfully
+     * renewed.
+     */
+    dhcpc_request();
+    dhcpc_unconfigured();
+
+    do
+    {
+      send_request();
+      timer_set(&s.timer, s.ticks);
+      PT_YIELD(&s.pt);
+      PT_WAIT_UNTIL(&s.pt, uip_newdata() || timer_expired(&s.timer));
+
+      if (uip_newdata() && parse_msg() == DHCPACK)
+      {
+        /* renewal successful. */
+        s.state = STATE_CONFIG_RECEIVED;
+        break;
+      }
+
+      if (s.ticks <= CLOCK_SECOND * 10)
+      {
+        s.ticks += CLOCK_SECOND;
+      }
+      else
+      {
+        /* the lease could not be renewed, so restart this entire thread from the
+         * begin to attempt to re-bind.
+         */
+        PT_RESTART(&s.pt);
+      }
+    }
+    while (s.state != STATE_CONFIG_RECEIVED);
+
+    /* inform the application that a DHCP configuration was received such that it can
+     * handle further processing of it.
+     */
+    dhcpc_configured(&s);
   }
 
+  /* code won't get here but this statement is still required at the end of a thread
+   * function.
+   */
   PT_END(&s.pt);
 }
 /*---------------------------------------------------------------------------*/
@@ -364,14 +419,10 @@ dhcpc_appcall(void)
 void
 dhcpc_request(void)
 {
-  u16_t ipaddr[2];
+  uip_ipaddr_t ipaddr;
 
-  if (s.state == STATE_INITIAL)
-  {
-    uip_ipaddr(ipaddr, 0,0,0,0);
-    uip_sethostaddr(ipaddr);
-    /*    handle_dhcp(PROCESS_EVENT_NONE, NULL);*/
-  }
+  uip_ipaddr(ipaddr, 0,0,0,0);
+  uip_sethostaddr(ipaddr);
 }
 /*---------------------------------------------------------------------------*/
 #endif /* (BOOT_COM_NET_ENABLE > 0) && (BOOT_COM_NET_DHCP_ENABLE > 0) */
