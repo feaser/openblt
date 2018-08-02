@@ -152,7 +152,7 @@ typedef unsigned short uip_stats_t;
    our project. */
 #include "boot.h"
 #include "net.h"
-#if (BOOT_COM_NET_ENABLE > 0) && (BOOT_COM_NET_DHCP_ENABLE > 0)
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
 #include "dhcpc.h"
 #endif
 

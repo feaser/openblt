@@ -341,6 +341,18 @@ void netdev_init_mac(void)
 
 
 /*---------------------------------------------------------------------------*/
+void netdev_get_mac(unsigned char * mac_addr)
+{
+  mac_addr[0] = NETDEV_DEFAULT_MACADDR0;
+  mac_addr[1] = NETDEV_DEFAULT_MACADDR1;
+  mac_addr[2] = NETDEV_DEFAULT_MACADDR2;
+  mac_addr[3] = NETDEV_DEFAULT_MACADDR3;
+  mac_addr[4] = NETDEV_DEFAULT_MACADDR4;
+  mac_addr[5] = NETDEV_DEFAULT_MACADDR5;
+}
+
+
+/*---------------------------------------------------------------------------*/
 unsigned int netdev_read(void)
 {
   uint32_t size;
@@ -440,3 +452,4 @@ static void netdev_TxDscrInit(void)
   ETH->DMATDLAR = (uint32_t)&EnetDmaTx;
 
 }
+

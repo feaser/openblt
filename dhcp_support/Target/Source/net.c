@@ -101,7 +101,7 @@ void NetInit(void)
 {
   uip_ipaddr_t ipaddr;
 #if (BOOT_COM_NET_DHCP_ENABLE > 0)
-  static struct uip_eth_addr macAddress;
+  struct uip_eth_addr macAddress;
 #endif
 
   /* only perform the initialization if there is no request to defer it */

@@ -99,6 +99,27 @@ typedef unsigned short uip_stats_t;
 #define UIP_CONF_MAX_LISTENPORTS 1
 
 /**
+ * UDP support on or off
+ *
+ * \hideinitializer
+ */
+#define UIP_CONF_UDP             1
+
+/**
+ * UDP Maximum Connections
+ *
+ * \hideinitializer
+ */
+#define UIP_CONF_UDP_CONNS       1
+
+/**
+ * UDP checksums on or off
+ *
+ * \hideinitializer
+ */
+#define UIP_CONF_UDP_CHECKSUMS   0
+
+/**
  * uIP buffer size.
  *
  * \hideinitializer
@@ -120,30 +141,20 @@ typedef unsigned short uip_stats_t;
 #define UIP_CONF_LOGGING         0
 
 /**
- * UDP support on or off
- *
- * \hideinitializer
- */
-#define UIP_CONF_UDP             0
-
-/**
- * UDP checksums on or off
- *
- * \hideinitializer
- */
-#define UIP_CONF_UDP_CHECKSUMS   1
-
-/**
  * uIP statistics on or off
  *
  * \hideinitializer
  */
 #define UIP_CONF_STATISTICS      0
 
+
 /* Here we include the header file for the application(s) we use in
    our project. */
-#include "boot.h"
+#include "header.h"
 #include "net.h"
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+#include "dhcpc.h"
+#endif
 
 #endif /* __UIP_CONF_H__ */
 
