@@ -74,16 +74,5 @@ typedef struct net_state
 
 #endif /* BOOT_COM_NET_ENABLE > 0 */
 
-#if (BOOT_COM_NET_DHCP_ENABLE == 0)
-typedef struct dhcpc_state
-{
-  blt_int8u  unused;
-} uip_udp_appstate_t;
-
-#define UIP_UDP_APPCALL();
-
-#endif /* BOOT_COM_NET_DHCP_ENABLE == 0 */
-
-
 #endif /* NET_H */
 /*********************************** end of net.h **************************************/

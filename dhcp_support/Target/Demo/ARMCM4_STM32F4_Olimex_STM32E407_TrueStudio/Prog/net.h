@@ -48,16 +48,6 @@ typedef struct net_state
   unsigned char unused;
 } uip_tcp_appstate_t;
 
-#if (BOOT_COM_NET_DHCP_ENABLE == 0)
-typedef struct dhcpc_state
-{
-  unsigned char unused;
-} uip_udp_appstate_t;
-
-#define UIP_UDP_APPCALL();
-
-#endif /* BOOT_COM_NET_DHCP_ENABLE == 0 */
-
 
 /****************************************************************************************
 * Function prototypes

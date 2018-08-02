@@ -36,7 +36,6 @@
 #include <limits.h>
 
 #include "uip.h"
-#if (BOOT_COM_NET_DHCP_ENABLE > 0)
 #include "dhcpc.h"
 #include "uip_timer.h"
 #include "pt.h"
@@ -96,6 +95,10 @@ struct dhcp_msg
 
 static const u8_t xid[4] = {0xad, 0xde, 0x12, 0x23};
 static const u8_t magic_cookie[4] = {99, 130, 83, 99};
+
+static void dhcpc_configured(const struct dhcpc_state *s);
+static void dhcpc_unconfigured(void);
+
 /*---------------------------------------------------------------------------*/
 static u8_t *
 add_msg_type(u8_t *optptr, u8_t type)
@@ -344,7 +347,7 @@ PT_THREAD(handle_dhcp(void))
     s.state = STATE_OFFER_RECEIVED;
     s.ticks = CLOCK_SECOND;
 
-    /* Keep in mind that DHCP request messages must come for source address 0.0.0.0, so
+    /* keep in mind that DHCP request messages must come for source address 0.0.0.0, so
      * reinitialize the DHCP request messages and inform the application that the
      * DHCP configuration is now temporarily reset until the lease was successfully
      * renewed.
@@ -425,5 +428,21 @@ dhcpc_request(void)
   uip_sethostaddr(ipaddr);
 }
 /*---------------------------------------------------------------------------*/
-#endif /* BOOT_COM_NET_DHCP_ENABLE > 0 */
+void
+dhcpc_configured(const struct dhcpc_state *s)
+{
+  /* set the IP address received from the DHCP server. */
+  uip_sethostaddr(&s->ipaddr);
+  /* set the network mask received from the DHCP server. */
+  uip_setnetmask(&s->netmask);
+  /* set the gateway address received from the DHCP server. */
+  uip_setdraddr(&s->default_router);
+}
+/*---------------------------------------------------------------------------*/
+void
+dhcpc_unconfigured(void)
+{
+  /* nothing needs to be done here. */
+}
+/*---------------------------------------------------------------------------*/
 

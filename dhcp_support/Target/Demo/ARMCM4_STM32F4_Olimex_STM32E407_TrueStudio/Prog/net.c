@@ -53,6 +53,10 @@
 static unsigned long periodicTimerTimeOut;
 /** \brief Holds the time out value of the uIP ARP timer. */
 static unsigned long ARPTimerTimeOut;
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+/** \brief Holds the MAC address which is used by the DHCP client. */
+static struct uip_eth_addr macAddress;
+#endif
 
 
 /************************************************************************************//**
@@ -63,9 +67,6 @@ static unsigned long ARPTimerTimeOut;
 void NetInit(void)
 {
   uip_ipaddr_t ipaddr;
-#if (BOOT_COM_NET_DHCP_ENABLE > 0)
-  struct uip_eth_addr macAddress;
-#endif
 
   /* initialize the network device */
   netdev_init();

@@ -76,6 +76,10 @@ static void NetServerTask(void);
 static blt_int32u periodicTimerTimeOut;
 /** \brief Holds the time out value of the uIP ARP timer. */
 static blt_int32u ARPTimerTimeOut;
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+/** \brief Holds the MAC address which is used by the DHCP client. */
+static struct uip_eth_addr macAddress;
+#endif
 /** \brief Boolean flag to determine if the module was initialized or not. */
 static blt_bool netInitializedFlag = BLT_FALSE;
 #if (BOOT_COM_NET_DEFERRED_INIT_ENABLE == 1)
@@ -100,9 +104,6 @@ static blt_bool netInitializationDeferred = BLT_FALSE;
 void NetInit(void)
 {
   uip_ipaddr_t ipaddr;
-#if (BOOT_COM_NET_DHCP_ENABLE > 0)
-  struct uip_eth_addr macAddress;
-#endif
 
   /* only perform the initialization if there is no request to defer it */
   if (netInitializationDeferred == BLT_FALSE)
@@ -399,36 +400,6 @@ static void NetServerTask(void)
     uip_arp_timer();
   }
 } /*** end of NetServerTask ***/
-
-
-#if (BOOT_COM_NET_DHCP_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Callback for when DHCP client has been configured.
-** \return    none.
-**
-****************************************************************************************/
-void dhcpc_configured(const struct dhcpc_state *s)
-{
-  /* Set the IP address received from the DHCP server. */
-  uip_sethostaddr(&s->ipaddr);
-  /* Set the network mask received from the DHCP server. */
-  uip_setnetmask(&s->netmask);
-  /* Set the gateway address received from the DHCP server. */
-  uip_setdraddr(&s->default_router);
-} /*** end of dhcpc_configured ***/
-
-
-/************************************************************************************//**
-** \brief     Callback for when DHCP client lost its configuration. This is typically
-**            temporary while the DHCP client is attempting to renew the lease.
-** \return    none.
-**
-****************************************************************************************/
-void dhcpc_unconfigured(void)
-{
-  /* No need to do anything here. */
-} /*** end of dhcpc_unconfigured ***/
-#endif /* BOOT_COM_NET_DHCP_ENABLE > 0 */
 
 #endif /* BOOT_COM_NET_ENABLE > 0 */
 

@@ -57,11 +57,7 @@ struct dhcpc_state
 
 void dhcpc_init(const void *mac_addr, int mac_len);
 void dhcpc_request(void);
-
 void dhcpc_appcall(void);
-
-void dhcpc_configured(const struct dhcpc_state *s);
-void dhcpc_unconfigured(void);
 
 typedef struct dhcpc_state uip_udp_appstate_t;
 #define UIP_UDP_APPCALL dhcpc_appcall
