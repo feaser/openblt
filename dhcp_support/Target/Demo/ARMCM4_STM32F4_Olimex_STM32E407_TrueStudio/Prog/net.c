@@ -250,34 +250,4 @@ void NetTask(void)
 } /*** end of NetServerTask ***/
 
 
-#if (BOOT_COM_NET_DHCP_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Callback for when DHCP client has been configured.
-** \return    none.
-**
-****************************************************************************************/
-void dhcpc_configured(const struct dhcpc_state *s)
-{
-  /* Set the IP address received from the DHCP server. */
-  uip_sethostaddr(&s->ipaddr);
-  /* Set the network mask received from the DHCP server. */
-  uip_setnetmask(&s->netmask);
-  /* Set the gateway address received from the DHCP server. */
-  uip_setdraddr(&s->default_router);
-} /*** end of dhcpc_configured ***/
-
-
-/************************************************************************************//**
-** \brief     Callback for when DHCP client lost its configuration. This is typically
-**            temporary while the DHCP client is attempting to renew the lease.
-** \return    none.
-**
-****************************************************************************************/
-void dhcpc_unconfigured(void)
-{
-  /* No need to do anything here. */
-} /*** end of dhcpc_unconfigured ***/
-#endif /* BOOT_COM_NET_DHCP_ENABLE > 0 */
-
-
 /*********************************** end of net.c **************************************/
