@@ -104,18 +104,6 @@
 /** \brief Enable/disable the backdoor override hook functions. */
 #define BOOT_BACKDOOR_HOOKS_ENABLE      (0)
 
-#if (BOOT_COM_USB_ENABLE > 0)
-/* For a USB bootloader, the backdoor needs to stay open long enough for the USB device
- * to enumerate on the host PC. Therefore it needs to be set a bit longer than the
- * default value, which is done here by overriding the macro. Note that this won't be
- * long enough for a first time USB driver install on the host PC. In this case the
- * bootloader should be started with the backup backdoor that uses a digital input to
- * for the bootloader to stay active. Refer to CpuUserProgramStartHook() to determine
- * the digital input to use for this.
- */
-#define BOOT_BACKDOOR_ENTRY_TIMEOUT_MS  (2000)
-#endif
-
 
 /****************************************************************************************
 *   N O N - V O L A T I L E   M E M O R Y   D R I V E R   C O N F I G U R A T I O N

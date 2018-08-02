@@ -1,12 +1,24 @@
 MEMORY
 {
-    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 32K
-    SRAM (rwx) : ORIGIN = 0x20000000, LENGTH = 64K
+    FLASH (rx)   : ORIGIN = 0x00000000, LENGTH = 32K
+    SHARED (rwx) : ORIGIN = 0x20000000, LENGTH = 64
+    SRAM (rwx)   : ORIGIN = 0x20000040, LENGTH = 64K - 64
 }
 
 SECTIONS
 {
     __STACKSIZE__ = 2048;
+
+	  .shared (NOLOAD):
+	  {
+        . = ALIGN(4);
+		    __shared_start__ = .;
+        *(.shared)
+        *(.shared.*)
+        KEEP(*(.shared)) 
+        . = ALIGN(4);
+		    __shared_end__ = .;
+	  } > SHARED
 
     .text :
     {

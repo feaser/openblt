@@ -1,10 +1,12 @@
 /*-Specials-*/
 define symbol __ICFEDIT_intvec_start__ = 0x00008000;
 /*-Memory Regions-*/
-define symbol __ICFEDIT_region_ROM_start__   = 0x00008000;
-define symbol __ICFEDIT_region_ROM_end__     = 0x0003FFFF;
-define symbol __ICFEDIT_region_RAM_start__   = 0x20000000;
-define symbol __ICFEDIT_region_RAM_end__     = 0x2000FFFF;
+define symbol __ICFEDIT_region_ROM_start__    = 0x00008000;
+define symbol __ICFEDIT_region_ROM_end__      = 0x0003FFFF;
+define symbol __ICFEDIT_region_SHARED_start__ = 0x20000000;
+define symbol __ICFEDIT_region_SHARED_end__   = 0x2000003F;
+define symbol __ICFEDIT_region_RAM_start__    = 0x20000040;
+define symbol __ICFEDIT_region_RAM_end__      = 0x2000FFFF;
 /*-Sizes-*/
 define symbol __ICFEDIT_size_cstack__   = 0x400;
 define symbol __ICFEDIT_size_heap__     = 0x800;
@@ -23,6 +25,7 @@ initialize by copy { readwrite };
 do not initialize  { section .noinit };
 
 place at address mem:__ICFEDIT_intvec_start__ { readonly section .intvec };
+place at address mem:__ICFEDIT_region_SHARED_start__ { readwrite section .shared };
 
 place in ROM_region   { readonly };
 place in RAM_region   { readwrite,

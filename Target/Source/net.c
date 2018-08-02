@@ -39,6 +39,20 @@
 
 #if (BOOT_COM_NET_ENABLE > 0)
 /****************************************************************************************
+* Configuration macros
+****************************************************************************************/
+/* Extend the default time that the backdoor is open if firmware updates via TCP/IP
+ * are supported. in this case an activation of the bootloader results in an
+ * initialization of the ethernet MAC. when connected to the network via a router this
+ * can take several seconds. Feel free to shorten/lengthen this time for finetuning,
+ * Note that adding this configuration macro to blt_conf.h overrides the value here.
+ */
+#ifndef BOOT_COM_NET_BACKDOOR_EXTENSION_MS
+#define BOOT_COM_NET_BACKDOOR_EXTENSION_MS   (10000)
+#endif
+
+
+/****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief Delta time for the uIP periodic timer. */
@@ -62,6 +76,24 @@ static void NetServerTask(void);
 static blt_int32u periodicTimerTimeOut;
 /** \brief Holds the time out value of the uIP ARP timer. */
 static blt_int32u ARPTimerTimeOut;
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+/** \brief Holds the MAC address which is used by the DHCP client. */
+static struct uip_eth_addr macAddress;
+#endif
+/** \brief Boolean flag to determine if the module was initialized or not. */
+static blt_bool netInitializedFlag = BLT_FALSE;
+#if (BOOT_COM_NET_DEFERRED_INIT_ENABLE == 1)
+/** \brief Boolean flag initialized such that the normal initialization via NetInit()
+ *         should be deferred. A called to NetDeferredInit() is need to do the actual
+ *         initialization of this module.
+ */
+static blt_bool netInitializationDeferred = BLT_TRUE;
+#else
+/** \brief Boolean flag initialized such that the normal initialization via NetInit()
+ *         proceeds as usual.
+ */
+static blt_bool netInitializationDeferred = BLT_FALSE;
+#endif
 
 
 /************************************************************************************//**
@@ -73,30 +105,85 @@ void NetInit(void)
 {
   uip_ipaddr_t ipaddr;
 
-  /* initialize the network device */
-  netdev_init();
-  /* initialize the timer variables */
-  periodicTimerTimeOut = TimerGet() + NET_UIP_PERIODIC_TIMER_MS;
-  ARPTimerTimeOut = TimerGet() + NET_UIP_ARP_TIMER_MS;
-  /* initialize the uIP TCP/IP stack. */
-  uip_init();
-  /* set the IP address */
-  uip_ipaddr(ipaddr, BOOT_COM_NET_IPADDR0, BOOT_COM_NET_IPADDR1, BOOT_COM_NET_IPADDR2,
-             BOOT_COM_NET_IPADDR3);
-  uip_sethostaddr(ipaddr);
-  /* set the network mask */
-  uip_ipaddr(ipaddr, BOOT_COM_NET_NETMASK0, BOOT_COM_NET_NETMASK1, BOOT_COM_NET_NETMASK2,
-             BOOT_COM_NET_NETMASK3);
-  uip_setnetmask(ipaddr);
-  /* set the gateway address */
-  uip_ipaddr(ipaddr, BOOT_COM_NET_GATEWAY0, BOOT_COM_NET_GATEWAY1, BOOT_COM_NET_GATEWAY2,
-             BOOT_COM_NET_GATEWAY3);
-  uip_setdraddr(ipaddr);
-  /* start listening on the configured port for XCP transfers on TCP/IP */
-  uip_listen(HTONS(BOOT_COM_NET_PORT));
-  /* initialize the MAC and set the MAC address */
-  netdev_init_mac();
+  /* only perform the initialization if there is no request to defer it */
+  if (netInitializationDeferred == BLT_FALSE)
+  {
+    /* initialize the network device */
+    netdev_init();
+    /* initialize the timer variables */
+    periodicTimerTimeOut = TimerGet() + NET_UIP_PERIODIC_TIMER_MS;
+    ARPTimerTimeOut = TimerGet() + NET_UIP_ARP_TIMER_MS;
+    /* initialize the uIP TCP/IP stack. */
+    uip_init();
+#if (BOOT_COM_NET_DHCP_ENABLE == 0)
+    /* set the IP address */
+    uip_ipaddr(ipaddr, BOOT_COM_NET_IPADDR0, BOOT_COM_NET_IPADDR1, BOOT_COM_NET_IPADDR2,
+               BOOT_COM_NET_IPADDR3);
+    uip_sethostaddr(ipaddr);
+    /* set the network mask */
+    uip_ipaddr(ipaddr, BOOT_COM_NET_NETMASK0, BOOT_COM_NET_NETMASK1, BOOT_COM_NET_NETMASK2,
+               BOOT_COM_NET_NETMASK3);
+    uip_setnetmask(ipaddr);
+    /* set the gateway address */
+    uip_ipaddr(ipaddr, BOOT_COM_NET_GATEWAY0, BOOT_COM_NET_GATEWAY1, BOOT_COM_NET_GATEWAY2,
+               BOOT_COM_NET_GATEWAY3);
+    uip_setdraddr(ipaddr);
+#else
+    /* set the IP address */
+    uip_ipaddr(ipaddr, 0, 0, 0, 0);
+    uip_sethostaddr(ipaddr);
+    /* set the network mask */
+    uip_ipaddr(ipaddr, 0, 0, 0, 0);
+    uip_setnetmask(ipaddr);
+    /* set the gateway address */
+    uip_ipaddr(ipaddr, 0, 0, 0, 0);
+    uip_setdraddr(ipaddr);
+#endif
+    /* start listening on the configured port for XCP transfers on TCP/IP */
+    uip_listen(HTONS(BOOT_COM_NET_PORT));
+    /* initialize the MAC and set the MAC address */
+    netdev_init_mac();
+
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+    /* initialize the DHCP client application and send the initial request. */
+    netdev_get_mac(&macAddress.addr[0]);
+    dhcpc_init(&macAddress.addr[0], 6);
+    dhcpc_request();
+#endif
+
+    /* extend the time that the backdoor is open in case the default timed backdoor
+     * mechanism is used.
+     */
+  #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+    if (BackDoorGetExtension() < BOOT_COM_NET_BACKDOOR_EXTENSION_MS)
+    {
+      BackDoorSetExtension(BOOT_COM_NET_BACKDOOR_EXTENSION_MS);
+    }
+  #endif /* BOOT_BACKDOOR_HOOKS_ENABLE == 0 */
+    /* set flag to indicate that we are now initialized. */
+    netInitializedFlag = BLT_TRUE;
+  }
 } /*** end of NetInit ***/
+
+
+#if (BOOT_COM_NET_DEFERRED_INIT_ENABLE == 1)
+/************************************************************************************//**
+** \brief     Performs a deferred initialization of the TCP/IP network communication
+**            interface.
+** \return    none.
+**
+****************************************************************************************/
+void NetDeferredInit(void)
+{
+  /* reset the request to defer the initializaton */
+  netInitializationDeferred = BLT_FALSE;
+  /* perform the initialization if not yet initialized */
+  if (netInitializedFlag == BLT_FALSE)
+  {
+    NetInit();
+  }
+} /*** end of NetDeferredInit ***/
+#endif
 
 
 /************************************************************************************//**
@@ -111,22 +198,26 @@ void NetTransmitPacket(blt_int8u *data, blt_int8u len)
   uip_tcp_appstate_t *s;
   blt_int16u cnt;
 
-  /* get pointer to application state */
-  s = &(uip_conn->appstate);
-
-  /* add the dto counter first */
-  *(blt_int32u *)&(s->dto_data[0]) = s->dto_counter;
-  /* copy the actual XCP response */
-  for (cnt=0; cnt<len; cnt++)
+  /* no need to send the packet if this module is not initialized */
+  if (netInitializedFlag == BLT_TRUE)
   {
-    s->dto_data[cnt+4] = data[cnt];
+    /* get pointer to application state */
+    s = &(uip_conn->appstate);
+
+    /* add the dto counter first */
+    *(blt_int32u *)&(s->dto_data[0]) = s->dto_counter;
+    /* copy the actual XCP response */
+    for (cnt=0; cnt<len; cnt++)
+    {
+      s->dto_data[cnt+4] = data[cnt];
+    }
+    /* set the length of the TCP/IP packet */
+    s->dto_len = len + 4;
+    /* submit it for transmission */
+    uip_send(s->dto_data, s->dto_len);
+    /* update dto counter for the next transmission */
+    s->dto_counter++;
   }
-  /* set the length of the TCP/IP packet */
-  s->dto_len = len + 4;
-  /* submit it for transmission */
-  uip_send(s->dto_data, s->dto_len);
-  /* update dto counter for the next transmission */
-  s->dto_counter++;
 } /*** end of NetTransmitPacket ***/
 
 
@@ -139,11 +230,14 @@ void NetTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool NetReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  /* run the TCP/IP server task function, which will handle the reception and
-   * transmission of XCP packets
-   */
-  NetServerTask();
-
+  /* no need to check for newly received packets if this module is not initialized */
+  if (netInitializedFlag == BLT_TRUE)
+  {
+    /* run the TCP/IP server task function, which will handle the reception and
+     * transmission of XCP packets
+     */
+    NetServerTask();
+  }
   /* packet reception and transmission is completely handled by the NetServerTask so
    * always return BLT_FALSE here.
    */
@@ -193,15 +287,21 @@ void NetApp(void)
 
   if (uip_newdata())
   {
-    /* XCP is request/response. this means is a new request comes in when a response
-     * transmission is still pending, the XCP master either re-initialized or sent
-     * the request again because of a response time-out. Either way the pending response
-     * should be cancelled before handling the new request.
+    /* only process the data if its length is not longer than expected. otherwise just
+     * ignore it.
      */
-    s->dto_len = 0;
-    /* the first 4 bytes contain a counter value in which we are not really interested */
-    newDataPtr = uip_appdata;
-    XcpPacketReceived(&newDataPtr[4], (blt_int8u)(uip_datalen() - 4));
+    if ((uip_datalen() - 4) <= BOOT_COM_NET_RX_MAX_DATA)
+    {
+      /* XCP is request/response. this means is a new request comes in when a response
+       * transmission is still pending, the XCP master either re-initialized or sent
+       * the request again because of a response time-out. Either way the pending response
+       * should be cancelled before handling the new request.
+       */
+      s->dto_len = 0;
+      /* the first 4 bytes contain a counter value in which we are not really interested */
+      newDataPtr = uip_appdata;
+      XcpPacketReceived(&newDataPtr[4], (blt_int8u)(uip_datalen() - 4));
+    }
   }
 } /*** end of NetApp ***/
 
@@ -274,6 +374,23 @@ static void NetServerTask(void)
         uip_len = 0;
       }
     }
+
+#if UIP_UDP
+    for (connection = 0; connection < UIP_UDP_CONNS; connection++)
+    {
+      uip_udp_periodic(connection);
+      /* If the above function invocation resulted in data that
+       * should be sent out on the network, the global variable
+       * uip_len is set to a value > 0.
+       */
+      if(uip_len > 0)
+      {
+        uip_arp_out();
+        netdev_send();
+        uip_len = 0;
+      }
+    }
+#endif
   }
 
   /* process ARP Timer here. */
@@ -283,6 +400,7 @@ static void NetServerTask(void)
     uip_arp_timer();
   }
 } /*** end of NetServerTask ***/
+
 #endif /* BOOT_COM_NET_ENABLE > 0 */
 
 

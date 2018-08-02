@@ -128,13 +128,16 @@ typedef enum
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void            ComInit(void);
-void            ComTask(void);
-void            ComFree(void);
-blt_int16u      ComGetActiveInterfaceMaxRxLen(void);
-blt_int16u      ComGetActiveInterfaceMaxTxLen(void);
-void            ComTransmitPacket(blt_int8u *data, blt_int16u len);
-blt_bool        ComIsConnected(void);
+void       ComInit(void);
+#if (BOOT_COM_DEFERRED_INIT_ENABLE == 1)
+void       ComDeferredInit(void);
+#endif
+void       ComTask(void);
+void       ComFree(void);
+blt_int16u ComGetActiveInterfaceMaxRxLen(void);
+blt_int16u ComGetActiveInterfaceMaxTxLen(void);
+void       ComTransmitPacket(blt_int8u *data, blt_int16u len);
+blt_bool   ComIsConnected(void);
 
 #endif /* BOOT_COM_ENABLE > 0 */
 

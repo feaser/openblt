@@ -78,6 +78,14 @@ void CpuStartUserProgram(void)
   /* check if a user program is present by verifying the checksum */
   if (NvmVerifyChecksum() == BLT_FALSE)
   {
+#if (BOOT_COM_DEFERRED_INIT_ENABLE == 1)
+    /* bootloader will stay active so perform deferred initialization to make sure
+     * the communication interface that were not yet initialized are now initialized.
+     * this is needed to make sure firmware updates via these communication interfaces
+     * will be possible.
+     */
+    ComDeferredInit();
+#endif
     /* not a valid user program so it cannot be started */
     return;
   }
@@ -85,6 +93,14 @@ void CpuStartUserProgram(void)
   /* invoke callback */
   if (CpuUserProgramStartHook() == BLT_FALSE)
   {
+  #if (BOOT_COM_DEFERRED_INIT_ENABLE == 1)
+    /* bootloader will stay active so perform deferred initialization to make sure
+     * the communication interface that were not yet initialized are now initialized.
+     * this is needed to make sure firmware updates via these communication interfaces
+     * will be possible.
+     */
+    ComDeferredInit();
+  #endif
     /* callback requests the user program to not be started */
     return;
   }
@@ -111,6 +127,14 @@ void CpuStartUserProgram(void)
   CpuIrqEnable();
   /* start the user program by activating its reset interrupt service routine */
   pProgResetHandler();
+#if (BOOT_COM_DEFERRED_INIT_ENABLE == 1)
+  /* theoretically, the code never gets here because the user program should now be
+   * running and the previous function call should not return. In case it did return
+   * for whatever reason, make sure all communication interfaces are initialized so that
+   * firmware updates can be started.
+   */
+  ComDeferredInit();
+#endif
 } /*** end of CpuStartUserProgram ***/
 
 

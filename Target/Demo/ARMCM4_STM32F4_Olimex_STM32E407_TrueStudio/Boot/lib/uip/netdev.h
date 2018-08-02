@@ -40,6 +40,7 @@
 
 void         netdev_init(void);
 void         netdev_init_mac(void);
+void         netdev_get_mac(unsigned char * mac_addr);
 unsigned int netdev_read(void);
 void         netdev_send(void);
 

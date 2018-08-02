@@ -1,14 +1,15 @@
 MEMORY
 {
   UNPLACED_SECTIONS (wx) : ORIGIN = 0x100000000, LENGTH = 0
-  SRAM (wx) : ORIGIN = 0x20000000, LENGTH = 0x00010000
-  FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x00008000
+  SHARED (wx) : ORIGIN = 0x20000000, LENGTH = 64
+  SRAM (wx)   : ORIGIN = 0x20000040, LENGTH = 0x00010000 - 64
+  FLASH (rx)  : ORIGIN = 0x00000000, LENGTH = 0x00008000
 }
 
 
 SECTIONS
 {
-  __SRAM_segment_start__ = 0x20000000;
+  __SRAM_segment_start__ = 0x20000040;
   __SRAM_segment_end__ = 0x20010000;
   __FLASH_segment_start__ = 0x00000000;
   __FLASH_segment_end__ = 0x00008000;
@@ -22,6 +23,17 @@ SECTIONS
   __STACKSIZE_UND__ = 0;
   __HEAPSIZE__ = 128;
 
+  .shared (NOLOAD):
+  {
+    . = ALIGN(4);
+    __shared_start__ = .;
+    *(.shared)
+    *(.shared.*)
+    KEEP(*(.shared)) 
+    . = ALIGN(4);
+    __shared_end__ = .;
+  } > SHARED
+  
   __vectors_ram_load_start__ = ALIGN(__SRAM_segment_start__ , 256);
   .vectors_ram ALIGN(__SRAM_segment_start__ , 256) (NOLOAD) : AT(ALIGN(__SRAM_segment_start__ , 256))
   {

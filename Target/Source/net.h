@@ -56,9 +56,13 @@ typedef struct net_state
 * Function prototypes
 ****************************************************************************************/
 void     NetInit(void);
+#if (BOOT_COM_NET_DEFERRED_INIT_ENABLE == 1)
+void     NetDeferredInit(void);
+#endif
 void     NetApp(void);
 void     NetTransmitPacket(blt_int8u *data, blt_int8u len);
 blt_bool NetReceivePacket(blt_int8u *data, blt_int8u *len);
+
 #else /* BOOT_COM_NET_ENABLE > 0 */
 
 typedef struct net_state
@@ -69,7 +73,6 @@ typedef struct net_state
 #define UIP_APPCALL();
 
 #endif /* BOOT_COM_NET_ENABLE > 0 */
-
 
 #endif /* NET_H */
 /*********************************** end of net.h **************************************/

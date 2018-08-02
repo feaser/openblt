@@ -37,9 +37,10 @@ SEARCH_DIR(.)
 /* Memory Spaces Definitions */
 MEMORY
 {
-    ROM  (rx) : ORIGIN = 0x08000000, LENGTH = 48K
-    RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
-  CCRAM (rwx) : ORIGIN = 0x10000000, LENGTH = 64K
+    ROM  (rx)    : ORIGIN = 0x08000000, LENGTH = 48K
+    SHARED (rwx) : ORIGIN = 0x20000000, LENGTH = 64
+    RAM (rwx)    : ORIGIN = 0x20000040, LENGTH = 128K - 64
+    CCRAM (rwx)  : ORIGIN = 0x10000000, LENGTH = 64K
 }
 
 /* Linker script to place sections and symbol values. Should be used together
@@ -72,6 +73,17 @@ MEMORY
 
 SECTIONS
 {
+	.shared (NOLOAD):
+	{
+    . = ALIGN(4);
+		__shared_start__ = .;
+    *(.shared)
+    *(.shared.*)
+    KEEP(*(.shared)) 
+    . = ALIGN(4);
+		__shared_end__ = .;
+	} > SHARED
+
 	.text :
 	{
 		KEEP(*(.isr_vector))

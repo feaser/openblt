@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-1582861970
+Checksum=2100562844
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -19,11 +19,9 @@ ShowArgs=0
 MixedMode=1
 [LMIFTDIDriver]
 LMI_ResetMode=0x00000000
-LMIFTDIserialNo=04110716A
+LMIFTDIserialNo=04110450A
 LMIFTDIfoundProbes=
 LMI_LeaveTargetRunning=0x00000000
-[watch_formats]
-Fmt0={W}0:test_address	4	0
 [CallStackLog]
 Enabled=0
 [DriverProfiling]
@@ -32,6 +30,9 @@ Mode=0
 Graph=0
 Symbiont=0
 Exclusions=
+[watch_formats]
+Fmt0={W}0:test_address	4	0
+Fmt1={W}1:ulBase	4	0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -42,7 +43,8 @@ LogFile=_ ""
 [Disassemble mode]
 mode=0
 [Breakpoints]
-Count=0
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Source\net.c}.300.7" 0 0 0 0 "" 0 ""
+Count=1
 [Aliases]
 Count=0
 SuppressDialog=0

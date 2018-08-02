@@ -38,24 +38,14 @@
 #if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
 #ifndef BOOT_BACKDOOR_ENTRY_TIMEOUT_MS
 /** \brief Sets the time in milliseconds that the backdoor is open, but allow an
- *         override for this time. note that this time should be at least 2.5 times
- *         as long as the time that is configured in Microboot's XCP settings for the
- *         connect command response. This is the last entry on XCP Timeouts tab. By
- *         default the connect command response is configured as 20ms by Microboot,
- *         except for TCP/IP where it is 300ms due to accomodate for worldwide
- *         network latency. The default value was chosen safely for compatibility
- *         reasons with all supported communication interfaces. It could be made
- *         shorter your bootloader. To change this value, simply add the macro
+ *         override for this time. To change this value, simply add the macro
  *         BOOT_BACKDOOR_ENTRY_TIMEOUT_MS to blt_conf.h with your desired backdoor 
  *         open time in milliseconds.
  */
-#if (BOOT_COM_NET_ENABLE == 1)
-#define BOOT_BACKDOOR_ENTRY_TIMEOUT_MS  (750)
-#else
 #define BOOT_BACKDOOR_ENTRY_TIMEOUT_MS  (500)
 #endif
-#endif
-#endif
+#endif /* BOOT_BACKDOOR_HOOKS_ENABLE == 0 */
+
 
 /****************************************************************************************
 * Hook functions
@@ -74,6 +64,16 @@ extern blt_bool BackDoorEntryHook(void);
 static blt_bool backdoorOpen;
 /** \brief To determine how long the backdoor has been open in milliseconds. */
 static blt_int32u backdoorOpenTime;
+/** \brief In certain scenarios it is desired to be able to extend the default backdoor
+ *         entry time at runtime. This variable holds the extension time in milliseconds.
+ *         Note that this value must be initialized to zero here and not in function
+ *         BackDoorInit(), because BackDoorInit() is one of the last functions called
+ *         in BootInit(). This order should not be changed otherwise there is a chance
+ *         that the timed backdoor partially or completely times out during BootInit().
+ *         Initializing the variable here, allows function BackDoorSetExtension() to be
+ *         called before BackDoorInit() was called.
+ */
+static blt_int32u backdoorExtensionTime = 0;
 #endif
 
 
@@ -106,7 +106,7 @@ void BackDoorInit(void)
 #else
   /* open the backdoor after a reset */
   backdoorOpen = BLT_TRUE;
-  backdoorOpenTime = TimerGet();
+  BackDoorRestartTimer();
 #endif
   /* perform the first check that open/closes the backdoor */
   BackDoorCheck();
@@ -148,7 +148,7 @@ void BackDoorCheck(void)
   if (backdoorOpen == BLT_TRUE)
   {
     /* check if the backdoor entry time window elapsed */
-    if (TimerGet() >= (BOOT_BACKDOOR_ENTRY_TIMEOUT_MS + backdoorOpenTime))
+    if (TimerGet() >= (BOOT_BACKDOOR_ENTRY_TIMEOUT_MS + backdoorExtensionTime + backdoorOpenTime))
     {
       /* close the backdoor */
       backdoorOpen = BLT_FALSE;
@@ -169,6 +169,53 @@ void BackDoorCheck(void)
   }
 #endif
 } /*** end of BackDoorCheck ***/
+
+
+#if (BOOT_BACKDOOR_HOOKS_ENABLE == 0)
+/************************************************************************************//**
+** \brief     Sets the amount of milliseconds that the default backdoor timeout time
+**            (BOOT_BACKDOOR_ENTRY_TIMEOUT_MS) is extended.
+** \param     extension_ms Extension time in milliseconds.
+** \return    none
+**
+****************************************************************************************/
+void BackDoorSetExtension(blt_int32u extension_ms)
+{
+  /* update the extension time */
+  backdoorExtensionTime = extension_ms;
+} /*** end of BackDoorSetExtension ***/
+
+
+/************************************************************************************//**
+** \brief     Gets the amount of milliseconds that the default backdoor timeout time
+**            (BOOT_BACKDOOR_ENTRY_TIMEOUT_MS) is extended.
+** \return    Extension time in milliseconds.
+**
+****************************************************************************************/
+blt_int32u BackDoorGetExtension(void)
+{
+  /* read out and reutrn the currently configured extension time */
+  return backdoorExtensionTime;
+} /*** end of BackDoorGetExtension ***/
+
+
+/************************************************************************************//**
+** \brief     Restarts the timed backdoor timer. It uses the current system time as the
+**            start time. The backdoor stays open for BOOT_BACKDOOR_ENTRY_TIMEOUT_MS
+**            after this start time, possibly extended in case BackDoorSetExtension() was
+**            called.
+** \return    none
+**
+****************************************************************************************/
+void BackDoorRestartTimer(void)
+{
+  /* only restart the time if the backdoor is actually still open */
+  if (backdoorOpen == BLT_TRUE)
+  {
+    backdoorOpenTime = TimerGet();
+  }
+} /*** end of BackDoorRestartTimer ***/
+#endif /* BOOT_BACKDOOR_HOOKS_ENABLE == 0 */
 
 
 /*********************************** end of backdoor.c *********************************/

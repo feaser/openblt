@@ -30,6 +30,8 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "inc/hw_types.h"
+#include "driverlib/gpio.h"
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
@@ -81,6 +83,11 @@ blt_bool BackDoorEntryHook(void)
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
+  /* do not start the user program is the pushbutton is pressed */
+  if (GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_1) == 0)  
+  {
+    return BLT_FALSE;
+  }
   /* okay to start the user program */
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/
@@ -191,79 +198,6 @@ blt_bool NvmWriteChecksumHook(void)
   return BLT_TRUE;
 }
 #endif /* BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0 */
-
-
-/****************************************************************************************
-*   N E T W O R K   I N T E R F A C E   H O O K   F U N C T I O N S
-****************************************************************************************/
-#if (BOOT_COM_NET_IPADDR_HOOK_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Callback that gets called when the IP address is about to be configured.
-** \param     ipAddrArray 4-byte array where the IP address should be stored.
-** \return    none.
-**
-****************************************************************************************/
-void NetIpAddressHook(blt_int8u *ipAddrArray)
-{
-  /* This hook function allows a dynamic configuration of the IP address. This could for
-   * example be used if the bootloader is activated from a running user program and 
-   * should have the same IP address as the user program. This IP address could be stored
-   * at a fixed location in RAM which can be read here. For now the example implemen-
-   * tation simply configures the bootloader's default IP address.
-   */
-  ipAddrArray[0] = BOOT_COM_NET_IPADDR0;
-  ipAddrArray[1] = BOOT_COM_NET_IPADDR1;
-  ipAddrArray[2] = BOOT_COM_NET_IPADDR2;
-  ipAddrArray[3] = BOOT_COM_NET_IPADDR3;
-} /*** end of NetIpAddressHook ***/
-#endif /* BOOT_COM_NET_IPADDR_HOOK_ENABLE > 0 */
-
-
-#if (BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Callback that gets called when the network mask is about to be configured.
-** \param     netMaskArray 4-byte array where the network mask should be stored.
-** \return    none.
-**
-****************************************************************************************/
-void NetNetworkMaskHook(blt_int8u *netMaskArray)
-{
-  /* This hook function allows a dynamic configuration of the network mask. This could 
-   * for example be used if the bootloader is activated from a running user program and 
-   * should have the same network mask as the user program. This network mask could be 
-   * stored at a fixed location in RAM which can be read here. For now the example 
-   * implementation simply configures the bootloader's default network mask.
-   */
-  netMaskArray[0] = BOOT_COM_NET_NETMASK0;
-  netMaskArray[1] = BOOT_COM_NET_NETMASK1;
-  netMaskArray[2] = BOOT_COM_NET_NETMASK2;
-  netMaskArray[3] = BOOT_COM_NET_NETMASK3;
-} /*** end of NetNetworkMaskHook ***/
-#endif /* BOOT_COM_NET_NETMASK_HOOK_ENABLE > 0 */
-
-
-#if (BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Callback that gets called when the gateway address is about to be 
-**            configured.
-** \param     gatewayAddrArray 4-byte array where the gateway address should be stored.
-** \return    none.
-**
-****************************************************************************************/
-void NetGatewayAddressHook(blt_int8u *gatewayAddrArray)
-{
-  /* This hook function allows a dynamic configuration of the network mask. This could 
-   * for example be used if the bootloader is activated from a running user program and 
-   * should have the same network mask as the user program. This network mask could be 
-   * stored at a fixed location in RAM which can be read here. For now the example 
-   * implementation simply configures the bootloader's default network mask.
-   */
-  gatewayAddrArray[0] = BOOT_COM_NET_GATEWAY0;
-  gatewayAddrArray[1] = BOOT_COM_NET_GATEWAY1;
-  gatewayAddrArray[2] = BOOT_COM_NET_GATEWAY2;
-  gatewayAddrArray[3] = BOOT_COM_NET_GATEWAY3;
-} /*** end of NetGatewayAddressHook ***/
-#endif /* BOOT_COM_NET_GATEWAY_HOOK_ENABLE > 0 */
 
 
 /****************************************************************************************

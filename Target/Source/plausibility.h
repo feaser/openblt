@@ -155,6 +155,7 @@
 #if (BOOT_COM_CAN_CHANNEL_INDEX < 0)
 #error "BOOT_COM_CAN_CHANNEL_INDEX must be >= 0"
 #endif
+
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 #ifndef BOOT_COM_UART_ENABLE
@@ -201,6 +202,7 @@
 #if (BOOT_COM_UART_CHANNEL_INDEX < 0)
 #error "BOOT_COM_UART_CHANNEL_INDEX must be >= 0"
 #endif
+
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 #ifndef BOOT_COM_USB_ENABLE
@@ -223,6 +225,13 @@
 #if (BOOT_COM_USB_RX_MAX_DATA <= 0)
 #error "BOOT_COM_USB_RX_MAX_DATA must be > 0"
 #endif
+
+#ifdef BOOT_COM_USB_BACKDOOR_EXTENSION_MS
+#if (BOOT_COM_USB_BACKDOOR_EXTENSION_MS < 0)
+#error "BOOT_COM_USB_BACKDOOR_EXTENSION_MS must be >= 0"
+#endif
+#endif
+
 #endif /* BOOT_COM_USB_ENABLE > 0 */
 
 #ifndef BOOT_COM_NET_ENABLE
@@ -262,6 +271,15 @@
 #error "BOOT_COM_NET_RX_MAX_DATA must be > 0"
 #endif
 
+#ifndef BOOT_COM_NET_DHCP_ENABLE
+#define BOOT_COM_NET_DHCP_ENABLE        (0)
+#endif
+
+#if (BOOT_COM_NET_DHCP_ENABLE < 0) || (BOOT_COM_NET_DHCP_ENABLE > 1)
+#error "BOOT_COM_NET_DHCP_ENABLE must be 0 or 1"
+#endif
+
+#if (BOOT_COM_NET_DHCP_ENABLE == 0)
 #ifndef BOOT_COM_NET_IPADDR0
 #error "BOOT_COM_NET_IPADDR0 is missing in blt_conf.h"
 #endif
@@ -313,21 +331,40 @@
 #ifndef BOOT_COM_NET_PORT
 #error "BOOT_COM_NET_PORT is missing in blt_conf.h"
 #endif
+#endif /* BOOT_COM_NET_DHCP_ENABLE == 0 */
 
-#ifndef BOOT_COM_NET_IPADDR_HOOK_ENABLE
-#define BOOT_COM_NET_IPADDR_HOOK_ENABLE  (0)
+#ifdef BOOT_COM_NET_BACKDOOR_EXTENSION_MS
+#if (BOOT_COM_NET_BACKDOOR_EXTENSION_MS < 0)
+#error "BOOT_COM_NET_BACKDOOR_EXTENSION_MS must be >= 0"
+#endif
 #endif
 
-#ifndef BOOT_COM_NET_NETMASK_HOOK_ENABLE
-#define BOOT_COM_NET_NETMASK_HOOK_ENABLE (0)
+#ifndef BOOT_COM_NET_DEFERRED_INIT_ENABLE
+#define BOOT_COM_NET_DEFERRED_INIT_ENABLE   (0)
 #endif
 
-#ifndef BOOT_COM_NET_GATEWAY_HOOK_ENABLE
-#define BOOT_COM_NET_GATEWAY_HOOK_ENABLE (0)
+#if (BOOT_COM_NET_DEFERRED_INIT_ENABLE < 0) || (BOOT_COM_NET_DEFERRED_INIT_ENABLE > 1)
+#error "BOOT_COM_NET_DEFERRED_INIT_ENABLE must be 0 or 1"
 #endif
 
 #endif /* BOOT_COM_NET_ENABLE > 0 */
 
+#if (BOOT_COM_NET_DEFERRED_INIT_ENABLE == 1)
+#define BOOT_COM_DEFERRED_INIT_ENABLE       (1)
+#else
+#define BOOT_COM_DEFERRED_INIT_ENABLE       (0)
+#endif
+
+#if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_NET_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
+#define BOOT_COM_ENABLE   (1)
+#else
+#define BOOT_COM_ENABLE   (0)
+#endif
+
+
+/****************************************************************************************
+*   F I L E   S Y S T E M   I N T E R F A C E   C O N F I G U R A T I O N   C H E C K
+****************************************************************************************/
 #ifndef BOOT_FILE_SYS_ENABLE
 #define BOOT_FILE_SYS_ENABLE      (0)
 #endif
@@ -369,12 +406,6 @@
 #error "BOOT_FILE_COMPLETED_HOOK_ENABLE must be 0 or 1"
 #endif
 #endif /* BOOT_FILE_SYS_ENABLE > 0 */
-
-#if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_NET_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
-#define BOOT_COM_ENABLE   (1)
-#else
-#define BOOT_COM_ENABLE   (0)
-#endif
 
 
 /****************************************************************************************

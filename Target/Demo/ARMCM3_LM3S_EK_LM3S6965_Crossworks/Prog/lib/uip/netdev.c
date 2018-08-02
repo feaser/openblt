@@ -60,6 +60,10 @@
 
 
 /*---------------------------------------------------------------------------*/
+static struct uip_eth_addr macAddress;
+
+
+/*---------------------------------------------------------------------------*/
 void netdev_init(void)
 {
   /* enable and reset the ethernet controller. */
@@ -139,6 +143,18 @@ void netdev_init_mac(void)
   }
   EthernetMACAddrSet(ETH_BASE, &macAddress.addr[0]);
   uip_setethaddr(macAddress);
+}
+
+
+/*---------------------------------------------------------------------------*/
+void netdev_get_mac(unsigned char * mac_addr)
+{
+  mac_addr[0] = macAddress.addr[0];
+  mac_addr[1] = macAddress.addr[1];
+  mac_addr[2] = macAddress.addr[2];
+  mac_addr[3] = macAddress.addr[3];
+  mac_addr[4] = macAddress.addr[4];
+  mac_addr[5] = macAddress.addr[5];
 }
 
 

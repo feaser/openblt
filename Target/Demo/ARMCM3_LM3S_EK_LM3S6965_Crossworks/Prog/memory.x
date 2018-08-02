@@ -4,7 +4,8 @@ MEMORY
   CM3_System_Control_Space (wx) : ORIGIN = 0xe000e000, LENGTH = 0x00001000
   Peripherals (wx) : ORIGIN = 0x40020000, LENGTH = 0x00100000
   FiRM_Peripherals (wx) : ORIGIN = 0x40000000, LENGTH = 0x00010000
-  SRAM (wx) : ORIGIN = 0x20000000, LENGTH = 0x00010000
+  SHARED (wx) : ORIGIN = 0x20000000, LENGTH = 64
+  SRAM (wx)   : ORIGIN = 0x20000040, LENGTH = 0x00010000 - 64
   FLASH (rx) : ORIGIN = 0x00008000, LENGTH = 0x00040000 - 0x8000
 }
 
@@ -17,7 +18,7 @@ SECTIONS
   __Peripherals_segment_end__ = 0x40120000;
   __FiRM_Peripherals_segment_start__ = 0x40000000;
   __FiRM_Peripherals_segment_end__ = 0x40010000;
-  __SRAM_segment_start__ = 0x20000000;
+  __SRAM_segment_start__ = 0x20000040;
   __SRAM_segment_end__ = 0x20010000;
   __FLASH_segment_start__ = 0x00008000;
   __FLASH_segment_end__ = 0x00040000;
@@ -31,6 +32,17 @@ SECTIONS
   __STACKSIZE_UND__ = 0;
   __HEAPSIZE__ = 128;
 
+  .shared (NOLOAD):
+  {
+    . = ALIGN(4);
+    __shared_start__ = .;
+    *(.shared)
+    *(.shared.*)
+    KEEP(*(.shared)) 
+    . = ALIGN(4);
+    __shared_end__ = .;
+  } > SHARED
+  
   __vectors_ram_load_start__ = ALIGN(__SRAM_segment_start__ , 256);
   .vectors_ram ALIGN(__SRAM_segment_start__ , 256) (NOLOAD) : AT(ALIGN(__SRAM_segment_start__ , 256))
   {

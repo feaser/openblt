@@ -42,7 +42,7 @@ struct dhcpc_state
   char state;
   struct uip_udp_conn *conn;
   struct timer timer;
-  u16_t ticks;
+  clock_time_t ticks;
   const void *mac_addr;
   int mac_len;
 
@@ -57,10 +57,7 @@ struct dhcpc_state
 
 void dhcpc_init(const void *mac_addr, int mac_len);
 void dhcpc_request(void);
-
 void dhcpc_appcall(void);
-
-void dhcpc_configured(const struct dhcpc_state *s);
 
 typedef struct dhcpc_state uip_udp_appstate_t;
 #define UIP_UDP_APPCALL dhcpc_appcall

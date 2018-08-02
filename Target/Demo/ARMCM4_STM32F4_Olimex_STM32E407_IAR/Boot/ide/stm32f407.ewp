@@ -245,7 +245,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>00000000</state>
+          <state>10010100</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -330,6 +330,7 @@
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32F4</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -349,16 +350,16 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
           <version>0</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -433,7 +434,7 @@
         <option>
           <name>CCOptStrategySlave</name>
           <version>0</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCGuardCalls</name>
@@ -2250,6 +2251,12 @@
       <name>$PROJ_DIR$\..\main.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\shared_params.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\shared_params.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\startup_stm32f40xx.s</name>
     </file>
     <file>
@@ -2339,6 +2346,12 @@
         <name>uip</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\clock.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-addrlabels.h</name>

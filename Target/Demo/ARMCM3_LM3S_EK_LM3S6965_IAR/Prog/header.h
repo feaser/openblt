@@ -36,6 +36,7 @@
 #include "led.h"                                       /* LED driver                   */
 #include "time.h"                                      /* Timer driver                 */
 #include "net.h"                                       /* TCP/IP server application    */
+#include "shared_params.h"                             /* Shared parameters header.    */
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_nvic.h"
