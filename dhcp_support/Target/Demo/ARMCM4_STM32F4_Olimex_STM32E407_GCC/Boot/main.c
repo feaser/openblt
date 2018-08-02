@@ -124,7 +124,6 @@ static void Init(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
   
-  
 #if (BOOT_COM_UART_ENABLE > 0)
   /* enable UART peripheral clock */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);

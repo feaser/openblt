@@ -131,7 +131,6 @@
  * DHCP client handles the automatic IP address assignment. In this case the macros for
  * configuring the IP address, network mask and gateway address are no longer needed.
  */
-
 /** \brief Enable/disable the NET transport layer. */
 #define BOOT_COM_NET_ENABLE               (1)
 /** \brief Configure number of bytes in the target->host data packet. */
