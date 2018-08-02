@@ -22,7 +22,7 @@
       build_output_directory="$(ProjectDir)/../bin"
       build_remove_unused_symbols="Yes"
       c_preprocessor_definitions="gcc"
-      c_user_include_directories="$(ProjectDir)/..;$(ProjectDir)/../lib;$(ProjectDir)/../lib/inc;$(ProjectDir)/../lib/fatfs;$(ProjectDir)/../lib/uip;$(ProjectDir)/../lib/driverlib;$(ProjectDir)/../../../../Source;$(ProjectDir)/../../../../Source/third_party/fatfs/src;$(ProjectDir)/../../../../Source/third_party/uip/uip;$(ProjectDir)/../../../../Source/ARMCM3_LM3S;$(ProjectDir)/../../../../Source/ARMCM3_LM3S/Crossworks"
+      c_user_include_directories="$(ProjectDir)/..;$(ProjectDir)/../lib;$(ProjectDir)/../lib/inc;$(ProjectDir)/../lib/fatfs;$(ProjectDir)/../lib/uip;$(ProjectDir)/../lib/driverlib;$(ProjectDir)/../../../../Source;$(ProjectDir)/../../../../Source/third_party/fatfs/src;$(ProjectDir)/../../../../Source/third_party/uip/uip;$(ProjectDir)/../../../../Source/third_party/uip/apps/dhcpc;$(ProjectDir)/../../../../Source/ARMCM3_LM3S;$(ProjectDir)/../../../../Source/ARMCM3_LM3S/Crossworks"
       gcc_entry_point="reset_handler"
       gcc_optimization_level="Optimize For Size"
       link_include_standard_libraries="Yes"
@@ -159,6 +159,8 @@
             <file file_name="../../../../Source/third_party/uip/uip/uip-neighbor.h" />
             <file file_name="../../../../Source/third_party/uip/uip/uipopt.h" />
             <file file_name="../../../../Source/third_party/uip/uip/uip-split.h" />
+            <file file_name="../../../../Source/third_party/uip/apps/dhcpc/dhcpc.c" />
+            <file file_name="../../../../Source/third_party/uip/apps/dhcpc/dhcpc.h" />
           </folder>
         </folder>
         <file file_name="../../../../Source/net.c" />

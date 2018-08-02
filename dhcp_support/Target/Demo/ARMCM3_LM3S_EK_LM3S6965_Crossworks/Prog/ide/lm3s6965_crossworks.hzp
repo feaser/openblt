@@ -21,7 +21,7 @@
       build_intermediate_directory="$(Configuration)/../../obj"
       build_output_directory="$(ProjectDir)/../bin"
       c_preprocessor_definitions="gcc"
-      c_user_include_directories="$(ProjectDir)/..;$(ProjectDir)/../lib;$(ProjectDir)/../lib/inc;$(ProjectDir)/../lib/uip;$(ProjectDir)/../lib/driverlib;$(ProjectDir)/../../../../Source/third_party/uip/uip"
+      c_user_include_directories="$(ProjectDir)/..;$(ProjectDir)/../lib;$(ProjectDir)/../lib/inc;$(ProjectDir)/../lib/uip;$(ProjectDir)/../lib/driverlib;$(ProjectDir)/../../../../Source/third_party/uip/uip;$(ProjectDir)/../../../../Source/third_party/uip/apps/dhcpc"
       gcc_entry_point="reset_handler"
       gcc_optimization_level="None"
       linker_additional_files=""
@@ -79,6 +79,8 @@
           <file file_name="../../../../Source/third_party/uip/uip/uip-neighbor.h" />
           <file file_name="../../../../Source/third_party/uip/uip/uipopt.h" />
           <file file_name="../../../../Source/third_party/uip/uip/uip-split.h" />
+          <file file_name="../../../../Source/third_party/uip/apps/dhcpc/dhcpc.c" />
+          <file file_name="../../../../Source/third_party/uip/apps/dhcpc/dhcpc.h" />
         </folder>
       </folder>
     </folder>

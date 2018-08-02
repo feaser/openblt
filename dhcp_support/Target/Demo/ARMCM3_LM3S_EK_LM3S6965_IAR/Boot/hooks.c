@@ -83,7 +83,7 @@ blt_bool BackDoorEntryHook(void)
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
-  /* do not start the user program is the pushbutton is pressed */
+  /* do not start the user program if the select pushbutton is pressed */
   if (GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_1) == 0)  
   {
     return BLT_FALSE;

@@ -82,6 +82,8 @@ PROJ_FILES += ../../../Source/third_party/uip/uip/uip_timer.h
 PROJ_FILES += ../../../Source/third_party/uip/uip/uiplib.c
 PROJ_FILES += ../../../Source/third_party/uip/uip/uiplib.h
 PROJ_FILES += ../../../Source/third_party/uip/uip/uipopt.h
+PROJ_FILES += ../../../Source/third_party/uip/apps/dhcpc/dhcpc.c
+PROJ_FILES += ../../../Source/third_party/uip/apps/dhcpc/dhcpc.h
 
 
 #|--------------------------------------------------------------------------------------|

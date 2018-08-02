@@ -53,6 +53,10 @@
 static unsigned long periodicTimerTimeOut;
 /** \brief Holds the time out value of the uIP ARP timer. */
 static unsigned long ARPTimerTimeOut;
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+/** \brief Holds the MAC address which is used by the DHCP client. */
+static struct uip_eth_addr macAddress;
+#endif
 
 
 /************************************************************************************//**
@@ -71,6 +75,7 @@ void NetInit(void)
   ARPTimerTimeOut = TimerGet() + NET_UIP_ARP_TIMER_MS;
   /* initialize the uIP TCP/IP stack. */
   uip_init();
+#if (BOOT_COM_NET_DHCP_ENABLE == 0)
   /* set the IP address */
   uip_ipaddr(ipaddr, BOOT_COM_NET_IPADDR0, BOOT_COM_NET_IPADDR1, BOOT_COM_NET_IPADDR2,
              BOOT_COM_NET_IPADDR3);
@@ -83,10 +88,28 @@ void NetInit(void)
   uip_ipaddr(ipaddr, BOOT_COM_NET_GATEWAY0, BOOT_COM_NET_GATEWAY1, BOOT_COM_NET_GATEWAY2,
              BOOT_COM_NET_GATEWAY3);
   uip_setdraddr(ipaddr);
+#else
+  /* set the IP address */
+  uip_ipaddr(ipaddr, 0, 0, 0, 0);
+  uip_sethostaddr(ipaddr);
+  /* set the network mask */
+  uip_ipaddr(ipaddr, 0, 0, 0, 0);
+  uip_setnetmask(ipaddr);
+  /* set the gateway address */
+  uip_ipaddr(ipaddr, 0, 0, 0, 0);
+  uip_setdraddr(ipaddr);
+#endif
   /* start listening on the configured port for XCP transfers on TCP/IP */
   uip_listen(HTONS(BOOT_COM_NET_PORT));
   /* initialize the MAC and set the MAC address */
   netdev_init_mac();  
+
+#if (BOOT_COM_NET_DHCP_ENABLE > 0)
+    /* initialize the DHCP client application and send the initial request. */
+    netdev_get_mac(&macAddress.addr[0]);
+    dhcpc_init(&macAddress.addr[0], 6);
+    dhcpc_request();
+#endif
 } /*** end of NetInit ***/
 
 
@@ -143,13 +166,13 @@ void NetTask(void)
   
   /* check for an RX packet and read it. */
   packetLen = netdev_read();
-  if(packetLen > 0)
+  if (packetLen > 0)
   {
     /* set uip_len for uIP stack usage */
     uip_len = (unsigned short)packetLen;
 
     /* process incoming IP packets here. */
-    if(NET_UIP_HEADER_BUF->type == htons(UIP_ETHTYPE_IP))
+    if (NET_UIP_HEADER_BUF->type == htons(UIP_ETHTYPE_IP))
     {
       uip_arp_ipin();
       uip_input();
@@ -157,7 +180,7 @@ void NetTask(void)
        * should be sent out on the network, the global variable
        * uip_len is set to a value > 0.
        */
-      if(uip_len > 0)
+      if (uip_len > 0)
       {
         uip_arp_out();
         netdev_send();
@@ -165,7 +188,7 @@ void NetTask(void)
       }
     }
     /* process incoming ARP packets here. */
-    else if(NET_UIP_HEADER_BUF->type == htons(UIP_ETHTYPE_ARP))
+    else if (NET_UIP_HEADER_BUF->type == htons(UIP_ETHTYPE_ARP))
     {
       uip_arp_arpin();
 
@@ -173,14 +196,14 @@ void NetTask(void)
        * should be sent out on the network, the global variable
        * uip_len is set to a value > 0.
        */
-      if(uip_len > 0)
+      if (uip_len > 0)
       {
         netdev_send();
         uip_len = 0;
       }
     }
   }
-  
+
   /* process TCP/IP Periodic Timer here. */
   if (TimerGet() >= periodicTimerTimeOut)
   {
@@ -192,6 +215,22 @@ void NetTask(void)
        * should be sent out on the network, the global variable
        * uip_len is set to a value > 0.
        */
+      if (uip_len > 0)
+      {
+        uip_arp_out();
+        netdev_send();
+        uip_len = 0;
+      }
+    }
+
+#if UIP_UDP
+    for (connection = 0; connection < UIP_UDP_CONNS; connection++)
+    {
+      uip_udp_periodic(connection);
+      /* If the above function invocation resulted in data that
+       * should be sent out on the network, the global variable
+       * uip_len is set to a value > 0.
+       */
       if(uip_len > 0)
       {
         uip_arp_out();
@@ -199,13 +238,14 @@ void NetTask(void)
         uip_len = 0;
       }
     }
+#endif
   }
-  
+
   /* process ARP Timer here. */
   if (TimerGet() >= ARPTimerTimeOut)
   {
-      ARPTimerTimeOut += NET_UIP_ARP_TIMER_MS;
-      uip_arp_timer();
+    ARPTimerTimeOut += NET_UIP_ARP_TIMER_MS;
+    uip_arp_timer();
   }
 } /*** end of NetServerTask ***/
 
