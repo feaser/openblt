@@ -834,6 +834,7 @@ class BltSessionSettingsXcpV10:
         self.timeoutT3 = 2000         # Start programming timeout in milliseconds.
         self.timeoutT4 = 10000        # Erase memory timeout in milliseonds.
         self.timeoutT5 = 1000         # Program memory and reset timeout in milliseconds.
+        self.timeoutT6 = 50           # Command response timeout in milliseconds.
         self.timeoutT7 = 2000         # Busy wait timer timeout in milliseconds.
         self.seedKeyFile = ''         # Seed/key algorithm library filename.
         self.connectMode = 0          # Connection mode parameter in XCP connect command.
@@ -929,6 +930,7 @@ def session_init(session_type, session_settings, transport_type, transport_setti
         session_settings.timeoutT3 = 2000
         session_settings.timeoutT4 = 10000
         session_settings.timeoutT5 = 1000
+        session_settings.timeoutT6 = 50
         session_settings.timeoutT7 = 2000
         session_settings.seedKeyFile = ''
         session_settings.connectMode = 0
@@ -947,6 +949,7 @@ def session_init(session_type, session_settings, transport_type, transport_setti
                     ('timeoutT3',   ctypes.c_uint16),
                     ('timeoutT4',   ctypes.c_uint16),
                     ('timeoutT5',   ctypes.c_uint16),
+                    ('timeoutT6',   ctypes.c_uint16),
                     ('timeoutT7',   ctypes.c_uint16),
                     ('seedKeyFile', ctypes.c_char_p),
                     ('connectMode', ctypes.c_uint8)]
@@ -984,6 +987,7 @@ def session_init(session_type, session_settings, transport_type, transport_setti
         session_settings_struct.timeoutT3 = ctypes.c_uint16(session_settings.timeoutT3)
         session_settings_struct.timeoutT4 = ctypes.c_uint16(session_settings.timeoutT4)
         session_settings_struct.timeoutT5 = ctypes.c_uint16(session_settings.timeoutT5)
+        session_settings_struct.timeoutT6 = ctypes.c_uint16(session_settings.timeoutT6)
         session_settings_struct.timeoutT7 = ctypes.c_uint16(session_settings.timeoutT7)
         session_settings_struct.seedKeyFile = \
             ctypes.c_char_p(session_settings.seedKeyFile.encode('utf-8'))

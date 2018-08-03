@@ -47,6 +47,9 @@ uses
 //***************************************************************************************
 type
   //------------------------------ TSessionXcpForm ----------------------------------------
+
+  { TSessionXcpForm }
+
   TSessionXcpForm = class(TForm)
     BtnSeedKey: TButton;
     CmbConnectMode: TComboBox;
@@ -55,6 +58,7 @@ type
     EdtTimeoutT3: TEdit;
     EdtTimeoutT4: TEdit;
     EdtTimeoutT5: TEdit;
+    EdtTimeoutT6: TEdit;
     EdtTimeoutT7: TEdit;
     LblConnection: TLabel;
     LblSeedKey: TLabel;
@@ -65,6 +69,7 @@ type
     LblTimeoutT3: TLabel;
     LblTimeoutT4: TLabel;
     LblTimeoutT5: TLabel;
+    LblTimeoutT6: TLabel;
     LblTimeoutT7: TLabel;
     OpenDialog: TOpenDialog;
     procedure BtnSeedKeyClick(Sender: TObject);
@@ -211,6 +216,7 @@ begin
   FSessionXcpConfig.TimeoutT3 := Config.TimeoutT3;
   FSessionXcpConfig.TimeoutT4 := Config.TimeoutT4;
   FSessionXcpConfig.TimeoutT5 := Config.TimeoutT5;
+  FSessionXcpConfig.TimeoutT6 := Config.TimeoutT6;
   FSessionXcpConfig.TimeoutT7 := Config.TimeoutT7;
   FSessionXcpConfig.ConnectMode := Config.ConnectMode;
   FSessionXcpConfig.SeedKey := Config.SeedKey;
@@ -221,6 +227,7 @@ begin
   EdtTimeoutT3.Text := IntToStr(FSessionXcpConfig.TimeoutT3);
   EdtTimeoutT4.Text := IntToStr(FSessionXcpConfig.TimeoutT4);
   EdtTimeoutT5.Text := IntToStr(FSessionXcpConfig.TimeoutT5);
+  EdtTimeoutT6.Text := IntToStr(FSessionXcpConfig.TimeoutT6);
   EdtTimeoutT7.Text := IntToStr(FSessionXcpConfig.TimeoutT7);
 end; //*** end of LoadConfig ***
 
@@ -248,6 +255,8 @@ begin
     FSessionXcpConfig.TimeoutT4 := StrToInt(EdtTimeoutT4.Text);
   if EdtTimeoutT5.Text <> '' then
     FSessionXcpConfig.TimeoutT5 := StrToInt(EdtTimeoutT5.Text);
+  if EdtTimeoutT6.Text <> '' then
+    FSessionXcpConfig.TimeoutT6 := StrToInt(EdtTimeoutT6.Text);
   if EdtTimeoutT7.Text <> '' then
     FSessionXcpConfig.TimeoutT7 := StrToInt(EdtTimeoutT7.Text);
   // Store configuration.
@@ -255,6 +264,7 @@ begin
   Config.TimeoutT3 := FSessionXcpConfig.TimeoutT3;
   Config.TimeoutT4 := FSessionXcpConfig.TimeoutT4;
   Config.TimeoutT5 := FSessionXcpConfig.TimeoutT5;
+  Config.TimeoutT6 := FSessionXcpConfig.TimeoutT6;
   Config.TimeoutT7 := FSessionXcpConfig.TimeoutT7;
   Config.ConnectMode := FSessionXcpConfig.ConnectMode;
   Config.SeedKey := FSessionXcpConfig.SeedKey;

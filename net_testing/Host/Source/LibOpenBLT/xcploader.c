@@ -59,9 +59,6 @@
 /* XCP response packet IDs as defined by the protocol. */
 #define XCPLOADER_CMD_PID_RES         (0xFFu)    /**< positive response                */
 
-/** \brief Maximum timeout for the XCP connect command. */
-#define XCPLOADER_CONNECT_TIMEOUT_MS  (50u)
-
 /** \brief Number of retries to connect to the XCP slave. */
 #define XCPLOADER_CONNECT_RETRIES     (5u)
 
@@ -169,6 +166,7 @@ static void XcpLoaderInit(void const * settings)
   xcpSettings.timeoutT3 = 2000;
   xcpSettings.timeoutT4 = 10000;
   xcpSettings.timeoutT5 = 1000;
+  xcpSettings.timeoutT6 = 50;
   xcpSettings.timeoutT7 = 2000;
   xcpSettings.connectMode = 0;
   xcpSettings.seedKeyFile = NULL;
@@ -244,6 +242,7 @@ static void XcpLoaderTerminate(void)
   xcpSettings.timeoutT3 = 2000;
   xcpSettings.timeoutT4 = 10000;
   xcpSettings.timeoutT5 = 1000;
+  xcpSettings.timeoutT6 = 50;
   xcpSettings.timeoutT7 = 2000;
   xcpSettings.connectMode = 0;
   xcpSettings.seedKeyFile = NULL;
@@ -695,7 +694,7 @@ static bool XcpLoaderSendCmdConnect(void)
     cmdPacket.len = 2;
     /* Send the packet. */
     if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket, 
-                                          XCPLOADER_CONNECT_TIMEOUT_MS))
+                                           xcpSettings.timeoutT6))
     {
       /* Could not send packet or receive response within the specified timeout. */
       result = false;

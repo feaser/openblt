@@ -90,6 +90,8 @@ typedef struct t_xcp_loader_settings
   uint16_t timeoutT4;            
   /** \brief Program memory and reset timeout in milliseconds. */
   uint16_t timeoutT5;            
+  /** \brief Connect response timeout in milliseconds. */
+  uint16_t timeoutT6;
   /** \brief Busy wait timer timeout in milliseconds. */
   uint16_t timeoutT7;     
   /** \brief Connection mode used in the XCP connect command. */

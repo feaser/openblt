@@ -507,6 +507,8 @@ static void DisplayProgramUsage(void)
   printf("                   value (Default = 10000 ms).\n");
   printf("  -t5=[timeout]    Program memory and target reset timeout in milli-\n");
   printf("                   seconds as a 16-bit value (Default = 1000 ms).\n");
+  printf("  -t6=[timeout]    Connect response timeout in milliseconds as a 16-bit\n");
+  printf("                   value (Default = 50 ms).\n");
   printf("  -t7=[timeout]    Busy wait timer timeout in milliseconds as a 16-bit\n"); 
   printf("                   value (Default = 2000 ms).\n");
   printf("  -sk=[file]       Seed/key algorithm library filename (Optional).\n");
@@ -607,6 +609,7 @@ static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSetting
         printf("  -> Timeout T3: %hu ms\n", xcpSettings->timeoutT3);
         printf("  -> Timeout T4: %hu ms\n", xcpSettings->timeoutT4);
         printf("  -> Timeout T5: %hu ms\n", xcpSettings->timeoutT5);
+        printf("  -> Timeout T6: %hu ms\n", xcpSettings->timeoutT6);
         printf("  -> Timeout T7: %hu ms\n", xcpSettings->timeoutT7);
         printf("  -> Seed/Key file: ");
         if (xcpSettings->seedKeyFile != NULL)
@@ -925,6 +928,7 @@ static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const
          *   -t3=[timeout]  -> Start programming timeout in milliseconds.
          *   -t4=[timeout]  -> Erase memory timeout in milliseconds.
          *   -t5=[timeout]  -> Program memory and reset timeout in milliseconds.
+         *   -t6=[timeout]  -> Connect response timeout in milliseconds.
          *   -t7=[timeout]  -> Busy wait timer timeout in milliseconds.
          *   -sk=[file]     -> Seed/key algorithm library filename. 
          *   -cm=[value]    -> Connection mode parameter in XCP connect command.
@@ -941,6 +945,7 @@ static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const
           xcpSettings->timeoutT3 = 2000;
           xcpSettings->timeoutT4 = 10000;
           xcpSettings->timeoutT5 = 1000;
+          xcpSettings->timeoutT6 = 50;
           xcpSettings->timeoutT7 = 2000;
           xcpSettings->seedKeyFile = NULL;
           xcpSettings->connectMode = 0;
@@ -982,6 +987,15 @@ static void * ExtractSessionSettingsFromCommandLine(int argc, char const * const
             {
               /* Extract the timeout value. */
               sscanf(&argv[paramIdx][4], "%hu", &(xcpSettings->timeoutT5));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -t6=[timeout] parameter? */
+            if ( (strstr(argv[paramIdx], "-t6=") != NULL) &&
+                 (strlen(argv[paramIdx]) > 4) )
+            {
+              /* Extract the timeout value. */
+              sscanf(&argv[paramIdx][4], "%hu", &(xcpSettings->timeoutT6));
               /* Continue with next loop iteration. */
               continue;
             }

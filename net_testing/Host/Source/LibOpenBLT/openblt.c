@@ -51,10 +51,10 @@
  *         for major-, minor-, and patch-version. Version 1.05.12 would for example be
  *         10512.
  */
-#define BLT_VERSION_NUMBER   (10301u)
+#define BLT_VERSION_NUMBER   (10302u)
 
 /** \brief The version number of the library as a null-terminated string. */
-#define BLT_VERSION_STRING   "1.03.01"
+#define BLT_VERSION_STRING   "1.03.02"
 
 
 /****************************************************************************************
@@ -140,6 +140,7 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
       xcpLoaderSettings.timeoutT3 = bltSessionSettingsXcpV10Ptr->timeoutT3;
       xcpLoaderSettings.timeoutT4 = bltSessionSettingsXcpV10Ptr->timeoutT4;
       xcpLoaderSettings.timeoutT5 = bltSessionSettingsXcpV10Ptr->timeoutT5;
+      xcpLoaderSettings.timeoutT6 = bltSessionSettingsXcpV10Ptr->timeoutT6;
       xcpLoaderSettings.timeoutT7 = bltSessionSettingsXcpV10Ptr->timeoutT7;
       xcpLoaderSettings.seedKeyFile = bltSessionSettingsXcpV10Ptr->seedKeyFile;
       xcpLoaderSettings.connectMode = bltSessionSettingsXcpV10Ptr->connectMode;

@@ -1,19 +1,19 @@
 object SessionXcpForm: TSessionXcpForm
-  Left = 1306
+  Left = 582
   Height = 308
-  Top = 661
+  Top = 371
   Width = 407
   Caption = 'XCP Session'
   ClientHeight = 308
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.8.2.0'
   object LblTimeouts: TLabel
     Left = 8
-    Height = 17
+    Height = 16
     Top = 160
-    Width = 56
+    Width = 59
     Caption = 'Timeouts'
     Font.Style = [fsBold]
     ParentColor = False
@@ -21,15 +21,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT1: TLabel
     Left = 23
-    Height = 17
+    Height = 16
     Top = 187
-    Width = 45
+    Width = 47
     Caption = 'T1 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT1: TEdit
     Left = 80
-    Height = 29
+    Height = 28
     Hint = 'Command response timeout in milliseconds as a 16-bit value (Default = 1000 ms)'
     Top = 184
     Width = 115
@@ -41,15 +41,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT3: TLabel
     Left = 23
-    Height = 17
+    Height = 16
     Top = 227
-    Width = 45
+    Width = 47
     Caption = 'T3 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT3: TEdit
     Left = 80
-    Height = 29
+    Height = 28
     Hint = 'Start programming timeout in milliseconds as a 16-bit value (Default = 2000 ms)'
     Top = 224
     Width = 115
@@ -61,15 +61,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT4: TLabel
     Left = 23
-    Height = 17
+    Height = 16
     Top = 267
-    Width = 45
+    Width = 47
     Caption = 'T4 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT4: TEdit
     Left = 80
-    Height = 29
+    Height = 28
     Hint = 'Erase memory timeout in milliseconds as a 16-bit value (Default = 10000 ms)'
     Top = 264
     Width = 115
@@ -81,15 +81,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT5: TLabel
     Left = 226
-    Height = 17
+    Height = 16
     Top = 187
-    Width = 45
+    Width = 47
     Caption = 'T5 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT5: TEdit
     Left = 280
-    Height = 29
+    Height = 28
     Hint = 'Program memory and target reset timeout in milliseconds as a 16-bit value (Default = 1000 ms)'
     Top = 184
     Width = 115
@@ -101,17 +101,17 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblTimeoutT7: TLabel
     Left = 226
-    Height = 17
-    Top = 227
-    Width = 45
+    Height = 16
+    Top = 267
+    Width = 47
     Caption = 'T7 (ms):'
     ParentColor = False
   end
   object EdtTimeoutT7: TEdit
     Left = 280
-    Height = 29
+    Height = 28
     Hint = 'Busy wait timer timeout in milliseconds as a 16-bit value (Default = 2000 ms)'
-    Top = 224
+    Top = 264
     Width = 115
     OnChange = EdtTimeoutChange
     OnKeyPress = EdtTimeoutKeyPress
@@ -121,9 +121,9 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblConnection: TLabel
     Left = 8
-    Height = 17
+    Height = 16
     Top = 8
-    Width = 68
+    Width = 74
     Caption = 'Connection'
     Font.Style = [fsBold]
     ParentColor = False
@@ -131,15 +131,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblConnectMode: TLabel
     Left = 23
-    Height = 17
+    Height = 16
     Top = 38
-    Width = 35
+    Width = 38
     Caption = 'Mode:'
     ParentColor = False
   end
   object CmbConnectMode: TComboBox
     Left = 80
-    Height = 27
+    Height = 26
     Hint = 'Connection mode value sent in the XCP connect command as a 8-bit value (Default=0)'
     Top = 35
     Width = 120
@@ -411,9 +411,9 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblSecurity: TLabel
     Left = 8
-    Height = 17
+    Height = 16
     Top = 72
-    Width = 49
+    Width = 54
     Caption = 'Security'
     Font.Style = [fsBold]
     ParentColor = False
@@ -421,15 +421,15 @@ object SessionXcpForm: TSessionXcpForm
   end
   object LblSeedKey: TLabel
     Left = 23
-    Height = 17
+    Height = 16
     Top = 96
-    Width = 276
+    Width = 298
     Caption = 'Select your seed/key algorithm shared library file:'
     ParentColor = False
   end
   object EdtSeedKey: TEdit
     Left = 23
-    Height = 29
+    Height = 28
     Hint = 'Seed/key algorithm shared library filename (Optional)'
     Top = 120
     Width = 281
@@ -445,6 +445,26 @@ object SessionXcpForm: TSessionXcpForm
     Caption = 'Browse..'
     OnClick = BtnSeedKeyClick
     TabOrder = 2
+  end
+  object LblTimeoutT6: TLabel
+    Left = 224
+    Height = 16
+    Top = 227
+    Width = 47
+    Caption = 'T6 (ms):'
+    ParentColor = False
+  end
+  object EdtTimeoutT6: TEdit
+    Left = 280
+    Height = 28
+    Hint = 'Connect response timeout in milliseconds as a 16-bit value (Default = 50 ms)'
+    Top = 224
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
   end
   object OpenDialog: TOpenDialog
     Filter = 'Shared libraries (*.dll;*.so)|*.dll;*.so|All files (*.*)|*.*'
