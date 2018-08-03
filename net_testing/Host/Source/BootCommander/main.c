@@ -268,7 +268,8 @@ int main(int argc, char const * const argv[])
     {
       printf("[" OUTPUT_YELLOW "TIMEOUT" OUTPUT_RESET "]\n");
       /* No response. Prompt the user to reset the system. */
-      printf("Reset target system..."); (void)fflush(stdout);
+      printf("Attempting backdoor entry (reset system if this takes too long)...");
+      (void)fflush(stdout);
       /* Now keep trying until we get a response. */
       while (BltSessionStart() != BLT_RESULT_OK)
       {
