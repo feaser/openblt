@@ -95,6 +95,7 @@ type
     FTimeoutT3: Integer;
     FTimeoutT4: Integer;
     FTimeoutT5: Integer;
+    FTimeoutT6: Integer;
     FTimeoutT7: Integer;
     FConnectMode: Integer;
     FSeedKey: String;
@@ -108,6 +109,7 @@ type
     property TimeoutT3: Integer read FTimeoutT3 write FTimeoutT3;
     property TimeoutT4: Integer read FTimeoutT4 write FTimeoutT4;
     property TimeoutT5: Integer read FTimeoutT5 write FTimeoutT5;
+    property TimeoutT6: Integer read FTimeoutT6 write FTimeoutT6;
     property TimeoutT7: Integer read FTimeoutT7 write FTimeoutT7;
     property ConnectMode: Integer read FConnectMode write FConnectMode;
     property SeedKey: String read FSeedKey write FSeedKey;
@@ -444,6 +446,7 @@ begin
   FTimeoutT3 := 2000;
   FTimeoutT4 := 10000;
   FTimeoutT5 := 1000;
+  FTimeoutT6 := 50;
   FTimeoutT7 := 2000;
   FConnectMode := 0;
   FSeedKey := '';
@@ -467,6 +470,7 @@ begin
   FTimeoutT3 := XmlConfig.GetValue('timeout_t3', FTimeoutT3);
   FTimeoutT4 := XmlConfig.GetValue('timeout_t4', FTimeoutT4);
   FTimeoutT5 := XmlConfig.GetValue('timeout_t5', FTimeoutT5);
+  FTimeoutT6 := XmlConfig.GetValue('timeout_t6', FTimeoutT6);
   FTimeoutT7 := XmlConfig.GetValue('timeout_t7', FTimeoutT7);
   FConnectMode := XmlConfig.GetValue('connect_mode', FConnectMode);
   FSeedKey := String(XmlConfig.GetValue('seed_key', UnicodeString(FSeedKey)));
@@ -492,6 +496,7 @@ begin
   XmlConfig.SetValue('timeout_t3', FTimeoutT3);
   XmlConfig.SetValue('timeout_t4', FTimeoutT4);
   XmlConfig.SetValue('timeout_t5', FTimeoutT5);
+  XmlConfig.SetValue('timeout_t6', FTimeoutT6);
   XmlConfig.SetValue('timeout_t7', FTimeoutT7);
   XmlConfig.SetValue('connect_mode', FConnectMode);
   XmlConfig.SetValue('seed_key', UnicodeString(FSeedKey));

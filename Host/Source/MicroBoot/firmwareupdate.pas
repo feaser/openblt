@@ -788,6 +788,7 @@ begin
     sessionSettingsXcp.timeoutT3 := sessionXcpConfig.TimeoutT3;
     sessionSettingsXcp.timeoutT4 := sessionXcpConfig.TimeoutT4;
     sessionSettingsXcp.timeoutT5 := sessionXcpConfig.TimeoutT5;
+    sessionSettingsXcp.timeoutT6 := sessionXcpConfig.TimeoutT6;
     sessionSettingsXcp.timeoutT7 := sessionXcpConfig.TimeoutT7;
     sessionSettingsXcp.connectMode := sessionXcpConfig.ConnectMode;
     sessionSettingsXcp.seedKeyFile := PAnsiChar(AnsiString(sessionXcpConfig.SeedKey));
@@ -925,6 +926,8 @@ begin
     FLogString := '  -> Timeout T4: ' + IntToStr(sessionXcpConfig.TimeoutT4) + ' ms';
     Synchronize(@SynchronizeLogEvent);
     FLogString := '  -> Timeout T5: ' + IntToStr(sessionXcpConfig.TimeoutT5) + ' ms';
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Timeout T6: ' + IntToStr(sessionXcpConfig.TimeoutT6) + ' ms';
     Synchronize(@SynchronizeLogEvent);
     FLogString := '  -> Timeout T7: ' + IntToStr(sessionXcpConfig.TimeoutT7) + ' ms';
     Synchronize(@SynchronizeLogEvent);
