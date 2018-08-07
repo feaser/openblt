@@ -29,7 +29,7 @@ Basic code snippet to call the BltVersionGetString()-function which displays the
 
     print('LibOpenBLT version:', openblt.version_get_string())
 
-Have a look at the function headers inside openblt.lib for details on how to call the functions, including examples.
+Have a look at the function headers inside openblt.lib for details on how to call the functions, including examples. A video tutorial about getting started with the Python bindings is available in this `blog article <https://www.feaser.com/en/blog/?p=208>`_.
 
 
 Run-time libraries
