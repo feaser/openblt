@@ -32,6 +32,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32f2xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f2xx_ll_rcc.h"                    /* STM32 LL RCC header                */
 
 
 #if (BOOT_COM_CAN_ENABLE > 0)
@@ -126,14 +127,21 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
                                   blt_int8u *tseg1, blt_int8u *tseg2)
 {
   blt_int8u  cnt;
+  blt_int32u canClockFreqkHz;
+  LL_RCC_ClocksTypeDef rccClocks;
+
+  /* read clock frequencies */
+  LL_RCC_GetSystemClocksFreq(&rccClocks);
+  /* store CAN peripheral clock speed in kHz */
+  canClockFreqkHz = rccClocks.PCLK1_Frequency / 1000u;
 
   /* loop through all possible time quanta configurations to find a match */
   for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
   {
-    if (((BOOT_CPU_SYSTEM_SPEED_KHZ/4) % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
+    if ((canClockFreqkHz % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
     {
       /* compute the prescaler that goes with this TQ configuration */
-      *prescaler = (BOOT_CPU_SYSTEM_SPEED_KHZ/4)/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
+      *prescaler = canClockFreqkHz/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
 
       /* make sure the prescaler is valid */
       if ((*prescaler > 0) && (*prescaler <= 1024))
@@ -158,7 +166,7 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
 ****************************************************************************************/
 void CanInit(void)
 {
-  blt_int16u prescaler;
+  blt_int16u prescaler = 0;
   blt_int8u  tseg1 = 0, tseg2 = 0;
   CAN_FilterConfTypeDef filterConfig;
   blt_int32u rxMsgId = BOOT_COM_CAN_RX_MSG_ID;

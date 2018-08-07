@@ -303,14 +303,18 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
                                        unsigned char *tseg1, unsigned char *tseg2)
 {
   unsigned char cnt;
+  unsigned long canClockFreqkHz;
+
+  /* store CAN peripheral clock speed in kHz */
+  canClockFreqkHz = HAL_RCC_GetPCLK1Freq() / 1000u;
 
   /* loop through all possible time quanta configurations to find a match */
   for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
   {
-    if (((BOOT_CPU_SYSTEM_SPEED_KHZ) % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
+    if ((canClockFreqkHz % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
     {
       /* compute the prescaler that goes with this TQ configuration */
-      *prescaler = (BOOT_CPU_SYSTEM_SPEED_KHZ)/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
+      *prescaler = canClockFreqkHz/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
 
       /* make sure the prescaler is valid */
       if ( (*prescaler > 0) && (*prescaler <= 1024) )
@@ -335,7 +339,7 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
 ****************************************************************************************/
 static void BootComCanInit(void)
 {
-  unsigned short prescaler;
+  unsigned short prescaler = 0;
   unsigned char tseg1 = 0, tseg2 = 0;
   CAN_FilterTypeDef filterConfig;
   unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
