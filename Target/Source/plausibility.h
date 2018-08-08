@@ -483,12 +483,12 @@
 #error "BOOT_XCP_SEED_KEY_ENABLE must be 0 or 1"
 #endif
 
-#ifndef BOOT_XCP_UPLOAD_EN
-#define BOOT_XCP_UPLOAD_EN              (1)
+#ifndef BOOT_XCP_UPLOAD_ENABLE
+#define BOOT_XCP_UPLOAD_ENABLE          (1)
 #endif
 
-#if (BOOT_XCP_UPLOAD_EN < 0) || (BOOT_XCP_UPLOAD_EN > 1)
-#error "BOOT_XCP_UPLOAD_EN must be 0 or 1"
+#if (BOOT_XCP_UPLOAD_ENABLE < 0) || (BOOT_XCP_UPLOAD_ENABLE > 1)
+#error "BOOT_XCP_UPLOAD_ENABLE must be 0 or 1"
 #endif
 
 #ifndef BOOT_XCP_PACKET_RECEIVED_HOOK

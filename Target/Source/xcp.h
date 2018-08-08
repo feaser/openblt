@@ -104,7 +104,7 @@
  *         always desired for security reasons. If disabled, memory reads via XCP always
  *         return zero values.
  */
-#if (BOOT_XCP_UPLOAD_EN > 0)
+#if (BOOT_XCP_UPLOAD_ENABLE > 0)
 #define XCP_UPLOAD_EN                  (1)
 #else
 #define XCP_UPLOAD_EN                  (0)
