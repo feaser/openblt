@@ -34,29 +34,6 @@
 
 #if (BOOT_COM_UART_ENABLE > 0)
 /****************************************************************************************
-* Type definitions
-****************************************************************************************/
-/** \brief UART register layout. */
-typedef struct
-{
-  volatile blt_int16u SR;                           /**< status register               */
-  blt_int16u          RESERVED0;
-  volatile blt_int16u DR;                           /**< data register                 */
-  blt_int16u          RESERVED1;
-  volatile blt_int16u BRR;                          /**< baudrate register             */
-  blt_int16u          RESERVED2;
-  volatile blt_int16u CR1;                          /**< control register 1            */
-  blt_int16u          RESERVED3;
-  volatile blt_int16u CR2;                          /**< control register 2            */
-  blt_int16u          RESERVED4;
-  volatile blt_int16u CR3;                          /**< control register 3            */
-  blt_int16u          RESERVED5;
-  volatile blt_int16u GTPR;                         /**< guard time and prescale reg.  */
-  blt_int16u          RESERVED6;
-} tUartRegs;                                        /**< UART register layout type     */
-
-
-/****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
@@ -65,31 +42,6 @@ typedef struct
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define UART_BYTE_TX_TIMEOUT_MS       (10u)
-/** \brief USART enable bit. */
-#define UART_BIT_UE    ((blt_int16u)0x2000)
-/** \brief Transmitter enable bit. */
-#define UART_BIT_TE    ((blt_int16u)0x0008)
-/** \brief Receiver enable bit. */
-#define UART_BIT_RE    ((blt_int16u)0x0004)
-/** \brief Transmit data reg. empty bit. */
-#define UART_BIT_TXE   ((blt_int16u)0x0080)
-/** \brief Read data reg. not empty bit. */
-#define UART_BIT_RXNE  ((blt_int16u)0x0020)
-
-
-/****************************************************************************************
-* Register definitions
-****************************************************************************************/
-#if (BOOT_COM_UART_CHANNEL_INDEX == 0)
-/** \brief Set UART base address to USART1. */
-#define UARTx          ((tUartRegs *) (blt_int32u)0x40013800)
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 1)
-/** \brief Set UART base address to USART2. */
-#define UARTx          ((tUartRegs *) (blt_int32u)0x40004400)
-#else
-/** \brief Set UART base address to USART1 by default. */
-#define UARTx          ((tUartRegs *) (blt_int32u)0x40013800)
-#endif
 
 
 /****************************************************************************************
@@ -106,24 +58,7 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  /* the current implementation supports USART1 and USART2. throw an assertion error in
-   * case a different UART channel is configured.
-   */
-  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) || (BOOT_COM_UART_CHANNEL_INDEX == 1));
-  /* first reset the UART configuration. note that this already configures the UART
-   * for 1 stopbit, 8 databits and no parity.
-   */
-  UARTx->BRR = 0;
-  UARTx->CR1 = 0;
-  UARTx->CR2 = 0;
-  UARTx->CR3 = 0;
-  UARTx->GTPR = 0;
-  /* configure the baudrate, knowing that PCLKx is configured to be half of
-   * BOOT_CPU_SYSTEM_SPEED_KHZ.
-   */
-  UARTx->BRR = ((BOOT_CPU_SYSTEM_SPEED_KHZ/2)*(blt_int32u)1000)/BOOT_COM_UART_BAUDRATE;
-  /* enable the UART including the transmitter and the receiver */
-  UARTx->CR1 |= (UART_BIT_UE | UART_BIT_TE | UART_BIT_RE);
+  /* TODO ##Vg Implement UartInit(). */
 } /*** end of UartInit ***/
 
 
@@ -236,14 +171,8 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
-  /* check if a new byte was received by means of the RDR-bit */
-  if ((UARTx->SR & UART_BIT_RXNE) != 0)
-  {
-    /* store the received byte */
-    data[0] = UARTx->DR;
-    /* inform caller of the newly received byte */
-    return BLT_TRUE;
-  }
+  /* TODO ##Vg Implement UartReceiveByte(). */
+
   /* inform caller that no new data was received */
   return BLT_FALSE;
 } /*** end of UartReceiveByte ***/
@@ -257,33 +186,9 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static blt_bool UartTransmitByte(blt_int8u data)
 {
-  blt_int32u timeout;
-  blt_bool result = BLT_TRUE;
+  /* TODO ##Vg Implement UartTransmitByte(). I think the return can be void. */
 
-  /* check if tx holding register can accept new data */
-  if ((UARTx->SR & UART_BIT_TXE) == 0)
-  {
-    /* UART not ready. should not happen */
-    return BLT_FALSE;
-  }
-  /* write byte to transmit holding register */
-  UARTx->DR = data;
-  /* set timeout time to wait for transmit completion. */
-  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
-  /* wait for tx holding register to be empty */
-  while ((UARTx->SR & UART_BIT_TXE) == 0)
-  {
-    /* keep the watchdog happy */
-    CopService();
-    /* break loop upon timeout. this would indicate a hardware failure. */
-    if (TimerGet() > timeout)
-    {
-      result = BLT_FALSE;
-      break;
-    }
-  }
-  /* give the result back to the caller */
-  return result;
+  return BLT_FALSE;
 } /*** end of UartTransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 

@@ -53,8 +53,6 @@
 /** \brief Number of bytes to erase per erase operation. */
 #define FLASH_ERASE_BLOCK_SIZE          (0x400)
 #endif
-/** \brief Macro for accessing the flash control registers. */
-#define FLASH_DRV_REGS_BASE             ((tFlashRegs *) (blt_int32u)0x40022000)
 /** \brief Offset into the user program's vector table where the checksum is located. 
  *         For this target it is set to the end of the vector table. Note that the 
  *         value can be overriden in blt_conf.h, because the size of the vector table
@@ -65,28 +63,6 @@
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
 #define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x150)
 #endif
-
-/** \brief Maximum time for a sector erase operation as specified by the STM32F1 data-
- *         sheet with an added margin of at least 20%.
- */
-#define FLASH_ERASE_TIME_MAX_MS         (100)
-
-/** \brief Maximum time for a page program operation as specified by the STM32F1 data-
- *         sheet with an added margin of at least 20%.
- */
-#define FLASH_PROGRAM_TIME_MAX_MS       (5)
-
-
-#define FLASH_KEY1                      ((blt_int32u)0x45670123)
-#define FLASH_KEY2                      ((blt_int32u)0xCDEF89AB)
-#define FLASH_LOCK_BIT                  ((blt_int32u)0x00000080)
-#define FLASH_EOP_BIT                   ((blt_int32u)0x00000020)
-#define FLASH_PGERR_BIT                 ((blt_int32u)0x00000004)
-#define FLASH_WRPRTERR_BIT              ((blt_int32u)0x00000010)
-#define FLASH_BSY_BIT                   ((blt_int32u)0x00000001)
-#define FLASH_PER_BIT                   ((blt_int32u)0x00000002)
-#define FLASH_STRT_BIT                  ((blt_int32u)0x00000040)
-#define FLASH_PG_BIT                    ((blt_int32u)0x00000001)
 
 
 /****************************************************************************************
@@ -157,11 +133,7 @@ static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
                                  blt_int8u *data, blt_int32u len);
 static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
-static void      FlashUnlock(void);
-static void      FlashLock(void);
 static blt_int8u FlashGetSector(blt_addr address);
-static blt_addr  FlashGetSectorBaseAddr(blt_int8u sector);
-static blt_addr  FlashGetSectorSize(blt_int8u sector);
 
 
 /****************************************************************************************
@@ -676,11 +648,6 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
   blt_int8u  sector_num;
-  blt_bool   result = BLT_TRUE;
-  blt_addr   prog_addr;
-  blt_int32u prog_data;
-  blt_int32u word_cnt;
-  blt_int32u timeout;
 
   /* check that address is actually within flash */
   sector_num = FlashGetSector(block->base_addr);
@@ -705,68 +672,9 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
-  /* unlock the flash array */
-  FlashUnlock();
-  /* check that the flash peripheral is not busy */
-  if ((FLASH_DRV_REGS_BASE->SR & FLASH_BSY_BIT) == FLASH_BSY_BIT)
-  {
-    /* lock the flash array again */
-    FlashLock();
-    /* could not perform erase operation */
-    return BLT_FALSE;
-  }
-  /* set the program bit to indicate that we are about to program data */
-  FLASH_DRV_REGS_BASE->CR |= FLASH_PG_BIT;
-  /* program all words in the block one by one */
-  for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
-  {
-    prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
-    prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
-    /* program the first half word */
-    *(volatile blt_int16u *)prog_addr = (blt_int16u)prog_data;
-    /* set the timeout time for the program operation */
-    timeout = TimerGet() + FLASH_PROGRAM_TIME_MAX_MS;
-    /* wait for the program operation to complete */
-    while ((FLASH_DRV_REGS_BASE->SR & FLASH_BSY_BIT) == FLASH_BSY_BIT)
-    {
-      /* keep the watchdog happy */
-      CopService();
-      /* check for timeout */
-      if (TimerGet() > timeout)
-      {
-        result = BLT_FALSE;
-        break;
-      }
-    }
-    /* program the second half word */
-    *(volatile blt_int16u *)(prog_addr+2) = (blt_int16u)(prog_data >> 16);
-    /* set the timeout time for the program operation */
-    timeout = TimerGet() + FLASH_PROGRAM_TIME_MAX_MS;
-    /* wait for the program operation to complete */
-    while ((FLASH_DRV_REGS_BASE->SR & FLASH_BSY_BIT) == FLASH_BSY_BIT)
-    {
-      /* keep the watchdog happy */
-      CopService();
-      /* check for timeout */
-      if (TimerGet() > timeout)
-      {
-        result = BLT_FALSE;
-        break;
-      }
-    }
-    /* verify that the written data is actually there */
-    if (*(volatile blt_int32u *)prog_addr != prog_data)
-    {
-      result = BLT_FALSE;
-      break;
-    }
-  }
-  /* reset the program bit to indicate that we are done programming data */
-  FLASH_DRV_REGS_BASE->CR &= ~FLASH_PG_BIT;
-  /* lock the flash array */
-  FlashLock();
-  /* give the result back to the caller */
-  return result;
+  /* TODO ##Vg Implement FlashWriteBlock(). */
+
+  return BLT_FALSE;
 } /*** end of FlashWriteBlock ***/
 
 
@@ -779,13 +687,6 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 ****************************************************************************************/
 static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 {
-  blt_int16u nr_of_blocks;
-  blt_int16u block_cnt;
-  blt_addr   start_addr;
-  blt_addr   end_addr;
-  blt_int32u timeout;
-  blt_bool   result = BLT_TRUE;
-
   /* validate the sector numbers */
   if (first_sector > last_sector)
   {
@@ -796,82 +697,11 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
   {
     return BLT_FALSE;
   }
-  /* unlock the flash array */
-  FlashUnlock();
-  /* check that the flash peripheral is not busy */
-  if ((FLASH_DRV_REGS_BASE->SR & FLASH_BSY_BIT) == FLASH_BSY_BIT)
-  {
-    /* lock the flash array again */
-    FlashLock();
-    /* could not perform erase operation */
-    return BLT_FALSE;
-  }
-  /* set the page erase bit to indicate that we are about to erase a block */
-  FLASH_DRV_REGS_BASE->CR |= FLASH_PER_BIT;
 
-  /* determine how many blocks need to be erased */
-  start_addr = FlashGetSectorBaseAddr(first_sector);
-  end_addr = FlashGetSectorBaseAddr(last_sector) + FlashGetSectorSize(last_sector) - 1;
-  nr_of_blocks = (end_addr - start_addr + 1) / FLASH_ERASE_BLOCK_SIZE;
+  /* TODO ##Vg Implement FlashEraseSectors(). */
 
-  /* erase all blocks one by one */
-  for (block_cnt=0; block_cnt<nr_of_blocks; block_cnt++)
-  {
-    /* store an address of the block that is to be erased to select the block */
-    FLASH_DRV_REGS_BASE->AR = start_addr + (block_cnt * FLASH_ERASE_BLOCK_SIZE);
-    /* start the block erase operation */
-    FLASH_DRV_REGS_BASE->CR |= FLASH_STRT_BIT;
-    /* set the timeout time for the erase operation */
-    timeout = TimerGet() + FLASH_ERASE_TIME_MAX_MS;
-    /* wait for the erase operation to complete */
-    while ((FLASH_DRV_REGS_BASE->SR & FLASH_BSY_BIT) == FLASH_BSY_BIT)
-    {
-      /* keep the watchdog happy */
-      CopService();
-      /* check for timeout */
-      if (TimerGet() > timeout)
-      {
-        result = BLT_FALSE;
-        break;
-      }
-    }
-  }
-  /* reset the page erase bit because we're all done erasing */
-  FLASH_DRV_REGS_BASE->CR &= ~FLASH_PER_BIT;
-  /* lock the flash array */
-  FlashLock();
-  /* give the result back to the caller */
-  return result;
+  return BLT_FALSE;
 } /*** end of FlashEraseSectors ***/
-
-
-/************************************************************************************//**
-** \brief     Unlocks the flash array so that erase and program operations can be
-**            performed.
-** \return    none.
-**
-****************************************************************************************/
-static void FlashUnlock(void)
-{
-  /* authorize the FPEC to access bank 1 */
-  FLASH_DRV_REGS_BASE->KEYR = FLASH_KEY1;
-  FLASH_DRV_REGS_BASE->KEYR = FLASH_KEY2;
-  /* clear all possibly pending status flags */
-  FLASH_DRV_REGS_BASE->SR = (FLASH_EOP_BIT | FLASH_PGERR_BIT | FLASH_WRPRTERR_BIT);
-} /*** end of FlashUnlock ***/
-
-
-/************************************************************************************//**
-** \brief     Locks the flash array so that erase and program operations can no
-**            longer be performed.
-** \return    none.
-**
-****************************************************************************************/
-static void FlashLock(void)
-{
-  /* set the lock bit to lock the FPEC */
-  FLASH_DRV_REGS_BASE->CR |= FLASH_LOCK_BIT;
-} /*** end of FlashLock ***/
 
 
 /************************************************************************************//**
@@ -901,56 +731,6 @@ static blt_int8u FlashGetSector(blt_addr address)
   /* still here so no valid sector found */
   return FLASH_INVALID_SECTOR;
 } /*** end of FlashGetSector ***/
-
-
-/************************************************************************************//**
-** \brief     Determines the flash sector base address.
-** \param     sector Sector to get the base address of.
-** \return    Flash sector base address or FLASH_INVALID_ADDRESS.
-**
-****************************************************************************************/
-static blt_addr FlashGetSectorBaseAddr(blt_int8u sector)
-{
-  blt_int8u sectorIdx;
-
-  /* search through the sectors to find the right one */
-  for (sectorIdx = 0; sectorIdx < FLASH_TOTAL_SECTORS; sectorIdx++)
-  {
-    /* keep the watchdog happy */
-    CopService();
-    if (flashLayout[sectorIdx].sector_num == sector)
-    {
-      return flashLayout[sectorIdx].sector_start;
-    }
-  }
-  /* still here so no valid sector found */
-  return FLASH_INVALID_ADDRESS;
-} /*** end of FlashGetSectorBaseAddr ***/
-
-
-/************************************************************************************//**
-** \brief     Determines the flash sector size.
-** \param     sector Sector to get the size of.
-** \return    Flash sector size or 0.
-**
-****************************************************************************************/
-static blt_addr FlashGetSectorSize(blt_int8u sector)
-{
-  blt_int8u sectorIdx;
-
-  /* search through the sectors to find the right one */
-  for (sectorIdx = 0; sectorIdx < FLASH_TOTAL_SECTORS; sectorIdx++)
-  {
-    /* keep the watchdog happy */
-    CopService();
-    if (flashLayout[sectorIdx].sector_num == sector)
-    {
-      return flashLayout[sectorIdx].sector_size;
-    }
-  }
-  /* still here so no valid sector found */
-  return 0;
-} /*** end of FlashGetSectorSize ***/
 
 
 /*********************************** end of flash.c ************************************/

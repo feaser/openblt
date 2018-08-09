@@ -30,10 +30,6 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#if (BOOT_FILE_LOGGING_ENABLE > 0)
-#include "stm32f10x.h"                           /* STM32 registers                    */
-#include "stm32f10x_conf.h"                      /* STM32 peripheral drivers           */
-#endif
 
 
 /****************************************************************************************
@@ -326,29 +322,7 @@ void FileFirmwareUpdateStartedHook(void)
 ****************************************************************************************/
 void FileFirmwareUpdateCompletedHook(void)
 {
-  #if (BOOT_FILE_LOGGING_ENABLE > 0)
-  blt_int32u timeoutTime;
-
-  /* close the log file */
-  if (logfile.canUse == BLT_TRUE)
-  {
-    f_close(&logfile.handle);
-  }
-  /* wait for all logging related transmission to complete with a maximum wait time of
-   * 100ms.
-   */
-  timeoutTime = TimerGet() + 100;
-  while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET)
-  {
-    /* check for timeout */
-    if (TimerGet() > timeoutTime)
-    {
-      break;
-    }
-  }
-  #endif
-  /* now delete the firmware file from the disk since the update was successful */
-  f_unlink(firmwareFilename);
+  /* TODO ##Vg Implement FileFirmwareUpdateCompletedHook(). */
 } /*** end of FileFirmwareUpdateCompletedHook ***/
 #endif /* BOOT_FILE_COMPLETED_HOOK_ENABLE > 0 */
 
@@ -395,10 +369,7 @@ void FileFirmwareUpdateLogHook(blt_char *info_string)
   /* echo all characters in the string on UART */
   while(*info_string != '\0')
   {
-    /* write character to transmit holding register */
-    USART_SendData(USART2, *info_string);
-    /* wait for tx holding register to be empty */
-    while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+    /* TODO ##Vg Implement character sending via UART. */
     /* point to the next character in the string */
     info_string++;
   }

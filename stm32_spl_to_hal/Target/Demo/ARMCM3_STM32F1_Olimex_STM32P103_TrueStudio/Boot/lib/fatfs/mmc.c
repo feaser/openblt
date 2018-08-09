@@ -19,8 +19,6 @@
  *
  */
 #include "diskio.h"
-#include "stm32f10x.h"                                /* STM32 registers               */
-#include "stm32f10x_conf.h"                           /* STM32 peripheral drivers      */
 #include "boot.h"
 
 
@@ -65,8 +63,8 @@
 
 
 /* Control signals (Platform dependent) */
-#define CS_LOW()	  GPIO_ResetBits(GPIOB, GPIO_Pin_12)  /* MMC CS = L */
-#define	CS_HIGH()	  GPIO_SetBits(GPIOB, GPIO_Pin_12)  	/* MMC CS = H */
+#define CS_LOW()	  /* TODO ##Vg Implement CS_LOW() */  /* MMC CS = L */
+#define	CS_HIGH()	  /* TODO ##Vg Implement CS_HIGH() */  	/* MMC CS = H */
 
 
 
@@ -87,38 +85,7 @@ UINT CardType;
 static
 void send_initial_clock_train(void)
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
-  unsigned int i;
-
-  /* Ensure CS is held high. */
-  CS_HIGH();
-
-  /* Switch the SSI TX line to a GPIO and drive it high too. */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-  GPIO_SetBits(GPIOB, GPIO_Pin_15);
-
-  /* Send 10 bytes over the SSI. This causes the clock to wiggle the */
-  /* required number of times. */
-  for(i = 0 ; i < 10 ; i++)
-  {
-    /* Loop while DR register in not empty */
-    while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET) { ; }
-
-    /* Send byte through the SPI peripheral */
-    SPI_I2S_SendData(SPI2, 0xff);
-
-    /* Wait to receive a byte */
-    while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET) { ; }
-  }
-
-  /* Revert to hardware control of the SSI TX line. */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  /* TODO ##Vg Implement send_initial_clock_train(). */
 }
 
 
@@ -131,83 +98,13 @@ void send_initial_clock_train(void)
 static
 void power_on (void)
 {
-  SPI_InitTypeDef  SPI_InitStructure;
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  /*
-   * This doesn't really turn the power on, but initializes the
-   * SSI port and pins needed to talk to the card.
-   */
-
-  /* Enable GPIO clock for CS */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-  /* Enable SPI clock, SPI2: APB1 */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
-  /* Configure I/O for Flash Chip select (PB12) */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-  /* De-select the Card: Chip Select high */
-  GPIO_SetBits(GPIOB, GPIO_Pin_12);
-
-  /* Configure SPI pins: SCK (PB13) and MOSI (PB15) with default alternate function (not re-mapped) push-pull */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13 | GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-  /* Configure MISO (PB14) as Input with internal pull-up */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_14;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IPU;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-  /* SPI configuration */
-  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256; // 72000kHz/256=281kHz < 400kHz
-  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-  SPI_InitStructure.SPI_CRCPolynomial = 7;
-
-  SPI_Init(SPI2, &SPI_InitStructure);
-  SPI_CalculateCRC(SPI2, DISABLE);
-  SPI_Cmd(SPI2, ENABLE);
-
-    /* Set DI and CS high and apply more than 74 pulses to SCLK for the card */
-    /* to be able to accept a native command. */
-    send_initial_clock_train();
-
+  /* TODO ##Vg Implement power_on(). */
 }
 // set the SSI speed to the max setting
 static
 void set_max_speed(void)
 {
-  SPI_InitTypeDef  SPI_InitStructure;
-
-  /* Disable the SPI system */
-  SPI_Cmd(SPI2, DISABLE);
-
-  /* MMC/SDC can work at the clock frequency up to 20/25MHz so pick a speed close to
-   * this but not higher
-   */
-  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4; // 72MHz/4=18MHz < 20MHz
-  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-  SPI_InitStructure.SPI_CRCPolynomial = 7;
-  SPI_Init(SPI2, &SPI_InitStructure);
-  SPI_CalculateCRC(SPI2, DISABLE);
-
-  /* Enable the SPI system */
-  SPI_Cmd(SPI2, ENABLE);
+  /* TODO ##Vg Implement set_max_speed(). */
 }
 
 static
@@ -224,14 +121,8 @@ void power_off (void)
 static
 BYTE xchg_spi (BYTE dat)
 {
-  /* Send byte through the SPI peripheral */
-  SPI_I2S_SendData(SPI2, dat);
-
-  /* Wait to receive a byte */
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET) { ; }
-
-  /* Return the byte read from the SPI bus */
-  return (BYTE)SPI_I2S_ReceiveData(SPI2);
+  /* TODO ##Vg Implement xchg_spi(). */
+  return 0;
 }
 
 static
