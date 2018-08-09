@@ -1,0 +1,60 @@
+/**
+\mainpage XCP Seed and Key shared library (SeedNKey)   
+\details
+\tableofcontents
+\section into Introduction
+The OpenBLT bootloader is an open source project, allowing everyone to access the 
+sources. One downside of this is that if someone knows the OpenBLT bootloader is used
+in your product, it is relatively easy for them to figure out how to update the 
+firmware in your product. Although this could be a feature of your product, in most
+cases it is not desirable.
+
+For this reason the bootloader contains a seed/key security module. If this security
+module is enabled in the bootloader's configuration, updates can only be made by users
+that have the correct algorithm inside this Seed and Key shared library. If not, then 
+new firmware update requests are rejected by the bootloader.
+
+The SeedNKey project is preconfigured to build this Seed and Key shared library. Its
+default implemented seed and key algorithm works together with those implemented in
+the OpenBLT demo bootloaders. You are free and encouraged to update this algorithm to
+match your security needs.
+
+On the bootloader target side (microcontroller), this security module is enabled by
+setting configurable BOOT_XCP_SEED_KEY_ENABLE to a value of 1 in the bootloader's 
+configuration header file (blt_conf.h). The implementation of the seed and key algorithm
+can be made in the hook-functions XcpGetSeedHook() and XcpVerifyKeyHook().
+
+On the host side (PC), you simply specify the Seed and Key shared library file that this
+preconfigured project built. In MicroBoot this shared library can be specified through
+the settings user interface. In BootCommander it is specified via a command line option.
+
+Refer to the OpenBLT website for additional information regarding the XCP Seed and Key
+shared library, including step-by-step instructions on how to build it:
+https://www.feaser.com/openblt/doku.php?id=manual:security
+php?id=manual:libopenblt.
+
+\verbatim
+----------------------------------------------------------------------------------------
+                          C O P Y R I G H T
+----------------------------------------------------------------------------------------
+               Copyright (c) 2017 Feaser. All rights reserved.
+
+----------------------------------------------------------------------------------------
+                            L I C E N S E
+----------------------------------------------------------------------------------------
+ This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+ modify it under the terms of the GNU General Public License as published by the Free
+ Software Foundation, either version 3 of the License, or (at your option) any later
+ version.
+
+ OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE. See the GNU General Public License for more details.
+
+ You have received a copy of the GNU General Public License along with OpenBLT. It 
+ should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
+----------------------------------------------------------------------------------------
+\endverbatim
+
+*/
+ 
