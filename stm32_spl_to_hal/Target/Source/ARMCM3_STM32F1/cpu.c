@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f1xx.h"                           /* STM32 registers and drivers        */
 
 
 /****************************************************************************************
@@ -110,9 +111,10 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the timer */
   TimerReset();
-
-  /* TODO ##Vg Implement vector table re-mapping and probably call HAL_Deinit(). */
-
+  /* reset the HAL */
+  HAL_DeInit();
+  /* remap user program's vector table */
+  SCB->VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of
    * the 2nd entry in the user program's vector table. this address points to the
    * user program's reset handler.

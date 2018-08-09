@@ -50,7 +50,7 @@
 /** \brief Motorola or Intel style byte ordering. */
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA     (0)
 /** \brief Enable/disable hook function call right before user program start. */
-#define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
+#define BOOT_CPU_USER_PROGRAM_START_HOOK (1)
 
 
 /****************************************************************************************
@@ -129,7 +129,7 @@
  * firmware update is completed by the bootloader. 
  */
 /** \brief Enable/disable support for firmware updates from a locally attached storage.*/
-#define BOOT_FILE_SYS_ENABLE            (1)
+#define BOOT_FILE_SYS_ENABLE            (0)
 /** \brief Enable/disable logging messages during firmware updates. */
 #define BOOT_FILE_LOGGING_ENABLE        (1)
 /** \brief Enable/disable a hook function that is called upon detection of an error. */
@@ -195,7 +195,7 @@
  * hook functions.
  */
 /** \brief Enable/disable the hook functions for controlling the watchdog. */
-#define BOOT_COP_HOOKS_ENABLE           (0)
+#define BOOT_COP_HOOKS_ENABLE           (1)
 
 
 /****************************************************************************************
