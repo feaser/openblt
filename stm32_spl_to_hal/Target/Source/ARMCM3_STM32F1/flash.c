@@ -101,20 +101,6 @@ typedef struct
   blt_int8u data[FLASH_WRITE_BLOCK_SIZE];
 } tFlashBlockInfo;
 
-/** \brief Flash controller register layout type.  */
-typedef struct
-{
-  volatile blt_int32u ACR;                       /**< flash access control register    */
-  volatile blt_int32u KEYR;                      /**< FPEC key register                */
-  volatile blt_int32u OPTKEYR;                   /**< flash OPTKEY register            */
-  volatile blt_int32u SR;                        /**< flash status register            */
-  volatile blt_int32u CR;                        /**< flash control register           */
-  volatile blt_int32u AR;                        /**< flash address register           */
-  volatile blt_int32u RESERVED;
-  volatile blt_int32u OBR;                       /**< option byte register             */
-  volatile blt_int32u WRPR;                      /**< write protection register        */
-} tFlashRegs;
-
 
 /****************************************************************************************
 * Hook functions
