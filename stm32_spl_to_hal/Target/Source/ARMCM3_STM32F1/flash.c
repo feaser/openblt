@@ -660,7 +660,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 
   /* TODO ##Vg Implement FlashWriteBlock(). */
 
-  return BLT_FALSE;
+  return BLT_TRUE;
 } /*** end of FlashWriteBlock ***/
 
 
@@ -686,7 +686,7 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 
   /* TODO ##Vg Implement FlashEraseSectors(). */
 
-  return BLT_FALSE;
+  return BLT_TRUE;
 } /*** end of FlashEraseSectors ***/
 
 
