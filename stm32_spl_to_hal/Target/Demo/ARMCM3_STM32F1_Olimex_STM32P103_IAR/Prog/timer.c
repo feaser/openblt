@@ -71,7 +71,7 @@ void SysTick_Handler(void)
   HAL_IncTick();
   /* Invoke the system tick handler. */
   HAL_SYSTICK_IRQHandler();
-} /*** end of TimerISRHandler ***/
+} /*** end of SysTick_Handler ***/
 
 
 /*********************************** end of timer.c ************************************/
