@@ -50,7 +50,7 @@
 #define ARGSSPACE 128
 #endif
 
-  .global _start
+  .extern SystemInit
   .extern APP_ENTRY_POINT
   .global exit
   .global reset_handler
@@ -187,6 +187,8 @@ start:
   mov r0, #0
   mov r1, #0
 #endif
+  /* Call the clock system intitialization function.*/
+  bl  SystemInit
   ldr r2, =APP_ENTRY_POINT
   blx r2
 

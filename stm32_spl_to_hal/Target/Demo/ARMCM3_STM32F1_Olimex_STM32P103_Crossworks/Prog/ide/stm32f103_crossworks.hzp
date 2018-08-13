@@ -23,8 +23,8 @@
       build_intermediate_directory="$(Configuration)/../../obj"
       build_output_directory="$(ProjectDir)/../bin"
       c_only_additional_options=""
-      c_preprocessor_definitions="STM32F10X_MD;USE_STDPERIPH_DRIVER ;VECT_TAB_FLASH;GCC_ARMCM3"
-      c_user_include_directories="$(ProjectDir)/..;$(ProjectDir)/../lib/stdperiphlib;$(ProjectDir)/../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc;$(ProjectDir)/../lib/stdperiphlib/CMSIS/CM3/CoreSupport;$(ProjectDir)/../lib/stdperiphlib/CMSIS/CM3/DeviceSupport/ST/STM32F10x"
+      c_preprocessor_definitions="USE_HAL_DRIVER;STM32F103xB"
+      c_user_include_directories="$(ProjectDir)/..;$(ProjectDir)/../lib;$(ProjectDir)/../lib/CMSIS/Include;$(ProjectDir)/../lib/CMSIS/Device/ST/STM32F1xx/Include;$(ProjectDir)/../lib/STM32F1xx_HAL_Driver/Inc;$(ProjectDir)/../lib/STM32F1xx_HAL_Driver/Inc/Legacy"
       gcc_optimization_level="None"
       link_include_standard_libraries="Yes"
       linker_keep_symbols="_vectors"
@@ -77,75 +77,55 @@
     </folder>
     <configuration Name="Debug" c_only_additional_options="" />
     <folder Name="Library Files">
-      <file file_name="../lib/stdperiphlib/stm32f10x_conf.h" />
-      <folder Name="STM32F10x_StdPeriph_Driver">
-        <folder Name="inc">
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/misc.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_adc.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_bkp.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_can.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_cec.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_crc.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_dac.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_dbgmcu.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_dma.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_exti.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_flash.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_fsmc.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_i2c.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_iwdg.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_pwr.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_rcc.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_rtc.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_sdio.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_spi.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_tim.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_usart.h" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/inc/stm32f10x_wwdg.h" />
-        </folder>
-        <folder Name="src">
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/misc.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_bkp.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_can.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_crc.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dbgmcu.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_flash.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_fsmc.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_iwdg.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_pwr.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_rtc.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c" />
-          <file file_name="../lib/stdperiphlib/STM32F10x_StdPeriph_Driver/src/stm32f10x_wwdg.c" />
-        </folder>
-      </folder>
       <folder Name="CMSIS">
-        <folder Name="CM3">
-          <folder Name="CoreSupport">
-            <file file_name="../lib/stdperiphlib/CMSIS/CM3/CoreSupport/core_cm3.h" />
-          </folder>
-          <folder Name="DeviceSupport">
-            <folder Name="ST">
-              <folder Name="STM32F10x">
-                <file file_name="../lib/stdperiphlib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h" />
-                <file file_name="../lib/stdperiphlib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c" />
-                <file file_name="../lib/stdperiphlib/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h" />
-              </folder>
-            </folder>
-          </folder>
-        </folder>
+        <file file_name="../lib/CMSIS/Include/arm_common_tables.h" />
+        <file file_name="../lib/CMSIS/Include/arm_const_structs.h" />
+        <file file_name="../lib/CMSIS/Include/arm_math.h" />
+        <file file_name="../lib/CMSIS/Include/cmsis_gcc.h" />
+        <file file_name="../lib/CMSIS/Include/core_cm3.h" />
+        <file file_name="../lib/CMSIS/Include/core_cmFunc.h" />
+        <file file_name="../lib/CMSIS/Include/core_cmInstr.h" />
+        <file file_name="../lib/CMSIS/Include/core_cmSimd.h" />
+        <file file_name="../lib/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h" />
+        <file file_name="../lib/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h" />
+        <file file_name="../lib/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h" />
       </folder>
+      <folder Name="HAL">
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_can.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_can.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_can_ex.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h" />
+        <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h" />
+      </folder>
+      <file file_name="../lib/stm32f1xx_hal_conf.h" />
+      <file file_name="../lib/system_stm32f1xx.c" />
     </folder>
   </project>
   <configuration Name="THUMB Debug" inherited_configurations="THUMB;Debug" />
