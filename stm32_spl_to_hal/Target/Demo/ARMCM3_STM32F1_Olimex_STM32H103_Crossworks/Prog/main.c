@@ -179,8 +179,8 @@ void HAL_MspInit(void)
 void HAL_MspDeInit(void)
 {
   /* Deconfigure GPIO pin for the LED. */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
-  HAL_GPIO_DeInit(GPIOC, GPIO_PIN_8);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_SET);
+  HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
 
   /* GPIO ports clock disable. */
   __HAL_RCC_GPIOC_CLK_DISABLE();

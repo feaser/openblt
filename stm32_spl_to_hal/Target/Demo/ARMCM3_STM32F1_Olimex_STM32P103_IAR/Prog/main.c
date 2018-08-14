@@ -226,8 +226,8 @@ void HAL_MspDeInit(void)
   HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2|GPIO_PIN_3);
 #endif /* BOOT_COM_UART_ENABLE > 0 */
   /* Deconfigure GPIO pin for the LED. */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
-  HAL_GPIO_DeInit(GPIOC, GPIO_PIN_8);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_SET);
+  HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
 
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* Peripheral clock enable. */

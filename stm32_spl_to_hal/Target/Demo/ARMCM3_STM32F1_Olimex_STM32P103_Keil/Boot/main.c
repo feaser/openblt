@@ -238,7 +238,7 @@ void HAL_MspDeInit(void)
   LL_GPIO_DeInit(GPIOB);
   LL_GPIO_DeInit(GPIOA);
 
-  #if (BOOT_COM_CAN_ENABLE > 0)
+#if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN clock disable. */
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_CAN1);
 #endif
