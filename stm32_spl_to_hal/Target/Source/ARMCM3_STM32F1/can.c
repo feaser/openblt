@@ -32,7 +32,9 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32f1xx.h"                           /* STM32 CPU and HAL header           */
+#if (BOOT_COM_CAN_ENABLE > 0)
 #include "stm32f1xx_ll_rcc.h"                    /* STM32 LL RCC header                */
+#endif
 
 
 #if (BOOT_COM_CAN_ENABLE > 0)

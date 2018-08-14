@@ -31,7 +31,9 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32f1xx.h"                           /* STM32 CPU and HAL header           */
+#if (BOOT_COM_UART_ENABLE > 0)
 #include "stm32f1xx_ll_usart.h"                  /* STM32 LL USART header              */
+#endif
 
 
 #if (BOOT_COM_UART_ENABLE > 0)
