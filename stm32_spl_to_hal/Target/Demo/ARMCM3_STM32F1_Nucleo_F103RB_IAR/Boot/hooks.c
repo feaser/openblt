@@ -31,7 +31,8 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* LED driver header                  */
-#include "stm32f10x.h"                           /* microcontroller registers          */
+#include "stm32f1xx.h"                           /* STM32 registers and drivers        */
+#include "stm32f1xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
 /****************************************************************************************
@@ -78,20 +79,21 @@ blt_bool BackDoorEntryHook(void)
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
-  /* clean up the LED driver */
-  LedBlinkExit();
-
   /* additional and optional backdoor entry through the pushbutton on the board. to
    * force the bootloader to stay active after reset, keep it pressed during reset.
    */
-  if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13) == Bit_RESET)
+  if (LL_GPIO_IsInputPinSet(GPIOC, LL_GPIO_PIN_13) == 0)
   {
     /* pushbutton pressed, so do not start the user program and keep the
      * bootloader active instead.
      */
     return BLT_FALSE;
   }
-  /*  okay to start the user program.*/
+
+  /* clean up the LED driver */
+  LedBlinkExit();
+
+  /* okay to start the user program */
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/
 #endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */

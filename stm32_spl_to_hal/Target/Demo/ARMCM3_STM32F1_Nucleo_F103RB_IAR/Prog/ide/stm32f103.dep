@@ -2,489 +2,347 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>1058014350</fileChecksum>
+  <fileChecksum>3870713168</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_sdio.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</file>
-      <file>$PROJ_DIR$\..\obj\misc.pbi</file>
-      <file>$PROJ_DIR$\..\..\Boot\blt_conf.h</file>
-      <file>$PROJ_DIR$\..\bin\demoprog_nucleo_stm32f103rb.srec</file>
-      <file>$PROJ_DIR$\..\stm32f103xB.icf</file>
-      <file>$PROJ_DIR$\..\obj\main.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_cec.lst</file>
-      <file>$PROJ_DIR$\..\obj\boot.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\core_cm3.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_tim.lst</file>
-      <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_rtc.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dbgmcu.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\..\obj\misc.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_gpio.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_rcc.lst</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\..\obj\misc.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_sdio.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_cec.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\timer.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dbgmcu.lst</file>
-      <file>$PROJ_DIR$\..\obj\core_cm3.__cstat.et</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_i2c.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_iwdg.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_iwdg.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_pwr.c</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_i2c.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dma.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_sdio.o</file>
+      <file>$PROJ_DIR$\..\obj\led.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_pwr.lst</file>
+      <file>$PROJ_DIR$\..\obj\boot.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_flash.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_wwdg.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_exti.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_rtc.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_can.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\led.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_can.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_iwdg.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_iwdg.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_gpio.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\timer.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_crc.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_spi.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_adc.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_tim.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_spi.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dac.pbi</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_rcc.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_usart.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_gpio.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_bkp.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_exti.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dac.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_rtc.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_flash.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_spi.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dac.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\system_stm32f10x.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_crc.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_can.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_exti.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dbgmcu.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_usart.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_gpio.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_iwdg.pbi</file>
+      <file>$PROJ_DIR$\..\obj\timer.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_crc.o</file>
+      <file>$PROJ_DIR$\..\bin\demoprog_olimex_stm32p103.out</file>
+      <file>$PROJ_DIR$\..\obj\misc.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_i2c.lst</file>
+      <file>$PROJ_DIR$\..\obj\boot.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_cec.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_i2c.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_cec.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_rcc.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_rcc.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_i2c.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.pbi</file>
+      <file>$PROJ_DIR$\..\obj\boot.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\startup_stm32f103xb.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_pwr.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_crc.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_iwdg.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dac.lst</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_adc.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_spi.lst</file>
+      <file>$PROJ_DIR$\..\bin\demoprog_olimex_stm32p103.srec</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_wwdg.lst</file>
+      <file>$PROJ_DIR$\..\obj\timer.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f103.pbd</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\..\obj\core_cm3.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_bkp.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_bkp.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_tim.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_pwr.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_flash.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_pwr.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_bkp.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_adc.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_wwdg.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_sdio.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_flash.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_rtc.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\system_stm32f10x.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_tim.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_usart.o</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$PROJ_DIR$\..\obj\led.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_exti.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_can.pbi</file>
+      <file>$PROJ_DIR$\..\obj\core_cm3.o</file>
+      <file>$PROJ_DIR$\..\obj\main.lst</file>
+      <file>$PROJ_DIR$\..\obj\system_stm32f10x.lst</file>
+      <file>$PROJ_DIR$\..\obj\main.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dma.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dma.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dbgmcu.pbi</file>
+      <file>$PROJ_DIR$\..\obj\main.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.lst</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dac.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_adc.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_fsmc.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_can.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_crc.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dma.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_fsmc.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\stm32f10x_conf.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dac.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\misc.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_can.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_cec.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_cec.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\CoreSupport\core_cm3.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_crc.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dbgmcu.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_flash.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\misc.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_i2c.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\CoreSupport\core_cm3.c</file>
       <file>$PROJ_DIR$\..\obj\stm32f10x_usart.pbi</file>
       <file>$PROJ_DIR$\..\obj\system_stm32f10x.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_wwdg.pbi</file>
       <file>$PROJ_DIR$\..\obj\stm32f10x_adc.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_sdio.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dma.o</file>
       <file>$PROJ_DIR$\..\obj\led.o</file>
       <file>$PROJ_DIR$\..\bin\demoprog_nucleo_stm32f103rb.out</file>
       <file>$PROJ_DIR$\..\obj\demoprog_nucleo_stm32f103rb.map</file>
       <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
-      <file>$PROJ_DIR$\..\obj\stm32f103.pbd</file>
-      <file>$PROJ_DIR$\..\obj\boot.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_i2c.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
-      <file>$PROJ_DIR$\..\obj\core_cm3.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_wwdg.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_bkp.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.pbi</file>
-      <file>$PROJ_DIR$\..\bin\demoprog_olimex_stm32p103.srec</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_bkp.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_crc.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_pwr.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_tim.pbi</file>
-      <file>$PROJ_DIR$\..\obj\timer.lst</file>
-      <file>$PROJ_DIR$\..\obj\timer.o</file>
-      <file>$PROJ_DIR$\..\bin\demoprog_olimex_stm32p103.out</file>
-      <file>$PROJ_DIR$\..\obj\misc.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_cec.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_cec.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_i2c.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_i2c.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_crc.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_rcc.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_iwdg.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_rcc.o</file>
-      <file>$PROJ_DIR$\..\obj\boot.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\startup_stm32f103xb.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dac.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_adc.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dma.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dbgmcu.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_can.pbi</file>
-      <file>$PROJ_DIR$\..\obj\main.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_usart.o</file>
-      <file>$PROJ_DIR$\..\obj\core_cm3.o</file>
-      <file>$PROJ_DIR$\..\obj\main.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_pwr.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_wwdg.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_sdio.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dma.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_exti.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_bkp.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.lst</file>
-      <file>$PROJ_DIR$\..\obj\system_stm32f10x.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_pwr.o</file>
-      <file>$PROJ_DIR$\..\obj\led.pbi</file>
-      <file>$PROJ_DIR$\..\obj\main.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_flash.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_adc.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_flash.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_rtc.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\system_stm32f10x.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_tim.o</file>
-      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_spi.lst</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_can.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\stm32f10x_conf.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_i2c.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_flash.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dma.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_cec.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_fsmc.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_crc.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_fsmc.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_i2c.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dac.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_cec.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dac.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_iwdg.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_pwr.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dbgmcu.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_crc.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_iwdg.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_can.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rtc.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rtc.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\misc.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\CoreSupport\core_cm3.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_adc.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_sdio.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\misc.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\CoreSupport\core_cm3.c</file>
+      <file>$PROJ_DIR$\..\obj\timer.pbi</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
+      <file>$PROJ_DIR$\..\bin\demoprog_nucleo_stm32f103rb.srec</file>
+      <file>$PROJ_DIR$\..\obj\boot.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dma.o</file>
+      <file>$PROJ_DIR$\..\obj\core_cm3.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_tim.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_rtc.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dbgmcu.lst</file>
+      <file>$PROJ_DIR$\..\obj\core_cm3.__cstat.et</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\..\obj\misc.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_wwdg.pbi</file>
+      <file>$PROJ_DIR$\..\obj\misc.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_sdio.lst</file>
+      <file>$PROJ_DIR$\..\obj\main.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_cec.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_gpio.lst</file>
+      <file>$PROJ_DIR$\..\stm32f103xB.icf</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_dbgmcu.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_rcc.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_sdio.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f10x_cec.__cstat.et</file>
       <file>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h</file>
-      <file>$PROJ_DIR$\..\startup_stm32f103xb.s</file>
-      <file>$PROJ_DIR$\..\led.c</file>
-      <file>$PROJ_DIR$\..\timer.h</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h</file>
-      <file>$PROJ_DIR$\..\boot.h</file>
-      <file>$PROJ_DIR$\..\led.h</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_exti.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_gpio.o</file>
-      <file>$PROJ_DIR$\..\obj\boot.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_spi.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_flash.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_adc.__cstat.et</file>
-      <file>$PROJ_DIR$\..\main.c</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_can.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_rcc.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_spi.__cstat.et</file>
-      <file>$PROJ_DIR$\..\timer.c</file>
-      <file>$PROJ_DIR$\..\header.h</file>
-      <file>$PROJ_DIR$\..\boot.c</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_iwdg.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dac.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_exti.o</file>
-      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_wwdg.c</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_i2c.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_sdio.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_iwdg.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_can.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_rtc.o</file>
-      <file>$PROJ_DIR$\..\obj\led.__cstat.et</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_sdio.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h</file>
       <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_rtc.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dma.__cstat.et</file>
-      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_tim.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_pwr.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_gpio.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_usart.lst</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_bkp.lst</file>
-      <file>$PROJ_DIR$\..\obj\led.lst</file>
-      <file>$PROJ_DIR$\..\obj\timer.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dac.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_crc.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_wwdg.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\system_stm32f10x.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_iwdg.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_flash.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_crc.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_can.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dac.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_gpio.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_fsmc.o</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_dbgmcu.__cstat.et</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_exti.pbi</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_usart.__cstat.et</file>
-      <file>$PROJ_DIR$\..\obj\stm32f10x_spi.pbi</file>
+      <file>$PROJ_DIR$\..\boot.h</file>
+      <file>$PROJ_DIR$\..\led.c</file>
+      <file>$PROJ_DIR$\..\main.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_sdio.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h</file>
+      <file>$PROJ_DIR$\..\timer.c</file>
+      <file>$PROJ_DIR$\..\led.h</file>
+      <file>$PROJ_DIR$\..\boot.c</file>
+      <file>$PROJ_DIR$\..\timer.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</file>
+      <file>$PROJ_DIR$\..\header.h</file>
+      <file>$PROJ_DIR$\..\startup_stm32f103xb.s</file>
+      <file>$PROJ_DIR$\..\obj\misc.pbi</file>
+      <file>$PROJ_DIR$\..\..\Boot\blt_conf.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rtc.h</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rtc.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</file>
+      <file>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_wwdg.c</file>
+      <file>$PROJ_DIR$\..\lib\system_stm32f1xx.c</file>
+      <file>$PROJ_DIR$\..\obj\system_stm32f1xx.o</file>
+      <file>$PROJ_DIR$\..\lib\stm32f1xx_hal_conf.h</file>
+      <file>$PROJ_DIR$\..\obj\system_stm32f1xx.pbi</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm3.h</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Include\arm_math.h</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmInstr.h</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Include\arm_common_tables.h</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmFunc.h</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Include\arm_const_structs.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_uart.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal.c</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_cortex.c</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_dma.c</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_flash.c</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_flash_ex.c</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_gpio.c</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_gpio_ex.c</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio_ex.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_pwr.c</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_can.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_can_ex.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_def.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_dma.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_dma_ex.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_can.c</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc_ex.h</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F1xx\Include\system_stm32f1xx.h</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F1xx\Include\stm32f103xb.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_cortex.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pwr.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim_ex.h</file>
+      <file>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmSimd.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_flash_ex.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_flash.h</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio.h</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_gpio.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_gpio_ex.pbi</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_uart.c</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_dma.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_pwr.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_uart.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_flash_ex.pbi</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_rcc_ex.c</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal.pbi</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim.c</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_rcc.c</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_flash_ex.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_gpio_ex.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_rcc.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_cortex.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_can.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_tim.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_tim_ex.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_flash.pbi</file>
+      <file>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim_ex.c</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_rcc_ex.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_gpio.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_cortex.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_can.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_dma.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_flash.o</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_rcc_ex.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_tim_ex.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_pwr.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_uart.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_rcc.pbi</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_tim.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\cmsis_iar.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_rcc_ex.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_cortex.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_uart.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_flash.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_gpio.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_pwr.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_tim.lst</file>
+      <file>$PROJ_DIR$\..\obj\system_stm32f1xx.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_tim_ex.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_rcc.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_uart.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_pwr.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_gpio.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_tim.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_rcc_ex.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_gpio_ex.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_can.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_dma.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_flash.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_cortex.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_flash_ex.__cstat.et</file>
+      <file>$PROJ_DIR$\..\obj\system_stm32f1xx.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_tim_ex.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_rcc.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_can.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_gpio_ex.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_flash_ex.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal_dma.lst</file>
+      <file>$PROJ_DIR$\..\obj\stm32f1xx_hal.lst</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 36 37</file>
+          <file> 144 145</file>
         </tool>
       </outputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_iwdg.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 29</file>
+          <name>ICCARM</name>
+          <file> 18 67</file>
         </tool>
         <tool>
-          <name>ICCARM</name>
-          <file> 178 75</file>
+          <name>BICOMP</name>
+          <file> 49</file>
         </tool>
         <tool>
           <name>__cstat</name>
-          <file> 197</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 108 132 67 131 124 134 42 72 107 111 171 128 140 192 43 121 103 106 118 1 138 99 22 18 89 195 135 105 112 101 102 127 115 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 171 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 198</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 97 151</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 157</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 145 112 140 192 195 115 22 72 135 102 2 128 134 67 99 18 89 105 101 127 0 1 42 43 131 121 107 103 108 106 111 118 124 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 1 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\bin\demoprog_nucleo_stm32f103rb.out</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 37</file>
-        </tool>
-        <tool>
-          <name>OBJCOPY</name>
-          <file> 7</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 8 150 76 35 88 56 66 69 46 189 58 50 162 17 34 163 92 193 149 41 63 86 64 169 166 151 95 75 79 94 54 96 174 15 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\bin\demoprog_olimex_stm32p103.out</name>
-      <outputs>
-        <tool>
-          <name>OBJCOPY</name>
-          <file> 48</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 8 150 76 35 88 56 66 69 46 189 58 50 162 17 34 163 92 193 149 41 63 86 64 169 166 151 95 75 79 94 54 96 174 15 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_can.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 73</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 155 189</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 168</file>
+          <file> 19</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 121 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_i2c.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 165</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 59 41</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 60</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 42 171 132 67 72 107 111 140 131 108 124 128 134 192 43 121 103 106 118 1 138 99 22 18 89 195 135 105 112 101 102 127 115 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 111 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dma.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 81</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 70 34</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 173</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 108 131 124 140 67 42 72 107 111 171 128 134 192 43 121 103 106 118 1 138 101 99 22 18 89 195 135 105 112 102 127 115 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 101 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_fsmc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 47</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 84 193</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 12</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 140 106 43 42 72 121 1 192 103 118 138 128 134 67 131 107 108 111 124 171 99 22 18 89 195 135 105 112 101 102 127 115 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 106 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 191</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 20 149</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 177</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 128 99 101 140 72 18 89 105 127 0 134 67 192 22 195 135 112 102 115 2 145 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 127 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_cec.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 57</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 10 58</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 25</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 106 43 42 72 121 1 140 192 103 118 138 128 134 67 131 107 108 111 124 171 105 99 22 18 89 195 135 112 101 102 127 115 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 105 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dac.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 182</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 68 162</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 190</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 111 67 42 72 107 171 134 131 108 124 128 140 192 43 121 103 106 118 1 138 112 99 22 18 89 195 135 105 101 102 127 115 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 112 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
+          <file> 3 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 0 183 193 174 176 173 177 182 127</file>
         </tool>
       </inputs>
     </file>
@@ -492,507 +350,12 @@
       <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_pwr.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 78</file>
-        </tool>
-        <tool>
           <name>ICCARM</name>
-          <file> 176 86</file>
+          <file> 9 82</file>
         </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 51</file>
-        </tool>
-      </outputs>
-      <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 103 192 132 138 118 140 43 42 72 121 106 1 128 134 67 131 107 108 111 124 171 99 22 18 89 195 135 105 112 101 102 127 115 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 118 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dbgmcu.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 71</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 27 17</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 194</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 124 132 131 108 140 67 42 72 107 111 171 134 192 43 121 103 106 118 1 138 99 22 18 89 195 135 105 112 101 102 127 115 128 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 103 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_crc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 183</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 61 50</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 188</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 121 1 140 43 42 72 106 192 103 118 138 134 67 131 107 108 111 124 171 99 22 18 89 195 135 105 112 101 102 127 115 128 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 107 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_iwdg.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 186</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 161 63</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 167</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 138 132 140 192 103 118 43 42 72 121 106 1 134 67 131 107 108 111 124 171 115 99 22 18 89 195 135 105 112 101 102 127 128 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 115 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 62</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 21 64</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 156</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 112 145 192 195 115 140 22 72 135 102 2 134 67 99 18 89 105 101 127 128 0 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 128 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rtc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 172</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 16 169</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 93</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 105 140 72 0 18 89 127 132 99 101 128 134 67 192 22 195 135 112 102 115 2 145 124 42 43 131 121 107 103 108 106 111 118 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 124 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 196</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 82 163</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 148</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 2 135 132 140 22 72 102 192 195 112 115 145 134 67 99 18 89 105 101 127 128 0 108 42 43 131 121 107 103 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 108 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 187</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 90 92</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 152</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 121 1 67 43 42 72 106 134 192 103 118 138 140 131 107 108 111 124 171 102 99 22 18 89 195 135 105 112 101 127 115 128 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 102 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 52</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 14 95</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 175</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 89 132 18 127 72 105 0 140 99 101 128 134 67 192 22 195 135 112 102 115 2 145 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 0 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\misc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 5</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 19 56</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 23</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 135 2 22 72 102 132 140 192 195 112 115 145 134 67 99 18 89 105 101 127 128 0 138 42 43 131 121 107 103 108 106 111 118 124 1 171</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 138 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 83</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 179 46</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 49</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 140 135 2 22 72 102 192 195 112 115 145 128 134 67 99 18 89 105 101 127 0 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 135 132 134 67 72 42 22 89 195 18 43 192 140 99 131 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_adc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 91</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 32 69</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 153</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 128 99 101 140 72 18 89 105 127 0 134 67 192 22 195 135 112 102 115 2 145 131 42 43 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 131 132 134 67 72 42 22 89 195 18 43 192 140 99 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_sdio.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 80</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 33 166</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 24</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 67 145 112 192 195 115 134 22 72 135 102 2 128 140 99 18 89 105 101 127 0 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 2 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 44</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 13 76</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 28</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 42 22 18 43 67 72 89 195</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 67 72 42 22 89 195 18 43</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\startup_stm32f103xb.s</name>
-      <outputs>
-        <tool>
-          <name>AARM</name>
-          <file> 66</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\led.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 87</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 180 35</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 170</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 143 134 22 72 132 102 135 2 146 67 192 195 112 115 145 6 99 147 140 18 89 105 101 127 128 0 159 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 159 6 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138 146 147 143</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 185</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 85 94</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 30</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132 138 192 103 118 140 43 42 72 121 106 1 134 67 131 107 108 111 124 171 99 22 18 89 195 135 105 112 101 102 127 115 128 2 0 145</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\main.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 9</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 77 88</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 74</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 146 22 72 132 102 67 135 2 143 134 192 195 112 115 145 6 99 147 140 18 89 105 101 127 128 0 159 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 159 6 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138 146 147 143</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\timer.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 26</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 53 54</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 181</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 22 72 132 147 102 6 135 2 99 140 192 195 112 115 145 146 143 134 67 18 89 105 101 127 128 0 159 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 159 6 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138 146 147 143</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\boot.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 40</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 11 150</file>
+          <file> 84</file>
         </tool>
         <tool>
           <name>__cstat</name>
@@ -1001,12 +364,665 @@
       </outputs>
       <inputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 147 22 72 132 102 6 135 2 99 140 192 195 112 115 145 146 143 134 67 18 89 105 101 127 128 0 159 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
+          <name>ICCARM</name>
+          <file> 0 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 183 193 174 176 173 177 182 127</file>
         </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\bin\demoprog_olimex_stm32p103.out</name>
+      <outputs>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 73</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 166 10 100 143 103 53 64 71 79 42 58 51 34 168 151 13 89 45 31 61 67 82 60 14 7 23 93 94 87 92 75 95 28 148 146</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</name>
+      <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 159 6 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 145 138 146 147 143</file>
+          <file> 98 13</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 43</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 33</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 124 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_adc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 142 71</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 86</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 24</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 109 117 131 70 97 69 167 90 36 158 77 44 172 122 133 115 130 116 110 135 118 124 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 32 79</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 85</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 80</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 133 117 131 70 97 69 167 90 36 158 77 44 172 122 109 115 130 116 110 135 118 124 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_fsmc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 108 45</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 62</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 155</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 120 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dma.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 105 151</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 104</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 6</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 118 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 124 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 165 31</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 48</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 20</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 126 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 83 89</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 37</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 11</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 136 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dac.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68 34</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 27</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 39</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 110 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 135 118 124 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_can.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 17 42</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 99</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 15</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 115 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 130 116 110 135 118 124 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_cec.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 164 58</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 56</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 171</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 130 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 116 110 135 118 124 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_crc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 66 51</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 22</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 41</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 116 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 110 135 118 124 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dbgmcu.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 156 168</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 106</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 46</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 135 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 118 124 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\misc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 161 53</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 191</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 159</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 127 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 0 183 193 174 176 173 177 182</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_i2c.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 54 61</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 5</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 57</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 1 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 152 100</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 157</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 70 97 69 167 90 36 158 77</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\bin\demoprog_nucleo_stm32f103rb.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 145</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 149</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 166 10 143 103 64 251 256 255 243 266 252 262 253 244 254 261 257 258 245 200 75 95 28 148 146</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 30 94</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 140</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 47</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 177 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 0 183 193 174 176 173 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\led.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 8 143</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 96</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 16</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 189 192 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 232 201 211 224 276 275 273 229 239 219 225 227 233 238 237 234 209 178 185 187</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 233 224 44 178 231 230 97 192 187 158 90 201 239 234 276 221 185 232 203 70 207 167 36 211 225 238 209 275 69 237 189 205 77 274 229 273 219 227</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\main.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 101 103</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 163</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 107</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 189 192 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 232 201 211 224 276 275 273 229 239 219 225 227 233 238 237 234 209 178 185 187</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 233 224 70 185 44 97 221 232 203 158 90 201 239 234 276 192 178 187 231 230 207 167 36 211 225 238 209 275 69 237 189 205 77 274 229 273 219 227</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_sdio.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 162 7</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 170</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 174 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 0 183 193 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\timer.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 50 75</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 147</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 21</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 189 192 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 232 201 211 224 276 275 273 229 239 219 225 227 233 238 237 234 209 178 185 187</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 233 232 224 44 221 203 97 185 70 158 90 201 239 234 276 192 178 187 231 230 207 167 36 211 225 238 209 275 69 237 189 205 77 274 229 273 219 227</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\boot.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 150 10</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 55</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 63</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 189 192 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 232 201 211 224 276 275 273 229 239 219 225 227 233 238 237 234 209 178 185 187</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 233 224 44 178 231 230 97 192 187 158 90 201 239 234 276 221 185 232 203 70 207 167 36 211 225 238 209 275 69 237 189 205 77 274 229 273 219 227</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 72 23</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 38</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 26</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 176 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 0 183 193 174 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\startup_stm32f103xb.s</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 64</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 102 92</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 40</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 141</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 0 183 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rtc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 154 14</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 35</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 91</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 193 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 0 183 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 169 60</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 59</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 29</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 183 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 0 193 174 176 173 177 182 127</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 153 93</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 81</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 25</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 173 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 0 183 193 174 176 177 182 127</file>
         </tool>
       </inputs>
     </file>
@@ -1014,29 +1030,526 @@
       <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_wwdg.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 31</file>
+          <name>ICCARM</name>
+          <file> 74 87</file>
         </tool>
         <tool>
-          <name>ICCARM</name>
-          <file> 45 79</file>
+          <name>BICOMP</name>
+          <file> 160</file>
         </tool>
         <tool>
           <name>__cstat</name>
-          <file> 184</file>
+          <file> 12</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 132 192 195 134 115 112 145 67 22 72 135 102 2 128 140 99 18 89 105 101 127 0 42 43 131 121 107 103 108 106 111 118 124 1 171 138</file>
-        </tool>
-        <tool>
           <name>ICCARM</name>
-          <file> 145 132 134 67 72 42 22 89 195 18 43 192 140 99 131 135 121 105 107 112 103 101 108 102 106 127 111 115 118 128 124 2 1 0 171 138</file>
+          <file> 182 117 131 70 97 69 167 90 36 158 77 44 172 122 109 133 115 130 116 110 135 118 124 136 120 126 1 3 0 183 193 174 176 173 177 127</file>
         </tool>
       </inputs>
     </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\system_stm32f1xx.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 299 200</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 202</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 284</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 232 201 211 224 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 232 224 274 203 69 97 70 205 229 231 230 77 221 273 219 227 207 167 158 90 36 44 201 211 239 225 233 238 234 209 276 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 306 251</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 248</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 295</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 230 205 229 231 274 97 221 69 201 211 239 225 233 238 234 209 276 232 203 70 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_cortex.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 278 255</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 263</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 297</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 209 205 225 274 211 238 70 97 201 239 233 234 276 232 203 69 229 221 231 230 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_dma.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 305 243</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 265</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 294</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 225 205 209 274 211 238 70 97 201 239 233 234 276 232 203 69 229 221 231 230 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_flash.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 280 266</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 259</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 296</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 221 205 274 97 229 231 230 69 201 211 239 225 233 238 234 209 276 232 203 70 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_flash_ex.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 304 252</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 246</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 298</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 205 221 274 97 229 231 230 69 201 211 239 225 233 238 234 209 276 232 203 70 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_gpio.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 281 262</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 240</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 289</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 211 70 205 238 274 225 209 97 201 239 233 234 276 232 203 69 229 221 231 230 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_gpio_ex.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 303 253</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 241</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 292</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 232 276 224 239 201 205 234 274 233 203 97 211 225 238 209 70 69 229 221 231 230 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_pwr.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 282 244</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 269</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 288</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 203 205 233 274 201 239 234 276 232 97 211 225 238 209 70 69 229 221 231 230 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_can.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 302 256</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 264</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 293</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 230 205 229 231 274 97 221 69 201 211 239 225 233 238 234 209 276 232 203 70 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_uart.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 279 245</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 270</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 287</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_rcc_ex.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 277 261</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 267</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 291</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 225 205 209 274 211 238 70 97 201 239 233 234 276 232 203 69 229 221 231 230 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 283 257</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 272</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 290</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 230 205 229 231 274 97 221 69 201 211 239 225 233 238 234 209 276 232 203 70 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_rcc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 301 254</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 271</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 286</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 203 205 233 274 201 239 234 276 232 97 211 225 238 209 70 69 229 221 231 230 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim_ex.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 300 258</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 268</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 285</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 232 201 211 224 221 231 203 70 97 69 167 90 36 158 77 205 274 44 207 230 276 275 273 229 239 219 225 227 233 238 237 234 209</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 224 230 205 229 231 274 97 221 69 201 211 239 225 233 238 234 209 276 232 203 70 77 273 219 227 207 167 158 90 36 44 275 237</file>
+        </tool>
+      </inputs>
+    </file>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_iwdg.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_pwr.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_adc.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_fsmc.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dma.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dac.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_can.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_cec.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_crc.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_dbgmcu.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\misc.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_i2c.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_sdio.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rtc.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_wwdg.c</name>
+      <tool>ICCARM</tool>
+    </forcedrebuild>
   </configuration>
   <configuration>
     <name>Release</name>
