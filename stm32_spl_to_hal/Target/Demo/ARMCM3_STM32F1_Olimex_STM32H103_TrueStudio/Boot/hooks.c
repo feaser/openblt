@@ -49,17 +49,6 @@
 ****************************************************************************************/
 void UsbConnectHook(blt_bool connect)
 {
-  static blt_bool initialized = BLT_FALSE;
-
-  /* the connection to the USB bus is typically controlled by software through a digital
-   * output. the GPIO pin for this must be configured as such.
-   */
-  if (initialized == BLT_FALSE)
-  {
-    /* set to initialized as this part only has to be done once after reset */
-    initialized = BLT_TRUE;
-  }
-
   /* determine if the USB should be connected or disconnected */
   if (connect == BLT_TRUE)
   {

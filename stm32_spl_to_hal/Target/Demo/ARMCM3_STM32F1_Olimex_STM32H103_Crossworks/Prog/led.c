@@ -20,9 +20,9 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -46,13 +46,10 @@
 ****************************************************************************************/
 void LedInit(void)
 {
-  GPIO_InitTypeDef  gpio_init;
-
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-  gpio_init.GPIO_Pin   = GPIO_Pin_12;
-  gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
-  gpio_init.GPIO_Mode  = GPIO_Mode_Out_PP;
-  GPIO_Init(GPIOC, &gpio_init);
+  /* Note that the initialization of the LED GPIO pin is done in HAL_MspInit(). All that
+   * is left to do here is to make sure the LED is turned off after initialization.
+   */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_SET);
 } /*** end of LedInit ***/
 
 
@@ -74,19 +71,19 @@ void LedToggle(void)
     /* not yet time to toggle */
     return;
   }
-  
+
   /* determine toggle action */
   if (led_toggle_state == 0)
   {
     led_toggle_state = 1;
     /* turn the LED on */
-    GPIO_ResetBits(GPIOC, GPIO_Pin_12);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_RESET);
   }
   else
   {
     led_toggle_state = 0;
     /* turn the LED off */
-    GPIO_SetBits(GPIOC, GPIO_Pin_12);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_SET);
   }
 
   /* store toggle time to determine next toggle interval */
