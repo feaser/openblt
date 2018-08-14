@@ -44,11 +44,11 @@
  * de-initialize application specific parts, for example to stop blinking an LED, etc.
  */
 /** \brief Frequency of the external crystal oscillator. */
-#define BOOT_CPU_XTAL_SPEED_KHZ         (8000)
+#define BOOT_CPU_XTAL_SPEED_KHZ          (8000)
 /** \brief Desired system speed. */
-#define BOOT_CPU_SYSTEM_SPEED_KHZ       (72000)
+#define BOOT_CPU_SYSTEM_SPEED_KHZ        (72000)
 /** \brief Motorola or Intel style byte ordering. */
-#define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
+#define BOOT_CPU_BYTE_ORDER_MOTOROLA     (0)
 /** \brief Enable/disable hook function call right before user program start. */
 #define BOOT_CPU_USER_PROGRAM_START_HOOK (1)
 
@@ -118,7 +118,7 @@
  *         a different checksum location, because this one is added at the end of the
  *         user program's vector table.
  */
-#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET (0xec)
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET (0x10c)
 /** \brief Enable support for a custom flash layout table. It is located in
  *         flash_layout.c. This was done because the default flashLayout[] table
  *         in the bootloader's core has more flash memory reserved for the bootloader
