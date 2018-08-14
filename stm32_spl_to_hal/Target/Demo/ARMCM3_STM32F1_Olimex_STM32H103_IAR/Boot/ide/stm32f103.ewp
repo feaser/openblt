@@ -185,7 +185,9 @@
         </option>
         <option>
           <name>CCDefines</name>
-          <state>STM32F10X_MD</state>
+          <state>USE_FULL_LL_DRIVER</state>
+          <state>USE_HAL_DRIVER</state>
+          <state>STM32F103xB</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -246,7 +248,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>00000000</state>
+          <state>10010100</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -318,9 +320,12 @@
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32F1</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32F1\IAR</state>
           <state>$PROJ_DIR$\..</state>
-          <state>$PROJ_DIR$\..\lib\CMSIS\CM3\CoreSupport</state>
-          <state>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x</state>
-          <state>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc</state>
+          <state>$PROJ_DIR$\..\lib</state>
+          <state>$PROJ_DIR$\..\lib\CMSIS\Include</state>
+          <state>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F1xx\Include</state>
+          <state>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc</state>
+          <state>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\Legacy</state>
+          <state>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -340,7 +345,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -349,7 +354,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -1939,67 +1944,208 @@
     <group>
       <name>lib</name>
       <group>
+        <name>cmsis</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_common_tables.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_const_structs.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_math.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm3.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmFunc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmInstr.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmSimd.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F1xx\Include\stm32f103xb.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F1xx\Include\system_stm32f1xx.h</name>
+        </file>
+      </group>
+      <group>
+        <name>hal</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_cortex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_cortex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_def.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_dma.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_dma.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_dma_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_flash.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_flash.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_flash_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_flash_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_gpio.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_gpio_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_pcd.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pcd.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_pcd_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pcd_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_pwr.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pwr.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_rcc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_rcc_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_bus.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_cortex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_dma.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_exti.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_exti.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_gpio.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_gpio.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_pwr.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_rcc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_rcc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_system.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_usb.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_usb.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_utils.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_utils.h</name>
+        </file>
+      </group>
+      <group>
         <name>usb</name>
         <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\src\usb_core.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Src\usbd_core.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc\usb_core.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_core.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc\usb_def.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\src\usb_init.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_ctlreq.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc\usb_init.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_def.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\src\usb_int.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Src\usbd_ioreq.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc\usb_int.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc\usb_lib.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\src\usb_mem.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc\usb_mem.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\src\usb_regs.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc\usb_regs.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\src\usb_sil.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc\usb_sil.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\USB_FS_DEVICE\inc\usb_type.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_ioreq.h</name>
         </file>
       </group>
       <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
+        <name>$PROJ_DIR$\..\lib\stm32f1xx_hal_conf.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\CoreSupport\core_cm3.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\lib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h</name>
+        <name>$PROJ_DIR$\..\lib\system_stm32f1xx.c</name>
       </file>
     </group>
     <file>
@@ -2015,40 +2161,34 @@
       <name>$PROJ_DIR$\..\hooks.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\led.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\led.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\main.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\startup_stm32f103xb.s</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\usb_conf.h</name>
+      <name>$PROJ_DIR$\..\usbd_bulk.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\usb_desc.c</name>
+      <name>$PROJ_DIR$\..\usbd_bulk.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\usb_desc.h</name>
+      <name>$PROJ_DIR$\..\usbd_conf.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\usb_endp.c</name>
+      <name>$PROJ_DIR$\..\usbd_conf.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\usb_istr.c</name>
+      <name>$PROJ_DIR$\..\usbd_desc.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\usb_istr.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usb_prop.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usb_prop.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usb_pwr.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usb_pwr.h</name>
+      <name>$PROJ_DIR$\..\usbd_desc.h</name>
     </file>
   </group>
   <group>

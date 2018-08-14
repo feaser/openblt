@@ -145,6 +145,8 @@ Reset_Handler
         ; Initialize the stack pointer
         LDR	    R0, =sfe(CSTACK)
         MOV	    SP, R0
+        LDR     R0, =SystemInit
+        BLX     R0
         LDR     R0, =__iar_program_start
         BX      R0
         
