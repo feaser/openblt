@@ -30,8 +30,9 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f10x.h"                           /* STM32 registers                    */
 #include "led.h"                                 /* LED driver header                  */
+#include "stm32f1xx.h"                           /* STM32 registers and drivers        */
+#include "stm32f1xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
 /****************************************************************************************
@@ -48,35 +49,16 @@
 ****************************************************************************************/
 void UsbConnectHook(blt_bool connect)
 {
-  static blt_bool initialized = BLT_FALSE;
-  GPIO_InitTypeDef  gpio_init;
-
-  /* the connection to the USB bus is typically controlled by software through a digital
-   * output. the GPIO pin for this must be configured as such.
-   */
-  if (initialized == BLT_FALSE)
-  {
-    /* enable clock for PC12 pin peripheral (GPIOC) */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-    /* configure DISC and as open drain digital output */
-    gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
-    gpio_init.GPIO_Mode  = GPIO_Mode_Out_OD;
-    gpio_init.GPIO_Pin   = GPIO_Pin_12;
-    GPIO_Init(GPIOC, &gpio_init);
-    /* set to initialized as this part only has to be done once after reset */
-    initialized = BLT_TRUE;
-  }
-
   /* determine if the USB should be connected or disconnected */
   if (connect == BLT_TRUE)
   {
     /* the GPIO has a pull-up so to connect to the USB bus the pin needs to go low */
-    GPIO_ResetBits(GPIOC, GPIO_Pin_12);
+    LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_12);
   }
   else
   {
     /* the GPIO has a pull-up so to disconnect to the USB bus the pin needs to go high */
-    GPIO_SetBits(GPIOC, GPIO_Pin_12);
+    LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_12);
   }
 } /*** end of UsbConnect ***/
 
@@ -151,16 +133,59 @@ blt_bool BackDoorEntryHook(void)
 blt_bool CpuUserProgramStartHook(void)
 {
   /* do not start the user program if D2 (PA0) is connected to ground */
-  if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == Bit_RESET)
+  if (LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0) == 0)
   {
     return BLT_FALSE;
   }
+
   /* clean up the LED driver */
   LedBlinkExit();
+
   /* okay to start the user program */
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/
 #endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */
+
+
+/****************************************************************************************
+*   W A T C H D O G   D R I V E R   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_COP_HOOKS_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called at the end of the internal COP driver
+**            initialization routine. It can be used to configure and enable the
+**            watchdog.
+** \return    none.
+**
+****************************************************************************************/
+void CopInitHook(void)
+{
+  /* this function is called upon initialization. might as well use it to initialize
+   * the LED driver. It is kind of a visual watchdog anyways.
+   */
+  LedBlinkInit(100);
+} /*** end of CopInitHook ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called at the end of the internal COP driver
+**            service routine. This gets called upon initialization and during
+**            potential long lasting loops and routine. It can be used to service
+**            the watchdog to prevent a watchdog reset.
+** \return    none.
+**
+****************************************************************************************/
+void CopServiceHook(void)
+{
+  /* run the LED blink task. this is a better place to do it than in the main() program
+   * loop. certain operations such as flash erase can take a long time, which would cause
+   * a blink interval to be skipped. this function is also called during such operations,
+   * so no blink intervals will be skipped when calling the LED blink task here.
+   */
+  LedBlinkTask();
+} /*** end of CopServiceHook ***/
+#endif /* BOOT_COP_HOOKS_ENABLE > 0 */
 
 
 /****************************************************************************************
@@ -267,47 +292,6 @@ blt_bool NvmWriteChecksumHook(void)
   return BLT_TRUE;
 }
 #endif /* BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0 */
-
-
-/****************************************************************************************
-*   W A T C H D O G   D R I V E R   H O O K   F U N C T I O N S
-****************************************************************************************/
-
-#if (BOOT_COP_HOOKS_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Callback that gets called at the end of the internal COP driver
-**            initialization routine. It can be used to configure and enable the
-**            watchdog.
-** \return    none.
-**
-****************************************************************************************/
-void CopInitHook(void)
-{
-  /* this function is called upon initialization. might as well use it to initialize
-   * the LED driver. It is kind of a visual watchdog anyways.
-   */
-  LedBlinkInit(100);
-} /*** end of CopInitHook ***/
-
-
-/************************************************************************************//**
-** \brief     Callback that gets called at the end of the internal COP driver
-**            service routine. This gets called upon initialization and during
-**            potential long lasting loops and routine. It can be used to service
-**            the watchdog to prevent a watchdog reset.
-** \return    none.
-**
-****************************************************************************************/
-void CopServiceHook(void)
-{
-  /* run the LED blink task. this is a better place to do it than in the main() program
-   * loop. certain operations such as flash erase can take a long time, which would cause
-   * a blink interval to be skipped. this function is also called during such operations,
-   * so no blink intervals will be skipped when calling the LED blink task here.
-   */
-  LedBlinkTask();
-} /*** end of CopServiceHook ***/
-#endif /* BOOT_COP_HOOKS_ENABLE > 0 */
 
 
 /****************************************************************************************

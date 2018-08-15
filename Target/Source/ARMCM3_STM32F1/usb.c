@@ -29,13 +29,12 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "boot.h"                                /* bootloader generic header          */
+#include "boot.h"                                     /* bootloader generic header     */
 #if (BOOT_COM_USB_ENABLE > 0)
-#include "usb.h"                                 /* USB driver module                  */
-#include "usb_lib.h"                             /* USB library driver header          */
-#include "usb_desc.h"                            /* USB descriptor header              */
-#include "usb_pwr.h"                             /* USB power management header        */
-#include "usb_istr.h"                            /* USB interrupt routine header       */
+#include "usb.h"                                      /* USB bootloader driver         */
+#include "usbd_core.h"                                /* USB driver core               */
+#include "usbd_desc.h"                                /* USB driver descriptor         */
+#include "usbd_bulk.h"                                /* USB driver bulk device        */
 
 
 /****************************************************************************************
@@ -113,6 +112,8 @@ static tFifoCtrl *fifoCtrlFree;
 static tFifoPipe  fifoPipeBulkIN;
 /** \brief Fifo pipe used for the bulk out endpoint. */
 static tFifoPipe  fifoPipeBulkOUT;
+/** \brief USB device handle. */
+static USBD_HandleTypeDef hUsbDeviceFS;
 
 
 /************************************************************************************//**
@@ -130,8 +131,14 @@ void UsbInit(void)
   /* validate fifo handles */
   ASSERT_RT((fifoPipeBulkIN.handle  != FIFO_ERR_INVALID_HANDLE) && \
             (fifoPipeBulkOUT.handle != FIFO_ERR_INVALID_HANDLE));
-  /* initialize the low level USB driver */
-  USB_Init();
+  /* initialize the USB device libary */
+  USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
+  /* register the bootloader's custom USB Bulk based class */
+  USBD_RegisterClass(&hUsbDeviceFS, &USBD_Bulk);
+  /* start the USB device */
+  USBD_Start(&hUsbDeviceFS);
+  /* perform low level connect of the device */
+  HAL_PCD_DevConnect((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
   /* extend the time that the backdoor is open in case the default timed backdoor
    * mechanism is used.
    */
@@ -151,8 +158,10 @@ void UsbInit(void)
 ****************************************************************************************/
 void UsbFree(void)
 {
-  /* disconnect the USB device from the USB host */
-  UsbConnectHook(BLT_FALSE);
+  /* perform low level disconnect of the device */
+  HAL_PCD_DevDisconnect((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
+  /* uninitialize the device */
+  USBD_DeInit(&hUsbDeviceFS);
 } /*** end of UsbFree ***/
 
 
@@ -201,7 +210,7 @@ blt_bool UsbReceivePacket(blt_int8u *data, blt_int8u *len)
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
 
   /* poll USB interrupt flags to process USB related events */
-  USB_Istr();
+  HAL_PCD_IRQHandler((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
 
   /* start of cto packet received? */
   if (xcpCtoRxInProgress == BLT_FALSE)
@@ -279,44 +288,6 @@ static blt_bool UsbTransmitByte(blt_int8u data)
 
 
 /************************************************************************************//**
-** \brief     Power-off system clocks and power while entering suspend mode.
-** \return    none.
-**
-****************************************************************************************/
-void UsbEnterLowPowerMode(void)
-{
-  /* Set the device state to suspend */
-  bDeviceState = SUSPENDED;
-  /* power-off system clocks and power */
-  UsbEnterLowPowerModeHook();
-} /*** end of UsbEnterLowPowerMode ***/
-
-
-/************************************************************************************//**
-** \brief     Restores system clocks and power while exiting suspend mode.
-** \return    none.
-**
-****************************************************************************************/
-void UsbLeaveLowPowerMode(void)
-{
-  DEVICE_INFO *pInfo = &Device_Info;
-
-  /* restore power and system clocks */
-  UsbLeaveLowPowerModeHook();
-  /* Set the device state to the correct state */
-  if (pInfo->Current_Configuration != 0)
-  {
-    /* Device configured */
-    bDeviceState = CONFIGURED;
-  }
-  else
-  {
-    bDeviceState = ATTACHED;
-  }
-} /*** end of UsbLeaveLowPowerMode ***/
-
-
-/************************************************************************************//**
 ** \brief     Checks if there is still data left to transmit and if so submits it
 **            for transmission with the USB endpoint.
 ** \return    none.
@@ -325,7 +296,7 @@ void UsbLeaveLowPowerMode(void)
 void UsbTransmitPipeBulkIN(void)
 {
   /* USB_Tx_Buffer is static for run-time optimalization */
-  static uint8_t USB_Tx_Buffer[BULK_DATA_SIZE];
+  static uint8_t USB_Tx_Buffer[BULK_DATA_MAX_PACKET_SIZE];
   blt_int8u nr_of_bytes_for_tx_endpoint;
   blt_int8u byte_counter;
   blt_int8u byte_value;
@@ -339,9 +310,9 @@ void UsbTransmitPipeBulkIN(void)
     return;
   }
   /* make sure to not transmit more than the USB endpoint can handle */
-  if (nr_of_bytes_for_tx_endpoint > BULK_DATA_SIZE)
+  if (nr_of_bytes_for_tx_endpoint > BULK_DATA_MAX_PACKET_SIZE)
   {
-    nr_of_bytes_for_tx_endpoint = BULK_DATA_SIZE;
+    nr_of_bytes_for_tx_endpoint = BULK_DATA_MAX_PACKET_SIZE;
   }
   /* copy the transmit data to the transmit buffer */
   for (byte_counter=0; byte_counter < nr_of_bytes_for_tx_endpoint; byte_counter++)
@@ -352,12 +323,9 @@ void UsbTransmitPipeBulkIN(void)
     /* store it in the endpoint's RAM */
     USB_Tx_Buffer[byte_counter] = byte_value;
   }
-  /* store it in the endpoint's RAM */
-  UserToPMABufferCopy(&USB_Tx_Buffer[0], ENDP1_TXADDR, nr_of_bytes_for_tx_endpoint);
-  /* set the number of bytes that need to be transmitted from this endpoint */
-  SetEPTxCount(ENDP1, nr_of_bytes_for_tx_endpoint);
-  /* inform the endpoint that it can start its transmission because the data is valid */
-  SetEPTxValid(ENDP1);
+  /* copy data to endpoint's RAM and start the transmission */
+  USBD_LL_Transmit(&hUsbDeviceFS, BULK_IN_EP, &USB_Tx_Buffer[0],
+                   nr_of_bytes_for_tx_endpoint);
 } /*** end of UsbTransmitPipeBulkIN ***/
 
 
@@ -366,16 +334,16 @@ void UsbTransmitPipeBulkIN(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void UsbReceivePipeBulkOUT(void)
+void UsbReceivePipeBulkOUT(blt_int8u epnum)
 {
-  /* USB_Rx_Buffer is static for run-time optimalization */
-  static uint8_t USB_Rx_Buffer[BULK_DATA_SIZE];
-  uint16_t USB_Rx_Cnt;
-  uint16_t byte_counter;
+  blt_int16u USB_Rx_Cnt=0;
+  blt_int8u *usbRxBufferPtr;
+  blt_int16u byte_counter;
   blt_bool result;
 
-  /* Get the received data buffer and update the counter */
-  USB_Rx_Cnt = USB_SIL_Read(EP1_OUT, USB_Rx_Buffer);
+  /* Get the received data buffer and the number of received bytes */
+  usbRxBufferPtr = USBD_Bulk_GetRxBufferPtr();
+  USB_Rx_Cnt = USBD_LL_GetRxDataSize(&hUsbDeviceFS, epnum);
 
   /* USB data will be immediately processed, this allow next USB traffic being
    * NAKed till the end of the USART Xfer
@@ -383,66 +351,16 @@ void UsbReceivePipeBulkOUT(void)
   for (byte_counter=0; byte_counter<USB_Rx_Cnt; byte_counter++)
   {
     /* add the data to the fifo */
-    result = UsbFifoMgrWrite(fifoPipeBulkOUT.handle, USB_Rx_Buffer[byte_counter]);
+    result = UsbFifoMgrWrite(fifoPipeBulkOUT.handle, usbRxBufferPtr[byte_counter]);
     /* verify that the fifo wasn't full */
     ASSERT_RT(result == BLT_TRUE);
   }
-  /* Enable the reception of data on EP1 */
-  SetEPRxValid(ENDP1);
+  /* Prepare Out endpoint to receive next packet */
+  USBD_LL_PrepareReceive(&hUsbDeviceFS,
+                         BULK_OUT_EP,
+                         USBD_Bulk_GetRxBufferPtr(),
+                         BULK_DATA_FS_OUT_PACKET_SIZE);
 } /*** end of UsbReceivePipeBulkOUT ***/
-
-
-/************************************************************************************//**
-** \brief     Converts Hex 32Bits value into char.
-** \param     value The hexadecimal value to convert.
-** \param     pbuf  Pointer to where the resulting string should be stored.
-** \param     len   Number of characters to convert.
-** \return    none.
-**
-****************************************************************************************/
-static void IntToUnicode(blt_int32u value , blt_int8u *pbuf , blt_int8u len)
-{
-  blt_int8u idx = 0;
-
-  for (idx = 0 ; idx < len ; idx ++)
-  {
-    if (((value >> 28)) < 0xA)
-    {
-      pbuf[ 2* idx] = (value >> 28) + '0';
-    }
-    else
-    {
-      pbuf[2* idx] = (value >> 28) + 'A' - 10;
-    }
-
-    value = value << 4;
-
-    pbuf[ 2* idx + 1] = 0;
-  }
-} /*** end of IntToUnicode ***/
-
-
-/************************************************************************************//**
-** \brief     Creates the serial number string descriptor.
-** \return    none.
-**
-****************************************************************************************/
-void UsbGetSerialNum(void)
-{
-  blt_int32u Device_Serial0, Device_Serial1, Device_Serial2;
-
-  Device_Serial0 = *(volatile blt_int32u *)(0x1FFFF7E8);
-  Device_Serial1 = *(volatile blt_int32u *)(0x1FFFF7EC);
-  Device_Serial2 = *(volatile blt_int32u *)(0x1FFFF7F0);
-
-  Device_Serial0 += Device_Serial2;
-
-  if (Device_Serial0 != 0)
-  {
-    IntToUnicode(Device_Serial0, &Bulk_StringSerial[2] , 8);
-    IntToUnicode(Device_Serial1, &Bulk_StringSerial[18], 4);
-  }
-} /*** end of UsbGetSerialNum ***/
 
 
 /************************************************************************************//**

@@ -30,7 +30,12 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f10x.h"                           /* microcontroller registers          */
+#include "stm32f1xx.h"                           /* STM32 registers and drivers        */
+#include "stm32f1xx_ll_rcc.h"                    /* STM32 LL RCC header                */
+#include "stm32f1xx_ll_bus.h"                    /* STM32 LL BUS header                */
+#include "stm32f1xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
+#include "stm32f1xx_ll_utils.h"                  /* STM32 LL UTILS header              */
+#include "stm32f1xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
 /****************************************************************************************
@@ -44,6 +49,7 @@
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+static void SystemClock_Config(void);
 
 
 /************************************************************************************//**
@@ -72,127 +78,179 @@ int main(void)
 
 
 /************************************************************************************//**
-** \brief     Initializes the microcontroller.
+** \brief     Initializes the microcontroller. 
 ** \return    none.
 **
 ****************************************************************************************/
 static void Init(void)
 {
-  volatile blt_int32u StartUpCounter = 0, HSEStatus = 0;
-  blt_int32u pll_multiplier;
-  GPIO_InitTypeDef  gpio_init;
+  /* HAL library initialization */
+  HAL_Init();
+  /* configure system clock */
+  SystemClock_Config();
+} /*** end of Init ***/
 
-  /* reset the RCC clock configuration to the default reset state (for debug purpose) */
-  /* set HSION bit */
-  RCC->CR |= (blt_int32u)0x00000001;
-  /* reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
-  RCC->CFGR &= (blt_int32u)0xF8FF0000;
-  /* reset HSEON, CSSON and PLLON bits */
-  RCC->CR &= (blt_int32u)0xFEF6FFFF;
-  /* reset HSEBYP bit */
-  RCC->CR &= (blt_int32u)0xFFFBFFFF;
-  /* reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
-  RCC->CFGR &= (blt_int32u)0xFF80FFFF;
-  /* disable all interrupts and clear pending bits  */
-  RCC->CIR = 0x009F0000;
-  /* enable HSE */
-  RCC->CR |= ((blt_int32u)RCC_CR_HSEON);
-  /* wait till HSE is ready and if Time out is reached exit */
-  do
+/************************************************************************************//**
+** \brief     System Clock Configuration. This code was created by CubeMX and configures
+**            the system clock to match the configuration in the bootloader's
+**            configuration (blt_conf.h), specifically the macros:
+**            BOOT_CPU_SYSTEM_SPEED_KHZ and BOOT_CPU_XTAL_SPEED_KHZ.
+**            Note that the Lower Layer drivers were selected in CubeMX for the RCC
+**            subsystem.
+** \return    none.
+**
+****************************************************************************************/
+static void SystemClock_Config(void)
+{
+  /* Set flash latency. */
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_2);
+  /* Verify flash latency setting. */
+  if(LL_FLASH_GetLatency() != LL_FLASH_LATENCY_2)
   {
-    HSEStatus = RCC->CR & RCC_CR_HSERDY;
-    StartUpCounter++;
-  }
-  while((HSEStatus == 0) && (StartUpCounter != 1500));
-  /* check if time out was reached */
-  if ((RCC->CR & RCC_CR_HSERDY) == RESET)
-  {
-    /* cannot continue when HSE is not ready */
+    /* Error setting flash latency. */
     ASSERT_RT(BLT_FALSE);
   }
-  /* enable flash prefetch buffer */
-  FLASH->ACR |= FLASH_ACR_PRFTBE;
-  /* reset flash wait state configuration to default 0 wait states */
-  FLASH->ACR &= (blt_int32u)((blt_int32u)~FLASH_ACR_LATENCY);
-#if (BOOT_CPU_SYSTEM_SPEED_KHZ > 48000)
-  /* configure 2 flash wait states */
-  FLASH->ACR |= (blt_int32u)FLASH_ACR_LATENCY_2;
-#elif (BOOT_CPU_SYSTEM_SPEED_KHZ > 24000)
-  /* configure 1 flash wait states */
-  FLASH->ACR |= (blt_int32u)FLASH_ACR_LATENCY_1;
-#endif
-  /* HCLK = SYSCLK */
-  RCC->CFGR |= (blt_int32u)RCC_CFGR_HPRE_DIV1;
-  /* PCLK2 = HCLK/2 */
-  RCC->CFGR |= (blt_int32u)RCC_CFGR_PPRE2_DIV2;
-  /* PCLK1 = HCLK/2 */
-  RCC->CFGR |= (blt_int32u)RCC_CFGR_PPRE1_DIV2;
-  /* reset PLL configuration */
-  RCC->CFGR &= (blt_int32u)((blt_int32u)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | \
-                                          RCC_CFGR_PLLMULL));
-  /* assert that the pll_multiplier is between 2 and 16 */
-  ASSERT_CT((BOOT_CPU_SYSTEM_SPEED_KHZ/BOOT_CPU_XTAL_SPEED_KHZ) >= 2);
-  ASSERT_CT((BOOT_CPU_SYSTEM_SPEED_KHZ/BOOT_CPU_XTAL_SPEED_KHZ) <= 16);
-  /* calculate multiplier value */
-  pll_multiplier = BOOT_CPU_SYSTEM_SPEED_KHZ/BOOT_CPU_XTAL_SPEED_KHZ;
-  /* convert to register value */
-  pll_multiplier = (blt_int32u)((pll_multiplier - 2) << 18);
-  /* set the PLL multiplier and clock source */
-  RCC->CFGR |= (blt_int32u)(RCC_CFGR_PLLSRC_HSE | pll_multiplier);
-  /* enable PLL */
-  RCC->CR |= RCC_CR_PLLON;
-  /* wait till PLL is ready */
-  while((RCC->CR & RCC_CR_PLLRDY) == 0)
+
+  /* Enable the HSE clock. */
+  LL_RCC_HSE_Enable();
+
+  /* Wait till HSE is ready */
+  while(LL_RCC_HSE_IsReady() != 1)
   {
+    ;
   }
-  /* select PLL as system clock source */
-  RCC->CFGR &= (blt_int32u)((blt_int32u)~(RCC_CFGR_SW));
-  RCC->CFGR |= (blt_int32u)RCC_CFGR_SW_PLL;
-  /* wait till PLL is used as system clock source */
-  while ((RCC->CFGR & (blt_int32u)RCC_CFGR_SWS) != (blt_int32u)0x08)
+
+  /* Configure and enable the PLL. */
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE_DIV_1, LL_RCC_PLL_MUL_9);
+  LL_RCC_PLL_Enable();
+
+  /* Wait till PLL is ready */
+  while(LL_RCC_PLL_IsReady() != 1)
   {
+    ;
   }
-#if (BOOT_COM_CAN_ENABLE > 0)
-  /* enable clocks for CAN transmitter and receiver pins (GPIOB and AFIO) */
-  RCC->APB2ENR |= (blt_int32u)(0x00000008 | 0x00000001);
-  /* configure CAN Rx (GPIOB8) as alternate function input pull-up */
-  /* first reset the configuration */
-  GPIOB->CRH &= ~(blt_int32u)((blt_int32u)0xf << 0);
-  /* CNF8[1:0] = %10 and MODE8[1:0] = %00 */
-  GPIOB->CRH |= (blt_int32u)((blt_int32u)0x8 << 0);
-  /* configure CAN Tx (GPIOB9) as alternate function push-pull */
-  /* first reset the configuration */
-  GPIOB->CRH &= ~(blt_int32u)((blt_int32u)0xf << 4);
-  /* CNF9[1:0] = %10 and MODE9[1:0] = %11 */
-  GPIOB->CRH |= (blt_int32u)((blt_int32u)0xb << 4);
-  /* remap CAN1 pins to PortB */
-  AFIO->MAPR &= ~(blt_int32u)((blt_int32u)0x3 << 13);
-  AFIO->MAPR |=  (blt_int32u)((blt_int32u)0x2 << 13);
-  /* enable clocks for CAN controller peripheral */
-  RCC->APB1ENR |= (blt_int32u)0x02000000;
-#endif
+  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
+  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
+  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
+
+  /* Wait till System clock is ready */
+  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
+  {
+    ;
+  }
+  /* Update the system clock speed setting. */
+  LL_SetSystemCoreClock(BOOT_CPU_SYSTEM_SPEED_KHZ * 1000u);
 #if (BOOT_COM_USB_ENABLE > 0)
-  /* divide USB clock by 1.5 to create 48MHz clock */
-  RCC->CFGR &= ~(blt_int32u)((blt_int32u)0x1 << 22);
-  /* enable the USB clock */
-  RCC->APB1ENR |= (blt_int32u)0x00800000;
+  /* Set USB clock divider. */
+  LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL_DIV_1_5);
 #endif
-  /* enable clocks for D2 input pin (GPIOA) */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-  /* configure D2 and as digital input with internal pull-up */
-  gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
-  gpio_init.GPIO_Mode  = GPIO_Mode_IPU;
-  gpio_init.GPIO_Pin   = GPIO_Pin_0;
-  GPIO_Init(GPIOA, &gpio_init);
-  /* enable clocks for LED1 output pin (GPIOA) */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-  /* configure LED1 and as digital output */
-  gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
-  gpio_init.GPIO_Mode  = GPIO_Mode_Out_PP;
-  gpio_init.GPIO_Pin   = GPIO_Pin_5;
-  GPIO_Init(GPIOA, &gpio_init);
-  GPIO_ResetBits(GPIOA, GPIO_Pin_5);
-} /*** end of Init ***/
+} /*** end of SystemClock_Config ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the Global MSP. This function is called from HAL_Init()
+**            function to perform system level initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspInit(void)
+{
+  LL_GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* AFIO and PWR clock enable. */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_AFIO);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
+
+  /* GPIO ports clock enable. */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOA);
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOB);
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOC);
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOD);
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock enable. */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_CAN1);
+#endif
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB clock enable. */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USB);
+#endif
+
+  /* Configure GPIO pin for the LED. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_5;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
+
+  /* Configure GPIO pin for the USB connect. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_12;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /* Configure GPIO pin for (optional) backdoor entry input. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_0;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_9;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  /* Re-map CAN1 pins to PB8 and PB9. */
+  LL_GPIO_AF_RemapPartial2_CAN1();
+#endif
+} /*** end of HAL_MspInit ***/
+
+
+/************************************************************************************//**
+** \brief     DeInitializes the Global MSP. This function is called from HAL_DeInit()
+**            function to perform system level de-initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspDeInit(void)
+{
+  /* Deinit used GPIOs. */
+  LL_GPIO_DeInit(GPIOD);
+  LL_GPIO_DeInit(GPIOC);
+  LL_GPIO_DeInit(GPIOB);
+  LL_GPIO_DeInit(GPIOA);
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USB);
+#endif
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_CAN1);
+#endif
+
+  /* GPIO ports clock disable. */
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_GPIOD);
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_GPIOC);
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_GPIOB);
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_GPIOA);
+
+  /* AFIO and PWR clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_PWR);
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_AFIO);
+} /*** end of HAL_MspDeInit ***/
 
 
 /*********************************** end of main.c *************************************/

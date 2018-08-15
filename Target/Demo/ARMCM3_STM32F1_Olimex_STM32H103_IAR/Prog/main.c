@@ -36,6 +36,7 @@
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+static void SystemClock_Config(void);
 
 
 /************************************************************************************//**
@@ -65,81 +66,126 @@ void main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  volatile unsigned long StartUpCounter = 0, HSEStatus = 0;
-  unsigned long pll_multiplier;
-
-  /* reset the RCC clock configuration to the default reset state (for debug purpose) */
-  /* set HSION bit */
-  RCC->CR |= (unsigned long)0x00000001;
-  /* reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
-  RCC->CFGR &= (unsigned long)0xF8FF0000;
-  /* reset HSEON, CSSON and PLLON bits */
-  RCC->CR &= (unsigned long)0xFEF6FFFF;
-  /* reset HSEBYP bit */
-  RCC->CR &= (unsigned long)0xFFFBFFFF;
-  /* reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
-  RCC->CFGR &= (unsigned long)0xFF80FFFF;
-  /* disable all interrupts and clear pending bits  */
-  RCC->CIR = 0x009F0000;
-  /* enable HSE */    
-  RCC->CR |= ((unsigned long)RCC_CR_HSEON);
-  /* wait till HSE is ready and if Time out is reached exit */
-  do
-  {
-    HSEStatus = RCC->CR & RCC_CR_HSERDY;
-    StartUpCounter++;  
-  } 
-  while((HSEStatus == 0) && (StartUpCounter != 1500));
-  /* check if time out was reached */
-  if ((RCC->CR & RCC_CR_HSERDY) == RESET)
-  {
-    /* cannot continue when HSE is not ready */
-    while (1) { ; }
-  }
-  /* enable flash prefetch buffer */
-  FLASH->ACR |= FLASH_ACR_PRFTBE;
-  /* reset flash wait state configuration to default 0 wait states */
-  FLASH->ACR &= (unsigned long)((unsigned long)~FLASH_ACR_LATENCY);
-#if (BOOT_CPU_SYSTEM_SPEED_KHZ > 48000)
-  /* configure 2 flash wait states */
-  FLASH->ACR |= (unsigned long)FLASH_ACR_LATENCY_2;    
-#elif (BOOT_CPU_SYSTEM_SPEED_KHZ > 24000)  
-  /* configure 1 flash wait states */
-  FLASH->ACR |= (unsigned long)FLASH_ACR_LATENCY_1;    
-#endif
-  /* HCLK = SYSCLK */
-  RCC->CFGR |= (unsigned long)RCC_CFGR_HPRE_DIV1;
-  /* PCLK2 = HCLK/2 */
-  RCC->CFGR |= (unsigned long)RCC_CFGR_PPRE2_DIV2;
-  /* PCLK1 = HCLK/2 */
-  RCC->CFGR |= (unsigned long)RCC_CFGR_PPRE1_DIV2;
-  /* reset PLL configuration */
-  RCC->CFGR &= (unsigned long)((unsigned long)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | \
-                                                RCC_CFGR_PLLMULL));
-  /* calculate multiplier value */
-  pll_multiplier = BOOT_CPU_SYSTEM_SPEED_KHZ/BOOT_CPU_XTAL_SPEED_KHZ;
-  /* convert to register value */
-  pll_multiplier = (unsigned long)((pll_multiplier - 2) << 18);
-  /* set the PLL multiplier and clock source */
-  RCC->CFGR |= (unsigned long)(RCC_CFGR_PLLSRC_HSE | pll_multiplier);
-  /* enable PLL */
-  RCC->CR |= RCC_CR_PLLON;
-  /* wait till PLL is ready */
-  while((RCC->CR & RCC_CR_PLLRDY) == 0)
-  {
-  }
-  /* select PLL as system clock source */
-  RCC->CFGR &= (unsigned long)((unsigned long)~(RCC_CFGR_SW));
-  RCC->CFGR |= (unsigned long)RCC_CFGR_SW_PLL;    
-  /* wait till PLL is used as system clock source */
-  while ((RCC->CFGR & (unsigned long)RCC_CFGR_SWS) != (unsigned long)0x08)
-  {
-  }
-  /* init the led driver */
-  LedInit();
-  /* init the timer driver */
+  /* reset of all peripherals, Initializes the Flash interface and the Systick */
+  HAL_Init();
+  /* configure the system clock */
+  SystemClock_Config();
+  /* initialize the timer driver */
   TimerInit();
+  /* initialize the led driver */
+  LedInit();
 } /*** end of Init ***/
+
+
+/************************************************************************************//**
+** \brief     System Clock Configuration. This code was created by CubeMX and configures
+**            the system clock.
+** \return    none.
+**
+****************************************************************************************/
+static void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+
+  /* initializes the CPU, AHB and APB busses clocks */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    /* Clock configuration incorrect or hardware failure. Hang the system to prevent
+     * damage.
+     */
+    while(1);
+  }
+
+  /* Initializes the CPU, AHB and APB busses clocks */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
+                               RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  {
+    /* Clock configuration incorrect or hardware failure. Hang the system to prevent
+     * damage.
+     */
+    while(1);
+  }
+} /*** end of SystemClock_Config ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the Global MSP. This function is called from HAL_Init()
+**            function to perform system level initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspInit(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* AFIO and PWR clock enable. */
+  __HAL_RCC_AFIO_CLK_ENABLE();
+  __HAL_RCC_PWR_CLK_ENABLE();
+
+  /* GPIO ports clock enable. */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+
+  /* Set priority grouping. */
+  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+  /* MemoryManagement_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(MemoryManagement_IRQn, 0, 0);
+  /* BusFault_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(BusFault_IRQn, 0, 0);
+  /* UsageFault_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(UsageFault_IRQn, 0, 0);
+  /* SVCall_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SVCall_IRQn, 0, 0);
+  /* DebugMonitor_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DebugMonitor_IRQn, 0, 0);
+  /* PendSV_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(PendSV_IRQn, 0, 0);
+  /* SysTick_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+
+  /* Configure the LED GPIO pin. */
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_SET);
+} /*** end of HAL_MspInit ***/
+
+
+/************************************************************************************//**
+** \brief     Deinitializes the Global MSP. This function is called from HAL_DeInit()
+**            function to perform system level Deinitialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspDeInit(void)
+{
+  /* Deconfigure GPIO pin for the LED. */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_SET);
+  HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
+
+  /* GPIO ports clock disable. */
+  __HAL_RCC_GPIOC_CLK_DISABLE();
+
+  /* AFIO and PWR clock disable. */
+  __HAL_RCC_PWR_CLK_DISABLE();
+  __HAL_RCC_AFIO_CLK_DISABLE();
+} /*** end of HAL_MspDeInit ***/
 
 
 /*********************************** end of main.c *************************************/

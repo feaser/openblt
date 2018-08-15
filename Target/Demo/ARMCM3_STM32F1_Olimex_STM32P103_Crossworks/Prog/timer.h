@@ -32,8 +32,6 @@
 * Function prototypes
 ****************************************************************************************/
 void          TimerInit(void);
-void          TimerDeinit(void);
-void          TimerSet(unsigned long timer_value);
 unsigned long TimerGet(void);
 void          TimerISRHandler(void);
 

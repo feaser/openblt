@@ -31,7 +31,8 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* module header                      */
-#include "stm32f10x.h"                           /* microcontroller registers          */
+#include "stm32f1xx.h"                           /* STM32 registers and drivers        */
+#include "stm32f1xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
 /****************************************************************************************
@@ -71,12 +72,12 @@ void LedBlinkTask(void)
     if (ledOn == BLT_FALSE)
     {
       ledOn = BLT_TRUE;
-      GPIO_SetBits(GPIOA, GPIO_Pin_5);
+      LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_5);
     }
     else
     {
       ledOn = BLT_FALSE;
-      GPIO_ResetBits(GPIOA, GPIO_Pin_5);
+      LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
     }
     /* schedule the next blink event */
     nextBlinkEvent = TimerGet() + ledBlinkIntervalMs;
@@ -93,7 +94,7 @@ void LedBlinkTask(void)
 void LedBlinkExit(void)
 {
   /* turn the LED off */
-  GPIO_ResetBits(GPIOA, GPIO_Pin_5);
+  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
 } /*** end of LedBlinkExit ***/
 
 

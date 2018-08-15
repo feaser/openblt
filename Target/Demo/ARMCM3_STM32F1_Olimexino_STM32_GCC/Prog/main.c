@@ -36,6 +36,7 @@
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+static void SystemClock_Config(void);
 
 
 /************************************************************************************//**
@@ -72,11 +73,156 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  /* init the led driver */
-  LedInit();
-  /* init the timer driver */
+  /* reset of all peripherals, Initializes the Flash interface and the Systick */
+  HAL_Init();
+  /* configure the system clock */
+  SystemClock_Config();
+  /* initialize the timer driver */
   TimerInit();
+  /* initialize the led driver */
+  LedInit();
 } /*** end of Init ***/
+
+
+/************************************************************************************//**
+** \brief     System Clock Configuration. This code was created by CubeMX and configures
+**            the system clock.
+** \return    none.
+**
+****************************************************************************************/
+static void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+
+  /* initializes the CPU, AHB and APB busses clocks */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    /* Clock configuration incorrect or hardware failure. Hang the system to prevent
+     * damage.
+     */
+    while(1);
+  }
+
+  /* Initializes the CPU, AHB and APB busses clocks */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
+                                RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  {
+    /* Clock configuration incorrect or hardware failure. Hang the system to prevent
+     * damage.
+     */
+    while(1);
+  }
+} /*** end of SystemClock_Config ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the Global MSP. This function is called from HAL_Init()
+**            function to perform system level initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspInit(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* AFIO and PWR clock enable. */
+  __HAL_RCC_AFIO_CLK_ENABLE();
+  __HAL_RCC_PWR_CLK_ENABLE();
+
+  /* GPIO ports clock enable. */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Peripheral clock enable. */
+  __HAL_RCC_CAN1_CLK_ENABLE();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
+
+  /* Set priority grouping. */
+  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+  /* MemoryManagement_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(MemoryManagement_IRQn, 0, 0);
+  /* BusFault_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(BusFault_IRQn, 0, 0);
+  /* UsageFault_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(UsageFault_IRQn, 0, 0);
+  /* SVCall_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SVCall_IRQn, 0, 0);
+  /* DebugMonitor_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DebugMonitor_IRQn, 0, 0);
+  /* PendSV_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(PendSV_IRQn, 0, 0);
+  /* SysTick_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+
+  /* Configure the LED GPIO pin. */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  /* Re-map CAN1 pins to PB8 and PB9. */
+  __HAL_AFIO_REMAP_CAN1_2();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
+} /*** end of HAL_MspInit ***/
+
+
+/************************************************************************************//**
+** \brief     Deinitializes the Global MSP. This function is called from HAL_DeInit()
+**            function to perform system level Deinitialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspDeInit(void)
+{
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Reset CAN GPIO pin configuration. */
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9);
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
+  /* Deconfigure GPIO pin for the LED. */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_5);
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Peripheral clock enable. */
+  __HAL_RCC_CAN1_CLK_DISABLE();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
+
+  /* GPIO ports clock disable. */
+  __HAL_RCC_GPIOB_CLK_DISABLE();
+  __HAL_RCC_GPIOA_CLK_DISABLE();
+
+  /* AFIO and PWR clock disable. */
+  __HAL_RCC_PWR_CLK_DISABLE();
+  __HAL_RCC_AFIO_CLK_DISABLE();
+} /*** end of HAL_MspDeInit ***/
 
 
 /*********************************** end of main.c *************************************/

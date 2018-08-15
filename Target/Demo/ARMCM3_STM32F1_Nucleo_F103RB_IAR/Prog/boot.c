@@ -95,6 +95,13 @@ void BootActivate(void)
 
 
 /****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief UART handle to be used in API calls. */
+static UART_HandleTypeDef uartHandle;
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static unsigned char UartReceiveByte(unsigned char *data);
@@ -107,32 +114,17 @@ static unsigned char UartReceiveByte(unsigned char *data);
 ****************************************************************************************/
 static void BootComUartInit(void)
 {
-  GPIO_InitTypeDef  GPIO_InitStruct;
-  USART_InitTypeDef USART_InitStruct;  
-
-  /* enable UART peripheral clock */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-  /* enable GPIO peripheral clock for transmitter and receiver pins */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
-  /* configure USART Tx as alternate function push-pull */
-  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStruct);
-  /* Configure USART Rx as alternate function input floating */
-  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;
-  GPIO_Init(GPIOA, &GPIO_InitStruct);
-  /* configure UART communcation parameters */  
-  USART_InitStruct.USART_BaudRate = BOOT_COM_UART_BAUDRATE;
-  USART_InitStruct.USART_WordLength = USART_WordLength_8b;
-  USART_InitStruct.USART_StopBits = USART_StopBits_1;
-  USART_InitStruct.USART_Parity = USART_Parity_No;
-  USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_Init(USART2, &USART_InitStruct);
-  /* enable UART */
-  USART_Cmd(USART2, ENABLE);
+  /* Configure UART peripheral. */
+  uartHandle.Instance          = USART2;
+  uartHandle.Init.BaudRate     = BOOT_COM_UART_BAUDRATE;
+  uartHandle.Init.WordLength   = UART_WORDLENGTH_8B;
+  uartHandle.Init.StopBits     = UART_STOPBITS_1;
+  uartHandle.Init.Parity       = UART_PARITY_NONE;
+  uartHandle.Init.HwFlowCtl    = UART_HWCONTROL_NONE;
+  uartHandle.Init.Mode         = UART_MODE_TX_RX;
+  uartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
+  /* Initialize the UART peripheral. */
+  HAL_UART_Init(&uartHandle);
 } /*** end of BootComUartInit ***/
 
 
@@ -213,15 +205,17 @@ static void BootComUartCheckActivationRequest(void)
 ****************************************************************************************/
 static unsigned char UartReceiveByte(unsigned char *data)
 {
-  /* check flag to see if a byte was received */
-  if (USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == SET)
+  HAL_StatusTypeDef result;
+
+  /* receive a byte in a non-blocking manner */
+  result = HAL_UART_Receive(&uartHandle, data, 1, 0);
+  /* process the result */
+  if (result == HAL_OK)
   {
-    /* retrieve and store the newly received byte */
-    *data = (unsigned char)USART_ReceiveData(USART2);
-    /* all done */
+    /* success */
     return 1;
   }
-  /* still here to no new byte received */
+  /* error occurred */
   return 0;
 } /*** end of UartReceiveByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */

@@ -20,9 +20,9 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It
+* You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-*
+* 
 * \endinternal
 ****************************************************************************************/
 #ifndef BLT_CONF_H
@@ -32,17 +32,17 @@
 *   C P U   D R I V E R   C O N F I G U R A T I O N
 ****************************************************************************************/
 /* To properly initialize the baudrate clocks of the communication interface, typically
- * the speed of the crystal oscillator and/or the speed at which the system runs is
+ * the speed of the crystal oscillator and/or the speed at which the system runs is 
  * needed. Set these through configurables BOOT_CPU_XTAL_SPEED_KHZ and
  * BOOT_CPU_SYSTEM_SPEED_KHZ, respectively. To enable data exchange with the host that is
- * not dependent on the targets architecture, the byte ordering needs to be known.
- * Setting BOOT_CPU_BYTE_ORDER_MOTOROLA to 1 selects big endian mode and 0 selects
+ * not dependent on the targets architecture, the byte ordering needs to be known. 
+ * Setting BOOT_CPU_BYTE_ORDER_MOTOROLA to 1 selects big endian mode and 0 selects 
  * little endian mode.
- *
+ * 
  * Set BOOT_CPU_USER_PROGRAM_START_HOOK to 1 if you would like a hook function to be
  * called the moment the user program is about to be started. This could be used to
  * de-initialize application specific parts, for example to stop blinking an LED, etc.
- */
+ */ 
 /** \brief Frequency of the external crystal oscillator. */
 #define BOOT_CPU_XTAL_SPEED_KHZ          (8000)
 /** \brief Desired system speed. */
@@ -56,18 +56,18 @@
 /****************************************************************************************
 *   C O M M U N I C A T I O N   I N T E R F A C E   C O N F I G U R A T I O N
 ****************************************************************************************/
-/* The CAN communication interface is selected by setting the BOOT_COM_CAN_ENABLE
+/* The CAN communication interface is selected by setting the BOOT_COM_CAN_ENABLE 
  * configurable to 1. Configurable BOOT_COM_CAN_BAUDRATE selects the communication speed
- * in bits/second. Two CAN messages are reserved for communication with the host. The
+ * in bits/second. Two CAN messages are reserved for communication with the host. The 
  * message identifier for sending data from the target to the host is configured with
  * BOOT_COM_CAN_TXMSG_ID. The one for receiving data from the host is configured with
  * BOOT_COM_CAN_RXMSG_ID. Note that an extended 29-bit CAN identifier is configured by
  * OR-ing with mask 0x80000000. The maximum amount of data bytes in a message for data
- * transmission and reception is set through BOOT_COM_CAN_TX_MAX_DATA and
+ * transmission and reception is set through BOOT_COM_CAN_TX_MAX_DATA and 
  * BOOT_COM_CAN_RX_MAX_DATA, respectively. It is common for a microcontroller to have more
  * than 1 CAN controller on board. The zero-based BOOT_COM_CAN_CHANNEL_INDEX selects the
  * CAN controller channel.
- *
+ * 
  */
 /** \brief Enable/disable CAN transport layer. */
 #define BOOT_COM_CAN_ENABLE             (0)
@@ -177,6 +177,12 @@
  *         user program's vector table.
  */
 #define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET (0x10c)
+/** \brief Enable support for a custom flash layout table. It is located in
+ *         flash_layout.c. This was done because the default flashLayout[] table
+ *         in the bootloader's core has more flash memory reserved for the bootloader
+ *         than is needed for this demo.
+ */
+#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (1)
 
 
 /****************************************************************************************

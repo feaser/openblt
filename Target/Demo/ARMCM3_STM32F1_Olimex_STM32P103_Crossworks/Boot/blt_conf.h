@@ -44,13 +44,13 @@
  * de-initialize application specific parts, for example to stop blinking an LED, etc.
  */ 
 /** \brief Frequency of the external crystal oscillator. */
-#define BOOT_CPU_XTAL_SPEED_KHZ         (8000)
+#define BOOT_CPU_XTAL_SPEED_KHZ          (8000)
 /** \brief Desired system speed. */
-#define BOOT_CPU_SYSTEM_SPEED_KHZ       (72000)
+#define BOOT_CPU_SYSTEM_SPEED_KHZ        (72000)
 /** \brief Motorola or Intel style byte ordering. */
-#define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
+#define BOOT_CPU_BYTE_ORDER_MOTOROLA     (0)
 /** \brief Enable/disable hook function call right before user program start. */
-#define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
+#define BOOT_CPU_USER_PROGRAM_START_HOOK (1)
 
 
 /****************************************************************************************
@@ -175,6 +175,17 @@
 
 
 /****************************************************************************************
+*   F L A S H   M E M O R Y   D R I V E R   C O N F I G U R A T I O N
+****************************************************************************************/
+/** \brief This microcontroller has a smaller vector table then the default STM32F1xx
+ *         project as assumed in the bootloader's core. This means the user program has
+ *         a different checksum location, because this one is added at the end of the
+ *         user program's vector table.
+ */
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET (0x10c)
+
+
+/****************************************************************************************
 *   W A T C H D O G   D R I V E R   C O N F I G U R A T I O N
 ****************************************************************************************/
 /* The COP driver cannot be configured internally in the bootloader, because its use
@@ -184,7 +195,7 @@
  * hook functions.
  */
 /** \brief Enable/disable the hook functions for controlling the watchdog. */
-#define BOOT_COP_HOOKS_ENABLE           (0)
+#define BOOT_COP_HOOKS_ENABLE           (1)
 
 
 /****************************************************************************************
