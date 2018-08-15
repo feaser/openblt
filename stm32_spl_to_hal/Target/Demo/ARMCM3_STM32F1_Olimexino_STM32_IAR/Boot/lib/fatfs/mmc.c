@@ -19,7 +19,10 @@
  *
  */
 #include "diskio.h"
-#include "stm32f10x.h"                                /* STM32 registers               */
+#include "stm32f1xx.h"                           /* STM32 registers and drivers        */
+#include "stm32f1xx_ll_bus.h"                    /* STM32 LL BUS header                */
+#include "stm32f1xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
+#include "stm32f1xx_ll_spi.h"                    /* STM32 LL SPI header                */
 #include "boot.h"
 
 
@@ -64,9 +67,8 @@
 
 
 /* Control signals (Platform dependent) */
-#define CS_LOW()	  GPIO_ResetBits(GPIOD, GPIO_Pin_2)  /* MMC CS = L */
-#define	CS_HIGH()	  GPIO_SetBits(GPIOD, GPIO_Pin_2)  	/* MMC CS = H */
-
+#define CS_LOW()	  LL_GPIO_ResetOutputPin(GPIOD, LL_GPIO_PIN_2)  /* MMC CS = L */
+#define	CS_HIGH()	  LL_GPIO_SetOutputPin(GPIOD, LL_GPIO_PIN_2)    /* MMC CS = H */
 
 
 #define	FCLK_SLOW()			/* Set slow clock (100k-400k) */
@@ -86,38 +88,59 @@ UINT CardType;
 static
 void send_initial_clock_train(void)
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
+  LL_GPIO_InitTypeDef GPIO_InitStruct;
   unsigned int i;
+  DWORD timeoutTime;
 
   /* Ensure CS is held high. */
   CS_HIGH();
 
   /* Switch the SSI TX line to a GPIO and drive it high too. */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-  GPIO_SetBits(GPIOB, GPIO_Pin_15);
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_15;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_15);
 
   /* Send 10 bytes over the SSI. This causes the clock to wiggle the */
   /* required number of times. */
   for(i = 0 ; i < 10 ; i++)
   {
+    /* Set timeout time to wait for DR register empty */
+    timeoutTime = TimerGet() + 100;
     /* Loop while DR register in not empty */
-    while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET) { ; }
+    while (LL_SPI_IsActiveFlag_TXE(SPI2) == 0)
+    {
+      /* Break wait loop upon timeout */
+      if (TimerGet() > timeoutTime)
+      {
+        break;
+      }
+    }
 
     /* Send byte through the SPI peripheral */
-    SPI_I2S_SendData(SPI2, 0xff);
+    LL_SPI_TransmitData8(SPI2, 0xff);
 
+    /* Set timeout time to wait for byte reception */
+    timeoutTime = TimerGet() + 100;
     /* Wait to receive a byte */
-    while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET) { ; }
+    while (LL_SPI_IsActiveFlag_RXNE(SPI2) == 0)
+    {
+      /* Break wait loop upon timeout */
+      if (TimerGet() > timeoutTime)
+      {
+        break;
+      }
+    }
   }
 
   /* Revert to hardware control of the SSI TX line. */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_15;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
 
@@ -126,56 +149,54 @@ void send_initial_clock_train(void)
 /*-----------------------------------------------------------------------*/
 /* When the target system does not support socket power control, there   */
 /* is nothing to do in these functions.                                  */
-
 static
 void power_on (void)
 {
-  SPI_InitTypeDef  SPI_InitStructure;
-  GPIO_InitTypeDef GPIO_InitStructure;
+  LL_SPI_InitTypeDef  SPI_InitStruct;
+  LL_GPIO_InitTypeDef GPIO_InitStruct;
 
   /*
    * This doesn't really turn the power on, but initializes the
    * SSI port and pins needed to talk to the card.
    */
+  /* Enable SPI and GPIO peripheral clocks. */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOB);
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOD);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_SPI2);
 
-  /* Enable GPIO clocks */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-  /* Enable SPI clock, SPI2: APB1 */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
   /* Configure I/O for Chip select (PD2) */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_2;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_2;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /* De-select the Card: Chip Select high */
-  GPIO_SetBits(GPIOD, GPIO_Pin_2);
+  LL_GPIO_SetOutputPin(GPIOD, LL_GPIO_PIN_2);
 
-  /* Configure SPI pins: SCK (PB13) and MOSI (PB15) with default alternate function (not re-mapped) push-pull */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13 | GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-  /* Configure MISO (PB14) as Input with internal pull-up */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_14;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IPU;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  /* Configure SPI pins: SCK (PB13), MOSI (PB15) and MISO (PB14) */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_13|LL_GPIO_PIN_15;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_14;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_FLOATING;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /* SPI configuration */
-  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256; // 72000kHz/256=281kHz < 400kHz
-  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-  SPI_InitStructure.SPI_CRCPolynomial = 7;
-
-  SPI_Init(SPI2, &SPI_InitStructure);
-  SPI_CalculateCRC(SPI2, DISABLE);
-  SPI_Cmd(SPI2, ENABLE);
+  /* SPI2 parameter configuration */
+  SPI_InitStruct.TransferDirection = LL_SPI_FULL_DUPLEX;
+  SPI_InitStruct.Mode = LL_SPI_MODE_MASTER;
+  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_8BIT;
+  SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;
+  SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;
+  SPI_InitStruct.NSS = LL_SPI_NSS_SOFT;
+  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV256; // 72000kHz/256=281kHz < 400kHz
+  SPI_InitStruct.BitOrder = LL_SPI_MSB_FIRST;
+  SPI_InitStruct.CRCCalculation = LL_SPI_CRCCALCULATION_DISABLE;
+  SPI_InitStruct.CRCPoly = 7;
+  LL_SPI_Init(SPI2, &SPI_InitStruct);
+  LL_SPI_Enable(SPI2);
 
   /* Set DI and CS high and apply more than 74 pulses to SCLK for the card */
   /* to be able to accept a native command. */
@@ -186,28 +207,26 @@ void power_on (void)
 static
 void set_max_speed(void)
 {
-  SPI_InitTypeDef  SPI_InitStructure;
+  LL_SPI_InitTypeDef  SPI_InitStruct;
 
   /* Disable the SPI system */
-  SPI_Cmd(SPI2, DISABLE);
+  LL_SPI_Disable(SPI2);
 
   /* MMC/SDC can work at the clock frequency up to 20/25MHz so pick a speed close to
    * this but not higher
    */
-  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4; // 72MHz/4=18MHz < 20MHz
-  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-  SPI_InitStructure.SPI_CRCPolynomial = 7;
-  SPI_Init(SPI2, &SPI_InitStructure);
-  SPI_CalculateCRC(SPI2, DISABLE);
-
-  /* Enable the SPI system */
-  SPI_Cmd(SPI2, ENABLE);
+  SPI_InitStruct.TransferDirection = LL_SPI_FULL_DUPLEX;
+  SPI_InitStruct.Mode = LL_SPI_MODE_MASTER;
+  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_8BIT;
+  SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;
+  SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;
+  SPI_InitStruct.NSS = LL_SPI_NSS_SOFT;
+  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV4; // 72MHz/4=18MHz < 20MHz
+  SPI_InitStruct.BitOrder = LL_SPI_MSB_FIRST;
+  SPI_InitStruct.CRCCalculation = LL_SPI_CRCCALCULATION_DISABLE;
+  SPI_InitStruct.CRCPoly = 7;
+  LL_SPI_Init(SPI2, &SPI_InitStruct);
+  LL_SPI_Enable(SPI2);
 }
 
 static
@@ -224,14 +243,40 @@ void power_off (void)
 static
 BYTE xchg_spi (BYTE dat)
 {
+  BYTE result = 0;
+  DWORD timeOutTime;
+  BYTE timeoutDetected = 0;
+
   /* Send byte through the SPI peripheral */
-  SPI_I2S_SendData(SPI2, dat);
+  LL_SPI_TransmitData8(SPI2, dat);
 
-  /* Wait to receive a byte */
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET) { ; }
+  /* Set timeout for 50 ms from now */
+  timeOutTime = TimerGet() + 50;
 
-  /* Return the byte read from the SPI bus */
-  return (BYTE)SPI_I2S_ReceiveData(SPI2);
+  /* Wait to receive a byte with timeout */
+  while (LL_SPI_IsActiveFlag_RXNE(SPI2) == 0)
+  {
+    /* Service the watchdog */
+    CopService();
+
+    /* Check for timeout */
+    if (TimerGet() > timeOutTime)
+    {
+      /* Set flag to remember that a timeout occurred and nothing was received */
+      timeoutDetected = 1;
+      /* Stop waiting */
+      break;
+    }
+  }
+
+  /* Read the value of the received byte */
+  if (timeoutDetected == 0)
+  {
+    result = LL_SPI_ReceiveData8(SPI2);
+  }
+
+  /* Give the result back to the caller */
+  return result;
 }
 
 static
@@ -250,12 +295,14 @@ int wait_ready (void)
 {
 	BYTE d;
   DWORD timeOutTime;
-  
+
   /* set timeout for 500 ms from now */
   timeOutTime = TimerGet() + 500;
 
 	do {
 		d = xchg_spi(0xFF);
+    /* Service the watchdog */
+    CopService();
 	} while ((d != 0xFF) && (TimerGet() < timeOutTime));
 
 	return (d == 0xFF) ? 1 : 0;
@@ -267,7 +314,7 @@ int wait_ready (void)
 /*-----------------------------------------------------------------------*/
 
 static
-void deselect (void)
+void deselect_card (void)
 {
 	CS_HIGH();
 	xchg_spi(0xFF);		/* Dummy clock (force DO hi-z for multiple slave SPI) */
@@ -280,13 +327,13 @@ void deselect (void)
 /*-----------------------------------------------------------------------*/
 
 static
-int select (void)	/* 1:Successful, 0:Timeout */
+int select_card (void)	/* 1:Successful, 0:Timeout */
 {
 	CS_LOW();
 	xchg_spi(0xFF);		/* Dummy clock (force DO enabled) */
 
 	if (wait_ready()) return 1;	/* OK */
-	deselect();
+	deselect_card();
 	return 0;	/* Timeout */
 }
 
@@ -310,13 +357,18 @@ int rcvr_datablock (	/* 1:OK, 0:Failed */
 
 	do {							/* Wait for data packet in timeout of 100ms */
 		token = xchg_spi(0xFF);
+    /* Service the watchdog */
+    CopService();
+
 	} while ((token == 0xFF) && (TimerGet() < timeOutTime));
 
 	if(token != 0xFE) return 0;		/* If not valid data token, retutn with error */
-  
+
     do {                            /* Receive the data block into buffer */
         rcvr_spi_m(buff++);
         rcvr_spi_m(buff++);
+        /* Service the watchdog */
+        CopService();
     } while (btr -= 2);
 	xchg_spi(0xFF);					/* Discard CRC */
 	xchg_spi(0xFF);
@@ -381,8 +433,8 @@ BYTE send_cmd (
 	}
 
 	/* Select the card and wait for ready */
-	deselect();
-	if (!select()) return 0xFF;
+	deselect_card();
+	if (!select_card()) return 0xFF;
 
 	/* Send command packet */
 	xchg_spi(0x40 | cmd);			/* Start + Command index */
@@ -398,9 +450,11 @@ BYTE send_cmd (
 	/* Receive command response */
 	if (cmd == CMD12) xchg_spi(0xFF);	/* Skip a stuff byte on stop to read */
 	n = 10;							/* Wait for a valid response in timeout of 10 attempts */
-	do
+	do {
 		res = xchg_spi(0xFF);
-	while ((res & 0x80) && --n);
+    /* Service the watchdog */
+    CopService();
+	} while ((res & 0x80) && --n);
 
 	return res;			/* Return with the response value */
 }
@@ -452,13 +506,16 @@ DSTATUS disk_initialize (
 			} else {
 				ty = CT_MMC; cmd = CMD1;	/* MMCv3 */
 			}
-			while ((TimerGet() < timeOutTime) && send_cmd(cmd, 0));		/* Wait for leaving idle state */
+			while ((TimerGet() < timeOutTime) && send_cmd(cmd, 0)) {	/* Wait for leaving idle state */
+		    /* Service the watchdog */
+		    CopService();
+			}
 			if (!(TimerGet() < timeOutTime) || send_cmd(CMD16, 512) != 0)	/* Set read/write block length to 512 */
 				ty = 0;
 		}
 	}
 	CardType = ty;
-	deselect();
+	deselect_card();
 
 	if (ty) {			/* Initialization succeded */
 		Stat &= ~STA_NOINIT;	/* Clear STA_NOINIT */
@@ -512,11 +569,13 @@ DRESULT disk_read (
 			do {
 				if (!rcvr_datablock(buff, 512)) break;
 				buff += 512;
+		    /* Service the watchdog */
+		    CopService();
 			} while (--count);
 			send_cmd(CMD12, 0);				/* STOP_TRANSMISSION */
 		}
 	}
-	deselect();
+	deselect_card();
 
 	return count ? RES_ERROR : RES_OK;
 }
@@ -551,12 +610,14 @@ DRESULT disk_write (
 			do {
 				if (!xmit_datablock(buff, 0xFC)) break;
 				buff += 512;
+		    /* Service the watchdog */
+		    CopService();
 			} while (--count);
 			if (!xmit_datablock(0, 0xFD))	/* STOP_TRAN token */
 				count = 1;
 		}
 	}
-	deselect();
+	deselect_card();
 
 	return count ? RES_ERROR : RES_OK;
 }
@@ -584,7 +645,7 @@ DRESULT disk_ioctl (
 	res = RES_ERROR;
 	switch (cmd) {
 	case CTRL_SYNC :	/* Flush write-back cache, Wait for end of internal process */
-		if (select()) res = RES_OK;
+		if (select_card()) res = RES_OK;
 		break;
 
 	case GET_SECTOR_COUNT :	/* Get number of sectors on the disk (WORD) */
@@ -642,8 +703,11 @@ DRESULT disk_ioctl (
 
 	case MMC_GET_OCR :	/* Receive OCR as an R3 resp (4 bytes) */
 		if (send_cmd(CMD58, 0) == 0) {	/* READ_OCR */
-			for (n = 0; n < 4; n++)
+			for (n = 0; n < 4; n++) {
 				*((BYTE*)buff+n) = xchg_spi(0xFF);
+		    /* Service the watchdog */
+		    CopService();
+			}
 			res = RES_OK;
 		}
 		break;
@@ -660,7 +724,7 @@ DRESULT disk_ioctl (
 		res = RES_PARERR;
 	}
 
-	deselect();
+	deselect_card();
 
 	return res;
 }
