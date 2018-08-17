@@ -119,6 +119,8 @@ void netdev_init_mac(void)
     {
       break;
     }
+    /* Service the watchdog. */
+    CopService();
   }
 
   /* set the default MAC address */

@@ -126,7 +126,7 @@
 /** \brief Configure the port that the TCP/IP server listens on */
 #define BOOT_COM_NET_PORT                 (1000)
 /** \brief Enable/disable DHCP client for automatically obtaining an IP address. */
-#define BOOT_COM_NET_DHCP_ENABLE          (0)
+#define BOOT_COM_NET_DHCP_ENABLE          (1)
 /** \brief Configure the 1st byte of the IP address */
 #define BOOT_COM_NET_IPADDR0              (192)
 /** \brief Configure the 2nd byte of the IP address */

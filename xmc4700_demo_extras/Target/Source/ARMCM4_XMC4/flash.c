@@ -176,7 +176,7 @@ static const tFlashSector flashLayout[] =
    * overwritten during a firmware update.
    */
   /* { 0x0c000000, 0x04000,  0},           flash sector  0 - reserved for bootloader   */
-  { 0x0c004000, 0x04000,  1},           /* flash sector  1 -  16kb                     */
+  /* { 0x0c004000, 0x04000,  1},           flash sector  1 - reserved for bootloader   */
   { 0x0c008000, 0x04000,  2},           /* flash sector  2 -  16kb                     */
   { 0x0c00c000, 0x04000,  3},           /* flash sector  3 -  16kb                     */
   { 0x0c010000, 0x04000,  4},           /* flash sector  4 -  16kb                     */
