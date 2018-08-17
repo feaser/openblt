@@ -48,6 +48,8 @@ int main(void)
 {
   /* initialize the microcontroller */
   Init();
+  /* initialize the network application */
+  NetInit();
   /* initialize the bootloader interface */
   BootComInit();
 
@@ -56,6 +58,8 @@ int main(void)
   {
     /* toggle LED with a fixed frequency */
     LedToggle();
+    /* run the network task */ 
+    NetTask();
     /* check for bootloader activation request */
     BootComCheckActivationRequest();
   }

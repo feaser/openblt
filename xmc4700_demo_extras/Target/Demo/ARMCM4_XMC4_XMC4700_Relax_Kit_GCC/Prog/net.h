@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_GCC/Prog/header.h
-* \brief        Generic header file.
+* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_GCC/Prog/net.h
+* \brief        Network application for the uIP TCP/IP stack.
 * \ingroup      Prog_ARMCM4_XMC4_XMC4700_Relax_Kit_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2014  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -22,22 +22,40 @@
 *
 * You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-*
+* 
 * \endinternal
 ****************************************************************************************/
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef NET_H
+#define NET_H
 
 /****************************************************************************************
-* Include files
+* Macro definitions
 ****************************************************************************************/
-#include "../Boot/blt_conf.h"                    /* bootloader configuration           */
-#include "XMC4700.h"                             /* XMC4700 peripheral access          */
-#include "boot.h"                                /* bootloader interface driver        */
-#include "led.h"                                 /* LED driver                         */
-#include "timer.h"                               /* Timer driver                       */
-#include "net.h"                                 /* TCP/IP server application          */
+#ifndef UIP_APPCALL
+#define UIP_APPCALL NetApp
+#endif /* UIP_APPCALL */
 
 
-#endif /* HEADER_H */
-/*********************************** end of header.h ***********************************/
+/****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Define the uip_tcp_appstate_t datatype. This is the state of our tcp/ip
+ *         application, and the memory required for this state is allocated together
+ *         with each TCP connection. One application state for each TCP connection.
+ */
+typedef struct net_state 
+{
+  unsigned char unused;
+} uip_tcp_appstate_t;
+
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+void     NetInit(void);
+void     NetApp(void);
+void     NetTask(void);
+
+
+#endif /* NET_H */
+/*********************************** end of net.h **************************************/

@@ -75,7 +75,6 @@ void netdev_init(void)
 /*---------------------------------------------------------------------------*/
 void netdev_init_mac(void)
 {
-  struct uip_eth_addr macAddress;
   unsigned long ulUser0, ulUser1;
   unsigned long ulTemp;
   unsigned long ulLinkTimeOut;
