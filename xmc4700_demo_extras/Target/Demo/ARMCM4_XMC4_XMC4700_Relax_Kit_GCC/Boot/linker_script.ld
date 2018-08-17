@@ -67,14 +67,29 @@ MEMORY
 {
 	FLASH_1_cached(RX) : ORIGIN = 0x08000000, LENGTH = 0x8000
 	FLASH_1_uncached(RX) : ORIGIN = 0x0C000000, LENGTH = 0x8000
-	PSRAM_1(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x18000
+	PSRAM_1(!RX) : ORIGIN = 0x1FFE8040, LENGTH = 0x17fc0
 	DSRAM_1_system(!RX) : ORIGIN = 0x20000000, LENGTH = 0x20000
 	DSRAM_2_comm(!RX) : ORIGIN = 0x20020000, LENGTH = 0x20000
-	SRAM_combined(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x58000
+	SRAM_combined(!RX) : ORIGIN = 0x1FFE8040, LENGTH = 0x57fc0
+	SHARED(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x40
 }
 
 SECTIONS
 {
+    /* Shared data section that also shouldn't get zeroed */
+    .shared (NOLOAD) :
+    {
+        . = ALIGN(4);
+        _sshared = .;         /* define a global symbol at shared start */
+        __shared_start__ = _sshared;
+        *(.shared)
+        *(.shared.*)
+        KEEP(*(.shared)) 
+        . = ALIGN(4);
+        _eshared = .;         /* define a global symbol at shared end */
+        __shared_end__ = _eshared;
+    } >SHARED
+
     /* TEXT section */
 
     .text :
