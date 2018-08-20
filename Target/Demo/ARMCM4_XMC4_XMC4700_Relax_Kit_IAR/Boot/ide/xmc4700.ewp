@@ -182,6 +182,7 @@
         <option>
           <name>CCDefines</name>
           <state>XMC4700_F144x2048</state>
+          <state>XMC_ETH_PHY_KSZ8081RNB</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -313,10 +314,13 @@
           <state>$PROJ_DIR$\..\</state>
           <state>$PROJ_DIR$\..\lib</state>
           <state>$PROJ_DIR$\..\lib\cmsis</state>
+          <state>$PROJ_DIR$\..\lib\uip</state>
           <state>$PROJ_DIR$\..\lib\xmclib\inc</state>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_XMC4</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_XMC4\IAR</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1954,6 +1958,24 @@
         </file>
       </group>
       <group>
+        <name>uip</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\clock-arch.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\clock-arch.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\netdev.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\netdev.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\uip\uip-conf.h</name>
+        </file>
+      </group>
+      <group>
         <name>xmclib</name>
         <file>
           <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc4_ccu4_map.h</name>
@@ -2228,6 +2250,12 @@
       <name>$PROJ_DIR$\..\main.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\shared_params.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\shared_params.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\startup_XMC4700.s</name>
     </file>
   </group>
@@ -2265,6 +2293,63 @@
       <file>
         <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_XMC4\uart.c</name>
       </file>
+    </group>
+    <group>
+      <name>third_party</name>
+      <group>
+        <name>uip</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\clock.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-addrlabels.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-switch.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\pt.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arch.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uipopt.h</name>
+        </file>
+      </group>
     </group>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Source\assert.c</name>

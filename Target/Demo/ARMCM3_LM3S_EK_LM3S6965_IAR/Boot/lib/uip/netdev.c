@@ -75,7 +75,6 @@ void netdev_init(void)
 /*---------------------------------------------------------------------------*/
 void netdev_init_mac(void)
 {
-  struct uip_eth_addr macAddress;
   unsigned long ulUser0, ulUser1;
   blt_int32u ulTemp;
   blt_int32u ulLinkTimeOut;
@@ -119,6 +118,8 @@ void netdev_init_mac(void)
     {
       break;
     }
+    /* Service the watchdog. */
+    CopService();
   }
 
   /* set the default MAC address */
