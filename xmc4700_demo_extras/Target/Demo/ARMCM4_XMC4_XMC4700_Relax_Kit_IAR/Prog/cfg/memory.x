@@ -2,9 +2,9 @@
 /*-Editor annotation file-*/
 /* IcfEditorFile="$TOOLKIT_DIR$\config\ide\IcfEditor\cortex_v1_1.xml" */
 /*-Specials-*/
-define symbol __ICFEDIT_intvec_start__ = 0x08004000;
+define symbol __ICFEDIT_intvec_start__ = 0x08008000;
 /*-Memory Regions-*/
-define symbol __ICFEDIT_region_IROM1_start__ = 0x08004000;
+define symbol __ICFEDIT_region_IROM1_start__ = 0x08008000;
 define symbol __ICFEDIT_region_IROM1_end__   = 0x081FFFFF;
 define symbol __ICFEDIT_region_IROM2_start__ = 0x0;
 define symbol __ICFEDIT_region_IROM2_end__   = 0x0;
@@ -38,8 +38,8 @@ define region EROM_region   =   mem:[from __ICFEDIT_region_EROM1_start__ to __IC
                               | mem:[from __ICFEDIT_region_EROM2_start__ to __ICFEDIT_region_EROM2_end__]
                               | mem:[from __ICFEDIT_region_EROM3_start__ to __ICFEDIT_region_EROM3_end__];
 define region IRAM_region   =   mem:[from __ICFEDIT_region_IRAM1_start__ to __ICFEDIT_region_IRAM1_end__]
-                              | mem:[from __ICFEDIT_region_IRAM2_start__ to __ICFEDIT_region_IRAM2_end__]
                               | mem:[from __ICFEDIT_region_IRAM3_start__ to __ICFEDIT_region_IRAM3_end__];
+define region IRAM2_region  =   mem:[from __ICFEDIT_region_IRAM2_start__ to __ICFEDIT_region_IRAM2_end__];
 define region ERAM_region   =   mem:[from __ICFEDIT_region_ERAM1_start__ to __ICFEDIT_region_ERAM1_end__]
                               | mem:[from __ICFEDIT_region_ERAM2_start__ to __ICFEDIT_region_ERAM2_end__]
                               | mem:[from __ICFEDIT_region_ERAM3_start__ to __ICFEDIT_region_ERAM3_end__];
@@ -61,4 +61,5 @@ place at address mem:__ICFEDIT_intvec_start__ { readonly section .intvec };
 place in IROM_region  { readonly };
 place in EROM_region  { readonly section application_specific_ro };
 place in IRAM_region  { readwrite, block CSTACK, block HEAP };
+place in IRAM2_region { readwrite section .iram2 };
 place in ERAM_region  { readwrite section application_specific_rw };
