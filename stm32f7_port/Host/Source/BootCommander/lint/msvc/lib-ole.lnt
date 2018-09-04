@@ -1,0 +1,17 @@
+/* Date Stamp */ -d"_lint_lib_ole_lnt=lib-ole.lnt modified 23-Mar-2004"
+/* To document usage use: -message( "Using " _lint_lib_ole_lnt ) */
+// ---------------------------------------------------------------------
+// This file is provided by Gimpel Software (www.gimpel.com) for use with
+// its products PC-lint and FlexeLint.
+//
+// Redistribution and use of this file, with or without modification, is
+// permitted provided that any such redistribution retains this notice.
+// ---------------------------------------------------------------------
+
+// BSTR functions (part of OLE Automation)
+
+-sem( SysAllocString, @p == malloc(1p) || @p == 0, 1p )
+-sem( SysAllocStringByteLen, @P == malloc(2n+1) || @p == 0 )
+-sem( SysAllocStringLen, @p == malloc(2n+1) || @p == 0 )
+-sem( SysStringLen, 1p ? @n == 1p - 1 : @n == 0 )
+-function( free, SysFreeString )

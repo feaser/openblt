@@ -1,0 +1,64 @@
+object TransportXcpUsbForm: TTransportXcpUsbForm
+  Left = 1285
+  Height = 308
+  Top = 253
+  Width = 407
+  Caption = 'XCP on USB'
+  ClientHeight = 308
+  ClientWidth = 407
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.6.4.0'
+  object LblCommunication: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 87
+    Caption = 'Communication'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object EdtVID: TEdit
+    Left = 128
+    Height = 23
+    Hint = 'The vendor identifier of the USB device (read only)'
+    Top = 35
+    Width = 168
+    Enabled = False
+    ParentShowHint = False
+    ReadOnly = True
+    ShowHint = True
+    TabOrder = 0
+    Text = '1D50'
+  end
+  object EdtPID: TEdit
+    Left = 128
+    Height = 23
+    Hint = 'The product identifier of the USB device (read only)'
+    Top = 75
+    Width = 168
+    Enabled = False
+    ParentShowHint = False
+    ReadOnly = True
+    ShowHint = True
+    TabOrder = 1
+    Text = '60AC'
+  end
+  object LblVID: TLabel
+    Left = 24
+    Height = 15
+    Top = 38
+    Width = 83
+    Caption = 'Vendor ID (hex):'
+    ParentColor = False
+  end
+  object LblPID: TLabel
+    Left = 24
+    Height = 15
+    Top = 78
+    Width = 88
+    Caption = 'Product ID (hex):'
+    ParentColor = False
+  end
+end

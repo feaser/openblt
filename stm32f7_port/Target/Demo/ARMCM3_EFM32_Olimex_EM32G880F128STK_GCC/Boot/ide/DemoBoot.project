@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="DemoBoot" InternalType="">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="Demo">
+    <VirtualDirectory Name="ARMCM3_EFM32_Olimex_EM32G880F128STK_GCC">
+      <VirtualDirectory Name="Boot">
+        <VirtualDirectory Name="lib">
+          <VirtualDirectory Name="efm32lib">
+            <VirtualDirectory Name="inc">
+              <File Name="../lib/efm32lib/inc/efm32_acmp.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_adc.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_aes.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_assert.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_bitband.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_chip.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_cmu.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_common.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_dac.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_dbg.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_dma.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_ebi.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_emu.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_gpio.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_i2c.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_int.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_lcd.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_lesense.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_letimer.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_leuart.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_mpu.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_msc.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_opamp.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_pcnt.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_prs.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_rmu.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_rtc.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_system.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_timer.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_usart.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_vcmp.h"/>
+              <File Name="../lib/efm32lib/inc/efm32_wdog.h"/>
+            </VirtualDirectory>
+            <VirtualDirectory Name="src">
+              <File Name="../lib/efm32lib/src/efm32_acmp.c"/>
+              <File Name="../lib/efm32lib/src/efm32_adc.c"/>
+              <File Name="../lib/efm32lib/src/efm32_aes.c"/>
+              <File Name="../lib/efm32lib/src/efm32_assert.c"/>
+              <File Name="../lib/efm32lib/src/efm32_cmu.c"/>
+              <File Name="../lib/efm32lib/src/efm32_dac.c"/>
+              <File Name="../lib/efm32lib/src/efm32_dbg.c"/>
+              <File Name="../lib/efm32lib/src/efm32_dma.c"/>
+              <File Name="../lib/efm32lib/src/efm32_ebi.c"/>
+              <File Name="../lib/efm32lib/src/efm32_emu.c"/>
+              <File Name="../lib/efm32lib/src/efm32_gpio.c"/>
+              <File Name="../lib/efm32lib/src/efm32_i2c.c"/>
+              <File Name="../lib/efm32lib/src/efm32_int.c"/>
+              <File Name="../lib/efm32lib/src/efm32_lcd.c"/>
+              <File Name="../lib/efm32lib/src/efm32_lesense.c"/>
+              <File Name="../lib/efm32lib/src/efm32_letimer.c"/>
+              <File Name="../lib/efm32lib/src/efm32_leuart.c"/>
+              <File Name="../lib/efm32lib/src/efm32_mpu.c"/>
+              <File Name="../lib/efm32lib/src/efm32_msc.c"/>
+              <File Name="../lib/efm32lib/src/efm32_opamp.c"/>
+              <File Name="../lib/efm32lib/src/efm32_pcnt.c"/>
+              <File Name="../lib/efm32lib/src/efm32_prs.c"/>
+              <File Name="../lib/efm32lib/src/efm32_rmu.c"/>
+              <File Name="../lib/efm32lib/src/efm32_rtc.c"/>
+              <File Name="../lib/efm32lib/src/efm32_system.c"/>
+              <File Name="../lib/efm32lib/src/efm32_timer.c"/>
+              <File Name="../lib/efm32lib/src/efm32_usart.c"/>
+              <File Name="../lib/efm32lib/src/efm32_vcmp.c"/>
+              <File Name="../lib/efm32lib/src/efm32_wdog.c"/>
+            </VirtualDirectory>
+          </VirtualDirectory>
+          <VirtualDirectory Name="CMSIS">
+            <VirtualDirectory Name="CM3">
+              <VirtualDirectory Name="DeviceSupport">
+                <VirtualDirectory Name="EnergyMicro">
+                  <VirtualDirectory Name="EFM32">
+                    <File Name="../lib/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/efm32.h"/>
+                    <File Name="../lib/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/efm32g880f128.h"/>
+                    <File Name="../lib/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/system_efm32.c"/>
+                    <File Name="../lib/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/system_efm32.h"/>
+                  </VirtualDirectory>
+                </VirtualDirectory>
+              </VirtualDirectory>
+              <VirtualDirectory Name="CoreSupport">
+                <File Name="../lib/CMSIS/CM3/CoreSupport/core_cm3.c"/>
+                <File Name="../lib/CMSIS/CM3/CoreSupport/core_cm3.h"/>
+                <File Name="../lib/CMSIS/CM3/CoreSupport/core_cmFunc.h"/>
+                <File Name="../lib/CMSIS/CM3/CoreSupport/core_cmInstr.h"/>
+              </VirtualDirectory>
+            </VirtualDirectory>
+          </VirtualDirectory>
+        </VirtualDirectory>
+        <File Name="../blt_conf.h"/>
+        <File Name="../hooks.c"/>
+        <File Name="../main.c"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <Settings Type="Dynamic Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="" IntermediateDirectory="../obj" Command="openbtl_olimex_lpc_l2294_20mhz.elf" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(WorkspacePath)/../bin" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="yes" RemoteHostName="localhost" RemoteHostPort="3333" DebuggerPath="C:\Program Files (x86)\CodeSourcery\Sourcery G++ Lite\bin\arm-none-eabi-gdb.exe">
+        <PostConnectCommands/>
+        <StartupCommands>break main
+continue
+</StartupCommands>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand/>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory>$(WorkspacePath)/..</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="-O2" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand/>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory>$(WorkspacePath)</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <VirtualDirectory Name="Source">
+    <VirtualDirectory Name="ARMCM3_EFM32">
+      <VirtualDirectory Name="GCC">
+        <File Name="../../../../Source/ARMCM3_EFM32/GCC/cstart.c"/>
+        <File Name="../../../../Source/ARMCM3_EFM32/GCC/vectors.c"/>
+        <File Name="../../../../Source/ARMCM3_EFM32/GCC/cpu_comp.c"/>
+      </VirtualDirectory>
+      <File Name="../../../../Source/ARMCM3_EFM32/cpu.c"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/flash.c"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/flash.h"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/nvm.c"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/timer.c"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/types.h"/>
+      <File Name="../../../../Source/ARMCM3_EFM32/uart.c"/>
+    </VirtualDirectory>
+    <File Name="../../../../Source/assert.c"/>
+    <File Name="../../../../Source/assert.h"/>
+    <File Name="../../../../Source/backdoor.c"/>
+    <File Name="../../../../Source/backdoor.h"/>
+    <File Name="../../../../Source/boot.c"/>
+    <File Name="../../../../Source/boot.h"/>
+    <File Name="../../../../Source/can.h"/>
+    <File Name="../../../../Source/com.c"/>
+    <File Name="../../../../Source/com.h"/>
+    <File Name="../../../../Source/cop.c"/>
+    <File Name="../../../../Source/cop.h"/>
+    <File Name="../../../../Source/cpu.h"/>
+    <File Name="../../../../Source/file.c"/>
+    <File Name="../../../../Source/file.h"/>
+    <File Name="../../../../Source/net.c"/>
+    <File Name="../../../../Source/net.h"/>
+    <File Name="../../../../Source/nvm.h"/>
+    <File Name="../../../../Source/plausibility.h"/>
+    <File Name="../../../../Source/timer.h"/>
+    <File Name="../../../../Source/uart.h"/>
+    <File Name="../../../../Source/usb.h"/>
+    <File Name="../../../../Source/xcp.c"/>
+    <File Name="../../../../Source/xcp.h"/>
+  </VirtualDirectory>
+</CodeLite_Project>
