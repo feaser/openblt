@@ -256,7 +256,8 @@ g_pfnVectors:
   .word     I2C4_EV_IRQHandler                /* I2C4 Event                   */
   .word     I2C4_ER_IRQHandler                /* I2C4 Error                   */
   .word     SPDIF_RX_IRQHandler               /* SPDIF_RX                     */  
-  
+  .word     0x55AA11EE                        /* Reserved for OpenBLT checksum*/
+
 /*******************************************************************************
 *
 * Provide weak aliases for each Exception handler to the Default_Handler. 
