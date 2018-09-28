@@ -136,7 +136,7 @@ static blt_int8u FlashGetSector(blt_addr address);
 static const tFlashSector flashLayout[] =
 {
   /* space is reserved for a bootloader configuration with all supported communication
-   * interfaces enabled. when for example only UART is needed, than the space required
+   * interfaces enabled. when for example only UART is needed, then the space required
    * for the bootloader can be made a lot smaller here.
    */
   /* { 0x08000000, 0x04000,  0},           flash sector  0 - reserved for bootloader   */
