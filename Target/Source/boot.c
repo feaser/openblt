@@ -55,6 +55,10 @@ void BootInit(void)
   /* initialize the communication module */
   ComInit();
 #endif
+#if (ADDON_GATEWAY_MOD_ENABLE > 0)
+  /* initialize the gateway module */
+  GatewayInit();
+#endif
   /* initialize the backdoor entry */
   BackDoorInit();
 } /*** end of BootInit ***/
@@ -78,6 +82,10 @@ void BootTask(void)
 #if (BOOT_COM_ENABLE > 0)
   /* process possibly pending communication data */
   ComTask();
+#endif
+#if (ADDON_GATEWAY_MOD_ENABLE > 0)
+  /* run the gateway */
+  GatewayTask();
 #endif
   /* control the backdoor */
   BackDoorCheck();

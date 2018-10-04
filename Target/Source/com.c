@@ -286,7 +286,24 @@ blt_int16u ComGetActiveInterfaceMaxTxLen(void)
 ****************************************************************************************/
 blt_bool ComIsConnected(void)
 {
-  return XcpIsConnected();
+  blt_bool result = BLT_FALSE;
+
+  /* Is there an active XCP connection? This indicates that the communication interface
+   * is in the connection state. 
+   */  
+  if (XcpIsConnected())
+  {
+    result = BLT_TRUE;
+  }
+#if (ADDON_GATEWAY_MOD_ENABLE > 0)
+  /* Is the gateway active? This indicates an XCP connection with a slave. */
+  if (GatewayIsActive())
+  {
+    result = BLT_TRUE;
+  }
+#endif
+  /* give the result back to the caller. */
+  return result;
 } /*** end of ComIsConnected ***/
 
 
