@@ -32,11 +32,7 @@
 #include "boot.h"                                     /* bootloader generic header     */
 #if (BOOT_COM_USB_ENABLE > 0)
 #include "usb.h"                                      /* USB bootloader driver         */
-#include "usb_core.h"                                 /* USB library core              */
-#include "usb_conf.h"                                 /* USB descriptor                */
-#include "usb_dcd_int.h"                              /* USB core interrupts           */
 #include "usbd_core.h"                                /* USB driver core               */
-#include "usbd_usr.h"                                 /* USB driver configuration      */
 #include "usbd_desc.h"                                /* USB driver descriptor         */
 #include "usbd_bulk.h"                                /* USB driver bulk device        */
 
@@ -117,8 +113,7 @@ static tFifoPipe  fifoPipeBulkIN;
 /** \brief Fifo pipe used for the bulk out endpoint. */
 static tFifoPipe  fifoPipeBulkOUT;
 /** \brief USB device handle. */
-static USB_OTG_CORE_HANDLE USB_OTG_dev;
-
+static USBD_HandleTypeDef hUsbDeviceFS;
 
 
 /************************************************************************************//**
@@ -136,8 +131,14 @@ void UsbInit(void)
   /* validate fifo handles */
   ASSERT_RT((fifoPipeBulkIN.handle  != FIFO_ERR_INVALID_HANDLE) && \
             (fifoPipeBulkOUT.handle != FIFO_ERR_INVALID_HANDLE));
-  /* initialize the low level USB driver */
-  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_bulk_cb, &USR_cb);
+  /* initialize the USB device libary */
+  USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
+  /* register the bootloader's custom USB Bulk based class */
+  USBD_RegisterClass(&hUsbDeviceFS, &USBD_Bulk);
+  /* start the USB device */
+  USBD_Start(&hUsbDeviceFS);
+  /* perform low level connect of the device */
+  HAL_PCD_DevConnect((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
   /* extend the time that the backdoor is open in case the default timed backdoor
    * mechanism is used.
    */
@@ -157,10 +158,10 @@ void UsbInit(void)
 ****************************************************************************************/
 void UsbFree(void)
 {
-  /* disconnect the USB device from the USB host */
-  DCD_DevDisconnect(&USB_OTG_dev);
-  /* invoke hook function */
-  UsbConnectHook(BLT_FALSE);
+  /* perform low level disconnect of the device */
+  HAL_PCD_DevDisconnect((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
+  /* uninitialize the device */
+  USBD_DeInit(&hUsbDeviceFS);
 } /*** end of UsbFree ***/
 
 
@@ -209,7 +210,7 @@ blt_bool UsbReceivePacket(blt_int8u *data, blt_int8u *len)
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
 
   /* poll USB interrupt flags to process USB related events */
-  USBD_OTG_ISR_Handler(&USB_OTG_dev);
+  HAL_PCD_IRQHandler((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
 
   /* start of cto packet received? */
   if (xcpCtoRxInProgress == BLT_FALSE)
@@ -323,7 +324,8 @@ void UsbTransmitPipeBulkIN(void)
     USB_Tx_Buffer[byte_counter] = byte_value;
   }
   /* copy data to endpoint's RAM and start the transmission */
-  DCD_EP_Tx(&USB_OTG_dev, BULK_IN_EP, &USB_Tx_Buffer[0], nr_of_bytes_for_tx_endpoint);
+  USBD_LL_Transmit(&hUsbDeviceFS, BULK_IN_EP, &USB_Tx_Buffer[0],
+                   nr_of_bytes_for_tx_endpoint);
 } /*** end of UsbTransmitPipeBulkIN ***/
 
 
@@ -332,14 +334,16 @@ void UsbTransmitPipeBulkIN(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void UsbReceivePipeBulkOUT(uint8_t epnum)
+void UsbReceivePipeBulkOUT(blt_int8u epnum)
 {
-  uint16_t USB_Rx_Cnt=0;
-  uint16_t byte_counter;
+  blt_int16u USB_Rx_Cnt=0;
+  blt_int8u *usbRxBufferPtr;
+  blt_int16u byte_counter;
   blt_bool result;
 
-  /* Get the received data buffer and update the counter */
-  USB_Rx_Cnt = USB_OTG_dev.dev.out_ep[epnum].xfer_count;
+  /* Get the received data buffer and the number of received bytes */
+  usbRxBufferPtr = USBD_Bulk_GetRxBufferPtr();
+  USB_Rx_Cnt = USBD_LL_GetRxDataSize(&hUsbDeviceFS, epnum);
 
   /* USB data will be immediately processed, this allow next USB traffic being
    * NAKed till the end of the USART Xfer
@@ -347,14 +351,15 @@ void UsbReceivePipeBulkOUT(uint8_t epnum)
   for (byte_counter=0; byte_counter<USB_Rx_Cnt; byte_counter++)
   {
     /* add the data to the fifo */
-    result = UsbFifoMgrWrite(fifoPipeBulkOUT.handle, usbd_bulk_get_rx_buffer_ptr()[byte_counter]);
+    result = UsbFifoMgrWrite(fifoPipeBulkOUT.handle, usbRxBufferPtr[byte_counter]);
     /* verify that the fifo wasn't full */
     ASSERT_RT(result == BLT_TRUE);
   }
-  /* Enable the reception of data on EP1 */
-  DCD_EP_PrepareRx(&USB_OTG_dev,
-                   BULK_OUT_EP, usbd_bulk_get_rx_buffer_ptr(),
-                   BULK_DATA_OUT_PACKET_SIZE);
+  /* Prepare Out endpoint to receive next packet */
+  USBD_LL_PrepareReceive(&hUsbDeviceFS,
+                         BULK_OUT_EP,
+                         USBD_Bulk_GetRxBufferPtr(),
+                         BULK_DATA_FS_OUT_PACKET_SIZE);
 } /*** end of UsbReceivePipeBulkOUT ***/
 
 

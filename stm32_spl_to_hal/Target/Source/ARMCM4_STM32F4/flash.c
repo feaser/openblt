@@ -30,8 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f4xx.h"                           /* STM32 registers                    */
-#include "stm32f4xx_conf.h"                      /* STM32 peripheral drivers           */
+#include "stm32f4xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -55,6 +54,7 @@
  *         of the checksum in the user program accordingly. Otherwise the checksum
  *         verification will always fail.
  */
+/* TODO ##Vg Verify checksum offset. */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
 #define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x188)
 #endif
@@ -144,10 +144,16 @@ static const tFlashSector flashLayout[] =
   /* { 0x08004000, 0x04000,  1},           flash sector  1 - reserved for bootloader   */
   /* { 0x08008000, 0x04000,  2},           flash sector  2 - reserved for bootloader   */
   { 0x0800c000, 0x04000,  3},           /* flash sector  3 -  16kb                     */
+#if (BOOT_NVM_SIZE_KB > 64)
   { 0x08010000, 0x10000,  4},           /* flash sector  4 -  64kb                     */
+#endif
+#if (BOOT_NVM_SIZE_KB > 128)
   { 0x08020000, 0x20000,  5},           /* flash sector  5 - 128kb                     */
+#endif
+#if (BOOT_NVM_SIZE_KB > 256)
   { 0x08040000, 0x20000,  6},           /* flash sector  6 - 128kb                     */
   { 0x08060000, 0x20000,  7},           /* flash sector  7 - 128kb                     */
+#endif
 #if (BOOT_NVM_SIZE_KB > 512)
   { 0x08080000, 0x20000,  8},           /* flash sector  8 - 128kb                     */
   { 0x080A0000, 0x20000,  9},           /* flash sector  9 - 128kb                     */
@@ -175,39 +181,6 @@ static const tFlashSector flashLayout[] =
 #else
 #include "flash_layout.c"
 #endif /* BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0 */
-
-/** \brief   Lookup table to quickly convert sector number to mask.
- *  \details The STM32F4x Standard Peripheral Library driver needs a sector mask instead
- *           of the sector number. this ROM lookup table can quickly convert the sector
- *           number to its mask.
- */
-static const blt_int16u flashSectorNumToMask[] =
-{
-  FLASH_Sector_0,                        /* idx 0  - mask for sector 0                 */
-  FLASH_Sector_1,                        /* idx 1  - mask for sector 1                 */
-  FLASH_Sector_2,                        /* idx 2  - mask for sector 2                 */
-  FLASH_Sector_3,                        /* idx 3  - mask for sector 3                 */
-  FLASH_Sector_4,                        /* idx 4  - mask for sector 4                 */
-  FLASH_Sector_5,                        /* idx 5  - mask for sector 5                 */
-  FLASH_Sector_6,                        /* idx 6  - mask for sector 6                 */
-  FLASH_Sector_7,                        /* idx 7  - mask for sector 7                 */
-  FLASH_Sector_8,                        /* idx 8  - mask for sector 8                 */
-  FLASH_Sector_9,                        /* idx 9  - mask for sector 9                 */
-  FLASH_Sector_10,                       /* idx 10 - mask for sector 10                */
-  FLASH_Sector_11,                       /* idx 11 - mask for sector 11                */
-  FLASH_Sector_12,                       /* idx 12 - mask for sector 12                */
-  FLASH_Sector_13,                       /* idx 13 - mask for sector 13                */
-  FLASH_Sector_14,                       /* idx 14 - mask for sector 14                */
-  FLASH_Sector_15,                       /* idx 15 - mask for sector 15                */
-  FLASH_Sector_16,                       /* idx 16 - mask for sector 16                */
-  FLASH_Sector_17,                       /* idx 17 - mask for sector 17                */
-  FLASH_Sector_18,                       /* idx 18 - mask for sector 18                */
-  FLASH_Sector_19,                       /* idx 19 - mask for sector 19                */
-  FLASH_Sector_20,                       /* idx 20 - mask for sector 20                */
-  FLASH_Sector_21,                       /* idx 21 - mask for sector 21                */
-  FLASH_Sector_22,                       /* idx 22 - mask for sector 22                */
-  FLASH_Sector_23                        /* idx 23 - mask for sector 23                */
-};
 
 
 /****************************************************************************************
@@ -290,7 +263,7 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
   {
     return BLT_FALSE;
   }
-
+  
   /* make sure the addresses are within the flash device */
   if ((FlashGetSector(addr) == FLASH_INVALID_SECTOR) || \
       (FlashGetSector(addr+len-1) == FLASH_INVALID_SECTOR))
@@ -329,7 +302,7 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
   {
     return BLT_FALSE;
   }
-
+  
   /* obtain the first and last sector number */
   first_sector = FlashGetSector(addr);
   last_sector  = FlashGetSector(addr+len-1);
@@ -648,18 +621,10 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_int8u  sector_num;
-  blt_bool   result = BLT_TRUE;
   blt_addr   prog_addr;
   blt_int32u prog_data;
   blt_int32u word_cnt;
-
-  /* check that address is actually within flash */
-  sector_num = FlashGetSector(block->base_addr);
-  if (sector_num == FLASH_INVALID_SECTOR)
-  {
-    return BLT_FALSE;
-  }
+  blt_bool   result = BLT_TRUE;
 
 #if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
   #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE == 0)
@@ -677,19 +642,9 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
-  /* unlock the flash array */
-  FLASH_Unlock();
-  /* clear pending flags (if any) */
-  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR |
-                  FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR|FLASH_FLAG_PGSERR);
-  /* check that the flash peripheral is not busy */
-  if (FLASH_GetStatus() == FLASH_BUSY)
-  {
-    /* lock the flash array again */
-    FLASH_Lock();
-    /* could not perform erase operation */
-    return BLT_FALSE;
-  }
+  /* unlock the flash peripheral to enable the flash control register access. */
+  HAL_FLASH_Unlock();
+
   /* program all words in the block one by one */
   for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
   {
@@ -698,7 +653,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
     /* keep the watchdog happy */
     CopService();
     /* program the word */
-    if (FLASH_ProgramWord(prog_addr, prog_data) != FLASH_COMPLETE)
+    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, prog_addr, prog_data) != HAL_OK)
     {
       result = BLT_FALSE;
       break;
@@ -710,9 +665,11 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
       break;
     }
   }
-  /* lock the flash array again */
-  FLASH_Lock();
-  /* still here so all is okay */
+
+  /* lock the flash peripheral to disable the flash control register access. */
+  HAL_FLASH_Lock();
+
+  /* Give the result back to the caller. */
   return result;
 } /*** end of FlashWriteBlock ***/
 
@@ -726,49 +683,56 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 ****************************************************************************************/
 static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 {
-  blt_int8u sector_cnt;
+  blt_bool result = BLT_TRUE;
+  blt_int8u sectorIdx;
+  FLASH_EraseInitTypeDef eraseInitStruct;
+  blt_int32u eraseSectorError = 0;
 
   /* validate the sector numbers */
   if (first_sector > last_sector)
   {
-    return BLT_FALSE;
+    result = BLT_FALSE;
   }
   if ((first_sector < flashLayout[0].sector_num) || \
       (last_sector > flashLayout[FLASH_TOTAL_SECTORS-1].sector_num))
   {
-    return BLT_FALSE;
+    result = BLT_FALSE;
   }
-  /* unlock the flash array */
-  FLASH_Unlock();
-  /* clear pending flags (if any) */
-  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR |
-                  FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR|FLASH_FLAG_PGSERR);
-  /* check that the flash peripheral is not busy */
-  if (FLASH_GetStatus() == FLASH_BUSY)
+
+  /* only move forward with the erase operation if all is okay so far */
+  if (result == BLT_TRUE)
   {
-    /* lock the flash array again */
-    FLASH_Lock();
-    /* could not perform erase operation */
-    return BLT_FALSE;
-  }
-  /* erase all sectors one by one */
-  for (sector_cnt=first_sector; sector_cnt<= last_sector; sector_cnt++)
-  {
-    /* keep the watchdog happy */
-    CopService();
-    /* submit the sector erase request */
-    if (FLASH_EraseSector(flashSectorNumToMask[sector_cnt], VoltageRange_3) != FLASH_COMPLETE)
+    /* intialize the sector erase info structure */
+    eraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
+    eraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+    eraseInitStruct.NbSectors = 1;
+
+    /* unlock the flash array */
+    HAL_FLASH_Unlock();
+
+    /* erase all sectors one by one */
+    for (sectorIdx=first_sector; sectorIdx<= last_sector; sectorIdx++)
     {
-      /* lock the flash array again */
-      FLASH_Lock();
-      /* could not perform erase operation */
-      return BLT_FALSE;
+      /* keep the watchdog happy */
+      CopService();
+      /* set the sector to erase */
+      eraseInitStruct.Sector = sectorIdx;
+      /* submit the sector erase request */
+      if(HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&eraseSectorError) != HAL_OK)
+      {
+        /* could not perform erase operation */
+        result = BLT_FALSE;
+        /* error detected so don't bother continuing with the loop */
+        break;
+      }
     }
+
+    /* lock the flash array again */
+    HAL_FLASH_Lock();
   }
-  /* lock the flash array again */
-  FLASH_Lock();
-  /* still here so all went okay */
-  return BLT_TRUE;
+
+  /* give the result back to the caller */
+  return result;
 } /*** end of FlashEraseSectors ***/
 
 
@@ -780,6 +744,7 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
 ****************************************************************************************/
 static blt_int8u FlashGetSector(blt_addr address)
 {
+  blt_int8u result = FLASH_INVALID_SECTOR;
   blt_int8u sectorIdx;
 
   /* search through the sectors to find the right one */
@@ -792,12 +757,14 @@ static blt_int8u FlashGetSector(blt_addr address)
         (address < (flashLayout[sectorIdx].sector_start + \
                     flashLayout[sectorIdx].sector_size)))
     {
-      /* return the sector number */
-      return flashLayout[sectorIdx].sector_num;
+      /* found the sector we are looking for so store it */
+      result = flashLayout[sectorIdx].sector_num;
+      /* all done so no need to continue looping */
+      break;
     }
   }
-  /* still here so no valid sector found */
-  return FLASH_INVALID_SECTOR;
+  /* give the result back to the caller */
+  return result;
 } /*** end of FlashGetSector ***/
 
 
