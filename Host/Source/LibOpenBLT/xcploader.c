@@ -81,7 +81,7 @@ static uint16_t XcpLoaderGetOrderedWord(uint8_t const * data);
 static bool XcpLoaderSendCmdConnect(void);
 static bool XcpLoaderSendCmdGetStatus(uint8_t * session, uint8_t * protectedResources,
                                       uint16_t * configId);
-static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t * seed, uint8_t * seedLen);
+static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t mode, uint8_t * seed, uint8_t * seedLen);
 static bool XcpLoaderSendCmdUnlock(uint8_t const * key, uint8_t keyLen,
                                    uint8_t * protectedResources);
 static bool XcpLoaderSendCmdSetMta(uint32_t address);
@@ -316,10 +316,16 @@ static bool XcpLoaderStart(void)
     if ( (protectedResources & XCPPROTECT_RESOURCE_PGM) != 0)
     {
       uint8_t availableResources = 0;
-      uint8_t seed[XCPLOADER_PACKET_SIZE_MAX-2] = { 0 };
-      uint8_t seedLen = 0;
-      uint8_t key[XCPLOADER_PACKET_SIZE_MAX-2] = { 0 };
-      uint8_t keyLen = 0;
+      uint8_t seed[256] = { 0 };
+      uint8_t *seedPtr = &seed[0];
+      uint8_t seedTotalLen = 0;
+      uint8_t seedRemainingLen = 0;
+      uint8_t key[256] = { 0 };
+      uint8_t keyTotalLen = 0;
+      uint8_t keyRemainingLen = 0;
+      uint8_t keyCurrentLen = 0;
+      uint8_t *keyPtr = &key[0];
+
       /* Make sure the XCP protection module contains an unlock algorithm for the
        * programming resource.
        */
@@ -340,22 +346,41 @@ static bool XcpLoaderStart(void)
           result = false;
         }
       }
-      /* Request the seed for unlocking the programming resources. */
+      /* Request (first part of) the seed for unlocking the programming resources. */
       if (result)
       {
-        if (!XcpLoaderSendCmdGetSeed(XCPPROTECT_RESOURCE_PGM, seed, &seedLen))
+        if (!XcpLoaderSendCmdGetSeed(XCPPROTECT_RESOURCE_PGM, 0, seedPtr, &seedRemainingLen))
         {
           result = false;
+        }
+        else
+        {
+          /* store the total seed length */
+          seedTotalLen = seedRemainingLen;
+        }
+      }
+      /* Check if more parts of the seed need to be requested. */
+      if (result)
+      {
+        while (seedRemainingLen > (xcpMaxDto - 2))
+        {
+          /* update the seed pointer for the next part */
+          seedPtr += (xcpMaxDto - 2);
+          if (!XcpLoaderSendCmdGetSeed(XCPPROTECT_RESOURCE_PGM, 1, seedPtr, &seedRemainingLen))
+          {
+            result = false;
+            break;
+          }
         }
       }
       /* Only continue with resource unlock operation if not already unlocked, which
        * is indicated by a seed length of 0.
        */
-      if ( (result) && (seedLen > 0) )
+      if ( (result) && (seedTotalLen > 0) )
       {
         /* Compute the key using the XCP protection module. */
-        if (!XCPProtectComputeKeyFromSeed(XCPPROTECT_RESOURCE_PGM, seedLen, seed,
-                                          &keyLen, key))
+        if (!XCPProtectComputeKeyFromSeed(XCPPROTECT_RESOURCE_PGM, seedTotalLen, seed,
+                                          &keyTotalLen, key))
         {
           result = false;
         }
@@ -363,16 +388,38 @@ static bool XcpLoaderStart(void)
         if (result)
         {
           uint8_t currentlyProtectedResources = 0;
-          /* Send the key to unlock the resource. */
-          if (!XcpLoaderSendCmdUnlock(key, keyLen, &currentlyProtectedResources))
+
+          /* Initialize remaining length */
+          keyRemainingLen = keyTotalLen;
+
+          /* Send the key to unlock the resource */
+          while (keyRemainingLen > 0)
           {
-            result = false;
-          }
-          /* Double-check that the programming resource is now unlocked. */
-          else if ((currentlyProtectedResources & XCPPROTECT_RESOURCE_PGM) != 0)
-          {
-            /* Programming resource unlock operation failed. */
-            result = false;
+            /* Determine how many key bytes are about to be sent. */
+            keyCurrentLen = keyRemainingLen;
+            if (keyCurrentLen > (xcpMaxCto - 2))
+            {
+              keyCurrentLen = (xcpMaxCto - 2);
+            }
+            /* The the (possible partial) unlock command. */
+            if (!XcpLoaderSendCmdUnlock(keyPtr, keyRemainingLen, &currentlyProtectedResources))
+            {
+              result = false;
+              break;
+            }
+            /* Update key pointer and the remaining length */
+            keyRemainingLen -= keyCurrentLen;
+            keyPtr += keyCurrentLen;
+            /* Check if the key was now completely sent. */
+            if (keyRemainingLen == 0)
+            {
+              /* Double-check that the programming resource is now unlocked. */
+              if ((currentlyProtectedResources & XCPPROTECT_RESOURCE_PGM) != 0)
+              {
+                /* Programming resource unlock operation failed. */
+                result = false;
+              }
+            }
           }
         }
       }
@@ -825,14 +872,17 @@ static bool XcpLoaderSendCmdGetStatus(uint8_t * session, uint8_t * protectedReso
 /************************************************************************************//**
 ** \brief     Sends the XCP Get Seed command.
 ** \param     resource The resource to unlock (XCPPROTECT_RESOURCE_xxx).
+** \param     mode 0 for the first part of the seed, 1 for the remaining part.
 ** \param     seed Pointer to byte array where the received seed is stored.
 ** \param     seedLen Length of the seed in bytes.
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t * seed, uint8_t * seedLen)
+static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t mode, uint8_t * seed, 
+                                    uint8_t * seedLen)
 {
   bool result = false;
+  uint8_t currentSeedLen;
   tXcpTransportPacket cmdPacket;
   tXcpTransportPacket resPacket;
 
@@ -857,12 +907,7 @@ static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t * seed, uint8_t * 
       result = true;
       /* Prepare the command packet. */
       cmdPacket.data[0] = XCPLOADER_CMD_GET_SEED;
-      /* Always use mode 0 because only seeds up to 48-bit are supported currently.
-       * This fits in 6-bytes, making it work with the all currently supported transport
-       * layers. CAN is the limiting one, because the max packet length is 8-bytes for
-       * this transport layer.
-       */
-      cmdPacket.data[1] = 0;
+      cmdPacket.data[1] = mode;
       cmdPacket.data[2] = resource;
       cmdPacket.len = 3;
       /* Send the packet. */
@@ -886,20 +931,18 @@ static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t * seed, uint8_t * 
       /* Extract and store the seed. */
       if (result)
       {
-        /* Make sure the seed length is valid. */
-        if (resPacket.data[1] > (xcpMaxCto - 2))
+        /* Store the seed length. */
+        *seedLen = resPacket.data[1];
+        /* Determine the number of seed bytes in the current response */
+        currentSeedLen = *seedLen;
+        if (currentSeedLen > (xcpMaxCto - 2))
         {
-          result = false;
+          currentSeedLen = (xcpMaxCto - 2);
         }
-        else
+        /* Store the seed bytes. */
+        for (uint8_t idx = 0; idx < currentSeedLen; idx++)
         {
-          /* Store the seed length. */
-          *seedLen = resPacket.data[1];
-          /* Store the seed. */
-          for (uint8_t idx = 0; idx < *seedLen; idx++)
-          {
-            seed[idx] = resPacket.data[idx + 2];
-          }
+          seed[idx] = resPacket.data[idx + 2];
         }
       }
     }
@@ -921,6 +964,7 @@ static bool XcpLoaderSendCmdUnlock(uint8_t const * key, uint8_t keyLen,
                                    uint8_t * protectedResources)
 {
   bool result = false;
+  uint8_t keyCurrentLen;
   tXcpTransportPacket cmdPacket;
   tXcpTransportPacket resPacket;
 
@@ -928,23 +972,29 @@ static bool XcpLoaderSendCmdUnlock(uint8_t const * key, uint8_t keyLen,
   assert(xcpSettings.transport != NULL);
   assert(key != NULL);
   assert(keyLen > 0);
-  assert(keyLen <= (xcpMaxCto - 2));
   assert(protectedResources != NULL);
 
   /* Only continue with a valid transport layer and parameters. */
   if ( (xcpSettings.transport != NULL) && (key != NULL) && (keyLen > 0) &&
-       (keyLen <= (xcpMaxCto - 2)) && (protectedResources != NULL) ) /*lint !e774 */
+       (protectedResources != NULL) ) /*lint !e774 */
   {
     /* Init the result value to okay and only set it to error when a problem occurred. */
     result = true;
     /* Prepare the command packet. */
     cmdPacket.data[0] = XCPLOADER_CMD_UNLOCK;
     cmdPacket.data[1] = keyLen;
-    for (uint8_t idx = 0; idx < keyLen; idx++)
+    /* Determine number of key bytes for the packet. */
+    keyCurrentLen = keyLen;
+    if (keyCurrentLen > (xcpMaxCto - 2))
+    {
+      keyCurrentLen = xcpMaxCto - 2;
+    }
+    /* Copy key bytes. */
+    for (uint8_t idx = 0; idx < keyCurrentLen; idx++)
     {
       cmdPacket.data[idx + 2] = key[idx];
     }
-    cmdPacket.len = keyLen + 2;
+    cmdPacket.len = keyCurrentLen + 2;
     /* Send the packet. */
     if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket,
                                            xcpSettings.timeoutT1))

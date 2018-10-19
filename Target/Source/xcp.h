@@ -53,10 +53,10 @@
 
 #if (BOOT_CPU_BYTE_ORDER_MOTOROLA > 0)
 /** \brief XCP byte ordering according to the Motorola (big-endian). */
-#define XCP_MOTOROLA_FORMAT          (0x01)
+#define XCP_MOTOROLA_FORMAT            (0x01)
 #else
 /** \brief XCP byte ordering according to the Intel (little-endian). */
-#define XCP_MOTOROLA_FORMAT          (0x00)
+#define XCP_MOTOROLA_FORMAT            (0x00)
 #endif
 
 /** \brief Enable (=1) or disable (=0) support for the calibration resource. This is
@@ -239,6 +239,11 @@
 #define XCP_CS_CRC32           (0x09)
 /** \brief Use user defined algorithm. */
 #define XCP_CS_USER            (0xff)
+
+/** \brief Maximum number of bytes of a seed for the seed/key security feature. */
+#define XCP_SEED_MAX_LEN       (BOOT_XCP_SEED_MAX_LEN)
+/** \brief Maximum number of bytes of a key for the seed/key security feature. */
+#define XCP_KEY_MAX_LEN        (BOOT_XCP_KEY_MAX_LEN)
 
 
 /****************************************************************************************

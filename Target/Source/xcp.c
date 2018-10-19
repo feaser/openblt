@@ -915,68 +915,120 @@ static void XcpCmdBuildCheckSum(blt_int8u *data)
 static void XcpCmdGetSeed(blt_int8u *data)
 {
   blt_int8u resourceOK;
-
-  /* init resource check variable as if an illegal resource is requested */
-  resourceOK = 0;
-
-  /* check if calibration/paging resource is requested for seed/key and make
-   * sure this is the only requested resource
-   */
-  if (((data[2] & XCP_RES_CALPAG) > 0) && ((data[2] & ~XCP_RES_CALPAG) == 0))
-  {
-    resourceOK = 1;
-  }
-
-  /* check if programming resource is requested for seed/key and make
-   * sure this is the only requested resource
-   */
-  if (((data[2] & XCP_RES_PGM) > 0) && ((data[2] & ~XCP_RES_PGM) == 0))
-  {
-    resourceOK = 1;
-  }
-
-  /* check if data acquisition resource is requested for seed/key and make
-   * sure this is the only requested resource
-   */
-  if (((data[2] & XCP_RES_DAQ) > 0) && ((data[2] & ~XCP_RES_DAQ) == 0))
-  {
-    resourceOK = 1;
-  }
-
-  /* check if data stimulation resource is requested for seed/key and make
-   * sure this is the only requested resource
-   */
-  if (((data[2] & XCP_RES_STIM) > 0) && ((data[2] & ~XCP_RES_STIM) == 0))
-  {
-    resourceOK = 1;
-  }
-
-  /* now process the resource validation */
-  if (resourceOK == 0)
-  {
-    XcpSetCtoError(XCP_ERR_OUT_OF_RANGE);
-    return;
-  }
-
-  /* store resource for which the seed/key sequence is started */
-  xcpInfo.s_n_k_resource = data[2];
+  /* made seed buffer static to lower stack load */
+  static blt_int8u seedBuffer[XCP_SEED_MAX_LEN];
+  static blt_int8u seedRemainderLen = 0;
+  static blt_int8u *seedCurrentPtr;
+  static blt_bool sequenceInProgress = BLT_FALSE;
+  blt_int8u seedCurrentLen;
 
   /* set packet id to command response packet */
   xcpInfo.ctoData[0] = XCP_PID_RES;
 
-  /* request the seed from the application */
-  xcpInfo.ctoData[1] = XcpGetSeed(xcpInfo.s_n_k_resource, &xcpInfo.ctoData[2]);
-
-  /* seed cannot be longer than XCP_CTO_PACKET_LEN-2 */
-  if (xcpInfo.ctoData[1] > (XCP_CTO_PACKET_LEN-2))
+  /* validate requested resource in case the mode flag equals 0 */
+  if (data[1] == 0)
   {
-    /* seed length is too long */
-    XcpSetCtoError(XCP_ERR_OUT_OF_RANGE);
-    return;
+    /* init resource check variable as if an illegal resource is requested */
+    resourceOK = 0;
+
+    /* check if calibration/paging resource is requested for seed/key and make
+     * sure this is the only requested resource
+     */
+    if (((data[2] & XCP_RES_CALPAG) > 0) && ((data[2] & ~XCP_RES_CALPAG) == 0))
+    {
+      resourceOK = 1;
+    }
+
+    /* check if programming resource is requested for seed/key and make
+     * sure this is the only requested resource
+     */
+    if (((data[2] & XCP_RES_PGM) > 0) && ((data[2] & ~XCP_RES_PGM) == 0))
+    {
+      resourceOK = 1;
+    }
+
+    /* check if data acquisition resource is requested for seed/key and make
+     * sure this is the only requested resource
+     */
+    if (((data[2] & XCP_RES_DAQ) > 0) && ((data[2] & ~XCP_RES_DAQ) == 0))
+    {
+      resourceOK = 1;
+    }
+
+    /* check if data stimulation resource is requested for seed/key and make
+     * sure this is the only requested resource
+     */
+    if (((data[2] & XCP_RES_STIM) > 0) && ((data[2] & ~XCP_RES_STIM) == 0))
+    {
+      resourceOK = 1;
+    }
+
+    /* now process the resource validation */
+    if (resourceOK == 0)
+    {
+      XcpSetCtoError(XCP_ERR_OUT_OF_RANGE);
+      return;
+    }
+
+    /* check if the resource is already unlocked */
+    if ((xcpInfo.protection & data[2]) == 0)
+    {
+      /* set the seed length to 0 to indicate that the resource is already unlocked */
+      xcpInfo.ctoData[1] = 0;
+      /* set packet length */
+      xcpInfo.ctoLen = 2;
+      /* no need to continue processing */
+      return;
+    }
+
+    /* store resource for which the seed/key sequence is started */
+    xcpInfo.s_n_k_resource = data[2];
   }
 
+  /* process the mode flag. 0 is first part of the seed, 1 is remainder of the seed */
+  if (data[1] == 0)
+  {
+    /* set flag that a seed reading sequence is now in progress */
+    sequenceInProgress = BLT_TRUE;
+    /* obtain the seed and store it in the buffer */
+    seedRemainderLen = XcpGetSeed(xcpInfo.s_n_k_resource, seedBuffer);
+    /* protect against buffer overrun */
+    ASSERT_RT(seedRemainderLen <= XCP_SEED_MAX_LEN);
+    /* set seed pointer */
+    seedCurrentPtr = &seedBuffer[0];
+  }
+  /* seed remainder is requested */
+  else
+  {
+    /* this is only allowed if a sequence is in progress */
+    if (sequenceInProgress == BLT_FALSE)
+    {
+      /* invalid sequence */
+      XcpSetCtoError(XCP_ERR_SEQUENCE);
+      /* reset seed/key resource variable for possible next unlock */
+      xcpInfo.s_n_k_resource = 0;
+      return;
+    }
+  }
+  /* determine number of seed bytes that fit in the first response */
+  seedCurrentLen = seedRemainderLen;
+  if (seedCurrentLen > (XCP_CTO_PACKET_LEN-2))
+  {
+    seedCurrentLen = XCP_CTO_PACKET_LEN-2;
+  }
+  /* store the first part of the seed in the response */
+  CpuMemCopy((blt_addr)(&xcpInfo.ctoData[2]), (blt_addr)seedCurrentPtr, seedCurrentLen);
+  xcpInfo.ctoData[1] = seedRemainderLen;
+  /* update control variables */
+  seedRemainderLen -= seedCurrentLen;
+  seedCurrentPtr += seedCurrentLen;
+  /* reset sequence flag at the end of the sequence */
+  if (seedRemainderLen == 0)
+  {
+    sequenceInProgress = BLT_FALSE;
+  }
   /* set packet length */
-  xcpInfo.ctoLen = xcpInfo.ctoData[1] + 2;
+  xcpInfo.ctoLen = seedCurrentLen + 2;
 } /*** end of XcpCmdGetSeed ***/
 
 
@@ -989,41 +1041,82 @@ static void XcpCmdGetSeed(blt_int8u *data)
 ****************************************************************************************/
 static void XcpCmdUnlock(blt_int8u *data)
 {
-  /* key cannot be longer than XCP_CTO_PACKET_LEN-2 */
-  if (data[1] > (XCP_CTO_PACKET_LEN-2))
+  /* made key buffer static to lower stack load */
+  static blt_int8u keyBuffer[XCP_KEY_MAX_LEN];
+  static blt_int8u keyPreviousRemainder = 0;
+  static blt_int8u keyTotalLen = 0;
+  static blt_int8u *keyCurrentPtr;
+  static blt_int8u keyReceivedLen = 0;
+  blt_int8u keyCurrentLen;
+
+  /* verify that the key will actually fit in the buffer */
+  if (data[1] > XCP_KEY_MAX_LEN)
   {
-    /* key is too long incorrect */
-    XcpSetCtoError(XCP_ERR_SEQUENCE);
+    /* reset previous remainder for the next loop iteration */
+    keyPreviousRemainder = 0;
+    /* key is too long */
+    XcpSetCtoError(XCP_ERR_OUT_OF_RANGE);
+    /* reset seed/key resource variable for possible next unlock */
+    xcpInfo.s_n_k_resource = 0;
     return;
   }
 
-  /* verify the key */
-  if (XcpVerifyKey(xcpInfo.s_n_k_resource, &data[2], data[1]) == 0)
+  /* is this the start of a key reception? the first unlock message contains the total
+   * length of the key and subsequent messages the remainder length. if the received
+   * length is >= than the previously received remainder, it must be the reception
+   * start of a new key.
+   */
+  if (data[1] >= keyPreviousRemainder)
   {
-    /* invalid key so inform the master and do a disconnect */
-    XcpSetCtoError(XCP_ERR_ACCESS_LOCKED);
+    /* store the total length of the key */
+    keyTotalLen = data[1];
+    /* initialize pointer to key reception buffer */
+    keyCurrentPtr = &keyBuffer[0];
+    /* reset number of received key bytes */
+    keyReceivedLen = 0;
 
-    /* indicate that the xcp connection is disconnected */
-    xcpInfo.connected = 0;
-
-    /* enable resource protection */
-    XcpProtectResources();
-
-    return;
   }
-
-  /* key correct so unlock the resource */
-  xcpInfo.protection &= ~xcpInfo.s_n_k_resource;
-
-  /* reset seed/key resource variable for possible next unlock */
-  xcpInfo.s_n_k_resource = 0;
+  /* store length / remainder for checking during the next iteration */
+  keyPreviousRemainder = data[1];
+  /* determine how many key bytes were received */
+  keyCurrentLen = data[1];
+  if (keyCurrentLen > (XCP_CTO_PACKET_LEN-2))
+  {
+    keyCurrentLen = XCP_CTO_PACKET_LEN-2;
+  }
+  /* store the received key bytes to the buffer */
+  CpuMemCopy((blt_addr)keyCurrentPtr, (blt_addr)(&data[2]), keyCurrentLen);
+  /* update control variables */
+  keyCurrentPtr += keyCurrentLen;
+  keyReceivedLen += keyCurrentLen;
+  /* check if the entire key was received */
+  if (keyReceivedLen >= keyTotalLen)
+  {
+    /* reset previous remainder for the next loop iteration */
+    keyPreviousRemainder = 0;
+    /* verify the key */
+    if (XcpVerifyKey(xcpInfo.s_n_k_resource, keyBuffer, keyTotalLen) == 0)
+    {
+      /* invalid key so inform the master and do a disconnect */
+      XcpSetCtoError(XCP_ERR_ACCESS_LOCKED);
+      /* indicate that the xcp connection is disconnected */
+      xcpInfo.connected = 0;
+      /* reset seed/key resource variable for possible next unlock */
+      xcpInfo.s_n_k_resource = 0;
+      /* enable resource protection */
+      XcpProtectResources();
+      return;
+    }
+    /* key correct so unlock the resource */
+    xcpInfo.protection &= ~xcpInfo.s_n_k_resource;
+    /* reset seed/key resource variable for possible next unlock */
+    xcpInfo.s_n_k_resource = 0;
+  }
 
   /* set packet id to command response packet */
   xcpInfo.ctoData[0] = XCP_PID_RES;
-
   /* report the current resource protection */
   xcpInfo.ctoData[1] = xcpInfo.protection;
-
   /* set packet length */
   xcpInfo.ctoLen = 2;
 } /*** end of XcpCmdUnlock ***/
