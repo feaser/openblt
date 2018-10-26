@@ -135,6 +135,8 @@ void UsbInit(void)
   USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
   /* register the bootloader's custom USB Bulk based class */
   USBD_RegisterClass(&hUsbDeviceFS, &USBD_Bulk);
+  /* inform application about the connect event */
+  UsbConnectHook(BLT_TRUE);
   /* start the USB device */
   USBD_Start(&hUsbDeviceFS);
   /* perform low level connect of the device */
@@ -162,6 +164,8 @@ void UsbFree(void)
   HAL_PCD_DevDisconnect((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
   /* uninitialize the device */
   USBD_DeInit(&hUsbDeviceFS);
+  /* inform application about the disconnect event */
+  UsbConnectHook(BLT_FALSE);
 } /*** end of UsbFree ***/
 
 

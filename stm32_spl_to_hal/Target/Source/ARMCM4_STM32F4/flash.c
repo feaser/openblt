@@ -54,7 +54,6 @@
  *         of the checksum in the user program accordingly. Otherwise the checksum
  *         verification will always fail.
  */
-/* TODO ##Vg Verify checksum offset. */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
 #define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x188)
 #endif

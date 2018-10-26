@@ -226,6 +226,22 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Alternate = LL_GPIO_AF_9;
   LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 #endif
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_11 | LL_GPIO_PIN_12;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_10;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#endif
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB clock enable. */
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_OTGFS);
+#endif
 } /*** end of HAL_MspInit ***/
 
 
@@ -238,6 +254,11 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB clock disable. */
+  LL_AHB2_GRP1_DisableClock(LL_AHB2_GRP1_PERIPH_OTGFS);
+#endif
+
   /* Deinit used GPIOs. */
   LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOB);

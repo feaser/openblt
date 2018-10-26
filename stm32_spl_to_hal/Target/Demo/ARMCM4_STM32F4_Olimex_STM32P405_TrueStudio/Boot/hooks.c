@@ -34,6 +34,7 @@
 #include "stm32f4xx.h"                           /* STM32 registers and drivers        */
 #include "stm32f4xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 #include "stm32f4xx_ll_usart.h"                  /* STM32 LL USART header              */
+#include "stm32f4xx_ll_bus.h"                    /* STM32 LL BUS header                */
 
 
 /****************************************************************************************
@@ -261,7 +262,7 @@ blt_bool NvmWriteChecksumHook(void)
 ****************************************************************************************/
 void UsbConnectHook(blt_bool connect)
 {
-  GPIO_InitTypeDef  GPIO_InitStructure;
+  LL_GPIO_InitTypeDef GPIO_InitStruct;
   static blt_bool initialized = BLT_FALSE;
 
   /* the connection to the USB bus is typically controlled by software through a digital
@@ -270,14 +271,14 @@ void UsbConnectHook(blt_bool connect)
   if (initialized == BLT_FALSE)
   {
     /* enable the clock for PC11 */
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
     /* configure DIS pin as open drain digital output */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOC, &GPIO_InitStructure);
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_11;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
     /* set to initialized as this part only has to be done once after reset */
     initialized = BLT_TRUE;
   }
@@ -286,12 +287,12 @@ void UsbConnectHook(blt_bool connect)
   if (connect == BLT_TRUE)
   {
     /* the GPIO has a pull-up so to connect to the USB bus the pin needs to go low */
-    GPIO_ResetBits(GPIOC, GPIO_Pin_11);
+    LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_11);
   }
   else
   {
     /* the GPIO has a pull-up so to disconnect to the USB bus the pin needs to go high */
-    GPIO_SetBits(GPIOC, GPIO_Pin_11);
+    LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_11);
   }
 } /*** end of UsbConnect ***/
 
