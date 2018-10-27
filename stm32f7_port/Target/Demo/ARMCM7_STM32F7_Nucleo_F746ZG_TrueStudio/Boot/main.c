@@ -153,8 +153,8 @@ void HAL_MspInit(void)
   LL_GPIO_InitTypeDef GPIO_InitStruct;
 
   /* PWR and SYSCFG clock enable. */
-  __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
 
   /* GPIO ports clock enable. */
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
@@ -164,6 +164,10 @@ void HAL_MspInit(void)
 #if (BOOT_COM_UART_ENABLE > 0)
   /* UART clock enable. */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3);
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock enable. */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_CAN1);
 #endif
 
   /* Configure GPIO pin for the LED. */
@@ -191,6 +195,16 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
   LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 #endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_0 | LL_GPIO_PIN_1;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_9;
+  LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+#endif
 } /*** end of HAL_MspInit ***/
 
 
@@ -211,6 +225,10 @@ void HAL_MspDeInit(void)
   LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOB);
 
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_CAN1);
+#endif
 #if (BOOT_COM_UART_ENABLE > 0)
   /* UART clock disable. */
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USART3);
@@ -222,8 +240,8 @@ void HAL_MspDeInit(void)
   LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
 
   /* SYSCFG and PWR clock disable. */
-  __HAL_RCC_SYSCFG_CLK_DISABLE();
-  __HAL_RCC_PWR_CLK_DISABLE();
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_PWR);
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
 } /*** end of HAL_MspDeInit ***/
 
 
