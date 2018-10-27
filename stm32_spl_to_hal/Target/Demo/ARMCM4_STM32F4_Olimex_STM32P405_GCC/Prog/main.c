@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_TrueStudio/Prog/main.c
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_GCC/Prog/main.c
 * \brief        Demo program application source file.
-* \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_TrueStudio
+* \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
