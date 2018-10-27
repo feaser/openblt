@@ -41,6 +41,16 @@
 #include "PCANBasic.h"                      /* for PCAN-Basic API                      */
 
 
+/****************************************************************************************
+* Macro definitions
+****************************************************************************************/
+/** \brief Configurable to enabled/disable the automatic CAN bus off recovery feature.
+ *         Testing shows that it is better to leave this disabled. If no connection
+ *         with the target can be made, the PCAN-USB automatically re-initialized anyway.
+ */
+#define PCANUSB_BUSOFF_AUTORECOVERY_ENABLE       (0u)
+
+
 /***************************************************************************************
 * Type definitions
 ****************************************************************************************/
@@ -280,7 +290,9 @@ static bool PCanUsbConnect(void)
   bool channelSupported;
   bool libInitialized = false;
   TPCANBaudrate baudrate = PCAN_BAUD_500K;
+#if (PCANUSB_BUSOFF_AUTORECOVERY_ENABLE > 0)
   uint32_t iBuffer;
+#endif
 
   /* Convert the baudrate to a value supported by the PCAN-Basic API. */
   switch (pCanUsbSettings.baudrate)
@@ -370,6 +382,7 @@ static bool PCanUsbConnect(void)
       }
     }
 
+#if (PCANUSB_BUSOFF_AUTORECOVERY_ENABLE > 0)
     /* Enable the bus off auto reset. */
     if (result)
     {
@@ -381,6 +394,7 @@ static bool PCanUsbConnect(void)
         result = false;
       }
     }
+#endif
 
     /* Configure reception acceptance filter, if it is not supposed to be fully open. */
     if ( (result) && (pCanUsbSettings.mask != 0x00000000u) )

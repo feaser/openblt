@@ -30,11 +30,11 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#if (BOOT_COM_UART_ENABLE > 0)
 #include "stm32l4xx.h"                           /* STM32 CPU and HAL header           */
 #include "stm32l4xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/

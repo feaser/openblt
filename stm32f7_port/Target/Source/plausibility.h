@@ -499,6 +499,21 @@
 #error "BOOT_XCP_PACKET_RECEIVED_HOOK must be 0 or 1"
 #endif
 
+#ifndef BOOT_XCP_SEED_MAX_LEN
+#define BOOT_XCP_SEED_MAX_LEN           (64)
+#endif
+
+#if (BOOT_XCP_SEED_MAX_LEN <= 0)
+#error "BOOT_XCP_SEED_MAX_LEN must be > 0"
+#endif
+
+#ifndef BOOT_XCP_KEY_MAX_LEN
+#define BOOT_XCP_KEY_MAX_LEN            (64)
+#endif
+
+#if (BOOT_XCP_KEY_MAX_LEN <= 0)
+#error "BOOT_XCP_KEY_MAX_LEN must be > 0"
+#endif
 
 #endif /* PLAUSIBILITY_H */
 /*********************************** end of plausibility.h *****************************/

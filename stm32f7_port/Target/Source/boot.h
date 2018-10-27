@@ -63,6 +63,9 @@
 #include "backdoor.h"                                 /* backdoor entry module         */
 #include "file.h"                                     /* file system module            */
 #include "com.h"                                      /* communication interface       */
+#if (ADDON_GATEWAY_MOD_ENABLE > 0)
+#include "gateway.h"                                  /* gateway add-on module         */
+#endif
 
 
 /****************************************************************************************
