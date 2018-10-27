@@ -31,11 +31,11 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#if (BOOT_COM_CAN_ENABLE > 0)
 #include "stm32f4xx.h"                           /* STM32 CPU and HAL header           */
 #include "stm32f4xx_ll_rcc.h"                    /* STM32 LL RCC header                */
 
 
-#if (BOOT_COM_CAN_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
