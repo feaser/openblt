@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_GCC/Prog/boot.h
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_TrueStudio/Prog/boot.h
 * \brief        Demo program bootloader interface header file.
-* \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_GCC
+* \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_TrueStudio
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2017  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E

@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_GCC/Prog/timer.h
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_TrueStudio/Prog/timer.h
 * \brief        Timer driver header file.
-* \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_GCC
+* \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_TrueStudio
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2017  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -32,8 +32,6 @@
 * Function prototypes
 ****************************************************************************************/
 void          TimerInit(void);
-void          TimerDeinit(void);
-void          TimerSet(unsigned long timer_value);
 unsigned long TimerGet(void);
 
 #endif /* TIMER_H */

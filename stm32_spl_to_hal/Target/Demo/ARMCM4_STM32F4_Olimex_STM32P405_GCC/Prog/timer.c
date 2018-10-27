@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_GCC/Prog/timer.c
+* \file         Demo/ARMCM4_STM32F4_Olimex_STM32P405_TrueStudio/Prog/timer.c
 * \brief        Timer driver source file.
-* \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_GCC
+* \ingroup      Prog_ARMCM4_STM32F4_Olimex_STM32P405_TrueStudio
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2017  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -32,15 +32,6 @@
 #include "header.h"                                    /* generic header               */
 
 
-/****************************************************************************************
-* Local data declarations
-****************************************************************************************/
-/** \brief Local variable for storing the number of milliseconds that have elapsed since
- *         startup.
- */
-static unsigned long millisecond_counter;
-
-
 /************************************************************************************//**
 ** \brief     Initializes the timer.
 ** \return    none.
@@ -48,35 +39,13 @@ static unsigned long millisecond_counter;
 ****************************************************************************************/
 void TimerInit(void)
 {
-  /* configure the SysTick timer for 1 ms period */
-  SysTick_Config(SystemCoreClock / 1000);
-  /* reset the millisecond counter */
-  TimerSet(0);
+  /* Configure the Systick interrupt time for 1 millisecond. */
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+  /* Configure the Systick. */
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+  /* SysTick_IRQn interrupt configuration. */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 } /*** end of TimerInit ***/
-
-
-/************************************************************************************//**
-** \brief     Stops and disables the timer.
-** \return    none.
-**
-****************************************************************************************/
-void TimerDeinit(void)
-{
-  SysTick->CTRL = 0;
-} /*** end of TimerDeinit ***/
-
-
-/************************************************************************************//**
-** \brief     Sets the initial counter value of the millisecond timer.
-** \param     timer_value initialize value of the millisecond timer.
-** \return    none.
-**
-****************************************************************************************/
-void TimerSet(unsigned long timer_value)
-{
-  /* set the millisecond counter */
-  millisecond_counter = timer_value;
-} /*** end of TimerSet ***/
 
 
 /************************************************************************************//**
@@ -86,8 +55,8 @@ void TimerSet(unsigned long timer_value)
 ****************************************************************************************/
 unsigned long TimerGet(void)
 {
-  /* read and return the millisecond counter value */
-  return millisecond_counter;
+  /* Read and return the tick counter value. */
+  return HAL_GetTick();
 } /*** end of TimerGet ***/
 
 
@@ -98,9 +67,11 @@ unsigned long TimerGet(void)
 ****************************************************************************************/
 void SysTick_Handler(void)
 {
-  /* increment the millisecond counter */
-  millisecond_counter++;
-} /*** end of SysTick_Handler ***/
+  /* Increment the tick counter. */
+  HAL_IncTick();
+  /* Invoke the system tick handler. */
+  HAL_SYSTICK_IRQHandler();
+} /*** end of TimerISRHandler ***/
 
 
 /*********************************** end of timer.c ************************************/

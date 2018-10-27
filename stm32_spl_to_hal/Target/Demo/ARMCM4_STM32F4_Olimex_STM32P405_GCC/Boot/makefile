@@ -49,7 +49,7 @@ rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filte
 
 # Collect all application files in the current directory and its subdirectories, but 
 # exclude flash-layout.c as this one is directly included in a source file, when used.
-PROJ_FILES  = $(filter-out flash_layout.c, $(call rwildcard, , *.c *.h *.S))
+PROJ_FILES  = $(filter-out flash_layout.c, $(call rwildcard, , *.c *.h *.s))
 # Collect bootloader core files
 PROJ_FILES += $(wildcard ../../../Source/*.c)
 PROJ_FILES += $(wildcard ../../../Source/*.h)
@@ -57,7 +57,8 @@ PROJ_FILES += $(wildcard ../../../Source/*.h)
 PROJ_FILES += $(wildcard ../../../Source/ARMCM4_STM32F4/*.c)
 PROJ_FILES += $(wildcard ../../../Source/ARMCM4_STM32F4/*.h)
 # Collect bootloader port compiler specific files
-PROJ_FILES += ../../../Source/ARMCM4_STM32F4/GCC/cpu_comp.c
+PROJ_FILES += $(wildcard ../../../Source/ARMCM4_STM32F4/GCC/*.c)
+PROJ_FILES += $(wildcard ../../../Source/ARMCM4_STM32F4/GCC/*.h)
 # Collect FatFS third party library files
 PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/src/*.c)
 PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/src/*.h)
@@ -79,7 +80,7 @@ SZ = $(TOOL_PATH)arm-none-eabi-size
 #|--------------------------------------------------------------------------------------|
 #| Filter project files
 #|--------------------------------------------------------------------------------------|
-PROJ_ASRCS  = $(filter %.S,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
+PROJ_ASRCS  = $(filter %.s,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CSRCS  = $(filter %.c,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CHDRS  = $(filter %.h,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 
@@ -91,26 +92,22 @@ VPATH    = $(foreach path,$(sort $(foreach file,$(PROJ_FILES),$(dir $(file)))) $
 OBJ_PATH = obj
 BIN_PATH = bin
 INC_PATH = $(patsubst %/,%,$(patsubst %,-I%,$(sort $(foreach file,$(filter %.h,$(PROJ_FILES)),$(dir $(file))))))
-LIB_PATH = -Lcfg 
+LIB_PATH  = 
 
 
 #|--------------------------------------------------------------------------------------|
 #| Options for toolchain binaries                                                       |
 #|--------------------------------------------------------------------------------------|
-HEAP_SIZE   = 0x0000
-STACK_SIZE  = 0x0800
 STDFLAGS    = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
-OPTFLAGS    = -Og
+OPTFLAGS    = -Os
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-CFLAGS     += -DSTM32F405RG -DSTM32F4XX -DUSE_STDPERIPH_DRIVER -DHSE_VALUE=8000000
-CFLAGS     += -DARM_MATH_CM4 -D__FPU_USED -DUSE_USB_OTG_FS
-CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)
+CFLAGS     += -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32F405xx
+CFLAGS     += -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))"
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
 LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-LFLAGS     += -Wl,--defsym=__HEAP_SIZE=$(HEAP_SIZE) -Wl,--defsym=__STACK_SIZE=$(STACK_SIZE)
-LFLAGS     += -Wl,-script="stm32f405rg_flash.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -Wl,-script="STM32F405RG_FLASH.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS     += -specs=nano.specs -Wl,--gc-sections $(LIB_PATH)
 OFLAGS      = -O srec
 ODFLAGS     = -x
@@ -127,7 +124,7 @@ LIBS =
 #|--------------------------------------------------------------------------------------|
 #| Define targets                                                                       |
 #|--------------------------------------------------------------------------------------|
-AOBJS = $(patsubst %.S,%.o,$(PROJ_ASRCS))
+AOBJS = $(patsubst %.s,%.o,$(PROJ_ASRCS))
 COBJS = $(patsubst %.c,%.o,$(PROJ_CSRCS))
 
 
@@ -153,7 +150,7 @@ $(BIN_PATH)/$(PROJ_NAME).elf : $(AOBJS) $(COBJS)
 #|--------------------------------------------------------------------------------------|
 #| Compile and assemble                                                                 |
 #|--------------------------------------------------------------------------------------|
-$(AOBJS): %.o: %.S $(PROJ_CHDRS)
+$(AOBJS): %.o: %.s $(PROJ_CHDRS)
 	@echo +++ Assembling [$(notdir $<)]
 	@$(AS) $(AFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 

@@ -3,665 +3,675 @@ bin/openblt_olimex_stm32p405.elf:     file format elf32-littlearm
 bin/openblt_olimex_stm32p405.elf
 architecture: arm, flags 0x00000112:
 EXEC_P, HAS_SYMS, D_PAGED
-start address 0x08000000
+start address 0x080003bd
 
 Program Header:
-0x70000001 off    0x00017380 vaddr 0x08007380 paddr 0x08007380 align 2**2
-         filesz 0x00000008 memsz 0x00000008 flags r--
     LOAD off    0x00010000 vaddr 0x08000000 paddr 0x08000000 align 2**16
-         filesz 0x00007388 memsz 0x00007388 flags r-x
-    LOAD off    0x00020000 vaddr 0x20000000 paddr 0x08007388 align 2**16
-         filesz 0x000002b8 memsz 0x00001ab8 flags rw-
+         filesz 0x0000786c memsz 0x0000786c flags rwx
+    LOAD off    0x00020000 vaddr 0x20000000 paddr 0x0800786c align 2**16
+         filesz 0x0000063c memsz 0x0000063c flags rw-
+    LOAD off    0x0002063c vaddr 0x2000063c paddr 0x2000063c align 2**16
+         filesz 0x00000000 memsz 0x00002358 flags rw-
 private flags = 5000400: [Version5 EABI] [hard-float ABI]
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00007380  08000000  08000000  00010000  2**2
-                  CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .ARM.exidx    00000008  08007380  08007380  00017380  2**2
+  0 .isr_vector   00000188  08000000  08000000  00010000  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  2 .data         000002b8  20000000  08007388  00020000  2**2
+  1 .text         00006e20  08000188  08000188  00010188  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .rodata       000008b8  08006fa8  08006fa8  00016fa8  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 .init_array   00000008  08007860  08007860  00017860  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  3 .bss          00001800  200002b8  08007640  000202b8  2**2
+  4 .fini_array   00000004  08007868  08007868  00017868  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  5 .data         0000063c  20000000  0800786c  00020000  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+  6 .ccmram       00000000  10000000  10000000  0002063c  2**0
+                  CONTENTS
+  7 .bss          00001958  2000063c  2000063c  0002063c  2**2
                   ALLOC
-  4 .stack_dummy  00000800  20001ab8  20001ab8  000202b8  2**3
+  8 ._user_heap_stack 00000a00  20001f94  20001f94  0002063c  2**0
+                  ALLOC
+  9 .ARM.attributes 00000030  00000000  00000000  0002063c  2**0
                   CONTENTS, READONLY
-  5 .ARM.attributes 00000030  00000000  00000000  00020ab8  2**0
+ 10 .debug_line   000120fc  00000000  00000000  0002066c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_info   0001b926  00000000  00000000  00032768  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_abbrev 000059cd  00000000  00000000  0004e08e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_aranges 00001220  00000000  00000000  00053a60  2**3
+                  CONTENTS, READONLY, DEBUGGING
+ 14 .debug_ranges 000017a0  00000000  00000000  00054c80  2**3
+                  CONTENTS, READONLY, DEBUGGING
+ 15 .debug_loc    0000f452  00000000  00000000  00056420  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 16 .debug_macro  0002751b  00000000  00000000  00065872  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 17 .debug_str    000c50ea  00000000  00000000  0008cd8d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 18 .comment      0000006e  00000000  00000000  00151e77  2**0
                   CONTENTS, READONLY
-  6 .comment      0000006e  00000000  00000000  00020ae8  2**0
-                  CONTENTS, READONLY
-  7 .debug_line   0000c4d3  00000000  00000000  00020b56  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  8 .debug_info   0001a00b  00000000  00000000  0002d029  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  9 .debug_abbrev 00003ee8  00000000  00000000  00047034  2**0
-                  CONTENTS, READONLY, DEBUGGING
- 10 .debug_aranges 00001268  00000000  00000000  0004af20  2**3
-                  CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000fe8  00000000  00000000  0004c188  2**0
-                  CONTENTS, READONLY, DEBUGGING
- 12 .debug_macro  0001464f  00000000  00000000  0004d170  2**0
-                  CONTENTS, READONLY, DEBUGGING
- 13 .debug_str    00064e76  00000000  00000000  000617bf  2**0
-                  CONTENTS, READONLY, DEBUGGING
- 14 .debug_frame  00002f40  00000000  00000000  000c6638  2**2
-                  CONTENTS, READONLY, DEBUGGING
- 15 .debug_loc    0000c3d0  00000000  00000000  000c9578  2**0
+ 19 .debug_frame  00002fbc  00000000  00000000  00151ee8  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
-08000000 l    d  .text	00000000 .text
-08007380 l    d  .ARM.exidx	00000000 .ARM.exidx
+08000000 l    d  .isr_vector	00000000 .isr_vector
+08000188 l    d  .text	00000000 .text
+08006fa8 l    d  .rodata	00000000 .rodata
+08007860 l    d  .init_array	00000000 .init_array
+08007868 l    d  .fini_array	00000000 .fini_array
 20000000 l    d  .data	00000000 .data
-200002b8 l    d  .bss	00000000 .bss
-20001ab8 l    d  .stack_dummy	00000000 .stack_dummy
+10000000 l    d  .ccmram	00000000 .ccmram
+2000063c l    d  .bss	00000000 .bss
+20001f94 l    d  ._user_heap_stack	00000000 ._user_heap_stack
 00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
-00000000 l    d  .comment	00000000 .comment
 00000000 l    d  .debug_line	00000000 .debug_line
 00000000 l    d  .debug_info	00000000 .debug_info
 00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
 00000000 l    d  .debug_aranges	00000000 .debug_aranges
 00000000 l    d  .debug_ranges	00000000 .debug_ranges
+00000000 l    d  .debug_loc	00000000 .debug_loc
 00000000 l    d  .debug_macro	00000000 .debug_macro
 00000000 l    d  .debug_str	00000000 .debug_str
+00000000 l    d  .comment	00000000 .comment
 00000000 l    d  .debug_frame	00000000 .debug_frame
-00000000 l    d  .debug_loc	00000000 .debug_loc
-00000000 l    df *ABS*	00000000 obj/startup_stm32f4xx.o
-00000800 l       *ABS*	00000000 Stack_Size
-00000000 l       *ABS*	00000000 Heap_Size
-08000262 l       .text	00000000 .flash_to_ram_loop
-0800029c l       .text	00000000 .fill_zero_bss
-08000298 l       .text	00000000 .loop_zero_bss
+00000000 l    df *ABS*	00000000 obj/startup_stm32f405xx.o
+080003cc l       .text	00000000 LoopCopyDataInit
+080003c4 l       .text	00000000 CopyDataInit
+080003e0 l       .text	00000000 LoopFillZerobss
+080003da l       .text	00000000 FillZerobss
+0800040c l       .text	00000000 Infinite_Loop
 00000000 l    df *ABS*	00000000 crtstuff.c
-0800737c l     O .text	00000000 __EH_FRAME_BEGIN__
+08006f90 l     O .text	00000000 __EH_FRAME_BEGIN__
 08000188 l     F .text	00000000 __do_global_dtors_aux
-200002b8 l       .bss	00000000 completed.8605
-200002b4 l     O .data	00000000 __do_global_dtors_aux_fini_array_entry
+2000063c l       .bss	00000000 completed.8605
+08007868 l     O .fini_array	00000000 __do_global_dtors_aux_fini_array_entry
 080001ac l     F .text	00000000 frame_dummy
-200002bc l       .bss	00000000 object.8610
-200002b0 l     O .data	00000000 __frame_dummy_init_array_entry
-00000000 l    df *ABS*	00000000 /opt/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
-00000000 l    df *ABS*	00000000 usbd_usr.c
-00000000 l    df *ABS*	00000000 usb_bsp.c
-00000000 l    df *ABS*	00000000 usbd_bulk.c
-0800046c l     F .text	0000000c USBD_bulk_GetCfgDesc
-08000478 l     F .text	00000012 usbd_bulk_SOF
-0800048c l     F .text	0000000a usbd_bulk_DataIn
-08000498 l     F .text	0000000c usbd_bulk_DataOut
-080004a4 l     F .text	00000060 usbd_bulk_Setup
-08000504 l     F .text	00000016 usbd_bulk_DeInit
-0800051c l     F .text	00000030 usbd_bulk_Init
-200002d4 l     O .bss	00000004 usbd_bulk_AltSet
-00000000 l    df *ABS*	00000000 main.c
-08000554 l     F .text	0000010c Init
-00000000 l    df *ABS*	00000000 hooks.c
-08006a84 l     O .text	00000020 firmwareFilename
-200002d8 l     O .bss	00000001 initialized.7905
-200002dc l     O .bss	0000022c logfile
-00000000 l    df *ABS*	00000000 led.c
-20000508 l     O .bss	00000002 ledBlinkIntervalMs
-2000050c l     O .bss	00000004 nextBlinkEvent.7900
-20000510 l     O .bss	00000001 ledOn.7899
+20000640 l       .bss	00000000 object.8610
+08007864 l     O .init_array	00000000 __frame_dummy_init_array_entry
+00000000 l    df *ABS*	00000000 init.c
+00000000 l    df *ABS*	00000000 memset.c
+00000000 l    df *ABS*	00000000 __call_atexit.c
+080002d0 l     F .text	00000014 register_fini
+00000000 l    df *ABS*	00000000 atexit.c
+00000000 l    df *ABS*	00000000 fini.c
+00000000 l    df *ABS*	00000000 __atexit.c
 00000000 l    df *ABS*	00000000 usbd_desc.c
-00000000 l    df *ABS*	00000000 mmc.c
-08000944 l     F .text	00000010 power_off
-08000954 l     F .text	00000060 set_max_speed
-080009b4 l     F .text	00000094 send_initial_clock_train
-08000a48 l     F .text	000000e0 power_on
-08000b28 l     F .text	00000024 xchg_spi
-08000b4c l     F .text	00000028 wait_ready
-08000b74 l     F .text	00000018 deselect
-08000b8c l     F .text	0000002c select
-08000bb8 l     F .text	00000082 send_cmd
-08000c3c l     F .text	0000000e rcvr_spi_m
-08000c4c l     F .text	0000004e rcvr_datablock
-08000c9c l     F .text	0000005a xmit_datablock
-20000514 l     O .bss	00000004 CardType
-2000009a l     O .data	00000001 Stat
-00000000 l    df *ABS*	00000000 usb_dcd_int.c
-08001214 l     F .text	0000001c DCD_SessionRequest_ISR
-08001230 l     F .text	00000024 DCD_OTG_ISR
-08001254 l     F .text	00000040 DCD_HandleResume_ISR
-08001294 l     F .text	00000074 DCD_HandleUSBSuspend_ISR
-08001308 l     F .text	0000001c DCD_HandleSof_ISR
-08001324 l     F .text	0000001c DCD_IsoINIncomplete_ISR
-08001340 l     F .text	0000001c DCD_IsoOUTIncomplete_ISR
-0800135c l     F .text	00000022 DCD_ReadDevInEP
-08001380 l     F .text	000000c8 DCD_HandleOutEP_ISR
-08001448 l     F .text	000000ac DCD_WriteEmptyTxFifo
-080014f4 l     F .text	000000dc DCD_HandleInEP_ISR
-080015d0 l     F .text	0000008e DCD_HandleRxStatusQueueLevel_ISR
-08001660 l     F .text	00000098 DCD_HandleUsbReset_ISR
-080016f8 l     F .text	00000046 DCD_HandleEnumDone_ISR
-00000000 l    df *ABS*	00000000 usb_core.c
-08001830 l     F .text	0000001c USB_OTG_EnableCommonInt
-0800184c l     F .text	00000058 USB_OTG_CoreReset
-00000000 l    df *ABS*	00000000 usb_dcd.c
-00000000 l    df *ABS*	00000000 _exit.c
-00000000 l    df *ABS*	00000000 stm32f4xx_gpio.c
-00000000 l    df *ABS*	00000000 stm32f4xx_rcc.c
-2000009c l     O .data	00000010 APBAHBPrescTable
-00000000 l    df *ABS*	00000000 stm32f4xx_flash.c
-00000000 l    df *ABS*	00000000 stm32f4xx_usart.c
-00000000 l    df *ABS*	00000000 stm32f4xx_spi.c
+00000000 l    df *ABS*	00000000 usbd_conf.c
+08006ff7 l     O .rodata	00000004 CSWTCH.18
+08006ff7 l     O .rodata	00000004 CSWTCH.20
+08006ff7 l     O .rodata	00000004 CSWTCH.22
+08006ff7 l     O .rodata	00000004 CSWTCH.24
+08006ff7 l     O .rodata	00000004 CSWTCH.26
+08006ff7 l     O .rodata	00000004 CSWTCH.28
+08006ff7 l     O .rodata	00000004 CSWTCH.30
+08006ff7 l     O .rodata	00000004 CSWTCH.32
+08006ff7 l     O .rodata	00000004 CSWTCH.35
+08006ff7 l     O .rodata	00000004 CSWTCH.37
+08006ff7 l     O .rodata	00000004 CSWTCH.39
+00000000 l    df *ABS*	00000000 usbd_bulk.c
+080007c8 l     F .text	0000000c USBD_Bulk_GetFSCfgDesc
+080007e0 l     F .text	00000012 USBD_Bulk_SOF
+080007f2 l     F .text	0000000a USBD_Bulk_DataIn
+080007fc l     F .text	0000000c USBD_Bulk_DataOut
+08000808 l     F .text	00000016 USBD_Bulk_DeInit
+08000820 l     F .text	00000030 USBD_Bulk_Init
+08000850 l     F .text	00000060 USBD_Bulk_Setup
+20000480 l     O .data	0000000a USBD_Bulk_DeviceQualifierDesc
+20000658 l     O .bss	00000004 usbd_bulk_AltSet
+00000000 l    df *ABS*	00000000 main.c
+080008b8 l     F .text	0000001c LL_AHB1_GRP1_EnableClock
+080008d4 l     F .text	0000001c LL_APB1_GRP1_EnableClock
 00000000 l    df *ABS*	00000000 system_stm32f4xx.c
-080028a4 l     F .text	000000c4 SetSysClock
-00000000 l    df *ABS*	00000000 usbd_req.c
-080029b8 l     F .text	00000014 USBD_GetLen
-080029cc l     F .text	0000007c USBD_SetFeature
-08002aa8 l     F .text	0000010a USBD_GetDescriptor
-08002bb4 l     F .text	0000004a USBD_SetAddress
-08002c00 l     F .text	00000090 USBD_SetConfig
-08002c90 l     F .text	0000003c USBD_GetConfig
-08002ccc l     F .text	00000034 USBD_GetStatus
-08002d00 l     F .text	00000030 USBD_ClrFeature
-2000051c l     O .bss	00000001 cfgidx.8733
-00000000 l    df *ABS*	00000000 usbd_core.c
-08002f10 l     F .text	00000010 USBD_RunTestMode
-08002f20 l     F .text	00000016 USBD_Resume
-08002f38 l     F .text	0000001c USBD_Suspend
-08002f54 l     F .text	00000010 USBD_SOF
-08002f64 l     F .text	0000000e USBD_IsoINIncomplete
-08002f74 l     F .text	0000000e USBD_IsoOUTIncomplete
-08002f84 l     F .text	00000016 USBD_DevConnected
-08002f9c l     F .text	00000020 USBD_DevDisconnected
-08002fbc l     F .text	0000002e USBD_Reset
-08002fec l     F .text	0000004e USBD_SetupStage
-0800303c l     F .text	000000b2 USBD_DataInStage
-080030f0 l     F .text	00000078 USBD_DataOutStage
 00000000 l    df *ABS*	00000000 usbd_ioreq.c
+00000000 l    df *ABS*	00000000 usbd_ctlreq.c
+2000065c l     O .bss	00000001 cfgidx.8329
+00000000 l    df *ABS*	00000000 usbd_core.c
+00000000 l    df *ABS*	00000000 stm32f4xx_ll_utils.c
+00000000 l    df *ABS*	00000000 stm32f4xx_ll_usb.c
+08001ba8 l     F .text	00000030 USB_CoreReset
+00000000 l    df *ABS*	00000000 stm32f4xx_ll_usart.c
+00000000 l    df *ABS*	00000000 stm32f4xx_ll_spi.c
+00000000 l    df *ABS*	00000000 stm32f4xx_ll_rcc.c
+00000000 l    df *ABS*	00000000 stm32f4xx_ll_gpio.c
+08001e14 l     F .text	00000010 LL_AHB1_GRP1_ForceReset
+08001e24 l     F .text	00000010 LL_AHB1_GRP1_ReleaseReset
+00000000 l    df *ABS*	00000000 stm32f4xx_hal_rcc.c
+00000000 l    df *ABS*	00000000 stm32f4xx_hal_pcd_ex.c
+00000000 l    df *ABS*	00000000 stm32f4xx_hal_pcd.c
+00000000 l    df *ABS*	00000000 stm32f4xx_hal_gpio.c
+00000000 l    df *ABS*	00000000 stm32f4xx_hal_flash_ex.c
+08002c7c l     F .text	00000024 FLASH_MassErase.isra.0
+00000000 l    df *ABS*	00000000 stm32f4xx_hal_flash.c
+08002de4 l     F .text	00000028 FLASH_Program_DoubleWord
+08002e0c l     F .text	00000024 FLASH_Program_Word
+08002e30 l     F .text	00000024 FLASH_Program_HalfWord
+08002e54 l     F .text	00000078 FLASH_SetErrorCode
+00000000 l    df *ABS*	00000000 stm32f4xx_hal_cortex.c
+00000000 l    df *ABS*	00000000 stm32f4xx_hal_can.c
+00000000 l    df *ABS*	00000000 stm32f4xx_hal.c
+00000000 l    df *ABS*	00000000 mmc.c
+080035d0 l     F .text	00000034 xchg_spi
+08003604 l     F .text	00000014 deselect_card
+08003618 l     F .text	0000002c wait_ready
+08003644 l     F .text	00000028 select_card
+0800366c l     F .text	0000008a send_cmd
+080036f6 l     F .text	00000058 xmit_datablock
+0800374e l     F .text	00000062 rcvr_datablock
+20000660 l     O .bss	00000004 CardType
+200004cd l     O .data	00000001 Stat
+00000000 l    df *ABS*	00000000 led.c
+20000664 l     O .bss	00000002 ledBlinkIntervalMs
+20000668 l     O .bss	00000004 nextBlinkEvent.7851
+2000066c l     O .bss	00000001 ledOn.7850
+00000000 l    df *ABS*	00000000 hooks.c
+08007026 l     O .rodata	00000020 firmwareFilename
+20000670 l     O .bss	0000022c logfile
+2000089c l     O .bss	00000001 initialized.8436
 00000000 l    df *ABS*	00000000 xcp.c
-08003244 l     F .text	00000020 XcpComputeChecksum
-08003264 l     F .text	0000000c XcpProtectResources
-08003270 l     F .text	00000014 XcpSetCtoError
-08003284 l     F .text	0000001c XcpCmdDisconnect
-080032a0 l     F .text	00000020 XcpCmdGetStatus
-080032c0 l     F .text	0000000a XcpCmdSynch
-080032cc l     F .text	0000002c XcpCmdGetId
-080032f8 l     F .text	00000018 XcpCmdSetMta
-08003310 l     F .text	00000028 XcpCmdBuildCheckSum
-08003338 l     F .text	0000000a XcpCmdProgramPrepare
-08003344 l     F .text	00000028 XcpCmdProgramStart
-0800336c l     F .text	00000050 XcpCmdConnect
-080033bc l     F .text	00000040 XcpCmdUpload
-080033fc l     F .text	00000040 XcpCmdShortUpload
-0800343c l     F .text	00000040 XcpCmdProgramMax
-0800347c l     F .text	0000005c XcpCmdProgram
-080034d8 l     F .text	00000028 XcpCmdProgramClear
-08003500 l     F .text	00000018 XcpCmdProgramReset
-08003518 l     F .text	0000000a XcpTransmitPacket
-08006b08 l     O .text	00000008 xcpStationId
-20000528 l     O .bss	0000004c xcpInfo
+08003f78 l     F .text	00000014 XcpSetCtoError
+08007053 l     O .rodata	00000008 xcpStationId
+200008a0 l     O .bss	0000004c xcpInfo
 00000000 l    df *ABS*	00000000 file.c
-08003640 l     F .text	00000040 FileLibLongToIntString
-08003680 l     F .text	0000002a FileLibByteNibbleToChar
-080036ac l     F .text	00000020 FileLibByteToHexString
-080036cc l     F .text	00000058 FileLibHexStringToByte
-20000574 l     O .bss	00000040 loggingStr
-200005b4 l     O .bss	00000001 firmwareUpdateState
-200005b8 l     O .bss	00000008 eraseInfo
-200005c0 l     O .bss	00000458 fatFsObjects
-20000a18 l     O .bss	00000184 lineParseObject
-00000000 l    df *ABS*	00000000 com.c
-200000dc l     O .data	00000001 comActiveInterface
-20000b9c l     O .bss	00000040 xcpCtoReqPacket.4523
-00000000 l    df *ABS*	00000000 boot.c
+080041ec l     F .text	00000028 FileLibByteNibbleToChar
+08004214 l     F .text	00000020 FileLibByteToHexString
+08004234 l     F .text	0000004e FileLibHexStringToByte
+08004284 l     F .text	00000030 FileLibLongToIntString.constprop.1
+200008ec l     O .bss	00000040 loggingStr
+2000092c l     O .bss	00000001 firmwareUpdateState
+20000930 l     O .bss	00000008 eraseInfo
+20000938 l     O .bss	00000458 fatFsObjects
+20000d90 l     O .bss	00000184 lineParseObject
 00000000 l    df *ABS*	00000000 cop.c
+00000000 l    df *ABS*	00000000 com.c
+20000f14 l     O .bss	00000040 xcpCtoReqPacket.4538
+200004ce l     O .data	00000001 comActiveInterface
+080071fb l     O .rodata	00000003 CSWTCH.11
+00000000 l    df *ABS*	00000000 boot.c
 00000000 l    df *ABS*	00000000 backdoor.c
-20000bdc l     O .bss	00000001 backdoorOpen
-20000be0 l     O .bss	00000004 backdoorOpenTime
+20000f54 l     O .bss	00000004 backdoorExtensionTime
+20000f58 l     O .bss	00000001 backdoorOpen
+20000f5c l     O .bss	00000004 backdoorOpenTime
 00000000 l    df *ABS*	00000000 assert.c
-00000000 l    df *ABS*	00000000 uart.c
-08003f3c l     F .text	00000030 UartTransmitByte
-08003f6c l     F .text	00000024 UartReceiveByte
-20000be4 l     O .bss	00000004 xcpCtoRxStartTime.7911
-20000be8 l     O .bss	00000041 xcpCtoReqPacket.7908
-20000c29 l     O .bss	00000001 xcpCtoRxInProgress.7910
-20000c2a l     O .bss	00000001 xcpCtoRxLength.7909
-00000000 l    df *ABS*	00000000 nvm.c
 00000000 l    df *ABS*	00000000 usb.c
-080040f8 l     F .text	00000030 UsbFifoMgrInit
-08004128 l     F .text	00000034 UsbFifoMgrCreate
-0800415c l     F .text	0000006c UsbFifoMgrWrite
-080041c8 l     F .text	00000014 UsbTransmitByte
-080041dc l     F .text	00000068 UsbFifoMgrRead
-08004244 l     F .text	00000014 UsbReceiveByte
-08004258 l     F .text	00000028 UsbFifoMgrScan
-20000c2c l     O .bss	00000004 fifoCtrlFree
-20000c30 l     O .bss	00000030 fifoCtrl
-20000c60 l     O .bss	00000041 fifoPipeBulkOUT
-20000ca4 l     O .bss	00000040 USB_Tx_Buffer.9093
-20000ce4 l     O .bss	00000041 fifoPipeBulkIN
-20000d25 l     O .bss	00000001 xcpCtoRxLength.9080
-20000d28 l     O .bss	000005f4 USB_OTG_dev
-2000131c l     O .bss	00000040 xcpCtoReqPacket.9079
-2000135c l     O .bss	00000001 xcpCtoRxInProgress.9081
-00000000 l    df *ABS*	00000000 cpu.c
-00000000 l    df *ABS*	00000000 flash.c
-080044ec l     F .text	00000048 FlashGetSector
-08004534 l     F .text	00000026 FlashInitBlock
-0800455c l     F .text	00000074 FlashWriteBlock
-080045d0 l     F .text	00000040 FlashSwitchBlock
-08004610 l     F .text	0000007a FlashAddToBlock
-0800468c l     F .text	00000068 FlashEraseSectors
-08006d24 l     O .text	00000030 flashSectorNumToMask
-08006d54 l     O .text	00000078 flashLayout
-20001360 l     O .bss	00000204 bootBlockInfo
-20001564 l     O .bss	00000204 blockInfo
-00000000 l    df *ABS*	00000000 can.c
-08004880 l     F .text	00000058 CanGetSpeedConfig
-08006df4 l     O .text	00000024 canTiming
+08004a90 l     F .text	00000050 UsbFifoMgrWrite
+08004ae0 l     F .text	00000050 UsbFifoMgrRead
+20000f60 l     O .bss	00000040 xcpCtoReqPacket.8638
+20000fa0 l     O .bss	00000001 xcpCtoRxInProgress.8640
+20000fa1 l     O .bss	00000001 xcpCtoRxLength.8639
+20000fa4 l     O .bss	00000004 fifoCtrlFree
+20000fa8 l     O .bss	00000030 fifoCtrl
+20000fd8 l     O .bss	00000041 fifoPipeBulkOUT
+2000101c l     O .bss	00000224 hUsbDeviceFS
+20001240 l     O .bss	00000041 fifoPipeBulkIN
+20001281 l     O .bss	00000040 USB_Tx_Buffer.8652
+00000000 l    df *ABS*	00000000 uart.c
+08004dc0 l     F .text	00000028 UartTransmitByte
+200012c1 l     O .bss	00000041 xcpCtoReqPacket.8213
+20001302 l     O .bss	00000001 xcpCtoRxLength.8214
+20001303 l     O .bss	00000001 xcpCtoRxInProgress.8215
+20001304 l     O .bss	00000004 xcpCtoRxStartTime.8216
 00000000 l    df *ABS*	00000000 timer.c
-20001768 l     O .bss	00000004 millisecond_counter
+20001308 l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 nvm.c
+00000000 l    df *ABS*	00000000 flash.c
+08004f78 l     F .text	00000034 FlashGetSector
+08004fac l     F .text	0000004e FlashWriteBlock
+08004ffc l     F .text	00000054 FlashSwitchBlock
+08005050 l     F .text	00000082 FlashAddToBlock
+0800724c l     O .rodata	00000078 flashLayout
+2000130c l     O .bss	00000204 bootBlockInfo
+20001510 l     O .bss	00000204 blockInfo
+00000000 l    df *ABS*	00000000 cpu.c
+00000000 l    df *ABS*	00000000 can.c
+20001714 l     O .bss	00000028 canHandle
+080072e9 l     O .rodata	00000024 canTiming
 00000000 l    df *ABS*	00000000 cpu_comp.c
 00000000 l    df *ABS*	00000000 ff.c
-08004b68 l     F .text	0000000a ld_word
-08004b74 l     F .text	00000016 ld_dword
-08004b8c l     F .text	00000008 st_word
-08004b94 l     F .text	00000014 st_dword
-08004ba8 l     F .text	00000012 mem_cpy
-08004bbc l     F .text	0000000a mem_set
-08004bc8 l     F .text	0000001e mem_cmp
-08004be8 l     F .text	00000010 chk_chr
-08004bf8 l     F .text	00000018 clust2sect
-08004c10 l     F .text	00000024 ld_clust
-08004c34 l     F .text	00000024 st_clust
-08004c58 l     F .text	0000008c pick_lfn
-08004ce4 l     F .text	00000070 put_lfn
-08004d54 l     F .text	000000a0 gen_numname
-08004df4 l     F .text	0000001c sum_sfn
-08004e10 l     F .text	00000054 get_ldnumber
-08004e64 l     F .text	00000034 validate
-08004e98 l     F .text	00000054 sync_window
-08004eec l     F .text	00000034 move_window
-08004f20 l     F .text	00000060 check_fs
-08004f80 l     F .text	000002d4 find_volume
-08005254 l     F .text	000000d0 get_fat
-08005324 l     F .text	000000b2 dir_sdi
-080053d8 l     F .text	0000010c put_fat
-080054e4 l     F .text	000000ce create_chain
-080055b4 l     F .text	0000007c remove_chain
-08005630 l     F .text	00000126 dir_next
-08005758 l     F .text	0000004c dir_alloc
-080057a4 l     F .text	000000c4 dir_read
-08005868 l     F .text	00000050 dir_remove
-080058b8 l     F .text	00000228 create_name
-08005ae0 l     F .text	000000e2 get_fileinfo
-08005bc4 l     F .text	000000ac cmp_lfn
-08005c70 l     F .text	000000e8 dir_find
-08005d58 l     F .text	0000008c follow_path
-08005de4 l     F .text	0000013c dir_register
-08005f20 l     F .text	0000008c sync_fs
-0800648c l     F .text	0000004a putc_bfd
-2000176c l     O .bss	00000200 LfnBuf
-2000196c l     O .bss	00000002 Fsid
-08006e2c l     O .text	00000080 ExCvt
-08006eac l     O .text	0000000d LfnOfs
-20001970 l     O .bss	00000004 FatFs
+0800544c l     F .text	00000010 ld_dword
+0800545c l     F .text	00000016 clust2sect
+08005472 l     F .text	0000001e sum_sfn
+08005490 l     F .text	00000030 get_ldnumber
+080054c0 l     F .text	00000036 validate
+080054f6 l     F .text	00000012 mem_cpy.part.0
+08005508 l     F .text	0000001c ld_clust.isra.1
+08005524 l     F .text	00000018 st_clust.isra.2
+0800553c l     F .text	00000046 sync_window.part.3
+08005582 l     F .text	0000000c sync_window
+0800558e l     F .text	00000036 move_window
+080055c4 l     F .text	00000064 check_fs
+08005628 l     F .text	00000298 find_volume
+080058c0 l     F .text	000000b4 get_fat.isra.6
+08005974 l     F .text	00000082 dir_sdi
+080059f6 l     F .text	000000dc get_fileinfo.part.8
+08005ad2 l     F .text	00000104 put_fat
+08005bd6 l     F .text	000000b6 create_chain
+08005c8c l     F .text	000000fe dir_next
+08005d8a l     F .text	0000004e dir_remove
+08005dd8 l     F .text	00000164 dir_find
+08005f3c l     F .text	00000270 follow_path
+080061ac l     F .text	00000110 dir_read.constprop.9
+080062bc l     F .text	0000006a remove_chain
+08006328 l     F .text	00000258 dir_register
+08006580 l     F .text	000000b2 sync_fs
+08006aac l     F .text	00000044 putc_bfd
+2000173c l     O .bss	00000200 LfnBuf
+2000193c l     O .bss	00000002 Fsid
+0800731d l     O .rodata	00000080 ExCvt
+0800739d l     O .rodata	0000000d LfnOfs
+20001940 l     O .bss	00000004 FatFs
 00000000 l    df *ABS*	00000000 unicode.c
-08006ebc l     O .text	000000bc cvt2.4382
-08006f78 l     O .text	000001f2 cvt1.4381
-0800716c l     O .text	00000100 Tbl
-00000000 l    df *ABS*	00000000 exit.c
-00000000 l    df *ABS*	00000000 init.c
+080073aa l     O .rodata	000000bc cvt2.4382
+08007466 l     O .rodata	000001f2 cvt1.4381
+08007658 l     O .rodata	00000100 Tbl
 00000000 l    df *ABS*	00000000 locale.c
-080069f0 l     F .text	00000018 __get_current_locale
+08006f24 l     F .text	00000018 __get_current_locale
 00000000 l    df *ABS*	00000000 mbtowc_r.c
-00000000 l    df *ABS*	00000000 memset.c
 00000000 l    df *ABS*	00000000 wctomb_r.c
 00000000 l    df *ABS*	00000000 /opt/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crti.o
 00000000 l    df *ABS*	00000000 /opt/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7e-m/fpu/crtn.o
 00000000 l    df *ABS*	00000000 impure.c
-200000e0 l     O .data	00000060 impure_data
+20000000 l     O .data	00000428 impure_data
 00000000 l    df *ABS*	00000000 ctype_.c
-00000000 l    df *ABS*	00000000 crtstuff.c
-0800737c l     O .text	00000000 __FRAME_END__
 00000000 l    df *ABS*	00000000 
-200002b4 l       .data	00000000 __init_array_end
-200002b0 l       .data	00000000 __preinit_array_end
-200002b0 l       .data	00000000 __init_array_start
-200002b0 l       .data	00000000 __preinit_array_start
-08003d7c g     F .text	00000028 ComInit
-0800030c  w    F .text	00000002 RTC_Alarm_IRQHandler
-0800470c g     F .text	0000005c FlashWrite
-0800035a  w    F .text	00000002 HASH_RNG_IRQHandler
-20000088 g     O .data	00000012 USBD_DeviceDesc
-080002ca  w    F .text	00000002 EXTI2_IRQHandler
-080008b8 g     F .text	0000001c USBD_USR_ProductStrDescriptor
-08000316  w    F .text	00000002 TIM8_CC_IRQHandler
-20001ab8 g       .stack_dummy	00000000 __HeapBase
-08006808 g     F .text	00000054 f_gets
-080020a4 g     F .text	00000012 USB_OTG_ReadDevOutEP_itr
-080025a0 g     F .text	00000020 FLASH_Unlock
-0800045c g     F .text	00000010 USB_OTG_BSP_mDelay
-08000384 g     F .text	0000000a USBD_USR_DeviceConnected
-08003f34 g     F .text	00000008 AssertFailure
-080002b2  w    F .text	00000002 DebugMon_Handler
-08004a74 g     F .text	0000008c CanReceivePacket
-200000ac g     O .data	00000004 USBD_DCD_INT_fops
-0800242c g     F .text	0000002e GPIO_PinAFConfig
-08002108 g     F .text	0000009c DCD_Init
-00000000 g       *ABS*	00000000 __HEAP_SIZE
-08004b34 g     F .text	0000001c TimerUpdate
-08003550 g     F .text	00000010 XcpPacketTransmitted
-20000000 g       .data	00000000 __data_start__
-0800054c g     F .text	00000008 usbd_bulk_get_rx_buffer_ptr
-080002f0  w    F .text	00000002 TIM1_CC_IRQHandler
-08002874 g     F .text	00000004 SPI_I2S_SendData
-08000342  w    F .text	00000002 DMA2_Stream5_IRQHandler
-08003da4 g     F .text	00000050 ComTask
-080002a8  w    F .text	00000002 HardFault_Handler
-080026bc g     F .text	0000003c FLASH_ProgramWord
-080002da  w    F .text	00000002 DMA1_Stream5_IRQHandler
-08001ac0 g     F .text	00000040 USB_OTG_FlushRxFifo
-080002b6  w    F .text	00000002 SysTick_Handler
-080002bc  w    F .text	00000002 PVD_IRQHandler
-0800031c  w    F .text	00000002 SDIO_IRQHandler
-080002be  w    F .text	00000002 TAMP_STAMP_IRQHandler
-08003e88 g     F .text	00000020 BootInit
-080021f8 g     F .text	00000042 DCD_EP_Close
-080037e4 g     F .text	0000003a FileSrecVerifyChecksum
-0800286c g     F .text	00000006 SPI_I2S_ReceiveData
-080002b4  w    F .text	00000002 PendSV_Handler
-08006a08 g     F .text	00000014 __locale_ctype_ptr
-080002a6  w    F .text	00000002 NMI_Handler
-08007388 g       .ARM.exidx	00000000 __exidx_end
-080021a4 g     F .text	00000052 DCD_EP_Open
-0800033c  w    F .text	00000002 CAN2_RX1_IRQHandler
-080002cc  w    F .text	00000002 EXTI3_IRQHandler
-20001ab4 g     O .bss	00000004 SET_TEST_MODE
-08003f14 g     F .text	00000020 BackDoorInit
-08007388 g       .ARM.exidx	00000000 __etext
-08002d30 g     F .text	00000048 USBD_StdDevReq
-08000314  w    F .text	00000002 TIM8_TRG_COM_TIM14_IRQHandler
-08000928 g     F .text	0000001c USBD_USR_InterfaceStrDescriptor
-080002ec  w    F .text	00000002 TIM1_UP_TIM10_IRQHandler
-080027f4 g     F .text	0000000e USART_GetFlagStatus
-08003ec8 g     F .text	00000008 CopService
-20000520 g     O .bss	00000004 USBD_ep_status
-08004b60 g     F .text	00000004 CpuIrqDisable
-08000312  w    F .text	00000002 TIM8_UP_TIM13_IRQHandler
-20000000 g     O .data	0000001c USR_cb
-080068e8 g     F .text	00000094 ff_wtoupper
-0800034c  w    F .text	00000002 I2C3_ER_IRQHandler
-08002378 g     F .text	00000014 DCD_DevDisconnect
-08004878 g     F .text	00000008 FlashGetUserProgBaseAddress
-08000374 g     F .text	00000008 USBD_USR_DeviceSuspended
-0800396c g     F .text	00000410 FileTask
-08002db0 g     F .text	00000124 USBD_StdEPReq
-08004b00 g     F .text	0000000c TimerReset
-080002c6  w    F .text	00000002 EXTI0_IRQHandler
-080002fc  w    F .text	00000002 I2C2_EV_IRQHandler
-08000cf8 g     F .text	00000160 disk_initialize
-0800070c g     F .text	00000002 UsbLeaveLowPowerModeHook
-080002d4  w    F .text	00000002 DMA1_Stream2_IRQHandler
-080002e2  w    F .text	00000002 CAN1_RX0_IRQHandler
-08003204 g     F .text	0000001e USBD_CtlSendStatus
-0800035c  w    F .text	00000002 FPU_IRQHandler
-08002d78 g     F .text	00000036 USBD_StdItfReq
-08002a48 g     F .text	00000044 USBD_ParseSetupRequest
-08000352  w    F .text	00000002 OTG_HS_WKUP_IRQHandler
-080027ec g     F .text	00000008 USART_ReceiveData
-08003ea8 g     F .text	00000018 BootTask
-08001740 g     F .text	000000f0 USBD_OTG_ISR_Handler
-08004798 g     F .text	00000050 FlashWriteChecksum
-08002878 g     F .text	0000001c SPI_CalculateCRC
-080002ae  w    F .text	00000002 UsageFault_Handler
-08002568 g     F .text	0000001c RCC_APB2PeriphClockCmd
-080018f4 g     F .text	000000d4 USB_OTG_SelectCore
-0800033e  w    F .text	00000002 CAN2_SCE_IRQHandler
-08003dfc g     F .text	0000003c ComTransmitPacket
-0800032e  w    F .text	00000002 DMA2_Stream2_IRQHandler
-08002390 g     F .text	00000084 GPIO_Init
-08000e58 g     F .text	00000014 disk_status
-20001ab8 g       .stack_dummy	00000000 __HeapLimit
-200002b8 g       .bss	00000000 __bss_start__
-08003820 g     F .text	0000014c FileSrecParseLine
-08001b00 g     F .text	0000002a USB_OTG_SetCurrentMode
-08000300  w    F .text	00000002 SPI1_IRQHandler
-080027c8 g     F .text	0000001c USART_Cmd
-08001b48 g     F .text	0000000a USB_OTG_ReadCoreItr
-0800036c g     F .text	00000002 USBD_USR_DeviceReset
-080031b4 g     F .text	0000000e USBD_ClrCfg
-08000326  w    F .text	00000002 TIM6_DAC_IRQHandler
-08000fa0 g     F .text	00000274 disk_ioctl
-080002ea  w    F .text	00000002 TIM1_BRK_TIM9_IRQHandler
-08003168 g     F .text	00000034 USBD_Init
-08000356  w    F .text	00000002 DCMI_IRQHandler
-0800033a  w    F .text	00000002 CAN2_RX0_IRQHandler
-08003764 g     F .text	00000030 FileHandleFirmwareUpdateRequest
-2000001c g     O .data	0000002c USBD_bulk_cb
-0800254c g     F .text	0000001c RCC_APB1PeriphClockCmd
-08007380 g       .text	00000000 __exidx_start
-08000330  w    F .text	00000002 DMA2_Stream3_IRQHandler
-0800726c g     O .text	00000004 _global_impure_ptr
-080069a4 g     F .text	0000004c __libc_init_array
-080031f4 g     F .text	00000010 USBD_CtlContinueRx
-08002530 g     F .text	0000001c RCC_AHB2PeriphClockCmd
-08002894 g     F .text	0000000e SPI_I2S_GetFlagStatus
-080001e4 g     F .text	00000000 _mainCRTStartup
-08000780 g     F .text	00000044 FileFirmwareUpdateCompletedHook
-08003540 g     F .text	00000010 XcpIsConnected
-0800674c g     F .text	000000bc f_unlink
-08000348  w    F .text	00000002 USART6_IRQHandler
-08000708 g     F .text	00000002 UsbEnterLowPowerModeHook
-08006a6c g     F .text	00000000 _init
-080040bc g     F .text	00000008 NvmInit
-080046f4 g     F .text	00000018 FlashInit
-080025c0 g     F .text	00000010 FLASH_Lock
-080040dc g     F .text	00000008 NvmGetUserProgBaseAddress
-08000308  w    F .text	00000002 USART3_IRQHandler
-08000358  w    F .text	00000002 CRYP_IRQHandler
-00000000  w      *UND*	00000000 __libc_fini_array
-080020b8 g     F .text	0000000c USB_OTG_ReadDevAllInEPItr
-08000258 g     F .text	00000038 Reset_Handler
-08002028 g     F .text	00000038 USB_OTG_EPSetStall
-0800685c g     F .text	00000050 f_puts
-080002e4  w    F .text	00000002 CAN1_RX1_IRQHandler
-080008d4 g     F .text	0000001c USBD_USR_ManufacturerStrDescriptor
-08000324  w    F .text	00000002 UART5_IRQHandler
-0800037c g     F .text	00000008 USBD_USR_DeviceResumed
-0800032a  w    F .text	00000002 DMA2_Stream0_IRQHandler
-08003df4 g     F .text	00000008 ComFree
-08002424 g     F .text	00000004 GPIO_SetBits
-080002f6  w    F .text	00000002 TIM4_IRQHandler
-0800039c g     F .text	000000a4 USB_OTG_BSP_Init
-080008f0 g     F .text	0000001c USBD_USR_SerialStrDescriptor
-00000000  w      *UND*	00000000 __sf_fake_stderr
-08001f00 g     F .text	00000128 USB_OTG_EP0StartXfer
+0800786c l       .fini_array	00000000 __fini_array_end
+2000063c l       .bss	00000000 __bss_start__
+20001f94 l       .bss	00000000 __bss_end__
+00000000 l       *UND*	00000000 software_init_hook
+08007868 l       .fini_array	00000000 __fini_array_start
+08007868 l       .init_array	00000000 __init_array_end
+00000000 l       *UND*	00000000 hardware_init_hook
+08007860 l       .init_array	00000000 __preinit_array_end
+00000000 l       *UND*	00000000 __stack
+08007860 l       .init_array	00000000 __init_array_start
+00000000 l       *UND*	00000000 _exit
+08007860 l       .init_array	00000000 __preinit_array_start
+00000000 l       *UND*	00000000 free
+080048b0 g     F .text	00000028 ComInit
+0800040c  w    F .text	00000002 RTC_Alarm_IRQHandler
+080050f0 g     F .text	0000005c FlashWrite
+0800040c  w    F .text	00000002 HASH_RNG_IRQHandler
+0800040c  w    F .text	00000002 EXTI2_IRQHandler
+0800701e g     O .rodata	00000008 APBPrescTable
+0800040c  w    F .text	00000002 TIM8_CC_IRQHandler
+08006dd4 g     F .text	0000004c f_gets
+08002b4c g     F .text	00000130 HAL_GPIO_DeInit
+08001d68 g     F .text	00000018 RCC_GetPCLK2ClockFreq
+08004a88 g     F .text	00000008 AssertFailure
+0800292c g     F .text	0000004a HAL_PCD_EP_ClrStall
+0800040c  w    F .text	00000002 DebugMon_Handler
+08005410 g     F .text	00000034 CanReceivePacket
+08000566 g     F .text	00000020 HAL_PCD_ResetCallback
+08001b2c g     F .text	00000036 USB_ActivateSetup
+08004f14 g     F .text	0000001c TimerUpdate
+08003fb8 g     F .text	00000010 XcpPacketTransmitted
+080027f8 g     F .text	00000046 HAL_PCD_EP_Close
+08001d50 g     F .text	00000018 RCC_GetPCLK1ClockFreq
+08000678 g     F .text	0000001c USBD_LL_DeInit
+080005f6 g     F .text	00000016 HAL_PCD_DisconnectCallback
+08000fcc g     F .text	00000016 USBD_SetClassConfig
+0800300c g     F .text	00000068 HAL_NVIC_SetPriority
+0800040c  w    F .text	00000002 TIM1_CC_IRQHandler
+08002ef0 g     F .text	00000014 HAL_FLASH_Lock
+0800054e g     F .text	00000010 HAL_PCD_DataInStageCallback
+0800040c  w    F .text	00000002 DMA2_Stream5_IRQHandler
+080048d8 g     F .text	00000068 ComTask
+0800040c  w    F .text	00000002 HardFault_Handler
+0800040c  w    F .text	00000002 DMA1_Stream5_IRQHandler
+00000800 g       *ABS*	00000000 _Min_Stack_Size
+08004f50 g     F .text	00000002 SysTick_Handler
+0800040c  w    F .text	00000002 PVD_IRQHandler
+08004a3c g     F .text	0000000c BackDoorSetExtension
+0800040c  w    F .text	00000002 SDIO_IRQHandler
+0800055e g     F .text	00000008 HAL_PCD_SOFCallback
+0800040c  w    F .text	00000002 TAMP_STAMP_IRQHandler
+080049ae g     F .text	00000022 BootInit
+0800786c g       *ABS*	00000000 _sidata
+08004362 g     F .text	00000038 FileSrecVerifyChecksum
+08002040 g     F .text	0000000c HAL_RCC_GetHCLKFreq
+0800040c  w    F .text	00000002 PendSV_Handler
+08006f3c g     F .text	00000014 __locale_ctype_ptr
+0800040c  w    F .text	00000002 NMI_Handler
+08007860 g       .init_array	00000000 __exidx_end
+0800040c  w    F .text	00000002 CAN2_RX1_IRQHandler
+0800040c  w    F .text	00000002 EXTI3_IRQHandler
+0800118c g     F .text	00000012 USBD_LL_Suspend
+08004a70 g     F .text	00000018 BackDoorInit
+080011e4 g     F .text	0000000c LL_SetSystemCoreClock
+08003500 g     F .text	0000002c HAL_DeInit
+08002754 g     F .text	00000024 HAL_PCD_DevDisconnect
+08000c24 g     F .text	00000214 USBD_StdDevReq
+0800040c  w    F .text	00000002 TIM8_TRG_COM_TIM14_IRQHandler
+08001464 g     F .text	00000084 USB_ActivateEndpoint
+080009d0 g     F .text	000000fc HAL_MspInit
+08000740 g     F .text	00000026 USBD_LL_IsStallEP
+08000694 g     F .text	0000001c USBD_LL_Start
+0800040c  w    F .text	00000002 TIM1_UP_TIM10_IRQHandler
+08000fc2 g     F .text	0000000a USBD_Start
+080048ac g     F .text	00000004 CopService
+080015c8 g     F .text	00000234 USB_EPStartXfer
+08006fa8 g       .text	00000000 _etext
+2000063c g       .bss	00000000 _sbss
+08005444 g     F .text	00000004 CpuIrqDisable
+08001998 g     F .text	00000064 USB_EPSetStall
+0800040c  w    F .text	00000002 TIM8_UP_TIM13_IRQHandler
+08006ea0 g     F .text	00000084 ff_wtoupper
+0800040c  w    F .text	00000002 I2C3_ER_IRQHandler
+08001420 g     F .text	0000000e USB_SetDevSpeed
+08001264 g     F .text	0000000c USB_EnableGlobalInt
+08000fb4 g     F .text	0000000e USBD_RegisterClass
+08005290 g     F .text	00000008 FlashGetUserProgBaseAddress
+08002978 g     F .text	000001d4 HAL_GPIO_Init
+08001186 g     F .text	00000006 USBD_LL_SetSpeed
+08001400 g     F .text	00000020 USB_FlushRxFifo
+20001b44 g     O .bss	000003f0 hpcd_USB_OTG_FS
+080005bc g     F .text	00000014 HAL_PCD_ResumeCallback
+080050d4 g     F .text	00000018 FlashReinit
+080044e4 g     F .text	000003c4 FileTask
+08000e68 g     F .text	000000c6 USBD_StdEPReq
+08004f08 g     F .text	0000000c TimerReset
+0800040c  w    F .text	00000002 EXTI0_IRQHandler
+0800040c  w    F .text	00000002 I2C2_EV_IRQHandler
+080037b0 g     F .text	000002a8 disk_initialize
+080011c6 g     F .text	00000004 USBD_LL_IsoOUTIncomplete
+08003e62 g     F .text	00000002 UsbLeaveLowPowerModeHook
+0800040c  w    F .text	00000002 DMA1_Stream2_IRQHandler
+0800040c  w    F .text	00000002 CAN1_RX0_IRQHandler
+08000bba g     F .text	00000016 USBD_CtlSendStatus
+080035a8  w    F .text	00000028 HAL_Delay
+0800040c  w    F .text	00000002 FPU_IRQHandler
+08000e38 g     F .text	00000030 USBD_StdItfReq
+200004c4 g     O .data	00000004 SystemCoreClock
+08002894 g     F .text	00000040 HAL_PCD_EP_Transmit
+080008b0 g     F .text	00000008 USBD_Bulk_GetRxBufferPtr
+08000be6 g     F .text	00000028 USBD_ParseSetupRequest
+0800040c  w    F .text	00000002 OTG_HS_WKUP_IRQHandler
+080049d0 g     F .text	0000001a BootTask
+00000000  w      *UND*	00000000 malloc
+200004cc g     O .data	00000001 uwTickFreq
+080032bc g     F .text	00000056 HAL_CAN_Start
+080051c4 g     F .text	00000048 FlashWriteChecksum
+0800040c  w    F .text	00000002 UsageFault_Handler
+0800040c  w    F .text	00000002 CAN2_SCE_IRQHandler
+08004944 g     F .text	0000003c ComTransmitPacket
+0800040c  w    F .text	00000002 DMA2_Stream2_IRQHandler
+08003a58 g     F .text	00000014 disk_status
+08001cd4 g     F .text	00000064 LL_SPI_Init
+0800439c g     F .text	00000148 FileSrecParseLine
+080011aa g     F .text	00000018 USBD_LL_SOF
+20000000 g       .data	00000000 _sdata
+0800040c  w    F .text	00000002 SPI1_IRQHandler
+08002d44 g     F .text	000000a0 HAL_FLASHEx_Erase
+080031a8 g     F .text	00000114 HAL_CAN_ConfigFilter
+080004b4 g     F .text	00000054 HAL_PCD_MspInit
+0800040c  w    F .text	00000002 TIM6_DAC_IRQHandler
+080012a8 g     F .text	00000134 USB_DevInit
+080028d4 g     F .text	00000058 HAL_PCD_EP_SetStall
+08003b8c g     F .text	000001e8 disk_ioctl
+0800040c  w    F .text	00000002 TIM1_BRK_TIM9_IRQHandler
+08000f66 g     F .text	0000002a USBD_Init
+0800040c  w    F .text	00000002 CAN2_RX0_IRQHandler
+080042f4 g     F .text	00000028 FileHandleFirmwareUpdateRequest
+08003074 g     F .text	0000002c HAL_SYSTICK_Config
+080033c4 g     F .text	00000026 HAL_CAN_IsTxMessagePending
+20001f74 g     O .bss	00000020 pFlash
+08007860 g       .init_array	00000000 __exidx_start
+08001bd8 g     F .text	000000fc LL_USART_Init
+0800040c  w    F .text	00000002 DMA2_Stream3_IRQHandler
+080006b0 g     F .text	0000001c USBD_LL_Stop
+08006fa8 g     O .rodata	00000004 _global_impure_ptr
+080001e4 g     F .text	00000050 __libc_init_array
+08000baa g     F .text	00000010 USBD_CtlContinueRx
+0800279c g     F .text	0000005c HAL_PCD_EP_Open
+080021e8 g     F .text	00000548 HAL_PCD_IRQHandler
+08002cec g     F .text	00000058 FLASH_FlushCaches
+080030a0  w    F .text	00000002 HAL_CAN_MspInit
+08003ecc g     F .text	00000040 FileFirmwareUpdateCompletedHook
+08003fa8 g     F .text	00000010 XcpIsConnected
+08006d2c g     F .text	000000a8 f_unlink
+0800040c  w    F .text	00000002 USART6_IRQHandler
+08003e60 g     F .text	00000002 UsbEnterLowPowerModeHook
+08006f90 g     F .text	00000000 _init
+08004f52 g     F .text	00000004 NvmInit
+080005e0 g     F .text	00000016 HAL_PCD_ConnectCallback
+080050ec g     F .text	00000004 FlashInit
+08004f62 g     F .text	00000004 NvmGetUserProgBaseAddress
+08000708 g     F .text	0000001c USBD_LL_StallEP
+0800040c  w    F .text	00000002 USART3_IRQHandler
+080002f0 g     F .text	00000028 __libc_fini_array
+08003312 g     F .text	000000b2 HAL_CAN_AddTxMessage
+20001f94 g       .bss	00000000 _ebss
+0800197c g     F .text	0000001c USB_ReadPacket
+080003bc  w    F .text	00000038 Reset_Handler
+08001a98 g     F .text	00000018 USB_DevConnect
+080005d0 g     F .text	00000008 HAL_PCD_ISOOUTIncompleteCallback
+08006e20 g     F .text	00000044 f_puts
+0800040c  w    F .text	00000002 CAN1_RX1_IRQHandler
+08001ac8 g     F .text	00000008 USB_ReadInterrupts
+080005d8 g     F .text	00000008 HAL_PCD_ISOINIncompleteCallback
+0800040c  w    F .text	00000002 UART5_IRQHandler
+2000044c g     O .data	00000012 USBD_FS_DeviceDesc
+080019fc g     F .text	0000003a USB_EPClearStall
+0800040c  w    F .text	00000002 DMA2_Stream0_IRQHandler
+200004c8 g     O .data	00000004 uwTickPrio
+08003574 g     F .text	00000034 HAL_Init
+08004940 g     F .text	00000004 ComFree
+08001d38 g     F .text	00000018 RCC_GetHCLKClockFreq
+0800040c  w    F .text	00000002 TIM4_IRQHandler
+08000508 g     F .text	00000028 HAL_PCD_MspDeInit
 00000000  w      *UND*	00000000 __deregister_frame_info
-08003224 g     F .text	0000001e USBD_CtlReceiveStatus
-20001ab8 g       .stack_dummy	00000000 end
-080002f8  w    F .text	00000002 I2C1_EV_IRQHandler
-080002dc  w    F .text	00000002 DMA1_Stream6_IRQHandler
-08003f90 g     F .text	0000003c UartInit
-08000444 g     F .text	00000018 USB_OTG_BSP_uDelay
-200002b8 g       .data	00000000 __data_end__
-08001b54 g     F .text	0000000c USB_OTG_InitDevSpeed
-08001dc4 g     F .text	0000013c USB_OTG_EPStartXfer
-08004434 g     F .text	00000058 UsbReceivePipeBulkOUT
-0800245c g     F .text	000000b8 RCC_GetClocksFreq
-080040cc g     F .text	00000008 NvmErase
-08000670 g     F .text	00000020 CpuUserProgramStartHook
-080002d2  w    F .text	00000002 DMA1_Stream1_IRQHandler
-08002a8c g     F .text	0000001a USBD_CtlError
-08000322  w    F .text	00000002 UART4_IRQHandler
-080026f8 g     F .text	000000d0 USART_Init
-20001ab8 g       .bss	00000000 __bss_end__
-00000800 g       *ABS*	00000000 __STACK_SIZE
-080002f4  w    F .text	00000002 TIM3_IRQHandler
-080002c4  w    F .text	00000002 RCC_IRQHandler
-08002324 g     F .text	00000042 DCD_EP_ClrStall
-08000310  w    F .text	00000002 TIM8_BRK_TIM12_IRQHandler
-00000000  w      *UND*	00000000 __call_exitprocs
-08006574 g     F .text	00000024 f_close
-080002b8  w    F .text	00000002 Default_Handler
-08000370 g     F .text	00000002 USBD_USR_DeviceConfigured
-080001e4 g     F .text	00000000 _start
-080025dc g     F .text	00000040 FLASH_GetStatus
-08003560 g     F .text	000000e0 XcpPacketReceived
-0800448c g     F .text	00000008 CpuInit
-080025d0 g     F .text	0000000c FLASH_ClearFlag
-0800261c g     F .text	00000030 FLASH_WaitForLastOperation
-08000828 g     F .text	0000000c LedBlinkInit
-08000368 g     F .text	00000002 USBD_USR_Init
-0800030a  w    F .text	00000002 EXTI15_10_IRQHandler
-0800617c g     F .text	0000016c f_read
-080002de  w    F .text	00000002 ADC_IRQHandler
-08004838 g     F .text	00000040 FlashDone
-08002098 g     F .text	0000000c USB_OTG_ReadDevAllOutEp_itr
-08001b38 g     F .text	00000010 USB_OTG_IsDeviceMode
-080018a4 g     F .text	0000002a USB_OTG_WritePacket
-08000318  w    F .text	00000002 DMA1_Stream7_IRQHandler
-00000000  w      *UND*	00000000 software_init_hook
-08000834 g     F .text	00000058 LedBlinkTask
-080022e0 g     F .text	00000042 DCD_EP_Stall
-08002428 g     F .text	00000004 GPIO_ResetBits
-08000328  w    F .text	00000002 TIM7_IRQHandler
-08000338  w    F .text	00000002 CAN2_TX_IRQHandler
-08002060 g     F .text	00000036 USB_OTG_EPClearStall
-20001974 g     O .bss	00000040 USB_Rx_Buffer
-0800031e  w    F .text	00000002 TIM5_IRQHandler
-080042f8 g     F .text	00000050 UsbTransmitPacket
-08000346  w    F .text	00000002 DMA2_Stream7_IRQHandler
-080049e0 g     F .text	00000094 CanTransmitPacket
-080006a4 g     F .text	00000064 UsbConnectHook
-0800034a  w    F .text	00000002 I2C3_EV_IRQHandler
-080002e8  w    F .text	00000002 EXTI9_5_IRQHandler
-0800223c g     F .text	0000005c DCD_EP_PrepareRx
-080002c0  w    F .text	00000002 RTC_WKUP_IRQHandler
-08001d18 g     F .text	00000062 USB_OTG_EPActivate
-08000336  w    F .text	00000002 ETH_WKUP_IRQHandler
-08003524 g     F .text	0000001c XcpInit
-0800319c g     F .text	00000018 USBD_SetCfg
-08003724 g     F .text	0000002c FileInit
-08004280 g     F .text	00000064 UsbInit
-08000302  w    F .text	00000002 SPI2_IRQHandler
-00000000  w      *UND*	00000000 __sf_fake_stdin
-080042e4 g     F .text	00000014 UsbFree
-08004768 g     F .text	0000002e FlashErase
-08000350  w    F .text	00000002 OTG_HS_EP1_IN_IRQHandler
-080008a0 g     F .text	0000000c USBD_USR_DeviceDescriptor
-08006a40 g     F .text	00000010 memset
-080007c4 g     F .text	00000018 FileFirmwareUpdateErrorHook
-0800088c g     F .text	00000014 LedBlinkExit
-080002aa  w    F .text	00000002 MemManage_Handler
-08000000 g       .text	00000188 __isr_vector
-08000660 g     F .text	00000010 main
-080002d0  w    F .text	00000002 DMA1_Stream0_IRQHandler
-0800264c g     F .text	00000070 FLASH_EraseSector
-080064d8 g     F .text	0000009c f_sync
-08001b9c g     F .text	00000130 USB_OTG_CoreInitDev
-08001a78 g     F .text	00000048 USB_OTG_FlushTxFifo
-080002e0  w    F .text	00000002 CAN1_TX_IRQHandler
-080002b0  w    F .text	00000002 SVC_Handler
-08003794 g     F .text	00000050 FileSrecGetLineType
-08006a50 g     F .text	0000001a __ascii_wctomb
-080040e4 g     F .text	00000014 NvmDone
-08005fac g     F .text	00000058 f_mount
-08003fcc g     F .text	00000050 UartTransmitPacket
-080040d4 g     F .text	00000008 NvmVerifyChecksum
-00000000  w      *UND*	00000000 hardware_init_hook
-080044cc g     F .text	00000020 CpuMemCopy
-20001ab8 g       .stack_dummy	00000000 __end__
-20000084 g     O .data	00000004 USBD_LangIDDesc
-08001a68 g     F .text	0000000e USB_OTG_DisableGlobalInt
-080002ce  w    F .text	00000002 EXTI4_IRQHandler
-080020c4 g     F .text	00000042 USB_OTG_EP0_OutStart
-080019c8 g     F .text	0000008e USB_OTG_CoreInit
-20000518 g     O .bss	00000004 USBD_cfg_status
-08002850 g     F .text	0000001c SPI_Cmd
-08002968 g     F .text	00000050 SystemInit
-20000524 g     O .bss	00000004 USBD_default_cfg
-08002298 g     F .text	00000046 DCD_EP_Tx
-08006a78 g     F .text	00000000 _fini
-08006598 g     F .text	00000168 f_lseek
-08003e5c g     F .text	00000024 ComGetActiveInterfaceMaxTxLen
-00000000  w      *UND*	00000000 atexit
-0800401c g     F .text	000000a0 UartReceivePacket
-08000750 g     F .text	00000008 FileGetFirmwareFilenameHook
-08004b64 g     F .text	00000004 CpuIrqEnable
-08000390 g     F .text	0000000a USBD_USR_DeviceDisconnected
-0800031a  w    F .text	00000002 FSMC_IRQHandler
-20020000 g       .bss	00000000 __StackTop
-08000334  w    F .text	00000002 ETH_IRQHandler
-08000440 g     F .text	00000002 USB_OTG_BSP_EnableInterrupt
-20000140 g     O .data	00000004 _impure_ptr
-0800034e  w    F .text	00000002 OTG_HS_EP1_OUT_IRQHandler
-080031e4 g     F .text	00000010 USBD_CtlContinueSendData
-080002ba  w    F .text	00000002 WWDG_IRQHandler
-080008ac g     F .text	0000000c USBD_USR_LangIDStrDescriptor
-08001ccc g     F .text	0000001e USB_OTG_GetDeviceSpeed
-08002584 g     F .text	0000001c RCC_APB1PeriphResetCmd
-08006a1c g     F .text	00000024 __ascii_mbtowc
-08006700 g     F .text	0000004c f_stat
-08003ec0 g     F .text	00000008 CopInit
-080002f2  w    F .text	00000002 TIM2_IRQHandler
-080048d8 g     F .text	00000108 CanInit
-080040c4 g     F .text	00000008 NvmWrite
-08004494 g     F .text	00000038 CpuStartUserProgram
-0800030e  w    F .text	00000002 OTG_FS_WKUP_IRQHandler
-080002ee  w    F .text	00000002 TIM1_TRG_COM_TIM11_IRQHandler
-08000354  w    F .text	00000002 OTG_HS_IRQHandler
-08002ed4 g     F .text	0000003a USBD_GetString
-080027e4 g     F .text	00000008 USART_SendData
-08004348 g     F .text	00000088 UsbReceivePacket
-20020000 g       *ABS*	00000000 __stack
-080002c8  w    F .text	00000002 EXTI1_IRQHandler
-080047e8 g     F .text	00000050 FlashVerifyChecksum
-08003750 g     F .text	00000014 FileIsIdle
-080062e8 g     F .text	000001a4 f_write
-08001b60 g     F .text	0000003c USB_OTG_EnableDevInt
-2001f800 g       *ABS*	00000800 __StackLimit
-08000306  w    F .text	00000002 USART2_IRQHandler
-0800090c g     F .text	0000001c USBD_USR_ConfigStrDescriptor
-08006004 g     F .text	00000178 f_open
-08000ef4 g     F .text	000000ac disk_write
-0800697c g     F .text	00000028 exit
-080031c4 g     F .text	00000020 USBD_CtlSendData
-080007dc g     F .text	0000004c FileFirmwareUpdateLogHook
-080002fe  w    F .text	00000002 I2C2_ER_IRQHandler
-08003e80 g     F .text	00000008 ComIsConnected
-08001cec g     F .text	0000002c USB_OTG_EP0Activate
-00000000  w      *UND*	00000000 __sf_fake_stdout
-080018d0 g     F .text	00000022 USB_OTG_ReadPacket
-0800032c  w    F .text	00000002 DMA2_Stream1_IRQHandler
-0800727a g     O .text	00000101 _ctype_
-08000710 g     F .text	00000040 FileIsFirmwareUpdateRequestedHook
-080002e6  w    F .text	00000002 CAN1_SCE_IRQHandler
-08002368 g     F .text	00000010 DCD_EP_SetAddress
-08001b2c g     F .text	0000000a USB_OTG_GetMode
-080002c2  w    F .text	00000002 FLASH_IRQHandler
-0800238c  w    F .text	00000002 _exit
-200019b4 g     O .bss	000000ff USBD_StrDesc
-08003e38 g     F .text	00000024 ComGetActiveInterfaceMaxRxLen
-08000332  w    F .text	00000002 DMA2_Stream4_IRQHandler
-08002514 g     F .text	0000001c RCC_AHB1PeriphClockCmd
-080002ac  w    F .text	00000002 BusFault_Handler
-08000304  w    F .text	00000002 USART1_IRQHandler
-08000690 g     F .text	0000000a CopInitHook
-08000e6c g     F .text	00000088 disk_read
-08000340  w    F .text	00000002 OTG_FS_IRQHandler
-08000320  w    F .text	00000002 SPI3_IRQHandler
-08003ed0 g     F .text	00000044 BackDoorCheck
-080002d8  w    F .text	00000002 DMA1_Stream4_IRQHandler
-080002fa  w    F .text	00000002 I2C1_ER_IRQHandler
-20000048 g     O .data	00000020 usbd_bulk_CfgDesc
-08002804 g     F .text	0000004c SPI_Init
-080068ac g     F .text	0000003c ff_convert
-08004b50 g     F .text	00000010 TimerGet
-080043d0 g     F .text	00000064 UsbTransmitPipeBulkIN
+08002f58 g     F .text	00000090 HAL_FLASH_Program
+08000bd0 g     F .text	00000016 USBD_CtlReceiveStatus
+0800040c  w    F .text	00000002 I2C1_EV_IRQHandler
+0800040c  w    F .text	00000002 DMA1_Stream6_IRQHandler
+080006cc g     F .text	00000020 USBD_LL_OpenEP
+08001b24 g     F .text	00000008 USB_GetMode
+08004de8 g     F .text	00000034 UartInit
+080010ac g     F .text	0000009c USBD_LL_DataInStage
+08004d64 g     F .text	0000005c UsbReceivePipeBulkOUT
+0800060c g     F .text	0000006c USBD_LL_Init
+08004f5a g     F .text	00000004 NvmErase
+08003ddc g     F .text	0000001c CpuUserProgramStartHook
+0800040c  w    F .text	00000002 DMA1_Stream1_IRQHandler
+08000c0e g     F .text	00000016 USBD_CtlError
+08001af0 g     F .text	00000014 USB_ReadDevOutEPInterrupt
+08000fe2 g     F .text	0000000e USBD_ClrClassConfig
+0800040c  w    F .text	00000002 UART4_IRQHandler
+0800040c  w    F .text	00000002 TIM3_IRQHandler
+0800040c  w    F .text	00000002 RCC_IRQHandler
+0800040c  w    F .text	00000002 TIM8_BRK_TIM12_IRQHandler
+0800204c g     F .text	00000042 HAL_PCDEx_SetTxFiFo
+00000200 g       *ABS*	00000000 _Min_Heap_Size
+08006b86 g     F .text	0000001a f_close
+0800053c g     F .text	00000012 HAL_PCD_DataOutStageCallback
+0800040c g       .text	00000002 Default_Handler
+08002ca0 g     F .text	0000004c FLASH_Erase_Sector
+08003fc8 g     F .text	00000224 XcpPacketReceived
+0800700e g     O .rodata	00000010 AHBPrescTable
+08005298 g     F .text	00000004 CpuInit
+08002884 g     F .text	00000010 HAL_PCD_EP_GetRxCount
+080011c2 g     F .text	00000004 USBD_LL_IsoINIncomplete
+08002f04 g     F .text	00000054 FLASH_WaitForLastOperation
+08003d74 g     F .text	0000000c LedBlinkInit
+08000724 g     F .text	0000001c USBD_LL_ClearStallEP
+08001a36 g     F .text	00000042 USB_StopDevice
+0800040c  w    F .text	00000002 EXTI15_10_IRQHandler
+08000318 g     F .text	000000a4 __register_exitproc
+080067d8 g     F .text	00000156 f_read
+08002778 g     F .text	00000024 HAL_PCD_SetAddress
+0800040c  w    F .text	00000002 ADC_IRQHandler
+0800525c g     F .text	00000034 FlashDone
+08002fe8 g     F .text	00000024 HAL_NVIC_SetPriorityGrouping
+0800040c  w    F .text	00000002 DMA1_Stream7_IRQHandler
+0800041c g     F .text	0000000c USBD_FS_LangIDStrDescriptor
+08003d80 g     F .text	0000004c LedBlinkTask
+0800040c  w    F .text	00000002 TIM7_IRQHandler
+08000588 g     F .text	00000034 HAL_PCD_SuspendCallback
+08002196 g     F .text	00000030 HAL_PCD_Stop
+0800040c  w    F .text	00000002 CAN2_TX_IRQHandler
+20001f34 g     O .bss	00000040 USB_Rx_Buffer
+0800040c  w    F .text	00000002 TIM5_IRQHandler
+08004bf4 g     F .text	0000005c UsbTransmitPacket
+0800040c  w    F .text	00000002 DMA2_Stream7_IRQHandler
+080053c8 g     F .text	00000048 CanTransmitPacket
+08003e04 g     F .text	0000005c UsbConnectHook
+0800040c  w    F .text	00000002 I2C3_EV_IRQHandler
+08000410 g     F .text	0000000c USBD_FS_DeviceDescriptor
+0800040c  w    F .text	00000002 EXTI9_5_IRQHandler
+080011ca g     F .text	00000004 USBD_LL_DevConnected
+0800040c  w    F .text	00000002 RTC_WKUP_IRQHandler
+0800142e g     F .text	00000036 USB_GetDevSpeed
+2000042c g     O .data	0000001c FS_Desc
+08004f40 g     F .text	00000010 HAL_GetTick
+08003f8c g     F .text	0000001c XcpInit
+08001e34 g     F .text	000000c4 LL_GPIO_DeInit
+080042b4 g     F .text	00000030 FileInit
+0800208e g     F .text	00000008 HAL_PCDEx_SetRxFiFo
+08001dcc g     F .text	00000028 RCC_GetSystemClockFreq
+08004b30 g     F .text	000000a4 UsbInit
+0800040c  w    F .text	00000002 SPI2_IRQHandler
+08004bd4 g     F .text	00000020 UsbFree
+0800514c g     F .text	00000078 FlashErase
+0800040c  w    F .text	00000002 OTG_HS_EP1_IN_IRQHandler
+08000234 g     F .text	0000009a memset
+08003f0c g     F .text	00000014 FileFirmwareUpdateErrorHook
+08003dcc g     F .text	00000010 LedBlinkExit
+0800040c  w    F .text	00000002 MemManage_Handler
+080008f0 g     F .text	000000e0 main
+08000498 g     F .text	0000001c USBD_FS_InterfaceStrDescriptor
+0800040c  w    F .text	00000002 DMA1_Stream0_IRQHandler
+08006af0 g     F .text	00000096 f_sync
+08000444 g     F .text	0000001c USBD_FS_ProductStrDescriptor
+080033ea g     F .text	00000114 HAL_CAN_GetRxMessage
+08007ea8 g       *ABS*	00000000 _siccmram
+0800040c  w    F .text	00000002 CAN1_TX_IRQHandler
+0800040c  w    F .text	00000002 SVC_Handler
+0800431c g     F .text	00000046 FileSrecGetLineType
+08001d80 g     F .text	0000004c RCC_PLL_GetFreqDomain_SYS
+080021c6 g     F .text	00000022 HAL_PCD_DeInit
+08006f74 g     F .text	0000001a __ascii_wctomb
+08004f66 g     F .text	00000012 NvmDone
+08006634 g     F .text	00000050 f_mount
+08004e1c g     F .text	00000038 UartTransmitPacket
+08004f5e g     F .text	00000004 NvmVerifyChecksum
+080052e0 g     F .text	0000001c CpuMemCopy
+08001148 g     F .text	0000003e USBD_LL_Reset
+00000000  w      *UND*	00000000 __libc_fini
+080007bc g     F .text	0000000c USBD_LL_GetRxDataSize
+20000448 g     O .data	00000004 USBD_LangIDDesc
+0800040c  w    F .text	00000002 EXTI4_IRQHandler
+0800104a g     F .text	00000062 USBD_LL_DataOutStage
+080011f0 g     F .text	00000074 USB_CoreInit
+08000b34 g     F .text	0000004c SystemInit
+08001270 g     F .text	0000000c USB_DisableGlobalInt
+08006f9c g     F .text	00000000 _fini
+0800216c g     F .text	0000002a HAL_PCD_Start
+0800127c g     F .text	0000002c USB_SetCurrentMode
+08006ba0 g     F .text	00000136 f_lseek
+080017fc g     F .text	00000158 USB_EP0StartXfer
+08004980 g     F .text	0000001c ComGetActiveInterfaceMaxTxLen
+080002e4 g     F .text	0000000c atexit
+08004e54 g     F .text	00000090 UartReceivePacket
+08003e9c g     F .text	00000008 FileGetFirmwareFilenameHook
+08005448 g     F .text	00000004 CpuIrqEnable
+10000000 g       .ccmram	00000000 _eccmram
+0800352c  w    F .text	00000048 HAL_InitTick
+0800040c  w    F .text	00000002 FSMC_IRQHandler
+08000768 g     F .text	0000001c USBD_LL_SetUSBAddress
+20000428 g     O .data	00000004 _impure_ptr
+0800047c g     F .text	0000001c USBD_FS_ConfigStrDescriptor
+0800040c  w    F .text	00000002 OTG_HS_EP1_OUT_IRQHandler
+080006ec g     F .text	0000001c USBD_LL_CloseEP
+08000b9a g     F .text	00000010 USBD_CtlContinueSendData
+0800119e g     F .text	0000000c USBD_LL_Resume
+0800040c  w    F .text	00000002 WWDG_IRQHandler
+08006f50 g     F .text	00000024 __ascii_mbtowc
+08000f90 g     F .text	00000024 USBD_DeInit
+08006cd8 g     F .text	00000054 f_stat
+080048a8 g     F .text	00000004 CopInit
+08004a48 g     F .text	0000000c BackDoorGetExtension
+08000784 g     F .text	0000001c USBD_LL_Transmit
+0800040c  w    F .text	00000002 TIM2_IRQHandler
+080052fc g     F .text	000000cc CanInit
+08002096 g     F .text	000000d6 HAL_PCD_Init
+08004f56 g     F .text	00000004 NvmWrite
+0800529c g     F .text	00000044 CpuStartUserProgram
+0800040c  w    F .text	00000002 OTG_FS_WKUP_IRQHandler
+0800040c  w    F .text	00000002 TIM1_TRG_COM_TIM11_IRQHandler
+0800040c  w    F .text	00000002 OTG_HS_IRQHandler
+08000f2e g     F .text	00000038 USBD_GetString
+08000530 g     F .text	0000000c HAL_PCD_SetupStageCallback
+08002730 g     F .text	00000024 HAL_PCD_DevConnect
+080030a2 g     F .text	00000104 HAL_CAN_Init
+20020000 g       *ABS*	00000000 _estack
+08004c50 g     F .text	0000009c UsbReceivePacket
+0800040c  w    F .text	00000002 EXTI1_IRQHandler
+0800520c g     F .text	00000050 FlashVerifyChecksum
+08000428 g     F .text	0000001c USBD_FS_ManufacturerStrDescriptor
+08000acc g     F .text	00000068 HAL_MspDeInit
+08001ef8 g     F .text	00000148 LL_GPIO_Init
+2000063c g       .data	00000000 _edata
+080042e4 g     F .text	00000010 FileIsIdle
+20000460 g     O .data	00000020 USBD_Bulk_CfgFSDesc
+10000000 g       .ccmram	00000000 _sccmram
+080007d4 g     F .text	0000000c USBD_Bulk_GetDeviceQualifierDescriptor
+0800692e g     F .text	0000017e f_write
+08001b04 g     F .text	00000020 USB_ReadDevInEPInterrupt
+08002ecc g     F .text	00000024 HAL_FLASH_Unlock
+08001ae0 g     F .text	00000010 USB_ReadDevAllInEpInterrupt
+08000460 g     F .text	0000001c USBD_FS_SerialStrDescriptor
+0800040c  w    F .text	00000002 USART2_IRQHandler
+08006684 g     F .text	00000154 f_open
+08003aec g     F .text	000000a0 disk_write
+08000000 g     O .isr_vector	00000000 g_pfnVectors
+08000b80 g     F .text	0000001a USBD_CtlSendData
+08003f20 g     F .text	00000058 FileFirmwareUpdateLogHook
+0800040c  w    F .text	00000002 I2C2_ER_IRQHandler
+080049a0 g     F .text	0000000e ComIsConnected
+0800040c  w    F .text	00000002 DMA2_Stream1_IRQHandler
+080014e8 g     F .text	00000004 USB_DeactivateEndpoint
+08001df4 g     F .text	00000020 LL_RCC_GetSystemClocksFreq
+08001954 g     F .text	00000028 USB_WritePacket
+0800775e g     O .rodata	00000101 _ctype_
+08003e64 g     F .text	00000038 FileIsFirmwareUpdateRequestedHook
+0800040c  w    F .text	00000002 CAN1_SCE_IRQHandler
+0800040c  w    F .text	00000002 FLASH_IRQHandler
+08001ad0 g     F .text	00000010 USB_ReadDevAllOutEpInterrupt
+20001944 g     O .bss	00000200 USBD_StrDesc
+08004a54 g     F .text	0000001c BackDoorRestartTimer
+0800499c g     F .text	00000004 ComGetActiveInterfaceMaxRxLen
+0800040c  w    F .text	00000002 DMA2_Stream4_IRQHandler
+0800040c  w    F .text	00000002 BusFault_Handler
+0800040c  w    F .text	00000002 USART1_IRQHandler
+080011ce g     F .text	00000016 USBD_LL_DevDisconnected
+08003df8 g     F .text	00000006 CopInitHook
+08003a6c g     F .text	00000080 disk_read
+0800040c  w    F .text	00000002 OTG_FS_IRQHandler
+0800040c  w    F .text	00000002 SPI3_IRQHandler
+080049ec g     F .text	00000050 BackDoorCheck
+08001ab0 g     F .text	00000018 USB_DevDisconnect
+0800040c  w    F .text	00000002 DMA1_Stream4_IRQHandler
+0800040c  w    F .text	00000002 I2C1_ER_IRQHandler
+08006e64 g     F .text	0000003c ff_convert
+08004f30 g     F .text	00000010 TimerGet
+080007a0 g     F .text	0000001c USBD_LL_PrepareReceive
+2000048c g     O .data	00000038 USBD_Bulk
+08004cec g     F .text	00000078 UsbTransmitPipeBulkIN
+080014ec g     F .text	000000dc USB_DeactivateDedicatedEndpoint
 00000000  w      *UND*	00000000 _Jv_RegisterClasses
-20000068 g     O .data	0000001c USR_desc
-08001d7c g     F .text	00000048 USB_OTG_EPDeactivate
-08002414 g     F .text	0000000e GPIO_ReadInputDataBit
-08004b0c g     F .text	00000028 TimerInit
+080013dc g     F .text	00000024 USB_FlushTxFifo
+08001a78 g     F .text	00000020 USB_SetDevAddress
+0800283e g     F .text	00000046 HAL_PCD_EP_Receive
+08004ee4 g     F .text	00000024 TimerInit
 00000000  w      *UND*	00000000 __register_frame_info
-0800069c g     F .text	00000008 CopServiceHook
-08000344  w    F .text	00000002 DMA2_Stream6_IRQHandler
-200000b0 g     O .data	0000002c USBD_DCD_INT_cb
-20000144 g     O .data	0000016c __global_locale
-080002d6  w    F .text	00000002 DMA1_Stream3_IRQHandler
-08000758 g     F .text	00000028 FileFirmwareUpdateStartedHook
-08001a58 g     F .text	0000000e USB_OTG_EnableGlobalInt
+08003dfe g     F .text	00000004 CopServiceHook
+0800040c  w    F .text	00000002 DMA2_Stream6_IRQHandler
+200004d0 g     O .data	0000016c __global_locale
+08001b62 g     F .text	00000046 USB_EP0_OutStart
+0800040c  w    F .text	00000002 DMA1_Stream3_IRQHandler
+08003ea4 g     F .text	00000028 FileFirmwareUpdateStartedHook
+08000ff0 g     F .text	0000005a USBD_LL_SetupStage
 
 
