@@ -369,6 +369,8 @@ static bool SRecParserSaveToFile (char const * firmwareFile)
           }
         }
       }
+      /* Close the file now that we are done with it. */
+      fclose(fp);
     }
   }
   /* Give the result back to the caller. */
