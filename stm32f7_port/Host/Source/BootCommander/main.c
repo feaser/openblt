@@ -792,9 +792,7 @@ static void DisplayFirmwareDataInfo(uint32_t segments, uint32_t base, uint32_t s
 
 
 /************************************************************************************//**
-** \brief     Parses the command line to extract the program settings. Note that this
-**            function allocates the memory necessary to store the settings. It is the
-**            caller's responsibility to free this memory after it is done with it.
+** \brief     Parses the command line to extract the program settings. 
 ** \param     argc Number of program arguments.
 ** \param     argv Array with program parameter strings.
 ** \param     programSettings Pointer to the setting structure where the program settings
