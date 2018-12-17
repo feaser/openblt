@@ -33,24 +33,19 @@
 							</tool>
 							<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1752548343" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc">
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1552634221" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" useByScannerDiscovery="false" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="STM32F4XX"/>
-									<listOptionValue builtIn="false" value="USE_USB_OTG_FS"/>
-									<listOptionValue builtIn="false" value="STM32F407ZG"/>
-									<listOptionValue builtIn="false" value="HSE_VALUE=12000000"/>
-									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
+									<listOptionValue builtIn="false" value="USE_FULL_LL_DRIVER"/>
+									<listOptionValue builtIn="false" value="USE_HAL_DRIVER"/>
+									<listOptionValue builtIn="false" value="STM32F407xx"/>
 								</option>
 								<option id="com.atollic.truestudio.gcc.directories.select.23801086" name="Include path" superClass="com.atollic.truestudio.gcc.directories.select" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/ethernetlib/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/CMSIS/Device/ST/STM32F4xx/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/CMSIS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/STM32F4xx_HAL_Driver/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/STM32F4xx_HAL_Driver/Inc/Legacy&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/fatfs&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/stdperiphlib&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/stdperiphlib/CMSIS/Device/ST/STM32F4xx/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/stdperiphlib/CMSIS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/stdperiphlib/STM32F4xx_StdPeriph_Driver/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/uip&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/usbdevicelib/Core/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/usbotgdriver/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source/ARMCM4_STM32F4&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source/third_party/fatfs/src&quot;"/>
@@ -75,7 +70,7 @@
 								<option id="com.atollic.truestudio.common_options.target.instr_set.928950265" name="Instruction set" superClass="com.atollic.truestudio.common_options.target.instr_set" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.instr_set.thumb2" valueType="enumerated"/>
 								<option id="com.atollic.truestudio.common_options.target.fpucore.1578538783" name="FPU" superClass="com.atollic.truestudio.common_options.target.fpucore" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.fpucore.fpv4-sp-d16" valueType="enumerated"/>
 								<option id="com.atollic.truestudio.common_options.target.fpu.92227855" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated"/>
-								<option id="com.atollic.truestudio.ld.general.scriptfile.674251026" name="Linker script" superClass="com.atollic.truestudio.ld.general.scriptfile" useByScannerDiscovery="false" value="${ProjDirPath}/stm32f4_flash.ld" valueType="string"/>
+								<option id="com.atollic.truestudio.ld.general.scriptfile.674251026" name="Linker script" superClass="com.atollic.truestudio.ld.general.scriptfile" useByScannerDiscovery="false" value="${ProjDirPath}/STM32F407ZG_FLASH.ld" valueType="string"/>
 								<option id="com.atollic.truestudio.ld.optimization.do_garbage.644644539" name="Dead code removal " superClass="com.atollic.truestudio.ld.optimization.do_garbage" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.atollic.truestudio.common_options.target.interwork.2135508181" name="Mix ARM/Thumb" superClass="com.atollic.truestudio.common_options.target.interwork" useByScannerDiscovery="false"/>
 								<inputType id="com.atollic.truestudio.ld.input.476130642" name="Input" superClass="com.atollic.truestudio.ld.input">

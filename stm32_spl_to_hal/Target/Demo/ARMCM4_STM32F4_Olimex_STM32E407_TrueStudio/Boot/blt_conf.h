@@ -70,7 +70,7 @@
  * 
  */
 /** \brief Enable/disable CAN transport layer. */
-#define BOOT_COM_CAN_ENABLE             (1)
+#define BOOT_COM_CAN_ENABLE             (0)
 /** \brief Configure the desired CAN baudrate. */
 #define BOOT_COM_CAN_BAUDRATE           (500000)
 /** \brief Configure CAN message ID target->host. */
@@ -93,7 +93,7 @@
  * 
  */
 /** \brief Enable/disable UART transport layer. */
-#define BOOT_COM_UART_ENABLE            (1)
+#define BOOT_COM_UART_ENABLE            (0)
 /** \brief Configure the desired communication speed. */
 #define BOOT_COM_UART_BAUDRATE          (57600)
 /** \brief Configure number of bytes in the target->host data packet. */
@@ -111,7 +111,7 @@
  * 
  */
 /** \brief Enable/disable USB transport layer. */
-#define BOOT_COM_USB_ENABLE             (1)
+#define BOOT_COM_USB_ENABLE             (0)
 /** \brief Configure number of bytes in the target->host data packet. */
 #define BOOT_COM_USB_TX_MAX_DATA        (63)
 /** \brief Configure number of bytes in the host->target data packet. */
@@ -132,7 +132,7 @@
  * configuring the IP address, network mask and gateway address are no longer needed.
  */
 /** \brief Enable/disable the NET transport layer. */
-#define BOOT_COM_NET_ENABLE               (1)
+#define BOOT_COM_NET_ENABLE               (0)
 /** \brief Configure number of bytes in the target->host data packet. */
 #define BOOT_COM_NET_TX_MAX_DATA          (64)
 /** \brief Configure number of bytes in the host->target data packet. */
@@ -171,7 +171,7 @@
  *         bootloader application can explicitly initialize the communication interface
  *         by calling ComDeferredInit().
  */
-#define BOOT_COM_NET_DEFERRED_INIT_ENABLE (1)
+#define BOOT_COM_NET_DEFERRED_INIT_ENABLE (0)
 
 
 /****************************************************************************************

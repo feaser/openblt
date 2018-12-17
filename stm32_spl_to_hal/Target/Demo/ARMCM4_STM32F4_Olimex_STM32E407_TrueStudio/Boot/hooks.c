@@ -30,10 +30,6 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#if (BOOT_FILE_LOGGING_ENABLE > 0)
-#include "stm32f4xx.h"                           /* STM32 registers                    */
-#include "stm32f4xx_conf.h"                      /* STM32 peripheral drivers           */
-#endif
 
 
 /****************************************************************************************
@@ -122,11 +118,14 @@ void UsbLeaveLowPowerModeHook(void)
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
+  /* TODO ##Vg Update CpuUserProgramStartHook(). */
+#if 0
   /* do not start the user program is the pushbutton is pressed */
   if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == Bit_SET)
   {
     return BLT_FALSE;
   }
+#endif
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/
 #endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */
@@ -373,24 +372,10 @@ void FileFirmwareUpdateStartedHook(void)
 void FileFirmwareUpdateCompletedHook(void)
 {
   #if (BOOT_FILE_LOGGING_ENABLE > 0)
-  blt_int32u timeoutTime;
-
   /* close the log file */
   if (logfile.canUse == BLT_TRUE)
   {
     f_close(&logfile.handle);
-  }
-  /* wait for all logging related transmission to complete with a maximum wait time of
-   * 100ms.
-   */
-  timeoutTime = TimerGet() + 100;
-  while(USART_GetFlagStatus(USART6, USART_FLAG_TC) == RESET)
-  {
-    /* check for timeout */
-    if (TimerGet() > timeoutTime)
-    {
-      break;
-    }
   }
   #endif
   /* now delete the firmware file from the disk since the update was successful */
@@ -437,16 +422,6 @@ void FileFirmwareUpdateLogHook(blt_char *info_string)
       logfile.canUse = BLT_FALSE;
       f_close(&logfile.handle);
     }
-  }
-  /* echo all characters in the string on UART */
-  while(*info_string != '\0')
-  {
-    /* write character to transmit holding register */
-    USART_SendData(USART6, *info_string);
-    /* wait for tx holding register to be empty */
-    while(USART_GetFlagStatus(USART6, USART_FLAG_TXE) == RESET);
-    /* point to the next character in the string */
-    info_string++;
   }
 } /*** end of FileFirmwareUpdateLogHook ***/
 #endif /* BOOT_FILE_LOGGING_ENABLE > 0 */
