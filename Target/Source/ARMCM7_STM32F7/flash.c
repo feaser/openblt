@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source/ARMCM3_STM32F2/flash.c
+* \file         Source/ARMCM7_STM32F7/flash.c
 * \brief        Bootloader flash driver source file.
-* \ingroup      Target_ARMCM3_STM32F2
+* \ingroup      Target_ARMCM7_STM32F7
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2018  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,7 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f2xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f7xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -55,7 +55,7 @@
  *         verification will always fail.
  */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
-#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x184)
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x1C8)
 #endif
 
 
@@ -139,26 +139,30 @@ static const tFlashSector flashLayout[] =
    * interfaces enabled. when for example only UART is needed, then the space required
    * for the bootloader can be made a lot smaller here.
    */
-  /* { 0x08000000, 0x04000,  0},           flash sector  0 - reserved for bootloader   */
-  /* { 0x08004000, 0x04000,  1},           flash sector  1 - reserved for bootloader   */
-  { 0x08008000, 0x04000,  2},           /* flash sector  2 -  16kb                     */
-  { 0x0800c000, 0x04000,  3},           /* flash sector  3 -  16kb                     */
-  { 0x08010000, 0x10000,  4},           /* flash sector  4 -  64kb                     */
+  /* { 0x08000000, 0x08000, 0 },         flash sector 0 - reserved for bootloader      */
+  { 0x08008000, 0x08000, 1},            /* flash sector  1 - 32kb                      */
+#if (BOOT_NVM_SIZE_KB > 64)
+  { 0x08010000, 0x08000, 2},            /* flash sector  2 - 32kb                      */
+  { 0x08018000, 0x08000, 3},            /* flash sector  3 - 32kb                      */
+#endif
 #if (BOOT_NVM_SIZE_KB > 128)
-  { 0x08020000, 0x20000,  5},           /* flash sector  5 - 128kb                     */
+  { 0x08020000, 0x20000, 4},            /* flash sector  4 - 128kb                     */
 #endif
 #if (BOOT_NVM_SIZE_KB > 256)
-  { 0x08040000, 0x20000,  6},           /* flash sector  6 - 128kb                     */
-  { 0x08060000, 0x20000,  7},           /* flash sector  7 - 128kb                     */
+  { 0x08040000, 0x40000, 5},            /* flash sector  5 - 256kb                     */
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
-  { 0x08080000, 0x20000,  8},           /* flash sector  8 - 128kb                     */
-  { 0x080A0000, 0x20000,  9},           /* flash sector  9 - 128kb                     */
-  { 0x080C0000, 0x20000, 10},           /* flash sector 10 - 128kb                     */
-  { 0x080E0000, 0x20000, 11},           /* flash sector 11 - 128kb                     */
+  { 0x08080000, 0x40000, 6},            /* flash sector  6 - 256kb                     */
+  { 0x080C0000, 0x40000, 7},            /* flash sector  7 - 256kb                     */
 #endif
 #if (BOOT_NVM_SIZE_KB > 1024)
-#error "BOOT_NVM_SIZE_KB > 1024 is currently not supported."
+  { 0x08100000, 0x40000, 8},            /* flash sector  8 - 256kb                     */
+  { 0x08140000, 0x40000, 9},            /* flash sector  9 - 256kb                     */
+  { 0x08180000, 0x40000, 10},           /* flash sector 10 - 256kb                     */
+  { 0x081C0000, 0x40000, 11},           /* flash sector 11 - 256kb                     */
+#endif
+#if (BOOT_NVM_SIZE_KB > 2048)
+#error "BOOT_NVM_SIZE_KB > 2048 is currently not supported."
 #endif
 };
 #else
