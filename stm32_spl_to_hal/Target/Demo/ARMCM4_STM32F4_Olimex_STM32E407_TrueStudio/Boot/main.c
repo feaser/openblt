@@ -30,12 +30,20 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32f4xx.h"                           /* STM32 registers and drivers        */
+#include "stm32f4xx_ll_rcc.h"                    /* STM32 LL RCC header                */
+#include "stm32f4xx_ll_pwr.h"                    /* STM32 LL PWR header                */
+#include "stm32f4xx_ll_bus.h"                    /* STM32 LL BUS header                */
+#include "stm32f4xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
+#include "stm32f4xx_ll_utils.h"                  /* STM32 LL UTILS header              */
+#include "stm32f4xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+static void SystemClock_Config(void);
 
 
 /************************************************************************************//**
@@ -70,8 +78,127 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  /* TODO ##Vg Update Init(). */
+  /* HAL library initialization */
+  HAL_Init();
+  /* configure system clock */
+  SystemClock_Config();
 } /*** end of Init ***/
+
+
+/************************************************************************************//**
+** \brief     System Clock Configuration. This code was created by CubeMX and configures
+**            the system clock to match the configuration in the bootloader's
+**            configuration (blt_conf.h), specifically the macros:
+**            BOOT_CPU_SYSTEM_SPEED_KHZ and BOOT_CPU_XTAL_SPEED_KHZ.
+**            Note that the Lower Layer drivers were selected in CubeMX for the RCC
+**            subsystem.
+** \return    none.
+**
+****************************************************************************************/
+static void SystemClock_Config(void)
+{
+  /* Set flash latency. */
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_5);
+  /* Verify flash latency setting. */
+  if(LL_FLASH_GetLatency() != LL_FLASH_LATENCY_5)
+  {
+    /* Error setting flash latency. */
+    ASSERT_RT(BLT_FALSE);
+  }
+
+  /* Configure voltage regulator scaling. */
+  LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
+
+  /* Enable the HSE clock. */
+  LL_RCC_HSE_Enable();
+
+  /* Wait till HSE is ready */
+  while(LL_RCC_HSE_IsReady() != 1)
+  {
+    ;
+  }
+
+  /* Configure and enable the PLL. */
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_12, 336, LL_RCC_PLLP_DIV_2);
+  LL_RCC_PLL_Enable();
+
+  /* Wait till PLL is ready */
+  while(LL_RCC_PLL_IsReady() != 1)
+  {
+    ;
+  }
+  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_4);
+  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_2);
+  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
+
+  /* Wait till System clock is ready */
+  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
+  {
+    ;
+  }
+  /* Update the system clock speed setting. */
+  LL_SetSystemCoreClock(BOOT_CPU_SYSTEM_SPEED_KHZ * 1000u);
+} /*** end of SystemClock_Config ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the Global MSP. This function is called from HAL_Init()
+**            function to perform system level initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspInit(void)
+{
+  LL_GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* SYSCFG and PWR clock enable. */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
+
+  /* GPIO ports clock enable. */
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
+
+  /* Configure GPIO pin for the LED. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_13;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+
+  /* Configure GPIO pin for (optional) backdoor entry input. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_0;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+} /*** end of HAL_MspInit ***/
+
+
+/************************************************************************************//**
+** \brief     DeInitializes the Global MSP. This function is called from HAL_DeInit()
+**            function to perform system level de-initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspDeInit(void)
+{
+  /* Deinit used GPIOs. */
+  LL_GPIO_DeInit(GPIOC);
+  LL_GPIO_DeInit(GPIOA);
+
+  /* GPIO ports clock disable. */
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+
+  /* SYSCFG and PWR clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_PWR);
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+} /*** end of HAL_MspDeInit ***/
 
 
 /*********************************** end of main.c *************************************/

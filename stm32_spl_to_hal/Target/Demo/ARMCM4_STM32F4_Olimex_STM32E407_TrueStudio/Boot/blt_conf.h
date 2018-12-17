@@ -254,7 +254,7 @@
  * hook functions.
  */
 /** \brief Enable/disable the hook functions for controlling the watchdog. */
-#define BOOT_COP_HOOKS_ENABLE           (0)
+#define BOOT_COP_HOOKS_ENABLE           (1)
 
 
 /****************************************************************************************
