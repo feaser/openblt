@@ -203,6 +203,8 @@ void FileTask(void)
     /* attempt to obtain a file object for the firmware file */
     if (f_open(&fatFsObjects.file, FileGetFirmwareFilenameHook(), FA_OPEN_EXISTING | FA_READ) != FR_OK)
     {
+      /* cannot continue with firmware update so go back to idle state */
+      firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
       /* can't open file */
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("ERROR\n\r");
@@ -232,6 +234,8 @@ void FileTask(void)
     /* check if an error occurred */
     if (f_error(&fatFsObjects.file) > 0)
     {
+      /* cannot continue with firmware update so go back to idle state */
+      firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("ERROR\n\r");
 #endif
@@ -240,8 +244,6 @@ void FileTask(void)
 #endif
       /* close the file */
       f_close(&fatFsObjects.file);
-      /* cannot continue with firmware update so go back to idle state */
-      firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
       return;
     }
     /* parse the S-Record line without copying the data values if the line is not empty */
@@ -251,6 +253,8 @@ void FileTask(void)
       /* check parsing result */
       if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
       {
+        /* cannot continue with firmware update so go back to idle state */
+        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("ERROR\n\r");
 #endif
@@ -259,8 +263,6 @@ void FileTask(void)
 #endif
         /* close the file */
         f_close(&fatFsObjects.file);
-        /* cannot continue with firmware update so go back to idle state */
-        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
     }
@@ -306,6 +308,8 @@ void FileTask(void)
           /* still here so we are ready to perform the memory erase operation */
           if (NvmErase(eraseInfo.start_address, eraseInfo.total_size) == BLT_FALSE)
           {
+            /* cannot continue with firmware update so go back to idle state */
+            firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
             #if (BOOT_FILE_LOGGING_ENABLE > 0)
             FileFirmwareUpdateLogHook("ERROR\n\r");
             #endif
@@ -314,8 +318,6 @@ void FileTask(void)
             #endif
             /* close the file */
             f_close(&fatFsObjects.file);
-            /* cannot continue with firmware update so go back to idle state */
-            firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
             return;
           }
           #if (BOOT_FILE_LOGGING_ENABLE > 0)
@@ -335,6 +337,8 @@ void FileTask(void)
       /* rewind the file in preparation for the programming state */
       if (f_lseek(&fatFsObjects.file, 0) != FR_OK)
       {
+        /* cannot continue with firmware update so go back to idle state */
+        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("ERROR\n\r");
 #endif
@@ -343,8 +347,6 @@ void FileTask(void)
 #endif
         /* close the file */
         f_close(&fatFsObjects.file);
-        /* cannot continue with firmware update so go back to idle state */
-        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
       /* still here so we are ready to perform the last memory erase operation, if there
@@ -369,6 +371,8 @@ void FileTask(void)
         #endif
         if (NvmErase(eraseInfo.start_address, eraseInfo.total_size) == BLT_FALSE)
         {
+          /* cannot continue with firmware update so go back to idle state */
+          firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
           #if (BOOT_FILE_LOGGING_ENABLE > 0)
           FileFirmwareUpdateLogHook("ERROR\n\r");
           #endif
@@ -377,8 +381,6 @@ void FileTask(void)
           #endif
           /* close the file */
           f_close(&fatFsObjects.file);
-          /* cannot continue with firmware update so go back to idle state */
-          firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
           return;
         }
       }
@@ -397,6 +399,8 @@ void FileTask(void)
     /* check if an error occurred */
     if (f_error(&fatFsObjects.file) > 0)
     {
+      /* cannot continue with firmware update so go back to idle state */
+      firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
       FileFirmwareUpdateLogHook("Reading line from file...ERROR\n\r");
 #endif
@@ -405,8 +409,6 @@ void FileTask(void)
 #endif
       /* close the file */
       f_close(&fatFsObjects.file);
-      /* cannot continue with firmware update so go back to idle state */
-      firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
       return;
     }
     /* parse the S-Record line if the line is not empty */
@@ -416,6 +418,8 @@ void FileTask(void)
       /* check parsing result */
       if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
       {
+        /* cannot continue with firmware update so go back to idle state */
+        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("Invalid checksum found...ERROR\n\r");
 #endif
@@ -424,8 +428,6 @@ void FileTask(void)
 #endif
         /* close the file */
         f_close(&fatFsObjects.file);
-        /* cannot continue with firmware update so go back to idle state */
-        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
     }
@@ -449,6 +451,8 @@ void FileTask(void)
       /* program the data */
       if (NvmWrite(lineParseObject.address, parse_result, lineParseObject.data) == BLT_FALSE)
       {
+        /* cannot continue with firmware update so go back to idle state */
+        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("ERROR\n\r");
 #endif
@@ -457,8 +461,6 @@ void FileTask(void)
 #endif
         /* close the file */
         f_close(&fatFsObjects.file);
-        /* cannot continue with firmware update so go back to idle state */
-        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
@@ -474,6 +476,8 @@ void FileTask(void)
       /* finish the programming by writing the checksum */
       if (NvmDone() == BLT_FALSE)
       {
+        /* cannot continue with firmware update so go back to idle state */
+        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
         FileFirmwareUpdateLogHook("ERROR\n\r");
 #endif
@@ -482,8 +486,6 @@ void FileTask(void)
 #endif
         /* close the file */
         f_close(&fatFsObjects.file);
-        /* cannot continue with firmware update so go back to idle state */
-        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
         return;
       }
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
