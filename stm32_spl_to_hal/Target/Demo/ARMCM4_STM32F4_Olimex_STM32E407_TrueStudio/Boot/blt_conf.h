@@ -171,7 +171,7 @@
  *         bootloader application can explicitly initialize the communication interface
  *         by calling ComDeferredInit().
  */
-#define BOOT_COM_NET_DEFERRED_INIT_ENABLE (0)
+#define BOOT_COM_NET_DEFERRED_INIT_ENABLE (1)
 
 
 /****************************************************************************************
