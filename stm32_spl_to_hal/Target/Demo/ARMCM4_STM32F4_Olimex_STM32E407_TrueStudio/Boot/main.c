@@ -58,7 +58,7 @@ int main(void)
   Init();
   /* initialize the bootloader */
   BootInit();
-  
+
   /* start the infinite program loop */
   while (1)
   {

@@ -18,10 +18,14 @@
  */
 #include "diskio.h"
 #include "boot.h"
+#include "sd_diskio.h"
 
 
 static volatile
 DSTATUS Stat = STA_NOINIT;	/* Disk status */
+
+static volatile
+BYTE DiskInitialized = 0;
 
 
 /*--------------------------------------------------------------------------
@@ -39,11 +43,14 @@ DSTATUS disk_initialize (
 	BYTE pdrv		/* Physical drive number (0) */
 )
 {
-  DSTATUS diskstatus = STA_NODISK;
-  
-  /* TODO ##Vg Implement disk_initialize(). */
-  
-  return (diskstatus);
+  DSTATUS stat = RES_OK;
+
+  if (DiskInitialized == 0)
+  {
+    DiskInitialized = 1;
+    stat = SD_initialize(0);
+  }
+  return stat;
 }
 
 
@@ -56,11 +63,10 @@ DSTATUS disk_status (
 	BYTE pdrv  /* Physical drive nmuber (0) */
 )
 {
-  DSTATUS diskstatus = STA_NODISK;
+  DSTATUS stat;
 
-  /* TODO ##Vg Implement disk_status(). */
-
-  return (diskstatus);
+  stat = SD_status(0);
+  return stat;
 }
 
 
@@ -76,11 +82,10 @@ DRESULT disk_read (
 	UINT count     /* Number of sectors to read */
 )
 {
-  DRESULT diskresult = RES_PARERR;
+  DRESULT res;
 
-  /* TODO ##Vg Implement disk_read(). */
-
-  return (diskresult);
+  res = SD_read(0, buff, sector, count);
+  return res;
 }
 
 
@@ -96,11 +101,10 @@ DRESULT disk_write (
 	UINT count         /* Number of sectors to write */
 )
 {
-  DRESULT diskresult = RES_PARERR;
+  DRESULT res;
 
-  /* TODO ##Vg Implement disk_write(). */
-
-  return (diskresult);
+  res = SD_write(0, buff, sector, count);
+  return res;
 }
 
 
@@ -115,11 +119,10 @@ DRESULT disk_ioctl (
 	void *buff    /* Buffer to send/receive data block */
 )
 {
-  DRESULT diskresult = RES_PARERR;
+  DRESULT res;
 
-  /* TODO ##Vg Implement disk_ioctl(). */
-
-  return (diskresult);
+  res = SD_ioctl(0, cmd, buff);
+  return res;
 }
 
 
