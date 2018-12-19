@@ -36,6 +36,7 @@
 #include "stm32f4xx_ll_bus.h"                    /* STM32 LL BUS header                */
 #include "stm32f4xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
 #include "stm32f4xx_ll_utils.h"                  /* STM32 LL UTILS header              */
+#include "stm32f4xx_ll_usart.h"                  /* STM32 LL USART header              */
 #include "stm32f4xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
@@ -152,6 +153,9 @@ static void SystemClock_Config(void)
 void HAL_MspInit(void)
 {
   LL_GPIO_InitTypeDef GPIO_InitStruct;
+#if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  LL_USART_InitTypeDef USART_InitStruct;
+#endif
 
   /* SYSCFG and PWR clock enable. */
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
@@ -160,6 +164,11 @@ void HAL_MspInit(void)
   /* GPIO ports clock enable. */
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
+
+#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* UART clock enable. */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART6);
+#endif
 
   /* Configure GPIO pin for the LED. */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_13;
@@ -175,6 +184,31 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* UART TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_6 | LL_GPIO_PIN_7;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+  LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  #if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  /* configure UART peripheral */
+  USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
+  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+  USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
+  USART_InitStruct.Parity = LL_USART_PARITY_NONE;
+  USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
+  USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
+  /* initialize the UART peripheral */
+  LL_USART_Init(USART6, &USART_InitStruct);
+  LL_USART_ConfigAsyncMode(USART6);
+  LL_USART_Enable(USART6);
+  #endif
+#endif
 } /*** end of HAL_MspInit ***/
 
 
@@ -190,6 +224,15 @@ void HAL_MspDeInit(void)
   /* Deinit used GPIOs. */
   LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOA);
+
+#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
+  #if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  /* Disable UART peripheral */
+  LL_USART_Disable(USART6);
+  #endif
+  /* UART clock disable. */
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_USART6);
+#endif
 
   /* GPIO ports clock disable. */
   LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOC);

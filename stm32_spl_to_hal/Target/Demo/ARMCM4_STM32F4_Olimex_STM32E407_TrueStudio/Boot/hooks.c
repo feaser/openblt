@@ -33,6 +33,7 @@
 #include "led.h"                                 /* LED driver header                  */
 #include "stm32f4xx.h"                           /* STM32 registers and drivers        */
 #include "stm32f4xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
+#include "stm32f4xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
 /****************************************************************************************
@@ -392,10 +393,24 @@ void FileFirmwareUpdateStartedHook(void)
 void FileFirmwareUpdateCompletedHook(void)
 {
   #if (BOOT_FILE_LOGGING_ENABLE > 0)
+  blt_int32u timeoutTime;
+
   /* close the log file */
   if (logfile.canUse == BLT_TRUE)
   {
     f_close(&logfile.handle);
+  }
+  /* wait for all logging related transmission to complete with a maximum wait time of
+   * 100ms.
+   */
+  timeoutTime = TimerGet() + 100;
+  while (LL_USART_IsActiveFlag_TC(USART6) == 0)
+  {
+    /* check for timeout */
+    if (TimerGet() > timeoutTime)
+    {
+      break;
+    }
   }
   #endif
   /* now delete the firmware file from the disk since the update was successful */
@@ -434,6 +449,8 @@ void FileFirmwareUpdateErrorHook(blt_int8u error_code)
 ****************************************************************************************/
 void FileFirmwareUpdateLogHook(blt_char *info_string)
 {
+  blt_int32u timeoutTime;
+
   /* write the string to the log file */
   if (logfile.canUse == BLT_TRUE)
   {
@@ -442,6 +459,27 @@ void FileFirmwareUpdateLogHook(blt_char *info_string)
       logfile.canUse = BLT_FALSE;
       f_close(&logfile.handle);
     }
+  }
+  /* echo all characters in the string on UART */
+  while(*info_string != '\0')
+  {
+    /* write byte to transmit holding register */
+    LL_USART_TransmitData8(USART6, *info_string);
+    /* set timeout time to wait for transmit completion. */
+    timeoutTime = TimerGet() + 10;
+    /* wait for tx holding register to be empty */
+    while (LL_USART_IsActiveFlag_TXE(USART6) == 0)
+    {
+      /* keep the watchdog happy */
+      CopService();
+      /* break loop upon timeout. this would indicate a hardware failure. */
+      if (TimerGet() > timeoutTime)
+      {
+        break;
+      }
+    }
+    /* point to the next character in the string */
+    info_string++;
   }
 } /*** end of FileFirmwareUpdateLogHook ***/
 #endif /* BOOT_FILE_LOGGING_ENABLE > 0 */
