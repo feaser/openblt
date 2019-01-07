@@ -85,7 +85,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.6.4.0'
   object PnlBody: TPanel
     Left = 0
     Height = 84
@@ -146,9 +146,9 @@ object MainForm: TMainForm
       end
       object LblFirmwareUpdateInfo: TLabel
         Left = 16
-        Height = 16
+        Height = 15
         Top = 14
-        Width = 143
+        Width = 124
         Caption = 'LblFirmwareUpdateInfo'
         ParentColor = False
       end
@@ -199,9 +199,9 @@ object MainForm: TMainForm
     end
     object LblElapsedTime: TLabel
       Left = 16
-      Height = 16
+      Height = 15
       Top = 14
-      Width = 96
+      Width = 83
       Caption = 'LblElapsedTime'
       ParentColor = False
     end
@@ -302,9 +302,9 @@ object MainForm: TMainForm
     end
     object LblProgramName: TLabel
       Left = 8
-      Height = 16
+      Height = 15
       Top = 8
-      Width = 68
+      Width = 59
       Caption = 'MicroBoot'
       Font.Style = [fsBold]
       ParentColor = False
@@ -312,9 +312,9 @@ object MainForm: TMainForm
     end
     object LblProgramConfig: TLabel
       Left = 16
-      Height = 16
+      Height = 15
       Top = 29
-      Width = 112
+      Width = 98
       Caption = 'LblProgramConfig'
       ParentColor = False
     end
