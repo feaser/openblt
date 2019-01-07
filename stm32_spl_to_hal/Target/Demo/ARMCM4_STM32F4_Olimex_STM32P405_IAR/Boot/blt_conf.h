@@ -189,17 +189,6 @@
 
 
 /****************************************************************************************
-*   F L A S H   M E M O R Y   D R I V E R   C O N F I G U R A T I O N
-****************************************************************************************/
-/** \brief Enable support for a custom flash layout table. It is located in
- *         flash_layout.c. This was done because the default flashLayout[] table
- *         in the bootloader's core has more flash memory reserved for the bootloader
- *         than is needed for this demo.
- */
-#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (1)
-
-
-/****************************************************************************************
 *   W A T C H D O G   D R I V E R   C O N F I G U R A T I O N
 ****************************************************************************************/
 /* The COP driver cannot be configured internally in the bootloader, because its use
