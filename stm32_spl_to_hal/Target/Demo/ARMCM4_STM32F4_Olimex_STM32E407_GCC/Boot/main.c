@@ -6,7 +6,7 @@
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2018  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,69 +30,45 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f4xx.h"                           /* STM32 registers                    */
-#include "stm32f4xx_conf.h"                      /* STM32 peripheral drivers           */
-#include "shared_params.h"                       /* Shared parameters header           */
+#include "stm32f4xx.h"                           /* STM32 registers and drivers        */
+#include "stm32f4xx_ll_rcc.h"                    /* STM32 LL RCC header                */
+#include "stm32f4xx_ll_pwr.h"                    /* STM32 LL PWR header                */
+#include "stm32f4xx_ll_bus.h"                    /* STM32 LL BUS header                */
+#include "stm32f4xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
+#include "stm32f4xx_ll_utils.h"                  /* STM32 LL UTILS header              */
+#include "stm32f4xx_ll_usart.h"                  /* STM32 LL USART header              */
+#include "stm32f4xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+static void SystemClock_Config(void);
 
 
 /************************************************************************************//**
 ** \brief     This is the entry point for the bootloader application and is called 
 **            by the reset interrupt vector after the C-startup routines executed.
-** \return    none.
+** \return    Program return code.
 **
 ****************************************************************************************/
-void main(void)
+int main(void)
 {
-  blt_int8u deferredInitRequestFlag = 0;
-
   /* initialize the microcontroller */
   Init();
-  /* initialize the shared parameters module */
-  SharedParamsInit();
   /* initialize the bootloader */
   BootInit();
-#if (BOOT_COM_DEFERRED_INIT_ENABLE == 1)
-  /* the bootloader is configured to NOT initialize the TCP/IP network stack by default
-   * to bypass unnecessary delay times before starting the user program. the TCP/IP net-
-   * work tack is now only initialized when: (a) no valid user program is detected, or
-   * (b) a forced backdoor entry occurred (CpuUserProgramStartHook() returned BLT_FALSE).
-   *
-   * these demo bootloader and user programs have one extra feature implemented for
-   * demonstration purposes. the demo user program can detect firmware update requests
-   * from the TCP/IP network in which case it activates the bootloader. But...the
-   * TCP/IP network stack will not be initialized in this situation. for this reason
-   * the shared parameter module was integrated in both the bootloader and user program.
-   * more information about the shared parameter module can be found here:
-   *   https://www.feaser.com/en/blog/?p=216
-   *
-   * the shared parameter at the first index (0) contains a flag. this flag is set to
-   * 1, right before the user program activates this bootloader, to explicitly request
-   * the bootloader to initialize the TCP/IP network stack. this makes it possible for
-   * a firmware update to proceed. the code here reads out this flag and performs the
-   * TCP/IP network stack initialization when requested.
-   */
-  SharedParamsReadByIndex(0, &deferredInitRequestFlag);
-  if (deferredInitRequestFlag == 1)
-  {
-    /* explicitly initialize all communication interface for which the deferred
-     * initialization feature was enabled.
-     */
-    ComDeferredInit();
-  }
-#endif
-  
+
   /* start the infinite program loop */
   while (1)
   {
     /* run the bootloader task */
     BootTask();
   }
+
+  /* Program should never get here. */
+  return 0;
 } /*** end of main ***/
 
 
@@ -103,95 +79,196 @@ void main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  GPIO_InitTypeDef  GPIO_InitStructure;
-#if (BOOT_COM_UART_ENABLE > 0)
-#elif (BOOT_FILE_SYS_ENABLE > 0)
-  USART_InitTypeDef USART_InitStructure;
-#endif  
-
-  /* initialize the system and its clocks */
-  SystemInit();
-  
-  /* initialize the button as a digital input. is used to override the starting of
-   * the user program.
-   */
-  /* enable the GPIO Clock */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-  /* configure the GPIO pin */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-  
-#if (BOOT_COM_UART_ENABLE > 0)
-  /* enable UART peripheral clock */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
-  /* enable GPIO peripheral clock for transmitter and receiver pins */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-  /* connect the pin to the peripherals alternate function */
-  GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_USART6);
-  GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_USART6);
-  /* configure USART Tx as alternate function  */
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-  /* configure USART Rx as alternate function */
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-#elif (BOOT_FILE_SYS_ENABLE > 0)
-  /* enable UART peripheral clock */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
-  /* enable GPIO peripheral clock for transmitter and receiver pins */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-  /* connect the pin to the peripherals alternate function */
-  GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_USART6);
-  GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_USART6);
-  /* configure USART Tx as alternate function  */
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-  /* configure USART Rx as alternate function */
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-  /* initialize the uart for the specified communication speed */
-  USART_InitStructure.USART_BaudRate = BOOT_COM_UART_BAUDRATE;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_Init(USART6, &USART_InitStructure);
-  /* enable UART */
-  USART_Cmd(USART6, ENABLE);
-#endif
-#if (BOOT_COM_CAN_ENABLE > 0)
-  /* enable clocks for CAN2 transmitter and receiver pins */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-  /* select alternate function for the CAN2 pins */
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_CAN2);
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_CAN2); 
-  /* configure CAN2 RX and TX pins */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-  /* enable CAN clock. Note that CAN2 shares reception filters with CAN1 so for CAN2
-   * the CAN1 peripheral also needs to be enabled.
-   */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN2 | RCC_APB1Periph_CAN1, ENABLE);
-#endif  
+  /* HAL library initialization */
+  HAL_Init();
+  /* configure system clock */
+  SystemClock_Config();
 } /*** end of Init ***/
+
+
+/************************************************************************************//**
+** \brief     System Clock Configuration. This code was created by CubeMX and configures
+**            the system clock to match the configuration in the bootloader's
+**            configuration (blt_conf.h), specifically the macros:
+**            BOOT_CPU_SYSTEM_SPEED_KHZ and BOOT_CPU_XTAL_SPEED_KHZ.
+**            Note that the Lower Layer drivers were selected in CubeMX for the RCC
+**            subsystem.
+** \return    none.
+**
+****************************************************************************************/
+static void SystemClock_Config(void)
+{
+  /* Set flash latency. */
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_5);
+  /* Verify flash latency setting. */
+  if(LL_FLASH_GetLatency() != LL_FLASH_LATENCY_5)
+  {
+    /* Error setting flash latency. */
+    ASSERT_RT(BLT_FALSE);
+  }
+
+  /* Configure voltage regulator scaling. */
+  LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
+
+  /* Enable the HSE clock. */
+  LL_RCC_HSE_Enable();
+
+  /* Wait till HSE is ready */
+  while(LL_RCC_HSE_IsReady() != 1)
+  {
+    ;
+  }
+
+  /* Configure and enable the PLL. */
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_12, 336, LL_RCC_PLLP_DIV_2);
+  LL_RCC_PLL_Enable();
+
+  /* Wait till PLL is ready */
+  while(LL_RCC_PLL_IsReady() != 1)
+  {
+    ;
+  }
+  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_4);
+  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_2);
+  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
+
+  /* Wait till System clock is ready */
+  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
+  {
+    ;
+  }
+  /* Update the system clock speed setting. */
+  LL_SetSystemCoreClock(BOOT_CPU_SYSTEM_SPEED_KHZ * 1000u);
+} /*** end of SystemClock_Config ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the Global MSP. This function is called from HAL_Init()
+**            function to perform system level initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspInit(void)
+{
+  LL_GPIO_InitTypeDef GPIO_InitStruct;
+#if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  LL_USART_InitTypeDef USART_InitStruct;
+#endif
+
+  /* SYSCFG and PWR clock enable. */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
+
+  /* GPIO ports clock enable. */
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
+
+#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* UART clock enable. */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART6);
+#endif
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock enable. */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_CAN1);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_CAN2);
+#endif
+
+  /* Configure GPIO pin for the LED. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_13;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+
+  /* Configure GPIO pin for (optional) backdoor entry input. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_0;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* UART TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_6 | LL_GPIO_PIN_7;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+  LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  #if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  /* configure UART peripheral */
+  USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
+  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+  USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
+  USART_InitStruct.Parity = LL_USART_PARITY_NONE;
+  USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
+  USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
+  /* initialize the UART peripheral */
+  LL_USART_Init(USART6, &USART_InitStruct);
+  LL_USART_ConfigAsyncMode(USART6);
+  LL_USART_Enable(USART6);
+  #endif
+#endif
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_5 | LL_GPIO_PIN_6;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_9;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#endif
+} /*** end of HAL_MspInit ***/
+
+
+/************************************************************************************//**
+** \brief     DeInitializes the Global MSP. This function is called from HAL_DeInit()
+**            function to perform system level de-initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspDeInit(void)
+{
+  /* Deinit used GPIOs. */
+  LL_GPIO_DeInit(GPIOC);
+  LL_GPIO_DeInit(GPIOB);
+  LL_GPIO_DeInit(GPIOA);
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_CAN2);
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_CAN1);
+#endif
+
+
+#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
+  #if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  /* Disable UART peripheral */
+  LL_USART_Disable(USART6);
+  #endif
+  /* UART clock disable. */
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_USART6);
+#endif
+
+  /* GPIO ports clock disable. */
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+
+  /* SYSCFG and PWR clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_PWR);
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+} /*** end of HAL_MspDeInit ***/
 
 
 /*********************************** end of main.c *************************************/

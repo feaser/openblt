@@ -6,7 +6,7 @@
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2018  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -32,8 +32,6 @@
 * Function prototypes
 ****************************************************************************************/
 void          TimerInit(void);
-void          TimerDeinit(void);
-void          TimerSet(unsigned long timer_value);
 unsigned long TimerGet(void);
 
 #endif /* TIMER_H */
