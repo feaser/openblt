@@ -141,7 +141,7 @@ static const tFlashSector flashLayout[] =
    */
   /* { 0x08000000, 0x04000,  0},           flash sector  0 - reserved for bootloader   */
   /* { 0x08004000, 0x04000,  1},           flash sector  1 - reserved for bootloader   */
-  /* { 0x08008000, 0x04000,  2},           flash sector  2 - reserved for bootloader   */
+  { 0x08008000, 0x04000,  2},           /* flash sector  2 -  16kb                     */
   { 0x0800c000, 0x04000,  3},           /* flash sector  3 -  16kb                     */
 #if (BOOT_NVM_SIZE_KB > 64)
   { 0x08010000, 0x10000,  4},           /* flash sector  4 -  64kb                     */
