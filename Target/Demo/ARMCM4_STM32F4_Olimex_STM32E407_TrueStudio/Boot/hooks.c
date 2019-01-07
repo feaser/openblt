@@ -30,10 +30,10 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#if (BOOT_FILE_LOGGING_ENABLE > 0)
-#include "stm32f4xx.h"                           /* STM32 registers                    */
-#include "stm32f4xx_conf.h"                      /* STM32 peripheral drivers           */
-#endif
+#include "led.h"                                 /* LED driver header                  */
+#include "stm32f4xx.h"                           /* STM32 registers and drivers        */
+#include "stm32f4xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
+#include "stm32f4xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
 /****************************************************************************************
@@ -122,14 +122,65 @@ void UsbLeaveLowPowerModeHook(void)
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
-  /* do not start the user program is the pushbutton is pressed */
-  if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == Bit_SET)
+  /* additional and optional backdoor entry through the pushbutton on the board. to
+   * force the bootloader to stay active after reset, keep it pressed during reset.
+   */
+  if (LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0) != 0)
   {
+    /* pushbutton pressed, so do not start the user program and keep the
+     * bootloader active instead.
+     */
     return BLT_FALSE;
   }
+
+  /* clean up the LED driver */
+  LedBlinkExit();
+
+  /* okay to start the user program */
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/
 #endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */
+
+
+/****************************************************************************************
+*   W A T C H D O G   D R I V E R   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_COP_HOOKS_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called at the end of the internal COP driver
+**            initialization routine. It can be used to configure and enable the
+**            watchdog.
+** \return    none.
+**
+****************************************************************************************/
+void CopInitHook(void)
+{
+  /* this function is called upon initialization. might as well use it to initialize
+   * the LED driver. It is kind of a visual watchdog anyways.
+   */
+  LedBlinkInit(100);
+} /*** end of CopInitHook ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called at the end of the internal COP driver
+**            service routine. This gets called upon initialization and during
+**            potential long lasting loops and routine. It can be used to service
+**            the watchdog to prevent a watchdog reset.
+** \return    none.
+**
+****************************************************************************************/
+void CopServiceHook(void)
+{
+  /* run the LED blink task. this is a better place to do it than in the main() program
+   * loop. certain operations such as flash erase can take a long time, which would cause
+   * a blink interval to be skipped. this function is also called during such operations,
+   * so no blink intervals will be skipped when calling the LED blink task here.
+   */
+  LedBlinkTask();
+} /*** end of CopServiceHook ***/
+#endif /* BOOT_COP_HOOKS_ENABLE > 0 */
 
 
 /****************************************************************************************
@@ -236,37 +287,6 @@ blt_bool NvmWriteChecksumHook(void)
   return BLT_TRUE;
 }
 #endif /* BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0 */
-
-
-/****************************************************************************************
-*   W A T C H D O G   D R I V E R   H O O K   F U N C T I O N S
-****************************************************************************************/
-
-#if (BOOT_COP_HOOKS_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Callback that gets called at the end of the internal COP driver
-**            initialization routine. It can be used to configure and enable the
-**            watchdog.
-** \return    none.
-**
-****************************************************************************************/
-void CopInitHook(void)
-{
-} /*** end of CopInitHook ***/
-
-
-/************************************************************************************//**
-** \brief     Callback that gets called at the end of the internal COP driver
-**            service routine. This gets called upon initialization and during
-**            potential long lasting loops and routine. It can be used to service
-**            the watchdog to prevent a watchdog reset.
-** \return    none.
-**
-****************************************************************************************/
-void CopServiceHook(void)
-{
-} /*** end of CopServiceHook ***/
-#endif /* BOOT_COP_HOOKS_ENABLE > 0 */
 
 
 /****************************************************************************************
@@ -384,7 +404,7 @@ void FileFirmwareUpdateCompletedHook(void)
    * 100ms.
    */
   timeoutTime = TimerGet() + 100;
-  while(USART_GetFlagStatus(USART6, USART_FLAG_TC) == RESET)
+  while (LL_USART_IsActiveFlag_TC(USART6) == 0)
   {
     /* check for timeout */
     if (TimerGet() > timeoutTime)
@@ -429,6 +449,8 @@ void FileFirmwareUpdateErrorHook(blt_int8u error_code)
 ****************************************************************************************/
 void FileFirmwareUpdateLogHook(blt_char *info_string)
 {
+  blt_int32u timeoutTime;
+
   /* write the string to the log file */
   if (logfile.canUse == BLT_TRUE)
   {
@@ -441,10 +463,21 @@ void FileFirmwareUpdateLogHook(blt_char *info_string)
   /* echo all characters in the string on UART */
   while(*info_string != '\0')
   {
-    /* write character to transmit holding register */
-    USART_SendData(USART6, *info_string);
+    /* write byte to transmit holding register */
+    LL_USART_TransmitData8(USART6, *info_string);
+    /* set timeout time to wait for transmit completion. */
+    timeoutTime = TimerGet() + 10;
     /* wait for tx holding register to be empty */
-    while(USART_GetFlagStatus(USART6, USART_FLAG_TXE) == RESET);
+    while (LL_USART_IsActiveFlag_TXE(USART6) == 0)
+    {
+      /* keep the watchdog happy */
+      CopService();
+      /* break loop upon timeout. this would indicate a hardware failure. */
+      if (TimerGet() > timeoutTime)
+      {
+        break;
+      }
+    }
     /* point to the next character in the string */
     info_string++;
   }

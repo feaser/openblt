@@ -30,7 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f4xx.h"                           /* STM32 registers                    */
+#include "stm32f4xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -49,16 +49,16 @@ static blt_int32u millisecond_counter;
 ****************************************************************************************/
 void TimerInit(void)
 {
-  /* reset the timer configuration */
+  /* Reset the timer configuration. */
   TimerReset();
 
-  /* configure the systick frequency as a 1 ms event generator */
+  /* Configure the systick frequency as a 1 ms event generator. */
   SysTick->LOAD = BOOT_CPU_SYSTEM_SPEED_KHZ - 1;
-  /* reset the current counter value */
+  /* Reset the current counter value. */
   SysTick->VAL = 0;
-  /* select core clock as source and enable the timer */
+  /* Select core clock as source and enable the timer. */
   SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
-  /* reset the millisecond counter value */
+  /* Reset the millisecond counter value. */
   millisecond_counter = 0;
 } /*** end of TimerInit ***/
 
@@ -71,7 +71,7 @@ void TimerInit(void)
 ****************************************************************************************/
 void TimerReset(void)
 {
-  /* set the systick's status and control register back into the default reset value */
+  /* Set the systick's status and control register back into the default reset value. */
   SysTick->CTRL = 0;
 } /* end of TimerReset */
 
@@ -83,10 +83,10 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* check if the millisecond event occurred */
+  /* Check if the millisecond event occurred. */
   if ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) != 0)
   {
-    /* increment the millisecond counter */
+    /* Increment the millisecond counter. */
     millisecond_counter++;
   }
 } /*** end of TimerUpdate ***/
@@ -99,13 +99,46 @@ void TimerUpdate(void)
 ****************************************************************************************/
 blt_int32u TimerGet(void)
 {
-  /* updating timer here allows this function to be called in a loop with timeout
+  /* Updating timer here allows this function to be called in a loop with timeout
    * detection.
    */
   TimerUpdate();
-  /* read and return the amount of milliseconds that passed since initialization */
+  /* Read and return the amount of milliseconds that passed since initialization. */
   return millisecond_counter;
 } /*** end of TimerGet ***/
+
+
+/************************************************************************************//**
+** \brief     Override for the HAL driver's GetTick() functionality. This is needed
+**            because the bootloader doesn't use interrupts, but the HAL's tick
+**            functionality assumes that it does. This will cause the HAL_Delay()
+**            function to not work properly. As a result of this override, the HAL's
+**            tick functionality works in polling mode.
+** \return    Current value of the millisecond timer.
+**
+****************************************************************************************/
+uint32_t HAL_GetTick(void)
+{
+  /* Link to the bootloader's 1ms timer. */
+  return TimerGet();
+} /*** end of HAL_GetTick ***/
+
+
+/************************************************************************************//**
+** \brief     This function handles the SysTick interrupt. The HAL driver is initialized
+**            before this timer driver. The HAL driver configures the SysTick for
+**            interrupt driven mode, which is afterwards disabled by the timer driver
+**            initialization. It is theoretically possible that the SysTick interrupt
+**            still fires before the timer driver disables it. Therefore the handler
+**            is implemented here. If not, then the default handler from cstart.s is
+**            used, which hangs the system.
+** \return    none.
+**
+****************************************************************************************/
+void SysTick_Handler(void)
+{
+  /* Nothing to do here. */
+} /*** end of SysTick_Handler ***/
 
 
 /*********************************** end of timer.c ************************************/

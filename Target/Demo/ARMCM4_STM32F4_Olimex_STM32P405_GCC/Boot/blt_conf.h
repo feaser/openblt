@@ -6,7 +6,7 @@
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2017  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -186,17 +186,6 @@
 #define BOOT_NVM_SIZE_KB                (1024)
 /** \brief Enable/disable hooks functions to override the user program checksum handling. */
 #define BOOT_NVM_CHECKSUM_HOOKS_ENABLE  (0)
-
-
-/****************************************************************************************
-*   F L A S H   M E M O R Y   D R I V E R   C O N F I G U R A T I O N
-****************************************************************************************/
-/** \brief Enable support for a custom flash layout table. It is located in
- *         flash_layout.c. This was done because the default flashLayout[] table
- *         in the bootloader's core has more flash memory reserved for the bootloader
- *         than is needed for this demo.
- */
-#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (1)
 
 
 /****************************************************************************************

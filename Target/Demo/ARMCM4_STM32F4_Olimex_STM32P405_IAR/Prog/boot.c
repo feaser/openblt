@@ -104,6 +104,13 @@ void BootActivate(void)
 
 
 /****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief UART handle to be used in API calls. */
+static UART_HandleTypeDef uartHandle;
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static unsigned char UartReceiveByte(unsigned char *data);
@@ -116,37 +123,17 @@ static unsigned char UartReceiveByte(unsigned char *data);
 ****************************************************************************************/
 static void BootComUartInit(void)
 {
-  GPIO_InitTypeDef  GPIO_InitStructure;
-  USART_InitTypeDef USART_InitStructure;
-
-  /* enable UART peripheral clock */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-  /* enable GPIO peripheral clock for transmitter and receiver pins */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-  /* connect the pin to the peripherals alternate function */
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
-  /* configure USART Tx as alternate function  */
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-  /* configure USART Rx as alternate function */
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-  /* initialize the uart for the specified communication speed */
-  USART_InitStructure.USART_BaudRate = BOOT_COM_UART_BAUDRATE;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_Init(USART2, &USART_InitStructure);
-  /* enable UART */
-  USART_Cmd(USART2, ENABLE);
+  /* Configure UART peripheral. */
+  uartHandle.Instance = USART2;
+  uartHandle.Init.BaudRate = BOOT_COM_UART_BAUDRATE;
+  uartHandle.Init.WordLength = UART_WORDLENGTH_8B;
+  uartHandle.Init.StopBits = UART_STOPBITS_1;
+  uartHandle.Init.Parity = UART_PARITY_NONE;
+  uartHandle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  uartHandle.Init.Mode = UART_MODE_TX_RX;
+  uartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
+  /* Initialize the UART peripheral. */
+  HAL_UART_Init(&uartHandle);
 } /*** end of BootComUartInit ***/
 
 
@@ -227,15 +214,17 @@ static void BootComUartCheckActivationRequest(void)
 ****************************************************************************************/
 static unsigned char UartReceiveByte(unsigned char *data)
 {
-  /* check flag to see if a byte was received */
-  if (USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == SET)
+  HAL_StatusTypeDef result;
+
+  /* receive a byte in a non-blocking manner */
+  result = HAL_UART_Receive(&uartHandle, data, 1, 0);
+  /* process the result */
+  if (result == HAL_OK)
   {
-    /* retrieve and store the newly received byte */
-    *data = (unsigned char)USART_ReceiveData(USART2);
-    /* all done */
+    /* success */
     return 1;
   }
-  /* still here to no new byte received */
+  /* error occurred */
   return 0;
 } /*** end of UartReceiveByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
@@ -291,6 +280,13 @@ static const tCanBusTiming canTiming[] =
 };
 
 
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief CAN handle to be used in API calls. */
+static CAN_HandleTypeDef canHandle;
+
+
 /************************************************************************************//**
 ** \brief     Search algorithm to match the desired baudrate to a possible bus
 **            timing configuration.
@@ -305,14 +301,18 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
                                        unsigned char *tseg1, unsigned char *tseg2)
 {
   unsigned char cnt;
+  unsigned long canClockFreqkHz;
+
+  /* store CAN peripheral clock speed in kHz */
+  canClockFreqkHz = HAL_RCC_GetPCLK1Freq() / 1000u;
 
   /* loop through all possible time quanta configurations to find a match */
   for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
   {
-    if (((BOOT_CPU_SYSTEM_SPEED_KHZ/4) % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
+    if ((canClockFreqkHz % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
     {
       /* compute the prescaler that goes with this TQ configuration */
-      *prescaler = (BOOT_CPU_SYSTEM_SPEED_KHZ/4)/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
+      *prescaler = canClockFreqkHz/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
 
       /* make sure the prescaler is valid */
       if ( (*prescaler > 0) && (*prescaler <= 1024) )
@@ -337,56 +337,65 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
 ****************************************************************************************/
 static void BootComCanInit(void)
 {
-  GPIO_InitTypeDef       GPIO_InitStructure;
-  CAN_InitTypeDef        CAN_InitStructure;
-  CAN_FilterInitTypeDef  CAN_FilterInitStructure;
-  unsigned short         prescaler;
-  unsigned char          tseg1, tseg2;
+  unsigned short prescaler = 0;
+  unsigned char tseg1 = 0, tseg2 = 0;
+  CAN_FilterTypeDef filterConfig;
+  unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  unsigned long rxFilterId, rxFilterMask;
 
-  /* enable clocks for CAN1 transmitter and receiver pins */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-  /* select alternate function for the CAN1 pins */
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource8, GPIO_AF_CAN1);
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource9, GPIO_AF_CAN1);
-  /* configure CAN1 RX and TX pins */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-  /* enable CAN1 clock */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
-  /* CAN register init */
-  CAN_DeInit(CAN1);
-  CAN_StructInit(&CAN_InitStructure);
-  /* obtain the bittiming configuration for this baudrate */
+  /* obtain bittiming configuration information. */
   CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &tseg1, &tseg2);
-  /* CAN controller init */
-  CAN_InitStructure.CAN_TTCM = DISABLE;
-  CAN_InitStructure.CAN_ABOM = DISABLE;
-  CAN_InitStructure.CAN_AWUM = DISABLE;
-  CAN_InitStructure.CAN_NART = DISABLE;
-  CAN_InitStructure.CAN_RFLM = DISABLE;
-  CAN_InitStructure.CAN_TXFP = DISABLE;
-  CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;
-  /* CAN Baudrate init */
-  CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
-  CAN_InitStructure.CAN_BS1 = tseg1 - 1;
-  CAN_InitStructure.CAN_BS2 = tseg2 - 1;
-  CAN_InitStructure.CAN_Prescaler = prescaler;
-  CAN_Init(CAN1, &CAN_InitStructure);
-  /* CAN filter init - receive all messages */
-  CAN_FilterInitStructure.CAN_FilterNumber = 0;
-  CAN_FilterInitStructure.CAN_FilterMode = CAN_FilterMode_IdMask;
-  CAN_FilterInitStructure.CAN_FilterScale = CAN_FilterScale_32bit;
-  CAN_FilterInitStructure.CAN_FilterIdHigh = 0x0000;
-  CAN_FilterInitStructure.CAN_FilterIdLow = 0x0000;
-  CAN_FilterInitStructure.CAN_FilterMaskIdHigh = 0x0000;
-  CAN_FilterInitStructure.CAN_FilterMaskIdLow = 0x0000;
-  CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
-  CAN_FilterInitStructure.CAN_FilterActivation = ENABLE;
-  CAN_FilterInit(&CAN_FilterInitStructure);
+
+  /* set the CAN controller configuration. */
+  canHandle.Instance = CAN1;
+  canHandle.Init.TimeTriggeredMode = DISABLE;
+  canHandle.Init.AutoBusOff = DISABLE;
+  canHandle.Init.AutoWakeUp = DISABLE;
+  canHandle.Init.AutoRetransmission = DISABLE;
+  canHandle.Init.ReceiveFifoLocked = DISABLE;
+  canHandle.Init.TransmitFifoPriority = DISABLE;
+  canHandle.Init.Mode = CAN_MODE_NORMAL;
+  canHandle.Init.SyncJumpWidth = CAN_SJW_1TQ;
+  canHandle.Init.TimeSeg1 = ((unsigned long)tseg1 - 1) << CAN_BTR_TS1_Pos;
+  canHandle.Init.TimeSeg2 = ((unsigned long)tseg2 - 1) << CAN_BTR_TS2_Pos;
+  canHandle.Init.Prescaler = prescaler;
+  /* initialize the CAN controller. this only fails if the CAN controller hardware is
+   * faulty. no need to evaluate the return value as there is nothing we can do about
+   * a faulty CAN controller.
+   */
+  (void)HAL_CAN_Init(&canHandle);
+  /* determine the reception filter mask and id values such that it only leaves one
+   * CAN identifier through (BOOT_COM_CAN_RX_MSG_ID).
+   */
+  if ((rxMsgId & 0x80000000) == 0)
+  {
+    rxFilterId = rxMsgId << CAN_RI0R_STID_Pos;
+    rxFilterMask = (CAN_RI0R_STID_Msk) | CAN_RI0R_IDE;
+  }
+  else
+  {
+    /* negate the ID-type bit */
+    rxMsgId &= ~0x80000000;
+    rxFilterId = (rxMsgId << CAN_RI0R_EXID_Pos) | CAN_RI0R_IDE;
+    rxFilterMask = (CAN_RI0R_EXID_Msk) | CAN_RI0R_IDE;
+  }
+  /* configure the reception filter. note that the implementation of this function
+   * always returns HAL_OK, so no need to evaluate the return value.
+   */
+  filterConfig.FilterBank = 0;
+  filterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+  filterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+  filterConfig.FilterIdHigh = (rxFilterId >> 16) & 0x0000FFFFu;
+  filterConfig.FilterIdLow = rxFilterId & 0x0000FFFFu;
+  filterConfig.FilterMaskIdHigh = (rxFilterMask >> 16) & 0x0000FFFFu;
+  filterConfig.FilterMaskIdLow = rxFilterMask & 0x0000FFFFu;
+  filterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+  filterConfig.FilterActivation = ENABLE;
+  filterConfig.SlaveStartFilterBank = 14;
+  (void)HAL_CAN_ConfigFilter(&canHandle, &filterConfig);
+  /* start the CAN peripheral. no need to evaluate the return value as there is nothing
+   * we can do about a faulty CAN controller. */
+  (void)HAL_CAN_Start(&canHandle);
 } /*** end of BootComCanInit ***/
 
 
@@ -398,30 +407,43 @@ static void BootComCanInit(void)
 ****************************************************************************************/
 static void BootComCanCheckActivationRequest(void)
 {
-  CanRxMsg RxMessage;
-  unsigned char canIdMatched = 0;
+  unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  unsigned char packetIdMatches = 0;
+  CAN_RxHeaderTypeDef rxMsgHeader;
+  unsigned char rxMsgData[8];
 
-  /* check if a new message was received */
-  if (CAN_MessagePending(CAN1, CAN_FIFO0) > 0)
+  /* poll for received CAN messages that await processing. */
+  if (HAL_CAN_GetRxMessage(&canHandle, CAN_RX_FIFO0, &rxMsgHeader, rxMsgData) == HAL_OK)
   {
-    /* receive the message */
-    CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-    /* check if the message identifier matches the bootloader reception message */
-    if ( (RxMessage.IDE == CAN_Id_Standard) &&
-         (RxMessage.StdId == BOOT_COM_CAN_RX_MSG_ID) )
+    /* check if this message has the configured CAN packet identifier. */
+    if ((rxMsgId & 0x80000000) == 0)
     {
-      canIdMatched = 1;
+      /* was an 11-bit CAN message received that matches? */
+      if ( (rxMsgHeader.StdId == rxMsgId) &&
+           (rxMsgHeader.IDE == CAN_ID_STD) )
+      {
+        /* set flag that a packet with a matching CAN identifier was received. */
+        packetIdMatches = 1;
+      }
     }
-    if ( (RxMessage.IDE == CAN_Id_Extended) &&
-         ((RxMessage.ExtId | 0x80000000) == BOOT_COM_CAN_RX_MSG_ID) )
+    else
     {
-      canIdMatched = 1;
+      /* negate the ID-type bit */
+      rxMsgId &= ~0x80000000;
+      /* was an 29-bit CAN message received that matches? */
+      if ( (rxMsgHeader.ExtId == rxMsgId) &&
+           (rxMsgHeader.IDE == CAN_ID_EXT) )
+      {
+        /* set flag that a packet with a matching CAN identifier was received. */
+        packetIdMatches = 1;
+      }
     }
-    /* is the identifier a match to the bootloader reception message identifier? */
-    if (canIdMatched == 1)
+
+    /* only continue if a packet with a matching CAN identifier was received. */
+    if (packetIdMatches == 1)
     {
       /* check if this was an XCP CONNECT command */
-      if ((RxMessage.Data[0] == 0xff) && (RxMessage.Data[1] == 0x00))
+      if ((rxMsgData[0] == 0xff) && (rxMsgData[1] == 0x00))
       {
         /* connection request received so start the bootloader */
         BootActivate();

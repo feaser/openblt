@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_bulk.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V2.4.2
+  * @date    11-December-2015
   * @brief   header file for the usbd_bulk.c file.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -24,45 +24,59 @@
   *
   ******************************************************************************
   */ 
+ 
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __USB_BULK_H
+#define __USB_BULK_H
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 /* Includes ------------------------------------------------------------------*/
-
-#ifndef __USB_BULK_H_
-#define __USB_BULK_H_
-
 #include  "usbd_ioreq.h"
 
-/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+/** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
   */
   
 /** @defgroup usbd_cdc
-  * @brief This file is the Header file for USBD_cdc.c
+  * @brief This file is the Header file for usbd_cdc.c
   * @{
   */ 
 
 
-/** @defgroup usbd_bulk_Exported_Defines
+/** @defgroup usbd_cdc_Exported_Defines
   * @{
   */ 
-#define USB_BULK_CONFIG_DESC_SIZ               (32)
-#define USB_BULK_DESC_SIZ                      (32-9)
+#define BULK_IN_EP                                  0x81  /* EP1 for data IN */
+#define BULK_OUT_EP                                 0x01  /* EP1 for data OUT */
 
-#define BULK_DESCRIPTOR_TYPE                    0x21
+/* CDC Endpoints parameters: you can fine tune these values depending on the needed baudrates and performance. */
+#define BULK_DATA_MAX_PACKET_SIZE                   64  /* Endpoint IN & OUT Packet size */
 
+#define USB_BULK_CONFIG_DESC_SIZ                    32
+#define USB_BULK_DESC_SIZ                           (32-9)
 
-#define USB_DEVICE_DESCRIPTOR_TYPE              0x01
-#define USB_CONFIGURATION_DESCRIPTOR_TYPE       0x02
-#define USB_STRING_DESCRIPTOR_TYPE              0x03
-#define USB_INTERFACE_DESCRIPTOR_TYPE           0x04
-#define USB_ENDPOINT_DESCRIPTOR_TYPE            0x05
-
-#define STANDARD_ENDPOINT_DESC_SIZE             0x09
-
-#define BULK_DATA_IN_PACKET_SIZE                BULK_DATA_MAX_PACKET_SIZE
-#define BULK_DATA_OUT_PACKET_SIZE               BULK_DATA_MAX_PACKET_SIZE
+#define BULK_DESCRIPTOR_TYPE                        0x21
 
 
+#define BULK_DATA_FS_IN_PACKET_SIZE                 BULK_DATA_MAX_PACKET_SIZE
+#define BULK_DATA_FS_OUT_PACKET_SIZE                BULK_DATA_MAX_PACKET_SIZE
+
+
+/**
+  * @}
+  */ 
+
+
+/** @defgroup USBD_CORE_Exported_TypesDefinitions
+  * @{
+  */
+
+/**
+  * @}
+  */ 
 
 
 /** @defgroup USBD_CORE_Exported_Macros
@@ -77,7 +91,7 @@
   * @{
   */ 
 
-extern USBD_Class_cb_TypeDef  USBD_bulk_cb;
+extern USBD_ClassTypeDef   USBD_Bulk;
 /**
   * @}
   */ 
@@ -85,12 +99,16 @@ extern USBD_Class_cb_TypeDef  USBD_bulk_cb;
 /** @defgroup USB_CORE_Exported_Functions
   * @{
   */
-uint8_t *usbd_bulk_get_rx_buffer_ptr(void);
+uint8_t * USBD_Bulk_GetRxBufferPtr(void);
 /**
   * @}
   */ 
 
-#endif  // __USB_CDC_CORE_H_
+#ifdef __cplusplus
+}
+#endif
+
+#endif  /* __USB_BULK_H */
 /**
   * @}
   */ 

@@ -6,7 +6,7 @@
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2018  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -20,9 +20,9 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -46,18 +46,10 @@
 ****************************************************************************************/
 void LedInit(void)
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
-  
-  /* enable the GPIO_LED Clock */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-  /* configure the GPIO_LED pin */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-  GPIO_SetBits(GPIOC, GPIO_Pin_13);
+  /* Note that the initialization of the LED GPIO pin is done in HAL_MspInit(). All that
+   * is left to do here is to make sure the LED is turned off after initialization.
+   */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 } /*** end of LedInit ***/
 
 
@@ -79,19 +71,19 @@ void LedToggle(void)
     /* not yet time to toggle */
     return;
   }
-  
+
   /* determine toggle action */
   if (led_toggle_state == 0)
   {
     led_toggle_state = 1;
     /* turn the LED on */
-    GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
   }
   else
   {
     led_toggle_state = 0;
     /* turn the LED off */
-    GPIO_SetBits(GPIOC, GPIO_Pin_13);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
   }
 
   /* store toggle time to determine next toggle interval */
