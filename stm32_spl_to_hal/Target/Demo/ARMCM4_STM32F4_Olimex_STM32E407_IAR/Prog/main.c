@@ -6,7 +6,7 @@
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2018  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -20,9 +20,9 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -36,6 +36,7 @@
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+static void SystemClock_Config(void);
 
 
 /************************************************************************************//**
@@ -46,28 +47,17 @@ static void Init(void);
 ****************************************************************************************/
 void main(void)
 {
-  /* initialize the microcontroller */
+  /* Initialize the microcontroller */
   Init();
-  /* initialize the shared parameters module */
-  SharedParamsInit();
-  /* initialize the network application */
-  NetInit();
-  /* initialize the bootloader interface */
+  /* Initialize the bootloader interface */
   BootComInit();
-  /* the shared parameter at index 0 is used as a boolean flag to indicate if the
-   * bootloader should initialize the TCP/IP network stack. by default this flag
-   * should be reset.
-   */
-  SharedParamsWriteByIndex(0, 0);
 
   /* start the infinite program loop */
   while (1)
   {
-    /* toggle LED with a fixed frequency */
+    /* Toggle LED with a fixed frequency. */
     LedToggle();
-    /* run the network task */ 
-    NetTask();
-    /* check for bootloader activation request */
+    /* Check for bootloader activation request. */
     BootComCheckActivationRequest();
   }
 } /*** end of main ***/
@@ -80,13 +70,180 @@ void main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  /* initialize the system and its clocks */
-  SystemInit();
-  /* init the led driver */
-  LedInit();
-  /* init the timer driver */
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+  /* Configure the system clock. */
+  SystemClock_Config();
+  /* Initialize the timer driver. */
   TimerInit();
+  /* Initialize the led driver. */
+  LedInit();
 } /*** end of Init ***/
+
+
+/************************************************************************************//**
+** \brief     System Clock Configuration. This code was created by CubeMX and configures
+**            the system clock.
+** \return    none.
+**
+****************************************************************************************/
+static void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+
+  /* Configure the main internal regulator output voltage. */
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /* Initializes the CPU, AHB and APB busses clocks. */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 12;
+  RCC_OscInitStruct.PLL.PLLN = 336;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 7;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    /* Clock configuration incorrect or hardware failure. Hang the system to prevent
+     * damage.
+     */
+    while(1);
+  }
+
+  /* Initializes the CPU, AHB and APB busses clocks. */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
+                                RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+  {
+    /* Clock configuration incorrect or hardware failure. Hang the system to prevent
+     * damage.
+     */
+    while(1);
+  }
+} /*** end of SystemClock_Config ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the Global MSP. This function is called from HAL_Init()
+**            function to perform system level initialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspInit(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* SYSCFG and PWR clock enable. */
+  __HAL_RCC_SYSCFG_CLK_ENABLE();
+  __HAL_RCC_PWR_CLK_ENABLE();
+
+  /* GPIO ports clock enable */
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+
+#if (BOOT_COM_UART_ENABLE > 0)
+  /* Peripheral clock enable. */
+  __HAL_RCC_USART6_CLK_ENABLE();
+#endif /* BOOT_COM_UART_ENABLE > 0 */
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Peripheral clock enable. Note that the CAN1 clock is also enabled, because CAN2
+   * is a slave of CAN1.
+   */
+  __HAL_RCC_CAN1_CLK_ENABLE();
+  __HAL_RCC_CAN2_CLK_ENABLE();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
+
+  /* Set priority grouping. */
+  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+  /* MemoryManagement_IRQn interrupt configuration. */
+  HAL_NVIC_SetPriority(MemoryManagement_IRQn, 0, 0);
+  /* BusFault_IRQn interrupt configuration. */
+  HAL_NVIC_SetPriority(BusFault_IRQn, 0, 0);
+  /* UsageFault_IRQn interrupt configuration. */
+  HAL_NVIC_SetPriority(UsageFault_IRQn, 0, 0);
+  /* SVCall_IRQn interrupt configuration. */
+  HAL_NVIC_SetPriority(SVCall_IRQn, 0, 0);
+  /* DebugMonitor_IRQn interrupt configuration. */
+  HAL_NVIC_SetPriority(DebugMonitor_IRQn, 0, 0);
+  /* PendSV_IRQn interrupt configuration. */
+  HAL_NVIC_SetPriority(PendSV_IRQn, 0, 0);
+  /* SysTick_IRQn interrupt configuration. */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+
+  /* Configure the LED GPIO pin. */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+#if (BOOT_COM_UART_ENABLE > 0)
+  /* UART TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+#endif /* BOOT_COM_UART_ENABLE > 0 */
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = GPIO_PIN_5 | GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF9_CAN2;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
+} /*** end of HAL_MspInit ***/
+
+
+/************************************************************************************//**
+** \brief     Deinitializes the Global MSP. This function is called from HAL_DeInit()
+**            function to perform system level Deinitialization (GPIOs, clock, DMA,
+**            interrupt).
+** \return    none.
+**
+****************************************************************************************/
+void HAL_MspDeInit(void)
+{
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Reset CAN GPIO pin configuration. */
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_5 | GPIO_PIN_6);
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
+#if (BOOT_COM_UART_ENABLE > 0)
+  /* Reset UART GPIO pin configuration. */
+  HAL_GPIO_DeInit(GPIOC, GPIO_PIN_6 | GPIO_PIN_7);
+#endif /* BOOT_COM_UART_ENABLE > 0 */
+  /* Deconfigure GPIO pin for the LED. */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+  HAL_GPIO_DeInit(GPIOC, GPIO_PIN_13);
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Peripheral clock enable. */
+  __HAL_RCC_CAN2_CLK_DISABLE();
+  __HAL_RCC_CAN1_CLK_DISABLE();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
+#if (BOOT_COM_UART_ENABLE > 0)
+  /* Peripheral clock disable. */
+  __HAL_RCC_USART6_CLK_DISABLE();
+#endif /* BOOT_COM_UART_ENABLE > 0 */
+
+  /* GPIO ports clock disable. */
+  __HAL_RCC_GPIOC_CLK_DISABLE();
+  __HAL_RCC_GPIOB_CLK_DISABLE();
+
+  /* SYSCFG and PWR clock disable. */
+  __HAL_RCC_PWR_CLK_DISABLE();
+  __HAL_RCC_SYSCFG_CLK_DISABLE();
+} /*** end of HAL_MspDeInit ***/
 
 
 /*********************************** end of main.c *************************************/

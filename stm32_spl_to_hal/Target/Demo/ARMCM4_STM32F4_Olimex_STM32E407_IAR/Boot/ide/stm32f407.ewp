@@ -181,10 +181,9 @@
         <debug>1</debug>
         <option>
           <name>CCDefines</name>
-          <state>USE_STDPERIPH_DRIVER</state>
-          <state>USE_USB_OTG_FS</state>
-          <state>STM32F4XX</state>
-          <state>HSE_VALUE=12000000</state>
+          <state>USE_HAL_DRIVER</state>
+          <state>USE_FULL_LL_DRIVER</state>
+          <state>STM32F407xx</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -314,23 +313,15 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..</state>
-          <state>$PROJ_DIR$\..\lib\stdperiphlib</state>
-          <state>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Device\ST\STM32F4xx\Include</state>
-          <state>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Include</state>
-          <state>$PROJ_DIR$\..\lib\ethernetlib\inc</state>
-          <state>$PROJ_DIR$\..\lib\ethernetlib\src</state>
+          <state>$PROJ_DIR$\..\lib\</state>
+          <state>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F4xx\Include</state>
+          <state>$PROJ_DIR$\..\lib\CMSIS\Include</state>
+          <state>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc</state>
+          <state>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\Legacy</state>
           <state>$PROJ_DIR$\..\lib\fatfs</state>
-          <state>$PROJ_DIR$\..\lib\uip</state>
-          <state>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc</state>
-          <state>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc</state>
-          <state>$PROJ_DIR$\..\lib\usbdevicelib\Core\src</state>
-          <state>$PROJ_DIR$\..\lib\usbotgdriver\inc</state>
-          <state>$PROJ_DIR$\..\lib\usbotgdriver\src</state>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32F4</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
-          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip</state>
-          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -745,7 +736,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\stm32f4xx_flash.icf</state>
+          <state>$PROJ_DIR$\..\stm32f407xx_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1953,293 +1944,227 @@
     <group>
       <name>lib</name>
       <group>
-        <name>ethernetlib</name>
+        <name>CMSIS</name>
         <file>
-          <name>$PROJ_DIR$\..\lib\ethernetlib\src\stm32_eth.c</name>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_common_tables.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\ethernetlib\inc\stm32_eth.h</name>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_const_structs.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_math.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm4.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmFunc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmInstr.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmSimd.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h</name>
         </file>
       </group>
       <group>
         <name>fatfs</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\fatfs\bsp_driver_sd.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\fatfs\bsp_driver_sd.h</name>
+        </file>
         <file>
           <name>$PROJ_DIR$\..\lib\fatfs\ffconf.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\lib\fatfs\mmc.c</name>
         </file>
-      </group>
-      <group>
-        <name>stdperiphlib</name>
         <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Include\core_cm4.h</name>
+          <name>$PROJ_DIR$\..\lib\fatfs\sd_diskio.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Include\core_cm4_simd.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Include\core_cmFunc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Include\core_cmInstr.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\misc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\misc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_can.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\stm32f4xx_conf.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_crc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_cryp.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp_aes.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp_des.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp_tdes.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dbgmcu.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dcmi.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_exti.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_fsmc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_hash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_hash.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_hash_md5.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_hash_sha1.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_i2c.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_iwdg.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_pwr.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rcc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rng.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rng.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rtc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_sdio.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_spi.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_syscfg.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_tim.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_wwdg.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Device\ST\STM32F4xx\Source\system_stm32f4xx.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\stdperiphlib\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h</name>
+          <name>$PROJ_DIR$\..\lib\fatfs\sd_diskio.h</name>
         </file>
       </group>
       <group>
-        <name>uip</name>
+        <name>HAL</name>
         <file>
-          <name>$PROJ_DIR$\..\lib\uip\clock-arch.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\uip\clock-arch.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\uip\netdev.c</name>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\uip\netdev.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_can.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\lib\uip\uip-conf.h</name>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_can.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_cortex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_def.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ramfunc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash_ramfunc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_gpio.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_gpio.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_gpio_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_sd.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_sd.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim_ex.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_bus.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_cortex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_dma.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_dma.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_exti.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_exti.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_gpio.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_gpio.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_pwr.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_rcc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_rcc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_sdmmc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_sdmmc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_system.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usart.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usart.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_utils.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_utils.h</name>
         </file>
       </group>
-      <group>
-        <name>usbdevicelib</name>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_bsp.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbotgdriver\src\usb_core.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_core.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbotgdriver\src\usb_dcd.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_dcd.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbotgdriver\src\usb_dcd_int.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_dcd_int.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_defines.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbotgdriver\inc\usb_regs.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\src\usbd_core.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_core.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_def.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\src\usbd_ioreq.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_ioreq.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\src\usbd_req.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_req.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\lib\usbdevicelib\Core\inc\usbd_usr.h</name>
-        </file>
-      </group>
+      <file>
+        <name>$PROJ_DIR$\..\lib\stm32f4xx_hal_conf.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\lib\system_stm32f4xx.c</name>
+      </file>
     </group>
     <file>
       <name>$PROJ_DIR$\..\blt_conf.h</name>
@@ -2248,40 +2173,16 @@
       <name>$PROJ_DIR$\..\hooks.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\led.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\led.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\main.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\shared_params.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\shared_params.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\startup_stm32f40xx.s</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usb_bsp.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usb_conf.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usbd_bulk.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usbd_bulk.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usbd_conf.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usbd_desc.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usbd_desc.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\usbd_usr.c</name>
+      <name>$PROJ_DIR$\..\startup_stm32f407xx.s</name>
     </file>
   </group>
   <group>
@@ -2340,72 +2241,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</name>
-        </file>
-      </group>
-      <group>
-        <name>uip</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\clock.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-addrlabels.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-switch.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\pt.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-fw.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-fw.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-neighbor.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-split.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arch.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uipopt.h</name>
         </file>
       </group>
     </group>
