@@ -128,7 +128,6 @@ __Vectors:
     .long   CLKVAL2_SSW                 /* Reserved                     */
     .long   0x55AA11EE                  /* Reserved for OpenBLT checksum*/
 #ifdef RETAIN_VECTOR_TABLE
-    .long   0x55AA11EE                  /* Reserved for OpenBLT checksum*/
     .long   0                           /* Reserved                     */
     .long   0                           /* Reserved                     */
     .long   0                           /* Reserved                     */
