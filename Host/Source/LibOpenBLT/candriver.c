@@ -39,6 +39,7 @@
 #include "pcanusb.h"                        /* Peak PCAN-USB interface                 */
 #include "leaflight.h"                      /* Kvaser Leaf Light v2 interface          */
 #include "canusb.h"                         /* Lawicel CANUSB interface                */
+#include "xldriver.h"                       /* Vector XL driver interface              */
 #endif
 #if defined(PLATFORM_LINUX)
 #include "socketcan.h"                      /* SocketCAN interface                     */
@@ -93,6 +94,10 @@ void CanInit(tCanSettings const * settings)
       else if (strcmp(settings->devicename, "lawicel_canusb") == 0)
       {
         canIfPtr = CanUsbGetInterface();
+      }
+      else if (strcmp(settings->devicename, "vector_xldriver") == 0)
+      {
+        canIfPtr = VectorXlGetInterface();
       }
 #endif
 #if defined(PLATFORM_LINUX)

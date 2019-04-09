@@ -218,7 +218,9 @@ begin
   if FTransportXcpCanConfig.Device = 'kvaser_leaflight' then
     CmbDevice.ItemIndex := 1
   else if FTransportXcpCanConfig.Device = 'lawicel_canusb' then
-    CmbDevice.ItemIndex := 2;
+    CmbDevice.ItemIndex := 2
+  else if FTransportXcpCanConfig.Device = 'vector_xldriver' then
+    CmbDevice.ItemIndex := 3;
   {$ENDIF}
   CmbChannel.ItemIndex := 0;
   if FTransportXcpCanConfig.Channel <= LongWord(CmbChannel.Items.Count) then
@@ -266,7 +268,9 @@ begin
   if CmbDevice.ItemIndex = 1 then
     FTransportXcpCanConfig.Device := 'kvaser_leaflight'
   else if CmbDevice.ItemIndex = 2 then
-  FTransportXcpCanConfig.Device := 'lawicel_canusb';
+    FTransportXcpCanConfig.Device := 'lawicel_canusb'
+  else if CmbDevice.ItemIndex = 3 then
+    FTransportXcpCanConfig.Device := 'vector_xldriver';
   {$ENDIF}
   FTransportXcpCanConfig.Channel := CmbChannel.ItemIndex;
   case CmbBaudrate.ItemIndex of
