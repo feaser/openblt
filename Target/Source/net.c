@@ -213,8 +213,8 @@ void NetTransmitPacket(blt_int8u *data, blt_int8u len)
     }
     /* set the length of the TCP/IP packet */
     s->dto_len = len + 4;
-    /* submit it for transmission */
-    uip_send(s->dto_data, s->dto_len);
+    /* set the flag to request the transmission of this packet. */
+    s->dto_tx_req = BLT_TRUE;
     /* update dto counter for the next transmission */
     s->dto_counter++;
   }
@@ -263,41 +263,63 @@ void NetApp(void)
 
   if (uip_connected())
   {
-    /* init the dto counter and reset the pending dto data length */
+    /* init the dto counter and reset the pending dto data length and transmit related
+     * flags.
+     */
     s->dto_counter = 1;
     s->dto_len = 0;
+    s->dto_tx_req = BLT_FALSE;
+    s->dto_tx_pending = BLT_FALSE;
     return;
   }
 
   if (uip_acked())
   {
-    /* dto sent so set the pending dto data length to zero */
-    s->dto_len = 0;
+    /* dto sent so reset the pending flag. */
+    s->dto_tx_pending = BLT_FALSE;
   }
 
   if (uip_rexmit())
   {
+    /* is a dto transmission pending that should now be retransmitted? */
     /* retransmit the currently pending dto response */
-    if (s->dto_len > 0)
+    if (s->dto_tx_pending == BLT_TRUE)
     {
       /* resend the last pending dto response */
       uip_send(s->dto_data, s->dto_len);
     }
   }
 
+  if (uip_poll())
+  {
+    /* check if there is a packet waiting to be transmitted. this is done via polling
+     * because then it is possible to asynchronously send data. otherwise data is
+     * only really send after a newly received packet was received.
+     */
+    if (s->dto_tx_req == BLT_TRUE)
+    {
+      /* reset the transmit request flag. */
+      s->dto_tx_req = BLT_FALSE;
+      if (s->dto_len > 0)
+      {
+        /* set the transmit pending flag. */
+        s->dto_tx_pending = BLT_TRUE;
+        /* submit the data for transmission. */
+        uip_send(s->dto_data, s->dto_len);
+      }
+    }
+  }
+
   if (uip_newdata())
   {
     /* only process the data if its length is not longer than expected. otherwise just
-     * ignore it.
+     * ignore it. XCP is request/response. this means that a new requests should
+     * only be processed when the response the the previous request was sent. new
+     * requests before the last response was sent can therefore also be ignored.
      */
-    if ((uip_datalen() - 4) <= BOOT_COM_NET_RX_MAX_DATA)
+    if ( ((uip_datalen() - 4) <= BOOT_COM_NET_RX_MAX_DATA) &&
+         (s->dto_tx_pending == BLT_FALSE) )
     {
-      /* XCP is request/response. this means is a new request comes in when a response
-       * transmission is still pending, the XCP master either re-initialized or sent
-       * the request again because of a response time-out. Either way the pending response
-       * should be cancelled before handling the new request.
-       */
-      s->dto_len = 0;
       /* the first 4 bytes contain a counter value in which we are not really interested */
       newDataPtr = uip_appdata;
       XcpPacketReceived(&newDataPtr[4], (blt_int8u)(uip_datalen() - 4));
@@ -399,6 +421,23 @@ static void NetServerTask(void)
     ARPTimerTimeOut += NET_UIP_ARP_TIMER_MS;
     uip_arp_timer();
   }
+
+  /* perform polling operations here. */
+  for (connection = 0; connection < UIP_CONNS; connection++)
+  {
+    uip_poll_conn(&uip_conns[connection]);
+    /* If the above function invocation resulted in data that
+     * should be sent out on the network, the global variable
+     * uip_len is set to a value > 0.
+     */
+    if (uip_len > 0)
+    {
+      uip_arp_out();
+      netdev_send();
+      uip_len = 0;
+    }
+  }
+
 } /*** end of NetServerTask ***/
 
 #endif /* BOOT_COM_NET_ENABLE > 0 */

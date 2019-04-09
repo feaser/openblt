@@ -49,6 +49,8 @@ typedef struct net_state
   blt_int32u dto_counter;
   blt_int8u  dto_data[BOOT_COM_NET_TX_MAX_DATA + 4]; /* +4 for counter overhead */
   blt_int16u dto_len;
+  blt_bool   dto_tx_req;
+  blt_bool   dto_tx_pending;
 } uip_tcp_appstate_t;
 
 
