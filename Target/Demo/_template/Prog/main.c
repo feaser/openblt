@@ -36,6 +36,7 @@
  * configure the project in your IDE or Makefile to generate an S-Record. This is
  * typically done in a post-build step. More information about the S-Record format can
  * be found here: https://en.wikipedia.org/wiki/SREC_(file_format).
+ */
 
 /* TODO ##Prog Note that the first part of flash memory is reserved for the bootloader. 
  * To find out exactly how much, have a look at the flashLayout[] array in the 
