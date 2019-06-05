@@ -1,0 +1,182 @@
+
+bin/demoprog_ek_lm3s8962.elf:     file format elf32-littlearm
+bin/demoprog_ek_lm3s8962.elf
+architecture: arm, flags 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+start address 0x00004000
+
+Program Header:
+    LOAD off    0x00000000 vaddr 0x00000000 paddr 0x00000000 align 2**16
+         filesz 0x000058f0 memsz 0x000058f0 flags r-x
+    LOAD off    0x00010000 vaddr 0x20000000 paddr 0x000058f0 align 2**16
+         filesz 0x00000008 memsz 0x00000480 flags rw-
+private flags = 5000200: [Version5 EABI] [soft-float ABI]
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000018f0  00004000  00004000  00004000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000008  20000000  000058f0  00010000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000478  20000008  000058f8  00010008  2**2
+                  ALLOC
+  3 .ARM.attributes 00000029  00000000  00000000  00010008  2**0
+                  CONTENTS, READONLY
+  4 .comment      0000006e  00000000  00000000  00010031  2**0
+                  CONTENTS, READONLY
+  5 .debug_info   00005af4  00000000  00000000  0001009f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000d80  00000000  00000000  00015b93  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_loc    00003b22  00000000  00000000  00016913  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_aranges 00000708  00000000  00000000  0001a435  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_ranges 00000648  00000000  00000000  0001ab3d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_macro  00004185  00000000  00000000  0001b185  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_line   000025ea  00000000  00000000  0001f30a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_str    0001e45c  00000000  00000000  000218f4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_frame  000012e4  00000000  00000000  0003fd50  2**2
+                  CONTENTS, READONLY, DEBUGGING
+SYMBOL TABLE:
+00004000 l    d  .text	00000000 .text
+20000000 l    d  .data	00000000 .data
+20000008 l    d  .bss	00000000 .bss
+00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .debug_info	00000000 .debug_info
+00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
+00000000 l    d  .debug_loc	00000000 .debug_loc
+00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_ranges	00000000 .debug_ranges
+00000000 l    d  .debug_macro	00000000 .debug_macro
+00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_str	00000000 .debug_str
+00000000 l    d  .debug_frame	00000000 .debug_frame
+00000000 l    df *ABS*	00000000 vectors.c
+00000000 l    df *ABS*	00000000 crtstuff.c
+000058ec l     O .text	00000000 __EH_FRAME_BEGIN__
+000040f4 l     F .text	00000000 __do_global_dtors_aux
+20000008 l       .bss	00000000 completed.8603
+20000004 l     O .data	00000000 __do_global_dtors_aux_fini_array_entry
+00004118 l     F .text	00000000 frame_dummy
+2000000c l       .bss	00000000 object.8608
+20000000 l     O .data	00000000 __frame_dummy_init_array_entry
+00000000 l    df *ABS*	00000000 systick.c
+00000000 l    df *ABS*	00000000 can.c
+00004190 l     F .text	0000002c CANBaseValid
+000041bc l     F .text	0000002c CANIntNumberGet
+000041e8 l     F .text	0000001a CANRegWrite
+00004204 l     F .text	0000002e CANDataRegWrite
+00004234 l     F .text	00000068 CANRegRead
+0000429c l     F .text	0000002e CANDataRegRead
+00000000 l    df *ABS*	00000000 gpio.c
+000048b4 l     F .text	000000dc GPIOBaseValid
+00000000 l    df *ABS*	00000000 interrupt.c
+00000000 l    df *ABS*	00000000 uart.c
+00004d1c l     F .text	0000002c UARTBaseValid
+00000000 l    df *ABS*	00000000 sysctl.c
+00004ec4 l     F .text	000001f8 SysCtlPeripheralValid
+0000586c l     O .text	0000005c g_pulXtals
+000058e0 l     O .text	0000000c g_pulRCGCRegs
+00000000 l    df *ABS*	00000000 led.c
+20000024 l     O .bss	00000004 timer_counter_last.4628
+20000028 l     O .bss	00000001 led_toggle_state.4627
+00000000 l    df *ABS*	00000000 cstart.c
+0000550a l     F .text	00000000 zero_loop
+00000000 l    df *ABS*	00000000 main.c
+00005534 l     F .text	00000018 Init
+2000002c l     O .bss	00000004 assert_failure_line.4635
+00000000 l    df *ABS*	00000000 boot.c
+00005570 l     F .text	00000038 BootComUartInit
+000055a8 l     F .text	00000074 CanSetBittiming
+0000561c l     F .text	0000005c BootComCanInit
+00005678 l     F .text	00000020 UartReceiveByte
+000056ac l     F .text	00000094 BootComUartCheckActivationRequest
+00005740 l     F .text	00000040 BootComCanCheckActivationRequest
+20000030 l     O .bss	00000001 xcpCtoRxLength.4647
+20000031 l     O .bss	00000001 xcpCtoRxInProgress.4648
+20000034 l     O .bss	00000004 xcpCtoRxStartTime.4649
+20000038 l     O .bss	00000041 xcpCtoReqPacket.4646
+00000000 l    df *ABS*	00000000 time.c
+2000007c l     O .bss	00000004 millisecond_counter
+00000000 l    df *ABS*	00000000 c:/progra~2/gnutoo~1/50a5a~1.420/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7-m/crti.o
+00000000 l    df *ABS*	00000000 c:/progra~2/gnutoo~1/50a5a~1.420/bin/../lib/gcc/arm-none-eabi/5.4.1/armv7-m/crtn.o
+00000000 l    df *ABS*	00000000 crtstuff.c
+000058ec l     O .text	00000000 __FRAME_END__
+00000000 l    df *ABS*	00000000 
+00000000 l       *UND*	00000000 __bss_start__
+00000000 l       *UND*	00000000 __libc_fini_array
+00000000 l       *UND*	00000000 __sf_fake_stderr
+00000000 l       *UND*	00000000 __bss_end__
+00000000 l       *UND*	00000000 __call_exitprocs
+00000000 l       *UND*	00000000 software_init_hook
+00000000 l       *UND*	00000000 __sf_fake_stdin
+20000004 l       .data	00000000 __init_array_end
+00000000 l       *UND*	00000000 hardware_init_hook
+00000000 l       *UND*	00000000 atexit
+20000000 l       .data	00000000 __preinit_array_end
+00000000 l       *UND*	00000000 __stack
+00000000 l       *UND*	00000000 __sf_fake_stdout
+20000000 l       .data	00000000 __init_array_start
+00000000 l       *UND*	00000000 _exit
+20000000 l       .data	00000000 __preinit_array_start
+00005560 g     F .text	0000000c __error__
+000054e8 g     F .text	00000040 reset_handler
+000042cc g     F .text	0000009c CANInit
+00005104 g     F .text	00000008 SysCtlDelay
+00004368 g     F .text	0000002c CANEnable
+000058f0 g       .text	00000000 _etext
+00004b44 g     F .text	00000024 GPIOPinWrite
+000057cc g     F .text	00000010 TimerISRHandler
+000050bc g     F .text	00000038 SysCtlPeripheralEnable
+000057dc g     F .text	00000000 _init
+000056a4 g     F .text	00000008 BootActivate
+000050f4 g     F .text	00000010 SysCtlReset
+20000080 g       .bss	00000000 _ebss
+00000400 g       *ABS*	00000000 __STACKSIZE__
+0000556c g     F .text	00000002 UnusedISR
+00005474 g     F .text	00000028 LedInit
+00000000  w      *UND*	00000000 __deregister_frame_info
+00004e98 g     F .text	0000002c UARTCharGetNonBlocking
+20000008 g       .bss	00000000 _bss
+00004170 g     F .text	00000020 SysTickPeriodSet
+00004470 g     F .text	0000008c CANStatusGet
+0000554c g     F .text	00000014 main
+00005270 g     F .text	00000204 SysCtlClockGet
+00004d78 g     F .text	00000038 UARTDisable
+000046f8 g     F .text	000001bc CANMessageGet
+0000578c g     F .text	0000000c TimerSet
+00004b68 g     F .text	00000034 GPIOPinTypeCAN
+00005698 g     F .text	0000000c BootComInit
+000057e8 g     F .text	00000000 _fini
+00004c90 g     F .text	0000008c IntDisable
+20000000 g       .data	00000000 _data
+0000549c g     F .text	0000004c LedToggle
+00004394 g     F .text	000000dc CANBitTimingSet
+20000480 g       .bss	00000000 _estack
+20000008 g       .data	00000000 _edata
+00004000 g     O .text	000000f4 _vectab
+00004bd0 g     F .text	00000034 GPIOPinTypeUART
+00004b9c g     F .text	00000034 GPIOPinTypeGPIOOutput
+00004c04 g     F .text	0000008c IntEnable
+00005780 g     F .text	0000000c BootComCheckActivationRequest
+00004990 g     F .text	00000060 GPIODirModeSet
+20000080 g       .bss	00000000 _stack
+00004150 g     F .text	00000010 SysTickEnable
+000057c0 g     F .text	0000000c TimerGet
+00000000  w      *UND*	00000000 _Jv_RegisterClasses
+00004160 g     F .text	00000010 SysTickIntEnable
+000044fc g     F .text	000001fc CANMessageSet
+00004db0 g     F .text	000000e8 UARTConfigSetExpClk
+0000510c g     F .text	00000164 SysCtlClockSet
+000049f0 g     F .text	00000154 GPIOPadConfigSet
+00005798 g     F .text	00000028 TimerInit
+00000000  w      *UND*	00000000 __register_frame_info
+00004d48 g     F .text	00000030 UARTEnable
+
+
