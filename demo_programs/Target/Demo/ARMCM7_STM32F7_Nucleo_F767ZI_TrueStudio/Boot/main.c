@@ -155,9 +155,11 @@ void HAL_MspInit(void)
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   /* GPIO ports clock enable. */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
 
 #if (BOOT_COM_UART_ENABLE > 0)
   /* UART clock enable. */
@@ -214,9 +216,11 @@ void HAL_MspDeInit(void)
 #endif
 
   /* GPIO ports clock disable. */
+  __HAL_RCC_GPIOG_CLK_DISABLE();
   __HAL_RCC_GPIOD_CLK_DISABLE();
   __HAL_RCC_GPIOC_CLK_DISABLE();
   __HAL_RCC_GPIOB_CLK_DISABLE();
+  __HAL_RCC_GPIOA_CLK_DISABLE();
 
   /* SYSCFG and PWR clock disable. */
   __HAL_RCC_PWR_CLK_DISABLE();
