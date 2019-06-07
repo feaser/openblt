@@ -49,15 +49,26 @@ int main(void)
 {
   /* Initialize the microcontroller */
   Init();
-  /* Initialize the bootloader interface */
+  /* initialize the shared parameters module */
+  /* TODO ##Vg Enable again SharedParamsInit(); */
+  /* initialize the network application */
+  NetInit();
+  /* initialize the bootloader interface */
   BootComInit();
+  /* the shared parameter at index 0 is used as a boolean flag to indicate if the
+   * bootloader should initialize the TCP/IP network stack. by default this flag
+   * should be reset.
+   */
+  /* TODO ##Vg Enable again SharedParamsWriteByIndex(0, 0); */
 
   /* start the infinite program loop */
   while (1)
   {
     /* Toggle LED with a fixed frequency. */
     LedToggle();
-    /* Check for bootloader activation request. */
+    /* run the network task */ 
+    NetTask();
+    /* check for bootloader activation request */
     BootComCheckActivationRequest();
   }
   /* Set program exit code. note that the program should never get here. */
@@ -155,8 +166,11 @@ void HAL_MspInit(void)
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   /* GPIO ports clock enable. */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
 #if (BOOT_COM_UART_ENABLE > 0)
   /* Peripheral clock enable. */
   __HAL_RCC_USART3_CLK_ENABLE();
@@ -219,8 +233,11 @@ void HAL_MspDeInit(void)
   __HAL_RCC_USART3_CLK_DISABLE();
 #endif /* BOOT_COM_UART_ENABLE > 0 */
   /* GPIO ports clock disable. */
+  __HAL_RCC_GPIOG_CLK_DISABLE();
   __HAL_RCC_GPIOD_CLK_DISABLE();
+  __HAL_RCC_GPIOC_CLK_DISABLE();
   __HAL_RCC_GPIOB_CLK_DISABLE();
+  __HAL_RCC_GPIOA_CLK_DISABLE();
   /* Power and SYSCFG clock disable. */
   __HAL_RCC_PWR_CLK_DISABLE();
   __HAL_RCC_SYSCFG_CLK_DISABLE();

@@ -37,9 +37,9 @@
 
 /*---------------------------------------------------------------------------*/
 #include <string.h>
+#include "header.h"
 #include "uip.h"
 #include "uip_arp.h"
-#include "boot.h"
 #include "stm32f7xx.h"                           /* STM32 CPU and HAL header           */
 
 
@@ -257,7 +257,6 @@ void netdev_send(void)
   /* Only continue with packet transmission of the buffer is available. */
   while ((DmaTxDesc->Status & ETH_DMATXDESC_OWN) != (uint32_t)RESET)
   {
-    CopService();
     /* Break loop upon timeout. This would indicate a hardware failure. */
     if (TimerGet() > timeout)
     {

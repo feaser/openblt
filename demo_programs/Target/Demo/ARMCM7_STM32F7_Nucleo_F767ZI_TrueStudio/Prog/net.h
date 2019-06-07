@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM7_STM32F7_Nucleo_F767ZI_TrueStudio/Prog/header.h
-* \brief        Generic header file.
+* \file         Demo/ARMCM7_STM32F7_Nucleo_F767ZI_TrueStudio/Prog/net.h
+* \brief        Network application for the uIP TCP/IP stack.
 * \ingroup      Prog_ARMCM7_STM32F7_Nucleo_F767ZI_TrueStudio
 * \internal
 *----------------------------------------------------------------------------------------
@@ -20,24 +20,42 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It
+* You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-*
+* 
 * \endinternal
 ****************************************************************************************/
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef NET_H
+#define NET_H
 
 /****************************************************************************************
-* Include files
+* Macro definitions
 ****************************************************************************************/
-#include "../Boot/blt_conf.h"                          /* bootloader configuration     */
-#include "stm32f7xx.h"                                 /* STM32 CPU and HAL header     */
-#include "boot.h"                                      /* bootloader interface driver  */
-#include "led.h"                                       /* LED driver                   */
-#include "timer.h"                                     /* Timer driver                 */
-#include "net.h"                                       /* TCP/IP server application    */
+#ifndef UIP_APPCALL
+#define UIP_APPCALL NetApp
+#endif /* UIP_APPCALL */
 
 
-#endif /* HEADER_H */
-/*********************************** end of header.h ***********************************/
+/****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Define the uip_tcp_appstate_t datatype. This is the state of our tcp/ip
+ *         application, and the memory required for this state is allocated together
+ *         with each TCP connection. One application state for each TCP connection.
+ */
+typedef struct net_state 
+{
+  unsigned char unused;
+} uip_tcp_appstate_t;
+
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+void     NetInit(void);
+void     NetApp(void);
+void     NetTask(void);
+
+
+#endif /* NET_H */
+/*********************************** end of net.h **************************************/

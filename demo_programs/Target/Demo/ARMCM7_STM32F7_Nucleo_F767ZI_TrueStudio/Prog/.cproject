@@ -41,10 +41,13 @@
 								<option id="com.atollic.truestudio.gcc.directories.select.330946435" name="Include path" superClass="com.atollic.truestudio.gcc.directories.select" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/uip&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/CMSIS/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/CMSIS/Device/ST/STM32F7xx/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/STM32F7xx_HAL_Driver/Inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/STM32F7xx_HAL_Driver/Inc/Legacy&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source/third_party/uip/uip&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source/third_party/uip/apps/dhcpc&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=&quot;__attribute__((weak))&quot;"/>
@@ -107,8 +110,8 @@
 								<option id="com.atollic.truestudio.common_options.target.interwork.1630329343" name="Mix ARM/Thumb" superClass="com.atollic.truestudio.common_options.target.interwork"/>
 							</tool>
 							<tool id="com.atollic.truestudio.exe.debug.toolchain.secoutput.839033486" name="Other" superClass="com.atollic.truestudio.exe.debug.toolchain.secoutput">
-								<option id="com.atollic.truestudio.secoutput.general.convert.522839610" superClass="com.atollic.truestudio.secoutput.general.convert" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="com.atollic.truestudio.mbs.convert.358880974" superClass="com.atollic.truestudio.mbs.convert" useByScannerDiscovery="false" value="com.atollic.truestudio.mbs.convert.srec" valueType="enumerated"/>
+								<option id="com.atollic.truestudio.secoutput.general.convert.522839610" name="Convert build output" superClass="com.atollic.truestudio.secoutput.general.convert" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.atollic.truestudio.mbs.convert.358880974" name="Format" superClass="com.atollic.truestudio.mbs.convert" useByScannerDiscovery="false" value="com.atollic.truestudio.mbs.convert.srec" valueType="enumerated"/>
 							</tool>
 							<tool id="com.atollic.truestudio.ar.base.286109641" name="Archiver" superClass="com.atollic.truestudio.ar.base"/>
 						</toolChain>
