@@ -146,7 +146,7 @@ void NetApp(void)
        * the bootloader for a firmware update via TCP/IP. At this point we should
        * set the flag to make sure the bootloader initializes its TCP/IP network stack.
        */
-      /* TODO ##Vg Enable again SharedParamsWriteByIndex(0, 1); */
+      SharedParamsWriteByIndex(0, 1);
       /* connection request received so start the bootloader */
       BootActivate();
     }

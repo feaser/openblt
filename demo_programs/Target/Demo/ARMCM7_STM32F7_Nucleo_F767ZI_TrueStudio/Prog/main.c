@@ -49,8 +49,8 @@ int main(void)
 {
   /* Initialize the microcontroller */
   Init();
-  /* initialize the shared parameters module */
-  /* TODO ##Vg Enable again SharedParamsInit(); */
+  /* Initialize the shared parameters module */
+  SharedParamsInit();
   /* initialize the network application */
   NetInit();
   /* initialize the bootloader interface */
@@ -59,7 +59,7 @@ int main(void)
    * bootloader should initialize the TCP/IP network stack. by default this flag
    * should be reset.
    */
-  /* TODO ##Vg Enable again SharedParamsWriteByIndex(0, 0); */
+  SharedParamsWriteByIndex(0, 0);
 
   /* start the infinite program loop */
   while (1)
