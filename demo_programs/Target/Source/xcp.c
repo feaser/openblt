@@ -1259,7 +1259,7 @@ static void XcpCmdProgramMax(blt_int8u *data)
 #endif
 
   /* program the data */
-  if (NvmWrite((blt_addr)xcpInfo.mta, XCP_CTO_PACKET_LEN-1, &data[1]) == 0)
+  if (NvmWrite((blt_addr)xcpInfo.mta, XCP_CTO_PACKET_LEN-1, &data[1]) == BLT_FALSE)
   {
     /* error occurred during programming */
     XcpSetCtoError(XCP_ERR_GENERIC);
@@ -1322,7 +1322,7 @@ static void XcpCmdProgram(blt_int8u *data)
     return;
   }
   /* program the data */
-  if (NvmWrite((blt_addr)xcpInfo.mta, data[1], &data[2]) == 0)
+  if (NvmWrite((blt_addr)xcpInfo.mta, data[1], &data[2]) == BLT_FALSE)
   {
     /* error occurred during programming */
     XcpSetCtoError(XCP_ERR_GENERIC);
@@ -1354,7 +1354,7 @@ static void XcpCmdProgramClear(blt_int8u *data)
 #endif
 
   /* erase the memory */
-  if (NvmErase((blt_addr)xcpInfo.mta, *(blt_int32u *)&data[4]) == 0)
+  if (NvmErase((blt_addr)xcpInfo.mta, *(blt_int32u *)&data[4]) == BLT_FALSE)
   {
     /* error occurred during erasure */
     XcpSetCtoError(XCP_ERR_GENERIC);
