@@ -30,8 +30,8 @@
 * \defgroup   Target__template_can CAN driver of a port
 * \brief      This module implements the CAN driver of a microcontroller port. 
 * \details    For the most parts, this driver is already implemented. The only parts that
-*             need porting are the UART initialization, byte reception and byte
-*             transmission.
+*             need porting are the CAN initialization, CAN message reception and CAN
+*             message transmission.
 * \ingroup    Target__template
 ****************************************************************************************/
 
