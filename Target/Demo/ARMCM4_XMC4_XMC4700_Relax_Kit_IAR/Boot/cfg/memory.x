@@ -5,7 +5,7 @@
 define symbol __ICFEDIT_intvec_start__ = 0x08000000;
 /*-Memory Regions-*/
 define symbol __ICFEDIT_region_IROM1_start__  = 0x08000000;
-define symbol __ICFEDIT_region_IROM1_end__    = 0x08007FFF;
+define symbol __ICFEDIT_region_IROM1_end__    = 0x0800BFFF;
 define symbol __ICFEDIT_region_IROM2_start__  = 0x0;
 define symbol __ICFEDIT_region_IROM2_end__    = 0x0;
 define symbol __ICFEDIT_region_EROM1_start__  = 0x0;

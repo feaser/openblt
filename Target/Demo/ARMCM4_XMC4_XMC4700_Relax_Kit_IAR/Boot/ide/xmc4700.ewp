@@ -222,7 +222,7 @@
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state></state>
+          <state>Pa082</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
@@ -316,11 +316,14 @@
           <state>$PROJ_DIR$\..\lib\cmsis</state>
           <state>$PROJ_DIR$\..\lib\uip</state>
           <state>$PROJ_DIR$\..\lib\xmclib\inc</state>
+          <state>$PROJ_DIR$\..\lib\FatFS</state>
+          <state>$PROJ_DIR$\..\lib\FatFS\SDMMC_BLOCK</state>
           <state>$PROJ_DIR$\..\..\..\..\Source</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_XMC4</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_XMC4\IAR</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip</state>
           <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc</state>
+          <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1958,6 +1961,36 @@
         </file>
       </group>
       <group>
+        <name>fatfs</name>
+        <file>
+          <name>$PROJ_DIR$\..\lib\FatFS\ffconf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\FatFS\mmc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\FatFS\SDMMC_BLOCK\sdmmc_block.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\FatFS\SDMMC_BLOCK\sdmmc_block.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_conf.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_conf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_extern.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_private_sd.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_private_sd.h</name>
+        </file>
+      </group>
+      <group>
         <name>uip</name>
         <file>
           <name>$PROJ_DIR$\..\lib\uip\clock-arch.c</name>
@@ -2296,6 +2329,24 @@
     </group>
     <group>
       <name>third_party</name>
+      <group>
+        <name>fatfs</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\diskio.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\integer.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</name>
+        </file>
+      </group>
       <group>
         <name>uip</name>
         <file>

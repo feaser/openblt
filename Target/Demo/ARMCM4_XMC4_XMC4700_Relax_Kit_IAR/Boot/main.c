@@ -108,11 +108,31 @@ void main(void)
 ****************************************************************************************/
 static void Init(void)
 {
+#if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  XMC_UART_CH_CONFIG_t uart_config;
+#endif
+
   /* initialize LED1 on P5.9 as digital output */
   XMC_GPIO_SetMode(P5_9, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
   /* initialize BUTTON1 as digital input. */
   XMC_GPIO_SetMode(P15_13, XMC_GPIO_MODE_INPUT_TRISTATE);
   XMC_GPIO_EnableDigitalInput(P15_13);
+
+#if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+  /* set configuration and initialize UART channel */
+  uart_config.baudrate = BOOT_COM_UART_BAUDRATE;
+  uart_config.data_bits = 8;
+  uart_config.frame_length = 8;
+  uart_config.stop_bits = 1;
+  uart_config.oversampling = 16;
+  uart_config.parity_mode = XMC_USIC_CH_PARITY_MODE_NONE;
+  XMC_UART_CH_Init(XMC_UART0_CH0, &uart_config);
+  /* configure small transmit and receive FIFO */
+  XMC_USIC_CH_TXFIFO_Configure(XMC_UART0_CH0, 16U, XMC_USIC_CH_FIFO_SIZE_16WORDS, 1U);
+  XMC_USIC_CH_RXFIFO_Configure(XMC_UART0_CH0,  0U, XMC_USIC_CH_FIFO_SIZE_16WORDS, 1U);
+  /* start UART */
+  XMC_UART_CH_Start(XMC_UART0_CH0);
+#endif
 } /*** end of Init ***/
 
 
@@ -124,7 +144,7 @@ static void Init(void)
 ****************************************************************************************/
 static void PostInit(void)
 {
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
   XMC_GPIO_CONFIG_t rx_uart_config;
   XMC_GPIO_CONFIG_t tx_uart_config;
 #endif
@@ -133,7 +153,7 @@ static void PostInit(void)
   XMC_GPIO_CONFIG_t tx_can_config;
 #endif
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
   /* initialize UART Rx pin */
   rx_uart_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
   rx_uart_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;

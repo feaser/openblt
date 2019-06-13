@@ -32,6 +32,7 @@
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* LED driver header                  */
 #include "xmc_gpio.h"                            /* GPIO module                        */
+#include "xmc_uart.h"                            /* UART driver header                 */
 
 
 /****************************************************************************************
@@ -243,6 +244,194 @@ blt_bool NvmWriteChecksumHook(void)
   return BLT_TRUE;
 }
 #endif /* BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0 */
+
+
+/****************************************************************************************
+*   F I L E   S Y S T E M   I N T E R F A C E   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_FILE_SYS_ENABLE > 0)
+
+/****************************************************************************************
+* Constant data declarations
+****************************************************************************************/
+/** \brief Firmware filename. */
+static const blt_char firmwareFilename[] = "/demoprog_xmc4700.srec";
+
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+/** \brief Data structure for grouping log-file related information. */
+static struct
+{
+  FIL      handle;                  /**< FatFS handle to the log-file.                 */
+  blt_bool canUse;                  /**< Flag to indicate if the log-file can be used. */
+} logfile;
+#endif
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called to check whether a firmware update from
+**            local file storage should be started. This could for example be when
+**            a switch is pressed, when a certain file is found on the local file
+**            storage, etc.
+** \return    BLT_TRUE if a firmware update is requested, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+blt_bool FileIsFirmwareUpdateRequestedHook(void)
+{
+  FILINFO fileInfoObject = { 0 }; /* needs to be zeroed according to f_stat docs */;
+
+  /* Current example implementation looks for a predetermined firmware file on the
+   * SD-card. If the SD-card is accessible and the firmware file was found the firmware
+   * update is started. When successfully completed, the firmware file is deleted.
+   * During the firmware update, progress information is written to a file called
+   * bootlog.txt and additionally outputted on UART @57600 bps for debugging purposes.
+   */
+  /* check if firmware file is present and SD-card is accessible */
+  if (f_stat(firmwareFilename, &fileInfoObject) == FR_OK)
+  {
+    /* check if the filesize is valid and that it is not a directory */
+    if ( (fileInfoObject.fsize > 0) && (!(fileInfoObject.fattrib & AM_DIR)) )
+    {
+      /* all conditions are met to start a firmware update from local file storage */
+      return BLT_TRUE;
+    }
+  }
+  /* still here so no firmware update request is pending */
+  return BLT_FALSE;
+} /*** end of FileIsFirmwareUpdateRequestedHook ***/
+
+
+/************************************************************************************//**
+** \brief     Callback to obtain the filename of the firmware file that should be
+**            used during the firmware update from the local file storage. This
+**            hook function is called at the beginning of the firmware update from
+**            local storage sequence.
+** \return    valid firmware filename with full path or BLT_NULL.
+**
+****************************************************************************************/
+const blt_char *FileGetFirmwareFilenameHook(void)
+{
+  return firmwareFilename;
+} /*** end of FileGetFirmwareFilenameHook ***/
+
+
+#if (BOOT_FILE_STARTED_HOOK_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called to inform the application that a firmware
+**            update from local storage just started.
+** \return    none.
+**
+****************************************************************************************/
+void FileFirmwareUpdateStartedHook(void)
+{
+  #if (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* create/overwrite the logfile */
+  logfile.canUse = BLT_FALSE;
+  if (f_open(&logfile.handle, "/bootlog.txt", FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
+  {
+    logfile.canUse = BLT_TRUE;
+  }
+  #endif
+} /*** end of FileFirmwareUpdateStartedHook ***/
+#endif /* BOOT_FILE_STARTED_HOOK_ENABLE > 0 */
+
+
+#if (BOOT_FILE_COMPLETED_HOOK_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called to inform the application that a firmware
+**            update was successfully completed.
+** \return    none.
+**
+****************************************************************************************/
+void FileFirmwareUpdateCompletedHook(void)
+{
+  #if (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* close the log file */
+  if (logfile.canUse == BLT_TRUE)
+  {
+    f_close(&logfile.handle);
+  }
+  #endif
+  /* now delete the firmware file from the disk since the update was successful */
+  f_unlink(firmwareFilename);
+} /*** end of FileFirmwareUpdateCompletedHook ***/
+#endif /* BOOT_FILE_COMPLETED_HOOK_ENABLE > 0 */
+
+
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called in case an error occurred during a firmware
+**            update. Refer to <file.h> for a list of available error codes.
+** \return    none.
+**
+****************************************************************************************/
+void FileFirmwareUpdateErrorHook(blt_int8u error_code)
+{
+  #if (BOOT_FILE_LOGGING_ENABLE > 0)
+  /* error detected which stops the firmware update, so close the log file */
+  if (logfile.canUse == BLT_TRUE)
+  {
+    f_close(&logfile.handle);
+  }
+  #endif
+} /*** end of FileFirmwareUpdateErrorHook ***/
+#endif /* BOOT_FILE_ERROR_HOOK_ENABLE > 0 */
+
+
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called each time new log information becomes
+**            available during a firmware update.
+** \param     info_string Pointer to a character array with the log entry info.
+** \return    none.
+**
+****************************************************************************************/
+void FileFirmwareUpdateLogHook(blt_char *info_string)
+{
+  blt_int32u timeoutTime;
+
+  /* write the string to the log file */
+  if (logfile.canUse == BLT_TRUE)
+  {
+    if (f_puts(info_string, &logfile.handle) < 0)
+    {
+      logfile.canUse = BLT_FALSE;
+      f_close(&logfile.handle);
+    }
+  }
+
+  /* echo all characters in the string on UART */
+  while(*info_string != '\0')
+  {
+    /* write byte to transmit holding register */
+    XMC_UART_CH_Transmit(XMC_UART0_CH0, *info_string);
+    /* set timeout time to wait for transmit completion. */
+    timeoutTime = TimerGet() + 10;
+    /* wait for tx holding register to be empty */
+    while( (XMC_USIC_CH_TXFIFO_GetEvent(XMC_UART0_CH0) & XMC_USIC_CH_TXFIFO_EVENT_STANDARD) == 0)
+    {
+      /* keep the watchdog happy */
+      CopService();
+      /* break loop upon timeout. this would indicate a hardware failure. */
+      if (TimerGet() > timeoutTime)
+      {
+        break;
+      }
+    }
+    /* reset event */
+    XMC_USIC_CH_TXFIFO_ClearEvent(XMC_UART0_CH0, XMC_USIC_CH_TXFIFO_EVENT_STANDARD);
+    /* point to the next character in the string */
+    info_string++;
+  }
+} /*** end of FileFirmwareUpdateLogHook ***/
+#endif /* BOOT_FILE_LOGGING_ENABLE > 0 */
+
+
+#endif /* BOOT_FILE_SYS_ENABLE > 0 */
 
 
 /****************************************************************************************
