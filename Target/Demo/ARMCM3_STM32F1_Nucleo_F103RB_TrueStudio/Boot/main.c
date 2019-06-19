@@ -105,7 +105,6 @@ static void SystemClock_Config(void)
   }
 
   /* Enable the HSE clock. */
-  LL_RCC_HSE_EnableBypass();
   LL_RCC_HSE_Enable();
   /* Wait till HSE is ready. */
   while (LL_RCC_HSE_IsReady() != 1)
@@ -178,8 +177,8 @@ void HAL_MspInit(void)
   /* UART TX and RX GPIO pin configuration. */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_2;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_FLOATING;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
   GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
