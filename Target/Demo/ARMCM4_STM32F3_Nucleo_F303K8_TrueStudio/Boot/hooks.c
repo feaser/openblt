@@ -51,9 +51,6 @@
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
-  /* clean up the LED driver */
-  LedBlinkExit();
-
   /* additional and optional backdoor entry through the D1 digital input on the board. to
    * force the bootloader to stay active after reset, connect D1 to ground.
    */
@@ -64,6 +61,8 @@ blt_bool CpuUserProgramStartHook(void)
      */
     return BLT_FALSE;
   }
+  /* clean up the LED driver */
+  LedBlinkExit();
   /*  okay to start the user program.*/
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/
