@@ -779,8 +779,14 @@ static blt_int32u FlashGetPage(blt_addr address)
 ****************************************************************************************/
 static blt_int32u FlashGetBank(blt_addr address)
 {
-  blt_int32u bank = 0;
-  
+  blt_int32u bank = FLASH_BANK_1;
+	
+	/* multiple banks is only supported on certain STM32L4xx derivatives. */
+#if defined (STM32L471xx) || defined (STM32L475xx) || defined (STM32L476xx) || \
+	  defined (STM32L485xx) || defined (STM32L486xx) || defined (STM32L496xx) || \
+	  defined (STM32L4A6xx) || defined (STM32L4R5xx) || defined (STM32L4R7xx) || \
+	  defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || \
+	  defined (STM32L4S9xx)
   /* check flash bank mode selection bit to determine if banks 1 and 2 are swapped */
   if (READ_BIT(SYSCFG->MEMRMP, SYSCFG_MEMRMP_FB_MODE) == 0)
   {
@@ -806,6 +812,7 @@ static blt_int32u FlashGetBank(blt_addr address)
       bank = FLASH_BANK_1;
     }
   }
+#endif	
   
   return bank;
 } /*** end of FlashGetBank ***/
