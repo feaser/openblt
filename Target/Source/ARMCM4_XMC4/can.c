@@ -275,7 +275,7 @@ blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
   if ((XMC_CAN_MO_GetStatus(&receiveMsgObj) & XMC_CAN_MO_STATUS_RX_PENDING) != 0)
   {
     /* read out and process the newly received data */
-    if (XMC_CAN_MO_ReceiveData(&receiveMsgObj) == XMC_CAN_STATUS_SUCCESS)
+    if (XMC_CAN_MO_Receive(&receiveMsgObj) == XMC_CAN_STATUS_SUCCESS)
     {
       *len = receiveMsgObj.can_data_length;
       for (byteIdx=0; byteIdx<receiveMsgObj.can_data_length; byteIdx++)
