@@ -4,7 +4,7 @@ OpenBLT is an open source bootloader for STM32, XMC, HCS12 and other microcontro
 
 OpenBLT enables you and your customers to update the firmware on your microcontroller based product. A major benefit of OpenBLT being open source is that you can customize and tweak the bootloader to your specific needs.
 
-OpenBLT can be ported to any 8-bit, 16-bit, or 32-bit microcontroller and currently runs on microcontrollers with an ARM Cortex-M, Infineon Tricore, and Freescale HCS12 core. It is most popular on STM32 microcontrollers.
+OpenBLT can be ported to any 8-bit, 16-bit, or 32-bit microcontroller and currently runs on runs on ST STM32, Infineon XMC, NXP S12, and TI TM4C and LM3S microcontrollers. It is most popular on STM32 microcontrollers.
 
 By default, it supports communication interfaces such as: RS232, CAN, USB, TCP/IP and it ships with the easy-to-use [MicroBoot](https://www.feaser.com/openblt/doku.php?id=manual:microboot) PC tool for initiating and monitoring the firmware update. Performing firmware updates directly from an SD-card is also supported.
 
