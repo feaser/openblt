@@ -1,0 +1,221 @@
+/* Date Stamp */ -d"_lint_env_vc10_lnt=env-vc10.lnt modified 22-Feb-2012"
+/* To document usage use: -message( "Using " _lint_env_vc10_lnt ) */
+// ---------------------------------------------------------------------
+// This file is provided by Gimpel Software (www.gimpel.com) for use with
+// its products PC-lint and FlexeLint.
+//
+// Redistribution and use of this file, with or without modification, is
+// permitted provided that any such redistribution retains this notice.
+// ---------------------------------------------------------------------
+/*
+    env-vc10.lnt: environment parameters for Microsoft's Visual C++ 10.0
+
+    If you are using Microsoft Visual Studio 2010 and you wish to invoke
+    PC-lint from that environment then add one or more commands to the
+    Tools menu as follows.
+
+    Simple Check
+    ------------
+
+    For example, to add a simple facility to lint the current file you
+    may do the following:
+
+    1.  From the Tools Menu choose "External Tools ..."
+    2.  Click the "Add" button.
+    3.  You will now be able to enter the fields of this Tool.
+        Modify them so that they approximate the following:
+
+    Title:       PC-lint (Simple Check)
+    Command:     c:\lint\lint-nt.exe
+    Arguments:
+        -i"c:\lint" std.lnt env-vc10.lnt "$(ItemFileName)$(ItemExt)"
+    Initial Directory:  $(ItemDir)
+
+    X_Use Output Window  __Prompt for arguments  __Close on exit
+
+        Please note that you will have to change the "Command:" path if
+        the PC-lint Installation Directory is anything other than c:\lint
+        and you will have to change the "Arguments:" line if the
+        Configuration Directory is anything other than c:\lint
+
+    4.  Select OK to return to the main environment.
+
+    This will result in the Tools menu containing the additional item
+    "PC-lint (Simple Check)".  Checking 'X' on 'Use Output Window' is
+    important because in this way you can advance from error to error
+    using the F8 key (Shift F8 to reverse).
+
+    Strings of the form $(...) are called macros and can be typed in
+    directly as shown or can be selected from a menu by clicking
+    a right arrow in the dialog box.  $(ItemFileName) refers to the
+    file name of the currently edited file without its path and without
+    its extension.  $(ItemExt) is its extension.  $(ItemDir) represents
+    the file's directory.
+
+    You will probably want to advance your new tool upward into the
+    initial position of all tools while you are testing and modifying the
+    command.  You can do this by using the "Move Up" button that appears
+    on the External Tools dialog.
+
+    The benefits of using "Initial Directory" are that file-names in lint
+    error messages will not be so long, and, also, this directory can
+    contain a std.lnt that overrides the global std.lnt in the
+    Configuration Directory.
+
+    This Simple Check is fine to check stand-alone modules but to check
+    projects or to unit check modules that are in projects we need to
+    go a bit further ...
+
+    Project Creation
+    ----------------
+
+    To lint an entire project we will need the names of all the modules
+    in the project.  Visual Studio keeps these names (as well as some
+    appropriate options such as define options (-d...) and include options
+    (-i...) in a file named NAME.vcproj in the current project directory.
+    NAME is the name of the project and is identified by the macro
+    $(TargetName).  PC-lint can read the .vcproj file and generate the
+    appropriate .lnt file.  We recommend creating a tool for this purpose.
+    For this tool follow the steps 1-4 doing exactly the same thing as
+    above except in step 3, the information entered should be:
+
+    Title:          PC-lint (Project Creation)
+    Command:        c:\lint\lint-nt.exe
+    Arguments:      -v -os("$(TargetName).lnt") "$(ProjectFileName)"
+    Init. Dir.:     $(ProjectDir)
+
+    __Use Output Window  __Prompt for arguments  x_Close on exit
+
+    You will need to have an active project before this will work.
+    If you don't already have one you can obtain an active project
+    from the Solutions Explorer.  You then click the newly added
+    "PC-lint (Project Creation)" tool on the tools menu to create
+    NAME.lnt.
+
+    The file created is an ASCII file and we recommend that you open it
+    within the IDE and examine it for any obvious flaws.  This is your
+    chance to make any necessary modifications to the file as the process
+    of conversion may be less than perfect.
+
+    Project Check
+    -------------
+
+    Interestingly, by opening up the NAME.lnt file created above and
+    running the Simple Check described earlier you have the equivalent
+    of a full project check.  However, we prefer to create a special
+    Project Check tool.
+
+    Now that we have a project file we can create a new tool called
+    "PC-lint (project check)".  For this tool again follow steps 1-4 doing
+    exactly the same thing as above except in step 3, the information
+    entered should be:
+
+    Title:          PC-lint (Project Check)
+    Command:        c:\lint\lint-nt.exe
+    Arguments:      -i"c:\lint" std.lnt env-vc10.lnt "$(TargetName).lnt"
+    Init. Dir.:     $(ProjectDir)
+
+    X_Use Output Window  __Prompt for arguments  __Close on exit
+
+    Unit Check
+    ----------
+
+    You can almost do a unit check on any single module by using the
+    Simple Check scheme suggested above.  The only problems are that you
+    will need a -u option and you will not have the benefit of any -d or
+    -i options that have been placed into NAME.lnt created in the Project
+    Creation step.  For this reason we suggest the following tool for
+    doing a unit check of any module that is part of a project and for
+    which a .lnt project file has been generated.
+
+    Title:          PC-lint (Unit Check)
+    Command:        c:\lint\lint-nt.exe
+    Arguments:
+    -i"c:\lint" std.lnt env-vc10.lnt --u "$(TargetName).lnt" "$(ItemPath)"
+
+    Init. Dir.:     $(ProjectDir)
+
+    X_Use Output Window  __Prompt for arguments  __Close on exit
+
+    Note that $(ItemPath) will provide a complete path name and in the
+    absence of a project.lnt file it would cause full path names to
+    appear in messages.  But a side effect of using the project file
+    with the --u option means that we adopt the shorter names used
+    in the project file.
+
+    Suppressing Messages
+    ----------- --------
+
+    Suppressing messages is normally done by adding message suppression
+    options to a file.  For example, -e550 will suppress message 550.
+    There are numerous other options to suppress messages.
+
+    As the documentation indicates, the file
+
+    c:\lint\options.lnt
+
+    (where c:\lint\ is the Configuration Directory) is the presumed
+    container of your overall suppression policy. (Note: options.lnt is
+    referenced by std.lnt).  Add a message suppression here and you will
+    affect all linting employing that configuration.
+
+    To suppress messages for a particular project (or for all projects
+    within a given project directory) you may do the following:
+    Create a file std.lnt that is contained in the project directory.
+    Make it refer back to the std.lnt in the Configuration Directory.
+    Then add additional message suppression options or indeed any options
+    you want.  For example it might contain:
+
+            c:\lint\std.lnt         // reference to original std.lnt
+            -e550                   // project-specific option
+
+    In this way suppression is limited to a particular project.
+
+
+    Tool Bar
+    --------
+
+    You also have the option of creating a PC-lint toolbar within your
+    Visual C++ IDE.  First, create one or more tools as described above.
+    You will need to know the number(s) of the tool(s) you want to place
+    on the tool bar.  This can only be done by the painful and laborious
+    task of counting.  Using the list provided by "Tools"/"External
+    Tools", jot down the numbers (starting with 1 at the top) of all the
+    tools to be added to the tool bar.  We recommend placing all the
+    PC-lint tools on a single tool bar.  Then select Customize from the
+    Tools menu.  Select the Toolbars tab and click the New... button.
+    Give the Toolbar a name (E.g., PC-lint) in the dialog box provided
+    and click "OK".  Confirm that the new toolbar is now floating on
+    the desktop and that a check has been placed in the check box next
+    to the new toolbar name.  Then click on the Commands tab and
+    select the "Toolbar:" radio button.  Open the drop down list and
+    select "PC-Lint" from the choices.  Click the "Add Command..."
+    button to reveal the "Add Command" window.  In the "Categories:"
+    box scroll down to and select the "Tools" item.  In the
+    "Commands:" box scroll down to and select the appropriate
+    "External Command" numbered item that corresponds to the desired
+    PC-Lint command, then click the OK button to add the selected item
+    to the PC-Lint toolbar.  Repeat the "Add Command..." process for
+    each desired PC-Lint command the you wish to place on the PC-Lint
+    toolbar.
+
+    If you want to add a button image to the toolbar, you can choose one
+    via the Modify Selection button.  Click Close and you now have your
+    own PC-lint for C/C++ button.  (Note: If you change the location of
+    the PC-lint menu item on the Tools menu, you will change the subscript
+    and you will need to change the button(s) on the toolbar.)
+
+ */
+
+
+-"format=%(%F(%l):%) error %n: (%t -- %m)"     //  Messages will contain
+    //  file information (%F), the line number (%l), the
+    //  message number (%n), message type (%t) and message text (%m).
+
+-hF2    //  Make sure we ALWAYS provide file information ('F') and use 2
+        //  lines (one for the source line in error and one for the
+        //  message).
+
+-width(0) //  don't break messages at any particular width
+-t4       //  Presume that tabs are every 4 stops
+//+e900     //  issue a message at termination.
