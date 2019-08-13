@@ -305,8 +305,8 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 blt_bool FlashErase(blt_addr addr, blt_int32u len)
 {
   blt_bool  result = BLT_TRUE;
-  blt_int8u first_sector;
-  blt_int8u last_sector;
+  blt_int8u first_sector = FLASH_INVALID_SECTOR;
+  blt_int8u last_sector = FLASH_INVALID_SECTOR;
 
   /* validate the len parameter */
   if ((len - 1) > (FLASH_END_ADDRESS - addr))
