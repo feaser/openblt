@@ -152,7 +152,6 @@ void send_initial_clock_train(void)
 /*-----------------------------------------------------------------------*/
 /* When the target system does not support socket power control, there   */
 /* is nothing to do in these functions.                                  */
-
 static
 void power_on (void)
 {

@@ -2122,25 +2122,22 @@
             <group>
                 <name>CMSIS</name>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_common_tables.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_armcc.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_const_structs.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_compiler.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_math.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_version.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_armv8mbl.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_armv8mml.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm4.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmFunc.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmInstr.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmSimd.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F4xx\Include\stm32f405xx.h</name>
@@ -2150,6 +2147,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\tz_context.h</name>
                 </file>
             </group>
             <group>
@@ -2198,6 +2198,12 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma_ex.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_exti.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_exti.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.c</name>
