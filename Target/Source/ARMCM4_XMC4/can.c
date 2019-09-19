@@ -72,9 +72,11 @@ static const CAN_NODE_TypeDef *canChannelMap[] =
   CAN_NODE0, /* BOOT_COM_CAN_CHANNEL_INDEX = 0 */
   CAN_NODE1, /* BOOT_COM_CAN_CHANNEL_INDEX = 1 */
   CAN_NODE2, /* BOOT_COM_CAN_CHANNEL_INDEX = 2 */
+#if defined(MULTICAN_PLUS)
   CAN_NODE3, /* BOOT_COM_CAN_CHANNEL_INDEX = 3 */
   CAN_NODE4, /* BOOT_COM_CAN_CHANNEL_INDEX = 4 */
   CAN_NODE5  /* BOOT_COM_CAN_CHANNEL_INDEX = 5 */
+#endif
 };
 
 
@@ -104,7 +106,11 @@ void CanInit(void)
   /* the current implementation supports CAN_NODE0 to CAN_NODE5. throw an assertion error
    * in case a different CAN channel is configured.
    */
+#if defined(MULTICAN_PLUS)
   ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX >= 0) && (BOOT_COM_CAN_CHANNEL_INDEX <= 5));
+#else
+  ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX >= 0) && (BOOT_COM_CAN_CHANNEL_INDEX <= 2));
+#endif
 
   /* decide on fCAN frequency. it should be in the 5-120MHz range. according to the
    * datasheet, it must be at least 12MHz if 1 node (channel) is used with up to
@@ -127,7 +133,11 @@ void CanInit(void)
   }
 
   /* configure CAN module*/
+#if defined(MULTICAN_PLUS)
   XMC_CAN_Init(CAN, XMC_CAN_CANCLKSRC_FPERI, canModuleFreqHz);
+#else
+  XMC_CAN_Init(CAN, canModuleFreqHz);
+#endif
 
   /* configure CAN node baudrate */
   baud.can_frequency = canModuleFreqHz;
