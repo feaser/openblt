@@ -8,12 +8,12 @@ object TransportXcpRs232Form: TTransportXcpRs232Form
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.6.4.0'
   object LlbCommunication: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 8
-    Width = 96
+    Width = 87
     Caption = 'Communication'
     Font.Style = [fsBold]
     ParentColor = False
@@ -21,11 +21,11 @@ object TransportXcpRs232Form: TTransportXcpRs232Form
   end
   object CmbDevice: TComboBox
     Left = 96
-    Height = 29
+    Height = 23
     Hint = 'Name of the communication device'
     Top = 35
     Width = 192
-    ItemHeight = 0
+    ItemHeight = 15
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
@@ -33,45 +33,38 @@ object TransportXcpRs232Form: TTransportXcpRs232Form
   end
   object LblDevice: TLabel
     Left = 24
-    Height = 17
+    Height = 15
     Top = 38
-    Width = 41
+    Width = 38
     Caption = 'Device:'
     ParentColor = False
   end
   object CmbBaudrate: TComboBox
     Left = 96
-    Height = 27
+    Height = 23
     Hint = 'The communication speed in bits per second, as a 32-bit value (Default = 57600)'
     Top = 75
     Width = 192
-    ItemHeight = 0
-    ItemIndex = 0
+    ItemHeight = 15
+    ItemIndex = 3
     Items.Strings = (
-      '1200'
-      '2400'
-      '4800'
       '9600'
-      '14400'
       '19200'
       '38400'
-      '56000'
       '57600'
       '115200'
-      '128000'
-      '256000'
     )
     ParentShowHint = False
     ShowHint = True
     Style = csDropDownList
     TabOrder = 1
-    Text = '1200'
+    Text = '57600'
   end
   object LblBaudrate: TLabel
     Left = 24
-    Height = 17
+    Height = 15
     Top = 78
-    Width = 55
+    Width = 50
     Caption = 'Baudrate:'
     ParentColor = False
   end
