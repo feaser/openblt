@@ -409,6 +409,10 @@ static bool SRecParserExtractLineData(char const * line, uint32_t * address,
   if ( (line != NULL) && (address != NULL) && (len != NULL) && 
        (data != NULL) ) /*lint !e774 */
   {
+    /* Initialize parameter result values. */
+    *len = 0;
+    *address = 0;
+  
     /* Determine the line type. */
     lineType = SRecParserGetLineType(line);
     /* Only continue if the S-record line contains program data. */
