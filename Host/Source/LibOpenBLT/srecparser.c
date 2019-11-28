@@ -62,6 +62,7 @@ typedef enum t_srec_parser_line_type
 * Function prototypes
 ****************************************************************************************/
 static bool SRecParserLoadFromFile (char const * firmwareFile, uint32_t addressOffset);
+static bool SRecParserVerifyFile(char const * firmwareFile);
 static bool SRecParserSaveToFile (char const * firmwareFile);
 static bool SRecParserExtractLineData(char const * line, uint32_t * address, 
                                       uint32_t * len, uint8_t * data);
@@ -131,6 +132,83 @@ static bool SRecParserLoadFromFile (char const * firmwareFile, uint32_t addressO
   /* Only continue if the parameters are valid. */
   if (firmwareFile != NULL) /*lint !e774 */
   {
+    /* First verify that the file is actually a valid S-record with correct line
+     * checksums and that it actually contains program data. Only continue if this
+     * verification was successful.
+     */
+    if (SRecParserVerifyFile(firmwareFile))
+    {
+      /* Open the file for reading. */
+      fp = fopen(firmwareFile, "r");
+      /* Only continue if the filepointer is valid. */
+      if (fp != NULL)
+      {
+        /* Start at the beginning of the file. */
+        rewind(fp);
+        /* Assume that everyting goes okay and then only set a negative result value upon
+         * detection of a problem.
+         */
+        result = true;
+        /* Read the entire file, one line at a time. */
+        while (fgets(line, sizeof(line)/sizeof(line[0]), fp) != NULL )
+        {
+          /* Replace the line termination with a string termination. */
+          line[strcspn(line, "\n\r")] = '\0'; 
+          /* Extra data from the S-record line. */
+          if (SRecParserExtractLineData(line, &address, &len, data))
+          {
+            /* Only add data if there is actually something to add. */
+            if (len > 0)
+            {
+              /* Add the extracted data to the firmware data module and add the memory
+               * address that was specified by the caller.
+               */
+              if (!FirmwareAddData(address + addressOffset, len, data))
+              {
+                /* Error detected. Flag it and abort. */
+                result = false;
+                break;
+              }
+            }
+          }
+        }      
+        /* Close the file now that we are done with it. */
+        fclose(fp);
+      }
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of SRecParserLoadFromFile ***/
+
+
+/************************************************************************************//**
+** \brief     Parses the specified firmware file to verify that the file is a valid
+**            S-record file. 
+** \param     firmwareFile Filename of the firmware file to verify.
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+static bool SRecParserVerifyFile(char const * firmwareFile)
+{
+  bool result = false;
+  FILE *fp;
+  /* The bytes count entry on the S-record line is max 255 bytes. This include the 
+   * address and the checksum. This would result in 255 * 2 = 510 characters. Another
+   * 4 characters are needed for the bytes count and line type characters. Then another
+   * two for possible line termination (new line + cariage return). This brings the total
+   * characters to 516. Note that this array was made static to lower the stack load.
+   */
+  static char line[516];
+  tSRecParserLineType lineType;
+  bool programDataDetected = false;
+  
+  /* Check parameters. */
+  assert(firmwareFile != NULL);
+  
+  /* Only continue if the parameters are valid. */
+  if (firmwareFile != NULL) /*lint !e774 */
+  {
     /* Open the file for reading. */
     fp = fopen(firmwareFile, "r");
     /* Only continue if the filepointer is valid. */
@@ -147,31 +225,36 @@ static bool SRecParserLoadFromFile (char const * firmwareFile, uint32_t addressO
       {
         /* Replace the line termination with a string termination. */
         line[strcspn(line, "\n\r")] = '\0'; 
-        /* Extra data from the S-record line. */
-        if (SRecParserExtractLineData(line, &address, &len, data))
+        /* Determine the line type. */
+        lineType = SRecParserGetLineType(line);
+        /* We are only interested in S-record line thatt contains program data. */
+        if ( (lineType == SREC_PARSER_LINE_TYPE_S1) || 
+             (lineType == SREC_PARSER_LINE_TYPE_S2) ||
+             (lineType == SREC_PARSER_LINE_TYPE_S3) )
         {
-          /* Only add data if there is actually something to add. */
-          if (len > 0)
+          /* The file contains program data, so update the flag for this. */
+          programDataDetected = true;
+          /* Verify the checksum of the line. */
+          if (!SRecParserVerifyChecksum(line))
           {
-            /* Add the extracted data to the firmware data module and add the memory
-             * address that was specified by the caller.
-             */
-            if (!FirmwareAddData(address + addressOffset, len, data))
-            {
-              /* Error detected. Flag it and abort. */
-              result = false;
-              break;
-            }
+            /* Invalid S-record file. Update the result value and stop looping. */
+            result = false;
+            break;
           }
         }
       }      
       /* Close the file now that we are done with it. */
       fclose(fp);
+      /* Update the result in case no program data was encountered. */
+      if (!programDataDetected)
+      {
+        result = false;
+      }
     }
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of SRecParserLoadFromFile ***/
+} /*** end of SRecParserVerifyFile ***/
 
 
 /************************************************************************************//**
