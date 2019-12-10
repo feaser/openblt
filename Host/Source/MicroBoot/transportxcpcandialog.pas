@@ -238,12 +238,12 @@ begin
   else
     CmbBaudrate.ItemIndex := 2;
   end;
-  EdtTransmitId.Text := Format('%.x', [FTransportXcpCanConfig.TransmitId]);
-  EdtReceiveId.Text := Format('%.x', [FTransportXcpCanConfig.ReceiveId]);
   if FTransportXcpCanConfig.ExtendedId = 0 then
     CbxExtended.Checked := False
   else
     CbxExtended.Checked := True;
+  EdtTransmitId.Text := Format('%.x', [FTransportXcpCanConfig.TransmitId]);
+  EdtReceiveId.Text := Format('%.x', [FTransportXcpCanConfig.ReceiveId]);
 end; //*** end of LoadConfig ***
 
 
