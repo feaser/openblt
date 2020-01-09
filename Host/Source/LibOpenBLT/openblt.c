@@ -51,10 +51,10 @@
  *         for major-, minor-, and patch-version. Version 1.05.12 would for example be
  *         10512.
  */
-#define BLT_VERSION_NUMBER   (10303u)
+#define BLT_VERSION_NUMBER   (10304u)
 
 /** \brief The version number of the library as a null-terminated string. */
-#define BLT_VERSION_STRING   "1.03.03"
+#define BLT_VERSION_STRING   "1.03.04"
 
 
 /****************************************************************************************
