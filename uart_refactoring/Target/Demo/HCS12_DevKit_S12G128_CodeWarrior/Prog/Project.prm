@@ -1,0 +1,56 @@
+/* This is a linker parameter file for the MC9S12G128 */
+NAMES END /* CodeWarrior will pass all the needed files to the linker by command line. But here you may add your own files too. */
+
+SEGMENTS  /* Here all RAM/ROM areas of the device are listed. Used in PLACEMENT below. */
+
+/* Register space  */
+/*    IO_SEG        = PAGED         0x0000 TO   0x03FF; intentionally not defined */
+
+/* RAM */
+      RAM           = READ_WRITE    0x2000 TO   0x3FFF;
+
+/* D-Flash */
+      DFLASH        = READ_ONLY     0x0400 TO   0x13FF;
+
+/* non-paged FLASHs */
+      ROM_4000      = READ_ONLY     0x4000 TO   0x7FFF;
+      ROM_C000      = READ_ONLY     0xC000 TO   0xE6FF;
+
+/* paged FLASH:                     0x8000 TO   0xBFFF; addressed through PPAGE */
+      PAGE_08       = READ_ONLY   0x088000 TO 0x08BFFF;
+      PAGE_09       = READ_ONLY   0x098000 TO 0x09BFFF;
+      PAGE_0A       = READ_ONLY   0x0A8000 TO 0x0ABFFF;
+      PAGE_0B       = READ_ONLY   0x0B8000 TO 0x0BBFFF;
+      PAGE_0C       = READ_ONLY   0x0C8000 TO 0x0CBFFF;
+/*    PAGE_0D       = READ_ONLY   0x0D8000 TO 0x0DBFFF; not used: equivalent to ROM_4000 */
+      PAGE_0E       = READ_ONLY   0x0E8000 TO 0x0EBFFF;
+      PAGE_0F       = READ_ONLY   0x0F8000 TO 0x0FA6FF; /* equivalent to ROM_C000. last part reserved for vector table and OpenBLT */
+END
+
+PLACEMENT /* here all predefined and user segments are placed into the SEGMENTS defined above. */
+      _PRESTART,              /* Used in HIWARE format: jump to _Startup at the code start */
+      STARTUP,                /* startup data structures */
+      ROM_VAR,                /* constant variables */
+      STRINGS,                /* string literals */
+      VIRTUAL_TABLE_SEGMENT,  /* C++ virtual table segment */
+      NON_BANKED,             /* runtime routines which must not be banked */
+      COPY                    /* copy down information: how to initialize variables */
+                              /* in case you want to use ROM_C000 here as well, make sure
+                                 that all files (incl. library files) are compiled with the
+                                 option: -OnB=b */
+                        INTO  ROM_4000/*, ROM_C000*/;
+
+      DEFAULT_ROM       INTO  PAGE_08, PAGE_09, PAGE_0A, PAGE_0B, PAGE_0C, PAGE_0E, PAGE_0F;
+      SSTACK,                 /* allocate stack first to avoid overwriting variables on overflow */
+    DEFAULT_RAM         INTO  RAM;
+
+
+END
+
+ENTRIES /* keep the following unreferenced variables */
+  _vectab
+END
+
+STACKSIZE 0x100
+
+
