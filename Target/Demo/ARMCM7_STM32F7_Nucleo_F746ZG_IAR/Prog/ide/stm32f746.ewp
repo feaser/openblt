@@ -112,7 +112,7 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Full.h</state>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Full.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
@@ -198,7 +198,7 @@
                 </option>
                 <option>
                     <name>DSPExtension</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>TrustZone</name>
@@ -1065,25 +1065,16 @@
             <group>
                 <name>CMSIS</name>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_common_tables.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_compiler.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_const_structs.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_iccarm.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_math.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_version.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm7.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmFunc.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmInstr.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmSimd.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F7xx\Include\stm32f746xx.h</name>
@@ -1093,6 +1084,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F7xx\Include\system_stm32f7xx.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\tz_context.h</name>
                 </file>
             </group>
             <group>
@@ -1132,6 +1126,12 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_dma_ex.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_exti.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_exti.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_flash.c</name>
@@ -1207,6 +1207,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_uart.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_uart_ex.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_uart_ex.h</name>

@@ -433,6 +433,16 @@
           <GroupName>Lib</GroupName>
           <Files>
             <File>
+              <FileName>stm32f7xx_hal_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\stm32f7xx_hal_conf.h</FilePath>
+            </File>
+            <File>
+              <FileName>system_stm32f7xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\system_stm32f7xx.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32f7xx.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\CMSIS\Device\ST\STM32F7xx\Include\stm32f7xx.h</FilePath>
@@ -448,9 +458,29 @@
               <FilePath>..\lib\CMSIS\Device\ST\STM32F7xx\Include\system_stm32f7xx.h</FilePath>
             </File>
             <File>
+              <FileName>cmsis_armcc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\cmsis_armcc.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmsis_compiler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\cmsis_compiler.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmsis_version.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\cmsis_version.h</FilePath>
+            </File>
+            <File>
               <FileName>core_cm7.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\CMSIS\Include\core_cm7.h</FilePath>
+            </File>
+            <File>
+              <FileName>tz_context.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\tz_context.h</FilePath>
             </File>
             <File>
               <FileName>stm32f7xx_hal.h</FileName>
@@ -481,6 +511,11 @@
               <FileName>stm32f7xx_hal_dma_ex.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_dma_ex.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_exti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_exti.h</FilePath>
             </File>
             <File>
               <FileName>stm32f7xx_hal_flash.h</FileName>
@@ -583,6 +618,11 @@
               <FilePath>..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_dma_ex.c</FilePath>
             </File>
             <File>
+              <FileName>stm32f7xx_hal_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_exti.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32f7xx_hal_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_flash.c</FilePath>
@@ -643,14 +683,9 @@
               <FilePath>..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_uart.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f7xx_hal_conf.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\stm32f7xx_hal_conf.h</FilePath>
-            </File>
-            <File>
-              <FileName>system_stm32f7xx.c</FileName>
+              <FileName>stm32f7xx_hal_uart_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\lib\system_stm32f7xx.c</FilePath>
+              <FilePath>..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_uart_ex.c</FilePath>
             </File>
           </Files>
         </Group>

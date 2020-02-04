@@ -32,11 +32,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Full formatting.</state>
+                    <state>Full formatting, with multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Full formatting.</state>
+                    <state>Full formatting, with multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -357,6 +357,7 @@
                     <state>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F7xx\Include</state>
                     <state>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc</state>
                     <state>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\Legacy</state>
+                    <state>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM7_STM32F7</state>
                 </option>
@@ -1068,25 +1069,19 @@
             <group>
                 <name>CMSIS</name>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_common_tables.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_compiler.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_const_structs.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_iccarm.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_math.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_version.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm7.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmFunc.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmInstr.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmSimd.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\mpu_armv7.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F7xx\Include\stm32f746xx.h</name>
@@ -1096,6 +1091,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F7xx\Include\system_stm32f7xx.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\tz_context.h</name>
                 </file>
             </group>
             <group>
@@ -1137,6 +1135,12 @@
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_dma_ex.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_exti.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_exti.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_flash.c</name>
                 </file>
                 <file>
@@ -1168,6 +1172,18 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_i2c_ex.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_pcd.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_pcd.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_pcd_ex.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_pcd_ex.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_pwr.c</name>
@@ -1248,10 +1264,40 @@
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_ll_usart.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_ll_usb.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_ll_usb.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Src\stm32f7xx_ll_utils.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F7xx_HAL_Driver\Inc\stm32f7xx_ll_utils.h</name>
+                </file>
+            </group>
+            <group>
+                <name>USB_Device</name>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Src\usbd_core.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_core.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_ctlreq.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_def.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Src\usbd_ioreq.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_ioreq.h</name>
                 </file>
             </group>
             <file>
@@ -1278,6 +1324,24 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\startup_stm32f746xx.s</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\usbd_bulk.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\usbd_bulk.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\usbd_conf.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\usbd_conf.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\usbd_desc.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\usbd_desc.h</name>
         </file>
     </group>
     <group>
@@ -1313,6 +1377,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM7_STM32F7\uart.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM7_STM32F7\usb.c</name>
             </file>
         </group>
         <file>

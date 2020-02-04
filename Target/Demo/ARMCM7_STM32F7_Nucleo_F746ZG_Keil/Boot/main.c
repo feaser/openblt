@@ -119,6 +119,7 @@ static void SystemClock_Config(void)
 
   /* Configure and enable the PLL. */
   LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_8, 432, LL_RCC_PLLP_DIV_2);
+  LL_RCC_PLL_ConfigDomain_48M(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_8, 432, LL_RCC_PLLQ_DIV_9);
   LL_RCC_PLL_Enable();
   /* Wait till PLL is ready. */
   while(LL_RCC_PLL_IsReady() != 1)
@@ -156,6 +157,7 @@ void HAL_MspInit(void)
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
 
   /* GPIO ports clock enable. */
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
@@ -204,6 +206,22 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Alternate = LL_GPIO_AF_9;
   LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 #endif
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_11 | LL_GPIO_PIN_12;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_10;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#endif
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB clock enable. */
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_OTGFS);
+#endif
 } /*** end of HAL_MspInit ***/
 
 
@@ -223,6 +241,12 @@ void HAL_MspDeInit(void)
   LL_GPIO_DeInit(GPIOD);
   LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOB);
+  LL_GPIO_DeInit(GPIOA);
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB clock disable. */
+  LL_AHB2_GRP1_DisableClock(LL_AHB2_GRP1_PERIPH_OTGFS);
+#endif
 
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN clock disable. */
@@ -237,6 +261,7 @@ void HAL_MspDeInit(void)
   LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
   LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
   LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
 
   /* SYSCFG and PWR clock disable. */
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_PWR);
