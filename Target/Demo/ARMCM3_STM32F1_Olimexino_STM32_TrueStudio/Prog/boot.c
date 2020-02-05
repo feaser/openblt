@@ -304,7 +304,7 @@ static void BootComCanCheckActivationRequest(void)
     if (packetIdMatches == 1)
     {
       /* check if this was an XCP CONNECT command */
-      if ((canHandle.pRxMsg->Data[0] == 0xff) && (canHandle.pRxMsg->Data[1] == 0x00))
+      if ((canHandle.pRxMsg->Data[0] == 0xff) && (canHandle.pRxMsg->DLC == 2))
       {
         /* connection request received so start the bootloader */
         BootActivate();

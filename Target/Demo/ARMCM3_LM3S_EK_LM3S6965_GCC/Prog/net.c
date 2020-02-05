@@ -123,6 +123,7 @@ void NetInit(void)
 void NetApp(void)
 {
   unsigned char *newDataPtr;
+  unsigned short newDataLen;
 
   if (uip_connected()) 
   {
@@ -137,8 +138,9 @@ void NetApp(void)
      */
     newDataPtr = uip_appdata;
     newDataPtr += 4;
+    newDataLen = uip_datalen() - 4;
     /* check if this was an XCP CONNECT command */
-    if ((newDataPtr[0] == 0xff) && (newDataPtr[1] == 0x00))
+    if ((newDataPtr[0] == 0xff) && (newDataLen == 2))
     {
       /* the shared parameter at index 0 is used as a boolean flag to indicate if the
        * bootloader should initialize the TCP/IP network stack. we just received a

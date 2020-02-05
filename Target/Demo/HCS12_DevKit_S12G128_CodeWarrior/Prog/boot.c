@@ -194,7 +194,7 @@ static void BootComUartCheckActivationRequest(void)
         xcpCtoRxInProgress = 0;
 
         /* check if this was an XCP CONNECT command */
-        if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoReqPacket[2] == 0x00))
+        if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoRxLength == 2))
         {
           /* connection request received so start the bootloader */
           BootActivate();
@@ -444,7 +444,7 @@ static void BootComCanCheckActivationRequest(void)
     if (rxMsgId == BOOT_COM_CAN_RX_MSG_ID)
     {
       /* check if this was an XCP CONNECT command */ 
-      if ( (CANRXDSR0 == 0xff) && (CANRXDSR1 == 0x00) )
+      if ( (CANRXDSR0 == 0xff) && ((CANRXDLR & CANRXDLR_DLC_MASK) == 2) )
       {
         /* release the receive object by clearing the rx flag */
         CANRFLG &= CANRFLG_RXF_MASK;

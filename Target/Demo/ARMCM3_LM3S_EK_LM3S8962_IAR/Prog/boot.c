@@ -175,7 +175,7 @@ static void BootComUartCheckActivationRequest(void)
         xcpCtoRxInProgress = 0;
 
         /* check if this was an XCP CONNECT command */
-        if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoReqPacket[2] == 0x00))
+        if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoRxLength == 2))
         {
           /* connection request received so start the bootloader */
           BootActivate();
@@ -358,7 +358,7 @@ static void BootComCanCheckActivationRequest(void)
     msgObject.pucMsgData = msgData;
     CANMessageGet(CAN0_BASE, CAN_RX_MSGOBJECT_IDX+1, &msgObject, true);
     /* check if this was an XCP CONNECT command */
-    if ((msgData[0] == 0xff) && (msgData[1] == 0x00))
+    if ((msgData[0] == 0xff) && (msgObject.ulMsgLen == 2))
     {
       /* connection request received so start the bootloader */
       BootActivate();

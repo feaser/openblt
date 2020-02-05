@@ -165,7 +165,7 @@ static void BootComUartCheckActivationRequest(void)
         xcpCtoRxInProgress = 0;
 
         /* check if this was an XCP CONNECT command */
-        if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoReqPacket[2] == 0x00))
+        if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoRxLength == 2))
         {
           /* connection request received so start the bootloader */
           BootActivate();
