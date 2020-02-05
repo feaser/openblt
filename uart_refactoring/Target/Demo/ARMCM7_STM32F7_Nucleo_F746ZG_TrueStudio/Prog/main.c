@@ -91,8 +91,8 @@ static void Init(void)
 ****************************************************************************************/
 static void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /* Configure the main internal regulator output voltage. */
   __HAL_RCC_PWR_CLK_ENABLE();

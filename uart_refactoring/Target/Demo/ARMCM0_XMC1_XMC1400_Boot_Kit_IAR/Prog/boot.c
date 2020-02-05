@@ -197,7 +197,7 @@ static void BootComUartCheckActivationRequest(void)
         xcpCtoRxInProgress = 0;
 
         /* check if this was an XCP CONNECT command */
-        if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoReqPacket[2] == 0x00))
+        if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoRxLength == 2))
         {
           /* connection request received so start the bootloader */
           BootActivate();
@@ -359,6 +359,7 @@ static void BootComCanCheckActivationRequest(void)
 {
   unsigned char byteIdx;
   unsigned char rxMsgData[8];
+  unsigned char rxMsgLen = 0;
   unsigned char rxMsgReceived = 0;
 
   /* check if a new message was received */
@@ -367,7 +368,10 @@ static void BootComCanCheckActivationRequest(void)
     /* read out and process the newly received data */
     if (XMC_CAN_MO_Receive(&receiveMsgObj) == XMC_CAN_STATUS_SUCCESS)
     {
-      for (byteIdx=0; byteIdx<receiveMsgObj.can_data_length; byteIdx++)
+      /* store the message length */
+      rxMsgLen = receiveMsgObj.can_data_length;
+      /* copy the message data */
+      for (byteIdx=0; byteIdx<rxMsgLen; byteIdx++)
       {
         rxMsgData[byteIdx] = receiveMsgObj.can_data_byte[byteIdx];
         /* set flag that message was received */
@@ -384,7 +388,7 @@ static void BootComCanCheckActivationRequest(void)
     /* reset flag */
     rxMsgReceived = 0;
     /* check if this was an XCP CONNECT command */
-    if ((rxMsgData[0] == 0xff) && (rxMsgData[1] == 0x00))
+    if ((rxMsgData[0] == 0xff) && (rxMsgLen == 2))
     {
       /* connection request received so start the bootloader */
       BootActivate();
