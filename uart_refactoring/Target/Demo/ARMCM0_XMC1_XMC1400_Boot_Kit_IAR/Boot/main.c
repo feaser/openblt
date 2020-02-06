@@ -85,8 +85,8 @@ static void Init(void)
 static void PostInit(void)
 {
 #if (BOOT_COM_RS232_ENABLE > 0)
-  XMC_GPIO_CONFIG_t rx_uart_config;
-  XMC_GPIO_CONFIG_t tx_uart_config;
+  XMC_GPIO_CONFIG_t rx_rs232_config;
+  XMC_GPIO_CONFIG_t tx_rs232_config;
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
   XMC_GPIO_CONFIG_t rx_can_config;
@@ -95,11 +95,11 @@ static void PostInit(void)
   
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* initialize UART Rx pin */
-  rx_uart_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
-  XMC_GPIO_Init(P1_3, &rx_uart_config);
+  rx_rs232_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
+  XMC_GPIO_Init(P1_3, &rx_rs232_config);
   /* initialize UART Tx pin */
-  tx_uart_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT7;
-  XMC_GPIO_Init(P1_2, &tx_uart_config);
+  tx_rs232_config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT7;
+  XMC_GPIO_Init(P1_2, &tx_rs232_config);
   /* set input source path to DXnA to connect P1_3 to ASC Receive. note that this
    * function must be called after XMC_UART_CH_Init(), which is called when initializing
    * the bootloader core with BootInit().

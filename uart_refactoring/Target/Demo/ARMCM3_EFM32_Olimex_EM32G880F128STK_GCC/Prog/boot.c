@@ -90,7 +90,7 @@ void BootActivate(void)
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 
 
 /****************************************************************************************
@@ -131,7 +131,7 @@ static void BootComRs232Init(void)
   LEUART_IntClear(LEUART1, LEUART_IF_RXDATAV);
   /* finally enable it */
   LEUART_Enable(LEUART1, leuartEnable);
-} /*** end of BootUartComInit ***/
+} /*** end of BootComRs232Init ***/
 
 
 /************************************************************************************//**
@@ -191,7 +191,7 @@ static void BootComRs232CheckActivationRequest(void)
     else
     {
       /* check packet reception timeout */
-      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      if (TimerGet() > (xcpCtoRxStartTime + RS232_CTO_RX_PACKET_TIMEOUT_MS))
       {
         /* cancel cto packet reception due to timeout. note that this automatically
          * discards the already received packet bytes, allowing the host to retry.

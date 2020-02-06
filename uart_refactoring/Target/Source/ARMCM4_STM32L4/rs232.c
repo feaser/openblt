@@ -41,9 +41,9 @@
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
-#define UART_BYTE_TX_TIMEOUT_MS       (10u)
+#define RS232_BYTE_TX_TIMEOUT_MS       (10u)
 /* map the configured UART channel index to the STM32's USART peripheral */
 #if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to USART1. */
@@ -186,7 +186,7 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
     else
     {
       /* check packet reception timeout */
-      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      if (TimerGet() > (xcpCtoRxStartTime + RS232_CTO_RX_PACKET_TIMEOUT_MS))
       {
         /* cancel cto packet reception due to timeout. note that that automaticaly
          * discards the already received packet bytes, allowing the host to retry.
@@ -233,7 +233,7 @@ static void Rs232TransmitByte(blt_int8u data)
   /* write byte to transmit holding register */
   LL_USART_TransmitData8(USART_CHANNEL, data);
   /* set timeout time to wait for transmit completion. */
-  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
+  timeout = TimerGet() + RS232_BYTE_TX_TIMEOUT_MS;
   /* wait for tx holding register to be empty */
   while (LL_USART_IsActiveFlag_TXE(USART_CHANNEL) == 0)
   {

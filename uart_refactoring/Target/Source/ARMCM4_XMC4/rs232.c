@@ -40,15 +40,15 @@
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 
 /** \brief Timeout for transmitting a byte in milliseconds. */
-#define UART_BYTE_TX_TIMEOUT_MS       (10u)
+#define RS232_BYTE_TX_TIMEOUT_MS       (10u)
 
 /** \brief Macro for accessing the UART channel handle in the format that is expected
  *         by the XMClib UART driver.
  */
-#define UART_CHANNEL ((XMC_USIC_CH_t *)(uartChannelMap[BOOT_COM_RS232_CHANNEL_INDEX]))
+#define RS232_CHANNEL ((XMC_USIC_CH_t *)(rs232ChannelMap[BOOT_COM_RS232_CHANNEL_INDEX]))
 
 
 /****************************************************************************************
@@ -58,7 +58,7 @@
  *         loader's configuration header, to the associated channel handle that the
  *         XMClib's UART driver requires.
  */
-static const XMC_USIC_CH_t *uartChannelMap[] =
+static const XMC_USIC_CH_t *rs232ChannelMap[] =
 {
   XMC_UART0_CH0, /* BOOT_COM_RS232_CHANNEL_INDEX = 0 */
   XMC_UART0_CH1, /* BOOT_COM_RS232_CHANNEL_INDEX = 1 */
@@ -97,12 +97,12 @@ void Rs232Init(void)
   uart_config.stop_bits = 1;
   uart_config.oversampling = 16;
   uart_config.parity_mode = XMC_USIC_CH_PARITY_MODE_NONE;
-  XMC_UART_CH_Init(UART_CHANNEL, &uart_config);
+  XMC_UART_CH_Init(RS232_CHANNEL, &uart_config);
   /* configure small transmit and receive FIFO */
-  XMC_USIC_CH_TXFIFO_Configure(UART_CHANNEL, 16U, XMC_USIC_CH_FIFO_SIZE_16WORDS, 1U);
-  XMC_USIC_CH_RXFIFO_Configure(UART_CHANNEL,  0U, XMC_USIC_CH_FIFO_SIZE_16WORDS, 1U);
+  XMC_USIC_CH_TXFIFO_Configure(RS232_CHANNEL, 16U, XMC_USIC_CH_FIFO_SIZE_16WORDS, 1U);
+  XMC_USIC_CH_RXFIFO_Configure(RS232_CHANNEL,  0U, XMC_USIC_CH_FIFO_SIZE_16WORDS, 1U);
   /* start UART */
-  XMC_UART_CH_Start(UART_CHANNEL);
+  XMC_UART_CH_Start(RS232_CHANNEL);
 } /*** end of Rs232Init ***/
 
 
@@ -193,7 +193,7 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
     else
     {
       /* check packet reception timeout */
-      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      if (TimerGet() > (xcpCtoRxStartTime + RS232_CTO_RX_PACKET_TIMEOUT_MS))
       {
         /* cancel cto packet reception due to timeout. note that that automaticaly
          * discards the already received packet bytes, allowing the host to retry.
@@ -215,10 +215,10 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 ****************************************************************************************/
 static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
-  if (XMC_USIC_CH_RXFIFO_IsEmpty(UART_CHANNEL) == 0)
+  if (XMC_USIC_CH_RXFIFO_IsEmpty(RS232_CHANNEL) == 0)
   {
     /* retrieve and store the newly received byte */
-    *data = (blt_int8u)XMC_UART_CH_GetReceivedData(UART_CHANNEL);
+    *data = (blt_int8u)XMC_UART_CH_GetReceivedData(RS232_CHANNEL);
     /* all done */
     return BLT_TRUE;
   }
@@ -239,17 +239,17 @@ static blt_bool Rs232TransmitByte(blt_int8u data)
   blt_bool result = BLT_TRUE;
 
   /* check if tx fifo can accept new data */
-  if (XMC_USIC_CH_TXFIFO_IsFull(UART_CHANNEL) != 0)
+  if (XMC_USIC_CH_TXFIFO_IsFull(RS232_CHANNEL) != 0)
   {
     /* tx fifo full. should not happen */
     return BLT_FALSE;
   }
   /* submit data for transmission */
-  XMC_UART_CH_Transmit(UART_CHANNEL, data);
+  XMC_UART_CH_Transmit(RS232_CHANNEL, data);
   /* set timeout time to wait for transmit completion. */
-  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
+  timeout = TimerGet() + RS232_BYTE_TX_TIMEOUT_MS;
   /* wait for transmission to be done */
-  while( (XMC_USIC_CH_TXFIFO_GetEvent(UART_CHANNEL) & XMC_USIC_CH_TXFIFO_EVENT_STANDARD) == 0)
+  while( (XMC_USIC_CH_TXFIFO_GetEvent(RS232_CHANNEL) & XMC_USIC_CH_TXFIFO_EVENT_STANDARD) == 0)
   {
     /* keep the watchdog happy */
     CopService();
@@ -261,7 +261,7 @@ static blt_bool Rs232TransmitByte(blt_int8u data)
     }
   }
   /* reset event */
-  XMC_USIC_CH_TXFIFO_ClearEvent(UART_CHANNEL, XMC_USIC_CH_TXFIFO_EVENT_STANDARD);
+  XMC_USIC_CH_TXFIFO_ClearEvent(RS232_CHANNEL, XMC_USIC_CH_TXFIFO_EVENT_STANDARD);
   /* give the result back to the caller */
   return result;
 } /*** end of Rs232TransmitByte ***/

@@ -103,7 +103,7 @@ void BootActivate(void)
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 
 
 /****************************************************************************************
@@ -121,16 +121,16 @@ static void BootComRs232Init(void)
 {
   XMC_GPIO_CONFIG_t rx_config;
   XMC_GPIO_CONFIG_t tx_config;
-  XMC_UART_CH_CONFIG_t uart_config;
+  XMC_UART_CH_CONFIG_t rs232_config;
 
   /* set configuration and initialize UART channel */
-  uart_config.baudrate = BOOT_COM_RS232_BAUDRATE;
-  uart_config.data_bits = 8;
-  uart_config.frame_length = 8;
-  uart_config.stop_bits = 1;
-  uart_config.oversampling = 16;
-  uart_config.parity_mode = XMC_USIC_CH_PARITY_MODE_NONE;
-  XMC_UART_CH_Init(XMC_UART0_CH0, &uart_config);
+  rs232_config.baudrate = BOOT_COM_RS232_BAUDRATE;
+  rs232_config.data_bits = 8;
+  rs232_config.frame_length = 8;
+  rs232_config.stop_bits = 1;
+  rs232_config.oversampling = 16;
+  rs232_config.parity_mode = XMC_USIC_CH_PARITY_MODE_NONE;
+  XMC_UART_CH_Init(XMC_UART0_CH0, &rs232_config);
   /* initialize UART Rx pin */
   rx_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
   rx_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
@@ -211,7 +211,7 @@ static void BootComRs232CheckActivationRequest(void)
     else
     {
       /* check packet reception timeout */
-      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      if (TimerGet() > (xcpCtoRxStartTime + RS232_CTO_RX_PACKET_TIMEOUT_MS))
       {
         /* cancel cto packet reception due to timeout. note that this automatically
          * discards the already received packet bytes, allowing the host to retry.

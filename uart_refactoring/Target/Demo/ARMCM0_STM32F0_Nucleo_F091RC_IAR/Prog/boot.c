@@ -100,14 +100,14 @@ void BootActivate(void)
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 
 
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
 /** \brief UART handle to be used in API calls. */
-static UART_HandleTypeDef uartHandle;
+static UART_HandleTypeDef rs232Handle;
 
 
 /****************************************************************************************
@@ -124,15 +124,15 @@ static unsigned char Rs232ReceiveByte(unsigned char *data);
 static void BootComRs232Init(void)
 {
   /* Configure UART peripheral. */
-  uartHandle.Instance        = USART2;
-  uartHandle.Init.BaudRate   = BOOT_COM_RS232_BAUDRATE;
-  uartHandle.Init.WordLength = UART_WORDLENGTH_8B;
-  uartHandle.Init.StopBits   = UART_STOPBITS_1;
-  uartHandle.Init.Parity     = UART_PARITY_NONE;
-  uartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
-  uartHandle.Init.Mode       = UART_MODE_TX_RX;
+  rs232Handle.Instance        = USART2;
+  rs232Handle.Init.BaudRate   = BOOT_COM_RS232_BAUDRATE;
+  rs232Handle.Init.WordLength = UART_WORDLENGTH_8B;
+  rs232Handle.Init.StopBits   = UART_STOPBITS_1;
+  rs232Handle.Init.Parity     = UART_PARITY_NONE;
+  rs232Handle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+  rs232Handle.Init.Mode       = UART_MODE_TX_RX;
   /* Initialize the UART peripheral. */
-  HAL_UART_Init(&uartHandle);
+  HAL_UART_Init(&rs232Handle);
 } /*** end of BootComRs232Init ***/
 
 
@@ -193,7 +193,7 @@ static void BootComRs232CheckActivationRequest(void)
     else
     {
       /* check packet reception timeout */
-      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      if (TimerGet() > (xcpCtoRxStartTime + RS232_CTO_RX_PACKET_TIMEOUT_MS))
       {
         /* cancel cto packet reception due to timeout. note that this automatically
          * discards the already received packet bytes, allowing the host to retry.
@@ -216,7 +216,7 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
   HAL_StatusTypeDef result;
 
   /* receive a byte in a non-blocking manner */
-  result = HAL_UART_Receive(&uartHandle, data, 1, 0);
+  result = HAL_UART_Receive(&rs232Handle, data, 1, 0);
   /* process the result */
   if (result == HAL_OK)
   {
