@@ -76,8 +76,8 @@ static void Init(void)
 {
   /* set the clocking to run at 50MHz from the PLL */
   SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_8MHZ);
-#if (BOOT_COM_UART_ENABLE > 0)
-  #if (BOOT_COM_UART_CHANNEL_INDEX == 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
+  #if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
   /* enable the and configure UART0 related peripherals and pins */
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
   GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);

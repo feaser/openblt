@@ -72,7 +72,7 @@ int main(void)
 ****************************************************************************************/
 static void PostInit(void)
 {
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   XMC_GPIO_CONFIG_t rx_uart_config;
   XMC_GPIO_CONFIG_t tx_uart_config;
 #endif
@@ -81,7 +81,7 @@ static void PostInit(void)
   XMC_GPIO_CONFIG_t tx_can_config;
 #endif
   
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   /* initialize UART Rx pin */
   rx_uart_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
   XMC_GPIO_Init(P1_3, &rx_uart_config);

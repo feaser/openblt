@@ -111,7 +111,7 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-#if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_RS232_ENABLE == 0)
   XMC_UART_CH_CONFIG_t uart_config;
 #endif
 
@@ -121,9 +121,9 @@ static void Init(void)
   XMC_GPIO_SetMode(P15_13, XMC_GPIO_MODE_INPUT_TRISTATE);
   XMC_GPIO_EnableDigitalInput(P15_13);
 
-#if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_UART_ENABLE == 0)
+#if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_RS232_ENABLE == 0)
   /* set configuration and initialize UART channel */
-  uart_config.baudrate = BOOT_COM_UART_BAUDRATE;
+  uart_config.baudrate = BOOT_COM_RS232_BAUDRATE;
   uart_config.data_bits = 8;
   uart_config.frame_length = 8;
   uart_config.stop_bits = 1;
@@ -147,7 +147,7 @@ static void Init(void)
 ****************************************************************************************/
 static void PostInit(void)
 {
-#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
   XMC_GPIO_CONFIG_t rx_uart_config;
   XMC_GPIO_CONFIG_t tx_uart_config;
 #endif
@@ -156,7 +156,7 @@ static void PostInit(void)
   XMC_GPIO_CONFIG_t tx_can_config;
 #endif
 
-#if (BOOT_COM_UART_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0) || (BOOT_FILE_LOGGING_ENABLE > 0)
   /* initialize UART Rx pin */
   rx_uart_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
   rx_uart_config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;

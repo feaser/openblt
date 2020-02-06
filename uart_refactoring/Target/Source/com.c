@@ -33,7 +33,7 @@
 #if (BOOT_COM_CAN_ENABLE > 0)
 #include "can.h"                                 /* can driver module                  */
 #endif
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 #include "rs232.h"                               /* rs232 driver module                */
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
@@ -68,8 +68,8 @@ void ComInit(void)
   /* set it as active */
   comActiveInterface = COM_IF_CAN;
 #endif
-#if (BOOT_COM_UART_ENABLE > 0)
-  /* initialize the UART interface */
+#if (BOOT_COM_RS232_ENABLE > 0)
+  /* initialize the RS232 interface */
   Rs232Init();
   /* set it as active */
   comActiveInterface = COM_IF_RS232;
@@ -112,7 +112,7 @@ void ComTask(void)
     XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
   }
 #endif
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   if (Rs232ReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
   {
     /* make this the active interface */
@@ -174,7 +174,7 @@ void ComTransmitPacket(blt_int8u *data, blt_int16u len)
     CanTransmitPacket(data, (blt_int8u)len);
   }
 #endif
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   /* transmit the packet. note that len is limited to 255 in the plausibility check,
    * so cast is okay.
    */
@@ -217,7 +217,7 @@ blt_int16u ComGetActiveInterfaceMaxRxLen(void)
   switch (comActiveInterface)
   {
     case COM_IF_RS232:
-      result = BOOT_COM_UART_RX_MAX_DATA;
+      result = BOOT_COM_RS232_RX_MAX_DATA;
       break;
 
     case COM_IF_CAN:
@@ -255,7 +255,7 @@ blt_int16u ComGetActiveInterfaceMaxTxLen(void)
   switch (comActiveInterface)
   {
     case COM_IF_RS232:
-      result = BOOT_COM_UART_TX_MAX_DATA;
+      result = BOOT_COM_RS232_TX_MAX_DATA;
       break;
 
     case COM_IF_CAN:

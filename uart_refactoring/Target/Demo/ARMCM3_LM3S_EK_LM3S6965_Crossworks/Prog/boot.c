@@ -35,7 +35,7 @@
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 static void BootComRs232Init(void);
 static void BootComRs232CheckActivationRequest(void);
 #endif
@@ -47,7 +47,7 @@ static void BootComRs232CheckActivationRequest(void);
 ****************************************************************************************/
 void BootComInit(void)
 {
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   BootComRs232Init();
 #endif
 } /*** end of BootComInit ***/
@@ -61,7 +61,7 @@ void BootComInit(void)
 ****************************************************************************************/
 void BootComCheckActivationRequest(void)
 {
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   BootComRs232CheckActivationRequest();
 #endif
 } /*** end of BootComCheckActivationRequest ***/
@@ -79,7 +79,7 @@ void BootActivate(void)
 } /*** end of BootActivate ***/
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 *     U N I V E R S A L   A S Y N C H R O N O U S   R X   T X   I N T E R F A C E
 ****************************************************************************************/
@@ -112,7 +112,7 @@ static void BootComRs232Init(void)
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
   GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
   /* configure the UART0 baudrate and communication parameters */
-  UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_UART_BAUDRATE,
+  UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_RS232_BAUDRATE,
                       (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | 
                       UART_CONFIG_PAR_NONE));
 } /*** end of BootUartComInit ***/
@@ -126,7 +126,7 @@ static void BootComRs232Init(void)
 ****************************************************************************************/
 static void BootComRs232CheckActivationRequest(void)
 {
-  static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
+  static unsigned char xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
   static unsigned char xcpCtoRxInProgress = 0;
   static unsigned long xcpCtoRxStartTime = 0;
@@ -139,7 +139,7 @@ static void BootComRs232CheckActivationRequest(void)
     {
       /* check that the length has a valid value. it should not be 0 */
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -210,7 +210,7 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
   /* inform caller that no new data was received */
   return 0;
 } /*** end of Rs232ReceiveByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
 /*********************************** end of boot.c *************************************/

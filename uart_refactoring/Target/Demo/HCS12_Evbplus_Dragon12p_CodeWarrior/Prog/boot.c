@@ -35,7 +35,7 @@
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 static void BootComRs232Init(void);
 static void BootComRs232CheckActivationRequest(void);
 #endif
@@ -51,7 +51,7 @@ static void BootComCanCheckActivationRequest(void);
 ****************************************************************************************/
 void BootComInit(void)
 {
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   BootComRs232Init();
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
@@ -68,7 +68,7 @@ void BootComInit(void)
 ****************************************************************************************/
 void BootComCheckActivationRequest(void)
 {
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   BootComRs232CheckActivationRequest();
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
@@ -98,7 +98,7 @@ void BootActivate(void)
 } /*** end of BootActivate ***/
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 *     U N I V E R S A L   A S Y N C H R O N O U S   R X   T X   I N T E R F A C E
 ****************************************************************************************/
@@ -134,8 +134,8 @@ static void BootComRs232Init(void)
   SCI0CR1 = 0;   
   SCI0BDH = 0;  
   SCI0BDL = 0;
-  /* configure the baudrate from BOOT_COM_UART_BAUDRATE */
-  baudrate_sbr0_12 = (BOOT_CPU_SYSTEM_SPEED_KHZ * 1000ul) / 16 / BOOT_COM_UART_BAUDRATE; 
+  /* configure the baudrate from BOOT_COM_RS232_BAUDRATE */
+  baudrate_sbr0_12 = (BOOT_CPU_SYSTEM_SPEED_KHZ * 1000ul) / 16 / BOOT_COM_RS232_BAUDRATE; 
   baudrate_sbr0_12 &= SCI0BD_SBR_MASK;
   /* write first MSB then LSB for the baudrate to latch */
   SCI0BDH = (unsigned char)(baudrate_sbr0_12 >> 8);
@@ -153,7 +153,7 @@ static void BootComRs232Init(void)
 ****************************************************************************************/
 static void BootComRs232CheckActivationRequest(void)
 {
-  static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
+  static unsigned char xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
   static unsigned char xcpCtoRxInProgress = 0;
   static unsigned long xcpCtoRxStartTime = 0;
@@ -166,7 +166,7 @@ static void BootComRs232CheckActivationRequest(void)
     {
       /* check that the length has a valid value. it should not be 0 */
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -233,7 +233,7 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
   /* inform caller that no new data was received */
   return 0;
 } /*** end of Rs232ReceiveByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
 #if (BOOT_COM_CAN_ENABLE > 0)

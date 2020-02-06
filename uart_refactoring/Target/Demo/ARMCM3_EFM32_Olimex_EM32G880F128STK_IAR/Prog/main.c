@@ -93,7 +93,7 @@ static void Init(void)
   CMU_ClockEnable(cmuClock_ADC0, false);
   CMU_ClockEnable(cmuClock_I2C0, false);
   CMU_ClockEnable(cmuClock_VCMP, false);
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   /* enable power to U2 (RS232_PWR_E) */
   GPIO_PinModeSet(gpioPortB, 9, gpioModePushPullDrive, 1);
   /* set port B outputs to drive up to 20 mA */

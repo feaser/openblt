@@ -32,7 +32,7 @@
 #include "boot.h"                                /* bootloader generic header          */
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
@@ -60,10 +60,10 @@ typedef volatile struct
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define UART_BYTE_TX_TIMEOUT_MS       (10u)
 
-#if (BOOT_COM_UART_CHANNEL_INDEX == 0)
+#if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to SCI0. */
 #define UART_REGS_BASE_ADDRESS  (0x00c8)
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 1)
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 1)
 /** \brief Set UART base address to SCI1. */
 #define UART_REGS_BASE_ADDRESS  (0x00d0)
 #endif
@@ -103,7 +103,7 @@ void Rs232Init(void)
   /* the current implementation supports SCI0 and SCI1. throw an assertion error in
    * case a different UART channel is configured.
    */
-  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) || (BOOT_COM_UART_CHANNEL_INDEX == 1));
+  ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) || (BOOT_COM_RS232_CHANNEL_INDEX == 1));
   /* reset the SCI subsystem's configuration, which automatically configures it for
    * 8,n,1 communication mode.
    */
@@ -111,8 +111,8 @@ void Rs232Init(void)
   UART->scicr1 = 0;
   UART->scibdh = 0;
   UART->scibdl = 0;
-  /* configure the baudrate from BOOT_COM_UART_BAUDRATE */
-  baudrate_sbr0_12 = (BOOT_CPU_SYSTEM_SPEED_KHZ * 1000ul) / 16 / BOOT_COM_UART_BAUDRATE;
+  /* configure the baudrate from BOOT_COM_RS232_BAUDRATE */
+  baudrate_sbr0_12 = (BOOT_CPU_SYSTEM_SPEED_KHZ * 1000ul) / 16 / BOOT_COM_RS232_BAUDRATE;
   /* baudrate register value cannot be more than 13 bits */
   ASSERT_RT((baudrate_sbr0_12 & 0xe000) == 0);
   /* write first MSB then LSB for the baudrate to latch */
@@ -136,7 +136,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
   blt_bool result;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
+  ASSERT_RT(len <= BOOT_COM_RS232_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
   result = Rs232TransmitByte(len);
@@ -163,7 +163,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
   static blt_int32u xcpCtoRxStartTime = 0;
@@ -175,7 +175,7 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
     if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -281,7 +281,7 @@ static blt_bool Rs232TransmitByte(blt_int8u data)
   /* give the result back to the caller */
   return result;
 } /*** end of Rs232TransmitByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
 /*********************************** end of rs232.c ************************************/

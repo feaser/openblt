@@ -32,13 +32,13 @@
 #include "boot.h"                                /* bootloader generic header          */
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 #include "driverlib/sysctl.h"
 #include "driverlib/uartlib.h"
 #endif
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
@@ -67,11 +67,11 @@ void Rs232Init(void)
   /* the current implementation supports UART0. throw an assertion error in case a
    * different UART channel is configured.
    */
-  ASSERT_CT(BOOT_COM_UART_CHANNEL_INDEX == 0);
+  ASSERT_CT(BOOT_COM_RS232_CHANNEL_INDEX == 0);
   /* enable the UART0 peripheral */
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
   /* configure the UART0 baudrate and communication parameters */
-  UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_UART_BAUDRATE,
+  UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_RS232_BAUDRATE,
                       (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                        UART_CONFIG_PAR_NONE));
 } /*** end of Rs232Init ***/
@@ -90,7 +90,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
   blt_bool result;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
+  ASSERT_RT(len <= BOOT_COM_RS232_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
   result = Rs232TransmitByte(len);
@@ -117,7 +117,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
   static blt_int32u xcpCtoRxStartTime = 0;
@@ -129,7 +129,7 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
     if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -237,7 +237,7 @@ static blt_bool Rs232TransmitByte(blt_int8u data)
   /* give the result back to the caller */
   return result;
 } /*** end of Rs232TransmitByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
 /*********************************** end of rs232.c ************************************/

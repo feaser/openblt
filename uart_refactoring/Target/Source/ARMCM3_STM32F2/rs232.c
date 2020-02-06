@@ -30,7 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 #include "stm32f2xx.h"                           /* STM32 CPU and HAL header           */
 #include "stm32f2xx_ll_usart.h"                  /* STM32 LL USART header              */
 
@@ -45,22 +45,22 @@
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define UART_BYTE_TX_TIMEOUT_MS       (10u)
 /* map the configured UART channel index to the STM32's USART peripheral */
-#if (BOOT_COM_UART_CHANNEL_INDEX == 0)
+#if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to USART1. */
 #define USART_CHANNEL   USART1
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 1)
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 1)
 /** \brief Set UART base address to USART2. */
 #define USART_CHANNEL   USART2
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 2)
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 2)
 /** \brief Set UART base address to USART3. */
 #define USART_CHANNEL   USART3
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 3)
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 3)
 /** \brief Set UART base address to USART4. */
 #define USART_CHANNEL   USART4
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 4)
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 4)
 /** \brief Set UART base address to USART5. */
 #define USART_CHANNEL   USART5
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 5)
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 5)
 /** \brief Set UART base address to USART6. */
 #define USART_CHANNEL   USART6
 #endif
@@ -85,15 +85,15 @@ void Rs232Init(void)
   /* the current implementation supports USART1 - USART5. throw an assertion error in
    * case a different UART channel is configured.
    */
-  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 1) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 2) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 3) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 4) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 5));
+  ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 1) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 2) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 3) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 4) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 5));
 
   /* configure UART peripheral */
-  USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
+  USART_InitStruct.BaudRate = BOOT_COM_RS232_BAUDRATE;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
   USART_InitStruct.Parity = LL_USART_PARITY_NONE;
@@ -118,7 +118,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
   blt_int16u data_index;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
+  ASSERT_RT(len <= BOOT_COM_RS232_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
   Rs232TransmitByte(len);
@@ -143,7 +143,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
   static blt_int32u xcpCtoRxStartTime = 0;
@@ -155,7 +155,7 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
     if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -250,7 +250,7 @@ static void Rs232TransmitByte(blt_int8u data)
     }
   }
 } /*** end of Rs232TransmitByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
 /*********************************** end of rs232.c ************************************/

@@ -36,7 +36,7 @@
 #include "efm32_leuart.h"
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
@@ -65,9 +65,9 @@ void Rs232Init(void)
   LEUART_Init_TypeDef init = LEUART_INIT_DEFAULT;
 
   /* currently, only LEUART1 is supported */
-  ASSERT_CT(BOOT_COM_UART_CHANNEL_INDEX == 1);
+  ASSERT_CT(BOOT_COM_RS232_CHANNEL_INDEX == 1);
   /* max baudrate for LEUART is 9600 bps */
-  ASSERT_CT(BOOT_COM_UART_BAUDRATE <= 9600);
+  ASSERT_CT(BOOT_COM_RS232_BAUDRATE <= 9600);
   /* configure GPIO pins */
   CMU_ClockEnable(cmuClock_GPIO, true);
   /* to avoid false start, configure output as high */
@@ -84,7 +84,7 @@ void Rs232Init(void)
   /* configure LEUART */
   init.enable = leuartDisable;
   LEUART_Init(LEUART1, &init);
-  LEUART_BaudrateSet(LEUART1, 0, BOOT_COM_UART_BAUDRATE);
+  LEUART_BaudrateSet(LEUART1, 0, BOOT_COM_RS232_BAUDRATE);
   /* enable pins at default location */
   LEUART1->ROUTE = LEUART_ROUTE_RXPEN | LEUART_ROUTE_TXPEN;
   /* clear previous RX interrupts */
@@ -107,7 +107,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
   blt_bool result;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
+  ASSERT_RT(len <= BOOT_COM_RS232_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
   result = Rs232TransmitByte(len);
@@ -134,7 +134,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
   static blt_int32u xcpCtoRxStartTime = 0;
@@ -146,7 +146,7 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
     if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -251,7 +251,7 @@ static blt_bool Rs232TransmitByte(blt_int8u data)
   /* give the result back to the caller */
   return result;
 } /*** end of Rs232TransmitByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
 /*********************************** end of rs232.c ************************************/

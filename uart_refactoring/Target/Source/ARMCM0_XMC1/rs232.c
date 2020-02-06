@@ -33,7 +33,7 @@
 #include "xmc_uart.h"                            /* UART driver header                 */
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
@@ -48,7 +48,7 @@
 /** \brief Macro for accessing the UART channel handle in the format that is expected
  *         by the XMClib UART driver.
  */
-#define UART_CHANNEL ((XMC_USIC_CH_t *)(uartChannelMap[BOOT_COM_UART_CHANNEL_INDEX]))
+#define UART_CHANNEL ((XMC_USIC_CH_t *)(uartChannelMap[BOOT_COM_RS232_CHANNEL_INDEX]))
 
 
 /****************************************************************************************
@@ -60,10 +60,10 @@
  */
 static const XMC_USIC_CH_t *uartChannelMap[] =
 {
-  XMC_UART0_CH0, /* BOOT_COM_UART_CHANNEL_INDEX = 0 */
-  XMC_UART0_CH1, /* BOOT_COM_UART_CHANNEL_INDEX = 1 */
-  XMC_UART1_CH0, /* BOOT_COM_UART_CHANNEL_INDEX = 2 */
-  XMC_UART1_CH1  /* BOOT_COM_UART_CHANNEL_INDEX = 3 */
+  XMC_UART0_CH0, /* BOOT_COM_RS232_CHANNEL_INDEX = 0 */
+  XMC_UART0_CH1, /* BOOT_COM_RS232_CHANNEL_INDEX = 1 */
+  XMC_UART1_CH0, /* BOOT_COM_RS232_CHANNEL_INDEX = 2 */
+  XMC_UART1_CH1  /* BOOT_COM_RS232_CHANNEL_INDEX = 3 */
 };
 
 
@@ -86,10 +86,10 @@ void Rs232Init(void)
   /* the current implementation supports XMC_UART0_CH0 to XMC_UART2_CH1. throw an
    * assertion error in case a different CAN channel is configured.
    */
-  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX >= 0) && (BOOT_COM_UART_CHANNEL_INDEX <= 3));
+  ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX >= 0) && (BOOT_COM_RS232_CHANNEL_INDEX <= 3));
 
   /* set configuration and initialize UART channel */
-  uart_config.baudrate = BOOT_COM_UART_BAUDRATE;
+  uart_config.baudrate = BOOT_COM_RS232_BAUDRATE;
   uart_config.data_bits = 8;
   uart_config.frame_length = 8;
   uart_config.stop_bits = 1;
@@ -117,7 +117,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
   blt_bool result;
 
   /* verify validity of the len-parameter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
+  ASSERT_RT(len <= BOOT_COM_RS232_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
   result = Rs232TransmitByte(len);
@@ -144,7 +144,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
   static blt_int32u xcpCtoRxStartTime = 0;
@@ -156,7 +156,7 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
     if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -263,7 +263,7 @@ static blt_bool Rs232TransmitByte(blt_int8u data)
   /* give the result back to the caller */
   return result;
 } /*** end of Rs232TransmitByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
 /*********************************** end of rs232.c ************************************/

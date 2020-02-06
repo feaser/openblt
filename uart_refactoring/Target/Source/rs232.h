@@ -28,14 +28,14 @@
 #ifndef RS232_H
 #define RS232_H
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 void     Rs232Init(void);
 void     Rs232TransmitPacket(blt_int8u *data, blt_int8u len);
 blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len);
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
 #endif /* RS232_H */
