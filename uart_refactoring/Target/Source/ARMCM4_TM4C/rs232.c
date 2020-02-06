@@ -55,16 +55,16 @@
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static blt_bool UartReceiveByte(blt_int8u *data);
-static blt_bool UartTransmitByte(blt_int8u data);
+static blt_bool Rs232ReceiveByte(blt_int8u *data);
+static blt_bool Rs232TransmitByte(blt_int8u data);
 
 
 /************************************************************************************//**
-** \brief     Initializes the UART communication interface.
+** \brief     Initializes the RS232 communication interface.
 ** \return    none.
 **
 ****************************************************************************************/
-void UartInit(void)
+void Rs232Init(void)
 {
   /* the current implementation supports UART0. throw an assertion error in case a
    * different UART channel is configured.
@@ -76,7 +76,7 @@ void UartInit(void)
   UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_UART_BAUDRATE,
                       (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                        UART_CONFIG_PAR_NONE));
-} /*** end of UartInit ***/
+} /*** end of Rs232Init ***/
 
 
 /************************************************************************************//**
@@ -86,7 +86,7 @@ void UartInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void UartTransmitPacket(blt_int8u *data, blt_int8u len)
+void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int16u data_index;
   blt_bool result;
@@ -95,7 +95,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
   ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
-  result = UartTransmitByte(len);
+  result = Rs232TransmitByte(len);
   ASSERT_RT(result == BLT_TRUE);
 
   /* transmit all the packet bytes one-by-one */
@@ -104,10 +104,10 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     /* keep the watchdog happy */
     CopService();
     /* write byte */
-    result = UartTransmitByte(data[data_index]);
+    result = Rs232TransmitByte(data[data_index]);
     ASSERT_RT(result == BLT_TRUE);
   }
-} /*** end of UartTransmitPacket ***/
+} /*** end of Rs232TransmitPacket ***/
 
 
 /************************************************************************************//**
@@ -117,7 +117,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
 ** \return    BLT_TRUE if a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
+blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
   static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
@@ -128,7 +128,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
   if (xcpCtoRxInProgress == BLT_FALSE)
   {
     /* store the message length when received */
-    if (UartReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
       if ( (xcpCtoReqPacket[0] > 0) &&
            (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
@@ -145,7 +145,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
   else
   {
     /* store the next packet byte */
-    if (UartReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == BLT_TRUE)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == BLT_TRUE)
     {
       /* increment the packet data count */
       xcpCtoRxLength++;
@@ -177,7 +177,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
   }
   /* packet reception not yet complete */
   return BLT_FALSE;
-} /*** end of UartReceivePacket ***/
+} /*** end of Rs232ReceivePacket ***/
 
 
 /************************************************************************************//**
@@ -186,7 +186,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
 ** \return    BLT_TRUE if a byte was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-static blt_bool UartReceiveByte(blt_int8u *data)
+static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
   blt_int32s result;
 
@@ -202,7 +202,7 @@ static blt_bool UartReceiveByte(blt_int8u *data)
   }
   /* inform caller that no new data was received */
   return BLT_FALSE;
-} /*** end of UartReceiveByte ***/
+} /*** end of Rs232ReceiveByte ***/
 
 
 /************************************************************************************//**
@@ -211,7 +211,7 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ** \return    BLT_TRUE if the byte was transmitted, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-static blt_bool UartTransmitByte(blt_int8u data)
+static blt_bool Rs232TransmitByte(blt_int8u data)
 {
   blt_int32u timeout;
   blt_bool result = BLT_TRUE;
@@ -238,7 +238,7 @@ static blt_bool UartTransmitByte(blt_int8u data)
   }
   /* give the result back to the caller */
   return result;
-} /*** end of UartTransmitByte ***/
+} /*** end of Rs232TransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 

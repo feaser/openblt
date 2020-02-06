@@ -70,7 +70,7 @@ void ComInit(void)
 #endif
 #if (BOOT_COM_UART_ENABLE > 0)
   /* initialize the UART interface */
-  UartInit();
+  Rs232Init();
   /* set it as active */
   comActiveInterface = COM_IF_RS232;
 #endif
@@ -113,7 +113,7 @@ void ComTask(void)
   }
 #endif
 #if (BOOT_COM_UART_ENABLE > 0)
-  if (UartReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
+  if (Rs232ReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
   {
     /* make this the active interface */
     comActiveInterface = COM_IF_RS232;
@@ -180,7 +180,7 @@ void ComTransmitPacket(blt_int8u *data, blt_int16u len)
    */
   if (comActiveInterface == COM_IF_RS232)
   {
-    UartTransmitPacket(data, (blt_int8u)len);
+    Rs232TransmitPacket(data, (blt_int8u)len);
   }
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)

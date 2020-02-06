@@ -36,8 +36,8 @@
 * Function prototypes
 ****************************************************************************************/
 #if (BOOT_COM_UART_ENABLE > 0)
-static void BootComUartInit(void);
-static void BootComUartCheckActivationRequest(void);
+static void BootComRs232Init(void);
+static void BootComRs232CheckActivationRequest(void);
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
 static void BootComCanInit(void);
@@ -52,7 +52,7 @@ static void BootComCanCheckActivationRequest(void);
 void BootComInit(void)
 {
 #if (BOOT_COM_UART_ENABLE > 0)
-  BootComUartInit();
+  BootComRs232Init();
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
   BootComCanInit();
@@ -69,7 +69,7 @@ void BootComInit(void)
 void BootComCheckActivationRequest(void)
 {
 #if (BOOT_COM_UART_ENABLE > 0)
-  BootComUartCheckActivationRequest();
+  BootComRs232CheckActivationRequest();
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
   BootComCanCheckActivationRequest();
@@ -113,7 +113,7 @@ static UART_HandleTypeDef uartHandle;
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static unsigned char UartReceiveByte(unsigned char *data);
+static unsigned char Rs232ReceiveByte(unsigned char *data);
 
 
 /************************************************************************************//**
@@ -121,7 +121,7 @@ static unsigned char UartReceiveByte(unsigned char *data);
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootComUartInit(void)
+static void BootComRs232Init(void)
 {
   /* Configure UART peripheral. */
   uartHandle.Instance        = USART3;
@@ -133,7 +133,7 @@ static void BootComUartInit(void)
   uartHandle.Init.Mode       = UART_MODE_TX_RX;
   /* Initialize the UART peripheral. */
   HAL_UART_Init(&uartHandle);
-} /*** end of BootComUartInit ***/
+} /*** end of BootComRs232Init ***/
 
 
 /************************************************************************************//**
@@ -142,7 +142,7 @@ static void BootComUartInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootComUartCheckActivationRequest(void)
+static void BootComRs232CheckActivationRequest(void)
 {
   static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
@@ -153,7 +153,7 @@ static void BootComUartCheckActivationRequest(void)
   if (xcpCtoRxInProgress == 0)
   {
     /* store the message length when received */
-    if (UartReceiveByte(&xcpCtoReqPacket[0]) == 1)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == 1)
     {
       /* check that the length has a valid value. it should not be 0 */
       if ( (xcpCtoReqPacket[0] > 0) &&
@@ -171,7 +171,7 @@ static void BootComUartCheckActivationRequest(void)
   else
   {
     /* store the next packet byte */
-    if (UartReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == 1)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == 1)
     {
       /* increment the packet data count */
       xcpCtoRxLength++;
@@ -202,7 +202,7 @@ static void BootComUartCheckActivationRequest(void)
       }
     }
   }
-} /*** end of BootComUartCheckActivationRequest ***/
+} /*** end of BootComRs232CheckActivationRequest ***/
 
 
 /************************************************************************************//**
@@ -211,7 +211,7 @@ static void BootComUartCheckActivationRequest(void)
 ** \return    1 if a byte was received, 0 otherwise.
 **
 ****************************************************************************************/
-static unsigned char UartReceiveByte(unsigned char *data)
+static unsigned char Rs232ReceiveByte(unsigned char *data)
 {
   HAL_StatusTypeDef result;
 
@@ -225,7 +225,7 @@ static unsigned char UartReceiveByte(unsigned char *data)
   }
   /* error occurred */
   return 0;
-} /*** end of UartReceiveByte ***/
+} /*** end of Rs232ReceiveByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 
