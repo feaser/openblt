@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         Source/uart.h
-* \brief        Bootloader UART communication interface header file.
+* \file         Source/rs232.h
+* \brief        Bootloader RS232 communication interface header file.
 * \ingroup      Core
 * \internal
 *----------------------------------------------------------------------------------------
@@ -25,18 +25,18 @@
 *
 * \endinternal
 ****************************************************************************************/
-#ifndef UART_H
-#define UART_H
+#ifndef RS232_H
+#define RS232_H
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void     UartInit(void);
-void     UartTransmitPacket(blt_int8u *data, blt_int8u len);
-blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len);
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+void     Rs232Init(void);
+void     Rs232TransmitPacket(blt_int8u *data, blt_int8u len);
+blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len);
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
-#endif /* UART_H */
-/*********************************** end of uart.h *************************************/
+#endif /* RS232_H */
+/*********************************** end of rs232.h ************************************/

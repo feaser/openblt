@@ -31,16 +31,16 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_CAN_ENABLE > 0)
-#include "can.h"                                    /* can driver module             */
+#include "can.h"                                 /* can driver module                  */
 #endif
-#if (BOOT_COM_UART_ENABLE > 0)
-#include "uart.h"                                   /* uart driver module            */
+#if (BOOT_COM_RS232_ENABLE > 0)
+#include "rs232.h"                               /* rs232 driver module                */
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
-#include "usb.h"                                    /* usb driver module             */
+#include "usb.h"                                 /* usb driver module                  */
 #endif
 #if (BOOT_COM_NET_ENABLE > 0)
-#include "net.h"                                    /* tcp/ip driver module          */
+#include "net.h"                                 /* tcp/ip driver module               */
 #endif
 
 
@@ -68,11 +68,11 @@ void ComInit(void)
   /* set it as active */
   comActiveInterface = COM_IF_CAN;
 #endif
-#if (BOOT_COM_UART_ENABLE > 0)
-  /* initialize the UART interface */
-  UartInit();
+#if (BOOT_COM_RS232_ENABLE > 0)
+  /* initialize the RS232 interface */
+  Rs232Init();
   /* set it as active */
-  comActiveInterface = COM_IF_UART;
+  comActiveInterface = COM_IF_RS232;
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
   /* initialize the USB interface */
@@ -112,11 +112,11 @@ void ComTask(void)
     XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
   }
 #endif
-#if (BOOT_COM_UART_ENABLE > 0)
-  if (UartReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
+#if (BOOT_COM_RS232_ENABLE > 0)
+  if (Rs232ReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
   {
     /* make this the active interface */
-    comActiveInterface = COM_IF_UART;
+    comActiveInterface = COM_IF_RS232;
     /* process packet */
     XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
   }
@@ -174,13 +174,13 @@ void ComTransmitPacket(blt_int8u *data, blt_int16u len)
     CanTransmitPacket(data, (blt_int8u)len);
   }
 #endif
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   /* transmit the packet. note that len is limited to 255 in the plausibility check,
    * so cast is okay.
    */
-  if (comActiveInterface == COM_IF_UART)
+  if (comActiveInterface == COM_IF_RS232)
   {
-    UartTransmitPacket(data, (blt_int8u)len);
+    Rs232TransmitPacket(data, (blt_int8u)len);
   }
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
@@ -216,8 +216,8 @@ blt_int16u ComGetActiveInterfaceMaxRxLen(void)
   /* filter on communication interface identifier */
   switch (comActiveInterface)
   {
-    case COM_IF_UART:
-      result = BOOT_COM_UART_RX_MAX_DATA;
+    case COM_IF_RS232:
+      result = BOOT_COM_RS232_RX_MAX_DATA;
       break;
 
     case COM_IF_CAN:
@@ -254,8 +254,8 @@ blt_int16u ComGetActiveInterfaceMaxTxLen(void)
   /* filter on communication interface identifier */
   switch (comActiveInterface)
   {
-    case COM_IF_UART:
-      result = BOOT_COM_UART_TX_MAX_DATA;
+    case COM_IF_RS232:
+      result = BOOT_COM_RS232_TX_MAX_DATA;
       break;
 
     case COM_IF_CAN:

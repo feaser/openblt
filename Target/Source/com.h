@@ -47,10 +47,10 @@
 #undef BOOT_COM_RX_MAX_DATA
 #define BOOT_COM_RX_MAX_DATA            (BOOT_COM_CAN_RX_MAX_DATA)
 #endif
-/* update in case UART interface uses more */
-#if (BOOT_COM_UART_RX_MAX_DATA > BOOT_COM_RX_MAX_DATA)
+/* update in case RS232 interface uses more */
+#if (BOOT_COM_RS232_RX_MAX_DATA > BOOT_COM_RX_MAX_DATA)
 #undef BOOT_COM_RX_MAX_DATA
-#define BOOT_COM_RX_MAX_DATA            (BOOT_COM_UART_RX_MAX_DATA)
+#define BOOT_COM_RX_MAX_DATA            (BOOT_COM_RS232_RX_MAX_DATA)
 #endif
 /* update in case USB interface uses more */
 #if (BOOT_COM_USB_RX_MAX_DATA > BOOT_COM_RX_MAX_DATA)
@@ -72,10 +72,10 @@
 #undef BOOT_COM_TX_MAX_DATA
 #define BOOT_COM_TX_MAX_DATA            (BOOT_COM_CAN_TX_MAX_DATA)
 #endif
-/* update in case UART interface uses more */
-#if (BOOT_COM_UART_TX_MAX_DATA > BOOT_COM_TX_MAX_DATA)
+/* update in case RS232 interface uses more */
+#if (BOOT_COM_RS232_TX_MAX_DATA > BOOT_COM_TX_MAX_DATA)
 #undef BOOT_COM_TX_MAX_DATA
-#define BOOT_COM_TX_MAX_DATA            (BOOT_COM_UART_TX_MAX_DATA)
+#define BOOT_COM_TX_MAX_DATA            (BOOT_COM_RS232_TX_MAX_DATA)
 #endif
 /* update in case USB interface uses more */
 #if (BOOT_COM_USB_TX_MAX_DATA > BOOT_COM_TX_MAX_DATA)
@@ -117,7 +117,7 @@
 /** \brief Enumeration for the different communication interfaces. */
 typedef enum
 {
-  COM_IF_UART,                                   /**< UART interface                   */
+  COM_IF_RS232,                                  /**< RS232 interface                  */
   COM_IF_CAN,                                    /**< CAN interface                    */
   COM_IF_USB,                                    /**< USB interface                    */
   COM_IF_NET,                                    /**< NET interface                    */

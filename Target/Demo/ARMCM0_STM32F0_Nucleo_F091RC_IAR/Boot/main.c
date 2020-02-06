@@ -151,7 +151,7 @@ void HAL_MspInit(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   /* UART clock enable. */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2);
 #endif
@@ -176,7 +176,7 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   /* UART TX and RX GPIO pin configuration. */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_2 | LL_GPIO_PIN_3;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
@@ -222,7 +222,7 @@ void HAL_MspDeInit(void)
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_CAN);
 #endif
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   /* UART clock disable. */
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USART2);
 #endif

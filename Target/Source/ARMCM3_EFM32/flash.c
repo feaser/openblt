@@ -144,7 +144,7 @@ static blt_int32u FlashCalcPageSize(void);
 static const tFlashSector flashLayout[] =
 {
   /* space is reserved for a bootloader configuration with all supported communication
-   * interfaces enabled. when for example only UART is needed, than the space required
+   * interfaces enabled. when for example only RS232 is needed, than the space required
    * for the bootloader can be made a lot smaller here.
    */
   /* { 0x00000000, 0x02000,  0},           flash sector  0 - reserved for bootloader   */

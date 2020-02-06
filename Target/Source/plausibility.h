@@ -76,12 +76,12 @@
 #define BOOT_COM_CAN_RX_MAX_DATA       (0)
 #endif
 
-#ifndef BOOT_COM_UART_TX_MAX_DATA
-#define BOOT_COM_UART_TX_MAX_DATA      (0)
+#ifndef BOOT_COM_RS232_TX_MAX_DATA
+#define BOOT_COM_RS232_TX_MAX_DATA     (0)
 #endif
 
-#ifndef BOOT_COM_UART_RX_MAX_DATA
-#define BOOT_COM_UART_RX_MAX_DATA      (0)
+#ifndef BOOT_COM_RS232_RX_MAX_DATA
+#define BOOT_COM_RS232_RX_MAX_DATA     (0)
 #endif
 
 #ifndef BOOT_COM_USB_TX_MAX_DATA
@@ -158,52 +158,52 @@
 
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
-#ifndef BOOT_COM_UART_ENABLE
-#define BOOT_COM_UART_ENABLE            (0)
+#ifndef BOOT_COM_RS232_ENABLE
+#define BOOT_COM_RS232_ENABLE           (0)
 #endif
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /* Note that the value check was disabled for the following configuration macros, which
  * makes it possible to link them to a function, allowing a more dynamic configuration:
- * - BOOT_COM_UART_BAUDRATE
+ * - BOOT_COM_RS232_BAUDRATE
  */
-#ifndef BOOT_COM_UART_BAUDRATE
-#error "BOOT_COM_UART_BAUDRATE is missing in blt_conf.h"
+#ifndef BOOT_COM_RS232_BAUDRATE
+#error "BOOT_COM_RS232_BAUDRATE is missing in blt_conf.h"
 #endif
 
-#ifndef BOOT_COM_UART_TX_MAX_DATA
-#error "BOOT_COM_UART_TX_MAX_DATA is missing in blt_conf.h"
+#ifndef BOOT_COM_RS232_TX_MAX_DATA
+#error "BOOT_COM_RS232_TX_MAX_DATA is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_UART_TX_MAX_DATA <= 0)
-#error "BOOT_COM_UART_TX_MAX_DATA must be > 0"
+#if (BOOT_COM_RS232_TX_MAX_DATA <= 0)
+#error "BOOT_COM_RS232_TX_MAX_DATA must be > 0"
 #endif
 
-#if (BOOT_COM_UART_TX_MAX_DATA > 255)
-#error "BOOT_COM_UART_TX_MAX_DATA must be <= 255"
+#if (BOOT_COM_RS232_TX_MAX_DATA > 255)
+#error "BOOT_COM_RS232_TX_MAX_DATA must be <= 255"
 #endif
 
-#ifndef BOOT_COM_UART_RX_MAX_DATA
-#error "BOOT_COM_UART_RX_MAX_DATA is missing in blt_conf.h"
+#ifndef BOOT_COM_RS232_RX_MAX_DATA
+#error "BOOT_COM_RS232_RX_MAX_DATA is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_UART_RX_MAX_DATA <= 0)
-#error "BOOT_COM_UART_RX_MAX_DATA must be > 0"
+#if (BOOT_COM_RS232_RX_MAX_DATA <= 0)
+#error "BOOT_COM_RS232_RX_MAX_DATA must be > 0"
 #endif
 
-#if (BOOT_COM_UART_RX_MAX_DATA > 255)
-#error "BOOT_COM_UART_RX_MAX_DATA must be <= 255"
+#if (BOOT_COM_RS232_RX_MAX_DATA > 255)
+#error "BOOT_COM_RS232_RX_MAX_DATA must be <= 255"
 #endif
 
-#ifndef BOOT_COM_UART_CHANNEL_INDEX
-#error "BOOT_COM_UART_CHANNEL_INDEX is missing in blt_conf.h"
+#ifndef BOOT_COM_RS232_CHANNEL_INDEX
+#error "BOOT_COM_RS232_CHANNEL_INDEX is missing in blt_conf.h"
 #endif
 
-#if (BOOT_COM_UART_CHANNEL_INDEX < 0)
-#error "BOOT_COM_UART_CHANNEL_INDEX must be >= 0"
+#if (BOOT_COM_RS232_CHANNEL_INDEX < 0)
+#error "BOOT_COM_RS232_CHANNEL_INDEX must be >= 0"
 #endif
 
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 #ifndef BOOT_COM_USB_ENABLE
 #define BOOT_COM_USB_ENABLE             (0)
@@ -355,7 +355,7 @@
 #define BOOT_COM_DEFERRED_INIT_ENABLE       (0)
 #endif
 
-#if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_UART_ENABLE == 1) || (BOOT_COM_NET_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
+#if (BOOT_COM_CAN_ENABLE == 1) || (BOOT_COM_RS232_ENABLE == 1) || (BOOT_COM_NET_ENABLE == 1) || (BOOT_COM_USB_ENABLE == 1)
 #define BOOT_COM_ENABLE   (1)
 #else
 #define BOOT_COM_ENABLE   (0)

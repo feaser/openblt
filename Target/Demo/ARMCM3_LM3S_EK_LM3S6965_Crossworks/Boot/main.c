@@ -123,8 +123,8 @@ static void Init(void)
   GPIODirModeSet(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_DIR_MODE_IN);
   GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
   
-#if (BOOT_COM_UART_ENABLE > 0)
-  #if (BOOT_COM_UART_CHANNEL_INDEX == 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
+  #if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
   /* enable and configure UART0 related peripherals and pins */
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
   GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);

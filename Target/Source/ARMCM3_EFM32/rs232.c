@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Source/ARMCM3_LM3S/uart.c
-* \brief        Bootloader UART communication interface source file.
-* \ingroup      Target_ARMCM3_LM3S
+* \file         Source/ARMCM3_EFM32/rs232.c
+* \brief        Bootloader RS232 communication interface source file.
+* \ingroup      Target_ARMCM3_EFM32
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -30,51 +30,68 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "inc/hw_memmap.h"
-#include "inc/hw_types.h"
-#if (BOOT_COM_UART_ENABLE > 0)
-#include "driverlib/sysctl.h"
-#include "driverlib/uartlib.h"
-#endif
+#include "efm32.h"
+#include "efm32_cmu.h"
+#include "efm32_gpio.h"
+#include "efm32_leuart.h"
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
-#define UART_BYTE_TX_TIMEOUT_MS       (10u)
+#define RS232_BYTE_TX_TIMEOUT_MS       (10u)
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static blt_bool UartReceiveByte(blt_int8u *data);
-static blt_bool UartTransmitByte(blt_int8u data);
+static blt_bool Rs232ReceiveByte(blt_int8u *data);
+static blt_bool Rs232TransmitByte(blt_int8u data);
 
 
 /************************************************************************************//**
-** \brief     Initializes the UART communication interface.
+** \brief     Initializes the RS232 communication interface.
 ** \return    none.
 **
 ****************************************************************************************/
-void UartInit(void)
+void Rs232Init(void)
 {
-  /* the current implementation supports UART0. throw an assertion error in case a
-   * different UART channel is configured.
-   */
-  ASSERT_CT(BOOT_COM_UART_CHANNEL_INDEX == 0);
-  /* enable the UART0 peripheral */
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
-  /* configure the UART0 baudrate and communication parameters */
-  UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_UART_BAUDRATE,
-                      (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
-                       UART_CONFIG_PAR_NONE));
-} /*** end of UartInit ***/
+  LEUART_Init_TypeDef init = LEUART_INIT_DEFAULT;
+
+  /* currently, only LEUART1 is supported */
+  ASSERT_CT(BOOT_COM_RS232_CHANNEL_INDEX == 1);
+  /* max baudrate for LEUART is 9600 bps */
+  ASSERT_CT(BOOT_COM_RS232_BAUDRATE <= 9600);
+  /* configure GPIO pins */
+  CMU_ClockEnable(cmuClock_GPIO, true);
+  /* to avoid false start, configure output as high */
+  GPIO_PinModeSet(gpioPortC, 6, gpioModePushPull, 1);
+  GPIO_PinModeSet(gpioPortC, 7, gpioModeInput, 0);
+  /* enable CORE LE clock in order to access LE modules */
+  CMU_ClockEnable(cmuClock_CORELE, true);
+  /* select LFXO for LEUARTs (and wait for it to stabilize) */
+  CMU_ClockSelectSet(cmuClock_LFB, cmuSelect_LFXO);
+  /* do not prescale clock */
+  CMU_ClockDivSet(cmuClock_LEUART1, cmuClkDiv_1);
+  /* enable LEUART1 clock */
+  CMU_ClockEnable(cmuClock_LEUART1, true);
+  /* configure LEUART */
+  init.enable = leuartDisable;
+  LEUART_Init(LEUART1, &init);
+  LEUART_BaudrateSet(LEUART1, 0, BOOT_COM_RS232_BAUDRATE);
+  /* enable pins at default location */
+  LEUART1->ROUTE = LEUART_ROUTE_RXPEN | LEUART_ROUTE_TXPEN;
+  /* clear previous RX interrupts */
+  LEUART_IntClear(LEUART1, LEUART_IF_RXDATAV);
+  /* finally enable it */
+  LEUART_Enable(LEUART1, leuartEnable);
+} /*** end of Rs232Init ***/
 
 
 /************************************************************************************//**
@@ -84,16 +101,16 @@ void UartInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void UartTransmitPacket(blt_int8u *data, blt_int8u len)
+void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int16u data_index;
   blt_bool result;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
+  ASSERT_RT(len <= BOOT_COM_RS232_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
-  result = UartTransmitByte(len);
+  result = Rs232TransmitByte(len);
   ASSERT_RT(result == BLT_TRUE);
 
   /* transmit all the packet bytes one-by-one */
@@ -102,10 +119,10 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     /* keep the watchdog happy */
     CopService();
     /* write byte */
-    result = UartTransmitByte(data[data_index]);
+    result = Rs232TransmitByte(data[data_index]);
     ASSERT_RT(result == BLT_TRUE);
   }
-} /*** end of UartTransmitPacket ***/
+} /*** end of Rs232TransmitPacket ***/
 
 
 /************************************************************************************//**
@@ -115,9 +132,9 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
 ** \return    BLT_TRUE if a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
+blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
   static blt_int32u xcpCtoRxStartTime = 0;
@@ -126,10 +143,10 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
   if (xcpCtoRxInProgress == BLT_FALSE)
   {
     /* store the message length when received */
-    if (UartReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -143,7 +160,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
   else
   {
     /* store the next packet byte */
-    if (UartReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == BLT_TRUE)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == BLT_TRUE)
     {
       /* increment the packet data count */
       xcpCtoRxLength++;
@@ -164,7 +181,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
     else
     {
       /* check packet reception timeout */
-      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      if (TimerGet() > (xcpCtoRxStartTime + RS232_CTO_RX_PACKET_TIMEOUT_MS))
       {
         /* cancel cto packet reception due to timeout. note that that automaticaly
          * discards the already received packet bytes, allowing the host to retry.
@@ -175,7 +192,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
   }
   /* packet reception not yet complete */
   return BLT_FALSE;
-} /*** end of UartReceivePacket ***/
+} /*** end of Rs232ReceivePacket ***/
 
 
 /************************************************************************************//**
@@ -184,23 +201,20 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
 ** \return    BLT_TRUE if a byte was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-static blt_bool UartReceiveByte(blt_int8u *data)
+static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
-  blt_int32s result;
+  blt_bool result = BLT_FALSE;
 
-  /* try to read a newly received byte */
-  result = UARTCharGetNonBlocking(UART0_BASE);
-  /* check if a new byte was received */
-  if (result != -1)
+  /* check to see if a new bytes was received */
+  if ((LEUART1->IF & LEUART_IF_RXDATAV) != 0)
   {
-    /* store the received byte */
-    data[0] = (blt_int8u)result;
-    /* inform caller of the newly received byte */
-    return BLT_TRUE;
+    /* store the received data byte and set return value to positive */
+    *data = LEUART_Rx(LEUART1);
+    result = BLT_TRUE;
   }
-  /* inform caller that no new data was received */
-  return BLT_FALSE;
-} /*** end of UartReceiveByte ***/
+  /* inform caller about the result */
+  return result;
+} /*** end of Rs232ReceiveByte ***/
 
 
 /************************************************************************************//**
@@ -209,21 +223,21 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ** \return    BLT_TRUE if the byte was transmitted, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-static blt_bool UartTransmitByte(blt_int8u data)
+static blt_bool Rs232TransmitByte(blt_int8u data)
 {
   blt_int32u timeout;
   blt_bool result = BLT_TRUE;
 
-  /* write byte to transmit holding register */
-  if (UARTCharPutNonBlocking(UART0_BASE, data) == false)
+  /* check if tx holding register can accept new data */
+  if ((LEUART1->STATUS & LEUART_STATUS_TXBL) == 0)
   {
-    /* tx holding register can accept new data */
+    /* UART not ready. should not happen */
     return BLT_FALSE;
   }
-  /* set timeout time to wait for transmit completion. */
-  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
+  /* write byte to transmit holding register */
+  LEUART_Tx(LEUART1, data);
   /* wait for tx holding register to be empty */
-  while (UARTSpaceAvail(UART0_BASE) == false)
+  while ((LEUART1->STATUS & LEUART_STATUS_TXBL) == 0)
   {
     /* keep the watchdog happy */
     CopService();
@@ -236,8 +250,8 @@ static blt_bool UartTransmitByte(blt_int8u data)
   }
   /* give the result back to the caller */
   return result;
-} /*** end of UartTransmitByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+} /*** end of Rs232TransmitByte ***/
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
-/*********************************** end of uart.c *************************************/
+/*********************************** end of rs232.c ************************************/

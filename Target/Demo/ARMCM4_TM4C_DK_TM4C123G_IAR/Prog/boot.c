@@ -35,9 +35,9 @@
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-#if (BOOT_COM_UART_ENABLE > 0)
-static void BootComUartInit(void);
-static void BootComUartCheckActivationRequest(void);
+#if (BOOT_COM_RS232_ENABLE > 0)
+static void BootComRs232Init(void);
+static void BootComRs232CheckActivationRequest(void);
 #endif
 
 /************************************************************************************//**
@@ -47,8 +47,8 @@ static void BootComUartCheckActivationRequest(void);
 ****************************************************************************************/
 void BootComInit(void)
 {
-#if (BOOT_COM_UART_ENABLE > 0)
-  BootComUartInit();
+#if (BOOT_COM_RS232_ENABLE > 0)
+  BootComRs232Init();
 #endif
 } /*** end of BootComInit ***/
 
@@ -61,8 +61,8 @@ void BootComInit(void)
 ****************************************************************************************/
 void BootComCheckActivationRequest(void)
 {
-#if (BOOT_COM_UART_ENABLE > 0)
-  BootComUartCheckActivationRequest();
+#if (BOOT_COM_RS232_ENABLE > 0)
+  BootComRs232CheckActivationRequest();
 #endif
 } /*** end of BootComCheckActivationRequest ***/
 
@@ -89,13 +89,13 @@ void BootActivate(void)
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static unsigned char UartReceiveByte(unsigned char *data);
+static unsigned char Rs232ReceiveByte(unsigned char *data);
 
 
 /************************************************************************************//**
@@ -103,7 +103,7 @@ static unsigned char UartReceiveByte(unsigned char *data);
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootComUartInit(void)
+static void BootComRs232Init(void)
 {
   /* enable the UART0 peripheral */
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
@@ -111,10 +111,10 @@ static void BootComUartInit(void)
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
   GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
   /* configure the UART0 baudrate and communication parameters */
-  UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_UART_BAUDRATE,
+  UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), BOOT_COM_RS232_BAUDRATE,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                              UART_CONFIG_PAR_NONE));
-} /*** end of BootComUartInit ***/
+} /*** end of BootComRs232Init ***/
 
 
 /************************************************************************************//**
@@ -123,9 +123,9 @@ static void BootComUartInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootComUartCheckActivationRequest(void)
+static void BootComRs232CheckActivationRequest(void)
 {
-  static unsigned char xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];
+  static unsigned char xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
   static unsigned char xcpCtoRxInProgress = 0;
   static unsigned long xcpCtoRxStartTime = 0;
@@ -134,11 +134,11 @@ static void BootComUartCheckActivationRequest(void)
   if (xcpCtoRxInProgress == 0)
   {
     /* store the message length when received */
-    if (UartReceiveByte(&xcpCtoReqPacket[0]) == 1)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == 1)
     {
       /* check that the length has a valid value. it should not be 0 */
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -152,7 +152,7 @@ static void BootComUartCheckActivationRequest(void)
   else
   {
     /* store the next packet byte */
-    if (UartReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == 1)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == 1)
     {
       /* increment the packet data count */
       xcpCtoRxLength++;
@@ -174,7 +174,7 @@ static void BootComUartCheckActivationRequest(void)
     else
     {
       /* check packet reception timeout */
-      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      if (TimerGet() > (xcpCtoRxStartTime + RS232_CTO_RX_PACKET_TIMEOUT_MS))
       {
         /* cancel cto packet reception due to timeout. note that this automatically
          * discards the already received packet bytes, allowing the host to retry.
@@ -183,7 +183,7 @@ static void BootComUartCheckActivationRequest(void)
       }
     }
   }
-} /*** end of BootComUartCheckActivationRequest ***/
+} /*** end of BootComRs232CheckActivationRequest ***/
 
 
 /************************************************************************************//**
@@ -192,7 +192,7 @@ static void BootComUartCheckActivationRequest(void)
 ** \return    1 if a byte was received, 0 otherwise.
 **
 ****************************************************************************************/
-static unsigned char UartReceiveByte(unsigned char *data)
+static unsigned char Rs232ReceiveByte(unsigned char *data)
 {
   signed long result;
 
@@ -208,7 +208,7 @@ static unsigned char UartReceiveByte(unsigned char *data)
   }
   /* inform caller that no new data was received */
   return 0;
-} /*** end of UartReceiveByte ***/
+} /*** end of Rs232ReceiveByte ***/
 
 
 /*********************************** end of boot.c *************************************/

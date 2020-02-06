@@ -32,11 +32,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>No specifier n, no float nor long long, no scan set, no assignment suppressing.</state>
+                    <state>No specifier n, no float nor long long, no scan set, no assignment suppressing, without multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>No specifier a, A, no specifier n, no float nor long long.</state>
+                    <state>No specifier a, A, no specifier n, no float nor long long, without multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -283,7 +283,7 @@
                 <option>
                     <name>CCAllowList</name>
                     <version>1</version>
-                    <state>10010100</state>
+                    <state>11111110</state>
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
@@ -370,7 +370,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>2</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -379,7 +379,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>2</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CompilerMisraRules98</name>
@@ -1010,7 +1010,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>###Unitialized###</state>
+                    <state>stm32l476_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1318,13 +1318,13 @@
                 <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32L4\nvm.c</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32L4\rs232.c</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32L4\timer.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32L4\types.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32L4\uart.c</name>
             </file>
         </group>
         <file>
@@ -1382,10 +1382,10 @@
             <name>$PROJ_DIR$\..\..\..\..\Source\plausibility.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Source\timer.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\Source\rs232.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Source\uart.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\Source\timer.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Source\usb.h</name>

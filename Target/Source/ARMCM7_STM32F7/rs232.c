@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source/ARMCM3_STM32F1/uart.c
-* \brief        Bootloader UART communication interface source file.
-* \ingroup      Target_ARMCM3_STM32F1
+* \file         Source/ARMCM7_STM32F7/rs232.c
+* \brief        Bootloader RS232 communication interface source file.
+* \ingroup      Target_ARMCM7_STM32F7
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2018  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,70 +30,88 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32f1xx.h"                           /* STM32 CPU and HAL header           */
-#if (BOOT_COM_UART_ENABLE > 0)
-#include "stm32f1xx_ll_usart.h"                  /* STM32 LL USART header              */
-#endif
+#if (BOOT_COM_RS232_ENABLE > 0)
+#include "stm32f7xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f7xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
-#if (BOOT_COM_UART_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
-#define UART_BYTE_TX_TIMEOUT_MS       (10u)
+#define RS232_BYTE_TX_TIMEOUT_MS       (10u)
 /* map the configured UART channel index to the STM32's USART peripheral */
-#if (BOOT_COM_UART_CHANNEL_INDEX == 0)
+#if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to USART1. */
 #define USART_CHANNEL   USART1
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 1)
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 1)
 /** \brief Set UART base address to USART2. */
 #define USART_CHANNEL   USART2
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 2)
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 2)
 /** \brief Set UART base address to USART3. */
 #define USART_CHANNEL   USART3
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 3)
+/** \brief Set UART base address to UART4. */
+#define USART_CHANNEL   UART4
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 4)
+/** \brief Set UART base address to UART5. */
+#define USART_CHANNEL   UART5
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 5)
+/** \brief Set UART base address to UART6. */
+#define USART_CHANNEL   UART6
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 6)
+/** \brief Set UART base address to UART7. */
+#define USART_CHANNEL   UART7
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 7)
+/** \brief Set UART base address to UART8. */
+#define USART_CHANNEL   UART8
 #endif
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static blt_bool UartReceiveByte(blt_int8u *data);
-static void     UartTransmitByte(blt_int8u data);
+static blt_bool Rs232ReceiveByte(blt_int8u *data);
+static void     Rs232TransmitByte(blt_int8u data);
 
 
 /************************************************************************************//**
-** \brief     Initializes the UART communication interface.
+** \brief     Initializes the RS232 communication interface.
 ** \return    none.
 **
 ****************************************************************************************/
-void UartInit(void)
+void Rs232Init(void)
 {
   LL_USART_InitTypeDef USART_InitStruct;
 
   /* the current implementation supports USART1 - USART5. throw an assertion error in
    * case a different UART channel is configured.
    */
-  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 1) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 2));
+  ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 1) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 2) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 3) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 4) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 5) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 6) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 7));
 
   /* configure UART peripheral */
-  USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
+  USART_InitStruct.BaudRate = BOOT_COM_RS232_BAUDRATE;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
   USART_InitStruct.Parity = LL_USART_PARITY_NONE;
   USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
   USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
   /* initialize the UART peripheral */
   LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
-  LL_USART_ConfigAsyncMode(USART_CHANNEL);
   LL_USART_Enable(USART_CHANNEL);
-} /*** end of UartInit ***/
+} /*** end of Rs232Init ***/
 
 
 /************************************************************************************//**
@@ -103,15 +121,15 @@ void UartInit(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void UartTransmitPacket(blt_int8u *data, blt_int8u len)
+void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int16u data_index;
 
   /* verify validity of the len-paramenter */
-  ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
+  ASSERT_RT(len <= BOOT_COM_RS232_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
-  UartTransmitByte(len);
+  Rs232TransmitByte(len);
 
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
@@ -119,9 +137,9 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     /* keep the watchdog happy */
     CopService();
     /* write byte */
-    UartTransmitByte(data[data_index]);
+    Rs232TransmitByte(data[data_index]);
   }
-} /*** end of UartTransmitPacket ***/
+} /*** end of Rs232TransmitPacket ***/
 
 
 /************************************************************************************//**
@@ -131,9 +149,9 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
 ** \return    BLT_TRUE if a packet was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
+blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  static blt_int8u xcpCtoReqPacket[BOOT_COM_UART_RX_MAX_DATA+1];  /* one extra for length */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];  /* one extra for length */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
   static blt_int32u xcpCtoRxStartTime = 0;
@@ -142,10 +160,10 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
   if (xcpCtoRxInProgress == BLT_FALSE)
   {
     /* store the message length when received */
-    if (UartReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_UART_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
@@ -159,7 +177,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
   else
   {
     /* store the next packet byte */
-    if (UartReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == BLT_TRUE)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == BLT_TRUE)
     {
       /* increment the packet data count */
       xcpCtoRxLength++;
@@ -180,7 +198,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
     else
     {
       /* check packet reception timeout */
-      if (TimerGet() > (xcpCtoRxStartTime + UART_CTO_RX_PACKET_TIMEOUT_MS))
+      if (TimerGet() > (xcpCtoRxStartTime + RS232_CTO_RX_PACKET_TIMEOUT_MS))
       {
         /* cancel cto packet reception due to timeout. note that that automaticaly
          * discards the already received packet bytes, allowing the host to retry.
@@ -191,7 +209,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
   }
   /* packet reception not yet complete */
   return BLT_FALSE;
-} /*** end of UartReceivePacket ***/
+} /*** end of Rs232ReceivePacket ***/
 
 
 /************************************************************************************//**
@@ -200,7 +218,7 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
 ** \return    BLT_TRUE if a byte was received, BLT_FALSE otherwise.
 **
 ****************************************************************************************/
-static blt_bool UartReceiveByte(blt_int8u *data)
+static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
   if (LL_USART_IsActiveFlag_RXNE(USART_CHANNEL) != 0)
   {
@@ -211,7 +229,7 @@ static blt_bool UartReceiveByte(blt_int8u *data)
   }
   /* still here to no new byte received */
   return BLT_FALSE;
-} /*** end of UartReceiveByte ***/
+} /*** end of Rs232ReceiveByte ***/
 
 
 /************************************************************************************//**
@@ -220,14 +238,14 @@ static blt_bool UartReceiveByte(blt_int8u *data)
 ** \return    none.
 **
 ****************************************************************************************/
-static void UartTransmitByte(blt_int8u data)
+static void Rs232TransmitByte(blt_int8u data)
 {
   blt_int32u timeout;
 
   /* write byte to transmit holding register */
   LL_USART_TransmitData8(USART_CHANNEL, data);
   /* set timeout time to wait for transmit completion. */
-  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
+  timeout = TimerGet() + RS232_BYTE_TX_TIMEOUT_MS;
   /* wait for tx holding register to be empty */
   while (LL_USART_IsActiveFlag_TXE(USART_CHANNEL) == 0)
   {
@@ -239,8 +257,8 @@ static void UartTransmitByte(blt_int8u data)
       break;
     }
   }
-} /*** end of UartTransmitByte ***/
-#endif /* BOOT_COM_UART_ENABLE > 0 */
+} /*** end of Rs232TransmitByte ***/
+#endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 
-/*********************************** end of uart.c *************************************/
+/*********************************** end of rs232.c ************************************/
