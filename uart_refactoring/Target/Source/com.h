@@ -117,7 +117,7 @@
 /** \brief Enumeration for the different communication interfaces. */
 typedef enum
 {
-  COM_IF_UART,                                   /**< UART interface                   */
+  COM_IF_RS232,                                  /**< RS232 interface                  */
   COM_IF_CAN,                                    /**< CAN interface                    */
   COM_IF_USB,                                    /**< USB interface                    */
   COM_IF_NET,                                    /**< NET interface                    */

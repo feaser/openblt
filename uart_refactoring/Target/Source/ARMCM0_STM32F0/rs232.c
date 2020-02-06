@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source/ARMCM4_STM32F4/uart.c
-* \brief        Bootloader UART communication interface source file.
-* \ingroup      Target_ARMCM4_STM32F4
+* \file         Source/ARMCM0_STM32F0/rs232.c
+* \brief        Bootloader RS232 communication interface source file.
+* \ingroup      Target_ARMCM0_STM32F0
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2016  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -31,8 +31,8 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_UART_ENABLE > 0)
-#include "stm32f4xx.h"                           /* STM32 CPU and HAL header           */
-#include "stm32f4xx_ll_usart.h"                  /* STM32 LL USART header              */
+#include "stm32f0xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f0xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
 /****************************************************************************************
@@ -44,6 +44,7 @@
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define UART_BYTE_TX_TIMEOUT_MS       (10u)
+
 /* map the configured UART channel index to the STM32's USART peripheral */
 #if (BOOT_COM_UART_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to USART1. */
@@ -63,6 +64,12 @@
 #elif (BOOT_COM_UART_CHANNEL_INDEX == 5)
 /** \brief Set UART base address to USART6. */
 #define USART_CHANNEL   USART6
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 6)
+/** \brief Set UART base address to USART7. */
+#define USART_CHANNEL   USART7
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 7)
+/** \brief Set UART base address to USART8. */
+#define USART_CHANNEL   USART8
 #endif
 
 
@@ -82,7 +89,7 @@ void UartInit(void)
 {
   LL_USART_InitTypeDef USART_InitStruct;
 
-  /* the current implementation supports USART1 - USART5. throw an assertion error in
+  /* the current implementation supports USART1 - USART8. throw an assertion error in
    * case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) ||
@@ -90,8 +97,9 @@ void UartInit(void)
             (BOOT_COM_UART_CHANNEL_INDEX == 2) ||
             (BOOT_COM_UART_CHANNEL_INDEX == 3) ||
             (BOOT_COM_UART_CHANNEL_INDEX == 4) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 5));
-
+            (BOOT_COM_UART_CHANNEL_INDEX == 5) ||
+            (BOOT_COM_UART_CHANNEL_INDEX == 6) ||
+            (BOOT_COM_UART_CHANNEL_INDEX == 7));
   /* configure UART peripheral */
   USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
@@ -212,15 +220,18 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
+  blt_bool result = BLT_FALSE;
+
+  /* check flag to see if a byte was received */
   if (LL_USART_IsActiveFlag_RXNE(USART_CHANNEL) != 0)
   {
     /* retrieve and store the newly received byte */
     *data = LL_USART_ReceiveData8(USART_CHANNEL);
-    /* all done */
-    return BLT_TRUE;
+    /* update the result for success */
+    result = BLT_TRUE;
   }
-  /* still here to no new byte received */
-  return BLT_FALSE;
+  /* give the result back to the caller */
+  return result;
 } /*** end of UartReceiveByte ***/
 
 
@@ -253,4 +264,4 @@ static void UartTransmitByte(blt_int8u data)
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 
-/*********************************** end of uart.c *************************************/
+/*********************************** end of rs232.c ************************************/

@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source/ARMCM3_EFM32/uart.c
-* \brief        Bootloader UART communication interface source file.
-* \ingroup      Target_ARMCM3_EFM32
+* \file         Source/ARMCM3_STM32F1/rs232.c
+* \brief        Bootloader RS232 communication interface source file.
+* \ingroup      Target_ARMCM3_STM32F1
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2011  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,10 +30,10 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "efm32.h"
-#include "efm32_cmu.h"
-#include "efm32_gpio.h"
-#include "efm32_leuart.h"
+#include "stm32f1xx.h"                           /* STM32 CPU and HAL header           */
+#if (BOOT_COM_UART_ENABLE > 0)
+#include "stm32f1xx_ll_usart.h"                  /* STM32 LL USART header              */
+#endif
 
 
 #if (BOOT_COM_UART_ENABLE > 0)
@@ -46,13 +46,24 @@
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define UART_BYTE_TX_TIMEOUT_MS       (10u)
+/* map the configured UART channel index to the STM32's USART peripheral */
+#if (BOOT_COM_UART_CHANNEL_INDEX == 0)
+/** \brief Set UART base address to USART1. */
+#define USART_CHANNEL   USART1
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 1)
+/** \brief Set UART base address to USART2. */
+#define USART_CHANNEL   USART2
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 2)
+/** \brief Set UART base address to USART3. */
+#define USART_CHANNEL   USART3
+#endif
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data);
-static blt_bool UartTransmitByte(blt_int8u data);
+static void     UartTransmitByte(blt_int8u data);
 
 
 /************************************************************************************//**
@@ -62,35 +73,26 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  LEUART_Init_TypeDef init = LEUART_INIT_DEFAULT;
+  LL_USART_InitTypeDef USART_InitStruct;
 
-  /* currently, only LEUART1 is supported */
-  ASSERT_CT(BOOT_COM_UART_CHANNEL_INDEX == 1);
-  /* max baudrate for LEUART is 9600 bps */
-  ASSERT_CT(BOOT_COM_UART_BAUDRATE <= 9600);
-  /* configure GPIO pins */
-  CMU_ClockEnable(cmuClock_GPIO, true);
-  /* to avoid false start, configure output as high */
-  GPIO_PinModeSet(gpioPortC, 6, gpioModePushPull, 1);
-  GPIO_PinModeSet(gpioPortC, 7, gpioModeInput, 0);
-  /* enable CORE LE clock in order to access LE modules */
-  CMU_ClockEnable(cmuClock_CORELE, true);
-  /* select LFXO for LEUARTs (and wait for it to stabilize) */
-  CMU_ClockSelectSet(cmuClock_LFB, cmuSelect_LFXO);
-  /* do not prescale clock */
-  CMU_ClockDivSet(cmuClock_LEUART1, cmuClkDiv_1);
-  /* enable LEUART1 clock */
-  CMU_ClockEnable(cmuClock_LEUART1, true);
-  /* configure LEUART */
-  init.enable = leuartDisable;
-  LEUART_Init(LEUART1, &init);
-  LEUART_BaudrateSet(LEUART1, 0, BOOT_COM_UART_BAUDRATE);
-  /* enable pins at default location */
-  LEUART1->ROUTE = LEUART_ROUTE_RXPEN | LEUART_ROUTE_TXPEN;
-  /* clear previous RX interrupts */
-  LEUART_IntClear(LEUART1, LEUART_IF_RXDATAV);
-  /* finally enable it */
-  LEUART_Enable(LEUART1, leuartEnable);
+  /* the current implementation supports USART1 - USART5. throw an assertion error in
+   * case a different UART channel is configured.
+   */
+  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) ||
+            (BOOT_COM_UART_CHANNEL_INDEX == 1) ||
+            (BOOT_COM_UART_CHANNEL_INDEX == 2));
+
+  /* configure UART peripheral */
+  USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
+  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+  USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
+  USART_InitStruct.Parity = LL_USART_PARITY_NONE;
+  USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
+  USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  /* initialize the UART peripheral */
+  LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
+  LL_USART_ConfigAsyncMode(USART_CHANNEL);
+  LL_USART_Enable(USART_CHANNEL);
 } /*** end of UartInit ***/
 
 
@@ -104,14 +106,12 @@ void UartInit(void)
 void UartTransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int16u data_index;
-  blt_bool result;
 
   /* verify validity of the len-paramenter */
   ASSERT_RT(len <= BOOT_COM_UART_TX_MAX_DATA);
 
   /* first transmit the length of the packet */
-  result = UartTransmitByte(len);
-  ASSERT_RT(result == BLT_TRUE);
+  UartTransmitByte(len);
 
   /* transmit all the packet bytes one-by-one */
   for (data_index = 0; data_index < len; data_index++)
@@ -119,8 +119,7 @@ void UartTransmitPacket(blt_int8u *data, blt_int8u len)
     /* keep the watchdog happy */
     CopService();
     /* write byte */
-    result = UartTransmitByte(data[data_index]);
-    ASSERT_RT(result == BLT_TRUE);
+    UartTransmitByte(data[data_index]);
   }
 } /*** end of UartTransmitPacket ***/
 
@@ -203,55 +202,45 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
-  blt_bool result = BLT_FALSE;
-
-  /* check to see if a new bytes was received */
-  if ((LEUART1->IF & LEUART_IF_RXDATAV) != 0)
+  if (LL_USART_IsActiveFlag_RXNE(USART_CHANNEL) != 0)
   {
-    /* store the received data byte and set return value to positive */
-    *data = LEUART_Rx(LEUART1);
-    result = BLT_TRUE;
+    /* retrieve and store the newly received byte */
+    *data = LL_USART_ReceiveData8(USART_CHANNEL);
+    /* all done */
+    return BLT_TRUE;
   }
-  /* inform caller about the result */
-  return result;
+  /* still here to no new byte received */
+  return BLT_FALSE;
 } /*** end of UartReceiveByte ***/
 
 
 /************************************************************************************//**
 ** \brief     Transmits a communication interface byte.
 ** \param     data Value of byte that is to be transmitted.
-** \return    BLT_TRUE if the byte was transmitted, BLT_FALSE otherwise.
+** \return    none.
 **
 ****************************************************************************************/
-static blt_bool UartTransmitByte(blt_int8u data)
+static void UartTransmitByte(blt_int8u data)
 {
   blt_int32u timeout;
-  blt_bool result = BLT_TRUE;
 
-  /* check if tx holding register can accept new data */
-  if ((LEUART1->STATUS & LEUART_STATUS_TXBL) == 0)
-  {
-    /* UART not ready. should not happen */
-    return BLT_FALSE;
-  }
   /* write byte to transmit holding register */
-  LEUART_Tx(LEUART1, data);
+  LL_USART_TransmitData8(USART_CHANNEL, data);
+  /* set timeout time to wait for transmit completion. */
+  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
   /* wait for tx holding register to be empty */
-  while ((LEUART1->STATUS & LEUART_STATUS_TXBL) == 0)
+  while (LL_USART_IsActiveFlag_TXE(USART_CHANNEL) == 0)
   {
     /* keep the watchdog happy */
     CopService();
     /* break loop upon timeout. this would indicate a hardware failure. */
     if (TimerGet() > timeout)
     {
-      result = BLT_FALSE;
       break;
     }
   }
-  /* give the result back to the caller */
-  return result;
 } /*** end of UartTransmitByte ***/
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 
-/*********************************** end of uart.c *************************************/
+/*********************************** end of rs232.c ************************************/

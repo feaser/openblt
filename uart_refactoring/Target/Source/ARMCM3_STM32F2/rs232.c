@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         Source/ARMCM3_STM32F2/uart.c
-* \brief        Bootloader UART communication interface source file.
+* \file         Source/ARMCM3_STM32F2/rs232.c
+* \brief        Bootloader RS232 communication interface source file.
 * \ingroup      Target_ARMCM3_STM32F2
 * \internal
 *----------------------------------------------------------------------------------------
@@ -253,4 +253,4 @@ static void UartTransmitByte(blt_int8u data)
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 
-/*********************************** end of uart.c *************************************/
+/*********************************** end of rs232.c ************************************/

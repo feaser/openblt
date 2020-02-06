@@ -31,16 +31,16 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_CAN_ENABLE > 0)
-#include "can.h"                                    /* can driver module             */
+#include "can.h"                                 /* can driver module                  */
 #endif
 #if (BOOT_COM_UART_ENABLE > 0)
-#include "uart.h"                                   /* uart driver module            */
+#include "rs232.h"                               /* rs232 driver module                */
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
-#include "usb.h"                                    /* usb driver module             */
+#include "usb.h"                                 /* usb driver module                  */
 #endif
 #if (BOOT_COM_NET_ENABLE > 0)
-#include "net.h"                                    /* tcp/ip driver module          */
+#include "net.h"                                 /* tcp/ip driver module               */
 #endif
 
 
@@ -72,7 +72,7 @@ void ComInit(void)
   /* initialize the UART interface */
   UartInit();
   /* set it as active */
-  comActiveInterface = COM_IF_UART;
+  comActiveInterface = COM_IF_RS232;
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
   /* initialize the USB interface */
@@ -116,7 +116,7 @@ void ComTask(void)
   if (UartReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
   {
     /* make this the active interface */
-    comActiveInterface = COM_IF_UART;
+    comActiveInterface = COM_IF_RS232;
     /* process packet */
     XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
   }
@@ -178,7 +178,7 @@ void ComTransmitPacket(blt_int8u *data, blt_int16u len)
   /* transmit the packet. note that len is limited to 255 in the plausibility check,
    * so cast is okay.
    */
-  if (comActiveInterface == COM_IF_UART)
+  if (comActiveInterface == COM_IF_RS232)
   {
     UartTransmitPacket(data, (blt_int8u)len);
   }
@@ -216,7 +216,7 @@ blt_int16u ComGetActiveInterfaceMaxRxLen(void)
   /* filter on communication interface identifier */
   switch (comActiveInterface)
   {
-    case COM_IF_UART:
+    case COM_IF_RS232:
       result = BOOT_COM_UART_RX_MAX_DATA;
       break;
 
@@ -254,7 +254,7 @@ blt_int16u ComGetActiveInterfaceMaxTxLen(void)
   /* filter on communication interface identifier */
   switch (comActiveInterface)
   {
-    case COM_IF_UART:
+    case COM_IF_RS232:
       result = BOOT_COM_UART_TX_MAX_DATA;
       break;
 

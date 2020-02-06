@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source/HCS12/uart.c
-* \brief        Bootloader UART communication interface source file.
-* \ingroup      Target_HCS12
+* \file         Source/ARMCM3_EFM32/rs232.c
+* \brief        Bootloader RS232 communication interface source file.
+* \ingroup      Target_ARMCM3_EFM32
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2013  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,26 +30,13 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "efm32.h"
+#include "efm32_cmu.h"
+#include "efm32_gpio.h"
+#include "efm32_leuart.h"
 
 
 #if (BOOT_COM_UART_ENABLE > 0)
-/****************************************************************************************
-* Type definitions
-****************************************************************************************/
-/** \brief Structure type with the layout of the UART related control registers. */
-typedef volatile struct
-{
-  volatile blt_int8u  scibdh;            /**< baudrate control register [SBR 12..8]    */
-  volatile blt_int8u  scibdl;            /**< baudrate control register [SBR  8..0]    */
-  volatile blt_int8u  scicr1;            /**< control register 1                       */
-  volatile blt_int8u  scicr2;            /**< control register 2                       */
-  volatile blt_int8u  scisr1;            /**< status regsiter 1                        */
-  volatile blt_int8u  scisr2;            /**< status register 2                        */
-  volatile blt_int8u  scidrh;            /**< data register high (for ninth bit)       */
-  volatile blt_int8u  scidrl;            /**< data regsiter low                        */
-} tUartRegs;                             /**< sci related registers                    */
-
-
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
@@ -59,29 +46,6 @@ typedef volatile struct
 #define UART_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define UART_BYTE_TX_TIMEOUT_MS       (10u)
-
-#if (BOOT_COM_UART_CHANNEL_INDEX == 0)
-/** \brief Set UART base address to SCI0. */
-#define UART_REGS_BASE_ADDRESS  (0x00c8)
-#elif (BOOT_COM_UART_CHANNEL_INDEX == 1)
-/** \brief Set UART base address to SCI1. */
-#define UART_REGS_BASE_ADDRESS  (0x00d0)
-#endif
-/** \brief Macro for accessing the UART related control registers. */
-#define UART                    ((volatile tUartRegs *)UART_REGS_BASE_ADDRESS)
-
-
-/****************************************************************************************
-* Register definitions
-****************************************************************************************/
-/** \brief SCICR2 - transmitter enable bit. */
-#define TE_BIT     (0x08)
-/** \brief SCICR2 - receiver enable bit. */
-#define RE_BIT     (0x04)
-/** \brief SCISR1 - receiver data register full bit. */
-#define RDRF_BIT   (0x20)
-/** \brief SCISR1 - transmit data register empty bit. */
-#define TDRE_BIT   (0x80)
 
 
 /****************************************************************************************
@@ -98,28 +62,35 @@ static blt_bool UartTransmitByte(blt_int8u data);
 ****************************************************************************************/
 void UartInit(void)
 {
-  blt_int16u baudrate_sbr0_12;
+  LEUART_Init_TypeDef init = LEUART_INIT_DEFAULT;
 
-  /* the current implementation supports SCI0 and SCI1. throw an assertion error in
-   * case a different UART channel is configured.
-   */
-  ASSERT_CT((BOOT_COM_UART_CHANNEL_INDEX == 0) || (BOOT_COM_UART_CHANNEL_INDEX == 1));
-  /* reset the SCI subsystem's configuration, which automatically configures it for
-   * 8,n,1 communication mode.
-   */
-  UART->scicr2 = 0;
-  UART->scicr1 = 0;
-  UART->scibdh = 0;
-  UART->scibdl = 0;
-  /* configure the baudrate from BOOT_COM_UART_BAUDRATE */
-  baudrate_sbr0_12 = (BOOT_CPU_SYSTEM_SPEED_KHZ * 1000ul) / 16 / BOOT_COM_UART_BAUDRATE;
-  /* baudrate register value cannot be more than 13 bits */
-  ASSERT_RT((baudrate_sbr0_12 & 0xe000) == 0);
-  /* write first MSB then LSB for the baudrate to latch */
-  UART->scibdh = (blt_int8u)(baudrate_sbr0_12 >> 8);
-  UART->scibdl = (blt_int8u)baudrate_sbr0_12;
-  /* enable the transmitted and receiver */
-  UART->scicr2 |= (TE_BIT | RE_BIT);
+  /* currently, only LEUART1 is supported */
+  ASSERT_CT(BOOT_COM_UART_CHANNEL_INDEX == 1);
+  /* max baudrate for LEUART is 9600 bps */
+  ASSERT_CT(BOOT_COM_UART_BAUDRATE <= 9600);
+  /* configure GPIO pins */
+  CMU_ClockEnable(cmuClock_GPIO, true);
+  /* to avoid false start, configure output as high */
+  GPIO_PinModeSet(gpioPortC, 6, gpioModePushPull, 1);
+  GPIO_PinModeSet(gpioPortC, 7, gpioModeInput, 0);
+  /* enable CORE LE clock in order to access LE modules */
+  CMU_ClockEnable(cmuClock_CORELE, true);
+  /* select LFXO for LEUARTs (and wait for it to stabilize) */
+  CMU_ClockSelectSet(cmuClock_LFB, cmuSelect_LFXO);
+  /* do not prescale clock */
+  CMU_ClockDivSet(cmuClock_LEUART1, cmuClkDiv_1);
+  /* enable LEUART1 clock */
+  CMU_ClockEnable(cmuClock_LEUART1, true);
+  /* configure LEUART */
+  init.enable = leuartDisable;
+  LEUART_Init(LEUART1, &init);
+  LEUART_BaudrateSet(LEUART1, 0, BOOT_COM_UART_BAUDRATE);
+  /* enable pins at default location */
+  LEUART1->ROUTE = LEUART_ROUTE_RXPEN | LEUART_ROUTE_TXPEN;
+  /* clear previous RX interrupts */
+  LEUART_IntClear(LEUART1, LEUART_IF_RXDATAV);
+  /* finally enable it */
+  LEUART_Enable(LEUART1, leuartEnable);
 } /*** end of UartInit ***/
 
 
@@ -232,16 +203,17 @@ blt_bool UartReceivePacket(blt_int8u *data, blt_int8u *len)
 ****************************************************************************************/
 static blt_bool UartReceiveByte(blt_int8u *data)
 {
-  /* check if a new byte was received by means of the RDRF-bit */
-  if ((UART->scisr1 & RDRF_BIT) != 0)
+  blt_bool result = BLT_FALSE;
+
+  /* check to see if a new bytes was received */
+  if ((LEUART1->IF & LEUART_IF_RXDATAV) != 0)
   {
-    /* store the received byte */
-    data[0] = UART->scidrl;
-    /* inform caller of the newly received byte */
-    return BLT_TRUE;
+    /* store the received data byte and set return value to positive */
+    *data = LEUART_Rx(LEUART1);
+    result = BLT_TRUE;
   }
-  /* inform caller that no new data was received */
-  return BLT_FALSE;
+  /* inform caller about the result */
+  return result;
 } /*** end of UartReceiveByte ***/
 
 
@@ -257,17 +229,15 @@ static blt_bool UartTransmitByte(blt_int8u data)
   blt_bool result = BLT_TRUE;
 
   /* check if tx holding register can accept new data */
-  if ((UART->scisr1 & TDRE_BIT) == 0)
+  if ((LEUART1->STATUS & LEUART_STATUS_TXBL) == 0)
   {
     /* UART not ready. should not happen */
     return BLT_FALSE;
   }
   /* write byte to transmit holding register */
-  UART->scidrl = data;
-  /* set timeout time to wait for transmit completion. */
-  timeout = TimerGet() + UART_BYTE_TX_TIMEOUT_MS;
+  LEUART_Tx(LEUART1, data);
   /* wait for tx holding register to be empty */
-  while ((UART->scisr1 & TDRE_BIT) == 0)
+  while ((LEUART1->STATUS & LEUART_STATUS_TXBL) == 0)
   {
     /* keep the watchdog happy */
     CopService();
@@ -284,4 +254,4 @@ static blt_bool UartTransmitByte(blt_int8u data)
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 
-/*********************************** end of uart.c *************************************/
+/*********************************** end of rs232.c ************************************/

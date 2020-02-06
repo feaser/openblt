@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Source/ARMCM4_STM32L4/uart.c
-* \brief        Bootloader UART communication interface source file.
-* \ingroup      Target_ARMCM4_STM32L4
+* \file         Source/ARMCM7_STM32F7/rs232.c
+* \brief        Bootloader RS232 communication interface source file.
+* \ingroup      Target_ARMCM7_STM32F7
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -31,8 +31,8 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_UART_ENABLE > 0)
-#include "stm32l4xx.h"                           /* STM32 CPU and HAL header           */
-#include "stm32l4xx_ll_usart.h"                  /* STM32 LL USART header              */
+#include "stm32f7xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f7xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
 /****************************************************************************************
@@ -55,11 +55,20 @@
 /** \brief Set UART base address to USART3. */
 #define USART_CHANNEL   USART3
 #elif (BOOT_COM_UART_CHANNEL_INDEX == 3)
-/** \brief Set UART base address to USART4. */
+/** \brief Set UART base address to UART4. */
 #define USART_CHANNEL   UART4
 #elif (BOOT_COM_UART_CHANNEL_INDEX == 4)
-/** \brief Set UART base address to USART5. */
+/** \brief Set UART base address to UART5. */
 #define USART_CHANNEL   UART5
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 5)
+/** \brief Set UART base address to UART6. */
+#define USART_CHANNEL   UART6
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 6)
+/** \brief Set UART base address to UART7. */
+#define USART_CHANNEL   UART7
+#elif (BOOT_COM_UART_CHANNEL_INDEX == 7)
+/** \brief Set UART base address to UART8. */
+#define USART_CHANNEL   UART8
 #endif
 
 
@@ -86,7 +95,10 @@ void UartInit(void)
             (BOOT_COM_UART_CHANNEL_INDEX == 1) ||
             (BOOT_COM_UART_CHANNEL_INDEX == 2) ||
             (BOOT_COM_UART_CHANNEL_INDEX == 3) ||
-            (BOOT_COM_UART_CHANNEL_INDEX == 4));
+            (BOOT_COM_UART_CHANNEL_INDEX == 4) ||
+            (BOOT_COM_UART_CHANNEL_INDEX == 5) ||
+            (BOOT_COM_UART_CHANNEL_INDEX == 6) ||
+            (BOOT_COM_UART_CHANNEL_INDEX == 7));
 
   /* configure UART peripheral */
   USART_InitStruct.BaudRate = BOOT_COM_UART_BAUDRATE;
@@ -249,4 +261,4 @@ static void UartTransmitByte(blt_int8u data)
 #endif /* BOOT_COM_UART_ENABLE > 0 */
 
 
-/*********************************** end of uart.c *************************************/
+/*********************************** end of rs232.c ************************************/
