@@ -35,7 +35,6 @@
 #include "stm32g0xx_ll_bus.h"                    /* STM32 LL BUS header                */
 #include "stm32g0xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
 #include "stm32g0xx_ll_utils.h"                  /* STM32 LL UTILS header              */
-#include "stm32g0xx_ll_usart.h"                  /* STM32 LL USART header              */
 #include "stm32g0xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
@@ -97,9 +96,6 @@ static void Init(void)
 ****************************************************************************************/
 static void SystemClock_Config(void)
 {
-  /* Configure the main internal regulator output voltage */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
-
   /* Set flash latency. */
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_2);
   /* Verify flash latency setting. */
@@ -109,68 +105,31 @@ static void SystemClock_Config(void)
     ASSERT_RT(BLT_FALSE);
   }
 
-  /* Configure and enable HSI */
+  /* HSI configuration and activation */
   LL_RCC_HSI_Enable();
+  /* Wait till HSI is ready */
   while(LL_RCC_HSI_IsReady() != 1)
   {
+    ;
   }
-
-  /* Configure and enable main PLL */
-  /*
-   * PLL configuration is based on HSI/4 (4 MHz) input clock and a VCO
-   * frequency equal to four times the required output frequency (which
-   * must be an exact multiple of 1 MHz in the range 16..64 MHz).
-   *
-   * Note: although the PLL ADC/I2S1 and RNG/TIM1 domain outputs are not
-   * required by the boot loader, if the application initialises the PLL
-   * dividers (P, Q) for these outputs to non-default values, they should
-   * also be initialised here to the same values used by the application.
-   * Otherwise, the application clock initialisation may fail.
-   *
-   * (The STM LL API for PLL configuration seems particularly clunky,
-   * requiring three calls which must be consistent in the duplicated
-   * arguments.)
-   */
-#define PLL_CLK_SPEED_KHZ   (HSI_VALUE / (4u * 1000u))
-
-#define PLL_N_VALUE         (4u * (BOOT_CPU_SYSTEM_SPEED_KHZ / \
-                                   PLL_CLK_SPEED_KHZ))
-  
-  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI,
-                              LL_RCC_PLLM_DIV_4,
-                              PLL_N_VALUE, 
-                              LL_RCC_PLLR_DIV_4);
-
-  LL_RCC_PLL_ConfigDomain_ADC(LL_RCC_PLLSOURCE_HSI,
-                              LL_RCC_PLLM_DIV_4,
-                              PLL_N_VALUE, 
-                              LL_RCC_PLLP_DIV_4);
-
-  LL_RCC_PLL_ConfigDomain_TIM1(LL_RCC_PLLSOURCE_HSI,
-                               LL_RCC_PLLM_DIV_4,
-                               PLL_N_VALUE, 
-                               LL_RCC_PLLQ_DIV_4);
-
+  /* Main PLL configuration and activation */
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 64, LL_RCC_PLLR_DIV_4);
   LL_RCC_PLL_Enable();
   LL_RCC_PLL_EnableDomain_SYS();
+  /* Wait till PLL is ready */
   while(LL_RCC_PLL_IsReady() != 1)
   {
+    ;
   }
-
-  /* Configure SYSCLK source from the main PLL */
+  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
-
+  /* Wait till System clock is ready */
   while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
   {
+    ;
   }
-
-  /* Set AHB prescaler*/
-  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
-
-  /* Set APB1 prescaler */
-  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
-
-  /* Update CMSIS system core clock speed */
+  /* Update the system clock speed setting. */
   LL_SetSystemCoreClock(BOOT_CPU_SYSTEM_SPEED_KHZ * 1000u);
 } /*** end of SystemClock_Config ***/
 
@@ -238,6 +197,9 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
+  /* Reset the RCC clock configuration to the default reset state. */
+  LL_RCC_DeInit();
+
   /* Reset GPIO pin for the LED to turn it off. */
   LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
 

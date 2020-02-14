@@ -383,16 +383,6 @@
           <GroupName>Lib</GroupName>
           <Files>
             <File>
-              <FileName>stm32g0xx_hal_conf.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\stm32g0xx_hal_conf.h</FilePath>
-            </File>
-            <File>
-              <FileName>system_stm32g0xx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\system_stm32g0xx.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32g0xx.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\CMSIS\Device\ST\STM32G0xx\Include\stm32g0xx.h</FilePath>
@@ -428,39 +418,9 @@
               <FilePath>..\lib\CMSIS\Include\cmsis_armcc.h</FilePath>
             </File>
             <File>
-              <FileName>cmsis_armcc_V6.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\cmsis_armcc_V6.h</FilePath>
-            </File>
-            <File>
-              <FileName>cmsis_gcc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\cmsis_gcc.h</FilePath>
-            </File>
-            <File>
-              <FileName>core_cm0.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\core_cm0.h</FilePath>
-            </File>
-            <File>
               <FileName>core_cm0plus.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\CMSIS\Include\core_cm0plus.h</FilePath>
-            </File>
-            <File>
-              <FileName>core_cm3.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\core_cm3.h</FilePath>
-            </File>
-            <File>
-              <FileName>core_cm4.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\core_cm4.h</FilePath>
-            </File>
-            <File>
-              <FileName>core_cm7.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\core_cm7.h</FilePath>
             </File>
             <File>
               <FileName>core_cmFunc.h</FileName>
@@ -478,19 +438,29 @@
               <FilePath>..\lib\CMSIS\Include\core_cmSimd.h</FilePath>
             </File>
             <File>
-              <FileName>core_sc000.h</FileName>
+              <FileName>stm32g0xx_hal_conf.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\core_sc000.h</FilePath>
+              <FilePath>..\lib\stm32g0xx_hal_conf.h</FilePath>
             </File>
             <File>
-              <FileName>core_sc300.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\core_sc300.h</FilePath>
+              <FileName>system_stm32g0xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\system_stm32g0xx.c</FilePath>
             </File>
             <File>
               <FileName>stm32g0xx_hal.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g0xx_hal_adc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_adc.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g0xx_hal_adc_ex.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_adc_ex.h</FilePath>
             </File>
             <File>
               <FileName>stm32g0xx_hal_cortex.h</FileName>
@@ -511,6 +481,11 @@
               <FileName>stm32g0xx_hal_dma_ex.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_dma_ex.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g0xx_hal_exti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_exti.h</FilePath>
             </File>
             <File>
               <FileName>stm32g0xx_hal_flash.h</FileName>
@@ -563,6 +538,11 @@
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_tim_ex.h</FilePath>
             </File>
             <File>
+              <FileName>stm32g0xx_ll_adc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_ll_adc.h</FilePath>
+            </File>
+            <File>
               <FileName>stm32g0xx_ll_bus.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_ll_bus.h</FilePath>
@@ -576,6 +556,11 @@
               <FileName>stm32g0xx_ll_dma.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_ll_dma.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g0xx_ll_dmamux.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_ll_dmamux.h</FilePath>
             </File>
             <File>
               <FileName>stm32g0xx_ll_exti.h</FileName>
@@ -603,11 +588,6 @@
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_ll_system.h</FilePath>
             </File>
             <File>
-              <FileName>stm32g0xx_ll_tim.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_ll_tim.h</FilePath>
-            </File>
-            <File>
               <FileName>stm32g0xx_ll_usart.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_ll_usart.h</FilePath>
@@ -618,9 +598,24 @@
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\stm32g0xx_ll_utils.h</FilePath>
             </File>
             <File>
+              <FileName>stm32_hal_legacy.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h</FilePath>
+            </File>
+            <File>
               <FileName>stm32g0xx_hal.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g0xx_hal_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g0xx_hal_adc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_adc_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32g0xx_hal_cortex.c</FileName>
@@ -631,6 +626,16 @@
               <FileName>stm32g0xx_hal_dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g0xx_hal_dma_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_dma_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g0xx_hal_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_exti.c</FilePath>
             </File>
             <File>
               <FileName>stm32g0xx_hal_flash.c</FileName>
@@ -676,6 +681,11 @@
               <FileName>stm32g0xx_hal_tim_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_tim_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32g0xx_ll_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32G0xx_HAL_Driver\Src\stm32g0xx_ll_adc.c</FilePath>
             </File>
             <File>
               <FileName>stm32g0xx_ll_dma.c</FileName>
