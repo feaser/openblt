@@ -111,7 +111,7 @@ static void VectorBase_Config(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void SystemClock_Config(void)
+static void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};

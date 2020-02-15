@@ -37,6 +37,7 @@
 ****************************************************************************************/
 static void Init(void);
 static void SystemClock_Config(void);
+static void VectorBase_Config(void);
 
 
 /************************************************************************************//**
@@ -68,6 +69,8 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
+  /* configure the vector table base address. */
+  VectorBase_Config();
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
   /* Configure the system clock. */
@@ -77,6 +80,27 @@ static void Init(void)
   /* Initialize the led driver. */
   LedInit();
 } /*** end of Init ***/
+
+
+/************************************************************************************//**
+** \brief     Vector base address configuration. It should no longer be at the start of
+**            flash memory but moved forward because the first part of flash is
+**            reserved for the bootloader. Note that this is already done by the
+**            bootloader before starting this program. Unfortunately, function
+**            SystemInit() overwrites this change again. 
+** \return    none.
+**
+****************************************************************************************/
+static void VectorBase_Config(void)
+{
+  /* The constant array with vectors of the vector table is declared externally in the
+   * c-startup code.
+   */
+  extern const unsigned long g_pfnVectors[];
+
+  /* Remap the vector table to where the vector table is located for this program. */
+  SCB->VTOR = (unsigned long)&g_pfnVectors[0];
+} /*** end of VectorBase_Config ***/
 
 
 /************************************************************************************//**

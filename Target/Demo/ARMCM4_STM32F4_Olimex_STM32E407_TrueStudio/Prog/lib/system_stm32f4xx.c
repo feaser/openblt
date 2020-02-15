@@ -106,12 +106,7 @@
 /*!< Uncomment the following line if you need to relocate your vector Table in
      Internal SRAM. */
 /* #define VECT_TAB_SRAM */
-/* Vector table offset was changed, because the first part in flash is occupied
- * by the OpenBLT bootloader. Therefore we need to remap the vector table base
- * address. Note that this value needs adjustment, if more space in flash is
- * reserved for the bootloader.
- */
-#define VECT_TAB_OFFSET  0x8000 /*!< Vector Table base offset field.
+#define VECT_TAB_OFFSET  0x00 /*!< Vector Table base offset field. 
                                    This value must be a multiple of 0x200. */
 /******************************************************************************/
 
