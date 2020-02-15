@@ -251,6 +251,9 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
+  /* Reset the RCC clock configuration to the default reset state. */
+  LL_RCC_DeInit();
+  
 #if (BOOT_COM_USB_ENABLE > 0)
   /* USB clock disable. */
   LL_AHB2_GRP1_DisableClock(LL_AHB2_GRP1_PERIPH_OTGFS);

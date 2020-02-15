@@ -200,6 +200,9 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
+  /* Reset the RCC clock configuration to the default reset state. */
+  LL_RCC_DeInit();
+  
   /* Reset GPIO pin for the LED to turn it off. */
   LL_GPIO_ResetOutputPin(GPIOE, LL_GPIO_PIN_8);
 

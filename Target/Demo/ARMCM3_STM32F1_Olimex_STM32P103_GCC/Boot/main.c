@@ -234,6 +234,9 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
+  /* Reset the RCC clock configuration to the default reset state. */
+  LL_RCC_DeInit();
+  
   /* Deinit used GPIOs. */
   LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOB);
