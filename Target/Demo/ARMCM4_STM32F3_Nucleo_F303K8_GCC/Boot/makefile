@@ -34,6 +34,12 @@ PROJ_NAME=openblt_stm32f303
 #|--------------------------------------------------------------------------------------|
 #| Configure tool path                                                                  |
 #|--------------------------------------------------------------------------------------|
+# Configure the path to where the arm-none-eabi-gcc program is located. If the program
+# is available on the path, then the TOOL_PATH variable can be left empty.
+# Make sure to add a fordward slash at the end. Note that on Windows it should be in the
+# 8.3 short pathname format with forward slashes. To obtain the pathname in the 8.3
+# format, open the directory in the Windows command prompt and run the following command:
+#  cmd /c for %A in ("%cd%") do @echo %~sA 
 TOOL_PATH=/opt/gcc-arm-none-eabi-8-2018-q4-major/bin/
 
 
