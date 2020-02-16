@@ -626,6 +626,10 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
       /* invalidate the result value to flag the error */
       result = BLT_NULL;
     }
+    else
+    {
+      result = block;
+    }
   }
 
   /* only continue if all is okay sofar */
