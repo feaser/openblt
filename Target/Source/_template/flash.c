@@ -618,8 +618,14 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
     base_addr = flashLayout[0].sector_start;
     result = block;
   }
+  /* no switching between the generic block and the bootblock needed. it is a switch
+   * within a generic block. the current block needs to be first programmed before a 
+   * switch to the new one can be make.
+   */   
   else
   {
+    /* start by initializing the result to success */
+    result = block;
     /* need to switch to a new block, so program the current one and init the next */
     if (FlashWriteBlock(block) == BLT_FALSE)
     {
