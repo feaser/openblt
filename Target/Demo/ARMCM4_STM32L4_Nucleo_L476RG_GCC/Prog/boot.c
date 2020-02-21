@@ -353,7 +353,7 @@ static void BootComCanInit(void)
   canHandle.Init.TimeTriggeredMode = DISABLE;
   canHandle.Init.AutoBusOff = DISABLE;
   canHandle.Init.AutoWakeUp = DISABLE;
-  canHandle.Init.AutoRetransmission = DISABLE;
+  canHandle.Init.AutoRetransmission = ENABLE;
   canHandle.Init.ReceiveFifoLocked = DISABLE;
   canHandle.Init.TransmitFifoPriority = DISABLE;
   canHandle.Init.Mode = CAN_MODE_NORMAL;
