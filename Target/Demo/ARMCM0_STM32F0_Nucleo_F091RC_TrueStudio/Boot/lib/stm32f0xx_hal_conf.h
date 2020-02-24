@@ -5,7 +5,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2018 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2020 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -72,6 +72,7 @@
 /*#define HAL_SMBUS_MODULE_ENABLED   */
 /*#define HAL_WWDG_MODULE_ENABLED   */
 /*#define HAL_PCD_MODULE_ENABLED   */
+/*#define HAL_EXTI_MODULE_ENABLED   */
 #define HAL_CORTEX_MODULE_ENABLED
 #define HAL_DMA_MODULE_ENABLED
 #define HAL_FLASH_MODULE_ENABLED
@@ -192,6 +193,10 @@
  #include "stm32f0xx_hal_rcc.h"
 #endif /* HAL_RCC_MODULE_ENABLED */
 
+#ifdef HAL_EXTI_MODULE_ENABLED
+ #include "stm32f0xx_hal_exti.h"
+#endif /* HAL_EXTI_MODULE_ENABLED */
+
 #ifdef HAL_GPIO_MODULE_ENABLED
  #include "stm32f0xx_hal_gpio.h"
 #endif /* HAL_GPIO_MODULE_ENABLED */
@@ -302,9 +307,9 @@
   *         If expr is true, it returns no value.
   * @retval None
   */
-  #define assert_param(expr) ((expr) ? (void)0U : assert_failed((uint8_t *)__FILE__, __LINE__))
+  #define assert_param(expr) ((expr) ? (void)0U : assert_failed((char *)__FILE__, __LINE__))
 /* Exported functions ------------------------------------------------------- */
-  void assert_failed(uint8_t* file, uint32_t line);
+  void assert_failed(char* file, uint32_t line);
 #else
   #define assert_param(expr) ((void)0U)
 #endif /* USE_FULL_ASSERT */    

@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Work\software\OpenBLT_uart_refactoring\Target\Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Boot\ide\settings\stm32f091.Debug.general.xcl" --backend -f "C:\Work\software\OpenBLT_uart_refactoring\Target\Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Boot\ide\settings\stm32f091.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Boot\ide\settings\stm32f091.Debug.general.xcl" --backend -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Boot\ide\settings\stm32f091.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Work\software\OpenBLT_uart_refactoring\Target\Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Boot\ide\settings\stm32f091.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Work\software\OpenBLT_uart_refactoring\Target\Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Boot\ide\settings\stm32f091.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Boot\ide\settings\stm32f091.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM0_STM32F0_Nucleo_F091RC_IAR\Boot\ide\settings\stm32f091.Debug.driver.xcl" 
 
 @echo off 
 :end

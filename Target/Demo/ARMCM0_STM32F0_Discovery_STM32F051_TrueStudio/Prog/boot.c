@@ -117,10 +117,13 @@ static void BootComRs232Init(void)
   rs232Handle.Instance        = USART2;
   rs232Handle.Init.BaudRate   = BOOT_COM_RS232_BAUDRATE;
   rs232Handle.Init.WordLength = UART_WORDLENGTH_8B;
-  rs232Handle.Init.StopBits   = UART_STOPBITS_1;
-  rs232Handle.Init.Parity     = UART_PARITY_NONE;
-  rs232Handle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
-  rs232Handle.Init.Mode       = UART_MODE_TX_RX;
+  rs232Handle.Init.StopBits = UART_STOPBITS_1;
+  rs232Handle.Init.Parity = UART_PARITY_NONE;
+  rs232Handle.Init.Mode = UART_MODE_TX_RX;
+  rs232Handle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  rs232Handle.Init.OverSampling = UART_OVERSAMPLING_16;
+  rs232Handle.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  rs232Handle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   /* Initialize the UART peripheral. */
   HAL_UART_Init(&rs232Handle);
 } /*** end of BootComRs232Init ***/
