@@ -32,11 +32,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Automatic choice of formatter.</state>
+                    <state>Automatic choice of formatter, without multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Automatic choice of formatter.</state>
+                    <state>Automatic choice of formatter, without multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -2116,52 +2116,16 @@
             <group>
                 <name>CMSIS</name>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_common_tables.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_compiler.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_const_structs.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_iccarm.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\arm_math.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_armcc.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_armcc_V6.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_gcc.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm0.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm0plus.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm3.h</name>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_version.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm4.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm7.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmFunc.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmInstr.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cmSimd.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_sc000.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_sc300.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F3xx\Include\stm32f303x8.h</name>
@@ -2171,6 +2135,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F3xx\Include\system_stm32f3xx.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\tz_context.h</name>
                 </file>
             </group>
             <group>
@@ -2207,6 +2174,12 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F3xx_HAL_Driver\Inc\stm32f3xx_hal_dma_ex.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F3xx_HAL_Driver\Src\stm32f3xx_hal_exti.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32F3xx_HAL_Driver\Inc\stm32f3xx_hal_exti.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F3xx_HAL_Driver\Src\stm32f3xx_hal_flash.c</name>

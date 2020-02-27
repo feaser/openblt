@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Work\software\OpenBLT_uart_refactoring\Target\Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\ide\settings\stm32f303.stm32f303.general.xcl" --backend -f "C:\Work\software\OpenBLT_uart_refactoring\Target\Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\ide\settings\stm32f303.stm32f303.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\ide\settings\stm32f303.stm32f303.general.xcl" --backend -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\ide\settings\stm32f303.stm32f303.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Work\software\OpenBLT_uart_refactoring\Target\Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\ide\settings\stm32f303.stm32f303.general.xcl" "--debug_file=%~1" --backend -f "C:\Work\software\OpenBLT_uart_refactoring\Target\Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\ide\settings\stm32f303.stm32f303.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\ide\settings\stm32f303.stm32f303.general.xcl" "--debug_file=%~1" --backend -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_STM32F3_Discovery_F303VC_IAR\Boot\ide\settings\stm32f303.stm32f303.driver.xcl" 
 
 @echo off 
 :end
