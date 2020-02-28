@@ -91,21 +91,19 @@
   */
 
 /*---------- -----------*/
-#define USBD_MAX_NUM_INTERFACES     1
+#define USBD_MAX_NUM_INTERFACES     1U
 /*---------- -----------*/
-#define USBD_MAX_NUM_CONFIGURATION     1
+#define USBD_MAX_NUM_CONFIGURATION     1U
 /*---------- -----------*/
-#define USBD_MAX_STR_DESC_SIZ     512
+#define USBD_MAX_STR_DESC_SIZ     512U
 /*---------- -----------*/
-#define USBD_SUPPORT_USER_STRING     0
+#define USBD_DEBUG_LEVEL     0U
 /*---------- -----------*/
-#define USBD_DEBUG_LEVEL     0
-/*---------- -----------*/
-#define USBD_SELF_POWERED     1
+#define USBD_SELF_POWERED     1U
 
 /****************************************/
 /* #define for FS and HS identification */
-#define DEVICE_FS 		0
+#define DEVICE_FS 		0U
 
 /**
   * @}
@@ -116,6 +114,22 @@
   * @{
   */
 
+/* Memory management macros */
+
+/** Alias for memory allocation. */
+#define USBD_malloc         /* Not used */
+
+/** Alias for memory release. */
+#define USBD_free           /* Not used */
+
+/** Alias for memory set. */
+#define USBD_memset         /* Not used */
+
+/** Alias for memory copy. */
+#define USBD_memcpy         /* Not used */
+
+/** Alias for delay. */
+#define USBD_Delay          HAL_Delay
 
 /* DEBUG macros */
 

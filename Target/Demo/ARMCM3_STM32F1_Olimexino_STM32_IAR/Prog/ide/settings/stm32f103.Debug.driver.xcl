@@ -14,17 +14,15 @@
 
 "--device=STM32F103RB" 
 
-"--drv_communication=USB0" 
+"--stlink_reset_strategy=0,0" 
 
-"--drv_interface_speed=auto" 
-
-"--jlink_initial_speed=32" 
-
-"--jlink_reset_strategy=0,0" 
+"--drv_swo_clock_setup=72000000,0,2000000" 
 
 "--drv_catch_exceptions=0x000" 
 
-"--drv_swo_clock_setup=72000000,0,2000000" 
+"--drv_debug_ap=0" 
+
+"--stlink_probe=stlinkv2" 
 
 
 
