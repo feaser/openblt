@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Source/_template/can.c
+* \file         Source/ARMCM4_S32K14/can.c
 * \brief        Bootloader CAN communication interface source file.
-* \ingroup      Target__template_can
+* \ingroup      Target_ARMCM4_S32K14
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2019  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2020  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -24,15 +24,6 @@
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
 *
 * \endinternal
-****************************************************************************************/
-
-/************************************************************************************//**
-* \defgroup   Target__template_can CAN driver of a port
-* \brief      This module implements the CAN driver of a microcontroller port. 
-* \details    For the most parts, this driver is already implemented. The only parts that
-*             need porting are the CAN initialization, CAN message reception and CAN
-*             message transmission.
-* \ingroup    Target__template
 ****************************************************************************************/
 
 /****************************************************************************************
