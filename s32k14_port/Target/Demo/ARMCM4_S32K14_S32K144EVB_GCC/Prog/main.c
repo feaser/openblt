@@ -72,7 +72,7 @@ static void Init(void)
   /* Configure the system clock. */
   SystemClockConfig();
   /* Enable the Port D peripheral clock which is used for the LED. */
-  PCC->PCCn[PCC_PORTD_INDEX] |= 0x40000000U;
+  PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
   /* Initialize the timer driver. */
   TimerInit();
   /* Initialize the led driver. */

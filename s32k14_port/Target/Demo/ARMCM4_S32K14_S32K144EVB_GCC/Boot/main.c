@@ -75,8 +75,15 @@ static void Init(void)
 {
   /* Configure the system clock. */
   SystemClockConfig();
-  /* Enable the Port D peripheral clock which is used for the LED. */
-  PCC->PCCn[PCC_PORTD_INDEX] |= 0x40000000U;
+  /* Enable the peripheral clock for the ports that are used. */
+  PCC->PCCn[PCC_PORTC_INDEX] |= PCC_PCCn_CGC_MASK;
+  PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
+#if (BOOT_COM_RS232_ENABLE > 0)
+  /* UART RX GPIO pin configuration. PC6 = UART1 RX, MUX = ALT2. */
+  PORTC->PCR[6] |= PORT_PCR_MUX(2);
+  /* UART TX GPIO pin configuration. PC7 = UART1 TX, MUX = ALT2. */
+  PORTC->PCR[7] |= PORT_PCR_MUX(2);
+#endif
 } /*** end of Init ***/
 
 

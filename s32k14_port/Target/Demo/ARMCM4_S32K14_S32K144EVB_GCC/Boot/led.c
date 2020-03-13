@@ -49,12 +49,12 @@ static blt_int16u ledBlinkIntervalMs;
 ****************************************************************************************/
 void LedBlinkInit(blt_int16u interval_ms)
 {
-  /* configure Port D pin 0 as GPIO */
-  PORTD->PCR[0] = 0x00000100U;
+  /* LED GPIO pin configuration. PD0 = GPIO, MUX = ALT1. */
+  PORTD->PCR[0] |= PORT_PCR_MUX(1);
   /* configure Port D pin 0 GPIO as digital output */
-  PTD->PDDR |= 0x00000001U;
+  PTD->PDDR |= GPIO_PDDR_PDD(0x00000001);
   /* turn the LED off on Port D pin 0 */
-  PTD->PSOR |= 0x00000001U;
+  PTD->PSOR |= GPIO_PSOR_PTSO(0x00000001);
   /* store the interval time between LED toggles */
   ledBlinkIntervalMs = interval_ms;
 } /*** end of LedBlinkInit ***/
@@ -78,13 +78,13 @@ void LedBlinkTask(void)
     {
       ledOn = BLT_TRUE;
       /* Turn the LED on. */
-      PTD->PCOR |= 0x00000001U;
+      PTD->PCOR |= GPIO_PCOR_PTCO(0x00000001);
     }
     else
     {
       ledOn = BLT_FALSE;
       /* Turn the LED off. */
-      PTD->PSOR |= 0x00000001U;
+      PTD->PSOR |= GPIO_PSOR_PTSO(0x00000001);
     }
     /* schedule the next blink event */
     nextBlinkEvent = TimerGet() + ledBlinkIntervalMs;
@@ -101,7 +101,7 @@ void LedBlinkTask(void)
 void LedBlinkExit(void)
 {
   /* Turn the LED off. */
-  PTD->PSOR |= 0x00000001U;
+  PTD->PSOR |= GPIO_PSOR_PTSO(0x00000001);
 } /*** end of LedBlinkExit ***/
 
 
