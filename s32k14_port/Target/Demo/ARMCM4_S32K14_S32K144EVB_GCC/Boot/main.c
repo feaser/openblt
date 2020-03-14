@@ -78,7 +78,15 @@ static void Init(void)
   /* Enable the peripheral clock for the ports that are used. */
   PCC->PCCn[PCC_PORTC_INDEX] |= PCC_PCCn_CGC_MASK;
   PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
-#if (BOOT_COM_RS232_ENABLE > 0)
+  /* Configure SW2 (PC12) GPIO pin for (optional) backdoor entry input. */
+  /* Input GPIO pin configuration. PC12 = GPIO, MUX = ALT1. */
+  PORTC->PCR[12] |= PORT_PCR_MUX(1);
+  /* Disable pull device, as SW2 already has a pull down resistor on the board. */
+  PORTC->PCR[12] &= ~PORT_PCR_PE(1);
+  /* Configure and enable Port C pin 12 GPIO as digital input */
+  PTC->PDDR &= ~GPIO_PDDR_PDD(1 << 12U);
+  PTC->PIDR &= ~GPIO_PIDR_PID(1 << 12U);
+  #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART RX GPIO pin configuration. PC6 = UART1 RX, MUX = ALT2. */
   PORTC->PCR[6] |= PORT_PCR_MUX(2);
   /* UART TX GPIO pin configuration. PC7 = UART1 TX, MUX = ALT2. */
