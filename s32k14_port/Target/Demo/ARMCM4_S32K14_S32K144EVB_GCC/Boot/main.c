@@ -112,7 +112,7 @@ static void SystemClockConfig(void)
    */
   SCG->SOSCCFG = SCG_SOSCCFG_RANGE(2) | SCG_SOSCCFG_EREFS_MASK;
   /* Ensure SOSCCSR unlocked. */
-  while(SCG->SOSCCSR & SCG_SOSCCSR_LK_MASK)
+  while (SCG->SOSCCSR & SCG_SOSCCSR_LK_MASK)
   {
     ;
   }
@@ -126,14 +126,14 @@ static void SystemClockConfig(void)
    */
   SCG->SOSCCSR = SCG_SOSCCSR_SOSCEN_MASK;
   /* Wait for system OSC clock to become valid. */
-  while(!(SCG->SOSCCSR & SCG_SOSCCSR_SOSCVLD_MASK))
+  while (!(SCG->SOSCCSR & SCG_SOSCCSR_SOSCVLD_MASK))
   {
     ;
   }
 
   /* --------- SPLL Initialization (160 MHz) ----------------------------------------- */
   /* Ensure SPLLCSR is unlocked. */
-  while(SCG->SPLLCSR & SCG_SPLLCSR_LK_MASK)
+  while (SCG->SPLLCSR & SCG_SPLLCSR_LK_MASK)
   {
     ;
   }
@@ -147,7 +147,7 @@ static void SystemClockConfig(void)
    */
   SCG->SPLLCFG = SCG_SPLLCFG_MULT(24);
   /* Ensure SPLLCSR is unlocked. */
-  while(SCG->SPLLCSR & SCG_SPLLCSR_LK_MASK)
+  while (SCG->SPLLCSR & SCG_SPLLCSR_LK_MASK)
   {
     ;
   }
@@ -159,7 +159,7 @@ static void SystemClockConfig(void)
    */
   SCG->SPLLCSR |= SCG_SPLLCSR_SPLLEN_MASK;
   /* Wait for SPLL to become valid. */
-  while(!(SCG->SPLLCSR & SCG_SPLLCSR_SPLLVLD_MASK))
+  while (!(SCG->SPLLCSR & SCG_SPLLCSR_SPLLVLD_MASK))
   {
     ;
   }
@@ -171,6 +171,9 @@ static void SystemClockConfig(void)
   SCG->SIRCDIV = SCG_SIRCDIV_SIRCDIV1(1) | SCG_SIRCDIV_SIRCDIV2(1);
 
   /* --------- Change to normal RUN mode with 8MHz SOSC, 80 MHz PLL ------------------ */
+  /* Note that flash memory should not be programmed or erased when the microcontroller
+   * is operating in VLPr or HSRUN mode. Therefore normal RUN mode is configured.
+   */
   /* Select PLL as clock source.
    * DIVCORE=1, div. by 2: Core clock = 160/2 MHz = 80 MHz.
    * DIVBUS=1, div. by 2: bus clock = 40 MHz.
