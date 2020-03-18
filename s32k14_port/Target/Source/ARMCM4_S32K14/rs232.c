@@ -40,9 +40,9 @@
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100U)
 /** \brief Timeout for transmitting a byte in milliseconds. */
-#define RS232_BYTE_TX_TIMEOUT_MS       (10u)
+#define RS232_BYTE_TX_TIMEOUT_MS       (10U)
 
 #if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
 /** \brief Set the peripheral LPUART0 base pointer. */
@@ -81,14 +81,14 @@ void Rs232Init(void)
   blt_int16u       baudrateSbr0_12;
   blt_int8u  const div2DividerLookup[] =
   {
-     0, /* 0b000. Output disabled. */
-     1, /* 0b001. Divide by 1. */
-     2, /* 0b010. Divide by 2. */
-     4, /* 0b011. Divide by 4. */
-     8, /* 0b100. Divide by 8. */
-    16, /* 0b101. Divide by 16. */
-    32, /* 0b110. Divide by 32. */
-    64, /* 0b111. Divide by 64. */
+     0U, /* 0b000. Output disabled. */
+     1U, /* 0b001. Divide by 1. */
+     2U, /* 0b010. Divide by 2. */
+     4U, /* 0b011. Divide by 4. */
+     8U, /* 0b100. Divide by 8. */
+    16U, /* 0b101. Divide by 16. */
+    32U, /* 0b110. Divide by 32. */
+    64U, /* 0b111. Divide by 64. */
   };
 
   /* Perform compile time assertion to check that the configured UART channel is actually
@@ -117,7 +117,7 @@ void Rs232Init(void)
      * actually enabled.
      */
     div2RegValue = 1U;
-    SCG->SIRCDIV = SCG_SIRCDIV_SIRCDIV2(div2RegValue);
+    SCG->SIRCDIV |= SCG_SIRCDIV_SIRCDIV2(div2RegValue);
   }
   /* Determine the SIRC clock frequency. If SIRC high range is enabled, it is 8 MHz. If
    * SIRC low range is enabled, it is 2 MHz.
@@ -203,7 +203,7 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
   Rs232TransmitByte(len);
 
   /* Transmit all the packet bytes one-by-one. */
-  for (data_index = 0; data_index < len; data_index++)
+  for (data_index = 0U; data_index < len; data_index++)
   {
     /* Keep the watchdog happy. */
     CopService();
@@ -222,10 +222,10 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];  /* One extra for length. */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1U];  /* One extra for length. */
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
-  static blt_int32u xcpCtoRxStartTime = 0;
+  static blt_int32u xcpCtoRxStartTime = 0U;
 
   /* Start of cto packet received? */
   if (xcpCtoRxInProgress == BLT_FALSE)
@@ -233,13 +233,13 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
     /* Store the message length when received. */
     if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == BLT_TRUE)
     {
-      if ( (xcpCtoReqPacket[0] > 0) &&
+      if ( (xcpCtoReqPacket[0] > 0U) &&
            (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
       {
         /* Store the start time. */
         xcpCtoRxStartTime = TimerGet();
         /* Reset packet data count. */
-        xcpCtoRxLength = 0;
+        xcpCtoRxLength = 0U;
         /* Indicate that a cto packet is being received. */
         xcpCtoRxInProgress = BLT_TRUE;
       }
@@ -248,7 +248,7 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
   else
   {
     /* Store the next packet byte. */
-    if (Rs232ReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == BLT_TRUE)
+    if (Rs232ReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1U]) == BLT_TRUE)
     {
       /* Increment the packet data count. */
       xcpCtoRxLength++;

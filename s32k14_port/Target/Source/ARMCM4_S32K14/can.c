@@ -31,59 +31,95 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_CAN_ENABLE > 0)
-/* TODO ##Port Include microcontroller peripheral driver header files here. */
+#include "device_registers.h"                    /* device registers                   */
+#include "system_S32K144.h"                      /* device sconfiguration              */
 
 
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Timeout for entering/leaving CAN initialization mode in milliseconds. */
+#define CAN_INIT_TIMEOUT_MS            (250U)
 /** \brief Timeout for transmitting a CAN message in milliseconds. */
-#define CAN_MSG_TX_TIMEOUT_MS          (50u)
+#define CAN_MSG_TX_TIMEOUT_MS          (50U)
+
+#if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
+/** \brief Set the peripheral CAN0 base pointer. */
+#define CANx                           (CAN0)
+/** \brief Set the PCC index offset for CAN0. */
+#define PCC_FlexCANx_INDEX             (PCC_FlexCAN0_INDEX)
+/** \brief Set the number of message boxes supported by CAN0. */
+#define CANx_MAX_MB_NUM                (FEATURE_CAN0_MAX_MB_NUM)
+#elif (BOOT_COM_CAN_CHANNEL_INDEX == 1)
+/** \brief Set the peripheral CAN1 base pointer. */
+#define CANx                           (CAN1)
+/** \brief Set the PCC index offset for CAN1. */
+#define PCC_FlexCANx_INDEX             (PCC_FlexCAN1_INDEX)
+/** \brief Set the number of message boxes supported by CAN1. */
+#define CANx_MAX_MB_NUM                (FEATURE_CAN1_MAX_MB_NUM)
+#elif (BOOT_COM_CAN_CHANNEL_INDEX == 2)
+/** \brief Set the peripheral CAN2 base pointer. */
+#define CANx                           (CAN2)
+/** \brief Set the PCC index offset for CAN2. */
+#define PCC_FlexCANx_INDEX             (PCC_FlexCAN2_INDEX)
+/** \brief Set the number of message boxes supported by CAN2. */
+#define CANx_MAX_MB_NUM                (FEATURE_CAN2_MAX_MB_NUM)
+#endif
 
 
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Structure type for grouping CAN bus timing related information. */
+/** \brief Structure type for grouping CAN bus timing related information.
+ *  time-segment 1 = propSeg + pseg1 + 2 time quanta
+ *  time-segment 2 = pseg2 + 1 time quanta */
 typedef struct t_can_bus_timing
 {
-  blt_int8u tseg1;                                    /**< CAN time segment 1          */
-  blt_int8u tseg2;                                    /**< CAN time segment 2          */
+  blt_int8u time_quanta;                              /**< Total number of time quanta */
+  blt_int8u propSeg;                                  /**< CAN propagation segment     */
+  blt_int8u pseg1;                                    /**< CAN phase segment 1         */
+  blt_int8u pseg2;                                    /**< CAN phase segment 2         */
 } tCanBusTiming;
 
 
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
-/** \brief CAN bittiming table for dynamically calculating the bittiming settings.
+/** \brief CAN bit timing table for dynamically calculating the bittiming settings.
  *  \details According to the CAN protocol 1 bit-time can be made up of between 8..25
  *           time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC
- *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) *
- *           100%. This array contains possible and valid time quanta configurations with
- *           a sample point between 68..78%.
+ *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + TSEG2)
+ *           * 100%. This array contains possible and valid time quanta configurations
+ *           with a sample point between 68..78%. A visual representation of the TQ in
+ *           a bit is:
+ *             | SYNCSEG |      TIME1SEG       | TIME2SEG  |
+ *           Or with an alternative representation:
+ *             | SYNCSEG | PROPSEG | PHASE1SEG | PHASE2SEG |
+ *           With the alternative representation TIME1SEG = PROPSEG + PHASE1SEG.
+ *
  */
 static const tCanBusTiming canTiming[] =
 {
-  /*  TQ | TSEG1 | TSEG2 | SP  */
-  /* ------------------------- */
-  {  5, 2 },          /*   8 |   5   |   2   | 75% */
-  {  6, 2 },          /*   9 |   6   |   2   | 78% */
-  {  6, 3 },          /*  10 |   6   |   3   | 70% */
-  {  7, 3 },          /*  11 |   7   |   3   | 73% */
-  {  8, 3 },          /*  12 |   8   |   3   | 75% */
-  {  9, 3 },          /*  13 |   9   |   3   | 77% */
-  {  9, 4 },          /*  14 |   9   |   4   | 71% */
-  { 10, 4 },          /*  15 |  10   |   4   | 73% */
-  { 11, 4 },          /*  16 |  11   |   4   | 75% */
-  { 12, 4 },          /*  17 |  12   |   4   | 76% */
-  { 12, 5 },          /*  18 |  12   |   5   | 72% */
-  { 13, 5 },          /*  19 |  13   |   5   | 74% */
-  { 14, 5 },          /*  20 |  14   |   5   | 75% */
-  { 15, 5 },          /*  21 |  15   |   5   | 76% */
-  { 15, 6 },          /*  22 |  15   |   6   | 73% */
-  { 16, 6 },          /*  23 |  16   |   6   | 74% */
-  { 16, 7 },          /*  24 |  16   |   7   | 71% */
-  { 16, 8 }           /*  25 |  16   |   8   | 68% */
+  /* Time-Quanta | PROPSEG | PSEG1 | PSEG2 | Sample-Point */
+  /* ---------------------------------------------------- */
+  {  8U, 3U, 2U, 2U },         /*1+3+2+1=8 |  3  |  2  |  2  | 75% */
+  {  9U, 3U, 3U, 2U },              /*   9 |  3  |  3  |  2  | 78% */
+  { 10U, 3U, 3U, 3U },              /*  10 |  3  |  3  |  3  | 70% */
+  { 11U, 4U, 3U, 3U },              /*  11 |  4  |  3  |  3  | 73% */
+  { 12U, 4U, 4U, 3U },              /*  12 |  4  |  4  |  3  | 75% */
+  { 13U, 5U, 4U, 3U },              /*  13 |  5  |  4  |  3  | 77% */
+  { 14U, 5U, 4U, 4U },              /*  14 |  5  |  4  |  4  | 71% */
+  { 15U, 6U, 4U, 4U },              /*  15 |  6  |  4  |  4  | 73% */
+  { 16U, 6U, 5U, 4U },              /*  16 |  6  |  5  |  4  | 75% */
+  { 17U, 7U, 5U, 4U },              /*  17 |  7  |  5  |  4  | 76% */
+  { 18U, 7U, 5U, 5U },              /*  18 |  7  |  5  |  5  | 72% */
+  { 19U, 8U, 5U, 5U },              /*  19 |  8  |  5  |  5  | 74% */
+  { 20U, 8U, 6U, 5U },              /*  20 |  8  |  6  |  5  | 75% */
+  { 21U, 8U, 7U, 5U },              /*  21 |  8  |  7  |  5  | 76% */
+  { 22U, 8U, 7U, 6U },              /*  22 |  8  |  7  |  6  | 73% */
+  { 23U, 8U, 8U, 6U },              /*  23 |  8  |  8  |  6  | 74% */
+  { 24U, 8U, 8U, 7U },              /*  24 |  8  |  8  |  7  | 71% */
+  { 25U, 8U, 8U, 8U }               /*  25 |  8  |  8  |  8  | 68% */
 };
 
 
@@ -98,50 +134,190 @@ static const tCanBusTiming canTiming[] =
 **            otherwise.
 **
 ****************************************************************************************/
-static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
-                                  blt_int8u *tseg1, blt_int8u *tseg2)
+static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u * prescaler,
+                                  tCanBusTiming * busTimingCfg)
 {
   blt_int8u  cnt;
   blt_int32u canClockFreqkHz;
+  blt_int32u div2RegValue;
+  blt_int8u  const div2DividerLookup[] =
+  {
+     0U, /* 0b000. Output disabled. */
+     1U, /* 0b001. Divide by 1. */
+     2U, /* 0b010. Divide by 2. */
+     4U, /* 0b011. Divide by 4. */
+     8U, /* 0b100. Divide by 8. */
+    16U, /* 0b101. Divide by 16. */
+    32U, /* 0b110. Divide by 32. */
+    64U, /* 0b111. Divide by 64. */
+  };
 
-  /* TODO ##Port This helper function assists with getting a compatible bittiming 
-   * configuration, based on the specified 'baud' communication speed on the CAN bus in
-   * kbps. This function needs two microcontroller specific values: (1) the speed of
-   * the clock that sources the CAN peripheral and (2) the supported range of the
-   * prescaler that for scaling down the CAN peripheral clock speed.
+  /* Obtain the DIV2 divider value of the SOSC_CLK. */
+  div2RegValue = (SCG->SOSCDIV & SCG_SOSCDIV_SOSCDIV2_MASK) >> SCG_SOSCDIV_SOSCDIV2_SHIFT;
+  /* Check if the DIV2 register value for SOSC is 0. In this case SOSCDIV2_CLK is
+   * currently disabled.
    */
-
-  /* TODO ##Port Set the clock speed of the CAN peripheral in kHz. You can used the
-   * macros BOOT_CPU_XTAL_SPEED_KHZ and BOOT_CPU_SYSTEM_SPEED_KHZ if applicable. 
+  if (div2RegValue == 0U)
+  {
+    /* Configure the DIV2 for a default divide by 1 to make sure the SOSCDIV2_CLK is
+     * actually enabled.
+     */
+    div2RegValue = 1U;
+    SCG->SOSCDIV = SCG_SOSCDIV_SOSCDIV2(div2RegValue);
+  }
+  /* Determine the SOSC clock frequency. */
+  canClockFreqkHz = CPU_XTAL_CLK_HZ / 1000U;
+  /* Now process the configured DIV2 divider factor to get the actual frequency of the
+   * CAN peripheral source clock.
    */
-  canClockFreqkHz = BOOT_CPU_XTAL_SPEED_KHZ;
+  canClockFreqkHz /= div2DividerLookup[div2RegValue];
 
-  /* loop through all possible time quanta configurations to find a match */
+  /* Loop through all possible time quanta configurations to find a match. */
   for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
   {
-    if ((canClockFreqkHz % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
+    if ((canClockFreqkHz % (baud * canTiming[cnt].time_quanta)) == 0U)
     {
-      /* compute the prescaler that goes with this TQ configuration */
-      *prescaler = canClockFreqkHz/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
+      /* Compute the prescaler that goes with this TQ configuration. */
+      *prescaler = canClockFreqkHz/(baud * canTiming[cnt].time_quanta);
   
-      /* TODO ##Port Update the prescaler range that is supported by the CAN peripheral
-       * on the microcontroller. The example implementation is for a prescaler that can
-       * be in the 1 - 1024 range.
-       */
-      /* make sure the prescaler is valid */
-      if ((*prescaler > 0) && (*prescaler <= 1024))
+      /* Make sure the prescaler is valid. */
+      if ((*prescaler > 0U) && (*prescaler <= 256U))
       {
-        /* store the bustiming configuration */
-        *tseg1 = canTiming[cnt].tseg1;
-        *tseg2 = canTiming[cnt].tseg2;
-        /* found a good bus timing configuration */
+        /* Store the bustiming configuration. */
+        *busTimingCfg = canTiming[cnt];
+        /* Found a good bus timing configuration. */
         return BLT_TRUE;
       }
     }
   }
-  /* could not find a good bus timing configuration */
+  /* Could not find a good bus timing configuration. */
   return BLT_FALSE;
 } /*** end of CanGetSpeedConfig ***/
+
+
+/************************************************************************************//**
+** \brief     Places the CAN controller in freeze mode. Note that the CAN controller
+**            can only be placed in freeze mode, if it is actually enabled.
+** \return    none.
+**
+****************************************************************************************/
+static void CanFreezeModeEnter(void)
+{
+  blt_int32u timeout;
+
+  /* This function should only be called with the module enabled. */
+  ASSERT_RT((CANx->MCR & CAN_MCR_MDIS_MASK) == 0U);
+
+  /* Request to enter freeze mode. */
+  CANx->MCR = (CANx->MCR & ~CAN_MCR_FRZ_MASK)  | CAN_MCR_FRZ(1U);
+  CANx->MCR = (CANx->MCR & ~CAN_MCR_HALT_MASK) | CAN_MCR_HALT(1U);
+  /* Set timeout time for entering freeze mode. */
+  timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
+  /* Wait for freeze mode acknowledgement. */
+  while (((CANx->MCR & CAN_MCR_FRZACK_MASK)) == 0U)
+  {
+    /* Keep the watchdog happy. */
+    CopService();
+    /* Break loop upon timeout. This would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
+  }
+} /*** end of CanFreezeModeEnter ***/
+
+
+/************************************************************************************//**
+** \brief     Leaves the CAN controller's freeze mode. Note that this operation can
+**            only be done, if it is actually enabled.
+** \return    none.
+**
+****************************************************************************************/
+static void CanFreezeModeExit(void)
+{
+  blt_int32u timeout;
+
+  /* This function should only be called with the module enabled. */
+  ASSERT_RT((CANx->MCR & CAN_MCR_MDIS_MASK) == 0U);
+
+  /* Request to leave freeze mode. */
+  CANx->MCR = (CANx->MCR & ~CAN_MCR_FRZ_MASK)  | CAN_MCR_FRZ(0U);
+  CANx->MCR = (CANx->MCR & ~CAN_MCR_HALT_MASK) | CAN_MCR_HALT(0U);
+  /* Set timeout time for leaving freeze mode. */
+  timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
+  /* Wait for non freeze mode acknowledgement. */
+  while (((CANx->MCR & CAN_MCR_FRZACK_MASK)) != 0U)
+  {
+    /* Keep the watchdog happy. */
+    CopService();
+    /* Break loop upon timeout. This would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
+  }
+} /*** end of CanFreezeModeExit ***/
+
+
+/************************************************************************************//**
+** \brief     Places the CAN controller in disabled mode.
+** \return    none.
+**
+****************************************************************************************/
+static void CanDisabledModeEnter(void)
+{
+  blt_int32u timeout;
+
+  /* Only continue if the CAN controller is currently enabled. */
+  if ((CANx->MCR & CAN_MCR_MDIS_MASK) == 0U)
+  {
+    /* Request disabled mode. */
+    CANx->MCR = (CANx->MCR & ~CAN_MCR_MDIS_MASK) | CAN_MCR_MDIS(1U);
+    /* Set timeout time for entering disabled mode. */
+    timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
+    /* Wait for disabled mode acknowledgement. */
+    while (((CANx->MCR & CAN_MCR_LPMACK_MASK)) == 0U)
+    {
+      /* Keep the watchdog happy. */
+      CopService();
+      /* Break loop upon timeout. This would indicate a hardware failure. */
+      if (TimerGet() > timeout)
+      {
+        break;
+      }
+    }
+  }
+} /*** end of CanDisabledModeEnter ***/
+
+/************************************************************************************//**
+** \brief     Places the CAN controller in enabled mode.
+** \return    none.
+**
+****************************************************************************************/
+static void CanDisabledModeExit(void)
+{
+  blt_int32u timeout;
+
+  /* Only continue if the CAN controller is currently disabled. */
+  if ((CANx->MCR & CAN_MCR_MDIS_MASK) != 0U)
+  {
+    /* Request enabled mode. */
+    CANx->MCR = (CANx->MCR & ~CAN_MCR_MDIS_MASK) | CAN_MCR_MDIS(0U);
+    /* Set timeout time for leaving disabled mode. */
+    timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
+    /* Wait for disabled mode acknowledgement. */
+    while (((CANx->MCR & CAN_MCR_LPMACK_MASK)) != 0U)
+    {
+      /* Keep the watchdog happy. */
+      CopService();
+      /* Break loop upon timeout. This would indicate a hardware failure. */
+      if (TimerGet() > timeout)
+      {
+        break;
+      }
+    }
+  }
+} /*** end of CanDisabledModeExit ***/
 
 
 /************************************************************************************//**
@@ -152,16 +328,41 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
 void CanInit(void)
 {
   blt_int16u prescaler = 0;
-  blt_int8u  tseg1 = 0, tseg2 = 0;
+  tCanBusTiming timingCfg = { 0 };
+  blt_int8u rjw;
+  blt_int16u idx;
+  blt_int32u timeout;
 
-  /* TODO ##Port Perform compile time assertion to check that the configured CAN channel
-   * is actually supported by this driver. The example is for a driver where CAN
-   * channels 0 - 1 are supported. 
+  /* Perform compile time assertion to check that the configured CAN channel is actually
+   * supported by this driver.
    */
-  ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX == 0 || BOOT_COM_CAN_CHANNEL_INDEX == 1));
+  ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX == 0) ||
+            (BOOT_COM_CAN_CHANNEL_INDEX == 1) ||
+            (BOOT_COM_CAN_CHANNEL_INDEX == 2));
 
-  /* obtain bittiming configuration information. */
-  if (CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &tseg1, &tseg2) == BLT_FALSE)
+  /* Enable the CAN peripheral clock. */
+  PCC->PCCn[PCC_FlexCANx_INDEX] |= PCC_PCCn_CGC_MASK;
+
+  /* The source clock needs to be configured first. For this the CAN controller must be
+   * in disabled mode, but that can only be entered after first entering freeze mode,
+   * which in turn can only be in enabled mode. So first enable the module, then goto
+   * freeze mode and finally enter disabled mode.
+   */
+  CanDisabledModeExit();
+  CanFreezeModeEnter();
+  CanDisabledModeEnter();
+  /* Configure SOSCDIV2 as the source clock. This assumes that an external oscillator
+   * is available, which is typically the case to meet the clock tolerance requirements
+   * of the CAN 2.0B secification.
+   */
+  CANx->CTRL1 &= ~CAN_CTRL1_CLKSRC_MASK;
+  /* Leave disabled mode. */
+  CanDisabledModeExit();
+  /* Make sure freeze mode is active to be able to initialize the CAN controller. */
+  CanFreezeModeEnter();
+
+  /* Obtain bittiming configuration information. */
+  if (CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &timingCfg) == BLT_FALSE)
   {
     /* Incorrect configuration. The specified baudrate is not supported for the given
      * clock configuration. Verify the following settings in blt_conf.h:
@@ -172,24 +373,73 @@ void CanInit(void)
     ASSERT_RT(BLT_FALSE);
   }
 
-  /* TODO ##Port Perform the configuration and initialization of the CAN controller. Note
-   * that the bittiming related values are already stored in 'prescaler, 'tseg1', and
-   * 'tseg2'. There values are ready to be used. Typically, the following tasks need
-   * to be performed:
-   * (1) Place the CAN controller in initialization mode.
-   * (2) Disable all CAN related interrupts as the bootloader runs in polling mode.
-   * (3) Configure the bittiming based on: 'prescaler', 'tseg1' and 'tseg2'. It is okay
-   *     to configure 1 time quanta for the synchronization jump width (SWJ).
-   * (4) Configure one transmit message object. It will be used in CanTransmitPacket()
-   *     to transmit a CAN message with identifier BOOT_COM_CAN_TX_MSG_ID. Note that if
-   *     the 0x80000000 bit is set in this identifier, it means that it is a 29-bit CAN
-   *     identifier instead of an 11-bit.
-   * (5) Configure at least one reception message object and configure its reception
-   *     acceptance filter such that only the CAN identifier BOOT_COM_CAN_RX_MSG_ID is 
-   *     received. Note that if the 0x80000000 bit is set in this identifier, it means
-   *     that it is a 29-bit CAN identifier instead of an 11-bit.
-   * (6) Leave the initialization mode and place the CAN controller in operational mode.
-   */    
+  /* Reset the current bittiming configuration. */
+  CANx->CTRL1 &= ~(CAN_CTRL1_PRESDIV_MASK | CAN_CTRL1_PROPSEG_MASK |
+                   CAN_CTRL1_PSEG1_MASK | CAN_CTRL1_PSEG2_MASK | CAN_CTRL1_RJW_MASK |
+                   CAN_CTRL1_SMP_MASK);
+  /* Configure the baudrate prescaler. */
+  CANx->CTRL1 |= CAN_CTRL1_PRESDIV(prescaler - 1U);
+  /* Configure the propagation segment. */
+  CANx->CTRL1 |= CAN_CTRL1_PROPSEG(timingCfg.propSeg - 1U);
+  /* Configure the phase segments. */
+  CANx->CTRL1 |= CAN_CTRL1_PSEG1(timingCfg.pseg1 - 1U);
+  CANx->CTRL1 |= CAN_CTRL1_PSEG2(timingCfg.pseg2 - 1U);
+  /* The resynchronization jump width (RJW) can be 1 - 4 TQ, yet should never be larger
+   * than pseg1. Configure the longest possible value for RJW.
+   */
+  rjw = (timingCfg.pseg1 < 4) ? timingCfg.pseg1 : 4;
+  CANx->CTRL1 |= CAN_CTRL1_RJW(rjw - 1U);
+  /* All the entries in canTiming[] have a PSEG1 >= 2, so three samples can be used to
+   * determine the value of the received bit, instead of the default one.
+   */
+  CANx->CTRL1 |= CAN_CTRL1_SMP(1U);
+
+  /* Clear the message box RAM. Each message box covers 4 words (1 word = 32-bits. */
+  for (idx = 0; idx < (CANx_MAX_MB_NUM * 4U); idx++)
+  {
+    CANx->RAMn[idx] = 0U;
+  }
+  /* Clear the reception mask register for each message box. */
+  for (idx = 0; idx < CANx_MAX_MB_NUM; idx++)
+  {
+    CANx->RXIMR[idx] = 0U;
+  }
+  /* Configure the maximum number of message boxes. */
+  CANx->MCR = (CANx->MCR & ~CAN_MCR_MAXMB_MASK) | CAN_MCR_MAXMB(CANx_MAX_MB_NUM - 1U);
+  /* Disable the self reception feature. */
+  CANx->MCR = (CANx->MCR & ~CAN_MCR_SRXDIS_MASK) | CAN_MCR_SRXDIS(1U);
+
+  /* TODO ##Port Configure the reception mailboxes and filters. Ideally use the first
+   * 8 mailboxes as a FIFO. Note that mailbox 8 is used for transmit already.
+   */
+
+  /* Disable all message box interrupts. */
+  CANx->IMASK1 = 0U;
+  /* Clear all mesasge box interrupt flags. */
+  CANx->IFLAG1 = CAN_IMASK1_BUF31TO0M_MASK;
+  /* Clear all error interrupt flags */
+  CANx->ESR1 = CAN_ESR1_ERRINT_MASK | CAN_ESR1_BOFFINT_MASK | CAN_ESR1_RWRNINT_MASK |
+               CAN_ESR1_TWRNINT_MASK | CAN_ESR1_BOFFDONEINT_MASK |
+               CAN_ESR1_ERRINT_FAST_MASK | CAN_ESR1_ERROVR_MASK;
+
+  /* Switch to normal user mode. */
+  CANx->MCR &= ~CAN_MCR_SUPV_MASK;
+  CANx->CTRL1 &= ~(CAN_CTRL1_LOM_MASK | CAN_CTRL1_LPB_MASK);
+  /* Exit freeze mode. */
+  CanFreezeModeExit();
+  /* Set timeout time for entering normal user mode. */
+  timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
+  /* Wait for normal user mode acknowledgement. */
+  while (((CANx->MCR & CAN_MCR_NOTRDY_MASK)) != 0U)
+  {
+    /* Keep the watchdog happy. */
+    CopService();
+    /* Break loop upon timeout. This would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
+  }
 } /*** end of CanInit ***/
 
 
@@ -202,29 +452,69 @@ void CanInit(void)
 ****************************************************************************************/
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
-  blt_int32u timeout;
+  blt_int32u         timeout;
+  blt_int32u const   txMsgBox = 8U;
+  blt_bool           isExtId  = BLT_FALSE;
+  blt_int32u         txMsgId  = BOOT_COM_CAN_TX_MSG_ID;
+  blt_int8u        * pMsgBoxData;
+  blt_int8u          byteIdx;
 
-  /* TODO ##Port Configure the transmit message object for transmitting a CAN message
-   * with CAN identifier BOOT_COM_CAN_TX_MSG_ID. Note that if the 0x80000000 bit is set
-   * in this identifier, it means that it is a 29-bit CAN identifier instead of an
-   * 11-bit. Next, copy the message data to the transmit message object. The number
-   * of data bytes is in 'len' and the actual data byte values are in array 'data'.
-   * Once done, start the transmission of the message that was just stored in the
-   * transmit message object.
+  /* Verify the correct configuration of the transmit mailbox. It must be >= 8 and <
+   * CANx_MAX_MB_NUM.
    */
+  ASSERT_RT((txMsgBox >= 8) && (txMsgBox < CANx_MAX_MB_NUM));
 
-  /* TODO ##Port Wait for the message transmission to complete, with timeout though to
-   * make sure this function doesn't hang in case of an error. This is typically achieved
-   * by evaluating a transmit complete flag in a register of the transmit message object.
-   */
-  /* determine timeout time for the transmit completion. */
-  timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
-  /* poll for completion of the transmit operation. */
-  while (1 == 0)
+  /* Prepare information about the message identifier. */
+  if ((txMsgId & 0x80000000U) != 0U)
   {
-    /* service the watchdog. */
+    /* It is a 29-bit extended CAN identifier. */
+    txMsgId &= ~0x80000000U;
+    isExtId = BLT_TRUE;
+  }
+
+  /* Clear the mailbox interrupt flag by writing a 1 to the corresponding box. */
+  CANx->IFLAG1 = CAN_IFLAG1_BUF31TO8I(txMsgBox);
+
+  /* Prepare the mailbox RAM for a basic CAN message.
+   *  EDL,BRS,ESI=0: CANFD not used.
+   */
+  CANx->RAMn[(txMsgBox * 4U) + 0U] &= ~0xE0000000U;
+  /* Configure SRR, IDE, RTR bits for a standard 11-bit transmit frame. */
+  CANx->RAMn[(txMsgBox * 4U) + 0U] &= ~(CAN_WMBn_CS_IDE_MASK | CAN_WMBn_CS_RTR_MASK);
+  CANx->RAMn[(txMsgBox * 4U) + 0U] |= CAN_WMBn_CS_SRR_MASK;
+  /* Configure the DLC. */
+  CANx->RAMn[(txMsgBox * 4U) + 0U] &= ~CAN_WMBn_CS_DLC_MASK;
+  CANx->RAMn[(txMsgBox * 4U) + 0U] |= CAN_WMBn_CS_DLC(len);
+  /* Write the data bytes of the CAN message to the mailbox RAM. */
+  pMsgBoxData = (blt_int8u * )(&CANx->RAMn[(txMsgBox * 4U) + 2U]);
+  for (byteIdx = 0; byteIdx < len; byteIdx++)
+  {
+    pMsgBoxData[((byteIdx) & ~3U) + (3U - ((byteIdx) & 3U))] = data[byteIdx];
+  }
+  /* Store the CAN message identifier in the mailbox RAM. */
+  if (isExtId == BLT_FALSE)
+  {
+     /* Store the 11-bit CAN identifier. */
+    CANx->RAMn[(txMsgBox * 4U) + 1U] = CAN_WMBn_ID_ID(txMsgId << 18U);
+  }
+  else
+  {
+    /* Set the IDE bit to configure the message for a 29-bit identifier. */
+    CANx->RAMn[(txMsgBox * 4U) + 0U] |= CAN_WMBn_CS_IDE_MASK;
+    /* Store the 29-bit CAN identifier. */
+    CANx->RAMn[(txMsgBox * 4U) + 1U] = CAN_WMBn_ID_ID(txMsgId);
+  }
+  /* Activate the mailbox to start the transmission by writing 0x0C to the CODE field. */
+  CANx->RAMn[(txMsgBox * 4U) + 0U] |= (0x0CU << 24U) & 0x0F000000U;
+
+  /* Determine timeout time for the transmit completion. */
+  timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
+  /* Poll for completion of the transmit operation. */
+  while ((CANx->IFLAG1 & CAN_IFLAG1_BUF31TO8I(txMsgBox)) == 0U)
+  {
+    /* Service the watchdog. */
     CopService();
-    /* break loop upon timeout. this would indicate a hardware failure or no other
+    /* Break loop upon timeout. this would indicate a hardware failure or no other
      * nodes connected to the bus.
      */
     if (TimerGet() > timeout)
@@ -255,7 +545,7 @@ blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
    * received and stored.
    */
 
-  /* give the result back to the caller */
+  /* Give the result back to the caller. */
   return result;
 } /*** end of CanReceivePacket ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */

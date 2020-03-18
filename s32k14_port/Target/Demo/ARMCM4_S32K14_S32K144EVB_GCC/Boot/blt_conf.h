@@ -89,7 +89,7 @@
  *
  */
 /** \brief Enable/disable CAN transport layer. */
-#define BOOT_COM_CAN_ENABLE             (0)
+#define BOOT_COM_CAN_ENABLE             (1)
 /** \brief Configure the desired CAN baudrate. */
 #define BOOT_COM_CAN_BAUDRATE           (500000)
 /** \brief Configure CAN message ID target->host. */

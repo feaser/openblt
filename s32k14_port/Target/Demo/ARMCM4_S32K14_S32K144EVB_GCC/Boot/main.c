@@ -78,6 +78,7 @@ static void Init(void)
   /* Enable the peripheral clock for the ports that are used. */
   PCC->PCCn[PCC_PORTC_INDEX] |= PCC_PCCn_CGC_MASK;
   PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
+  PCC->PCCn[PCC_PORTE_INDEX] |= PCC_PCCn_CGC_MASK;
   /* Configure SW2 (PC12) GPIO pin for (optional) backdoor entry input. */
   /* Input GPIO pin configuration. PC12 = GPIO, MUX = ALT1. */
   PORTC->PCR[12] |= PORT_PCR_MUX(1);
@@ -86,11 +87,17 @@ static void Init(void)
   /* Configure and enable Port C pin 12 GPIO as digital input */
   PTC->PDDR &= ~GPIO_PDDR_PDD(1 << 12U);
   PTC->PIDR &= ~GPIO_PIDR_PID(1 << 12U);
-  #if (BOOT_COM_RS232_ENABLE > 0)
+#if (BOOT_COM_RS232_ENABLE > 0)
   /* UART RX GPIO pin configuration. PC6 = UART1 RX, MUX = ALT2. */
   PORTC->PCR[6] |= PORT_PCR_MUX(2);
   /* UART TX GPIO pin configuration. PC7 = UART1 TX, MUX = ALT2. */
   PORTC->PCR[7] |= PORT_PCR_MUX(2);
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN RX GPIO pin configuration. PE4 = CAN0 RX, MUX = ALT5. */
+  PORTE->PCR[4] |= PORT_PCR_MUX(5);
+  /* CAN TX GPIO pin configuration. PE5 = CAN0 TX, MUX = ALT5. */
+  PORTE->PCR[5] |= PORT_PCR_MUX(5);
 #endif
 } /*** end of Init ***/
 
