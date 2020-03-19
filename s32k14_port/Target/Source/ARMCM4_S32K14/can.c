@@ -32,7 +32,6 @@
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_CAN_ENABLE > 0)
 #include "device_registers.h"                    /* device registers                   */
-#include "system_S32K144.h"                      /* device sconfiguration              */
 
 
 /****************************************************************************************
@@ -75,9 +74,7 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Structure type for grouping CAN bus timing related information.
- *  time-segment 1 = propSeg + pseg1 + 2 time quanta
- *  time-segment 2 = pseg2 + 1 time quanta */
+/** \brief Structure type for grouping CAN bus timing related information. */
 typedef struct t_can_bus_timing
 {
   blt_int8u timeQuanta;                               /**< Total number of time quanta */
@@ -145,8 +142,7 @@ static volatile blt_int32u dummyTimerVal;
 **            timing configuration.
 ** \param     baud The desired baudrate in kbps. Valid values are 10..1000.
 ** \param     prescaler Pointer to where the value for the prescaler will be stored.
-** \param     tseg1 Pointer to where the value for TSEG2 will be stored.
-** \param     tseg2 Pointer to where the value for TSEG2 will be stored.
+** \param     busTimingCfg Pointer to where the bus timing values will be stored.
 ** \return    BLT_TRUE if the CAN bustiming register values were found, BLT_FALSE
 **            otherwise.
 **
@@ -183,7 +179,7 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u * prescaler,
     SCG->SOSCDIV = SCG_SOSCDIV_SOSCDIV2(div2RegValue);
   }
   /* Determine the SOSC clock frequency. */
-  canClockFreqkHz = CPU_XTAL_CLK_HZ / 1000U;
+  canClockFreqkHz = BOOT_CPU_XTAL_SPEED_KHZ;
   /* Now process the configured DIV2 divider factor to get the actual frequency of the
    * CAN peripheral source clock.
    */
@@ -598,7 +594,7 @@ blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
      */
     *len = (CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 0U] & CAN_WMBn_CS_DLC_MASK) >> CAN_WMBn_CS_DLC_SHIFT;
     /* Read the data bytes of the CAN message from the mailbox RAM. */
-    pMsgBoxData = (blt_int8u * )(&CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 2U]);
+    pMsgBoxData = (blt_int8u *)(&CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 2U]);
     for (byteIdx = 0; byteIdx < *len; byteIdx++)
     {
       data[byteIdx] = pMsgBoxData[((byteIdx) & ~3U) + (3U - ((byteIdx) & 3U))];

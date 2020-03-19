@@ -75,8 +75,23 @@ static void Init(void)
 {
   /* Configure the system clock. */
   SystemClockConfig();
-  /* Enable the Port D peripheral clock which is used for the LED. */
+  /* Enable the peripheral clock for the ports that are used. */
+  PCC->PCCn[PCC_PORTC_INDEX] |= PCC_PCCn_CGC_MASK;
   PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
+  PCC->PCCn[PCC_PORTE_INDEX] |= PCC_PCCn_CGC_MASK;
+#if (BOOT_COM_RS232_ENABLE > 0)
+  /* UART RX GPIO pin configuration. PC6 = UART1 RX, MUX = ALT2. */
+  PORTC->PCR[6] |= PORT_PCR_MUX(2);
+  /* UART TX GPIO pin configuration. PC7 = UART1 TX, MUX = ALT2. */
+  PORTC->PCR[7] |= PORT_PCR_MUX(2);
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN RX GPIO pin configuration. PE4 = CAN0 RX, MUX = ALT5. */
+  PORTE->PCR[4] |= PORT_PCR_MUX(5);
+  /* CAN TX GPIO pin configuration. PE5 = CAN0 TX, MUX = ALT5. */
+  PORTE->PCR[5] |= PORT_PCR_MUX(5);
+#endif
+
   /* Initialize the timer driver. */
   TimerInit();
   /* Initialize the led driver. */
