@@ -47,12 +47,15 @@ static void SystemClockConfig(void);
 ** \return    Program return code.
 **
 ****************************************************************************************/
+extern void CanTransmitPacket(blt_int8u *data, blt_int8u len);
 int main(void)
 {
+  blt_int8u msgData[] = { 1, 2, 3, 4, 5, 6, 7 ,8 };
   /* Initialize the microcontroller. */
   Init();
   /* Initialize the bootloader. */
   BootInit();
+  CanTransmitPacket(msgData, 8);
 
   /* Start the infinite program loop. */
   while (1)

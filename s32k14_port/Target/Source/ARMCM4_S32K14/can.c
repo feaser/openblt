@@ -66,6 +66,11 @@
 #define CANx_MAX_MB_NUM                (FEATURE_CAN2_MAX_MB_NUM)
 #endif
 
+/** \brief The mailbox used for transmitting the XCP respond message. */
+#define CAN_TX_MSGBOX_NUM              (8U)
+/** \brief The mailbox used for receiving the XCP command message. */
+#define CAN_RX_MSGBOX_NUM              (9U)
+
 
 /****************************************************************************************
 * Type definitions
@@ -75,10 +80,10 @@
  *  time-segment 2 = pseg2 + 1 time quanta */
 typedef struct t_can_bus_timing
 {
-  blt_int8u time_quanta;                              /**< Total number of time quanta */
+  blt_int8u timeQuanta;                               /**< Total number of time quanta */
   blt_int8u propSeg;                                  /**< CAN propagation segment     */
-  blt_int8u pseg1;                                    /**< CAN phase segment 1         */
-  blt_int8u pseg2;                                    /**< CAN phase segment 2         */
+  blt_int8u phaseSeg1;                                /**< CAN phase segment 1         */
+  blt_int8u phaseSeg2;                                /**< CAN phase segment 2         */
 } tCanBusTiming;
 
 
@@ -121,6 +126,18 @@ static const tCanBusTiming canTiming[] =
   { 24U, 8U, 8U, 7U },              /*  24 |  8  |  8  |  7  | 71% */
   { 25U, 8U, 8U, 8U }               /*  25 |  8  |  8  |  8  | 68% */
 };
+
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief Dummy variable to store the CAN controller's free running timer value in.
+ *         This is needed at the end of a CAN message reception to unlock the mailbox
+ *         again. If this variable is declared locally within the function, it generates
+ *         an unwanted compiler warning about assigning a value and not using it.
+ *         For this reason this dummy variabled is declare here as a module global.
+ */
+static volatile blt_int32u dummyTimerVal;
 
 
 /************************************************************************************//**
@@ -175,10 +192,10 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u * prescaler,
   /* Loop through all possible time quanta configurations to find a match. */
   for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
   {
-    if ((canClockFreqkHz % (baud * canTiming[cnt].time_quanta)) == 0U)
+    if ((canClockFreqkHz % (baud * canTiming[cnt].timeQuanta)) == 0U)
     {
       /* Compute the prescaler that goes with this TQ configuration. */
-      *prescaler = canClockFreqkHz/(baud * canTiming[cnt].time_quanta);
+      *prescaler = canClockFreqkHz/(baud * canTiming[cnt].timeQuanta);
   
       /* Make sure the prescaler is valid. */
       if ((*prescaler > 0U) && (*prescaler <= 256U))
@@ -327,11 +344,12 @@ static void CanDisabledModeExit(void)
 ****************************************************************************************/
 void CanInit(void)
 {
-  blt_int16u prescaler = 0;
+  blt_int16u    prescaler = 0;
   tCanBusTiming timingCfg = { 0 };
-  blt_int8u rjw;
-  blt_int16u idx;
-  blt_int32u timeout;
+  blt_int8u     rjw;
+  blt_int16u    idx;
+  blt_int32u    timeout;
+  blt_int32u    rxMsgId  = BOOT_COM_CAN_RX_MSG_ID;
 
   /* Perform compile time assertion to check that the configured CAN channel is actually
    * supported by this driver.
@@ -339,6 +357,10 @@ void CanInit(void)
   ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX == 0) ||
             (BOOT_COM_CAN_CHANNEL_INDEX == 1) ||
             (BOOT_COM_CAN_CHANNEL_INDEX == 2));
+
+  /* Verify the correct configuration of the transmit and receive mailboxes. */
+  ASSERT_CT(CAN_TX_MSGBOX_NUM < CANx_MAX_MB_NUM);
+  ASSERT_CT(CAN_RX_MSGBOX_NUM < CANx_MAX_MB_NUM);
 
   /* Enable the CAN peripheral clock. */
   PCC->PCCn[PCC_FlexCANx_INDEX] |= PCC_PCCn_CGC_MASK;
@@ -382,12 +404,12 @@ void CanInit(void)
   /* Configure the propagation segment. */
   CANx->CTRL1 |= CAN_CTRL1_PROPSEG(timingCfg.propSeg - 1U);
   /* Configure the phase segments. */
-  CANx->CTRL1 |= CAN_CTRL1_PSEG1(timingCfg.pseg1 - 1U);
-  CANx->CTRL1 |= CAN_CTRL1_PSEG2(timingCfg.pseg2 - 1U);
+  CANx->CTRL1 |= CAN_CTRL1_PSEG1(timingCfg.phaseSeg1 - 1U);
+  CANx->CTRL1 |= CAN_CTRL1_PSEG2(timingCfg.phaseSeg2 - 1U);
   /* The resynchronization jump width (RJW) can be 1 - 4 TQ, yet should never be larger
    * than pseg1. Configure the longest possible value for RJW.
    */
-  rjw = (timingCfg.pseg1 < 4) ? timingCfg.pseg1 : 4;
+  rjw = (timingCfg.phaseSeg1 < 4) ? timingCfg.phaseSeg1 : 4;
   CANx->CTRL1 |= CAN_CTRL1_RJW(rjw - 1U);
   /* All the entries in canTiming[] have a PSEG1 >= 2, so three samples can be used to
    * determine the value of the received bit, instead of the default one.
@@ -409,9 +431,41 @@ void CanInit(void)
   /* Disable the self reception feature. */
   CANx->MCR = (CANx->MCR & ~CAN_MCR_SRXDIS_MASK) | CAN_MCR_SRXDIS(1U);
 
-  /* TODO ##Port Configure the reception mailboxes and filters. Ideally use the first
-   * 8 mailboxes as a FIFO. Note that mailbox 8 is used for transmit already.
+  /* Enable individual reception masking. This disables the legacy support for the
+   * global reception mask and the mailbox 14/15 individual reception mask.
    */
+  CANx->MCR = (CANx->MCR & ~CAN_MCR_IRMQ_MASK) | CAN_MCR_IRMQ(1U);
+  /* Disable the reception FIFO. This driver only needs to receive one CAN message
+   * identifier. It is sufficient to use just one dedicated mailbox for this.
+   */
+  CANx->MCR &= ~CAN_MCR_RFEN_MASK;
+  /* Configure the mask of the invididual message reception mailbox to check all ID bits
+   * and also the IDE bit.
+   */
+  CANx->RXIMR[CAN_RX_MSGBOX_NUM] = 0x40000000U | 0x1FFFFFFFU;
+  /* Configure the reception mailbox to receive just the CAN message configured with
+   * BOOT_COM_CAN_RX_MSG_ID.
+   *   EDL, BRS, ESI=0: CANFD not used.
+   *   CODE=0b0100: mailbox set to active and empty.
+   *   IDE=0: 11-bit CAN identifier.
+   *   SRR, RTR, TIME STAMP=0: not applicable.
+   */
+  CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 0U] = 0x04000000;
+  /* Store the message identifier to receive in the mailbox RAM. */
+  if ((rxMsgId & 0x80000000U) != 0U)
+  {
+    /* It is a 29-bit extended CAN identifier. */
+    rxMsgId &= ~0x80000000U;
+    /* Set the IDE bit to configure the message for a 29-bit identifier. */
+    CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 0U] |= CAN_WMBn_CS_IDE_MASK;
+    /* Store the 29-bit CAN identifier. */
+    CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 1U] = CAN_WMBn_ID_ID(rxMsgId);
+  }
+  else
+  {
+    /* Store the 11-bit CAN identifier. */
+   CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 1U] = CAN_WMBn_ID_ID(rxMsgId << 18U);
+  }
 
   /* Disable all message box interrupts. */
   CANx->IMASK1 = 0U;
@@ -452,17 +506,11 @@ void CanInit(void)
 ****************************************************************************************/
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
-  blt_int32u         timeout;
-  blt_int32u const   txMsgBox = 8U;
-  blt_bool           isExtId  = BLT_FALSE;
-  blt_int32u         txMsgId  = BOOT_COM_CAN_TX_MSG_ID;
-  blt_int8u        * pMsgBoxData;
-  blt_int8u          byteIdx;
-
-  /* Verify the correct configuration of the transmit mailbox. It must be >= 8 and <
-   * CANx_MAX_MB_NUM.
-   */
-  ASSERT_RT((txMsgBox >= 8) && (txMsgBox < CANx_MAX_MB_NUM));
+  blt_int32u   timeout;
+  blt_bool     isExtId = BLT_FALSE;
+  blt_int32u   txMsgId = BOOT_COM_CAN_TX_MSG_ID;
+  blt_int8u  * pMsgBoxData;
+  blt_int8u    byteIdx;
 
   /* Prepare information about the message identifier. */
   if ((txMsgId & 0x80000000U) != 0U)
@@ -473,20 +521,21 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   }
 
   /* Clear the mailbox interrupt flag by writing a 1 to the corresponding box. */
-  CANx->IFLAG1 = CAN_IFLAG1_BUF31TO8I(txMsgBox);
+  CANx->IFLAG1 = (1U << CAN_TX_MSGBOX_NUM);
 
   /* Prepare the mailbox RAM for a basic CAN message.
    *  EDL,BRS,ESI=0: CANFD not used.
    */
-  CANx->RAMn[(txMsgBox * 4U) + 0U] &= ~0xE0000000U;
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] &= ~0xE0000000U;
   /* Configure SRR, IDE, RTR bits for a standard 11-bit transmit frame. */
-  CANx->RAMn[(txMsgBox * 4U) + 0U] &= ~(CAN_WMBn_CS_IDE_MASK | CAN_WMBn_CS_RTR_MASK);
-  CANx->RAMn[(txMsgBox * 4U) + 0U] |= CAN_WMBn_CS_SRR_MASK;
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] &= ~(CAN_WMBn_CS_IDE_MASK |
+                                                 CAN_WMBn_CS_RTR_MASK);
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= CAN_WMBn_CS_SRR_MASK;
   /* Configure the DLC. */
-  CANx->RAMn[(txMsgBox * 4U) + 0U] &= ~CAN_WMBn_CS_DLC_MASK;
-  CANx->RAMn[(txMsgBox * 4U) + 0U] |= CAN_WMBn_CS_DLC(len);
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] &= ~CAN_WMBn_CS_DLC_MASK;
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= CAN_WMBn_CS_DLC(len);
   /* Write the data bytes of the CAN message to the mailbox RAM. */
-  pMsgBoxData = (blt_int8u * )(&CANx->RAMn[(txMsgBox * 4U) + 2U]);
+  pMsgBoxData = (blt_int8u * )(&CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 2U]);
   for (byteIdx = 0; byteIdx < len; byteIdx++)
   {
     pMsgBoxData[((byteIdx) & ~3U) + (3U - ((byteIdx) & 3U))] = data[byteIdx];
@@ -495,22 +544,22 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   if (isExtId == BLT_FALSE)
   {
      /* Store the 11-bit CAN identifier. */
-    CANx->RAMn[(txMsgBox * 4U) + 1U] = CAN_WMBn_ID_ID(txMsgId << 18U);
+    CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 1U] = CAN_WMBn_ID_ID(txMsgId << 18U);
   }
   else
   {
     /* Set the IDE bit to configure the message for a 29-bit identifier. */
-    CANx->RAMn[(txMsgBox * 4U) + 0U] |= CAN_WMBn_CS_IDE_MASK;
+    CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= CAN_WMBn_CS_IDE_MASK;
     /* Store the 29-bit CAN identifier. */
-    CANx->RAMn[(txMsgBox * 4U) + 1U] = CAN_WMBn_ID_ID(txMsgId);
+    CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 1U] = CAN_WMBn_ID_ID(txMsgId);
   }
   /* Activate the mailbox to start the transmission by writing 0x0C to the CODE field. */
-  CANx->RAMn[(txMsgBox * 4U) + 0U] |= (0x0CU << 24U) & 0x0F000000U;
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= (0x0CU << 24U) & 0x0F000000U;
 
   /* Determine timeout time for the transmit completion. */
   timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
   /* Poll for completion of the transmit operation. */
-  while ((CANx->IFLAG1 & CAN_IFLAG1_BUF31TO8I(txMsgBox)) == 0U)
+  while ((CANx->IFLAG1 & (1U << CAN_TX_MSGBOX_NUM)) == 0U)
   {
     /* Service the watchdog. */
     CopService();
@@ -534,16 +583,33 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  blt_bool result = BLT_FALSE;
+  blt_bool    result = BLT_FALSE;
+  blt_int8u * pMsgBoxData;
+  blt_int8u   byteIdx;
 
-  /* TODO ##Port Check for the reception of a new CAN message with identifier 
-   * BOOT_COM_CAN_RX_MSG_ID. Note that if the 0x80000000 bit is set in this identifier, 
-   * it means that it is a 29-bit CAN identifier instead of an 11-bit.
-   * If a new message with this CAN identifier was received, store the data byte values
-   * in array 'data' and store the number of data bytes in 'len'. Finally, set 'result'
-   * to BLT_TRUE to indicate to the caller of this function that a new CAN message was
-   * received and stored.
+  /* Check if a message was received in the individual mailbox configured to receive
+   * the BOOT_COM_CAN_RX_MSG_ID message.
    */
+  if ((CANx->IFLAG1 & (1U << CAN_RX_MSGBOX_NUM)) != 0U)
+  {
+    /* Note that there is no need to verify the identifier of the CAN message because the
+     * mailbox is configured to only receive the BOOT_COM_CAN_TX_MSG_ID message. Start
+     * by reading out the DLC of the newly received CAN message.
+     */
+    *len = (CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 0U] & CAN_WMBn_CS_DLC_MASK) >> CAN_WMBn_CS_DLC_SHIFT;
+    /* Read the data bytes of the CAN message from the mailbox RAM. */
+    pMsgBoxData = (blt_int8u * )(&CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 2U]);
+    for (byteIdx = 0; byteIdx < *len; byteIdx++)
+    {
+      data[byteIdx] = pMsgBoxData[((byteIdx) & ~3U) + (3U - ((byteIdx) & 3U))];
+    }
+    /* Clear the mailbox interrupt flag by writing a 1 to the corresponding box. */
+    CANx->IFLAG1 = (1U << CAN_RX_MSGBOX_NUM);
+    /* Read the free running timer to unlock the mailbox. */
+    dummyTimerVal = CANx->TIMER;
+    /* Update the result. */
+    result = BLT_TRUE;
+  }
 
   /* Give the result back to the caller. */
   return result;
