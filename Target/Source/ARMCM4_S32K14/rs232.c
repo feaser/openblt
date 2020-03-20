@@ -105,7 +105,7 @@ void Rs232Init(void)
   /* Select option 2 as the UART peripheral source clock and enable the clock. Option 2
    * is the SIRCDIV2_CLK, which is available on all peripherals and configurations.
    */
-  PCC->PCCn[PCC_LPUARTx_INDEX] |= PCC_PCCn_PCS(0b010) | PCC_PCCn_CGC_MASK;
+  PCC->PCCn[PCC_LPUARTx_INDEX] |= PCC_PCCn_PCS(2) | PCC_PCCn_CGC_MASK;
   /* Obtain the DIV2 divider value of the SIRC_CLK. */
   div2RegValue = (SCG->SIRCDIV & SCG_SIRCDIV_SIRCDIV2_MASK) >> SCG_SIRCDIV_SIRCDIV2_SHIFT;
   /* Check if the DIV2 register value for SIRC is 0. In this case SIRCDIV2_CLK is
