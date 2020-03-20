@@ -181,7 +181,7 @@ void CanInit(void)
     ASSERT_RT(BLT_FALSE);
   }
 
-  /* TODO ##Vg Perform the configuration and initialization of the CAN controller. Note
+  /* TODO ##Port Perform the configuration and initialization of the CAN controller. Note
    * that the bittiming related values are already stored in 'prescaler, 'tseg1', and
    * 'tseg2'. There values are ready to be used. Typically, the following tasks need
    * to be performed:

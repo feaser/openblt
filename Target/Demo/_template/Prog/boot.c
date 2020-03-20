@@ -198,7 +198,7 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
 {
   unsigned char result = 0;
 
-  /* TODO ##Port Check if a new byte was received on the configured channel. This is
+  /* TODO ##Prog Check if a new byte was received on the configured channel. This is
    * typically done by checking the reception register not empty flag. If a new byte 
    * was received, read it out and store it in '*data'. Next, clear the reception flag
    * such that a new byte can be received again. Finally, set 'result' to 1 to indicate
