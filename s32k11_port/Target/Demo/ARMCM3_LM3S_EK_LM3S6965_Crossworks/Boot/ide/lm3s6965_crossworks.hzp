@@ -1,0 +1,198 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="lm3s6965_crossworks" target="8" version="2">
+  <project Name="openblt_ek_lm3s6965">
+    <configuration
+      Name="Common"
+      Placement="Flash"
+      Target="LM3S6965"
+      arm_architecture="v7M"
+      arm_core_type="Cortex-M3"
+      arm_gcc_target="arm-unknown-eabi"
+      arm_library_optimization="Small"
+      arm_linker_heap_size="128"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="128"
+      arm_simulator_memory_simulation_filename="$(TargetsDir)/LM3S/LM3SSimulatorMemory.dll"
+      arm_simulator_memory_simulation_parameter="0x40000;0x10000"
+      arm_target_debug_interface_type="ADIv5"
+      arm_target_loader_applicable_loaders="Flash"
+      arm_target_loader_default_loader="Flash"
+      arm_use_gcc_libraries="Yes"
+      build_intermediate_directory="$(Configuration)/../../obj"
+      build_output_directory="$(ProjectDir)/../bin"
+      build_remove_unused_symbols="Yes"
+      c_preprocessor_definitions="gcc"
+      c_user_include_directories="$(ProjectDir)/..;$(ProjectDir)/../lib;$(ProjectDir)/../lib/inc;$(ProjectDir)/../lib/fatfs;$(ProjectDir)/../lib/uip;$(ProjectDir)/../lib/driverlib;$(ProjectDir)/../../../../Source;$(ProjectDir)/../../../../Source/third_party/fatfs/src;$(ProjectDir)/../../../../Source/third_party/uip/uip;$(ProjectDir)/../../../../Source/third_party/uip/apps/dhcpc;$(ProjectDir)/../../../../Source/ARMCM3_LM3S;$(ProjectDir)/../../../../Source/ARMCM3_LM3S/Crossworks"
+      gcc_entry_point="reset_handler"
+      gcc_optimization_level="Optimize For Size"
+      link_include_standard_libraries="Yes"
+      linker_DebugIO_enabled="No"
+      linker_additional_files=""
+      linker_keep_symbols="_vectors;EntryFromProg"
+      linker_memory_map_file="$(TargetsDir)/LM3S/LM3S6965_MemoryMap.xml"
+      linker_output_format="srec"
+      linker_printf_enabled="No"
+      linker_printf_width_precision_supported="No"
+      linker_scanf_enabled="No"
+      linker_scanf_fmt_level="int"
+      linker_section_placement_file="$(StudioDir)/targets/Cortex_M/flash_placement.xml"
+      project_directory=""
+      project_type="Executable"
+      property_groups_file_path="$(TargetsDir)/LM3S/propertyGroups.xml"
+      target_get_partname_script="GetPartName()"
+      target_reset_script="Reset()" />
+    <configuration
+      Name="Flash"
+      arm_target_flash_loader_file_path="$(TargetsDir)/LM3S/Release/Loader.elf"
+      arm_target_flash_loader_type="LIBMEM RPC Loader"
+      target_reset_script="FLASHReset()" />
+    <folder Name="Source Files">
+      <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
+      <folder Name="Demo">
+        <folder Name="Boot">
+          <folder Name="lib">
+            <folder Name="inc">
+              <file file_name="../lib/inc/hw_ints.h" />
+              <file file_name="../lib/inc/hw_nvic.h" />
+              <file file_name="../lib/inc/hw_sysctl.h" />
+              <file file_name="../lib/inc/hw_types.h" />
+              <file file_name="../lib/inc/hw_flash.h" />
+              <file file_name="../lib/inc/hw_gpio.h" />
+              <file file_name="../lib/inc/hw_uart.h" />
+              <file file_name="../lib/inc/hw_memmap.h" />
+              <file file_name="../lib/inc/hw_ssi.h" />
+              <file file_name="../lib/inc/hw_ethernet.h" />
+            </folder>
+            <folder Name="driverlib">
+              <file file_name="../lib/driverlib/sysctl.c" />
+              <file file_name="../lib/driverlib/sysctl.h" />
+              <file file_name="../lib/driverlib/debug.h" />
+              <file file_name="../lib/driverlib/interrupt.c" />
+              <file file_name="../lib/driverlib/interrupt.h" />
+              <file file_name="../lib/driverlib/cpulib.c" />
+              <file file_name="../lib/driverlib/cpulib.h" />
+              <file file_name="../lib/driverlib/gpio.c" />
+              <file file_name="../lib/driverlib/gpio.h" />
+              <file file_name="../lib/driverlib/flashlib.c" />
+              <file file_name="../lib/driverlib/flashlib.h" />
+              <file file_name="../lib/driverlib/uartlib.c" />
+              <file file_name="../lib/driverlib/uartlib.h" />
+              <file file_name="../lib/driverlib/pin_map.h" />
+              <file file_name="../lib/driverlib/ssi.c" />
+              <file file_name="../lib/driverlib/ssi.h" />
+              <file file_name="../lib/driverlib/ethernet.c" />
+              <file file_name="../lib/driverlib/ethernet.h" />
+            </folder>
+            <folder Name="fatfs">
+              <file file_name="../lib/fatfs/ffconf.h" />
+              <file file_name="../lib/fatfs/mmc.c" />
+            </folder>
+            <folder Name="uip">
+              <file file_name="../lib/uip/clock-arch.c" />
+              <file file_name="../lib/uip/clock-arch.h" />
+              <file file_name="../lib/uip/netdev.c" />
+              <file file_name="../lib/uip/netdev.h" />
+              <file file_name="../lib/uip/uip-conf.h" />
+            </folder>
+          </folder>
+          <file file_name="../hooks.c" />
+          <file file_name="../main.c" />
+          <file file_name="../blt_conf.h" />
+          <file file_name="../cstart.s" />
+          <file file_name="../vectors.c" />
+          <file file_name="../shared_params.c" />
+          <file file_name="../shared_params.h" />
+        </folder>
+      </folder>
+      <folder Name="Source">
+        <folder Name="ARMCM3_LM3S">
+          <file file_name="../../../../Source/ARMCM3_LM3S/cpu.c" />
+          <file file_name="../../../../Source/ARMCM3_LM3S/flash.c" />
+          <file file_name="../../../../Source/ARMCM3_LM3S/flash.h" />
+          <file file_name="../../../../Source/ARMCM3_LM3S/nvm.c" />
+          <file file_name="../../../../Source/ARMCM3_LM3S/timer.c" />
+          <file file_name="../../../../Source/ARMCM3_LM3S/types.h" />
+          <folder Name="GCC">
+            <file file_name="../../../../Source/ARMCM3_LM3S/GCC/cpu_comp.c" />
+          </folder>
+          <file file_name="../../../../Source/ARMCM3_LM3S/rs232.c" />
+        </folder>
+        <file file_name="../../../../Source/assert.c" />
+        <file file_name="../../../../Source/assert.h" />
+        <file file_name="../../../../Source/backdoor.c" />
+        <file file_name="../../../../Source/backdoor.h" />
+        <file file_name="../../../../Source/boot.c" />
+        <file file_name="../../../../Source/boot.h" />
+        <file file_name="../../../../Source/com.c" />
+        <file file_name="../../../../Source/com.h" />
+        <file file_name="../../../../Source/cop.c" />
+        <file file_name="../../../../Source/cop.h" />
+        <file file_name="../../../../Source/plausibility.h" />
+        <file file_name="../../../../Source/xcp.c" />
+        <file file_name="../../../../Source/xcp.h" />
+        <file file_name="../../../../Source/file.c" />
+        <file file_name="../../../../Source/file.h" />
+        <folder Name="third_party">
+          <folder Name="fatfs">
+            <file file_name="../../../../Source/third_party/fatfs/src/diskio.h" />
+            <file file_name="../../../../Source/third_party/fatfs/src/ff.c" />
+            <file file_name="../../../../Source/third_party/fatfs/src/ff.h" />
+            <file file_name="../../../../Source/third_party/fatfs/src/integer.h" />
+            <file file_name="../../../../Source/third_party/fatfs/src/option/unicode.c" />
+          </folder>
+          <folder Name="uip">
+            <file file_name="../../../../Source/third_party/uip/uip/clock.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/lc.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/lc-addrlabels.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/lc-switch.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/pt.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip.c" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip_arch.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip_arp.c" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip_arp.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip_timer.c" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip_timer.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip-fw.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/uiplib.c" />
+            <file file_name="../../../../Source/third_party/uip/uip/uiplib.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip-neighbor.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/uipopt.h" />
+            <file file_name="../../../../Source/third_party/uip/uip/uip-split.h" />
+            <file file_name="../../../../Source/third_party/uip/apps/dhcpc/dhcpc.c" />
+            <file file_name="../../../../Source/third_party/uip/apps/dhcpc/dhcpc.h" />
+          </folder>
+        </folder>
+        <file file_name="../../../../Source/net.c" />
+        <file file_name="../../../../Source/net.h" />
+        <file file_name="../../../../Source/cpu.h" />
+        <file file_name="../../../../Source/nvm.h" />
+        <file file_name="../../../../Source/timer.h" />
+        <file file_name="../../../../Source/rs232.h" />
+      </folder>
+    </folder>
+    <folder Name="System Files">
+      <file file_name="$(TargetsDir)/LM3S/LM3S_Target.js">
+        <configuration Name="Common" file_type="Reset Script" />
+      </file>
+      <file file_name="../memory.x">
+        <configuration Name="Common" file_type="Linker Script" />
+      </file>
+    </folder>
+  </project>
+  <configuration Name="THUMB Debug" inherited_configurations="THUMB;Debug" />
+  <configuration
+    Name="THUMB"
+    Platform="ARM"
+    arm_instruction_set="THUMB"
+    arm_library_instruction_set="THUMB"
+    c_preprocessor_definitions="__THUMB"
+    hidden="Yes" />
+  <configuration
+    Name="Debug"
+    build_debug_information="Yes"
+    c_preprocessor_definitions="DEBUG"
+    gcc_optimization_level="None"
+    hidden="Yes"
+    link_include_startup_code="No" />
+</solution>
