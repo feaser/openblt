@@ -81,6 +81,7 @@ __isr_vector:
     .long   CMP0_IRQHandler                       /* CMP0 interrupt request */
     .long   LPUART1_RxTx_IRQHandler               /* LPUART1 Transmit / Receive  Interrupt */
     .long   LPUART0_RxTx_IRQHandler               /* LPUART0 Transmit / Receive Interrupt */
+    .long   0x55AA11EE                            /* Reserved for OpenBLT checksum */
 
     .size    __isr_vector, . - __isr_vector
 
