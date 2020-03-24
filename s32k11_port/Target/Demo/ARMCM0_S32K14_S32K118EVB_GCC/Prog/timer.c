@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_S32K14_S32K118EVB_GCC/Prog/timer.c
+* \file         Demo/ARMCM0_S32K14_S32K118EVB_GCC/Prog/timer.c
 * \brief        Timer driver source file.
-* \ingroup      Prog_ARMCM4_S32K14_S32K118EVB_GCC
+* \ingroup      Prog_ARMCM0_S32K14_S32K118EVB_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

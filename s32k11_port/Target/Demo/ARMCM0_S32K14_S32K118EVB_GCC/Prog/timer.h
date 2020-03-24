@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_S32K14_S32K118EVB_GCC/Prog/led.h
-* \brief        LED driver header file.
-* \ingroup      Prog_ARMCM4_S32K14_S32K118EVB_GCC
+* \file         Demo/ARMCM0_S32K14_S32K118EVB_GCC/Prog/timer.h
+* \brief        Timer driver header file.
+* \ingroup      Prog_ARMCM0_S32K14_S32K118EVB_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,15 +25,14 @@
 *
 * \endinternal
 ****************************************************************************************/
-#ifndef LED_H
-#define LED_H
+#ifndef TIMER_H
+#define TIMER_H
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-void LedInit(void);
-void LedToggle(void);
+void          TimerInit(void);
+unsigned long TimerGet(void);
 
-
-#endif /* LED_H */
-/*********************************** end of led.h **************************************/
+#endif /* TIMER_H */
+/*********************************** end of timer.h ************************************/

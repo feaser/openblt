@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_S32K14_S32K118EVB_GCC/Prog/timer.h
-* \brief        Timer driver header file.
-* \ingroup      Prog_ARMCM4_S32K14_S32K118EVB_GCC
+* \file         Demo/ARMCM0_S32K14_S32K118EVB_GCC/Prog/header.h
+* \brief        Generic header file.
+* \ingroup      Prog_ARMCM0_S32K14_S32K118EVB_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,14 +25,17 @@
 *
 * \endinternal
 ****************************************************************************************/
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef HEADER_H
+#define HEADER_H
 
 /****************************************************************************************
-* Function prototypes
+* Include files
 ****************************************************************************************/
-void          TimerInit(void);
-unsigned long TimerGet(void);
+#include "../Boot/blt_conf.h"                          /* bootloader configuration     */
+#include "led.h"                                       /* LED driver                   */
+#include "timer.h"                                     /* Timer driver                 */
+#include "device_registers.h"                          /* Device registers             */
+#include "system_S32K118.h"                            /* Device sconfiguration        */
 
-#endif /* TIMER_H */
-/*********************************** end of timer.h ************************************/
+#endif /* HEADER_H */
+/*********************************** end of header.h ***********************************/
