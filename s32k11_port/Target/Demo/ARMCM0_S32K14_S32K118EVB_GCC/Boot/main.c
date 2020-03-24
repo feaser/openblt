@@ -94,6 +94,12 @@ static void Init(void)
   /* UART TX GPIO pin configuration. PB1 = UART0 TX, MUX = ALT2. */
   PORTB->PCR[1] |= PORT_PCR_MUX(2);
 #endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN RX GPIO pin configuration. PE4 = CAN0 RX, MUX = ALT5. */
+  PORTE->PCR[4] |= PORT_PCR_MUX(5);
+  /* CAN TX GPIO pin configuration. PE5 = CAN0 TX, MUX = ALT5. */
+  PORTE->PCR[5] |= PORT_PCR_MUX(5);
+#endif
 } /*** end of Init ***/
 
 
