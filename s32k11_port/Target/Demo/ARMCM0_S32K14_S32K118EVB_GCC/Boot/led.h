@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM0_S32K14_S32K118EVB_GCC/Prog/header.h
-* \brief        Generic header file.
-* \ingroup      Prog_ARMCM0_S32K14_S32K118EVB_GCC
+* \file         Demo/ARMCM0_S32K14_S32K118EVB_GCC/Boot/led.h
+* \brief        LED driver header file.
+* \ingroup      Boot_ARMCM0_S32K14_S32K118EVB_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -25,18 +25,16 @@
 *
 * \endinternal
 ****************************************************************************************/
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef LED_H
+#define LED_H
 
 /****************************************************************************************
-* Include files
+* Function prototypes
 ****************************************************************************************/
-#include "../Boot/blt_conf.h"                          /* bootloader configuration     */
-#include "boot.h"                                      /* bootloader interface driver  */
-#include "led.h"                                       /* LED driver                   */
-#include "timer.h"                                     /* Timer driver                 */
-#include "device_registers.h"                          /* Device registers             */
-#include "system_S32K118.h"                            /* Device sconfiguration        */
+void LedBlinkInit(blt_int16u interval_ms);
+void LedBlinkTask(void);
+void LedBlinkExit(void);
 
-#endif /* HEADER_H */
-/*********************************** end of header.h ***********************************/
+
+#endif /* LED_H */
+/*********************************** end of led.h **************************************/

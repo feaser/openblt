@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM0_S32K14_S32K118EVB_GCC/Prog/main.c
-* \brief        Demo program application source file.
-* \ingroup      Prog_ARMCM0_S32K14_S32K118EVB_GCC
+* \file         Demo/ARMCM0_S32K14_S32K118EVB_GCC/Boot/main.c
+* \brief        Bootloader application source file.
+* \ingroup      Boot_ARMCM0_S32K14_S32K118EVB_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -29,7 +29,9 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "header.h"                                    /* generic header               */
+#include "boot.h"                                /* bootloader generic header          */
+#include "device_registers.h"                    /* device registers                   */
+#include "system_S32K118.h"                      /* device sconfiguration              */
 
 
 /****************************************************************************************
@@ -40,7 +42,7 @@ static void SystemClockConfig(void);
 
 
 /************************************************************************************//**
-** \brief     This is the entry point for the bootloader application and is called 
+** \brief     This is the entry point for the bootloader application and is called
 **            by the reset interrupt vector after the C-startup routines executed.
 ** \return    Program return code.
 **
@@ -49,16 +51,14 @@ int main(void)
 {
   /* Initialize the microcontroller. */
   Init();
-  /* Initialize the bootloader interface */
-  BootComInit();
+  /* Initialize the bootloader. */
+  BootInit();
 
   /* Start the infinite program loop. */
   while (1)
   {
-    /* Toggle LED with a fixed frequency. */
-    LedToggle();
-    /* Check for bootloader activation request */
-    BootComCheckActivationRequest();
+    /* Run the bootloader task. */
+    BootTask();
   }
 
   /* Program should never get here. */
@@ -77,21 +77,23 @@ static void Init(void)
   SystemClockConfig();
   /* Enable the peripheral clock for the ports that are used. */
   PCC->PCCn[PCC_PORTB_INDEX] |= PCC_PCCn_CGC_MASK;
+  PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
   PCC->PCCn[PCC_PORTE_INDEX] |= PCC_PCCn_CGC_MASK;
 
+  /* Configure SW2 (PD3) GPIO pin for (optional) backdoor entry input. */
+  /* Input GPIO pin configuration. PD3 = GPIO, MUX = ALT1. */
+  PORTD->PCR[3] |= PORT_PCR_MUX(1);
+  /* Disable pull device, as SW2 already has a pull down resistor on the board. */
+  PORTD->PCR[3] &= ~PORT_PCR_PE(1);
+  /* Configure and enable Port D pin 3 GPIO as digital input */
+  PTD->PDDR &= ~GPIO_PDDR_PDD(1 << 3U);
+  PTD->PIDR &= ~GPIO_PIDR_PID(1 << 3U);
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART RX GPIO pin configuration. PB0 = UART0 RX, MUX = ALT2. */
   PORTB->PCR[0] |= PORT_PCR_MUX(2);
   /* UART TX GPIO pin configuration. PB1 = UART0 TX, MUX = ALT2. */
   PORTB->PCR[1] |= PORT_PCR_MUX(2);
 #endif
-
-  /* Initialize the timer driver. */
-  TimerInit();
-  /* Initialize the led driver. */
-  LedInit();
-  /* Enable the global interrupts. */
-  ENABLE_INTERRUPTS();
 } /*** end of Init ***/
 
 

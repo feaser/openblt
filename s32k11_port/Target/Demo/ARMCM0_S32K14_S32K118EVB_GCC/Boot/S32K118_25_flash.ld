@@ -48,9 +48,9 @@ M_VECTOR_RAM_SIZE = DEFINED(__flash_vector_table__) ? 0x0 : 0x00C0;
 MEMORY
 {
   /* Flash */
-  m_interrupts          (RX)  : ORIGIN = 0x00002000, LENGTH = 0x000000C4
-  m_flash_config        (RX)  : ORIGIN = 0x00002400, LENGTH = 0x00000010
-  m_text                (RX)  : ORIGIN = 0x00002410, LENGTH = 0x0003FBF0 - 0x2000
+  m_interrupts          (RX)  : ORIGIN = 0x00000000, LENGTH = 0x000000C0
+  m_flash_config        (RX)  : ORIGIN = 0x00000400, LENGTH = 0x00000010
+  m_text                (RX)  : ORIGIN = 0x00000410, LENGTH = 0x00001BF0
 
   /* SRAM_L */
 
