@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM0_S32K14_S32K118EVB_GCC/Prog/boot.c
+* \file         Demo/ARMCM0_S32K14_S32K118EVB_IAR/Prog/boot.c
 * \brief        Demo program bootloader interface source file.
-* \ingroup      Prog_ARMCM0_S32K14_S32K118EVB_GCC
+* \ingroup      Prog_ARMCM0_S32K14_S32K118EVB_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
