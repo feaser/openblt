@@ -190,8 +190,8 @@ static void SystemClockConfig(void)
    * DIVBUS=1, div. by 2: bus clock = 40 MHz.
    * DIVSLOW=2, div. by 2: SCG slow, flash clock= 26 2/3 MHz.
    */
-   SCG->RCCR= SCG_RCCR_SCS(6) | SCG_RCCR_DIVCORE(0b01) | SCG_RCCR_DIVBUS(0b01) |
-              SCG_RCCR_DIVSLOW(0b10);
+   SCG->RCCR= SCG_RCCR_SCS(6) | SCG_RCCR_DIVCORE(1) | SCG_RCCR_DIVBUS(1) |
+              SCG_RCCR_DIVSLOW(2);
    /* Wait until system clock source is SPLL. */
    while (((SCG->CSR & SCG_CSR_SCS_MASK) >> SCG_CSR_SCS_SHIFT ) != 6U)
    {
