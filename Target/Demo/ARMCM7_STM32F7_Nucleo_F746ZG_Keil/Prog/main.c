@@ -224,12 +224,12 @@ void HAL_MspInit(void)
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN TX and RX GPIO pin configuration. */
-  GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+  GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 } /*** end of HAL_MspInit ***/
 
