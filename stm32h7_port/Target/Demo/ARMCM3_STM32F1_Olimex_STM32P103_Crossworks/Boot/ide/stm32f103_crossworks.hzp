@@ -1,0 +1,217 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="stm32f103_crossworks" target="8" version="2">
+  <project Name="openblt_olimex_stm32p103">
+    <configuration
+      Name="Common"
+      Placement="Flash"
+      Target="STM32F103RB"
+      arm_architecture="v7M"
+      arm_core_type="Cortex-M3"
+      arm_linker_heap_size="128"
+      arm_linker_jtag_pad_pre_dr="1"
+      arm_linker_jtag_pad_pre_ir="5"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="128"
+      arm_simulator_memory_simulation_filename="$(TargetsDir)/STM32/STM32SimulatorMemory.dll"
+      arm_simulator_memory_simulation_parameter="STM32F103RB;0x20000;0x5000"
+      arm_target_debug_interface_type="ADIv5"
+      arm_target_loader_applicable_loaders="Flash"
+      arm_target_loader_default_loader="Flash"
+      arm_target_loader_parameter="8000000"
+      arm_use_gcc_libraries="Yes"
+      build_intermediate_directory="$(Configuration)/../../obj"
+      build_output_directory="$(ProjectDir)/../bin"
+      c_only_additional_options="-I./..;-I./../lib;-I./../lib/fatfs;-I./../lib/CMSIS/Include;-I./../lib/CMSIS/Device/ST/STM32F1xx/Include;-I./../lib/STM32F1xx_HAL_Driver/Inc;-I./../lib/STM32F1xx_HAL_Driver/Inc/Legacy;-I./../../../../Source;-I./../../../../Source/third_party/fatfs/src;-I./../../../../Source/ARMCM3_STM32F1;-I./../../../../Source/ARMCM3_STM32F1/Crossworks"
+      c_preprocessor_definitions="USE_FULL_LL_DRIVER;USE_HAL_DRIVER;STM32F103xB"
+      c_user_include_directories="$(TargetsDir)/STM32/include"
+      gcc_optimization_level="Debug"
+      link_include_standard_libraries="Yes"
+      linker_keep_symbols="_vectors;EntryFromProg"
+      linker_memory_map_file="$(TargetsDir)/STM32/STM32F103RB_MemoryMap.xml"
+      linker_output_format="srec"
+      linker_printf_enabled="No"
+      linker_printf_width_precision_supported="No"
+      linker_scanf_enabled="No"
+      linker_section_placement_file="$(StudioDir)/targets/Cortex_M/flash_placement.xml"
+      oscillator_frequency="8MHz"
+      project_directory=""
+      project_type="Executable"
+      property_groups_file_path="$(TargetsDir)/STM32/propertyGroups.xml"
+      target_get_partname_script="GetPartName()"
+      target_match_partname_script="MatchPartName(&quot;$(Target)&quot;)"
+      target_reset_script="Reset()" />
+    <configuration
+      Name="Flash"
+      arm_target_flash_loader_file_path="$(TargetsDir)/STM32/Release/Loader_rpc.elf"
+      arm_target_flash_loader_type="LIBMEM RPC Loader"
+      arm_target_loader_can_lock_all="No"
+      arm_target_loader_can_lock_range="No"
+      arm_target_loader_can_unlock_all="No"
+      arm_target_loader_can_unlock_range="No"
+      target_reset_script="FLASHReset()" />
+    <folder Name="Source Files">
+      <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
+      <folder Name="Demo">
+        <folder Name="Boot">
+          <file file_name="../hooks.c" />
+          <file file_name="../main.c" />
+          <file file_name="../stm32f10x.h" />
+          <folder Name="lib">
+            <folder Name="cmsis">
+              <file file_name="../lib/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h" />
+              <file file_name="../lib/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h" />
+              <file file_name="../lib/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h" />
+              <file file_name="../lib/CMSIS/Include/cmsis_compiler.h" />
+              <file file_name="../lib/CMSIS/Include/cmsis_gcc.h" />
+              <file file_name="../lib/CMSIS/Include/cmsis_version.h" />
+              <file file_name="../lib/CMSIS/Include/core_cm1.h" />
+              <file file_name="../lib/CMSIS/Include/tz_context.h" />
+            </folder>
+            <folder Name="fatfs">
+              <file file_name="../lib/fatfs/ffconf.h" />
+              <file file_name="../lib/fatfs/mmc.c" />
+            </folder>
+            <folder Name="hal">
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_can.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_exti.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_bus.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_cortex.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_exti.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_gpio.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_pwr.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_rcc.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_spi.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_system.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usart.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_utils.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_can.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_dma.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_exti.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_gpio.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_rcc.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_spi.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_usart.c" />
+              <file file_name="../lib/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_utils.c" />
+            </folder>
+            <file file_name="../lib/stm32f1xx_hal_conf.h" />
+            <file file_name="../lib/system_stm32f1xx.c" />
+          </folder>
+          <file file_name="../blt_conf.h" />
+          <file file_name="../cstart.s" />
+          <file file_name="../vectors.c" />
+          <file file_name="../led.c" />
+          <file file_name="../led.h" />
+        </folder>
+      </folder>
+      <folder Name="Source">
+        <folder Name="ARMCM3_STM32F1">
+          <file file_name="../../../../Source/ARMCM3_STM32F1/can.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/cpu.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/flash.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/flash.h" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/nvm.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/timer.c" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/types.h" />
+          <file file_name="../../../../Source/ARMCM3_STM32F1/usb.c" />
+          <folder Name="GCC">
+            <file file_name="../../../../Source/ARMCM3_STM32F1/GCC/cpu_comp.c" />
+          </folder>
+          <file file_name="../../../../Source/ARMCM3_STM32F1/rs232.c" />
+        </folder>
+        <file file_name="../../../../Source/assert.c" />
+        <file file_name="../../../../Source/assert.h" />
+        <file file_name="../../../../Source/backdoor.c" />
+        <file file_name="../../../../Source/backdoor.h" />
+        <file file_name="../../../../Source/boot.c" />
+        <file file_name="../../../../Source/boot.h" />
+        <file file_name="../../../../Source/com.c" />
+        <file file_name="../../../../Source/com.h" />
+        <file file_name="../../../../Source/cop.c" />
+        <file file_name="../../../../Source/cop.h" />
+        <file file_name="../../../../Source/plausibility.h" />
+        <file file_name="../../../../Source/xcp.c" />
+        <file file_name="../../../../Source/xcp.h" />
+        <file file_name="../../../../Source/file.c" />
+        <file file_name="../../../../Source/file.h" />
+        <folder Name="third_party">
+          <folder Name="fatfs">
+            <file file_name="../../../../Source/third_party/fatfs/src/diskio.h" />
+            <file file_name="../../../../Source/third_party/fatfs/src/ff.c" />
+            <file file_name="../../../../Source/third_party/fatfs/src/ff.h" />
+            <file file_name="../../../../Source/third_party/fatfs/src/integer.h" />
+            <file file_name="../../../../Source/third_party/fatfs/src/option/unicode.c" />
+          </folder>
+        </folder>
+        <file file_name="../../../../Source/can.h" />
+        <file file_name="../../../../Source/cpu.h" />
+        <file file_name="../../../../Source/nvm.h" />
+        <file file_name="../../../../Source/timer.h" />
+        <file file_name="../../../../Source/rs232.h" />
+      </folder>
+    </folder>
+    <folder Name="System Files">
+      <file file_name="$(TargetsDir)/STM32/STM32_Target.js">
+        <configuration Name="Common" file_type="Reset Script" />
+      </file>
+      <file file_name="../memory.x">
+        <configuration Name="Common" file_type="Linker Script" />
+      </file>
+    </folder>
+    <configuration Name="Debug" c_only_additional_options="" />
+  </project>
+  <configuration Name="THUMB Debug" inherited_configurations="THUMB;Debug" />
+  <configuration
+    Name="THUMB"
+    Platform="ARM"
+    arm_instruction_set="THUMB"
+    arm_library_instruction_set="THUMB"
+    c_preprocessor_definitions="__THUMB"
+    hidden="Yes" />
+  <configuration
+    Name="Debug"
+    build_debug_information="Yes"
+    c_preprocessor_definitions="DEBUG"
+    gcc_optimization_level="None"
+    hidden="Yes"
+    link_include_startup_code="No" />
+  <configuration
+    Name="THUMB Release"
+    inherited_configurations="THUMB;Release" />
+  <configuration
+    Name="Release"
+    build_debug_information="No"
+    c_additional_options="-g1"
+    c_preprocessor_definitions="NDEBUG"
+    gcc_optimization_level="Level 1"
+    hidden="Yes"
+    link_include_startup_code="No" />
+</solution>

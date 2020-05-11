@@ -1,0 +1,232 @@
+
+bin/demoprog_stm32f051.elf:     file format elf32-littlearm
+bin/demoprog_stm32f051.elf
+architecture: armv6s-m, flags 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+start address 0x08002000
+
+Program Header:
+0x70000001 off    0x00003574 vaddr 0x08003574 paddr 0x08003574 align 2**2
+         filesz 0x00000008 memsz 0x00000008 flags r--
+    LOAD off    0x00000000 vaddr 0x08000000 paddr 0x08000000 align 2**16
+         filesz 0x0000357c memsz 0x0000357c flags r-x
+    LOAD off    0x000100c0 vaddr 0x200000c0 paddr 0x0800357c align 2**16
+         filesz 0x0000006c memsz 0x0000014c flags rw-
+private flags = 5000200: [Version5 EABI] [soft-float ABI]
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00001574  08002000  08002000  00002000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .ARM.exidx    00000008  08003574  08003574  00003574  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .data         0000006c  200000c0  0800357c  000100c0  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  3 .bss          000000e0  2000012c  080035e8  0001012c  2**2
+                  ALLOC
+  4 .stack_dummy  00000100  20000210  20000210  00010130  2**3
+                  CONTENTS, READONLY
+  5 .ARM.attributes 00000028  00000000  00000000  00010230  2**0
+                  CONTENTS, READONLY
+  6 .comment      00000075  00000000  00000000  00010258  2**0
+                  CONTENTS, READONLY
+  7 .debug_line   00006842  00000000  00000000  000102cd  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_info   0000b509  00000000  00000000  00016b0f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_abbrev 00001f44  00000000  00000000  00022018  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_aranges 00000530  00000000  00000000  00023f60  2**3
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    0004e43e  00000000  00000000  00024490  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_loc    00002a2b  00000000  00000000  000728ce  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_ranges 000004c0  00000000  00000000  000752f9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 14 .debug_macro  0000ed96  00000000  00000000  000757b9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 15 .debug_frame  00000c14  00000000  00000000  00084550  2**2
+                  CONTENTS, READONLY, DEBUGGING
+SYMBOL TABLE:
+08002000 l    d  .text	00000000 .text
+08003574 l    d  .ARM.exidx	00000000 .ARM.exidx
+200000c0 l    d  .data	00000000 .data
+2000012c l    d  .bss	00000000 .bss
+20000210 l    d  .stack_dummy	00000000 .stack_dummy
+00000000 l    d  .ARM.attributes	00000000 .ARM.attributes
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_info	00000000 .debug_info
+00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
+00000000 l    d  .debug_aranges	00000000 .debug_aranges
+00000000 l    d  .debug_str	00000000 .debug_str
+00000000 l    d  .debug_loc	00000000 .debug_loc
+00000000 l    d  .debug_ranges	00000000 .debug_ranges
+00000000 l    d  .debug_macro	00000000 .debug_macro
+00000000 l    d  .debug_frame	00000000 .debug_frame
+00000000 l    df *ABS*	00000000 obj/startup_stm32f0xx.o
+00000100 l       *ABS*	00000000 Stack_Size
+00000000 l       *ABS*	00000000 Heap_Size
+0800219e l       .text	00000000 .flash_to_ram_loop_end
+08002194 l       .text	00000000 .flash_to_ram_loop
+080021cc l       .text	00000000 .fill_zero_bss
+080021c8 l       .text	00000000 .loop_zero_bss
+00000000 l    df *ABS*	00000000 crtstuff.c
+08003570 l     O .text	00000000 __EH_FRAME_BEGIN__
+080020c4 l     F .text	00000000 __do_global_dtors_aux
+2000012c l       .bss	00000001 completed.8879
+20000128 l     O .data	00000000 __do_global_dtors_aux_fini_array_entry
+080020ec l     F .text	00000000 frame_dummy
+20000130 l       .bss	00000018 object.8884
+20000124 l     O .data	00000000 __frame_dummy_init_array_entry
+00000000 l    df *ABS*	00000000 c:/progra~2/gnutoo~1/82018-~1/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp/crt0.o
+00000000 l    df *ABS*	00000000 system_stm32f0xx.c
+00000000 l    df *ABS*	00000000 stm32f0xx_hal_rcc.c
+00000000 l    df *ABS*	00000000 stm32f0xx_hal_cortex.c
+00000000 l    df *ABS*	00000000 stm32f0xx_hal_gpio.c
+00000000 l    df *ABS*	00000000 stm32f0xx_hal_uart.c
+00000000 l    df *ABS*	00000000 stm32f0xx_hal.c
+00000000 l    df *ABS*	00000000 _exit.c
+00000000 l    df *ABS*	00000000 timer.c
+00000000 l    df *ABS*	00000000 led.c
+20000148 l     O .bss	00000001 led_toggle_state.6577
+2000014c l     O .bss	00000004 timer_counter_last.6578
+00000000 l    df *ABS*	00000000 main.c
+08003150 l     F .text	0000004c SystemClock_Config
+0800319c l     F .text	00000014 Init
+00000000 l    df *ABS*	00000000 boot.c
+0800326c l     F .text	00000030 BootComRs232Init
+0800329c l     F .text	00000020 Rs232ReceiveByte
+080032e0 l     F .text	00000098 BootComRs232CheckActivationRequest
+20000150 l     O .bss	00000070 rs232Handle
+200001c0 l     O .bss	00000041 xcpCtoReqPacket.6593
+20000201 l     O .bss	00000001 xcpCtoRxInProgress.6595
+20000202 l     O .bss	00000001 xcpCtoRxLength.6594
+20000204 l     O .bss	00000004 xcpCtoRxStartTime.6596
+00000000 l    df *ABS*	00000000 _udivsi3.o
+08003380 l       .text	00000000 .udivsi3_skip_div0_test
+00000000 l    df *ABS*	00000000 _dvmd_tls.o
+00000000 l    df *ABS*	00000000 exit.c
+00000000 l    df *ABS*	00000000 init.c
+00000000 l    df *ABS*	00000000 memset.c
+00000000 l    df *ABS*	00000000 c:/progra~2/gnutoo~1/82018-~1/bin/../lib/gcc/arm-none-eabi/8.2.1/thumb/v6-m/nofp/crti.o
+00000000 l    df *ABS*	00000000 c:/progra~2/gnutoo~1/82018-~1/bin/../lib/gcc/arm-none-eabi/8.2.1/thumb/v6-m/nofp/crtn.o
+00000000 l    df *ABS*	00000000 impure.c
+200000c4 l     O .data	00000060 impure_data
+00000000 l    df *ABS*	00000000 crtstuff.c
+08003570 l     O .text	00000000 __FRAME_END__
+00000000 l    df *ABS*	00000000 
+20000128 l       .data	00000000 __init_array_end
+20000124 l       .data	00000000 __preinit_array_end
+20000124 l       .data	00000000 __init_array_start
+20000124 l       .data	00000000 __preinit_array_start
+08003544 g     O .text	00000008 APBPrescTable
+20000210 g       .stack_dummy	00000000 __HeapBase
+00000000 g       *ABS*	00000000 __HEAP_SIZE
+200000c0 g       .data	00000000 __data_start__
+080028b8 g     F .text	00000020 HAL_RCC_GetPCLK1Freq
+080028d8 g     F .text	00000064 HAL_NVIC_SetPriority
+080021fe  w    F .text	00000002 TIM1_CC_IRQHandler
+080021d8  w    F .text	00000002 HardFault_Handler
+080021fa  w    F .text	00000002 ADC1_COMP_IRQHandler
+080030dc g     F .text	0000000c SysTick_Handler
+08002b2c g     F .text	0000000c HAL_GPIO_WritePin
+080021e4  w    F .text	00000002 PVD_IRQHandler
+080028ac g     F .text	0000000c HAL_RCC_GetHCLKFreq
+080021dc  w    F .text	00000002 PendSV_Handler
+080021d6  w    F .text	00000002 NMI_Handler
+0800357c g       .ARM.exidx	00000000 __exidx_end
+080026e4 g     F .text	00000070 HAL_RCC_GetSysClockFreq
+08002210  w    F .text	00000002 I2C1_IRQHandler
+0800357c g       .ARM.exidx	00000000 __etext
+080031c4 g     F .text	000000a8 HAL_MspInit
+08002994  w    F .text	00000002 HAL_SYSTICK_Callback
+080029a0 g     F .text	0000018c HAL_GPIO_Init
+200000c0 g     O .data	00000004 SystemCoreClock
+08003380 g     F .text	0000010a .hidden __udivsi3
+20000210 g       .stack_dummy	00000000 __HeapLimit
+2000012c g       .bss	00000000 __bss_start__
+08002214  w    F .text	00000002 SPI1_IRQHandler
+08002204  w    F .text	00000002 TIM6_DAC_IRQHandler
+08002b3c g     F .text	000001c4 UART_SetConfig
+20000208 g     O .bss	00000004 uwTick
+0800293c g     F .text	00000038 HAL_SYSTICK_Config
+08003574 g       .text	00000000 __exidx_start
+0800356c g     O .text	00000004 _global_impure_ptr
+080034c4 g     F .text	00000048 __libc_init_array
+0800221c  w    F .text	00000002 USART3_4_IRQHandler
+0800210c g     F .text	00000000 _mainCRTStartup
+080021ee  w    F .text	00000002 EXTI2_3_IRQHandler
+0800351c g     F .text	00000000 _init
+08002212  w    F .text	00000002 I2C2_IRQHandler
+080032c4 g     F .text	0000001c BootActivate
+0800220e  w    F .text	00000002 TIM17_IRQHandler
+080021e6  w    F .text	00000002 RTC_IRQHandler
+08002e4c g     F .text	00000118 HAL_UART_Receive
+08002184 g     F .text	0000003c Reset_Handler
+08003070 g     F .text	00000020 HAL_Init
+080030e8 g     F .text	00000014 LedInit
+08002de0 g     F .text	0000006c UART_WaitOnFlagUntilTimeout
+08002d00 g     F .text	000000e0 UART_AdvFeatureConfig
+20000210 g       .stack_dummy	00000000 end
+2000012c g       .data	00000000 __data_end__
+0800220c  w    F .text	00000002 TIM16_IRQHandler
+2000020c g       .bss	00000000 __bss_end__
+00000100 g       *ABS*	00000000 __STACK_SIZE
+08002202  w    F .text	00000002 TIM3_IRQHandler
+080021f0  w    F .text	00000002 EXTI4_15_IRQHandler
+080021ea  w    F .text	00000002 RCC_IRQHandler
+080021f4  w    F .text	00000002 DMA1_Channel1_IRQHandler
+080021e0  w    F .text	00000002 Default_Handler
+0800210c g     F .text	00000000 _start
+08003534 g     O .text	00000010 AHBPrescTable
+08002f64 g     F .text	00000078 UART_CheckIdleState
+0800221e  w    F .text	00000002 CEC_IRQHandler
+08002208  w    F .text	00000002 TIM14_IRQHandler
+080021f8  w    F .text	00000002 DMA1_Channel4_5_IRQHandler
+08002754 g     F .text	00000158 HAL_RCC_ClockConfig
+08002206  w    F .text	00000002 TIM7_IRQHandler
+0800220a  w    F .text	00000002 TIM15_IRQHandler
+080021ec  w    F .text	00000002 EXTI0_1_IRQHandler
+08002220  w    F .text	00000002 USB_IRQHandler
+08003494  w    F .text	00000002 .hidden __aeabi_ldiv0
+080030a0  w    F .text	0000000c HAL_GetTick
+08002216  w    F .text	00000002 SPI2_IRQHandler
+0800350c g     F .text	00000010 memset
+08002000 g       .text	000000c4 __isr_vector
+080031b0 g     F .text	00000014 main
+08003380 g     F .text	00000000 .hidden __aeabi_uidiv
+080021da  w    F .text	00000002 SVC_Handler
+20000210 g       .stack_dummy	00000000 __end__
+080032bc g     F .text	00000008 BootComInit
+0800222c g     F .text	00000060 SystemInit
+08003528 g     F .text	00000000 _fini
+08002b38  w    F .text	00000002 HAL_UART_MspInit
+0800304c  w    F .text	00000024 HAL_InitTick
+20002000 g       .bss	00000000 __StackTop
+08003090  w    F .text	00000010 HAL_IncTick
+080021f2  w    F .text	00000002 TS_IRQHandler
+080021e2  w    F .text	00000002 WWDG_IRQHandler
+080030fc g     F .text	00000054 LedToggle
+08002200  w    F .text	00000002 TIM2_IRQHandler
+080021f6  w    F .text	00000002 DMA1_Channel2_3_IRQHandler
+08002974 g     F .text	00000020 HAL_SYSTICK_CLKSourceConfig
+20002000 g       *ABS*	00000000 __stack
+0800348c g     F .text	00000008 .hidden __aeabi_uidivmod
+20001f00 g       *ABS*	00000100 __StackLimit
+0800221a  w    F .text	00000002 USART2_IRQHandler
+0800228c g     F .text	00000458 HAL_RCC_OscConfig
+08003498 g     F .text	0000002c exit
+08003378 g     F .text	00000008 BootComCheckActivationRequest
+08003494  w    F .text	00000002 .hidden __aeabi_idiv0
+080021e8  w    F .text	00000002 FLASH_IRQHandler
+080030ac  w    F .text	00000002 _exit
+08002218  w    F .text	00000002 USART1_IRQHandler
+08002996 g     F .text	00000008 HAL_SYSTICK_IRQHandler
+08002fdc g     F .text	00000070 HAL_UART_Init
+080021fc  w    F .text	00000002 TIM1_BRK_UP_TRG_COM_IRQHandler
+080030d4 g     F .text	00000008 TimerGet
+080030ae g     F .text	00000026 TimerInit
+
+
