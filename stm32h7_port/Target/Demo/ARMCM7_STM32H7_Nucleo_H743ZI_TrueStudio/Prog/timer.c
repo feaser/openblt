@@ -39,8 +39,10 @@
 ****************************************************************************************/
 void TimerInit(void)
 {
+  /* Update the  system core clock variable. */
+  SystemCoreClockUpdate();
   /* Configure the Systick interrupt time for 1 millisecond. */
-  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+  HAL_SYSTICK_Config(SystemCoreClock/1000);
   /* Configure the Systick. */
   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
   /* SysTick_IRQn interrupt configuration. */
