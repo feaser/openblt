@@ -41,10 +41,7 @@
 /** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
 /** \brief Standard size of a flash block for writing. */
-/* TODO ##Port The FLASH_WRITE_BLOCK_SIZE should be at least 512. If for some reason this
- * is not large enough, double the size so: 512 -> 1024 -> 2048 -> 4096 etc.
- */
-#define FLASH_WRITE_BLOCK_SIZE          (512)
+#define FLASH_WRITE_BLOCK_SIZE          (1024)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 /** \brief End address of the bootloader programmable flash. */
@@ -58,19 +55,7 @@
  *         verification will always fail.
  */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
-/* TODO ##Port The bootloader uses a 32-bit checksum signature value to determine if a 
- * a valid user program is present or not. This checksum value is written by the
- * bootloader at the end of a firmware update with function FlashWriteChecksum(). Right
- * before a user program is about to be started, function FlashVerifyChecksum() is called
- * to verify the presence of a user program. Space must be reserved in the user program
- * for the checksum signature value and the bootloader needs to know where this space
- * is reserved. It is recommended to place the signature checksum right after the 
- * user program's vector table. Using this approach it is easy to reserved space for the
- * checksum signature in the user program by simply adding one more dummy entry into the
- * vector table. This macro should be set to the size of the vector table, which can then
- * be used to determine the memory address of the signature checksum.
- */
-#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x188)
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x298)
 #endif
 
 
@@ -151,38 +136,37 @@ static blt_int8u FlashGetSectorIdx(blt_addr address);
  */
 static const tFlashSector flashLayout[] =
 {
-  /* TODO ##Port Update the contents of this array with the erase sector sizes as defined
-   * in the microcontroller's reference manual. The flash sector erase sizes are
-   * hardware specific and must therefore match, otherwise erase operations cannot be
-   * performed properly. 
-   * Besides controlling the flash erase size, this array also controls which sectors
-   * are reserved for the bootloader and will therefore never be erased. The current
-   * fictive implementation is for a microcontroller that can only erase flash memory
-   * in chunks of 16 KB and the first 32 KB are reserved for the bootloader. Its flash
-   * memory starts at 0x08000000 in the memory map.
-   */
-  /* { 0x08000000, 0x04000,  0},           flash sector  0 - reserved for bootloader   */
-  /* { 0x08004000, 0x04000,  1},           flash sector  1 - reserved for bootloader   */
-  { 0x08008000, 0x04000,  2},           /* flash sector  2 - 16kb                      */
-  { 0x0800C000, 0x04000,  3},           /* flash sector  3 - 16kb                      */
-#if (BOOT_NVM_SIZE_KB > 64)
-  { 0x08010000, 0x4000,  4},            /* flash sector  4 - 16kb                      */
-  { 0x08014000, 0x4000,  5},            /* flash sector  5 - 16kb                      */
-  { 0x08018000, 0x4000,  6},            /* flash sector  6 - 16kb                      */
-  { 0x0801C000, 0x4000,  7},            /* flash sector  7 - 16kb                      */
-#endif
-#if (BOOT_NVM_SIZE_KB > 128)
-  { 0x08020000, 0x4000,  8},            /* flash sector  8 - 16kb                      */
-  { 0x08024000, 0x4000,  9},            /* flash sector  9 - 16kb                      */
-  { 0x08028000, 0x4000, 10},            /* flash sector 10 - 16kb                      */
-  { 0x0802C000, 0x4000, 11},            /* flash sector 11 - 16kb                      */
-  { 0x08030000, 0x4000, 12},            /* flash sector 12 - 16kb                      */
-  { 0x08034000, 0x4000, 13},            /* flash sector 13 - 16kb                      */
-  { 0x08038000, 0x4000, 14},            /* flash sector 14 - 16kb                      */
-  { 0x0803C000, 0x4000, 15},            /* flash sector 15 - 16kb                      */
-#endif
-#if (BOOT_NVM_SIZE_KB > 256)
-#error "BOOT_NVM_SIZE_KB > 256 is currently not supported."
+#if (BOOT_NVM_SIZE_KB < 1024)
+  #error "BOOT_NVM_SIZE_KB < 1024 is currently not supported."
+#elif (BOOT_NVM_SIZE_KB == 1024)
+    /* { 0x08000000, 0x20000,  0 },        flash sector 0 - reserved for bootloader    */
+    { 0x08020000, 0x20000,  1},           /* flash sector  1 - 128kb                   */
+    { 0x08040000, 0x20000,  2},           /* flash sector  2 - 128kb                   */
+    { 0x08060000, 0x20000,  3},           /* flash sector  3 - 128kb                   */
+    /* Note that there is a gap here. */
+    { 0x08100000, 0x20000,  4},           /* flash sector  4 - 128kb                   */
+    { 0x08120000, 0x20000,  5},           /* flash sector  5 - 128kb                   */
+    { 0x08140000, 0x20000,  6},           /* flash sector  6 - 128kb                   */
+    { 0x08160000, 0x20000,  7},           /* flash sector  7 - 128kb                   */
+#elif (BOOT_NVM_SIZE_KB == 2048)
+    /* { 0x08000000, 0x20000,  0 },        flash sector 0 - reserved for bootloader    */
+    { 0x08020000, 0x20000,  1},           /* flash sector  1 - 128kb                   */
+    { 0x08040000, 0x20000,  2},           /* flash sector  2 - 128kb                   */
+    { 0x08060000, 0x20000,  3},           /* flash sector  3 - 128kb                   */
+    { 0x08080000, 0x20000,  4},           /* flash sector  4 - 128kb                   */
+    { 0x080A0000, 0x20000,  5},           /* flash sector  5 - 128kb                   */
+    { 0x080C0000, 0x20000,  6},           /* flash sector  6 - 128kb                   */
+    { 0x080E0000, 0x20000,  7},           /* flash sector  7 - 128kb                   */
+    { 0x08100000, 0x20000,  8},           /* flash sector  8 - 128kb                   */
+    { 0x08120000, 0x20000,  9},           /* flash sector  9 - 128kb                   */
+    { 0x08140000, 0x20000, 10},           /* flash sector 10 - 128kb                   */
+    { 0x08160000, 0x20000, 11},           /* flash sector 11 - 128kb                   */
+    { 0x08180000, 0x20000, 12},           /* flash sector 12 - 128kb                   */
+    { 0x081A0000, 0x20000, 13},           /* flash sector 13 - 128kb                   */
+    { 0x081C0000, 0x20000, 14},           /* flash sector 14 - 128kb                   */
+    { 0x081E0000, 0x20000, 15},           /* flash sector 15 - 128kb                   */
+#else
+#error "BOOT_NVM_SIZE_KB > 2048 is currently not supported."
 #endif
 };
 #else
@@ -317,8 +301,8 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
 blt_bool FlashErase(blt_addr addr, blt_int32u len)
 {
   blt_bool  result = BLT_TRUE;
-  blt_int8u first_sector_idx;
-  blt_int8u last_sector_idx;
+  blt_int8u first_sector_idx = FLASH_INVALID_SECTOR_IDX;
+  blt_int8u last_sector_idx = FLASH_INVALID_SECTOR_IDX;
 
   /* validate the len parameter */
   if ((len - 1) > (FLASH_END_ADDRESS - addr))
@@ -366,20 +350,24 @@ blt_bool FlashWriteChecksum(void)
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
 
-  /* TODO ##Port Calculate and write the signature checksum such that it appears at the
-   * address configured with macro BOOT_FLASH_VECTOR_TABLE_CS_OFFSET. Use the 
-   * FlashWrite() function for the actual write operation. For a typical microcontroller,
-   * the bootBlock holds the program code that includes the user program's interrupt
-   * vector table and after which the 32-bit for the signature checksum is reserved.
-   * 
-   * Note that this means one extra dummy entry must be added at the end of the user 
-   * program's vector table to reserve storage space for the signature checksum value,
-   * which is then overwritten by this function.
+  /* for the STM32 target we defined the checksum as the Two's complement value of the
+   * sum of the first 7 exception addresses.
    *
-   * The example here calculates a signature checksum by summing up the first 32-bit
-   * values in the bootBlock (so the first 7 interrupt vectors) and then taking the
-   * Two's complement of this sum. You can modify this to anything you like as long as
-   * the signature checksum is based on program code present in the bootBlock.
+   * Layout of the vector table:
+   *    0x08000000 Initial stack pointer
+   *    0x08000004 Reset Handler
+   *    0x08000008 NMI Handler
+   *    0x0800000C Hard Fault Handler
+   *    0x08000010 MPU Fault Handler
+   *    0x08000014 Bus Fault Handler
+   *    0x08000018 Usage Fault Handler
+   *
+   *    signature_checksum = Two's complement of (SUM(exception address values))
+   *
+   *    the bootloader writes this 32-bit checksum value right after the vector table
+   *    of the user program. note that this means one extra dummy entry must be added
+   *    at the end of the user program's vector table to reserve storage space for the
+   *    checksum.
    */
 
   /* first check that the bootblock contains valid data. if not, this means the
@@ -435,16 +423,6 @@ blt_bool FlashVerifyChecksum(void)
 {
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
-
-  /* TODO ##Port Implement code here that basically does the reverse of
-   * FlashWriteChecksum(). Just make sure to read the values directory from flash memory
-   * and NOT from the bootBlock. 
-   * The example implementation reads the first 7 32-bit from the user program flash
-   * memory and sums them up. The signature checksum written by FlashWriteChecksum() was
-   * the Two complement's value. This means that if you add the previously written
-   * signature checksum value to the sum of the first 7 32-bit values, the result is
-   * a value of 0 in case the signature checksum is valid.
-   */
 
   /* verify the checksum based on how it was written by FlashWriteChecksum(). */
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start));

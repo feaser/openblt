@@ -292,7 +292,6 @@ g_pfnVectors:
   .word     0                                 /* Reserved                   */      
   .word     0                                 /* Reserved                   */      
   .word     WAKEUP_PIN_IRQHandler             /* Interrupt for all 6 wake-up pins */
-  .word     0x55AA11EE                        /* Reserved for OpenBLT checksum */
 
 /*******************************************************************************
 *

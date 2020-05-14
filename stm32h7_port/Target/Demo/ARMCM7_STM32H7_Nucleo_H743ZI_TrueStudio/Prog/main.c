@@ -118,14 +118,14 @@ static void SystemClock_Config(void)
   HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
   /* Configure the main internal regulator output voltage. */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY))
+  while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY))
   {
     ;
   }
 
   /* Initializes the CPU, AHB and APB busses clocks. */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
@@ -141,7 +141,7 @@ static void SystemClock_Config(void)
     /* Clock configuration incorrect or hardware failure. Hang the system to prevent
      * damage.
      */
-    while(1);
+    while (1);
   }
 
   /* Initializes the CPU, AHB and APB busses clocks. */
@@ -160,7 +160,7 @@ static void SystemClock_Config(void)
     /* Clock configuration incorrect or hardware failure. Hang the system to prevent
      * damage.
      */
-    while(1);
+    while (1);
   }
 } /*** end of SystemClock_Config ***/
 
