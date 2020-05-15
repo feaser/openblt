@@ -50,12 +50,16 @@ int main(void)
 {
   /* Initialize the microcontroller */
   Init();
+  /* Initialize the bootloader interface */
+  BootComInit();
 
   /* start the infinite program loop */
   while (1)
   {
     /* Toggle LED with a fixed frequency. */
     LedToggle();
+    /* Check for bootloader activation request. */
+    BootComCheckActivationRequest();
   }
   /* Set program exit code. note that the program should never get here. */
   return 0;

@@ -80,6 +80,7 @@ typedef struct
   blt_addr   sector_start;                       /**< sector start address             */
   blt_int32u sector_size;                        /**< sector size in bytes             */
   blt_int8u  sector_num;                         /**< sector number                    */
+  blt_int8u  bank_num;                           /**< bank number                      */
 } tFlashSector;
 
 /** \brief    Structure type for grouping flash block information.
@@ -139,32 +140,32 @@ static const tFlashSector flashLayout[] =
 #if (BOOT_NVM_SIZE_KB < 1024)
   #error "BOOT_NVM_SIZE_KB < 1024 is currently not supported."
 #elif (BOOT_NVM_SIZE_KB == 1024)
-    /* { 0x08000000, 0x20000,  0 },        flash sector 0 - reserved for bootloader    */
-    { 0x08020000, 0x20000,  1},           /* flash sector  1 - 128kb                   */
-    { 0x08040000, 0x20000,  2},           /* flash sector  2 - 128kb                   */
-    { 0x08060000, 0x20000,  3},           /* flash sector  3 - 128kb                   */
+    /* { 0x08000000, 0x20000, 0, 1 },     flash sector idx 0 - reserved for bootloader */
+    { 0x08020000, 0x20000, 1, 1},        /* flash sector idx  1 - 128kb                */
+    { 0x08040000, 0x20000, 2, 1},        /* flash sector idx  2 - 128kb                */
+    { 0x08060000, 0x20000, 3, 1},        /* flash sector idx  3 - 128kb                */
     /* Note that there is a gap here. */
-    { 0x08100000, 0x20000,  4},           /* flash sector  4 - 128kb                   */
-    { 0x08120000, 0x20000,  5},           /* flash sector  5 - 128kb                   */
-    { 0x08140000, 0x20000,  6},           /* flash sector  6 - 128kb                   */
-    { 0x08160000, 0x20000,  7},           /* flash sector  7 - 128kb                   */
+    { 0x08100000, 0x20000, 0, 2},        /* flash sector idx  4 - 128kb                */
+    { 0x08120000, 0x20000, 1, 2},        /* flash sector idx  5 - 128kb                */
+    { 0x08140000, 0x20000, 2, 2},        /* flash sector idx  6 - 128kb                */
+    { 0x08160000, 0x20000, 3, 2},        /* flash sector idx  7 - 128kb                */
 #elif (BOOT_NVM_SIZE_KB == 2048)
-    /* { 0x08000000, 0x20000,  0 },        flash sector 0 - reserved for bootloader    */
-    { 0x08020000, 0x20000,  1},           /* flash sector  1 - 128kb                   */
-    { 0x08040000, 0x20000,  2},           /* flash sector  2 - 128kb                   */
-    { 0x08060000, 0x20000,  3},           /* flash sector  3 - 128kb                   */
-    { 0x08080000, 0x20000,  4},           /* flash sector  4 - 128kb                   */
-    { 0x080A0000, 0x20000,  5},           /* flash sector  5 - 128kb                   */
-    { 0x080C0000, 0x20000,  6},           /* flash sector  6 - 128kb                   */
-    { 0x080E0000, 0x20000,  7},           /* flash sector  7 - 128kb                   */
-    { 0x08100000, 0x20000,  8},           /* flash sector  8 - 128kb                   */
-    { 0x08120000, 0x20000,  9},           /* flash sector  9 - 128kb                   */
-    { 0x08140000, 0x20000, 10},           /* flash sector 10 - 128kb                   */
-    { 0x08160000, 0x20000, 11},           /* flash sector 11 - 128kb                   */
-    { 0x08180000, 0x20000, 12},           /* flash sector 12 - 128kb                   */
-    { 0x081A0000, 0x20000, 13},           /* flash sector 13 - 128kb                   */
-    { 0x081C0000, 0x20000, 14},           /* flash sector 14 - 128kb                   */
-    { 0x081E0000, 0x20000, 15},           /* flash sector 15 - 128kb                   */
+    /* { 0x08000000, 0x20000, 0, 1 },     flash sector idx 0 - reserved for bootloader */
+    { 0x08020000, 0x20000, 1, 1},        /* flash sector idx  1 - 128kb                */
+    { 0x08040000, 0x20000, 2, 1},        /* flash sector idx  2 - 128kb                */
+    { 0x08060000, 0x20000, 3, 1},        /* flash sector idx  3 - 128kb                */
+    { 0x08080000, 0x20000, 4, 1},        /* flash sector idx  4 - 128kb                */
+    { 0x080A0000, 0x20000, 5, 1},        /* flash sector idx  5 - 128kb                */
+    { 0x080C0000, 0x20000, 6, 1},        /* flash sector idx  6 - 128kb                */
+    { 0x080E0000, 0x20000, 7, 1},        /* flash sector idx  7 - 128kb                */
+    { 0x08100000, 0x20000, 0, 2},        /* flash sector idx  8 - 128kb                */
+    { 0x08120000, 0x20000, 1, 2},        /* flash sector idx  9 - 128kb                */
+    { 0x08140000, 0x20000, 2, 2},        /* flash sector idx 10 - 128kb                */
+    { 0x08160000, 0x20000, 3, 2},        /* flash sector idx 11 - 128kb                */
+    { 0x08180000, 0x20000, 4, 2},        /* flash sector idx 12 - 128kb                */
+    { 0x081A0000, 0x20000, 5, 2},        /* flash sector idx 13 - 128kb                */
+    { 0x081C0000, 0x20000, 6, 2},        /* flash sector idx 14 - 128kb                */
+    { 0x081E0000, 0x20000, 7, 2},        /* flash sector idx 15 - 128kb                */
 #else
 #error "BOOT_NVM_SIZE_KB > 2048 is currently not supported."
 #endif
@@ -702,10 +703,12 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_bool   result = BLT_TRUE;
-  blt_addr   prog_addr;
-  blt_int32u prog_data;
-  blt_int32u word_cnt;
+  blt_bool              result = BLT_TRUE;
+  blt_addr              prog_addr;
+  blt_int8u  volatile * prog_data;
+  blt_int32u            word_cnt;
+  blt_int8u  const      word_size = 32U;
+  blt_int8u             byte_idx;
 
   /* check that the address is actually within flash */
   if (FlashGetSectorIdx(block->base_addr) == FLASH_INVALID_SECTOR_IDX)
@@ -732,37 +735,47 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
-    /* TODO ##Port Program the data contents in 'block' to flash memory here and read the
-     * programmed data values back directory from flash memory to verify that the flash
-     * program operation was successful. The example implementation assumes that flash
-     * data can be written 32-bits at a time.
-     */
+    /* unlock the flash array */
+    HAL_FLASH_Unlock();
 
-    /* program all words in the block one by one */
-    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+    /* program all words (32 bytes) in the block one by one */
+    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/word_size); word_cnt++)
     {
-      prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
-      prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+      prog_addr = block->base_addr + (word_cnt * word_size);
+      prog_data = (volatile blt_int8u *)(&block->data[word_cnt * word_size]);
       /* keep the watchdog happy */
       CopService();
-      /* TODO ##Port Program 32-bit 'prog_data' data value to memory address 'prog_addr'.
-       * In case an error occured, set result to BLT_FALSE and break the loop. 
-       */
-      if (1 == 0)
+      /* program the word */
+      if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, prog_addr,
+          (uint32_t)prog_data) != HAL_OK)
       {
         result = BLT_FALSE;
         break;
       }
       /* verify that the written data is actually there */
-      if (*(volatile blt_int32u *)prog_addr != prog_data)
+      for (byte_idx = 0; byte_idx < word_size; byte_idx++)
       {
-        /* TODO ##Port Uncomment the following two lines again. It was commented out so
-         * that a dry run with the flash driver is possible without it reporting errors.
+        /* compare the byte value located in flash with the one that was supposed to
+         * be programmed there
          */
-        /*result = BLT_FALSE;*/
-        /*break;*/
+        if (((volatile blt_int8u *)prog_addr)[byte_idx] != prog_data[byte_idx])
+        {
+          /* byte value in flash is not as expected, so a programming error must have
+           * happened
+           */
+          result = BLT_FALSE;
+          break;
+        }
+      }
+      /* check if an error was flagged during the verification step */
+      if (result == BLT_FALSE)
+      {
+        /* no point in continuing with the programming loop */
+        break;
       }
     }
+    /* lock the flash array again */
+    HAL_FLASH_Lock();
   }
 
   /* Give the result back to the caller. */
@@ -784,6 +797,8 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
   blt_int8u  sectorIdx;
   blt_addr   sectorBaseAddr;
   blt_int32u sectorSize;
+  FLASH_EraseInitTypeDef eraseInitStruct;
+  blt_int32u eraseSectorError = 0;
 
   /* validate the sector numbers */
   if (first_sector_idx > last_sector_idx)
@@ -803,6 +818,9 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
+    /* unlock the flash array */
+    HAL_FLASH_Unlock();
+
     /* erase the sectors one by one */
     for (sectorIdx = first_sector_idx; sectorIdx <= last_sector_idx; sectorIdx++)
     {
@@ -819,18 +837,25 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
         break;
       }
       
-      /* TODO ##Port Perform the flash erase operation of a sector that starts at
-       * 'sectorBaseAddr' and has a length of 'sectorSize' bytes. In case an error
-       * occured, set result to BLT_FALSE and break the loop.
-       */
-      if(1 == 0)
+      /* intialize the sector erase info structure */
+      eraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
+      eraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+      eraseInitStruct.Banks = flashLayout[sectorIdx].bank_num;
+      eraseInitStruct.Sector = flashLayout[sectorIdx].sector_num;
+      eraseInitStruct.NbSectors = 1;
+
+      /* submit the sector erase request */
+      if (HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&eraseSectorError) != HAL_OK)
       {
         /* could not perform erase operation */
         result = BLT_FALSE;
         /* error detected so don't bother continuing with the loop */
         break;
       }
+
     }
+    /* lock the flash array again */
+    HAL_FLASH_Lock();
   }
 
   /* give the result back to the caller */
