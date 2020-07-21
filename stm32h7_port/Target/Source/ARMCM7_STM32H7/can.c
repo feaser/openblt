@@ -42,14 +42,13 @@
 /** \brief Timeout for transmitting a CAN message in milliseconds. */
 #define CAN_MSG_TX_TIMEOUT_MS          (50u)
 
-
 /* map the configured CAN channel index to the STM32's CAN peripheral */
 #if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
 /** \brief Set CAN base address to CAN1. */
-#define CAN_CHANNEL   CAN1
+#define CAN_CHANNEL   FDCAN1
 #elif (BOOT_COM_CAN_CHANNEL_INDEX == 1)
 /** \brief Set CAN base address to CAN2. */
-#define CAN_CHANNEL   CAN2
+#define CAN_CHANNEL   FDCAN2
 #endif
 
 
@@ -99,6 +98,13 @@ static const tCanBusTiming canTiming[] =
 };
 
 
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief CAN handle to be used in API calls. */
+static FDCAN_HandleTypeDef canHandle;
+
+
 /************************************************************************************//**
 ** \brief     Search algorithm to match the desired baudrate to a possible bus
 **            timing configuration.
@@ -113,19 +119,16 @@ static const tCanBusTiming canTiming[] =
 static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
                                   blt_int8u *tseg1, blt_int8u *tseg2)
 {
-  blt_int8u  cnt;
-  blt_int32u canClockFreqkHz;
+  blt_int8u            cnt;
+  blt_int32u           canClockFreqkHz;
 
-  /* TODO ##Port This helper function assists with getting a compatible bittiming 
-   * configuration, based on the specified 'baud' communication speed on the CAN bus in
-   * kbps. This function needs two microcontroller specific values: (1) the speed of
-   * the clock that sources the CAN peripheral and (2) the supported range of the
-   * prescaler that for scaling down the CAN peripheral clock speed.
+  /* the CAN peripheral can be clocked by the external crystal, the PLL1Q or the PLL2Q
+   * clock. the external crystal option is typically preferred to meet the clock
+   * tolerance specified in the CAN 2.0B protocol. therefore, this driver assumes that
+   * an external crystal is present. configure the external crystal to be the clock
+   * source of the CAN peripheral.
    */
-
-  /* TODO ##Port Set the clock speed of the CAN peripheral in kHz. You can used the
-   * macros BOOT_CPU_XTAL_SPEED_KHZ and BOOT_CPU_SYSTEM_SPEED_KHZ if applicable. 
-   */
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_HSE);
   canClockFreqkHz = BOOT_CPU_XTAL_SPEED_KHZ;
 
   /* loop through all possible time quanta configurations to find a match */
@@ -136,12 +139,8 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
       /* compute the prescaler that goes with this TQ configuration */
       *prescaler = canClockFreqkHz/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
   
-      /* TODO ##Port Update the prescaler range that is supported by the CAN peripheral
-       * on the microcontroller. The example implementation is for a prescaler that can
-       * be in the 1 - 1024 range.
-       */
       /* make sure the prescaler is valid */
-      if ((*prescaler > 0) && (*prescaler <= 1024))
+      if ((*prescaler > 0) && (*prescaler <= 512))
       {
         /* store the bustiming configuration */
         *tseg1 = canTiming[cnt].tseg1;
@@ -163,12 +162,13 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u *prescaler,
 ****************************************************************************************/
 void CanInit(void)
 {
-  blt_int16u prescaler = 0;
-  blt_int8u  tseg1 = 0, tseg2 = 0;
+  blt_int16u          prescaler = 0;
+  blt_int8u           tseg1 = 0, tseg2 = 0;
+  blt_int32u          rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  FDCAN_FilterTypeDef filterConfig;
 
-  /* TODO ##Port Perform compile time assertion to check that the configured CAN channel
-   * is actually supported by this driver. The example is for a driver where CAN
-   * channels 0 - 1 are supported. 
+  /* the current implementation supports CAN1 and 2. throw an assertion error in case a
+   * different CAN channel is configured.
    */
   ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX == 0 || BOOT_COM_CAN_CHANNEL_INDEX == 1));
 
@@ -184,24 +184,78 @@ void CanInit(void)
     ASSERT_RT(BLT_FALSE);
   }
 
-  /* TODO ##Port Perform the configuration and initialization of the CAN controller. Note
-   * that the bittiming related values are already stored in 'prescaler, 'tseg1', and
-   * 'tseg2'. There values are ready to be used. Typically, the following tasks need
-   * to be performed:
-   * (1) Place the CAN controller in initialization mode.
-   * (2) Disable all CAN related interrupts as the bootloader runs in polling mode.
-   * (3) Configure the bittiming based on: 'prescaler', 'tseg1' and 'tseg2'. It is okay
-   *     to configure 1 time quanta for the synchronization jump width (SWJ).
-   * (4) Configure one transmit message object. It will be used in CanTransmitPacket()
-   *     to transmit a CAN message with identifier BOOT_COM_CAN_TX_MSG_ID. Note that if
-   *     the 0x80000000 bit is set in this identifier, it means that it is a 29-bit CAN
-   *     identifier instead of an 11-bit.
-   * (5) Configure at least one reception message object and configure its reception
-   *     acceptance filter such that only the CAN identifier BOOT_COM_CAN_RX_MSG_ID is 
-   *     received. Note that if the 0x80000000 bit is set in this identifier, it means
-   *     that it is a 29-bit CAN identifier instead of an 11-bit.
-   * (6) Leave the initialization mode and place the CAN controller in operational mode.
-   */    
+  /* set the CAN controller configuration. */
+  canHandle.Instance = CAN_CHANNEL;
+  canHandle.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+  canHandle.Init.Mode = FDCAN_MODE_NORMAL;
+  canHandle.Init.AutoRetransmission = ENABLE;
+  canHandle.Init.TransmitPause = DISABLE;
+  canHandle.Init.ProtocolException = DISABLE;
+  canHandle.Init.NominalPrescaler = prescaler;
+  canHandle.Init.NominalSyncJumpWidth = 1;
+  canHandle.Init.NominalTimeSeg1 = tseg1;
+  canHandle.Init.NominalTimeSeg2 = tseg2;
+  /* FD mode is not used by this driver, so the .Init.DataXxx values are don't care. */
+  canHandle.Init.DataPrescaler = 1;
+  canHandle.Init.DataSyncJumpWidth = 1;
+  canHandle.Init.DataTimeSeg1 = 1;
+  canHandle.Init.DataTimeSeg2 = 1;
+  canHandle.Init.MessageRAMOffset = 0;
+  /* does the message to be received have a standard 11-bit CAN identifier? */
+  if ((rxMsgId & 0x80000000) == 0)
+  {
+    canHandle.Init.StdFiltersNbr = 1;
+    canHandle.Init.ExtFiltersNbr = 0;
+  }
+  else
+  {
+    canHandle.Init.StdFiltersNbr = 0;
+    canHandle.Init.ExtFiltersNbr = 1;
+  }
+  /* only one reception buffer is needed. reception FIFO 0 and 1 are not used. */
+  canHandle.Init.RxFifo0ElmtsNbr = 0;
+  canHandle.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
+  canHandle.Init.RxFifo1ElmtsNbr = 0;
+  canHandle.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
+  canHandle.Init.RxBuffersNbr = 1;
+  canHandle.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
+  /* only one transmit buffer is needed. transmit FIFO is not used. */
+  canHandle.Init.TxEventsNbr = 0;
+  canHandle.Init.TxBuffersNbr = 1;
+  canHandle.Init.TxFifoQueueElmtsNbr = 0;
+  canHandle.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
+  canHandle.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
+  /* initialize the CAN controller. this only fails if the CAN controller hardware is
+   * faulty. no need to evaluate the return value as there is nothing we can do about
+   * a faulty CAN controller.
+   */
+  (void)HAL_FDCAN_Init(&canHandle);
+
+  /* configure the reception filter. note that the implementation of this function
+   * always returns HAL_OK as long as the CAN controller is initialized, so no need to
+   * evaluate the return value.
+   */
+  if ((rxMsgId & 0x80000000) == 0)
+  {
+    filterConfig.IdType = FDCAN_STANDARD_ID;
+  }
+  else
+  {
+    filterConfig.IdType = FDCAN_EXTENDED_ID;
+    /* negate the ID-type bit */
+    rxMsgId &= ~0x80000000;
+  }
+  filterConfig.FilterIndex = 0;
+  filterConfig.FilterType = FDCAN_FILTER_DUAL;
+  filterConfig.FilterConfig = FDCAN_FILTER_TO_RXBUFFER;
+  filterConfig.FilterID1 = rxMsgId;
+  filterConfig.FilterID2 = rxMsgId;
+  filterConfig.RxBufferIndex = 0;
+  (void)HAL_FDCAN_ConfigFilter(&canHandle, &filterConfig);
+
+  /* start the CAN peripheral. no need to evaluate the return value as there is nothing
+   * we can do about a faulty CAN controller. */
+  (void)HAL_FDCAN_Start(&canHandle);
 } /*** end of CanInit ***/
 
 
@@ -214,34 +268,62 @@ void CanInit(void)
 ****************************************************************************************/
 void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
-  blt_int32u timeout;
+  blt_int32u            txMsgId = BOOT_COM_CAN_TX_MSG_ID;
+  FDCAN_TxHeaderTypeDef txMsgHeader;
+  blt_int32u            timeout;
+  HAL_StatusTypeDef     status;
 
-  /* TODO ##Port Configure the transmit message object for transmitting a CAN message
-   * with CAN identifier BOOT_COM_CAN_TX_MSG_ID. Note that if the 0x80000000 bit is set
-   * in this identifier, it means that it is a 29-bit CAN identifier instead of an
-   * 11-bit. Next, copy the message data to the transmit message object. The number
-   * of data bytes is in 'len' and the actual data byte values are in array 'data'.
-   * Once done, start the transmission of the message that was just stored in the
-   * transmit message object.
-   */
-
-  /* TODO ##Port Wait for the message transmission to complete, with timeout though to
-   * make sure this function doesn't hang in case of an error. This is typically achieved
-   * by evaluating a transmit complete flag in a register of the transmit message object.
-   */
-  /* determine timeout time for the transmit completion. */
-  timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
-  /* poll for completion of the transmit operation. */
-  while (1 == 0)
+  /* configure the message that should be transmitted. */
+  if ((txMsgId & 0x80000000) == 0)
   {
-    /* service the watchdog. */
-    CopService();
-    /* break loop upon timeout. this would indicate a hardware failure or no other
-     * nodes connected to the bus.
+    /* set the 11-bit CAN identifier. */
+    txMsgHeader.Identifier = txMsgId;
+    txMsgHeader.IdType = FDCAN_STANDARD_ID;
+  }
+  else
+  {
+    /* negate the ID-type bit. */
+    txMsgId &= ~0x80000000;
+    /* set the 29-bit CAN identifier. */
+    txMsgHeader.Identifier = txMsgId;
+    txMsgHeader.IdType = FDCAN_EXTENDED_ID;
+  }
+  txMsgHeader.TxFrameType = FDCAN_DATA_FRAME;
+  txMsgHeader.DataLength = len << 16U;
+  txMsgHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
+  txMsgHeader.BitRateSwitch = FDCAN_BRS_OFF;
+  txMsgHeader.FDFormat = FDCAN_CLASSIC_CAN;
+  txMsgHeader.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
+  txMsgHeader.MessageMarker = 0x52;
+
+  /* add the message to the transmit buffer. */
+  status = HAL_FDCAN_AddMessageToTxBuffer(&canHandle, &txMsgHeader, data,
+                                          FDCAN_TX_BUFFER0);
+  /* only continue with the transmission if the message was added to the buffer. */
+  if (status == HAL_OK)
+  {
+    /* submit the message for transmission. */
+    status = HAL_FDCAN_EnableTxBufferRequest(&canHandle, FDCAN_TX_BUFFER0);
+    /* only continue with polling for transmit completion if the message transmit request
+     * could be submitted.
      */
-    if (TimerGet() > timeout)
+    if (status == HAL_OK)
     {
-      break;
+      /* determine timeout time for the transmit completion. */
+      timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
+      /* poll for completion of the transmit operation. */
+      while (HAL_FDCAN_IsTxBufferMessagePending(&canHandle, FDCAN_TX_BUFFER0) != 0)
+      {
+        /* service the watchdog. */
+        CopService();
+        /* break loop upon timeout. this would indicate a hardware failure or no other
+         * nodes connected to the bus.
+         */
+        if (TimerGet() > timeout)
+        {
+          break;
+        }
+      }
     }
   }
 } /*** end of CanTransmitPacket ***/
@@ -256,18 +338,52 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  blt_bool result = BLT_FALSE;
+  blt_bool              result = BLT_FALSE;
+  blt_int32u            rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  FDCAN_RxHeaderTypeDef rxMsgHeader;
+  HAL_StatusTypeDef     rxStatus = HAL_ERROR;
 
-  /* TODO ##Port Check for the reception of a new CAN message with identifier 
-   * BOOT_COM_CAN_RX_MSG_ID. Note that if the 0x80000000 bit is set in this identifier, 
-   * it means that it is a 29-bit CAN identifier instead of an 11-bit.
-   * If a new message with this CAN identifier was received, store the data byte values
-   * in array 'data' and store the number of data bytes in 'len'. Finally, set 'result'
-   * to BLT_TRUE to indicate to the caller of this function that a new CAN message was
-   * received and stored.
-   */
+  /* check if the expected CAN message was received? */
+  if (HAL_FDCAN_IsRxBufferMessageAvailable(&canHandle, FDCAN_RX_BUFFER0) > 0)
+  {
+    /* attempt to read the newly received CAN message from its buffer. */
+    rxStatus = HAL_FDCAN_GetRxMessage(&canHandle, FDCAN_RX_BUFFER0, &rxMsgHeader, data);
+  }
 
-  /* give the result back to the caller */
+  /* only continue processing the CAN message if something was received. */
+  if (rxStatus == HAL_OK)
+  {
+    /* check if this message has the configured CAN packet identifier. */
+    if ((rxMsgId & 0x80000000) == 0)
+    {
+      /* was an 11-bit CAN message received that matches? */
+      if ( (rxMsgHeader.Identifier == rxMsgId) &&
+           (rxMsgHeader.IdType == FDCAN_STANDARD_ID) )
+      {
+        /* set flag that a packet with a matching CAN identifier was received. */
+        result = BLT_TRUE;
+      }
+    }
+    else
+    {
+      /* negate the ID-type bit. */
+      rxMsgId &= ~0x80000000;
+      /* was an 29-bit CAN message received that matches? */
+      if ( (rxMsgHeader.Identifier == rxMsgId) &&
+           (rxMsgHeader.IdType == FDCAN_EXTENDED_ID) )
+      {
+        /* set flag that a packet with a matching CAN identifier was received. */
+        result = BLT_TRUE;
+      }
+    }
+    /* store the data length. */
+    if (result == BLT_TRUE)
+    {
+      *len = (blt_int8u)(rxMsgHeader.DataLength >> 16U);
+    }
+  }
+
+  /* Give the result back to the caller. */
   return result;
 } /*** end of CanReceivePacket ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */

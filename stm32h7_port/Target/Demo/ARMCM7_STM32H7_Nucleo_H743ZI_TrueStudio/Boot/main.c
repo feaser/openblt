@@ -33,10 +33,7 @@
 #include "stm32h7xx.h"                           /* STM32 CPU and HAL header           */
 #include "stm32h7xx_ll_pwr.h"                    /* STM32 LL PWR header                */
 #include "stm32h7xx_ll_rcc.h"                    /* STM32 LL RCC header                */
-#include "stm32h7xx_ll_bus.h"                    /* STM32 LL BUS header                */
-#include "stm32h7xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
 #include "stm32h7xx_ll_utils.h"                  /* STM32 LL UTILS header              */
-#include "stm32h7xx_ll_usart.h"                  /* STM32 LL USART header              */
 #include "stm32h7xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
@@ -177,6 +174,11 @@ void HAL_MspInit(void)
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3);
 #endif
 
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock enable. */
+  LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_FDCAN);
+#endif
+
   /* Configure GPIO pin for the LED. */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_7;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
@@ -201,6 +203,17 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
   LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 #endif
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_8 | LL_GPIO_PIN_9;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_9;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#endif
 } /*** end of HAL_MspInit ***/
 
 
@@ -223,6 +236,11 @@ void HAL_MspDeInit(void)
   LL_GPIO_DeInit(GPIOD);
   LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOB);
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock disable. */
+  LL_APB1_GRP2_DisableClock(LL_APB1_GRP2_PERIPH_FDCAN);
+#endif
 
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART clock disable. */

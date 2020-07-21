@@ -190,6 +190,10 @@ void HAL_MspInit(void)
   /* Peripheral clock enable. */
   __HAL_RCC_USART3_CLK_ENABLE();
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Peripheral clock enable. */
+  __HAL_RCC_FDCAN_CLK_ENABLE();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 
   /* Set priority grouping. */
   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
@@ -223,6 +227,15 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF9_FDCAN1;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 } /*** end of HAL_MspInit ***/
 
 
@@ -235,6 +248,10 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Reset CAN GPIO pin configuration. */
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8 | GPIO_PIN_9);
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* Reset UART GPIO pin configuration. */
   HAL_GPIO_DeInit(GPIOD, GPIO_PIN_8 | GPIO_PIN_9);
@@ -243,6 +260,10 @@ void HAL_MspDeInit(void)
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
   HAL_GPIO_DeInit(GPIOB, GPIO_PIN_7);
 
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Peripheral clock enable. */
+  __HAL_RCC_FDCAN_CLK_DISABLE();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* Peripheral clock disable. */
   __HAL_RCC_USART3_CLK_DISABLE();
