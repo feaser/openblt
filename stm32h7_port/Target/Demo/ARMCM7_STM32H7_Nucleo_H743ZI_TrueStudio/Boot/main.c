@@ -120,12 +120,13 @@ static void SystemClock_Config(void)
   /* Configure and enable the PLL. */
   LL_RCC_PLL_SetSource(LL_RCC_PLLSOURCE_HSE);
   LL_RCC_PLL1P_Enable();
+  LL_RCC_PLL1Q_Enable();
   LL_RCC_PLL1_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_2_4);
   LL_RCC_PLL1_SetVCOOutputRange(LL_RCC_PLLVCORANGE_WIDE);
   LL_RCC_PLL1_SetM(4);
   LL_RCC_PLL1_SetN(480);
   LL_RCC_PLL1_SetP(2);
-  LL_RCC_PLL1_SetQ(4);
+  LL_RCC_PLL1_SetQ(20);
   LL_RCC_PLL1_SetR(2);
   LL_RCC_PLL1_Enable();
   /* Wait till PLL is ready. */
@@ -144,6 +145,11 @@ static void SystemClock_Config(void)
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_2);
   LL_RCC_SetAPB3Prescaler(LL_RCC_APB3_DIV_2);
   LL_RCC_SetAPB4Prescaler(LL_RCC_APB4_DIV_2);
+
+  /* Configure peripheral clock sources. */
+  LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_HSE);
+  LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL1Q);
 
   /* Update the system clock speed setting. */
   LL_SetSystemCoreClock(BOOT_CPU_SYSTEM_SPEED_KHZ * 1000u);
@@ -165,6 +171,7 @@ void HAL_MspInit(void)
   LL_APB4_GRP1_EnableClock(LL_APB4_GRP1_PERIPH_SYSCFG);
 
   /* GPIO ports clock enable. */
+  LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
@@ -214,6 +221,22 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Alternate = LL_GPIO_AF_9;
   LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 #endif
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB pin configuration. */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_11 | LL_GPIO_PIN_12;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_10;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#endif
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB clock enable. */
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_USB2OTGHS);
+#endif
 } /*** end of HAL_MspInit ***/
 
 
@@ -236,6 +259,12 @@ void HAL_MspDeInit(void)
   LL_GPIO_DeInit(GPIOD);
   LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOB);
+  LL_GPIO_DeInit(GPIOA);
+
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* USB clock disable. */
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_USB2OTGHS);
+#endif
 
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN clock disable. */
@@ -251,6 +280,7 @@ void HAL_MspDeInit(void)
   LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
   LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
   LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
+  LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
 
   /* SYSCFG clock disable. */
   LL_APB4_GRP1_DisableClock(LL_APB4_GRP1_PERIPH_SYSCFG);
