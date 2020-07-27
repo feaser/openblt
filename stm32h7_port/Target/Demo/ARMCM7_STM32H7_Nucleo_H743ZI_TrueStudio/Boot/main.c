@@ -76,6 +76,8 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
+  /* Enable D-cache. */
+  SCB_EnableDCache();
   /* HAL library initialization */
   HAL_Init();
   /* configure system clock */

@@ -62,6 +62,7 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   DTCMRAM (xrw)     : ORIGIN = 0x20000000, LENGTH = 128K
+  /* When using ETH, RAM_D1 should be used. */
   RAM_D1 (xrw)      : ORIGIN = 0x24000000, LENGTH = 512K
   RAM_D2 (xrw)      : ORIGIN = 0x30000000, LENGTH = 288K
   RAM_D3 (xrw)      : ORIGIN = 0x38000000, LENGTH = 64K
@@ -147,7 +148,7 @@ SECTIONS
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } >DTCMRAM AT> FLASH
+  } >RAM_D1 AT> FLASH
 
   
   /* Uninitialized data section */
@@ -164,7 +165,7 @@ SECTIONS
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
-  } >DTCMRAM
+  } >RAM_D1
 
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
@@ -175,7 +176,7 @@ SECTIONS
     . = . + _Min_Heap_Size;
     . = . + _Min_Stack_Size;
     . = ALIGN(4);
-  } >DTCMRAM
+  } >RAM_D1
 
   
 
