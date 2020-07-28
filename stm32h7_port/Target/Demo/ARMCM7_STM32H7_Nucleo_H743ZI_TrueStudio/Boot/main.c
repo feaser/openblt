@@ -177,6 +177,7 @@ void HAL_MspInit(void)
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
+  LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
 
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART clock enable. */
@@ -258,6 +259,7 @@ void HAL_MspDeInit(void)
   LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_7);
 
   /* Deinit used GPIOs. */
+  LL_GPIO_DeInit(GPIOG);
   LL_GPIO_DeInit(GPIOD);
   LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOB);
@@ -279,6 +281,7 @@ void HAL_MspDeInit(void)
 #endif
 
   /* GPIO ports clock disable. */
+  LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
   LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
   LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
   LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
