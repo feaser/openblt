@@ -42,6 +42,7 @@
 ****************************************************************************************/
 static void Init(void);
 static void SystemClock_Config(void);
+static void MPU_Config(blt_bool enable);
 
 
 /************************************************************************************//**
@@ -76,8 +77,6 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  /* Enable D-cache. */
-  SCB_EnableDCache();
   /* HAL library initialization */
   HAL_Init();
   /* configure system clock */
@@ -159,6 +158,74 @@ static void SystemClock_Config(void)
 
 
 /************************************************************************************//**
+** \brief     Configure the MPU attributes needed to get Ethernet operational.
+** \param     enable BLT_TRUE to enable the MPU configuration, BLT_FALSE to reset it.
+** \return    none.
+**
+****************************************************************************************/
+static void MPU_Config(blt_bool enable)
+{
+  MPU_Region_InitTypeDef MPU_InitStruct;
+
+  /* Should the MPU be configured and enabled? */
+  if (enable == BLT_TRUE)
+  {
+    /* Disable the MPU. */
+    HAL_MPU_Disable();
+
+    /* Configure the MPU attributes as Device not cacheable for ETH DMA descriptors. */
+    MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+    MPU_InitStruct.BaseAddress = 0x30040000;
+    MPU_InitStruct.Size = MPU_REGION_SIZE_256B;
+    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+    MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+    MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+    MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+    MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+    MPU_InitStruct.SubRegionDisable = 0x00;
+    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+    /* Configure the MPU attributes as Normal Non Cacheable for RAM which contains the
+     * uIP Tx buffers.
+     */
+    MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+    MPU_InitStruct.BaseAddress = 0x30044000;
+    MPU_InitStruct.Size = MPU_REGION_SIZE_16KB;
+    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+    MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+    MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+    MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+    MPU_InitStruct.Number = MPU_REGION_NUMBER1;
+    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+    MPU_InitStruct.SubRegionDisable = 0x00;
+    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+    /* Enable the MPU. */
+    HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+  }
+  /* The MPU should be disabled and reset. */
+  else
+  {
+    /* Disable the MPU. */
+    HAL_MPU_Disable();
+
+    /* Reset region 0 */
+    MPU->RNR = MPU_REGION_NUMBER0;
+    MPU->RBAR = 0x00;
+    MPU->RASR = 0x00;
+
+    /* Reset region 0 */
+    MPU->RNR = MPU_REGION_NUMBER1;
+    MPU->RBAR = 0x00;
+    MPU->RASR = 0x00;
+  }
+} /*** end of MPU_Config ***/
+
+
+/************************************************************************************//**
 ** \brief     Initializes the Global MSP. This function is called from HAL_Init()
 **            function to perform system level initialization (GPIOs, clock, DMA,
 **            interrupt).
@@ -171,6 +238,13 @@ void HAL_MspInit(void)
 
   /* SYSCFG clock enable. */
   LL_APB4_GRP1_EnableClock(LL_APB4_GRP1_PERIPH_SYSCFG);
+
+#if (BOOT_COM_NET_ENABLE > 0)
+  /* Configure the MPU attributes as Device memory for ETH DMA descriptors. */
+  MPU_Config(BLT_TRUE);
+  /* Enable D-cache. */
+  SCB_EnableDCache();
+#endif
 
   /* GPIO ports clock enable. */
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
@@ -286,6 +360,13 @@ void HAL_MspDeInit(void)
   LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
   LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
   LL_AHB4_GRP1_DisableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
+
+#if (BOOT_COM_NET_ENABLE > 0)
+  /* Disable D-cache. */
+  SCB_DisableDCache();
+  /* Disable and reset the MPU. */
+  MPU_Config(BLT_FALSE);
+#endif
 
   /* SYSCFG clock disable. */
   LL_APB4_GRP1_DisableClock(LL_APB4_GRP1_PERIPH_SYSCFG);
