@@ -77,13 +77,15 @@ ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT]; /* Ethernet Rx DMA Descriptor
 ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT]; /* Ethernet Tx DMA Descriptors */
 #pragma location=0x30040200
 uint8_t Rx_Buff[ETH_RX_DESC_CNT][ETH_RX_BUFFER_SIZE]; /* Ethernet Receive Buffers */
+#pragma location=0x30044000
+uint8_t Tx_Buff[ETH_TX_DESC_CNT][ETH_TX_BUFFER_SIZE]; /* Ethernet Transmit Buffers */
 
 #elif defined ( __CC_ARM )  /* MDK ARM Compiler */
 
 __attribute__((at(0x30040000))) ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT]; /* Ethernet Rx DMA Descriptors */
 __attribute__((at(0x30040060))) ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT]; /* Ethernet Tx DMA Descriptors */
 __attribute__((at(0x30040200))) uint8_t Rx_Buff[ETH_RX_DESC_CNT][ETH_RX_BUFFER_SIZE]; /* Ethernet Receive Buffer */
-
+__attribute__((at(0x30044000))) uint8_t Tx_Buff[ETH_TX_DESC_CNT][ETH_TX_BUFFER_SIZE]; /* Ethernet Transmit Buffers */
 #elif defined ( __GNUC__ ) /* GNU Compiler */
 
 ETH_DMADescTypeDef DMARxDscrTab[ETH_RX_DESC_CNT] __attribute__((section(".RxDecripSection"))); /* Ethernet Rx DMA Descriptors */
@@ -218,9 +220,6 @@ void netdev_init(void)
   TxConfig.ChecksumCtrl = ETH_CHECKSUM_IPHDR_PAYLOAD_INSERT_PHDR_CALC;
   TxConfig.CRCPadCtrl = ETH_CRC_PAD_INSERT;
 
-  /* TODO ##Vg Port. */
-  //LWIP_MEMPOOL_INIT(RX_POOL);
-
   /* Assign memory buffers to a DMA Rx descriptor. */
   for(idx = 0; idx < ETH_RX_DESC_CNT; idx ++)
   {
@@ -296,8 +295,36 @@ void netdev_get_mac(unsigned char * mac_addr)
 unsigned int netdev_read(void)
 {
   unsigned int result = 0;
+  uint16_t  len = 0;
+  uint8_t * buffer;
+  ETH_BufferTypeDef rxbuffer = { 0 };
+  uint32_t framelength = 0;
 
-  /* TODO ##Vg Check if a new frame was received and read it. */
+  /* Check if a new frame was received. */
+  if (HAL_ETH_IsRxDataAvailable(&heth) != 0)
+  {
+    /* Obtain the size of the packet and a pointer to the buffer with packet data. */
+    HAL_ETH_GetRxDataBuffer(&heth, &rxbuffer);
+    HAL_ETH_GetRxDataLength(&heth, &framelength);
+
+#if !defined(DUAL_CORE) || defined(CORE_CM7)
+    /* Invalidate data cache for ETH Rx Buffers to get the update content in SRAM. */
+    SCB_InvalidateDCache_by_Addr((uint32_t *)rxbuffer.buffer, framelength);
+#endif
+
+    /* Prepare parameters for memcpy. */
+    len = (unsigned int)framelength;
+    buffer = (uint8_t *)rxbuffer.buffer;
+
+    /* Copy the received packet data into the uip buffer. */
+    memcpy(uip_buf, buffer, len);
+
+    /* Build Rx descriptor to be ready for next data reception */
+    HAL_ETH_BuildRxDescriptors(&heth);
+
+    /* Update the result. */
+    result = len;
+  }
 
   /* Give the result back to the caller. */
   return result;
@@ -314,7 +341,6 @@ void netdev_send(void)
   /* Store the framelength. */
   framelength = uip_len;
   /* Obtain pointer to write the packet data to. */
-  /* TODO ##Vg Not sure if this is correct since I added Tx_Buff myself. */
   buffer = (uint8_t *)(&Tx_Buff[0][0]);
   /* Copy the packet data to the buffer. */
   memcpy(buffer, uip_buf, framelength);
@@ -326,7 +352,6 @@ void netdev_send(void)
   TxConfig.TxBuffer = &txbuffer;
   /* Submit the packet for transmission. */
   HAL_ETH_Transmit(&heth, &TxConfig, NETDEV_TX_PACKET_TIMEOUT_MS);
-  /* TODO ##Vg CONTNUE HERE: Test if packet tx works. DHCP should send a packet. */
 }
 
 
