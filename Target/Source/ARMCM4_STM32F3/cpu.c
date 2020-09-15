@@ -60,7 +60,8 @@ void CpuInit(void)
   /* bootloader runs in polling mode so disable the global interrupts. this is done for
    * safety reasons. if the bootloader was started from a running user program, it could 
    * be that the user program did not properly disable the interrupt generation of 
-   * peripherals. */
+   * peripherals.
+   */
   CpuIrqDisable();
 } /*** end of CpuInit ***/
 
@@ -109,10 +110,10 @@ void CpuStartUserProgram(void)
   /* release the communication interface */
   ComFree();
 #endif
-  /* reset the timer */
-  TimerReset();
   /* reset the HAL */
   HAL_DeInit();
+  /* reset the timer */
+  TimerReset();
   /* remap user program's vector table */
   SCB->VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of

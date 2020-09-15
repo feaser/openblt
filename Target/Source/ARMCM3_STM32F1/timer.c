@@ -71,8 +71,10 @@ void TimerInit(void)
 ****************************************************************************************/
 void TimerReset(void)
 {
-  /* Set the systick's status and control register back into the default reset value. */
+  /* Set the systick's registers back into the default reset value. */
   SysTick->CTRL = 0;
+  SysTick->LOAD = 0;
+  SysTick->VAL = 0;
 } /* end of TimerReset */
 
 
