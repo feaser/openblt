@@ -31,7 +31,6 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32f7xx.h"                           /* STM32 CPU and HAL header           */
-#include "stm32f7xx_ll_rcc.h"                    /* STM32 LL RCC header                */
 
 
 /************************************************************************************//**
@@ -58,19 +57,6 @@ void AppTask(void)
   /* Run the bootloader task. */
   BootTask();
 } /*** end of AppTask ***/
-
-
-/************************************************************************************//**
-** \brief     Uninitializes the bootloader application. Should be called right before the
-**            bootloader starts the user program.
-** \return    none.
-**
-****************************************************************************************/
-void AppDeInit(void)
-{
-  /* Reset the RCC clock configuration to the default reset state. */
-  LL_RCC_DeInit();
-} /*** end of AppDeInit ***/
 
 
 /*********************************** end of app.c **************************************/

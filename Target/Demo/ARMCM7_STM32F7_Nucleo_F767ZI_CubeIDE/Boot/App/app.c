@@ -93,17 +93,4 @@ void AppTask(void)
 } /*** end of AppTask ***/
 
 
-/************************************************************************************//**
-** \brief     Uninitializes the bootloader application. Should be called right before the
-**            bootloader starts the user program.
-** \return    none.
-**
-****************************************************************************************/
-void AppDeInit(void)
-{
-  /* Reset the RCC clock configuration to the default reset state. */
-  HAL_RCC_DeInit();
-} /*** end of AppDeInit ***/
-
-
 /*********************************** end of app.c **************************************/

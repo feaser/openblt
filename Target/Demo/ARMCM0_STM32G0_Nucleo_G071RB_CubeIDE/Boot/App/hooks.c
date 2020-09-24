@@ -30,7 +30,6 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "app.h"                                 /* bootloader application header      */
 #include "led.h"                                 /* LED driver header                  */
 #include "stm32g0xx.h"                           /* STM32 CPU and HAL header           */
 #include "stm32g0xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
@@ -93,8 +92,6 @@ blt_bool CpuUserProgramStartHook(void)
 
   /* clean up the LED driver */
   LedBlinkExit();
-  /* clean up the application. */
-  AppDeInit();
   /* okay to start the user program */
   return BLT_TRUE;
 } /*** end of CpuUserProgramStartHook ***/

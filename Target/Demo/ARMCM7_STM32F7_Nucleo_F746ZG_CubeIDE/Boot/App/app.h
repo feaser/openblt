@@ -33,7 +33,6 @@
 ****************************************************************************************/
 void AppInit(void);
 void AppTask(void);
-void AppDeInit(void);
 
 
 #endif /* APP_H */

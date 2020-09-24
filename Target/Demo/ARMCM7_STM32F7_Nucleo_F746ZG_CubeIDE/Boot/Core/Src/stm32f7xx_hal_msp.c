@@ -22,7 +22,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 /* USER CODE BEGIN Includes */
-
+#include "stm32f7xx_ll_rcc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -213,6 +213,9 @@ void HAL_PCD_MspDeInit(PCD_HandleTypeDef* hpcd)
   */
 void HAL_MspDeInit(void)
 {
+  /* Reset the RCC clock configuration to the default reset state. */
+  LL_RCC_DeInit();
+
   /* Reset GPIO pin for the LED to turn it off. */
   LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_7);
 
