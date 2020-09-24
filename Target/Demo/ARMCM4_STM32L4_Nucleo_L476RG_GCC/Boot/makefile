@@ -42,7 +42,6 @@ PROJ_NAME=openblt_stm32l476
 #  cmd /c for %A in ("%cd%") do @echo %~sA 
 TOOL_PATH=/opt/gcc-arm-none-eabi-8-2018-q4-major/bin/
 
-
 #|--------------------------------------------------------------------------------------|
 #| Collect project files                                                                |
 #|--------------------------------------------------------------------------------------|
@@ -102,7 +101,7 @@ LIB_PATH  =
 #|--------------------------------------------------------------------------------------|
 STDFLAGS    = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
-OPTFLAGS    = -O2
+OPTFLAGS    = -Os
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32L476xx
 CFLAGS     += $(INC_PATH)

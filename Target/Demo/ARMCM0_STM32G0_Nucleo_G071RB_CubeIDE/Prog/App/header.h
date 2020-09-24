@@ -33,6 +33,7 @@
 ****************************************************************************************/
 #include "../../Boot/App/blt_conf.h"                   /* bootloader configuration     */
 #include "stm32g0xx.h"                                  /* STM32 CPU and HAL header           */
+#include "app.h"                                       /* Application header           */
 #include "boot.h"                                      /* bootloader interface driver  */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
