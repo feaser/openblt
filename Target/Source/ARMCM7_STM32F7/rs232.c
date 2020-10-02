@@ -62,7 +62,7 @@
 #define USART_CHANNEL   UART5
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 5)
 /** \brief Set UART base address to UART6. */
-#define USART_CHANNEL   UART6
+#define USART_CHANNEL   USART6
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 6)
 /** \brief Set UART base address to UART7. */
 #define USART_CHANNEL   UART7
