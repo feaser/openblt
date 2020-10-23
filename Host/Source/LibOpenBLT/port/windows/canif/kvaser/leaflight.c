@@ -137,6 +137,9 @@ static HINSTANCE leafLightDllHandle;
 /** \brief Handle to the CAN channel. */
 static CanHandle leafLightCanHandle;
 
+/** \brief Handle to the CAN channel for usage in the CAN reception thread. */
+static CanHandle leafLightRxCanHandle;
+
 /** \brief Function pointer to the Kvaser CANLIB canInitializeLibrary function. */
 static tLeafLightLibFuncInitializeLibrary leafLightLibFuncInitializeLibraryPtr;
 
@@ -215,6 +218,7 @@ static void LeafLightInit(tCanSettings const * settings)
   leafLightRxThreadHandle = NULL;
   leafLightDllHandle = NULL;
   leafLightCanHandle = -1;
+  leafLightRxCanHandle = -1;
   /* Reset library function pointers. */
   leafLightLibFuncInitializeLibraryPtr = NULL;
   leafLightLibFuncUnloadLibraryPtr = NULL;
@@ -360,6 +364,7 @@ static bool LeafLightConnect(void)
 
   /* Invalidate handles. */
   leafLightCanHandle = -1;
+  leafLightRxCanHandle = -1;
   leafLightTerminateEvent = NULL;
   leafLightCanEvent = NULL;
   leafLightRxThreadHandle = NULL;
@@ -457,11 +462,30 @@ static bool LeafLightConnect(void)
         result = false;
       }
     }
+    /* Open the CAN channel and obtain its handle, which will only be used in the
+     * reception thread. CAN channel handles are not thread safe and therefore a
+     * second handle is needed. Note that no init access is needed for this
+     * handle.
+     */
+    leafLightRxCanHandle = LeafLightLibFuncOpenChannel(0, canOPEN_NO_INIT_ACCESS);
+    /* Validate the handle. */
+    if (leafLightRxCanHandle < 0)
+    {
+      result = false;
+    }
+    /* Go on the bus. */
+    if (result)
+    {
+      if (LeafLightLibFuncBusOn(leafLightRxCanHandle) != canOK)
+      {
+        result = false;
+      }
+    }
     /* Obtain the handle for CAN events. */
     if (result)
     {
       leafLightCanEvent = NULL;
-      if (LeafLightLibFuncIoCtl(leafLightCanHandle, canIOCTL_GET_EVENTHANDLE,
+      if (LeafLightLibFuncIoCtl(leafLightRxCanHandle, canIOCTL_GET_EVENTHANDLE,
                                 &leafLightCanEvent, sizeof(leafLightCanEvent)) != canOK)
       {
         result = false;
@@ -502,6 +526,13 @@ static bool LeafLightConnect(void)
       (void)LeafLightLibFuncBusOff(leafLightCanHandle);
       (void)LeafLightLibFuncClose(leafLightCanHandle);
       leafLightCanHandle = -1;
+    }
+    if (leafLightRxCanHandle >= 0)
+    {
+      /* Go off the bus and close the channel. */
+      (void)LeafLightLibFuncBusOff(leafLightRxCanHandle);
+      (void)LeafLightLibFuncClose(leafLightRxCanHandle);
+      leafLightRxCanHandle = -1;
     }
     if (leafLightTerminateEvent != NULL)
     {
@@ -544,6 +575,12 @@ static void LeafLightDisconnect(void)
     (void)LeafLightLibFuncBusOff(leafLightCanHandle);
     (void)LeafLightLibFuncClose(leafLightCanHandle);
     leafLightCanHandle = -1;
+  }
+  if (leafLightRxCanHandle >= 0)
+  {
+    (void)LeafLightLibFuncBusOff(leafLightRxCanHandle);
+    (void)LeafLightLibFuncClose(leafLightRxCanHandle);
+    leafLightRxCanHandle = -1;
   }
 } /*** end of LeafLightDisconnect ***/
 
@@ -713,12 +750,12 @@ static DWORD WINAPI LeafLightReceptionThread(LPVOID pv)
       /* CAN reception event. */
       case WAIT_OBJECT_0 + 0: /*lint !e835 */
         /* Only read out the events when the handle is valid. */
-        if (leafLightCanHandle >= 0)
+        if (leafLightRxCanHandle >= 0)
         {
           /* Empty out the event queue. */
           do
           {
-            rxStatus = LeafLightLibFuncRead(leafLightCanHandle, &rxId, &rxMsg.data[0], 
+            rxStatus = LeafLightLibFuncRead(leafLightRxCanHandle, &rxId, &rxMsg.data[0], 
                                             &rxDlc, &rxFlags, &rxTime);
             /* Only process the result if a message was read. */
             if (rxStatus == canOK)
@@ -776,8 +813,9 @@ static DWORD WINAPI LeafLightReceptionThread(LPVOID pv)
 ****************************************************************************************/
 static void LeafLightLibLoadDll(void)
 {
-  /* Reset the channel handle. */
+  /* Reset the channel handles. */
   leafLightCanHandle = -1;
+  leafLightRxCanHandle = -1;
   /* Start out by resetting the API function pointers. */
   leafLightLibFuncInitializeLibraryPtr = NULL;
   leafLightLibFuncUnloadLibraryPtr = NULL;
@@ -852,8 +890,9 @@ static void LeafLightLibUnloadDll(void)
   leafLightLibFuncReadStatusPtr = NULL;
   leafLightLibFuncBusOffPtr = NULL;
   leafLightLibFuncClosePtr = NULL;
-  /* Reset the channel handle. */
+  /* Reset the channel handles. */
   leafLightCanHandle = -1;
+  leafLightRxCanHandle = -1;
   /* Unload the library and invalidate its handle. */
   if (leafLightDllHandle != NULL) 
   {
