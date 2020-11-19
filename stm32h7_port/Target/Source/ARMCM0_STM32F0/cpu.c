@@ -117,10 +117,10 @@ void CpuStartUserProgram(void)
   /* release the communication interface */
   ComFree();
 #endif
-  /* reset the timer */
-  TimerReset();
   /* reset the HAL */
   HAL_DeInit();
+  /* reset the timer */
+  TimerReset();
   /* enable system configuration peripheral, which is needed to remap the RAM later on */
   LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_SYSCFG);
   /* copy user program vector's to RAM */

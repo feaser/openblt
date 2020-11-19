@@ -243,7 +243,7 @@ void HAL_MspDeInit(void)
 {
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* Reset CAN GPIO pin configuration. */
-  HAL_GPIO_DeInit(GPIOD, GPIO_PIN_0 | GPIO_PIN_1);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8 | GPIO_PIN_9);
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* Reset UART GPIO pin configuration. */

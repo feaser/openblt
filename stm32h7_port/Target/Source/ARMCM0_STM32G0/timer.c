@@ -70,8 +70,10 @@ void TimerInit(void)
 ****************************************************************************************/
 void TimerReset(void)
 {
-  /* set the systick's status and control register back into the default reset value */
+  /* set the systick's registers back into the default reset value. */
   SysTick->CTRL = 0;
+  SysTick->LOAD = 0;
+  SysTick->VAL = 0;
 } /* end of TimerReset */
 
 
@@ -134,7 +136,7 @@ uint32_t HAL_GetTick(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void SysTick_Handler(void)
+__weak void SysTick_Handler(void)
 {
   /* Nothing to do here. */
 } /*** end of SysTick_Handler ***/

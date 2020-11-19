@@ -56,6 +56,7 @@ __heap_limit
                 EXPORT  __Vectors
                 EXPORT  __Vectors_End
                 EXPORT  __Vectors_Size
+                IMPORT  SysTick_Handler
 
 __Vectors       DCD     __initial_sp                   ; Top of Stack
                 DCD     Reset_Handler                  ; Reset Handler
@@ -141,10 +142,6 @@ SVC_Handler     PROC
                 ENDP
 PendSV_Handler  PROC
                 EXPORT  PendSV_Handler                 [WEAK]
-                B       .
-                ENDP
-SysTick_Handler PROC
-                EXPORT  SysTick_Handler                [WEAK]
                 B       .
                 ENDP
 

@@ -62,7 +62,7 @@
 #define USART_CHANNEL   UART5
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 5)
 /** \brief Set UART base address to UART6. */
-#define USART_CHANNEL   UART6
+#define USART_CHANNEL   USART6
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 6)
 /** \brief Set UART base address to UART7. */
 #define USART_CHANNEL   UART7
@@ -100,6 +100,8 @@ void Rs232Init(void)
             (BOOT_COM_RS232_CHANNEL_INDEX == 6) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 7));
 
+  /* disable the UART peripheral */
+  LL_USART_Disable(USART_CHANNEL);
   /* configure UART peripheral */
   USART_InitStruct.BaudRate = BOOT_COM_RS232_BAUDRATE;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
