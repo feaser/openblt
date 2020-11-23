@@ -100,6 +100,8 @@ void Rs232Init(void)
             (BOOT_COM_RS232_CHANNEL_INDEX == 6) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 7));
 
+  /* disable the UART peripheral */
+  LL_USART_Disable(USART_CHANNEL);
   /* configure UART peripheral */
   USART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV1;
   USART_InitStruct.BaudRate = BOOT_COM_RS232_BAUDRATE;
