@@ -758,7 +758,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
         /* compare the byte value located in flash with the one that was supposed to
          * be programmed there
          */
-        if (((volatile blt_int8u *)prog_addr)[byte_idx] != prog_data[byte_idx])
+        if (((blt_int8u *)prog_addr)[byte_idx] != prog_data[byte_idx])
         {
           /* byte value in flash is not as expected, so a programming error must have
            * happened
