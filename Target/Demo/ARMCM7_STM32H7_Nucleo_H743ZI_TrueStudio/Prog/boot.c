@@ -376,12 +376,12 @@ static void BootComCanInit(void)
     canHandle.Init.StdFiltersNbr = 0;
     canHandle.Init.ExtFiltersNbr = 1;
   }
-  /* only one reception buffer is needed. reception FIFO 0 and 1 are not used. */
-  canHandle.Init.RxFifo0ElmtsNbr = 0;
+  /* only reception FIFO 0 is used. */
+  canHandle.Init.RxFifo0ElmtsNbr = 1;
   canHandle.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
   canHandle.Init.RxFifo1ElmtsNbr = 0;
   canHandle.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
-  canHandle.Init.RxBuffersNbr = 1;
+  canHandle.Init.RxBuffersNbr = 0;
   canHandle.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
   /* no transmit buffer is needed. transmit FIFO is not used. */
   canHandle.Init.TxEventsNbr = 0;
@@ -411,12 +411,16 @@ static void BootComCanInit(void)
   }
   filterConfig.FilterIndex = 0;
   filterConfig.FilterType = FDCAN_FILTER_DUAL;
-  filterConfig.FilterConfig = FDCAN_FILTER_TO_RXBUFFER;
+  filterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
   filterConfig.FilterID1 = rxMsgId;
   filterConfig.FilterID2 = rxMsgId;
   filterConfig.RxBufferIndex = 0;
   (void)HAL_FDCAN_ConfigFilter(&canHandle, &filterConfig);
 
+  /* configure global filter to reject all non-matching frames. */
+  HAL_FDCAN_ConfigGlobalFilter(&canHandle, FDCAN_REJECT, FDCAN_REJECT, 
+                               FDCAN_REJECT_REMOTE, FDCAN_REJECT_REMOTE);
+  
   /* start the CAN peripheral. no need to evaluate the return value as there is nothing
    * we can do about a faulty CAN controller. */
   (void)HAL_FDCAN_Start(&canHandle);
@@ -440,10 +444,10 @@ static void BootComCanCheckActivationRequest(void)
 
 
   /* poll for received CAN messages that await processing. */
-  if (HAL_FDCAN_IsRxBufferMessageAvailable(&canHandle, FDCAN_RX_BUFFER0) > 0)
+  if (HAL_FDCAN_GetRxFifoFillLevel(&canHandle, FDCAN_RX_FIFO0) > 0)
   {
     /* attempt to read the newly received CAN message from its buffer. */
-    rxStatus = HAL_FDCAN_GetRxMessage(&canHandle, FDCAN_RX_BUFFER0, &rxMsgHeader,
+    rxStatus = HAL_FDCAN_GetRxMessage(&canHandle, FDCAN_RX_FIFO0, &rxMsgHeader,
                                       rxMsgData);
   }
 
