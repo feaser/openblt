@@ -41,8 +41,7 @@
 
 /* USER CODE END PV */
 
-PCD_HandleTypeDef hpcd_USB_FS;
-
+extern PCD_HandleTypeDef hpcd_USB_FS;
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
@@ -66,58 +65,6 @@ void HAL_PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state);
 /*******************************************************************************
                        LL Driver Callbacks (PCD -> USB Device Library)
 *******************************************************************************/
-/* MSP Init */
-
-void HAL_PCD_MspInit(PCD_HandleTypeDef* pcdHandle)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(pcdHandle->Instance==USB)
-  {
-  /* USER CODE BEGIN USB_MspInit 0 */
-
-  /* USER CODE END USB_MspInit 0 */
-  
-    /**USB GPIO Configuration    
-    PA11     ------> USB_DM
-    PA12     ------> USB_DP 
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF14_USB;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    /* Peripheral clock enable */
-    __HAL_RCC_USB_CLK_ENABLE();
-
-  /* USER CODE BEGIN USB_MspInit 1 */
-
-  /* USER CODE END USB_MspInit 1 */
-  }
-}
-
-void HAL_PCD_MspDeInit(PCD_HandleTypeDef* pcdHandle)
-{
-  if(pcdHandle->Instance==USB)
-  {
-  /* USER CODE BEGIN USB_MspDeInit 0 */
-
-  /* USER CODE END USB_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_USB_CLK_DISABLE();
-  
-    /**USB GPIO Configuration    
-    PA11     ------> USB_DM
-    PA12     ------> USB_DP 
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11|GPIO_PIN_12);
-
-  /* USER CODE BEGIN USB_MspDeInit 1 */
-
-  /* USER CODE END USB_MspDeInit 1 */
-  }
-}
 
 /**
   * @brief  Setup stage callback
@@ -190,19 +137,13 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
 { 
   USBD_SpeedTypeDef speed = USBD_SPEED_FULL;
 
-  /* Set USB current speed. */
-  switch (hpcd->Init.speed)
+  if ( hpcd->Init.speed != PCD_SPEED_FULL)
   {
-  case PCD_SPEED_FULL:
-    speed = USBD_SPEED_FULL;
-    break;
-	
-  default:
-    speed = USBD_SPEED_FULL;
-    break;    
+    ASSERT_RT(BLT_FALSE);
   }
+    /* Set Speed. */
   USBD_LL_SetSpeed((USBD_HandleTypeDef*)hpcd->pData, speed);
-  
+
   /* Reset Device. */
   USBD_LL_Reset((USBD_HandleTypeDef*)hpcd->pData);
 }

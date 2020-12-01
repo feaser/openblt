@@ -59,7 +59,7 @@ static USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status);
 /* USER CODE END 1 */
 #if (USE_HAL_PCD_REGISTER_CALLBACKS == 1U)
 static void PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state);
-else
+#else
 void HAL_PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state);
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 
@@ -334,7 +334,6 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   hpcd_USB_FS.Instance = USB;
   hpcd_USB_FS.Init.dev_endpoints = 8;
   hpcd_USB_FS.Init.speed = PCD_SPEED_FULL;
-  hpcd_USB_FS.Init.ep0_mps = DEP0CTL_MPS_64;
   hpcd_USB_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
   hpcd_USB_FS.Init.low_power_enable = DISABLE;
   hpcd_USB_FS.Init.battery_charging_enable = DISABLE;
