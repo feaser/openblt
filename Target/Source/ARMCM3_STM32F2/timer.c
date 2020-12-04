@@ -137,7 +137,7 @@ uint32_t HAL_GetTick(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void SysTick_Handler(void)
+__weak void SysTick_Handler(void)
 {
   /* Nothing to do here. */
 } /*** end of SysTick_Handler ***/
