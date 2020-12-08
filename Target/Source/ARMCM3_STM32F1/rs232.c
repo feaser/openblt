@@ -30,13 +30,11 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#if (BOOT_COM_RS232_ENABLE > 0)
 #include "stm32f1xx.h"                           /* STM32 CPU and HAL header           */
-#if (BOOT_COM_RS232_ENABLE > 0)
 #include "stm32f1xx_ll_usart.h"                  /* STM32 LL USART header              */
-#endif
 
 
-#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
@@ -82,6 +80,8 @@ void Rs232Init(void)
             (BOOT_COM_RS232_CHANNEL_INDEX == 1) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 2));
 
+  /* disable the UART peripheral */
+  LL_USART_Disable(USART_CHANNEL);
   /* configure UART peripheral */
   USART_InitStruct.BaudRate = BOOT_COM_RS232_BAUDRATE;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
