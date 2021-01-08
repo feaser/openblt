@@ -49,6 +49,8 @@
 -elib(553)  // undefined preprocessor variables assumed 0
 -elib(1081) // suspicious object argument to an object parameter
 -elib(726)  // extraneous comma in enum definition
+-elib(157)  // suppress message about no data may follow an incomplete array
+-elib(91)   // suppress message about line exceeds 598 characters
 
 //  SREGS, WORDREGS, BYTEREGS are defined in both bios.h and dos.h
 //  and accordingly you MAY get type differences based on 'origin'.
@@ -257,6 +259,9 @@ lib-ole.lnt
 -d__try_cast=dynamic_cast
 
 +rw(__restrict)         // reserved word
+
+// Needed for VC++ 2019
+-efile(766, stddef.h, string.h, stdlib.h)
 
 // Partial support for the "old" (VC++ 2003) Managed Extensions
 // syntax:

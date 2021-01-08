@@ -260,6 +260,9 @@ lib-ole.lnt
 
 +rw(__restrict)         // reserved word
 
+// Needed for VC++ 2019
+-efile(766, stddef.h, string.h, stdlib.h)
+
 // Partial support for the "old" (VC++ 2003) Managed Extensions
 // syntax:
 +rw( __gc, __value, __nogc, __pin, __ptr32, __ptr64 )
