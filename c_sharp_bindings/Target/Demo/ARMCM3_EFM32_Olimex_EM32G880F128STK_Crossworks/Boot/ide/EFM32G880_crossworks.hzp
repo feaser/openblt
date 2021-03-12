@@ -1,0 +1,193 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="EFM32G880_crossworks" target="8" version="2">
+  <project Name="openbtl_olimex_efm32g880">
+    <configuration
+      Name="Common"
+      Target="EFM32G880F128"
+      arm_architecture="v7M"
+      arm_core_type="Cortex-M3"
+      arm_linker_heap_size="128"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="128"
+      arm_long_calls="Yes"
+      arm_simulator_memory_simulation_filename="$(TargetsDir)/EFM32/EFM32SimulatorMemory.dll"
+      arm_simulator_memory_simulation_parameter="EFM32G880F128;FLASH=0x00000000:0x20000;RAM=0x20000000:0x4000"
+      arm_target_debug_interface_type="ADIv5"
+      arm_target_interface_type="SWD"
+      arm_target_loader_parameter="16000000"
+      build_intermediate_directory="$(Configuration)/../../obj"
+      build_output_directory="$(Configuration)/../../bin"
+      c_preprocessor_definitions="USE_PROCESS_STACK;EFM32G880F128"
+      c_user_include_directories="$(ProjectDir)/..;$(ProjectDir)/../lib/CMSIS/CM3/CoreSupport;$(ProjectDir)/../lib/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32;$(ProjectDir)/../lib/efm32lib/inc;$(ProjectDir)/../../../../Source;$(ProjectDir)/../../../../Source/ARMCM3_EFM32;$(ProjectDir)/../../../../Source/ARMCM3_EFM32/Crossworks"
+      gcc_optimization_level="Optimize For Size"
+      link_include_standard_libraries="No"
+      link_include_startup_code="No"
+      linker_additional_files=""
+      linker_keep_symbols="_vectors;EntryFromProg"
+      linker_memory_map_file="$(TargetsDir)/EFM32/EFM32G880F128_MemoryMap.xml"
+      linker_output_format="srec"
+      oscillator_frequency="Other"
+      project_directory=""
+      project_type="Executable"
+      property_groups_file_path="$(TargetsDir)/EFM32/EFM32_propertyGroups.xml" />
+    <configuration
+      Name="Flash"
+      Placement="Flash"
+      arm_target_flash_loader_file_path="$(TargetsDir)/EFM32/Release/Loader_rpc.elf"
+      arm_target_flash_loader_type="LIBMEM RPC Loader"
+      linker_section_placement_file="$(StudioDir)/targets/Cortex_M/flash_placement.xml"
+      target_reset_script="FLASHReset()" />
+    <configuration
+      Name="RAM"
+      Placement="RAM"
+      linker_section_placement_file="$(StudioDir)/targets/Cortex_M/ram_placement.xml"
+      target_reset_script="SRAMReset()" />
+    <folder Name="Source Files">
+      <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
+      <folder Name="Source">
+        <folder Name="ARMCM3_EFM32">
+          <file file_name="../../../../Source/ARMCM3_EFM32/cpu.c" />
+          <file file_name="../../../../Source/ARMCM3_EFM32/flash.c" />
+          <file file_name="../../../../Source/ARMCM3_EFM32/flash.h" />
+          <file file_name="../../../../Source/ARMCM3_EFM32/nvm.c" />
+          <file file_name="../../../../Source/ARMCM3_EFM32/timer.c" />
+          <file file_name="../../../../Source/ARMCM3_EFM32/types.h" />
+          <folder Name="GCC">
+            <file file_name="../../../../Source/ARMCM3_EFM32/GCC/cpu_comp.c" />
+          </folder>
+          <file file_name="../../../../Source/ARMCM3_EFM32/rs232.c" />
+        </folder>
+        <file file_name="../../../../Source/assert.c" />
+        <file file_name="../../../../Source/assert.h" />
+        <file file_name="../../../../Source/backdoor.c" />
+        <file file_name="../../../../Source/backdoor.h" />
+        <file file_name="../../../../Source/boot.c" />
+        <file file_name="../../../../Source/boot.h" />
+        <file file_name="../../../../Source/com.c" />
+        <file file_name="../../../../Source/com.h" />
+        <file file_name="../../../../Source/cop.c" />
+        <file file_name="../../../../Source/cop.h" />
+        <file file_name="../../../../Source/plausibility.h" />
+        <file file_name="../../../../Source/xcp.c" />
+        <file file_name="../../../../Source/xcp.h" />
+        <file file_name="../../../../Source/cpu.h" />
+        <file file_name="../../../../Source/nvm.h" />
+        <file file_name="../../../../Source/timer.h" />
+        <file file_name="../../../../Source/rs232.h" />
+      </folder>
+      <folder Name="Demo">
+        <folder Name="Boot">
+          <folder Name="Lib">
+            <folder Name="Cmsis">
+              <file file_name="../lib/CMSIS/CM3/CoreSupport/core_cm3.c" />
+              <file file_name="../lib/CMSIS/CM3/CoreSupport/core_cm3.h" />
+              <file file_name="../lib/CMSIS/CM3/CoreSupport/core_cmFunc.h" />
+              <file file_name="../lib/CMSIS/CM3/CoreSupport/core_cmInstr.h" />
+              <file file_name="../lib/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/efm32.h" />
+              <file file_name="../lib/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/efm32g880f128.h" />
+              <file file_name="../lib/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/system_efm32.c" />
+              <file file_name="../lib/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/system_efm32.h" />
+            </folder>
+            <folder Name="Efm32lib">
+              <file file_name="../lib/efm32lib/inc/efm32_acmp.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_adc.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_aes.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_assert.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_bitband.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_chip.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_cmu.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_common.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_dac.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_dbg.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_dma.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_ebi.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_emu.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_gpio.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_i2c.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_int.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_lcd.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_lesense.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_letimer.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_leuart.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_mpu.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_msc.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_opamp.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_pcnt.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_prs.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_rmu.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_rtc.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_system.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_timer.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_usart.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_vcmp.h" />
+              <file file_name="../lib/efm32lib/inc/efm32_wdog.h" />
+              <file file_name="../lib/efm32lib/src/efm32_acmp.c" />
+              <file file_name="../lib/efm32lib/src/efm32_adc.c" />
+              <file file_name="../lib/efm32lib/src/efm32_aes.c" />
+              <file file_name="../lib/efm32lib/src/efm32_assert.c" />
+              <file file_name="../lib/efm32lib/src/efm32_cmu.c" />
+              <file file_name="../lib/efm32lib/src/efm32_dac.c" />
+              <file file_name="../lib/efm32lib/src/efm32_dbg.c" />
+              <file file_name="../lib/efm32lib/src/efm32_dma.c" />
+              <file file_name="../lib/efm32lib/src/efm32_ebi.c" />
+              <file file_name="../lib/efm32lib/src/efm32_emu.c" />
+              <file file_name="../lib/efm32lib/src/efm32_gpio.c" />
+              <file file_name="../lib/efm32lib/src/efm32_i2c.c" />
+              <file file_name="../lib/efm32lib/src/efm32_int.c" />
+              <file file_name="../lib/efm32lib/src/efm32_lcd.c" />
+              <file file_name="../lib/efm32lib/src/efm32_lesense.c" />
+              <file file_name="../lib/efm32lib/src/efm32_letimer.c" />
+              <file file_name="../lib/efm32lib/src/efm32_leuart.c" />
+              <file file_name="../lib/efm32lib/src/efm32_mpu.c" />
+              <file file_name="../lib/efm32lib/src/efm32_msc.c" />
+              <file file_name="../lib/efm32lib/src/efm32_opamp.c" />
+              <file file_name="../lib/efm32lib/src/efm32_pcnt.c" />
+              <file file_name="../lib/efm32lib/src/efm32_prs.c" />
+              <file file_name="../lib/efm32lib/src/efm32_rmu.c" />
+              <file file_name="../lib/efm32lib/src/efm32_rtc.c" />
+              <file file_name="../lib/efm32lib/src/efm32_system.c" />
+              <file file_name="../lib/efm32lib/src/efm32_timer.c" />
+              <file file_name="../lib/efm32lib/src/efm32_usart.c" />
+              <file file_name="../lib/efm32lib/src/efm32_vcmp.c" />
+              <file file_name="../lib/efm32lib/src/efm32_wdog.c" />
+            </folder>
+          </folder>
+          <file file_name="../hooks.c" />
+          <file file_name="../main.c" />
+          <file file_name="../blt_conf.h" />
+          <file file_name="../cstart.s" />
+          <file file_name="../vectors.c" />
+        </folder>
+      </folder>
+    </folder>
+    <folder Name="System Files">
+      <file file_name="$(TargetsDir)/EFM32/EFM32_Target.js">
+        <configuration Name="Common" file_type="Reset Script" />
+      </file>
+      <file file_name="../memory.x">
+        <configuration Name="Common" file_type="Linker Script" />
+      </file>
+    </folder>
+  </project>
+  <configuration
+    Name="THUMB Flash Debug"
+    inherited_configurations="THUMB;Flash;Debug" />
+  <configuration
+    Name="THUMB"
+    Platform="ARM"
+    arm_instruction_set="THUMB"
+    arm_library_instruction_set="THUMB"
+    c_preprocessor_definitions="__THUMB"
+    hidden="Yes" />
+  <configuration
+    Name="Flash"
+    c_preprocessor_definitions="__FLASH_BUILD"
+    hidden="Yes" />
+  <configuration
+    Name="Debug"
+    build_debug_information="Yes"
+    c_preprocessor_definitions="DEBUG"
+    gcc_optimization_level="None"
+    hidden="Yes"
+    link_include_startup_code="No" />
+</solution>
