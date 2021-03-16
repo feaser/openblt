@@ -215,28 +215,24 @@ namespace OpenBLT
             /// The segment index. It should be a value greater or equal to zero and
             /// smaller than the value returned by GetSegmentCount().
             /// </param>
-            /// <param name="address">Output variable where the segment's base address will be written to.</param>
-            /// <param name="len">Output variable where the segment's length will be written to.</param>
-            /// <returns>Managed byte array with segment data if successful, empty byte array otherwise.</returns>
+            /// <returns>Tuple with segment data and base address.</returns>
             /// <example>
             /// <code>
-            /// UInt32 segmentAddr;
-            /// UInt32 segmentLen;
-            /// byte[] segmentData;
-            /// 
-            /// segmentData = OpenBLT.Lib.Firmware.GetSegment(0, out segmentAddr, out segmentLen);
-            /// Console.WriteLine("Base address: {0:X}h", segmentAddr);
-            /// Console.WriteLine("Length: {0}", segmentLen);
-            /// Console.WriteLine("First data: {0:X2}h {1:X2}h {2:X2}h", segmentData[0], segmentData[1], segmentData[2]);
+            /// var segment = OpenBLT.Lib.Firmware.GetSegment(0);
+            /// Console.WriteLine("Base address: {0:X}h", segment.address);
+            /// Console.WriteLine("Length: {0}", segment.data.Length);
+            /// Console.WriteLine("First data: {0:X2}h {1:X2}h {2:X2}h", segment.data[0], segment.data[1], segment.data[2]);
             /// </code>
             /// </example>
-            public static byte[] GetSegment(UInt32 idx, out UInt32 address, out UInt32 len)
+            public static (byte[] data, UInt32 address) GetSegment(UInt32 idx)
             {
-                // Initialize the result as an empty byte array.
-                byte[] result = new byte[0];
+                byte[] data = new byte[0];
+                UInt32 address = 0;
+                UInt32 len;
+                IntPtr dataPtr;
 
                 // Obtain the segment info.
-                IntPtr dataPtr = BltFirmwareGetSegment(idx, out address, out len);
+                dataPtr = BltFirmwareGetSegment(idx, out address, out len);
 
                 // Note that the DLL function returns a 32-bit unsigned. It is subsequently
                 // used in functions where it is assumed to be 32-bit signed. A segments will
@@ -248,16 +244,96 @@ namespace OpenBLT
                 // the segment has a non-zero length.
                 if ( (dataPtr != IntPtr.Zero) && (len > 0) && (len <= Int32.MaxValue))
                 {
-                    // Resize the array such that it can store all byte from the segment.
-                    Array.Resize(ref result, (Int32)len);
+                    // Resize the array such that it can store all bytes from the segment.
+                    Array.Resize(ref data, (Int32)len);
                     // Copy the segment data to the resulting data array.
-                    Marshal.Copy(dataPtr, result, 0, (Int32)len);
+                    Marshal.Copy(dataPtr, data, 0, (Int32)len);
+                }
+
+                // Give the result back to the caller.
+                return (data, address);
+            }
+
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern UInt32 BltFirmwareAddData(UInt32 address, UInt32 len, IntPtr data);
+
+            /// <summary>
+            /// Adds data to the segments that are currently present in the firmware data
+            /// module.If the data overlaps with already existing data, the existing data
+            /// gets overwritten.The size of a segment is automatically adjusted or a new
+            /// segment gets created, if necessary.
+            /// </summary>
+            /// <param name="address">Base address of the firmware data.</param>
+            /// <param name="data">Array with data bytes that should be added.</param>
+            /// <returns>RESULT_OK if successful, RESULT_ERROR_xxx otherwise.</returns>
+            /// <example>
+            /// <code>
+            /// byte[] newData = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 };
+            /// OpenBLT.Lib.Firmware.AddData(0x08100000, newData);
+            /// </code>
+            /// </example>
+            public static UInt32 AddData(UInt32 address, byte[] data)
+            {
+                UInt32 result = RESULT_ERROR_GENERIC;
+
+                // Determine data size.
+                Int32 dataSize = Marshal.SizeOf(data[0]) * data.Length;
+
+                // Allocate memory on the heap for storing the data in unmanaged memory.
+                IntPtr dataPtr = Marshal.AllocHGlobal(dataSize);
+
+                // Only continue if the allocation was successful.
+                if (dataPtr != IntPtr.Zero)
+                {
+                    // Copy the data to unmanaged memory.
+                    Marshal.Copy(data, 0, dataPtr, data.Length);
+                    // Add the data to the already loaded firmware data.
+                    result = BltFirmwareAddData(address, (UInt32)data.Length, dataPtr);
+                    // Free the unmanaged memory.
+                    Marshal.FreeHGlobal(dataPtr);
                 }
 
                 // Give the result back to the caller.
                 return result;
             }
 
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern UInt32 BltFirmwareRemoveData(UInt32 address, UInt32 len);
+
+            /// <summary>
+            /// Removes data from the segments that are currently present in the firmware 
+            /// data module.The size of a segment is automatically adjusted or removed, if
+            /// necessary.
+            /// </summary>
+            /// <param name="address">Base address of the firmware data.</param>
+            /// <param name="len">Number of bytes to remove.</param>
+            /// <returns>RESULT_OK if successful, RESULT_ERROR_xxx otherwise.</returns>
+            /// <example>
+            /// <code>
+            /// OpenBLT.Lib.Firmware.RemoveData(0x08100000, 8);
+            /// </code>
+            /// </example>
+            public static UInt32 RemoveData(UInt32 address, UInt32 len)
+            {
+                return BltFirmwareRemoveData(address, len);
+            }
+
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern void BltFirmwareClearData();
+
+            /// <summary>
+            /// Clears all data and segments that are currently present in the firmware
+            /// data module.
+            /// </summary>
+            /// <example>
+            /// <code>
+            /// OpenBLT.Lib.Firmware.ClearData();
+            /// </code>
+            /// </example>
+            public static void ClearData()
+            {
+                BltFirmwareClearData();
+            }
         }
     }
 }
