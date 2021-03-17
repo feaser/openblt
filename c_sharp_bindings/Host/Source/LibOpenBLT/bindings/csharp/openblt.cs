@@ -1,3 +1,33 @@
+//***************************************************************************************
+//  Description: Class for accessing the OpenBLT shared library in C#.
+//    File Name: openblt.cs
+//
+//---------------------------------------------------------------------------------------
+//                          C O P Y R I G H T
+//---------------------------------------------------------------------------------------
+//   Copyright (c) 2021 by Feaser    http://www.feaser.com    All rights reserved
+//
+//   This software has been carefully tested, but is not guaranteed for any particular
+// purpose. The author does not offer any warranties and does not guarantee the accuracy,
+//   adequacy, or completeness of the software and is not responsible for any errors or
+//              omissions or the results obtained from use of the software.
+//
+//---------------------------------------------------------------------------------------
+//                            L I C E N S E
+//---------------------------------------------------------------------------------------
+// This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+// modify it under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option) any later
+// version.
+//
+// OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+// PURPOSE. See the GNU General Public License for more details.
+//
+// You have received a copy of the GNU General Public License along with OpenBLT. It
+// should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
+//
+//***************************************************************************************
 using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -87,6 +117,613 @@ namespace OpenBLT
         }
 
         /// <summary>
+        /// Wrapper for the session module of LibOpenBLT.
+        /// </summary>
+        public static class Session
+        {
+            /// <summary>
+            /// XCP protocol version 1.0. XCP is a universal measurement and calibration
+            /// communication protocol. It contains functionality for reading, programming,
+            /// and erasing (non-volatile) memory making it a good fit for bootloader
+            /// purposes.
+            /// </summary>
+            private const UInt32 SESSION_XCP_V10 = 0;
+
+            /// <summary>
+            /// Transport layer for the XCP v1.0 protocol that uses RS-232 serial
+            /// communication for data exchange.
+            /// </summary>
+            private const UInt32 TRANSPORT_XCP_V10_RS232 = 0;
+
+            /// <summary>
+            /// Transport layer for the XCP v1.0 protocol that uses Controller Area Network
+            /// (CAN) for data exchange.
+            /// </summary>            
+            private const UInt32 TRANSPORT_XCP_V10_CAN = 1;
+
+            /// <summary>
+            /// Transport layer for the XCP v1.0 protocol that uses USB Bulk for data 
+            /// exchange.
+            /// </summary>
+            private const UInt32 TRANSPORT_XCP_V10_USB = 2;
+
+            /// <summary>
+            /// Transport layer for the XCP v1.0 protocol that uses TCP/IP for data
+            /// exchange.
+            /// </summary>
+            private const UInt32 TRANSPORT_XCP_V10_NET = 3;
+
+            /// <summary>
+            /// Structure layout of the XCP version 1.0 session settings.
+            /// </summary>
+            public struct SessionSettingsXcpV10
+            {
+                /// <summary>
+                /// Command response timeout in milliseconds.
+                /// </summary>
+                public UInt16 timeoutT1;
+
+                /// <summary>
+                /// Start programming timeout in milliseconds.
+                /// </summary>
+                public UInt16 timeoutT3;
+
+                /// <summary>
+                /// Erase memory timeout in milliseconds.
+                /// </summary>
+                public UInt16 timeoutT4;
+
+                /// <summary>
+                /// Program memory and reset timeout in milliseconds.
+                /// </summary>
+                public UInt16 timeoutT5;
+
+                /// <summary>
+                /// Connect response timeout in milliseconds.
+                /// </summary>
+                public UInt16 timeoutT6;
+
+                /// <summary>
+                /// Busy wait timer timeout in milliseonds.
+                /// </summary>
+                public UInt16 timeoutT7;
+
+                /// <summary>
+                /// Seed/key algorithm library filename.
+                /// </summary>
+                public String seedKeyFile;
+
+                /// <summary>
+                /// Connection mode parameter in XCP connect command.
+                /// </summary>
+                public Byte connectMode;
+            }
+
+            /// <summary>
+            /// Unmanaged structure layout of the XCP version 1.0 session settings. 
+            /// </summary>
+            /// <remarks>
+            /// Only used internally when calling the API function inside the DLL.
+            /// </remarks>
+            [StructLayout(LayoutKind.Sequential)]
+            private struct SessionSettingsXcpV10Unmanaged
+            {
+                public UInt16 timeoutT1;
+                public UInt16 timeoutT3;
+                public UInt16 timeoutT4;
+                public UInt16 timeoutT5;
+                public UInt16 timeoutT6;
+                public UInt16 timeoutT7;
+                public IntPtr seedKeyFile;
+                public Byte connectMode;
+            }
+
+            /// <summary>
+            /// Structure layout of the XCP version 1.0 RS232 transport layer settings.
+            /// </summary>
+            /// <remarks>
+            /// The portName field is platform dependent. On Linux based systems this should be
+            /// the filename of the tty-device, such as "/dev/tty0". On Windows based systems
+            /// it should be the name of the COM-port, such as "COM1".
+            /// </remarks>
+            public struct TransportSettingsXcpV10Rs232
+            {
+                /// <summary>
+                /// Communication port name such as /dev/tty0.
+                /// </summary>
+                public String portName;
+
+                /// <summary>
+                /// Communication speed in bits/sec.
+                /// </summary>
+                public UInt32 baudrate;
+            }
+
+            /// <summary>
+            /// Unmanaged structure layout of the XCP version 1.0 RS232 transport layer settings.
+            /// </summary>
+            /// <remarks>
+            /// Only used internally when calling the API function inside the DLL.
+            /// </remarks>
+            [StructLayout(LayoutKind.Sequential)]
+            private struct TransportSettingsXcpV10Rs232Unmanaged
+            {
+                public IntPtr portName;
+                public UInt32 baudrate;
+            }
+
+            /// <summary>
+            /// Structure layout of the XCP version 1.0 CAN transport layer settings.
+            /// </summary>
+            /// <remarks>
+            /// The deviceName field is platform dependent.On Linux based systems this should
+            /// be the socketCAN interface name such as "can0". The terminal command "ip addr"
+            /// can be issued to view a list of interfaces that are up and available. Under
+            /// Linux it is assumed that the socketCAN interface is already configured on the
+            /// system, before using the OpenBLT library.When baudrate is configured when
+            /// bringing up the system, so the baudrate field in this structure is don't care
+            /// when using the library on a Linux was system. On Windows based systems, the
+            /// device name is a name that is pre-defined by this library for the supported
+            /// CAN adapters. The device name should be one of the following: "peak_pcanusb",
+            /// "kvaser_leaflight", or "lawicel_canusb". Field use extended is a boolean
+            /// field.When set to 0, the specified transmitId and receiveId are assumed to
+            /// be 11-bit standard CAN identifier. If the field is True, these identifiers 
+            /// are assumed to be 29-bit extended CAN identifiers.
+            /// </remarks>
+            public struct TransportSettingsXcpV10Can
+            {
+                /// <summary>
+                /// Device name such as can0, peak_pcanusb etc.
+                /// </summary>
+                public String deviceName;
+
+                /// <summary>
+                /// Channel on the device to use.
+                /// </summary>
+                public UInt32 deviceChannel;
+
+                /// <summary>
+                /// Communication speed in bits/sec.
+                /// </summary>
+                public UInt32 baudrate;
+
+                /// <summary>
+                /// Transmit CAN identifier.
+                /// </summary>
+                public UInt32 transmitId;
+
+                /// <summary>
+                /// Receive CAN identifier.
+                /// </summary>
+                public UInt32 receiveId;
+
+                /// <summary>
+                /// Boolean to configure 29-bit CAN identifiers.
+                /// </summary>
+                public Boolean useExtended;
+            }
+
+            /// <summary>
+            /// Unmanaged structure layout of the XCP version 1.0 CAN transport layer settings.
+            /// </summary>
+            /// <remarks>
+            /// Only used internally when calling the API function inside the DLL.
+            /// </remarks>
+            [StructLayout(LayoutKind.Sequential)]
+            private struct TransportSettingsXcpV10CanUnmanaged
+            {
+                public IntPtr deviceName;
+                public UInt32 deviceChannel;
+                public UInt32 baudrate;
+                public UInt32 transmitId;
+                public UInt32 receiveId;
+                public UInt32 useExtended;
+            }
+
+            /// <summary>
+            /// Structure layout of the XCP version 1.0 NET transport layer settings.
+            /// </summary>
+            /// <remarks>
+            /// The address field can be set to either the IP address or the hostname, such
+            /// as "192.168.178.23" or "mymicro.mydomain.com". The port should be set to the
+            /// TCP port number that the bootloader target listens on.
+            /// </remarks>
+            public struct TransportSettingsXcpV10Net
+            {
+                /// <summary>
+                /// Target IP-address or hostname on the network.
+                /// </summary>
+                public String address;
+
+                /// <summary>
+                /// TCP port to use.
+                /// </summary>
+                public UInt16 port;
+            }
+
+            /// <summary>
+            /// Unmanaged structure layout of the XCP version 1.0 TCP/IP transport layer settings.
+            /// </summary>
+            /// <remarks>
+            /// Only used internally when calling the API function inside the DLL.
+            /// </remarks>
+            [StructLayout(LayoutKind.Sequential)]
+            private struct TransportSettingsXcpV10NetUnmanaged
+            {
+                public IntPtr address;
+                public UInt16 port;
+            }
+
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern void BltSessionInit(UInt32 sessionType, IntPtr sessionSettings, UInt32 transportType, IntPtr transportSettings);
+
+            /// <summary>
+            /// Initializes the firmware update session for the XCP v1.0 communication
+            /// protocol and RS232 as the transport layer. This function is typically
+            /// called once at the start of the firmware update.
+            /// </summary>
+            /// <param name="sessionSettings">XCP V1.0 protocol settings</param>
+            /// <param name="transportSettings">RS232 transport layer settings</param>
+            /// <example>
+            /// <code>
+            ///  OpenBLT.Lib.Session.SessionSettingsXcpV10 sessionSettings;
+            ///  sessionSettings.timeoutT1 = 1000;
+            ///  sessionSettings.timeoutT3 = 2000;
+            ///  sessionSettings.timeoutT4 = 10000;
+            ///  sessionSettings.timeoutT5 = 1000;
+            ///  sessionSettings.timeoutT6 = 50;
+            ///  sessionSettings.timeoutT7 = 2000;
+            ///  sessionSettings.seedKeyFile = "";
+            ///  sessionSettings.connectMode = 0;
+            ///  
+            ///  OpenBLT.Lib.Session.TransportSettingsXcpV10Rs232 transportSettings;
+            ///  transportSettings.portName = "COM8";
+            ///  transportSettings.baudrate = 57600;
+            ///  
+            ///  OpenBLT.Lib.Session.Init(sessionSettings, transportSettings);
+            /// </code>
+            /// </example>
+            public static void Init(SessionSettingsXcpV10 sessionSettings, TransportSettingsXcpV10Rs232 transportSettings)
+            {
+                // Copy the managed session settings to an unmanaged structure.
+                SessionSettingsXcpV10Unmanaged sessionSettingsUnmanaged;
+                sessionSettingsUnmanaged.timeoutT1 = sessionSettings.timeoutT1;
+                sessionSettingsUnmanaged.timeoutT3 = sessionSettings.timeoutT3;
+                sessionSettingsUnmanaged.timeoutT4 = sessionSettings.timeoutT4;
+                sessionSettingsUnmanaged.timeoutT5 = sessionSettings.timeoutT5;
+                sessionSettingsUnmanaged.timeoutT6 = sessionSettings.timeoutT6;
+                sessionSettingsUnmanaged.timeoutT7 = sessionSettings.timeoutT7;
+                // Convert string to unmanged string.
+                sessionSettingsUnmanaged.seedKeyFile = (IntPtr)Marshal.StringToHGlobalAnsi(sessionSettings.seedKeyFile);
+                sessionSettingsUnmanaged.connectMode = sessionSettings.connectMode;
+
+                // Copy the managed transport settings to an unmanaged structure.
+                TransportSettingsXcpV10Rs232Unmanaged transportSettingsUnmanaged;
+                // Convert string to unmanaged string.
+                transportSettingsUnmanaged.portName = (IntPtr)Marshal.StringToHGlobalAnsi(transportSettings.portName);
+                transportSettingsUnmanaged.baudrate = transportSettings.baudrate;
+
+                // The structures are now formatted to be converted to unmanaged memory. Start by allocating
+                // memory on the heap for this.
+                IntPtr sessionSettingsUnmanagedPtr = Marshal.AllocHGlobal(Marshal.SizeOf(sessionSettingsUnmanaged));
+                IntPtr transportSettingsUnmanagedPtr = Marshal.AllocHGlobal(Marshal.SizeOf(transportSettingsUnmanaged));
+
+                // Assert the heap allocations.
+                Debug.Assert(sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero);
+                Debug.Assert(transportSettingsUnmanaged.portName != IntPtr.Zero);
+                Debug.Assert(sessionSettingsUnmanagedPtr != IntPtr.Zero);
+                Debug.Assert(transportSettingsUnmanagedPtr != IntPtr.Zero);
+
+                // Only continue if all the heap allocations were successful.
+                if ((sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero) &&
+                     (transportSettingsUnmanaged.portName != IntPtr.Zero) &&
+                     (sessionSettingsUnmanagedPtr != IntPtr.Zero) &&
+                     (transportSettingsUnmanagedPtr != IntPtr.Zero))
+                {
+                    // Copy the structures to unmanaged memory.
+                    Marshal.StructureToPtr(sessionSettingsUnmanaged, sessionSettingsUnmanagedPtr, false);
+                    Marshal.StructureToPtr(transportSettingsUnmanaged, transportSettingsUnmanagedPtr, false);
+
+                    // Call the API function inside the DLL.
+                    BltSessionInit(SESSION_XCP_V10, sessionSettingsUnmanagedPtr, TRANSPORT_XCP_V10_RS232, transportSettingsUnmanagedPtr);
+
+                    // Free memory allocated on the heap.
+                    Marshal.FreeHGlobal(transportSettingsUnmanagedPtr);
+                    Marshal.FreeHGlobal(sessionSettingsUnmanagedPtr);
+                    Marshal.FreeHGlobal(transportSettingsUnmanaged.portName);
+                    Marshal.FreeHGlobal(sessionSettingsUnmanaged.seedKeyFile);
+                }
+            }
+
+            /// <summary>
+            /// Initializes the firmware update session for the XCP v1.0 communication
+            /// protocol and CAN as the transport layer. This function is typically
+            /// called once at the start of the firmware update.
+            /// </summary>
+            /// <param name="sessionSettings">XCP V1.0 protocol settings</param>
+            /// <param name="transportSettings">CAN transport layer settings</param>
+            /// <example>
+            /// <code>
+            ///  OpenBLT.Lib.Session.SessionSettingsXcpV10 sessionSettings;
+            ///  sessionSettings.timeoutT1 = 1000;
+            ///  sessionSettings.timeoutT3 = 2000;
+            ///  sessionSettings.timeoutT4 = 10000;
+            ///  sessionSettings.timeoutT5 = 1000;
+            ///  sessionSettings.timeoutT6 = 50;
+            ///  sessionSettings.timeoutT7 = 2000;
+            ///  sessionSettings.seedKeyFile = "";
+            ///  sessionSettings.connectMode = 0;
+            ///  
+            ///  OpenBLT.Lib.Session.TransportSettingsXcpV10Can transportSettings;
+            ///  transportSettings.deviceName = "peak_pcanusb";
+            ///  transportSettings.deviceChannel = 0;
+            ///  transportSettings.baudrate = 500000;
+            ///  transportSettings.transmitId = 0x667;
+            ///  transportSettings.receiveId = 0x7E1;
+            ///  transportSettings.useExtended = false;
+            ///  
+            ///  OpenBLT.Lib.Session.Init(sessionSettings, transportSettings);
+            /// </code>
+            /// </example>
+            public static void Init(SessionSettingsXcpV10 sessionSettings, TransportSettingsXcpV10Can transportSettings)
+            {
+                // Copy the managed session settings to an unmanaged structure.
+                SessionSettingsXcpV10Unmanaged sessionSettingsUnmanaged;
+                sessionSettingsUnmanaged.timeoutT1 = sessionSettings.timeoutT1;
+                sessionSettingsUnmanaged.timeoutT3 = sessionSettings.timeoutT3;
+                sessionSettingsUnmanaged.timeoutT4 = sessionSettings.timeoutT4;
+                sessionSettingsUnmanaged.timeoutT5 = sessionSettings.timeoutT5;
+                sessionSettingsUnmanaged.timeoutT6 = sessionSettings.timeoutT6;
+                sessionSettingsUnmanaged.timeoutT7 = sessionSettings.timeoutT7;
+                // Convert string to unmanged string.
+                sessionSettingsUnmanaged.seedKeyFile = (IntPtr)Marshal.StringToHGlobalAnsi(sessionSettings.seedKeyFile);
+                sessionSettingsUnmanaged.connectMode = sessionSettings.connectMode;
+
+                // Copy the managed transport settings to an unmanaged structure.
+                TransportSettingsXcpV10CanUnmanaged transportSettingsUnmanaged;
+                // Convert string to unmanaged string.
+                transportSettingsUnmanaged.deviceName = (IntPtr)Marshal.StringToHGlobalAnsi(transportSettings.deviceName);
+                transportSettingsUnmanaged.deviceChannel = transportSettings.deviceChannel;
+                transportSettingsUnmanaged.baudrate = transportSettings.baudrate;
+                transportSettingsUnmanaged.transmitId = transportSettings.transmitId;
+                transportSettingsUnmanaged.receiveId = transportSettings.receiveId;
+                transportSettingsUnmanaged.useExtended = 0;
+                if (transportSettings.useExtended)
+                {
+                    transportSettingsUnmanaged.useExtended = 1;
+                }
+
+                // The structures are now formatted to be converted to unmanaged memory. Start by allocating
+                // memory on the heap for this.
+                IntPtr sessionSettingsUnmanagedPtr = Marshal.AllocHGlobal(Marshal.SizeOf(sessionSettingsUnmanaged));
+                IntPtr transportSettingsUnmanagedPtr = Marshal.AllocHGlobal(Marshal.SizeOf(transportSettingsUnmanaged));
+
+                // Assert the heap allocations.
+                Debug.Assert(sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero);
+                Debug.Assert(transportSettingsUnmanaged.deviceName != IntPtr.Zero);
+                Debug.Assert(sessionSettingsUnmanagedPtr != IntPtr.Zero);
+                Debug.Assert(transportSettingsUnmanagedPtr != IntPtr.Zero);
+
+                // Only continue if all the heap allocations were successful.
+                if ((sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero) &&
+                     (transportSettingsUnmanaged.deviceName != IntPtr.Zero) &&
+                     (sessionSettingsUnmanagedPtr != IntPtr.Zero) &&
+                     (transportSettingsUnmanagedPtr != IntPtr.Zero))
+                {
+                    // Copy the structures to unmanaged memory.
+                    Marshal.StructureToPtr(sessionSettingsUnmanaged, sessionSettingsUnmanagedPtr, false);
+                    Marshal.StructureToPtr(transportSettingsUnmanaged, transportSettingsUnmanagedPtr, false);
+
+                    // Call the API function inside the DLL.
+                    BltSessionInit(SESSION_XCP_V10, sessionSettingsUnmanagedPtr, TRANSPORT_XCP_V10_CAN, transportSettingsUnmanagedPtr);
+
+                    // Free memory allocated on the heap.
+                    Marshal.FreeHGlobal(transportSettingsUnmanagedPtr);
+                    Marshal.FreeHGlobal(sessionSettingsUnmanagedPtr);
+                    Marshal.FreeHGlobal(transportSettingsUnmanaged.deviceName);
+                    Marshal.FreeHGlobal(sessionSettingsUnmanaged.seedKeyFile);
+                }
+            }
+
+            /// <summary>
+            /// Initializes the firmware update session for the XCP v1.0 communication
+            /// protocol and USB as the transport layer. This function is typically
+            /// called once at the start of the firmware update.
+            /// </summary>
+            /// <remarks>
+            /// Note that the USB transport layer does not need any configuration
+            /// settings. Therefore, this function only needs the session
+            /// settings as a parameter.
+            /// </remarks>
+            /// <param name="sessionSettings">XCP V1.0 protocol settings</param>
+            /// <example>
+            /// <code>
+            ///  OpenBLT.Lib.Session.SessionSettingsXcpV10 sessionSettings;
+            ///  sessionSettings.timeoutT1 = 1000;
+            ///  sessionSettings.timeoutT3 = 2000;
+            ///  sessionSettings.timeoutT4 = 10000;
+            ///  sessionSettings.timeoutT5 = 1000;
+            ///  sessionSettings.timeoutT6 = 50;
+            ///  sessionSettings.timeoutT7 = 2000;
+            ///  sessionSettings.seedKeyFile = "";
+            ///  sessionSettings.connectMode = 0;
+            ///  
+            ///  OpenBLT.Lib.Session.Init(sessionSettings);
+            /// </code>
+            /// </example>
+            public static void Init(SessionSettingsXcpV10 sessionSettings)
+            {
+                // Copy the managed session settings to an unmanaged structure.
+                SessionSettingsXcpV10Unmanaged sessionSettingsUnmanaged;
+                sessionSettingsUnmanaged.timeoutT1 = sessionSettings.timeoutT1;
+                sessionSettingsUnmanaged.timeoutT3 = sessionSettings.timeoutT3;
+                sessionSettingsUnmanaged.timeoutT4 = sessionSettings.timeoutT4;
+                sessionSettingsUnmanaged.timeoutT5 = sessionSettings.timeoutT5;
+                sessionSettingsUnmanaged.timeoutT6 = sessionSettings.timeoutT6;
+                sessionSettingsUnmanaged.timeoutT7 = sessionSettings.timeoutT7;
+                // Convert string to unmanged string.
+                sessionSettingsUnmanaged.seedKeyFile = (IntPtr)Marshal.StringToHGlobalAnsi(sessionSettings.seedKeyFile);
+                sessionSettingsUnmanaged.connectMode = sessionSettings.connectMode;
+
+                // Note that the USB transport layer does not require any settings. The settings structure is
+                // now formatted to be converted to unmanaged memory. Start by allocating memory on the heap for this.
+                IntPtr sessionSettingsUnmanagedPtr = Marshal.AllocHGlobal(Marshal.SizeOf(sessionSettingsUnmanaged));
+
+                // Assert the heap allocations.
+                Debug.Assert(sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero);
+                Debug.Assert(sessionSettingsUnmanagedPtr != IntPtr.Zero);
+
+                // Only continue if all the heap allocations were successful.
+                if ((sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero) &&
+                     (sessionSettingsUnmanagedPtr != IntPtr.Zero))
+                {
+                    // Copy the structure to unmanaged memory.
+                    Marshal.StructureToPtr(sessionSettingsUnmanaged, sessionSettingsUnmanagedPtr, false);
+
+                    // Call the API function inside the DLL.
+                    BltSessionInit(SESSION_XCP_V10, sessionSettingsUnmanagedPtr, TRANSPORT_XCP_V10_USB, IntPtr.Zero);
+
+                    // Free memory allocated on the heap.
+                    Marshal.FreeHGlobal(sessionSettingsUnmanagedPtr);
+                    Marshal.FreeHGlobal(sessionSettingsUnmanaged.seedKeyFile);
+                }
+            }
+
+            /// <summary>
+            /// Initializes the firmware update session for the XCP v1.0 communication
+            /// protocol and TCP/IP as the transport layer. This function is typically
+            /// called once at the start of the firmware update.
+            /// </summary>
+            /// <param name="sessionSettings">XCP V1.0 protocol settings</param>
+            /// <param name="transportSettings">TCP/IP transport layer settings</param>
+            /// <example>
+            /// <code>
+            ///  OpenBLT.Lib.Session.SessionSettingsXcpV10 sessionSettings;
+            ///  sessionSettings.timeoutT1 = 1000;
+            ///  sessionSettings.timeoutT3 = 2000;
+            ///  sessionSettings.timeoutT4 = 10000;
+            ///  sessionSettings.timeoutT5 = 1000;
+            ///  sessionSettings.timeoutT6 = 50;
+            ///  sessionSettings.timeoutT7 = 2000;
+            ///  sessionSettings.seedKeyFile = "";
+            ///  sessionSettings.connectMode = 0;
+            ///  
+            ///  OpenBLT.Lib.Session.TransportSettingsXcpV10Net transportSettings;
+            ///  transportSettings.address = "192.168.178.30";
+            ///  transportSettings.port = 1000;
+            ///  
+            ///  OpenBLT.Lib.Session.Init(sessionSettings, transportSettings);
+            /// </code>
+            /// </example>
+            public static void Init(SessionSettingsXcpV10 sessionSettings, TransportSettingsXcpV10Net transportSettings)
+            {
+                // Copy the managed session settings to an unmanaged structure.
+                SessionSettingsXcpV10Unmanaged sessionSettingsUnmanaged;
+                sessionSettingsUnmanaged.timeoutT1 = sessionSettings.timeoutT1;
+                sessionSettingsUnmanaged.timeoutT3 = sessionSettings.timeoutT3;
+                sessionSettingsUnmanaged.timeoutT4 = sessionSettings.timeoutT4;
+                sessionSettingsUnmanaged.timeoutT5 = sessionSettings.timeoutT5;
+                sessionSettingsUnmanaged.timeoutT6 = sessionSettings.timeoutT6;
+                sessionSettingsUnmanaged.timeoutT7 = sessionSettings.timeoutT7;
+                // Convert string to unmanged string.
+                sessionSettingsUnmanaged.seedKeyFile = (IntPtr)Marshal.StringToHGlobalAnsi(sessionSettings.seedKeyFile);
+                sessionSettingsUnmanaged.connectMode = sessionSettings.connectMode;
+
+                // Copy the managed transport settings to an unmanaged structure.
+                TransportSettingsXcpV10NetUnmanaged transportSettingsUnmanaged;
+                // Convert string to unmanaged string.
+                transportSettingsUnmanaged.address = (IntPtr)Marshal.StringToHGlobalAnsi(transportSettings.address);
+                transportSettingsUnmanaged.port = transportSettings.port;
+
+                // The structures are now formatted to be converted to unmanaged memory. Start by allocating
+                // memory on the heap for this.
+                IntPtr sessionSettingsUnmanagedPtr = Marshal.AllocHGlobal(Marshal.SizeOf(sessionSettingsUnmanaged));
+                IntPtr transportSettingsUnmanagedPtr = Marshal.AllocHGlobal(Marshal.SizeOf(transportSettingsUnmanaged));
+
+                // Assert the heap allocations.
+                Debug.Assert(sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero);
+                Debug.Assert(transportSettingsUnmanaged.address != IntPtr.Zero);
+                Debug.Assert(sessionSettingsUnmanagedPtr != IntPtr.Zero);
+                Debug.Assert(transportSettingsUnmanagedPtr != IntPtr.Zero);
+
+                // Only continue if all the heap allocations were successful.
+                if ((sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero) &&
+                     (transportSettingsUnmanaged.address != IntPtr.Zero) &&
+                     (sessionSettingsUnmanagedPtr != IntPtr.Zero) &&
+                     (transportSettingsUnmanagedPtr != IntPtr.Zero))
+                {
+                    // Copy the structures to unmanaged memory.
+                    Marshal.StructureToPtr(sessionSettingsUnmanaged, sessionSettingsUnmanagedPtr, false);
+                    Marshal.StructureToPtr(transportSettingsUnmanaged, transportSettingsUnmanagedPtr, false);
+
+                    // Call the API function inside the DLL.
+                    BltSessionInit(SESSION_XCP_V10, sessionSettingsUnmanagedPtr, TRANSPORT_XCP_V10_NET, transportSettingsUnmanagedPtr);
+
+                    // Free memory allocated on the heap.
+                    Marshal.FreeHGlobal(transportSettingsUnmanagedPtr);
+                    Marshal.FreeHGlobal(sessionSettingsUnmanagedPtr);
+                    Marshal.FreeHGlobal(transportSettingsUnmanaged.address);
+                    Marshal.FreeHGlobal(sessionSettingsUnmanaged.seedKeyFile);
+                }
+            }
+
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern void BltSessionTerminate();
+
+            /// <summary>
+            /// Terminates the firmware update session. This function is typically called
+            /// once at the end of the firmware update.
+            /// </summary>
+            /// <example>
+            /// <code>
+            /// OpenBLT.Lib.Session.Terminate();
+            /// </code>
+            /// </example>
+            public static void Terminate()
+            {
+                BltSessionTerminate();
+            }
+
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern UInt32 BltSessionStart();
+
+            /// <summary>
+            /// Terminates the firmware update session. This function is typically called
+            /// once at the end of the firmware update.
+            /// </summary>
+            /// <returns>RESULT_OK if successful, RESULT_ERROR_xxx otherwise.</returns>
+            /// <example>
+            /// <code>
+            /// if (OpenBLT.Lib.Session.Start() != OpenBLT.Lib.RESULT_OK)
+            /// {
+            ///     Console.WriteLine("Could not connect to the target.");
+            /// }
+            /// </code>
+            /// </example>
+            public static UInt32 Start()
+            {
+                return BltSessionStart();
+            }
+
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern void BltSessionStop();
+
+            /// <summary>
+            /// Terminates the firmware update session. This function is typically called
+            /// once at the end of the firmware update.
+            /// </summary>
+            /// <example>
+            /// <code>
+            /// OpenBLT.Lib.Session.Stop();
+            /// </code>
+            /// </example>
+            public static void Stop()
+            {
+                BltSessionStop();
+            }
+        }
+
+        /// <summary>
         /// Wrapper for the firmware module of LibOpenBLT.
         /// </summary>
         public static class Firmware
@@ -97,7 +734,7 @@ namespace OpenBLT
             /// and pretty much all microcontroller compiler toolchains include
             /// functionality to output or convert the firmware's data as an S-record.
             /// </summary>
-            public const UInt32 PARSER_SRECORD = 0;
+            public const UInt32 FIRMWARE_PARSER_SRECORD = 0;
 
             [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
             private static extern void BltFirmwareInit(UInt32 parserType);
@@ -111,7 +748,7 @@ namespace OpenBLT
             /// </param>
             /// <example>
             /// <code>
-            /// OpenBLT.Lib.Firmware.Init(OpenBLT.Lib.Firmware.PARSER_SRECORD);
+            /// OpenBLT.Lib.Firmware.Init(OpenBLT.Lib.Firmware.FIRMWARE_PARSER_SRECORD);
             /// </code>
             /// </example>
             public static void Init(UInt32 parserType)
@@ -242,7 +879,7 @@ namespace OpenBLT
 
                 // Only continue if the returned data pointer is not a NULL pointer and when
                 // the segment has a non-zero length.
-                if ( (dataPtr != IntPtr.Zero) && (len > 0) && (len <= Int32.MaxValue))
+                if ((dataPtr != IntPtr.Zero) && (len > 0) && (len <= Int32.MaxValue))
                 {
                     // Resize the array such that it can store all bytes from the segment.
                     Array.Resize(ref data, (Int32)len);
@@ -333,6 +970,35 @@ namespace OpenBLT
             public static void ClearData()
             {
                 BltFirmwareClearData();
+            }
+        }
+
+        /// <summary>
+        /// Wrapper for the utility module of LibOpenBLT.
+        /// </summary>
+        public static class Util
+        {
+            /// <summary>
+            /// Wrapper for the time utilities of LibOpenBLT.
+            /// </summary>
+            public static class Time
+            {
+                [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+                private static extern void BltUtilTimeDelayMs(UInt16 delay);
+
+                /// <summary>
+                /// Performs a delay of the specified amount of milliseconds.
+                /// </summary>
+                /// <param name="delay">Delay time in milliseconds.</param>
+                /// <example>
+                /// <code>
+                /// OpenBLT.Lib.Util.Time.DelayMs(1000);
+                /// </code>
+                /// </example>
+                public static void DelayMs(UInt16 delay)
+                {
+                    BltUtilTimeDelayMs(delay);
+                }
             }
         }
     }
