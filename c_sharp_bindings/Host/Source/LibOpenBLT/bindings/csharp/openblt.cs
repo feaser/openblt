@@ -979,10 +979,114 @@ namespace OpenBLT
         public static class Util
         {
             /// <summary>
+            /// Wrapper for the CRC utilities of LibOpenBLT.
+            /// </summary>
+            public static class Crc
+            {
+                [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+                private static extern UInt16 BltUtilCrc16Calculate(IntPtr data, UInt32 len);
+
+                /// <summary>
+                /// Calculates a 16-bit CRC value over the specified data.
+                /// </summary>
+                /// <param name="data">Array with bytes over which the CRC16 should be calculated.</param>
+                /// <returns>The 16-bit CRC value.</returns>
+                /// <example>
+                /// <code>
+                /// byte[] crcData = new byte[] { 0x55, 0xAA, 0x00, 0xFF };
+                /// UInt16 crc16 = OpenBLT.Lib.Util.Crc.Calculate16(crcData);
+                /// </code>
+                /// </example>
+                public static UInt16 Calculate16(byte[] data)
+                {
+                    UInt16 result = 0;
+
+                    // Determine data size.
+                    Int32 dataSize = Marshal.SizeOf(data[0]) * data.Length;
+
+                    // Allocate memory on the heap for storing the data in unmanaged memory.
+                    IntPtr dataPtr = Marshal.AllocHGlobal(dataSize);
+
+                    // Only continue if the allocation was successful.
+                    if (dataPtr != IntPtr.Zero)
+                    {
+                        // Copy the data to unmanaged memory.
+                        Marshal.Copy(data, 0, dataPtr, data.Length);
+                        // Calculate the CRC16 over the data.
+                        result = BltUtilCrc16Calculate(dataPtr, (UInt32)data.Length);
+                        // Free the unmanaged memory.
+                        Marshal.FreeHGlobal(dataPtr);
+                    }
+
+                    // Give the result back to the caller.
+                    return result;
+                }
+
+                [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+                private static extern UInt32 BltUtilCrc32Calculate(IntPtr data, UInt32 len);
+
+                /// <summary>
+                /// Calculates a 32-bit CRC value over the specified data.
+                /// </summary>
+                /// <param name="data">Array with bytes over which the CRC32 should be calculated.</param>
+                /// <returns>The 32-bit CRC value.</returns>
+                /// <example>
+                /// <code>
+                /// byte[] crcData = new byte[] { 0x55, 0xAA, 0x00, 0xFF };
+                /// UInt32 crc32 = OpenBLT.Lib.Util.Crc.Calculate32(crcData);
+                /// </code>
+                /// </example>
+                public static UInt32 Calculate32(byte[] data)
+                {
+                    UInt32 result = 0;
+
+                    // Determine data size.
+                    Int32 dataSize = Marshal.SizeOf(data[0]) * data.Length;
+
+                    // Allocate memory on the heap for storing the data in unmanaged memory.
+                    IntPtr dataPtr = Marshal.AllocHGlobal(dataSize);
+
+                    // Only continue if the allocation was successful.
+                    if (dataPtr != IntPtr.Zero)
+                    {
+                        // Copy the data to unmanaged memory.
+                        Marshal.Copy(data, 0, dataPtr, data.Length);
+                        // Calculate the CRC32 over the data.
+                        result = BltUtilCrc32Calculate(dataPtr, (UInt32)data.Length);
+                        // Free the unmanaged memory.
+                        Marshal.FreeHGlobal(dataPtr);
+                    }
+
+                    // Give the result back to the caller.
+                    return result;
+                }
+
+            }
+
+            /// <summary>
             /// Wrapper for the time utilities of LibOpenBLT.
             /// </summary>
             public static class Time
             {
+                [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+                private static extern Int32 BltUtilTimeGetSystemTime();
+
+                /// <summary>
+                /// Get the system time in milliseconds.
+                /// </summary>
+                /// <returns>
+                /// Time in milliseconds.
+                /// </returns>
+                /// <example>
+                /// <code>
+                /// Console.WriteLine("Current system time: {0}", OpenBLT.Lib.Util.Time.GetSystemTime());
+                /// </code>
+                /// </example>
+                public static Int32 GetSystemTime()
+                {
+                    return BltUtilTimeGetSystemTime();
+                }
+
                 [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
                 private static extern void BltUtilTimeDelayMs(UInt16 delay);
 
@@ -998,6 +1102,172 @@ namespace OpenBLT
                 public static void DelayMs(UInt16 delay)
                 {
                     BltUtilTimeDelayMs(delay);
+                }
+            }
+
+            /// <summary>
+            /// Wrapper for the cryptography utilities of LibOpenBLT.
+            /// </summary>
+            public static class Crypto
+            {
+                /// <summary>
+                /// Wrapper for the AES256 cryptography utilities of LibOpenBLT.
+                /// </summary>
+                public static class Aes256
+                {
+                    [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+                    private static extern UInt32 BltUtilCryptoAes256Encrypt(IntPtr data, UInt32 len, IntPtr key);
+
+                    /// <summary>
+                    /// Encrypts the bytes in the specified data-array, using the specified
+                    /// 256-bit (32 bytes) key.The results are written back into the same array.
+                    /// </summary>
+                    /// <remarks>
+                    /// The number of bytes in the data-array must be a multiple of 16, as this
+                    /// is the AES256 minimal block size.
+                    /// </remarks>
+                    /// <param name="data">
+                    /// Byte array with data to encrypt. The encrypted bytes are stored in the
+                    /// same array.
+                    /// </param>
+                    /// <param name="key">The 256-bit encryption key as a array of 32 bytes.</param>
+                    /// <returns>RESULT_OK if successful, RESULT_ERROR_xxx otherwise.</returns>
+                    /// <example>
+                    /// <code>
+                    /// byte[] cryptoKey = new byte[]
+                    /// {
+                    ///     0x83, 0x23, 0x44, 0x28, 0x47, 0x2B, 0x4B, 0x62,
+                    ///     0x50, 0x65, 0x53, 0x68, 0x56, 0x6D, 0x59, 0x71,
+                    ///     0x33, 0x74, 0x36, 0x77, 0x39, 0x7A, 0x24, 0x43,
+                    ///     0x26, 0x46, 0x29, 0x48, 0x40, 0x4D, 0x69, 0x39
+                    /// };
+                    /// 
+                    /// byte[] originalData = new byte[]
+                    /// {
+                    ///     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                    ///     0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+                    ///     0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+                    ///     0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F
+                    /// };
+                    /// 
+                    /// OpenBLT.Lib.Util.Crypto.Aes256.Encrypt(originalData, cryptoKey);
+                    /// </code>
+                    /// </example>
+                    public static UInt32 Encrypt(byte[] data, byte[] key)
+                    {
+                        UInt32 result = RESULT_ERROR_GENERIC;
+
+                        // Determine data and key size.
+                        Int32 dataSize = Marshal.SizeOf(data[0]) * data.Length;
+                        Int32 keySize = Marshal.SizeOf(key[0]) * key.Length;
+
+                        // Only continue if the key has at least 32 bytes (256-bit key).
+                        if (keySize >= 32)
+                        {
+                            // Allocate memory on the heap for storing the data and key in unmanaged memory.
+                            IntPtr dataPtr = Marshal.AllocHGlobal(dataSize);
+                            IntPtr keyPtr = Marshal.AllocHGlobal(keySize);
+
+                            // Only continue if the allocation was successful.
+                            if ((dataPtr != IntPtr.Zero) && (keyPtr != IntPtr.Zero))
+                            {
+                                // Copy the data and key to unmanaged memory.
+                                Marshal.Copy(data, 0, dataPtr, data.Length);
+                                Marshal.Copy(key, 0, keyPtr, key.Length);
+
+                                // Encrypt the data using the key. Note that the encrypted data overwrites
+                                // the data in unmanaged memory.
+                                result = BltUtilCryptoAes256Encrypt(dataPtr, (UInt32)dataSize, keyPtr);
+
+                                // Copy encrypted data in unmanaged memory back to the data array.
+                                Marshal.Copy(dataPtr, data, 0, dataSize);
+
+                                // Free the unmanaged memory.
+                                Marshal.FreeHGlobal(dataPtr);
+                                Marshal.FreeHGlobal(keyPtr);
+                            }
+                        }
+
+                        // Give the result back to the caller.
+                        return result;
+                    }
+
+                    [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+                    private static extern UInt32 BltUtilCryptoAes256Decrypt(IntPtr data, UInt32 len, IntPtr key);
+
+                    /// <summary>
+                    /// Decrypts the bytes in the specified data-array, using the specified
+                    /// 256-bit (32 bytes) key.The results are written back into the same array.
+                    /// </summary>
+                    /// <remarks>
+                    /// The number of bytes in the data-array must be a multiple of 16, as this
+                    /// is the AES256 minimal block size.
+                    /// </remarks>
+                    /// <param name="data">
+                    /// Byte array with data to decrypt. The decrypted bytes are stored in the
+                    /// same array.
+                    /// </param>
+                    /// <param name="key">The 256-bit decryption key as a array of 32 bytes.</param>
+                    /// <returns>RESULT_OK if successful, RESULT_ERROR_xxx otherwise.</returns>
+                    /// <example>
+                    /// <code>
+                    /// byte[] cryptoKey = new byte[]
+                    /// {
+                    ///     0x83, 0x23, 0x44, 0x28, 0x47, 0x2B, 0x4B, 0x62,
+                    ///     0x50, 0x65, 0x53, 0x68, 0x56, 0x6D, 0x59, 0x71,
+                    ///     0x33, 0x74, 0x36, 0x77, 0x39, 0x7A, 0x24, 0x43,
+                    ///     0x26, 0x46, 0x29, 0x48, 0x40, 0x4D, 0x69, 0x39
+                    /// };
+                    /// 
+                    /// byte[] encryptedData = new byte[]
+                    /// {
+                    ///     0x43, 0x34, 0xd1, 0x54, 0xa2, 0xf0, 0x48, 0x76,
+                    ///     0x0e, 0x30, 0xf8, 0xa0, 0x92, 0x4f, 0xbc, 0xce,
+                    ///     0x06, 0x9c, 0x29, 0xf7, 0x24, 0x58, 0x79, 0x4e,
+                    ///     0x94, 0xeb, 0xd0, 0x35, 0xfd, 0xae, 0xf9, 0x88
+                    /// };
+                    /// 
+                    /// OpenBLT.Lib.Util.Crypto.Aes256.Decrypt(encryptedData, cryptoKey);
+                    /// </code>
+                    /// </example>
+                    public static UInt32 Decrypt(byte[] data, byte[] key)
+                    {
+                        UInt32 result = RESULT_ERROR_GENERIC;
+
+                        // Determine data and key size.
+                        Int32 dataSize = Marshal.SizeOf(data[0]) * data.Length;
+                        Int32 keySize = Marshal.SizeOf(key[0]) * key.Length;
+
+                        // Only continue if the key has at least 32 bytes (256-bit key).
+                        if (keySize >= 32)
+                        {
+                            // Allocate memory on the heap for storing the data and key in unmanaged memory.
+                            IntPtr dataPtr = Marshal.AllocHGlobal(dataSize);
+                            IntPtr keyPtr = Marshal.AllocHGlobal(keySize);
+
+                            // Only continue if the allocation was successful.
+                            if ((dataPtr != IntPtr.Zero) && (keyPtr != IntPtr.Zero))
+                            {
+                                // Copy the data and key to unmanaged memory.
+                                Marshal.Copy(data, 0, dataPtr, data.Length);
+                                Marshal.Copy(key, 0, keyPtr, key.Length);
+
+                                // Decrypt the data using the key. Note that the decrypted data overwrites
+                                // the data in unmanaged memory.
+                                result = BltUtilCryptoAes256Decrypt(dataPtr, (UInt32)dataSize, keyPtr);
+
+                                // Copy Decrypted data in unmanaged memory back to the data array.
+                                Marshal.Copy(dataPtr, data, 0, dataSize);
+
+                                // Free the unmanaged memory.
+                                Marshal.FreeHGlobal(dataPtr);
+                                Marshal.FreeHGlobal(keyPtr);
+                            }
+                        }
+
+                        // Give the result back to the caller.
+                        return result;
+                    }
                 }
             }
         }
