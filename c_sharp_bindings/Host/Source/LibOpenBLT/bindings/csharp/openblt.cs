@@ -721,6 +721,141 @@ namespace OpenBLT
             {
                 BltSessionStop();
             }
+
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern UInt32 BltSessionClearMemory(UInt32 address, UInt32 len);
+
+            /// <summary>
+            /// Requests the target to erase the specified range of memory on the target.
+            /// </summary>
+            /// <remarks>
+            /// Note that the target automatically aligns this to the erasable memory
+            /// block sizes. This typically results in more memory being erased than the
+            /// range that was specified here. Refer to the target implementation for
+            /// details.
+            /// </remarks>
+            /// <param name="address">The starting memory address for the erase operation.</param>
+            /// <param name="len">The total number of bytes to erase from memory.</param>
+            /// <returns>RESULT_OK if successful, RESULT_ERROR_xxx otherwise.</returns>
+            /// <example>
+            /// <code>
+            /// if (OpenBLT.Lib.Session.ClearMemory(0x08004000, 8196) != OpenBLT.Lib.RESULT_OK)
+            /// {
+            ///     Console.WriteLine("Could not erase memory.");
+            /// }
+            /// </code>
+            /// </example>
+            public static UInt32 ClearMemory(UInt32 address, Int32 len)
+            {
+                // Note that parameter length was made 32-bit signed, because you typically erase the
+                // length of a segment. When obtaining the segment info with GetSegment(), you would
+                // then pass the length of the segment's data-array into this function, which is 32-bit
+                // signed.
+                return BltSessionClearMemory(address, (UInt32)len);
+            }
+
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern UInt32 BltSessionWriteData(UInt32 address, UInt32 len, IntPtr data);
+
+            /// <summary>
+            /// Requests the target to program the specified data to memory.
+            /// </summary>
+            /// <remarks>
+            /// Note that it is the responsibility of the application to make sure the
+            /// memory range was erased beforehand. The length of the data array
+            /// determines how many bytes are programmed.
+            /// </remarks>
+            /// <param name="address">The starting memory address for the write operation.</param>
+            /// <param name="data">Byte array with data to write.</param>
+            /// <returns>RESULT_OK if successful, RESULT_ERROR_xxx otherwise.</returns>
+            /// <example>
+            /// <code>
+            /// byte[] firmwareDataAt08006000 = new byte[]
+            /// {
+            ///     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+            ///     0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+            ///     0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+            ///     0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F
+            /// };
+            /// byte[] flashData = new byte[8];
+            /// 
+            /// Array.Copy(firmwareDataAt08006000, 24, flashData, 0, 8);
+            /// 
+            /// if (OpenBLT.Lib.Session.WriteData(0x08006000 + 24, flashData) != OpenBLT.Lib.RESULT_OK)
+            /// {
+            ///    Console.WriteLine("Could not program 8 bytes at 0x08006018 in memory.");
+            /// }
+            /// </code>
+            /// </example>
+            public static UInt32 WriteData(UInt32 address, byte[] data)
+            {
+                UInt32 result = RESULT_ERROR_GENERIC;
+
+                // Determine data size.
+                Int32 dataSize = Marshal.SizeOf(data[0]) * data.Length;
+
+                // Allocate memory on the heap for storing the data in unmanaged memory.
+                IntPtr dataPtr = Marshal.AllocHGlobal(dataSize);
+
+                // Only continue if the allocation was successful.
+                if (dataPtr != IntPtr.Zero)
+                {
+                    // Copy the data to unmanaged memory.
+                    Marshal.Copy(data, 0, dataPtr, data.Length);
+                    // Write the data to memory on the target.
+                    result = BltSessionWriteData(address, (UInt32)data.Length, dataPtr);
+                    // Free the unmanaged memory.
+                    Marshal.FreeHGlobal(dataPtr);
+                }
+
+                // Give the result back to the caller.
+                return result;
+            }
+
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern UInt32 BltSessionReadData(UInt32 address, UInt32 len, IntPtr data);
+
+            /// <summary>
+            /// Requests the target to upload the specified range from memory and store its
+            /// contents in the specified data buffer.
+            /// </summary>
+            /// <remarks>
+            /// Note that the length of the data array determines how many bytes are read.
+            /// </remarks>
+            /// <param name="address">The starting memory address for the read operation.</param>
+            /// <param name="data">Byte array where the uploaded data should be stored.</param>
+            /// <returns>RESULT_OK if successful, RESULT_ERROR_xxx otherwise.</returns>
+            /// <example>
+            /// <code>
+            /// 
+            /// </code>
+            /// </example>
+            public static UInt32 ReadData(UInt32 address, byte[] data)
+            {
+                UInt32 result = RESULT_ERROR_GENERIC;
+
+                // Determine data size.
+                Int32 dataSize = Marshal.SizeOf(data[0]) * data.Length;
+
+                // Allocate memory on the heap for storing the data in unmanaged memory.
+                IntPtr dataPtr = Marshal.AllocHGlobal(dataSize);
+
+                // Only continue if the allocation was successful.
+                if (dataPtr != IntPtr.Zero)
+                {
+                    // Read the data to memory on the target.
+                    result = BltSessionReadData(address, (UInt32)data.Length, dataPtr);
+
+                    // Copy read data in unmanaged memory back to the data array.
+                    Marshal.Copy(dataPtr, data, 0, dataSize);
+
+                    // Free the unmanaged memory.
+                    Marshal.FreeHGlobal(dataPtr);
+                }
+
+                // Give the result back to the caller.
+                return result;
+            }
         }
 
         /// <summary>
