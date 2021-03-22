@@ -11,7 +11,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>31</version>
+                <version>32</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -88,7 +88,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>8.40.1.21529</state>
+                    <state>8.50.4.26131</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -217,6 +217,10 @@
                 <option>
                     <name>OCMulticoreSessionFile</name>
                     <state></state>
+                </option>
+                <option>
+                    <name>OCTpiuBaseOption</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -1003,7 +1007,7 @@
             <name>STLINK_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>7</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1118,8 +1122,8 @@
                 </option>
                 <option>
                     <name>CCSTLinkProbeList</name>
-                    <version>0</version>
-                    <state>1</state>
+                    <version>1</version>
+                    <state>2</state>
                 </option>
             </data>
         </settings>
@@ -1441,11 +1445,11 @@
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
-                <file>$TOOLKIT_DIR$\plugins\rtos\SMX\smxAwareIarArm8.ewplugin</file>
+                <file>$TOOLKIT_DIR$\plugins\rtos\SMX\smxAwareIarArm8b.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
-                <file>$TOOLKIT_DIR$\plugins\rtos\SMX\smxAwareIarArm8BE.ewplugin</file>
+                <file>$TOOLKIT_DIR$\plugins\rtos\SMX\smxAwareIarArm8bBE.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -1492,7 +1496,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>31</version>
+                <version>32</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1699,6 +1703,10 @@
                     <name>OCMulticoreSessionFile</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>OCTpiuBaseOption</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -2484,7 +2492,7 @@
             <name>STLINK_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>7</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -2599,8 +2607,8 @@
                 </option>
                 <option>
                     <name>CCSTLinkProbeList</name>
-                    <version>0</version>
-                    <state>1</state>
+                    <version>1</version>
+                    <state>2</state>
                 </option>
             </data>
         </settings>
@@ -2922,11 +2930,11 @@
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
-                <file>$TOOLKIT_DIR$\plugins\rtos\SMX\smxAwareIarArm8.ewplugin</file>
+                <file>$TOOLKIT_DIR$\plugins\rtos\SMX\smxAwareIarArm8b.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
-                <file>$TOOLKIT_DIR$\plugins\rtos\SMX\smxAwareIarArm8BE.ewplugin</file>
+                <file>$TOOLKIT_DIR$\plugins\rtos\SMX\smxAwareIarArm8bBE.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
