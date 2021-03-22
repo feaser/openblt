@@ -49,7 +49,7 @@
  * and enables you to have just one bootloader source base.
  */
 #include "types.h"                                    /* variable types                */
-#include "assert.h"                                   /* assertion checks              */
+#include "asserts.h"                                  /* assertion checks              */
 #ifdef PROJ_BLT_CONF_H
 #include PROJ_BLT_CONF_H                              /* custom configuration          */
 #else
