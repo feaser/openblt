@@ -43,6 +43,28 @@
 #define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define RS232_BYTE_TX_TIMEOUT_MS       (10u)
+/* map the configured UART channel index to the STM32's USART peripheral. note that the
+ * LPUART peripheral is mapped after the regual U(S)ART peripherals.
+ */
+#if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
+/** \brief Set UART base address to USART1. */
+#define USART_CHANNEL   USART1
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 1)
+/** \brief Set UART base address to USART2. */
+#define USART_CHANNEL   USART2
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 2)
+/** \brief Set UART base address to USART3. */
+#define USART_CHANNEL   USART3
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 3)
+/** \brief Set UART base address to UART4. */
+#define USART_CHANNEL   UART4
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 4)
+/** \brief Set UART base address to UART5. */
+#define USART_CHANNEL   UART5
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 5)
+/** \brief Set UART base address to LPUART1. */
+#define USART_CHANNEL   LPUART1
+#endif
 
 
 /****************************************************************************************
@@ -59,13 +81,15 @@ static void     Rs232TransmitByte(blt_int8u data);
 ****************************************************************************************/
 void Rs232Init(void)
 {
-  /* TODO ##Port Perform compile time assertion to check that the configured UART channel
-   * is actually supported by this driver. The example is for a driver where UART
-   * channels 0 - 2 are supported. 
+  /* The current implementation supports USART1 - UART5 and LPUART1. throw an assertion
+   * error in case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 1) ||
-            (BOOT_COM_RS232_CHANNEL_INDEX == 2));
+            (BOOT_COM_RS232_CHANNEL_INDEX == 2) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 3) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 4) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 5));
 
   /* TODO ##Port Configure and initialize the UART peripheral for the configured UART
    * channel. The communication speed should be set to the value configured with
