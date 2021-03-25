@@ -40,9 +40,6 @@
 /** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
 /** \brief Standard size of a flash block for writing. */
-/* TODO ##Port The FLASH_WRITE_BLOCK_SIZE should be at least 512. If for some reason this
- * is not large enough, double the size so: 512 -> 1024 -> 2048 -> 4096 etc.
- */
 #define FLASH_WRITE_BLOCK_SIZE          (512)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
@@ -57,19 +54,14 @@
  *         verification will always fail.
  */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
-/* TODO ##Port The bootloader uses a 32-bit checksum signature value to determine if a 
- * a valid user program is present or not. This checksum value is written by the
- * bootloader at the end of a firmware update with function FlashWriteChecksum(). Right
- * before a user program is about to be started, function FlashVerifyChecksum() is called
- * to verify the presence of a user program. Space must be reserved in the user program
- * for the checksum signature value and the bootloader needs to know where this space
- * is reserved. It is recommended to place the signature checksum right after the 
- * user program's vector table. Using this approach it is easy to reserved space for the
- * checksum signature in the user program by simply adding one more dummy entry into the
- * vector table. This macro should be set to the size of the vector table, which can then
- * be used to determine the memory address of the signature checksum.
+/** \brief Offset into the user program's vector table where the checksum is located.
+ *         For this target it is set to the end of the vector table. Note that the
+ *         value can be overriden in blt_conf.h, because the size of the vector table
+ *         could vary. When changing this value, don't forget to update the location
+ *         of the checksum in the user program accordingly. Otherwise the checksum
+ *         verification will always fail.
  */
-#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x188)
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x1F4)
 #endif
 
 
@@ -153,8 +145,8 @@ static const tFlashSector flashLayout[] =
   /* Note that the current layout assumes a single bank organization. */
   /* { 0x08000000, 0x01000,   0},          flash sector   0 - reserved for bootloader  */
   /* { 0x08001000, 0x01000,   1},          flash sector   1 - reserved for bootloader  */
-  { 0x08002000, 0x01000,   2},           /* flash sector   2 - 4kb                     */
-  { 0x08003000, 0x01000,   3},           /* flash sector   3 - 4kb                     */
+  /* { 0x08002000, 0x01000,   2},          flash sector   2 - reserved for bootloader  */
+  /* { 0x08003000, 0x01000,   3},          flash sector   3 - reserved for bootloader  */
   { 0x08004000, 0x01000,   4},           /* flash sector   4 - 4kb                     */
   { 0x08005000, 0x01000,   5},           /* flash sector   5 - 4kb                     */
   { 0x08006000, 0x01000,   6},           /* flash sector   6 - 4kb                     */
