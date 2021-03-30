@@ -207,7 +207,7 @@ static void MX_LPUART1_UART_Init(void)
    * reconfigured upon bootloader initialization with function Rs232Init().
    */
   /* USER CODE END LPUART1_Init 1 */
-  LPUART_InitStruct.BaudRate = 57600;
+  LPUART_InitStruct.BaudRate = 115200;
   LPUART_InitStruct.DataWidth = LL_LPUART_DATAWIDTH_8B;
   LPUART_InitStruct.StopBits = LL_LPUART_STOPBITS_1;
   LPUART_InitStruct.Parity = LL_LPUART_PARITY_NONE;

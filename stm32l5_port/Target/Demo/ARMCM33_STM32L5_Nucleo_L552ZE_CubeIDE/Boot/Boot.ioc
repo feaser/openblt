@@ -1,9 +1,10 @@
 #MicroXplorer Configuration settings - do not modify
 File.Version=6
 KeepUserPlacement=false
-LPUART1.BaudRate=57600
+LPUART1.BaudRate=115200
 LPUART1.FIFOMode=UART_FIFOMODE_DISABLE
-LPUART1.IPParameters=BaudRate,FIFOMode
+LPUART1.IPParameters=BaudRate,FIFOMode,Prescaler
+LPUART1.Prescaler=UART_PRESCALER_DIV4
 Mcu.ContextProject=TrustZoneDisabled
 Mcu.Family=STM32L5
 Mcu.IP0=LPUART1

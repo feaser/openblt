@@ -30,13 +30,16 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32l5xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Pointer to the user program's reset vector. */
+#define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)(NvmGetUserProgBaseAddress() + 0x00000004))
 /** \brief Pointer to the user program's vector table. */
-#define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_addr)NvmGetUserProgBaseAddress())
+#define CPU_USER_PROGRAM_VECTABLE_OFFSET  ((blt_int32u)NvmGetUserProgBaseAddress())
 
 
 /****************************************************************************************
@@ -57,7 +60,8 @@ void CpuInit(void)
   /* bootloader runs in polling mode so disable the global interrupts. this is done for
    * safety reasons. if the bootloader was started from a running user program, it could 
    * be that the user program did not properly disable the interrupt generation of 
-   * peripherals. */
+   * peripherals.
+   */
   CpuIrqDisable();
 } /*** end of CpuInit ***/
 
@@ -106,46 +110,23 @@ void CpuStartUserProgram(void)
   /* release the communication interface */
   ComFree();
 #endif
+  /* reset the HAL */
+  HAL_DeInit();
   /* reset the timer */
   TimerReset();
-  
-  /* TODO ##Port Prepare to start the user program. This typically consists of remapping
-   * the base address of the vector table, since the user program is typically moved
-   * forward to make space for the bootloader itself. 
-   * Some microcontrollers to not support changing the base address of the vector 
-   * table. In this the bootloader would need to reroute all interrupt vectors, except 
-   * the reset vector, to the location in memory where the user program has its vector
-   * table. This was done in the HCS12 port.
-   * If the microcontroller does not support remapping the vector table base address in
-   * flash, it might support remapping it to RAM. In this case you would not only need
-   * to do the remapping, but also copy the user program's vector table to this area
-   * in RAM. This was done in the STM32F0 port.
-   */
-
-  /* TODO ##Port Enable the global interrupts by calling function CpuIrqEnable(). Note
-   * that this should only be done if the microcontroller normally has global interrupts
-   * enabled after a reset event. Otherwise, you can skip this part.
-   */
-  CpuIrqEnable();
-
-  /* TODO ##Port Start the user program. This is achieved by reading out the address
-   * of the user program's reset handler from its vector table and jumping to it.
-   * The following example implementation shows how this is done in case the reset
-   * handler is located in the first entry of the interrupt vector table and the
-   * interrupt vector table is at the start of the user program.
-   * Note that for a lot of ARM Cortex CPUs, the first entry is the stackpointer and the
-   * second entry is the reset handler. In this case an extra 4 bytes need to be added
-   * to get to the address of where the reset handler pointer is located. In this case
-   * the user program should also explicitly initialize the stackpointer as the first
-   * thing in the reset handler.
-   */
-   
+  /* remap user program's vector table */
+  SCB->VTOR = CPU_USER_PROGRAM_VECTABLE_OFFSET & (blt_int32u)0x1FFFFF80;
   /* set the address where the bootloader needs to jump to. this is the address of
-   * the 1st entry in the user program's vector table. this address points to the
+   * the 2nd entry in the user program's vector table. this address points to the
    * user program's reset handler.
    */
-  pProgResetHandler = (void(*)(void))(*((blt_addr *)NvmGetUserProgBaseAddress()));
-  /* start the user program by calling its reset interrupt service routine */
+  pProgResetHandler = (void(*)(void))(*((blt_addr *)CPU_USER_PROGRAM_STARTADDR_PTR));
+  /* The Cortex-M33 core has interrupts enabled out of reset. the bootloader
+   * explicitly disables these for security reasons. Enable them here again, so it does 
+   * not have to be done by the user program.
+   */
+  CpuIrqEnable();
+  /* start the user program by activating its reset interrupt service routine */
   pProgResetHandler();
 #if (BOOT_COM_DEFERRED_INIT_ENABLE > 0) && (BOOT_COM_ENABLE > 0)
   /* theoretically, the code never gets here because the user program should now be
@@ -169,12 +150,6 @@ void CpuStartUserProgram(void)
 void CpuMemCopy(blt_addr dest, blt_addr src, blt_int16u len)
 {
   blt_int8u *from, *to;
-
-  /* TODO ##Port Implements similar functionality as the C library's memcpy() function.
-   * For most ports you can simply leave this function as is. If desired you can optimize
-   * the implementation, for example by copying 32-bits at a time for 32-bit CPU
-   * architectures. Alternativly, you could just use memcpy().
-   */
 
   /* set casted pointers */
   from = (blt_int8u *)src;
@@ -202,12 +177,6 @@ void CpuMemCopy(blt_addr dest, blt_addr src, blt_int16u len)
 void CpuMemSet(blt_addr dest, blt_int8u value, blt_int16u len)
 {
   blt_int8u *to;
-
-  /* TODO ##Port Implements similar functionality as the C library's memset() function.
-   * For most ports you can simply leave this function as is. If desired you can optimize
-   * the implementation, for example by setting 32-bits at a time for 32-bit CPU
-   * architectures. Alternativly, you could just use memset().
-   */
 
   /* set casted pointer */
   to = (blt_int8u *)dest;
