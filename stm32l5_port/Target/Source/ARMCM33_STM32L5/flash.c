@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "stm32l5xx.h"                           /* STM32 CPU and HAL header           */
 
 
 /****************************************************************************************
@@ -46,13 +47,6 @@
 /** \brief End address of the bootloader programmable flash. */
 #define FLASH_END_ADDRESS               (flashLayout[FLASH_TOTAL_SECTORS-1].sector_start + \
                                          flashLayout[FLASH_TOTAL_SECTORS-1].sector_size - 1)
-/** \brief Offset into the user program's vector table where the checksum is located. 
- *         For this target it is set to the end of the vector table. Note that the 
- *         value can be overriden in blt_conf.h, because the size of the vector table
- *         could vary. When changing this value, don't forget to update the location
- *         of the checksum in the user program accordingly. Otherwise the checksum
- *         verification will always fail.
- */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
 /** \brief Offset into the user program's vector table where the checksum is located.
  *         For this target it is set to the end of the vector table. Note that the
@@ -85,7 +79,6 @@ typedef struct
 {
   blt_addr   sector_start;                       /**< sector start address             */
   blt_int32u sector_size;                        /**< sector size in bytes             */
-  blt_int8u  sector_num;                         /**< sector number                    */
 } tFlashSector;
 
 /** \brief    Structure type for grouping flash block information.
@@ -121,6 +114,10 @@ static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector_idx, 
                                    blt_int8u last_sector_idx);
 static blt_int8u FlashGetSectorIdx(blt_addr address);
+static blt_int32u FlashGetPageSize(void);
+static blt_bool  FlashIsDualBankMode(void);
+static blt_int32u FlashGetBank(blt_addr address);
+static blt_int32u FlashGetPage(blt_addr address);
 
 
 /****************************************************************************************
@@ -142,140 +139,48 @@ static blt_int8u FlashGetSectorIdx(blt_addr address);
  */
 static const tFlashSector flashLayout[] =
 {
-  /* Note that the current layout assumes a single bank organization. */
-  /* { 0x08000000, 0x01000,   0},          flash sector   0 - reserved for bootloader  */
-  /* { 0x08001000, 0x01000,   1},          flash sector   1 - reserved for bootloader  */
-  /* { 0x08002000, 0x01000,   2},          flash sector   2 - reserved for bootloader  */
-  /* { 0x08003000, 0x01000,   3},          flash sector   3 - reserved for bootloader  */
-  { 0x08004000, 0x01000,   4},           /* flash sector   4 - 4kb                     */
-  { 0x08005000, 0x01000,   5},           /* flash sector   5 - 4kb                     */
-  { 0x08006000, 0x01000,   6},           /* flash sector   6 - 4kb                     */
-  { 0x08007000, 0x01000,   7},           /* flash sector   7 - 4kb                     */
-  { 0x08008000, 0x01000,   8},           /* flash sector   8 - 4kb                     */
-  { 0x08009000, 0x01000,   9},           /* flash sector   9 - 4kb                     */
-  { 0x0800A000, 0x01000,  10},           /* flash sector  10 - 4kb                     */
-  { 0x0800B000, 0x01000,  11},           /* flash sector  11 - 4kb                     */
-  { 0x0800C000, 0x01000,  12},           /* flash sector  12 - 4kb                     */
-  { 0x0800D000, 0x01000,  13},           /* flash sector  13 - 4kb                     */
-  { 0x0800E000, 0x01000,  14},           /* flash sector  14 - 4kb                     */
-  { 0x0800F000, 0x01000,  15},           /* flash sector  15 - 4kb                     */
+  /* Note that the STM32L5 supports single and dual bank modes. Each mode has a different
+   * layout of the flash pages. The layout defined here is meant to support both
+   * modes. It just means that the entries of the flash sector sizes in this table do
+   * not match the flash pages as defined by the hardware. Certain entries in the
+   * table cover more than one flash pages. So keep in mind that there is a different
+   * between the term flash page and flash sector.
+   */
+  /* { 0x08000000, 0x01000},               flash sector   0 - reserved for bootloader  */
+  /* { 0x08001000, 0x01000},               flash sector   1 - reserved for bootloader  */
+  /* { 0x08002000, 0x01000},               flash sector   2 - reserved for bootloader  */
+  /* { 0x08003000, 0x01000},               flash sector   3 - reserved for bootloader  */
+  { 0x08004000, 0x01000},                /* flash sector   4 - 4kb                     */
+  { 0x08005000, 0x01000},                /* flash sector   5 - 4kb                     */
+  { 0x08006000, 0x01000},                /* flash sector   6 - 4kb                     */
+  { 0x08007000, 0x01000},                /* flash sector   7 - 4kb                     */
+  { 0x08008000, 0x01000},                /* flash sector   8 - 4kb                     */
+  { 0x08009000, 0x01000},                /* flash sector   9 - 4kb                     */
+  { 0x0800A000, 0x01000},                /* flash sector  10 - 4kb                     */
+  { 0x0800B000, 0x01000},                /* flash sector  11 - 4kb                     */
+  { 0x0800C000, 0x01000},                /* flash sector  12 - 4kb                     */
+  { 0x0800D000, 0x01000},                /* flash sector  13 - 4kb                     */
+  { 0x0800E000, 0x01000},                /* flash sector  14 - 4kb                     */
+  { 0x0800F000, 0x01000},                /* flash sector  15 - 4kb                     */
 #if (BOOT_NVM_SIZE_KB > 64)
-  { 0x08010000, 0x01000,  16},           /* flash sector  16 - 4kb                     */
-  { 0x08011000, 0x01000,  17},           /* flash sector  17 - 4kb                     */
-  { 0x08012000, 0x01000,  18},           /* flash sector  18 - 4kb                     */
-  { 0x08013000, 0x01000,  19},           /* flash sector  19 - 4kb                     */
-  { 0x08014000, 0x01000,  20},           /* flash sector  20 - 4kb                     */
-  { 0x08015000, 0x01000,  21},           /* flash sector  21 - 4kb                     */
-  { 0x08016000, 0x01000,  22},           /* flash sector  22 - 4kb                     */
-  { 0x08017000, 0x01000,  23},           /* flash sector  23 - 4kb                     */
-  { 0x08018000, 0x01000,  24},           /* flash sector  24 - 4kb                     */
-  { 0x08019000, 0x01000,  25},           /* flash sector  25 - 4kb                     */
-  { 0x0801A000, 0x01000,  26},           /* flash sector  26 - 4kb                     */
-  { 0x0801B000, 0x01000,  27},           /* flash sector  27 - 4kb                     */
-  { 0x0801C000, 0x01000,  28},           /* flash sector  28 - 4kb                     */
-  { 0x0801D000, 0x01000,  29},           /* flash sector  29 - 4kb                     */
-  { 0x0801E000, 0x01000,  30},           /* flash sector  30 - 4kb                     */
-  { 0x0801F000, 0x01000,  31},           /* flash sector  31 - 4kb                     */
+  { 0x08010000, 0x08000},                /* flash sector  16 - 32kb                    */
+  { 0x08018000, 0x08000},                /* flash sector  17 - 32kb                    */
 #endif
 #if (BOOT_NVM_SIZE_KB > 128)
-  { 0x08020000, 0x01000,  32},           /* flash sector  32 - 4kb                     */
-  { 0x08021000, 0x01000,  33},           /* flash sector  33 - 4kb                     */
-  { 0x08022000, 0x01000,  34},           /* flash sector  34 - 4kb                     */
-  { 0x08023000, 0x01000,  35},           /* flash sector  35 - 4kb                     */
-  { 0x08024000, 0x01000,  36},           /* flash sector  36 - 4kb                     */
-  { 0x08025000, 0x01000,  37},           /* flash sector  37 - 4kb                     */
-  { 0x08026000, 0x01000,  38},           /* flash sector  38 - 4kb                     */
-  { 0x08027000, 0x01000,  39},           /* flash sector  39 - 4kb                     */
-  { 0x08028000, 0x01000,  40},           /* flash sector  40 - 4kb                     */
-  { 0x08029000, 0x01000,  41},           /* flash sector  41 - 4kb                     */
-  { 0x0802A000, 0x01000,  42},           /* flash sector  42 - 4kb                     */
-  { 0x0802B000, 0x01000,  43},           /* flash sector  43 - 4kb                     */
-  { 0x0802C000, 0x01000,  44},           /* flash sector  44 - 4kb                     */
-  { 0x0802D000, 0x01000,  45},           /* flash sector  45 - 4kb                     */
-  { 0x0802E000, 0x01000,  46},           /* flash sector  46 - 4kb                     */
-  { 0x0802F000, 0x01000,  47},           /* flash sector  47 - 4kb                     */
-  { 0x08030000, 0x01000,  48},           /* flash sector  48 - 4kb                     */
-  { 0x08031000, 0x01000,  49},           /* flash sector  49 - 4kb                     */
-  { 0x08032000, 0x01000,  50},           /* flash sector  50 - 4kb                     */
-  { 0x08033000, 0x01000,  51},           /* flash sector  51 - 4kb                     */
-  { 0x08034000, 0x01000,  52},           /* flash sector  52 - 4kb                     */
-  { 0x08035000, 0x01000,  53},           /* flash sector  53 - 4kb                     */
-  { 0x08036000, 0x01000,  54},           /* flash sector  54 - 4kb                     */
-  { 0x08037000, 0x01000,  55},           /* flash sector  55 - 4kb                     */
-  { 0x08038000, 0x01000,  56},           /* flash sector  56 - 4kb                     */
-  { 0x08039000, 0x01000,  57},           /* flash sector  57 - 4kb                     */
-  { 0x0803A000, 0x01000,  58},           /* flash sector  58 - 4kb                     */
-  { 0x0803B000, 0x01000,  59},           /* flash sector  59 - 4kb                     */
-  { 0x0803C000, 0x01000,  60},           /* flash sector  60 - 4kb                     */
-  { 0x0803D000, 0x01000,  61},           /* flash sector  61 - 4kb                     */
-  { 0x0803E000, 0x01000,  62},           /* flash sector  62 - 4kb                     */
-  { 0x0803F000, 0x01000,  63},           /* flash sector  63 - 4kb                     */
+  { 0x08020000, 0x08000},                /* flash sector  18 - 32kb                    */
+  { 0x08028000, 0x08000},                /* flash sector  19 - 32kb                    */
+  { 0x08030000, 0x08000},                /* flash sector  20 - 32kb                    */
+  { 0x08038000, 0x08000},                /* flash sector  21 - 32kb                    */
 #endif
 #if (BOOT_NVM_SIZE_KB > 256)
-  { 0x08040000, 0x01000,  64},           /* flash sector  64 - 4kb                     */
-  { 0x08041000, 0x01000,  65},           /* flash sector  65 - 4kb                     */
-  { 0x08042000, 0x01000,  66},           /* flash sector  66 - 4kb                     */
-  { 0x08043000, 0x01000,  67},           /* flash sector  67 - 4kb                     */
-  { 0x08044000, 0x01000,  68},           /* flash sector  68 - 4kb                     */
-  { 0x08045000, 0x01000,  69},           /* flash sector  69 - 4kb                     */
-  { 0x08046000, 0x01000,  70},           /* flash sector  70 - 4kb                     */
-  { 0x08047000, 0x01000,  71},           /* flash sector  71 - 4kb                     */
-  { 0x08048000, 0x01000,  72},           /* flash sector  72 - 4kb                     */
-  { 0x08049000, 0x01000,  73},           /* flash sector  73 - 4kb                     */
-  { 0x0804A000, 0x01000,  74},           /* flash sector  74 - 4kb                     */
-  { 0x0804B000, 0x01000,  75},           /* flash sector  75 - 4kb                     */
-  { 0x0804C000, 0x01000,  76},           /* flash sector  76 - 4kb                     */
-  { 0x0804D000, 0x01000,  77},           /* flash sector  77 - 4kb                     */
-  { 0x0804E000, 0x01000,  78},           /* flash sector  78 - 4kb                     */
-  { 0x0804F000, 0x01000,  79},           /* flash sector  79 - 4kb                     */
-  { 0x08050000, 0x01000,  80},           /* flash sector  80 - 4kb                     */
-  { 0x08051000, 0x01000,  81},           /* flash sector  81 - 4kb                     */
-  { 0x08052000, 0x01000,  82},           /* flash sector  82 - 4kb                     */
-  { 0x08053000, 0x01000,  83},           /* flash sector  83 - 4kb                     */
-  { 0x08054000, 0x01000,  84},           /* flash sector  84 - 4kb                     */
-  { 0x08055000, 0x01000,  85},           /* flash sector  85 - 4kb                     */
-  { 0x08056000, 0x01000,  86},           /* flash sector  86 - 4kb                     */
-  { 0x08057000, 0x01000,  87},           /* flash sector  87 - 4kb                     */
-  { 0x08058000, 0x01000,  88},           /* flash sector  88 - 4kb                     */
-  { 0x08059000, 0x01000,  89},           /* flash sector  89 - 4kb                     */
-  { 0x0805A000, 0x01000,  90},           /* flash sector  90 - 4kb                     */
-  { 0x0805B000, 0x01000,  91},           /* flash sector  91 - 4kb                     */
-  { 0x0805C000, 0x01000,  92},           /* flash sector  92 - 4kb                     */
-  { 0x0805D000, 0x01000,  93},           /* flash sector  93 - 4kb                     */
-  { 0x0805E000, 0x01000,  94},           /* flash sector  94 - 4kb                     */
-  { 0x0805F000, 0x01000,  95},           /* flash sector  95 - 4kb                     */
-  { 0x08060000, 0x01000,  96},           /* flash sector  96 - 4kb                     */
-  { 0x08061000, 0x01000,  97},           /* flash sector  97 - 4kb                     */
-  { 0x08062000, 0x01000,  98},           /* flash sector  98 - 4kb                     */
-  { 0x08063000, 0x01000,  99},           /* flash sector  99 - 4kb                     */
-  { 0x08064000, 0x01000, 100},           /* flash sector 100 - 4kb                     */
-  { 0x08065000, 0x01000, 101},           /* flash sector 101 - 4kb                     */
-  { 0x08066000, 0x01000, 102},           /* flash sector 102 - 4kb                     */
-  { 0x08067000, 0x01000, 103},           /* flash sector 103 - 4kb                     */
-  { 0x08068000, 0x01000, 104},           /* flash sector 104 - 4kb                     */
-  { 0x08069000, 0x01000, 105},           /* flash sector 105 - 4kb                     */
-  { 0x0806A000, 0x01000, 106},           /* flash sector 106 - 4kb                     */
-  { 0x0806B000, 0x01000, 107},           /* flash sector 107 - 4kb                     */
-  { 0x0806C000, 0x01000, 108},           /* flash sector 108 - 4kb                     */
-  { 0x0806D000, 0x01000, 109},           /* flash sector 109 - 4kb                     */
-  { 0x0806E000, 0x01000, 110},           /* flash sector 110 - 4kb                     */
-  { 0x0806F000, 0x01000, 111},           /* flash sector 111 - 4kb                     */
-  { 0x08070000, 0x01000, 112},           /* flash sector 112 - 4kb                     */
-  { 0x08071000, 0x01000, 113},           /* flash sector 113 - 4kb                     */
-  { 0x08072000, 0x01000, 114},           /* flash sector 114 - 4kb                     */
-  { 0x08073000, 0x01000, 115},           /* flash sector 115 - 4kb                     */
-  { 0x08074000, 0x01000, 116},           /* flash sector 116 - 4kb                     */
-  { 0x08075000, 0x01000, 117},           /* flash sector 117 - 4kb                     */
-  { 0x08076000, 0x01000, 118},           /* flash sector 118 - 4kb                     */
-  { 0x08077000, 0x01000, 119},           /* flash sector 119 - 4kb                     */
-  { 0x08078000, 0x01000, 120},           /* flash sector 120 - 4kb                     */
-  { 0x08079000, 0x01000, 121},           /* flash sector 121 - 4kb                     */
-  { 0x0807A000, 0x01000, 122},           /* flash sector 122 - 4kb                     */
-  { 0x0807B000, 0x01000, 123},           /* flash sector 123 - 4kb                     */
-  { 0x0807C000, 0x01000, 124},           /* flash sector 124 - 4kb                     */
-  { 0x0807D000, 0x01000, 125},           /* flash sector 125 - 4kb                     */
-  { 0x0807E000, 0x01000, 126},           /* flash sector 126 - 4kb                     */
-  { 0x0807F000, 0x01000, 127},           /* flash sector 127 - 4kb                     */
+  { 0x08040000, 0x08000},                /* flash sector  22 - 32kb                    */
+  { 0x08048000, 0x08000},                /* flash sector  23 - 32kb                    */
+  { 0x08050000, 0x08000},                /* flash sector  24 - 32kb                    */
+  { 0x08058000, 0x08000},                /* flash sector  25 - 32kb                    */
+  { 0x08060000, 0x08000},                /* flash sector  26 - 32kb                    */
+  { 0x08068000, 0x08000},                /* flash sector  27 - 32kb                    */
+  { 0x08070000, 0x08000},                /* flash sector  28 - 32kb                    */
+  { 0x08078000, 0x08000}                 /* flash sector  29 - 32kb                    */
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
 #error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
@@ -462,20 +367,24 @@ blt_bool FlashWriteChecksum(void)
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
 
-  /* TODO ##Port Calculate and write the signature checksum such that it appears at the
-   * address configured with macro BOOT_FLASH_VECTOR_TABLE_CS_OFFSET. Use the 
-   * FlashWrite() function for the actual write operation. For a typical microcontroller,
-   * the bootBlock holds the program code that includes the user program's interrupt
-   * vector table and after which the 32-bit for the signature checksum is reserved.
-   * 
-   * Note that this means one extra dummy entry must be added at the end of the user 
-   * program's vector table to reserve storage space for the signature checksum value,
-   * which is then overwritten by this function.
+  /* for the STM32 target we defined the checksum as the Two's complement value of the
+   * sum of the first 7 exception addresses.
    *
-   * The example here calculates a signature checksum by summing up the first 32-bit
-   * values in the bootBlock (so the first 7 interrupt vectors) and then taking the
-   * Two's complement of this sum. You can modify this to anything you like as long as
-   * the signature checksum is based on program code present in the bootBlock.
+   * Layout of the vector table:
+   *    0x08000000 Initial stack pointer
+   *    0x08000004 Reset Handler
+   *    0x08000008 NMI Handler
+   *    0x0800000C Hard Fault Handler
+   *    0x08000010 MPU Fault Handler
+   *    0x08000014 Bus Fault Handler
+   *    0x08000018 Usage Fault Handler
+   *
+   *    signature_checksum = Two's complement of (SUM(exception address values))
+   *
+   *    the bootloader writes this 32-bit checksum value right after the vector table
+   *    of the user program. note that this means one extra dummy entry must be added
+   *    at the end of the user program's vector table to reserve storage space for the
+   *    checksum.
    */
 
   /* first check that the bootblock contains valid data. if not, this means the
@@ -531,16 +440,6 @@ blt_bool FlashVerifyChecksum(void)
 {
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
-
-  /* TODO ##Port Implement code here that basically does the reverse of
-   * FlashWriteChecksum(). Just make sure to read the values directory from flash memory
-   * and NOT from the bootBlock. 
-   * The example implementation reads the first 7 32-bit from the user program flash
-   * memory and sums them up. The signature checksum written by FlashWriteChecksum() was
-   * the Two complement's value. This means that if you add the previously written
-   * signature checksum value to the sum of the first 7 32-bit values, the result is
-   * a value of 0 in case the signature checksum is valid.
-   */
 
   /* verify the checksum based on how it was written by FlashWriteChecksum(). */
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start));
@@ -822,8 +721,8 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
   blt_bool   result = BLT_TRUE;
   blt_addr   prog_addr;
-  blt_int32u prog_data;
-  blt_int32u word_cnt;
+  blt_int64u prog_data;
+  blt_int32u dword_cnt;
 
   /* check that the address is actually within flash */
   if (FlashGetSectorIdx(block->base_addr) == FLASH_INVALID_SECTOR_IDX)
@@ -850,37 +749,33 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
-    /* TODO ##Port Program the data contents in 'block' to flash memory here and read the
-     * programmed data values back directory from flash memory to verify that the flash
-     * program operation was successful. The example implementation assumes that flash
-     * data can be written 32-bits at a time.
-     */
 
-    /* program all words in the block one by one */
-    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+    /* unlock the flash peripheral to enable the flash control register access. */
+    HAL_FLASH_Unlock();
+
+    /* program all double words in the block one by one */
+    for (dword_cnt=0; dword_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int64u)); dword_cnt++)
     {
-      prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
-      prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+      prog_addr = block->base_addr + (dword_cnt * sizeof(blt_int64u));
+      prog_data = *(volatile blt_int64u *)(&block->data[dword_cnt * sizeof(blt_int64u)]);
       /* keep the watchdog happy */
       CopService();
-      /* TODO ##Port Program 32-bit 'prog_data' data value to memory address 'prog_addr'.
-       * In case an error occured, set result to BLT_FALSE and break the loop. 
-       */
-      if (1 == 0)
+      /* program 64-bit 'prog_data' data value to memory address 'prog_addr' */
+      if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, prog_addr, prog_data) != HAL_OK)
       {
         result = BLT_FALSE;
         break;
       }
       /* verify that the written data is actually there */
-      if (*(volatile blt_int32u *)prog_addr != prog_data)
+      if (*(volatile blt_int64u *)prog_addr != prog_data)
       {
-        /* TODO ##Port Uncomment the following two lines again. It was commented out so
-         * that a dry run with the flash driver is possible without it reporting errors.
-         */
-        /*result = BLT_FALSE;*/
-        /*break;*/
+        result = BLT_FALSE;
+        break;
       }
     }
+
+    /* lock the flash peripheral to disable the flash control register access. */
+    HAL_FLASH_Lock();
   }
 
   /* Give the result back to the caller. */
@@ -898,10 +793,15 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 ****************************************************************************************/
 static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sector_idx)
 {
-  blt_bool   result = BLT_TRUE;
-  blt_int8u  sectorIdx;
-  blt_addr   sectorBaseAddr;
-  blt_int32u sectorSize;
+  blt_bool               result = BLT_TRUE;
+  blt_int8u              sectorIdx;
+  blt_addr               sectorBaseAddr;
+  blt_int32u             sectorSize;
+  FLASH_EraseInitTypeDef eraseInitStruct;
+  uint32_t               pageEraseError = 0;
+  uint32_t               sectorBank;
+  uint32_t               sectorFirstPage;
+  uint32_t               sectorTotalPages;
 
   /* validate the sector numbers */
   if (first_sector_idx > last_sector_idx)
@@ -921,6 +821,10 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
+
+    /* unlock the flash peripheral to enable the flash control register access. */
+    HAL_FLASH_Unlock();
+
     /* erase the sectors one by one */
     for (sectorIdx = first_sector_idx; sectorIdx <= last_sector_idx; sectorIdx++)
     {
@@ -937,11 +841,23 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
         break;
       }
       
-      /* TODO ##Port Perform the flash erase operation of a sector that starts at
-       * 'sectorBaseAddr' and has a length of 'sectorSize' bytes. In case an error
-       * occured, set result to BLT_FALSE and break the loop.
-       */
-      if(1 == 0)
+      /* assert that the sector size is an exact multiple of the page size */
+      ASSERT_RT((sectorSize % FlashGetPageSize()) == 0);
+      /* determine how many pages the sector contains */
+      sectorTotalPages = sectorSize / FlashGetPageSize();
+      /* determine the flash bank that the sector falls into */
+      sectorBank = FlashGetBank(sectorBaseAddr);
+      /* determine the page number of the first page in the sector */
+      sectorFirstPage = FlashGetPage(sectorBaseAddr);
+
+      /* prepare the information for the erase operation */
+      eraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
+      eraseInitStruct.Banks = sectorBank;
+      eraseInitStruct.Page = sectorFirstPage;
+      eraseInitStruct.NbPages = sectorTotalPages;
+
+      /* perform the flash erase operation of the sector */
+      if (HAL_FLASHEx_Erase(&eraseInitStruct, &pageEraseError) != HAL_OK)
       {
         /* could not perform erase operation */
         result = BLT_FALSE;
@@ -949,6 +865,9 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
         break;
       }
     }
+
+    /* lock the flash peripheral to disable the flash control register access. */
+    HAL_FLASH_Lock();
   }
 
   /* give the result back to the caller */
@@ -987,6 +906,126 @@ static blt_int8u FlashGetSectorIdx(blt_addr address)
   /* give the result back to the caller */
   return result;
 } /*** end of FlashGetSectorIdx ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the size of a flash pages, defined by hardware. This also
+**            defines the minimal erase size.
+** \return    Size of a flash page.
+**
+****************************************************************************************/
+static blt_int32u FlashGetPageSize(void)
+{
+  blt_int32u result;
+
+  /* evaluate bank mode to figure out the size of a flash page */
+  if (FlashIsDualBankMode() == BLT_TRUE)
+  {
+    result = FLASH_PAGE_SIZE;
+  }
+  else
+  {
+    result = FLASH_PAGE_SIZE_128_BITS;
+  }
+
+  /* give the result back to the caller */
+  return result;
+} /*** end of FlashGetEraseSegmentSize ***/
+
+
+/************************************************************************************//**
+** \brief     Determines if the flash device is configured as dual bank mode or single
+**            bank mode.
+** \return    BLT_TRUE if configured as dual bank mode, BLT_FALSE for single bank mode.
+**
+****************************************************************************************/
+static blt_bool FlashIsDualBankMode(void)
+{
+  blt_bool result = BLT_FALSE;
+
+  /* evaluate DBANK bit to determine if dual bank mode is configured */
+  if ((FLASH->OPTR & FLASH_OPTR_DBANK_Msk) != 0U)
+  {
+    /* update the result */
+    result = BLT_TRUE;
+  }
+
+  /* give the result back to the caller */
+  return result;
+} /*** end of FlashIsDualBankMode ***/
+
+
+
+/************************************************************************************//**
+** \brief     Determines the flash bank that the address belongs to.
+** \param     address Flash memory address.
+** \return    FLASH_BANK_1 if the address belongs to bank 1, FLASH_BANK_2 otherwise.
+**
+****************************************************************************************/
+static blt_int32u FlashGetBank(blt_addr address)
+{
+  blt_int32u result = FLASH_BANK_1;
+
+  /* assert that the address is actually a valid flash address */
+  ASSERT_RT(address >= FLASH_BASE);
+  ASSERT_RT((address - FLASH_BASE) < FLASH_SIZE);
+
+  /* bank 2 is only possible if configured for dual bank mode */
+  if (FlashIsDualBankMode() == BLT_TRUE)
+  {
+    /* is the address in bank 2? */
+    if ((address - FLASH_BASE) >= FLASH_BANK_SIZE)
+    {
+      /* update the result */
+      result = FLASH_BANK_2;
+    }
+  }
+
+  /* give the result back to the caller */
+  return result;
+} /** end of FlashGetBank ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the flash page that the address belongs to.
+** \param     address Flash memory address.
+** \return    Page number.
+**
+****************************************************************************************/
+static blt_int32u FlashGetPage(blt_addr address)
+{
+  blt_int32u result = 0;
+
+  /* assert that the address is actually a valid flash address */
+  ASSERT_RT(address >= FLASH_BASE);
+  ASSERT_RT((address - FLASH_BASE) < FLASH_SIZE);
+
+  /* is the flash in single bank mode? */
+  if (FlashIsDualBankMode() == BLT_FALSE)
+  {
+    /* determine the page number */
+    result = (address - FLASH_BASE) / FlashGetPageSize();
+  }
+  /* flash is in dual page mode */
+  else
+  {
+    /* does the address fall in the first bank? */
+    if (FlashGetBank(address) == FLASH_BANK_1)
+    {
+      /* determine the page number */
+      result = (address - FLASH_BASE) / FlashGetPageSize();
+    }
+    /* address falls in the second bank */
+    else
+    {
+      /* determine the page number */
+      result = (address - (FLASH_BASE + FLASH_BANK_SIZE)) / FlashGetPageSize();
+    }
+  }
+
+  /* give the result back to the caller */
+  return result;
+} /*** end of FlashGetPage ***/
 
 
 /*********************************** end of flash.c ************************************/

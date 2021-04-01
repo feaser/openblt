@@ -42,10 +42,6 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/* TODO ##Port Adjust the type definitions such that they match the microcontroller
- * architecture for which this port is being developed. These type definitions are quite
- * generic and can typically be left as is.
- */
 typedef unsigned char   blt_bool;                     /**<  boolean type               */
 typedef char            blt_char;                     /**<  character type             */
 typedef unsigned long   blt_addr;                     /**<  memory address type        */
@@ -55,6 +51,8 @@ typedef unsigned short  blt_int16u;                   /**< 16-bit unsigned integ
 typedef signed short    blt_int16s;                   /**< 16-bit   signed integer     */
 typedef unsigned int    blt_int32u;                   /**< 32-bit unsigned integer     */
 typedef signed int      blt_int32s;                   /**< 32-bit   signed integer     */
+typedef unsigned long long  blt_int64u;               /**< 64-bit unsigned integer     */
+typedef signed long long    blt_int64s;               /**< 64-bit   signed integer     */
 
 
 #endif /* TYPES_H */
