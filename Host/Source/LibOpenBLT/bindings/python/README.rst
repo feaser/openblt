@@ -39,3 +39,7 @@ Copy the LibOpenBLT related run-time libraries into your python program's direct
 https://www.feaser.com/openblt/doku.php?id=manual:libopenblt#run-time_libraries.
 
 These run-time libraries can be found in the ./Host directory of the OpenBLT bootloader package. These run-time libraries should also be included, when distributing your program.
+
+Specific on Windows
+------------------
+Under Microsoft Windows, the LibOpenBLT shared library (libopenblt.dll) is 32-bit. Therefore you need to run your Python application, that makes use of LibOpenBLT, using the 32-bit Python interpreter.
