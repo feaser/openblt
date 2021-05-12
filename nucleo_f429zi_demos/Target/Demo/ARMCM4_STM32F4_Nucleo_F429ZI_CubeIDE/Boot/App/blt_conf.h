@@ -46,7 +46,7 @@
 /** \brief Frequency of the external crystal oscillator. */
 #define BOOT_CPU_XTAL_SPEED_KHZ          (8000)
 /** \brief Desired system speed. */
-#define BOOT_CPU_SYSTEM_SPEED_KHZ        (180000)
+#define BOOT_CPU_SYSTEM_SPEED_KHZ        (168000)
 /** \brief Motorola or Intel style byte ordering. */
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA     (0)
 /** \brief Enable/disable hook function call right before user program start. */
@@ -111,24 +111,18 @@
  */
 #define BOOT_COM_NET_DEFERRED_INIT_ENABLE (1)
 
-/* The RS232 communication interface is selected by setting the BOOT_COM_RS232_ENABLE
- * configurable to 1. Configurable BOOT_COM_RS232_BAUDRATE selects the communication speed
- * in bits/second. The maximum amount of data bytes in a message for data transmission
- * and reception is set through BOOT_COM_RS232_TX_MAX_DATA and BOOT_COM_RS232_RX_MAX_DATA,
- * respectively. It is common for a microcontroller to have more than 1 UART interface
- * on board. The zero-based BOOT_COM_RS232_CHANNEL_INDEX selects the UART interface.
+/* The USB communication interface is selected by setting the BOOT_COM_USB_ENABLE
+ * configurable to 1. The maximum amount of data bytes in a message for data transmission
+ * and reception is set through BOOT_COM_USB_TX_MAX_DATA and BOOT_COM_USB_RX_MAX_DATA,
+ * respectively.
  *
  */
-/** \brief Enable/disable UART transport layer. */
-#define BOOT_COM_RS232_ENABLE            (1)
-/** \brief Configure the desired communication speed. */
-#define BOOT_COM_RS232_BAUDRATE          (57600)
+/** \brief Enable/disable USB transport layer. */
+#define BOOT_COM_USB_ENABLE             (1)
 /** \brief Configure number of bytes in the target->host data packet. */
-#define BOOT_COM_RS232_TX_MAX_DATA       (64)
+#define BOOT_COM_USB_TX_MAX_DATA        (63)
 /** \brief Configure number of bytes in the host->target data packet. */
-#define BOOT_COM_RS232_RX_MAX_DATA       (64)
-/** \brief Select the desired UART peripheral as a zero based index. */
-#define BOOT_COM_RS232_CHANNEL_INDEX     (2)
+#define BOOT_COM_USB_RX_MAX_DATA        (63)
 
 /* The CAN communication interface is selected by setting the BOOT_COM_CAN_ENABLE
  * configurable to 1. Configurable BOOT_COM_CAN_BAUDRATE selects the communication speed
@@ -157,6 +151,25 @@
 #define BOOT_COM_CAN_RX_MAX_DATA        (8)
 /** \brief Select the desired CAN peripheral as a zero based index. */
 #define BOOT_COM_CAN_CHANNEL_INDEX      (0)
+
+/* The RS232 communication interface is selected by setting the BOOT_COM_RS232_ENABLE
+ * configurable to 1. Configurable BOOT_COM_RS232_BAUDRATE selects the communication speed
+ * in bits/second. The maximum amount of data bytes in a message for data transmission
+ * and reception is set through BOOT_COM_RS232_TX_MAX_DATA and BOOT_COM_RS232_RX_MAX_DATA,
+ * respectively. It is common for a microcontroller to have more than 1 UART interface
+ * on board. The zero-based BOOT_COM_RS232_CHANNEL_INDEX selects the UART interface.
+ *
+ */
+/** \brief Enable/disable UART transport layer. */
+#define BOOT_COM_RS232_ENABLE            (1)
+/** \brief Configure the desired communication speed. */
+#define BOOT_COM_RS232_BAUDRATE          (57600)
+/** \brief Configure number of bytes in the target->host data packet. */
+#define BOOT_COM_RS232_TX_MAX_DATA       (64)
+/** \brief Configure number of bytes in the host->target data packet. */
+#define BOOT_COM_RS232_RX_MAX_DATA       (64)
+/** \brief Select the desired UART peripheral as a zero based index. */
+#define BOOT_COM_RS232_CHANNEL_INDEX     (2)
 
 
 /****************************************************************************************
