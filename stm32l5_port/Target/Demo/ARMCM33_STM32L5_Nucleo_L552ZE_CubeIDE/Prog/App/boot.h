@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_CubeIDE/Prog/App/header.h
-* \brief        Generic header file.
+* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_CubeIDE/Prog/App/boot.h
+* \brief        Demo program bootloader interface header file.
 * \ingroup      Prog_ARMCM33_STM32L5_Nucleo_L552ZE_CubeIDE
 * \internal
 *----------------------------------------------------------------------------------------
@@ -20,24 +20,21 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef BOOT_H
+#define BOOT_H
 
 /****************************************************************************************
-* Include files
+* Function prototypes
 ****************************************************************************************/
-#include "../../Boot/App/blt_conf.h"                   /* bootloader configuration     */
-#include "stm32l5xx.h"                                 /* STM32 registers and drivers  */
-#include "app.h"                                       /* application header           */
-#include "boot.h"                                      /* bootloader interface driver  */
-#include "led.h"                                       /* LED driver                   */
-#include "timer.h"                                     /* Timer driver                 */
+void BootComInit(void);
+void BootComCheckActivationRequest(void);
+void BootActivate(void);
 
 
-#endif /* HEADER_H */
-/*********************************** end of header.h ***********************************/
+#endif /* BOOT_H */
+/*********************************** end of boot.h *************************************/
