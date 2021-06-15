@@ -141,6 +141,77 @@ void CopServiceHook(void)
 
 
 /****************************************************************************************
+*   U S B   C O M M U N I C A T I O N   I N T E R F A C E   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_COM_USB_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB device should be connected
+**            to the USB bus.
+** \param     connect BLT_TRUE to connect and BLT_FALSE to disconnect.
+** \return    none.
+**
+****************************************************************************************/
+void UsbConnectHook(blt_bool connect)
+{
+  /* Note that this is handled automatically by the OTG peripheral. */
+} /*** end of UsbConnect ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device
+**            to enter a low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbEnterLowPowerModeHook(void)
+{
+  /* support to enter a low power mode can be implemented here */
+} /*** end of UsbEnterLowPowerMode ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device to
+**            exit low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbLeaveLowPowerModeHook(void)
+{
+  /* support to leave a low power mode can be implemented here */
+} /*** end of UsbLeaveLowPowerMode ***/
+#endif /* BOOT_COM_USB_ENABLE > 0 */
+
+
+/****************************************************************************************
+*   B A C K D O O R   E N T R Y   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_BACKDOOR_HOOKS_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Initializes the backdoor entry option.
+** \return    none.
+**
+****************************************************************************************/
+void BackDoorInitHook(void)
+{
+} /*** end of BackDoorInitHook ***/
+
+
+/************************************************************************************//**
+** \brief     Checks if a backdoor entry is requested.
+** \return    BLT_TRUE if the backdoor entry is requested, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+blt_bool BackDoorEntryHook(void)
+{
+  /* default implementation always activates the bootloader after a reset */
+  return BLT_TRUE;
+} /*** end of BackDoorEntryHook ***/
+#endif /* BOOT_BACKDOOR_HOOKS_ENABLE > 0 */
+
+
+/****************************************************************************************
 *   N O N - V O L A T I L E   M E M O R Y   D R I V E R   H O O K   F U N C T I O N S
 ****************************************************************************************/
 

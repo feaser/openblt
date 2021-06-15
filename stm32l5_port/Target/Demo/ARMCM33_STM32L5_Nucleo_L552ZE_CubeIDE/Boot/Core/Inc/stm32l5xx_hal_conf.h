@@ -52,7 +52,7 @@
 /*#define HAL_OPAMP_MODULE_ENABLED   */
 /*#define HAL_OSPI_MODULE_ENABLED   */
 /*#define HAL_OTFDEC_MODULE_ENABLED   */
-/*#define HAL_PCD_MODULE_ENABLED   */
+#define HAL_PCD_MODULE_ENABLED
 /*#define HAL_PKA_MODULE_ENABLED   */
 /*#define HAL_RCC_MODULE_ENABLED   */
 /*#define HAL_RNG_MODULE_ENABLED   */
