@@ -56,7 +56,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
 void MX_ETH_Init(void);
 void MX_CAN1_Init(void);
-static void MX_USB_OTG_FS_PCD_Init(void);
+void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -95,7 +95,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART3_UART_Init();
-  MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
   /* Initialize the bootloader application. */
   AppInit();
@@ -298,11 +297,13 @@ static void MX_USART3_UART_Init(void)
   * @param None
   * @retval None
   */
-static void MX_USB_OTG_FS_PCD_Init(void)
+void MX_USB_OTG_FS_PCD_Init(void)
 {
 
   /* USER CODE BEGIN USB_OTG_FS_Init 0 */
-
+  /* Note that this function is generated but not actually used. The bootloader handles
+   * the USB initialization.
+   */
   /* USER CODE END USB_OTG_FS_Init 0 */
 
   /* USER CODE BEGIN USB_OTG_FS_Init 1 */
