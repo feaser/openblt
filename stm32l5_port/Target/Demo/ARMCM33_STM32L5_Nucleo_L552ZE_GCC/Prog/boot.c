@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_CubeIDE/Prog/App/boot.c
+* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_GCC/Prog/boot.c
 * \brief        Demo program bootloader interface source file.
-* \ingroup      Prog_ARMCM33_STM32L5_Nucleo_L552ZE_CubeIDE
+* \ingroup      Prog_ARMCM33_STM32L5_Nucleo_L552ZE_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
