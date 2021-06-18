@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_GCC/Boot/blt_conf.h
+* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_Keil/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
-* \ingroup      Boot_ARMCM33_STM32L5_Nucleo_L552ZE_GCC
+* \ingroup      Boot_ARMCM33_STM32L5_Nucleo_L552ZE_Keil
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

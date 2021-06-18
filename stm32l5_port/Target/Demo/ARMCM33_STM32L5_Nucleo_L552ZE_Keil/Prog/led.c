@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_GCC/Prog/led.c
+* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_Keil/Prog/led.c
 * \brief        LED driver source file.
-* \ingroup      Prog_ARMCM33_STM32L5_Nucleo_L552ZE_GCC
+* \ingroup      Prog_ARMCM33_STM32L5_Nucleo_L552ZE_Keil
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

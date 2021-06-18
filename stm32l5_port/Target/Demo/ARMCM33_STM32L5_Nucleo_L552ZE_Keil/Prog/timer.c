@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_GCC/Prog/timer.c
+* \file         Demo/ARMCM33_STM32L5_Nucleo_L552ZE_Keil/Prog/timer.c
 * \brief        Timer driver source file.
-* \ingroup      Prog_ARMCM33_STM32L5_Nucleo_L552ZE_GCC
+* \ingroup      Prog_ARMCM33_STM32L5_Nucleo_L552ZE_Keil
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
