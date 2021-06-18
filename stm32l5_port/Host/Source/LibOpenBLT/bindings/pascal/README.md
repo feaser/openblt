@@ -25,6 +25,14 @@ https://www.feaser.com/openblt/doku.php?id=manual:libopenblt#run-time_libraries
 
 These run-time libraries can be found in the ./Host directory of the OpenBLT bootloader package. These run-time libraries should also be included, when distributing your program.
 
+### Lazarus and Delphi specifics on Windows
+
+Under Microsoft Windows, the LibOpenBLT shared library (**libopenblt.dll**) is 32-bit. This means that the application you develop needs to build as a 32-bit application as well. 
+
+When using Lazarus, an easy solution is to install the 32-bit version of Lazarus. That way your own application automatically builds as a 32-bit application as well. If you already installed the 64-bit version of Lazarus, then you can go to the *Project Options* and set **Target OS** to **Win32** and **Target CPU Family** to **i386**.
+
+When using Delphi, go to the *Project Manager* and configure just **32-bit Windows platform (Win32)** for setting **Target Platforms**.
+
 ### Lazarus specifics on Linux
 When running your program under Linux, you will most likely get the following error:
 ```
