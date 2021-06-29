@@ -114,6 +114,7 @@ static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
 static blt_int8u FlashGetSector(blt_addr address);
+static blt_bool  FlashIsSingleBankMode(void);
 
 
 /****************************************************************************************
@@ -628,6 +629,15 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
     }
   }
 #endif
+  
+  /* this flash driver currently supports single bank mode. report an error if it is
+   * configured in dual bank mode. otherwise a tricky to debug hard fault might happen.
+   */
+  if (FlashIsSingleBankMode() == BLT_FALSE)
+  {
+    /* cannot perform flash operation, because it is configured in dual bank mode. */
+    return BLT_FALSE;
+  }
 
   /* unlock the flash peripheral to enable the flash control register access. */
   HAL_FLASH_Unlock();
@@ -685,7 +695,16 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
   {
     result = BLT_FALSE;
   }
-
+  
+  /* this flash driver currently supports single bank mode. report an error if it is
+   * configured in dual bank mode. otherwise a tricky to debug hard fault might happen.
+   */
+  if (FlashIsSingleBankMode() == BLT_FALSE)
+  {
+    /* cannot perform flash operation, because it is configured in dual bank mode. */
+    result = BLT_FALSE;
+  }
+  
   /* only move forward with the erase operation if all is okay so far */
   if (result == BLT_TRUE)
   {
@@ -753,6 +772,33 @@ static blt_int8u FlashGetSector(blt_addr address)
   /* give the result back to the caller */
   return result;
 } /*** end of FlashGetSector ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the flash is configured in single bank mode, which is required
+**            by this flash driver.
+** \return    BLT_TRUE if the flash is in single bank mode, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+static blt_bool FlashIsSingleBankMode(void)
+{
+  blt_bool result = BLT_TRUE;
+
+  /* dual bank mode is only available on certain STM32F7 variants. for these variants,
+   * macro FLASH_OPTCR_nDBANK is defined in the HAL.
+   */
+  #if defined (FLASH_OPTCR_nDBANK)
+  /* check if the flash is NOT in single bank mode. */
+  if ((FLASH->OPTCR & FLASH_OPTCR_nDBANK) == 0)
+  {
+    /* update the result to indicate that the flash is not in single bank mode. */
+    result = BLT_FALSE;
+  }
+  #endif /* FLASH_OPTCR_nDBANK */
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashIsSingleBankMode ***/
 
 
 /*********************************** end of flash.c ************************************/
