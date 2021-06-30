@@ -25,7 +25,7 @@
 # \endinternal
 #****************************************************************************************
 # Specify the version being used aswell as the language
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.15)
 
 
 #****************************************************************************************
@@ -94,6 +94,13 @@ if(WIN32)
   endif()
 elseif(UNIX)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -pthread -std=gnu99")
+endif(WIN32)
+
+# Configure a statically linked run-time library for msvc
+if(WIN32)
+  if(CMAKE_C_COMPILER_ID MATCHES MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  endif()
 endif(WIN32)
 
 
