@@ -183,7 +183,25 @@ static const tFlashSector flashLayout[] =
   { 0x0803C000, 0x4000, 15},            /* flash sector 15 - 16kb                      */
 #endif
 #if (BOOT_NVM_SIZE_KB > 256)
-#error "BOOT_NVM_SIZE_KB > 256 is currently not supported."
+  { 0x08040000, 0x4000, 16},            /* flash sector 16 - 16kb                      */
+  { 0x08044000, 0x4000, 17},            /* flash sector 17 - 16kb                      */
+  { 0x08048000, 0x4000, 18},            /* flash sector 18 - 16kb                      */
+  { 0x0804C000, 0x4000, 19},            /* flash sector 19 - 16kb                      */
+  { 0x08050000, 0x4000, 20},            /* flash sector 20 - 16kb                      */
+  { 0x08054000, 0x4000, 21},            /* flash sector 21 - 16kb                      */
+  { 0x08058000, 0x4000, 22},            /* flash sector 22 - 16kb                      */
+  { 0x0805C000, 0x4000, 23},            /* flash sector 23 - 16kb                      */
+  { 0x08060000, 0x4000, 24},            /* flash sector 24 - 16kb                      */
+  { 0x08064000, 0x4000, 25},            /* flash sector 25 - 16kb                      */
+  { 0x08068000, 0x4000, 26},            /* flash sector 26 - 16kb                      */
+  { 0x0806C000, 0x4000, 27},            /* flash sector 27 - 16kb                      */
+  { 0x08070000, 0x4000, 28},            /* flash sector 28 - 16kb                      */
+  { 0x08074000, 0x4000, 29},            /* flash sector 29 - 16kb                      */
+  { 0x08078000, 0x4000, 30},            /* flash sector 30 - 16kb                      */
+  { 0x0807C000, 0x4000, 31},            /* flash sector 31 - 16kb                      */
+#endif
+#if (BOOT_NVM_SIZE_KB > 512)
+#error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
 #endif
 };
 #else
