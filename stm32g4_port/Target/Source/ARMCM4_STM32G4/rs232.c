@@ -32,7 +32,11 @@
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_RS232_ENABLE > 0)
 #include "stm32g4xx.h"                           /* STM32 CPU and HAL header           */
+#if (BOOT_COM_RS232_CHANNEL_INDEX < 5) /* USART or UART channel */
 #include "stm32g4xx_ll_usart.h"                  /* STM32 LL USART header              */
+#else /* LPUART channel */
+#include "stm32g4xx_ll_lpuart.h"                 /* STM32 LL LPUART header             */
+#endif
 
 
 /****************************************************************************************
@@ -44,7 +48,9 @@
 #define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define RS232_BYTE_TX_TIMEOUT_MS       (10u)
-/* map the configured UART channel index to the STM32's USART peripheral */
+/* map the configured UART channel index to the STM32's USART peripheral. note that the
+ * LPUART peripheral is mapped after the regular U(S)ART peripherals.
+ */
 #if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to USART1. */
 #define USART_CHANNEL   USART1
@@ -60,6 +66,9 @@
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 4)
 /** \brief Set UART base address to USART5. */
 #define USART_CHANNEL   UART5
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 5)
+/** \brief Set UART base address to LPUART1. */
+#define USART_CHANNEL   LPUART1
 #endif
 
 
@@ -77,21 +86,27 @@ static void     Rs232TransmitByte(blt_int8u data);
 ****************************************************************************************/
 void Rs232Init(void)
 {
-  LL_USART_InitTypeDef USART_InitStruct;
+#if (BOOT_COM_RS232_CHANNEL_INDEX < 5) /* USART or UART channel */
+  LL_USART_InitTypeDef USART_InitStruct = {0};
+#else /* LPUART channel */
+  LL_LPUART_InitTypeDef LPUART_InitStruct = {0};
+#endif
 
-  /* the current implementation supports USART1 - USART5. throw an assertion error in
-   * case a different UART channel is configured.
+  /* The current implementation supports USART1 - UART5 and LPUART1. throw an assertion
+   * error in case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 1) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 2) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 3) ||
-            (BOOT_COM_RS232_CHANNEL_INDEX == 4));
+            (BOOT_COM_RS232_CHANNEL_INDEX == 4) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 5));
 
+#if (BOOT_COM_RS232_CHANNEL_INDEX < 5) /* USART or UART channel */
   /* disable the UART peripheral */
   LL_USART_Disable(USART_CHANNEL);
   /* configure UART peripheral */
-  USART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV4;
+  USART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV8;
   USART_InitStruct.BaudRate = BOOT_COM_RS232_BAUDRATE;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
@@ -102,6 +117,20 @@ void Rs232Init(void)
   /* initialize the UART peripheral */
   LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
   LL_USART_Enable(USART_CHANNEL);
+#else /* LPUART channel */
+  /* disable the peripheral */
+  LL_LPUART_Disable(USART_CHANNEL);
+  /* configure UART peripheral */
+  LPUART_InitStruct.PrescalerValue = LL_LPUART_PRESCALER_DIV8;
+  LPUART_InitStruct.BaudRate = BOOT_COM_RS232_BAUDRATE;
+  LPUART_InitStruct.DataWidth = LL_LPUART_DATAWIDTH_8B;
+  LPUART_InitStruct.StopBits = LL_LPUART_STOPBITS_1;
+  LPUART_InitStruct.Parity = LL_LPUART_PARITY_NONE;
+  LPUART_InitStruct.TransferDirection = LL_LPUART_DIRECTION_TX_RX;
+  LPUART_InitStruct.HardwareFlowControl = LL_LPUART_HWCONTROL_NONE;
+  LL_LPUART_Init(USART_CHANNEL, &LPUART_InitStruct);
+  LL_LPUART_Enable(USART_CHANNEL);
+#endif
 } /*** end of Rs232Init ***/
 
 
@@ -213,7 +242,8 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
   blt_bool result = BLT_FALSE;
 
-  /* check if a new byte was received */
+#if (BOOT_COM_RS232_CHANNEL_INDEX < 5) /* USART or UART channel */
+  /* check if a new byte was received on the configured channel */
   if (LL_USART_IsActiveFlag_RXNE(USART_CHANNEL) != 0)
   {
     /* retrieve and store the newly received byte */
@@ -221,6 +251,16 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
     /* update the result */
     result = BLT_TRUE;
   }
+#else /* LPUART channel */
+  /* check if a new byte was received on the configured channel */
+  if (LL_LPUART_IsActiveFlag_RXNE(USART_CHANNEL) != 0)
+  {
+    /* retrieve and store the newly received byte */
+    *data = LL_LPUART_ReceiveData8(USART_CHANNEL);
+    /* update the result */
+    result = BLT_TRUE;
+  }
+#endif
   
   /* give the result back to the caller */
   return result;
@@ -237,6 +277,7 @@ static void Rs232TransmitByte(blt_int8u data)
 {
   blt_int32u timeout;
 
+#if (BOOT_COM_RS232_CHANNEL_INDEX < 5) /* USART or UART channel */
   /* write byte to transmit holding register */
   LL_USART_TransmitData8(USART_CHANNEL, data);
   /* set timeout time to wait for transmit completion. */
@@ -252,6 +293,23 @@ static void Rs232TransmitByte(blt_int8u data)
       break;
     }
   }
+#else /* LPUART channel */
+  /* write byte to transmit holding register */
+  LL_LPUART_TransmitData8(USART_CHANNEL, data);
+  /* set timeout time to wait for transmit completion. */
+  timeout = TimerGet() + RS232_BYTE_TX_TIMEOUT_MS;
+  /* wait for tx holding register to be empty */
+  while (LL_LPUART_IsActiveFlag_TXE(USART_CHANNEL) == 0)
+  {
+    /* keep the watchdog happy */
+    CopService();
+    /* break loop upon timeout. this would indicate a hardware failure. */
+    if (TimerGet() > timeout)
+    {
+      break;
+    }
+  }
+#endif
 } /*** end of Rs232TransmitByte ***/
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
 

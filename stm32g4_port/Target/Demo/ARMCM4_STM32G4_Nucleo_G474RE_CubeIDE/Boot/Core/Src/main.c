@@ -248,7 +248,7 @@ static void MX_USART2_UART_Init(void)
    * reconfigured upon bootloader initialization with function Rs232Init().
    */
   /* USER CODE END USART2_Init 1 */
-  USART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV4;
+  USART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV8;
   USART_InitStruct.BaudRate = 57600;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;

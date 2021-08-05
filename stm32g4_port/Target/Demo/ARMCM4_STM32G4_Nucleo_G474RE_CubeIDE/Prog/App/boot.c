@@ -133,7 +133,7 @@ static void BootComRs232Init(void)
   rs232Handle.Init.Mode = UART_MODE_TX_RX;
   rs232Handle.Init.OverSampling = UART_OVERSAMPLING_16;
   rs232Handle.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  rs232Handle.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+  rs232Handle.Init.ClockPrescaler = UART_PRESCALER_DIV8;
   rs232Handle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   /* Initialize the UART peripheral. */
   HAL_UART_Init(&rs232Handle);
