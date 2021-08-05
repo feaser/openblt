@@ -44,6 +44,23 @@
 #define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define RS232_BYTE_TX_TIMEOUT_MS       (10u)
+/* map the configured UART channel index to the STM32's USART peripheral */
+#if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
+/** \brief Set UART base address to USART1. */
+#define USART_CHANNEL   USART1
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 1)
+/** \brief Set UART base address to USART2. */
+#define USART_CHANNEL   USART2
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 2)
+/** \brief Set UART base address to USART3. */
+#define USART_CHANNEL   USART3
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 3)
+/** \brief Set UART base address to USART4. */
+#define USART_CHANNEL   UART4
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 4)
+/** \brief Set UART base address to USART5. */
+#define USART_CHANNEL   UART5
+#endif
 
 
 /****************************************************************************************
@@ -60,21 +77,31 @@ static void     Rs232TransmitByte(blt_int8u data);
 ****************************************************************************************/
 void Rs232Init(void)
 {
-  /* TODO ##Port Perform compile time assertion to check that the configured UART channel
-   * is actually supported by this driver. The example is for a driver where UART
-   * channels 0 - 2 are supported. 
+  LL_USART_InitTypeDef USART_InitStruct;
+
+  /* the current implementation supports USART1 - USART5. throw an assertion error in
+   * case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 1) ||
-            (BOOT_COM_RS232_CHANNEL_INDEX == 2));
+            (BOOT_COM_RS232_CHANNEL_INDEX == 2) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 3) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 4));
 
-  /* TODO ##Port Configure and initialize the UART peripheral for the configured UART
-   * channel. The communication speed should be set to the value configured with
-   * BOOT_COM_RS232_BAUDRATE. Further communication settings are: 8 databits, no parity,
-   * and 1 stopbit. Keep in mind that the bootloader runs in polling mode so without
-   * interrupts. For this reason make sure not to configure the UART peripheral for
-   * interrupt driven operation.
-   */
+  /* disable the UART peripheral */
+  LL_USART_Disable(USART_CHANNEL);
+  /* configure UART peripheral */
+  USART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV4;
+  USART_InitStruct.BaudRate = BOOT_COM_RS232_BAUDRATE;
+  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+  USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
+  USART_InitStruct.Parity = LL_USART_PARITY_NONE;
+  USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
+  USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
+  /* initialize the UART peripheral */
+  LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
+  LL_USART_Enable(USART_CHANNEL);
 } /*** end of Rs232Init ***/
 
 
@@ -186,16 +213,11 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
   blt_bool result = BLT_FALSE;
 
-  /* TODO ##Port Check if a new byte was received on the configured channel. This is
-   * typically done by checking the reception register not empty flag. If a new byte 
-   * was received, read it out and store it in '*data'. Next, clear the reception flag
-   * such that a new byte can be received again. Finally, set 'result' to BLT_TRUE to
-   * indicate to the caller of this function that a new byte was received and stored.
-   */
-  if (1 == 0)
+  /* check if a new byte was received */
+  if (LL_USART_IsActiveFlag_RXNE(USART_CHANNEL) != 0)
   {
     /* retrieve and store the newly received byte */
-    *data = 0;
+    *data = LL_USART_ReceiveData8(USART_CHANNEL);
     /* update the result */
     result = BLT_TRUE;
   }
@@ -215,20 +237,12 @@ static void Rs232TransmitByte(blt_int8u data)
 {
   blt_int32u timeout;
 
-  /* TODO ##Port Write the byte value in 'data' to the transmit register of the UART 
-   * peripheral such that the transmission of the byte value is started.
-   */
-
+  /* write byte to transmit holding register */
+  LL_USART_TransmitData8(USART_CHANNEL, data);
   /* set timeout time to wait for transmit completion. */
   timeout = TimerGet() + RS232_BYTE_TX_TIMEOUT_MS;
-  
-  /* TODO ##Port Wait in a loop, with timeout, until the UART peripheral reports that the
-   * data was successfully completed. This is typically done by reading out a transmit
-   * register empty flag.
-   */
-  
   /* wait for tx holding register to be empty */
-  while (1 == 0)
+  while (LL_USART_IsActiveFlag_TXE(USART_CHANNEL) == 0)
   {
     /* keep the watchdog happy */
     CopService();
