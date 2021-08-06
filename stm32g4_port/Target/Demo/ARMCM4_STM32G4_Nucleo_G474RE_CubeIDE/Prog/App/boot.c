@@ -44,6 +44,7 @@ static void BootComCanInit(void);
 static void BootComCanCheckActivationRequest(void);
 #endif
 
+
 /************************************************************************************//**
 ** \brief     Initializes the communication interface.
 ** \return    none.
@@ -305,21 +306,12 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
 {
   unsigned char      cnt;
   unsigned long      canClockFreqkHz;
-  RCC_OscInitTypeDef oscConfig = {0};
-
-  /* obtain the current clock configuration */
-  HAL_RCC_GetOscConfig(&oscConfig);
   /* determine the CAN peripheral clock frequency in kHz. this code assumes that the
-   * PLL is used as the FDCAN clock source. you basically need to determine the PLLQ
-   * frequency in kHz.
+   * HSE is used as the CAN clock source. If not, then update the code accordingly.
    */
-  canClockFreqkHz = (HAL_RCC_GetSysClockFreq() / 1000u);
-  canClockFreqkHz *= oscConfig.PLL.PLLR;
-  canClockFreqkHz /= oscConfig.PLL.PLLQ;
-  /* the CAN peripheral clock should not be higher than 48 MHz. so only continue if
-   * this is the case. when too high, increase the Q divider in the clock configuration
-   * to get to a PLLQ frequency that is below 48 MHz. A multiple of 8 MHz for the
-   * PLLQ frequency gives the best support for most commonly CAN baudrates.
+  canClockFreqkHz = BOOT_CPU_XTAL_SPEED_KHZ;
+  /* the CAN clock source should not be higher than 48 MHz. so only continue if this is
+   * the case.
    */
   if (canClockFreqkHz <= 48000u)
   {
@@ -365,6 +357,7 @@ static void BootComCanInit(void)
 
   /* set the CAN controller configuration. */
   canHandle.Instance = FDCAN1;
+  canHandle.Init.ClockDivider = FDCAN_CLOCK_DIV1;
   canHandle.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
   canHandle.Init.Mode = FDCAN_MODE_NORMAL;
   canHandle.Init.AutoRetransmission = ENABLE;
@@ -438,18 +431,29 @@ static void BootComCanCheckActivationRequest(void)
 {
   unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   unsigned char packetIdMatches = 0;
-  CAN_RxHeaderTypeDef rxMsgHeader;
+  FDCAN_RxHeaderTypeDef rxMsgHeader;
   unsigned char rxMsgData[8];
+  unsigned char rxMsgLen;
+  HAL_StatusTypeDef rxStatus = HAL_ERROR;
+
 
   /* poll for received CAN messages that await processing. */
-  if (HAL_CAN_GetRxMessage(&canHandle, CAN_RX_FIFO0, &rxMsgHeader, rxMsgData) == HAL_OK)
+  if (HAL_FDCAN_GetRxFifoFillLevel(&canHandle, FDCAN_RX_FIFO0) > 0)
+  {
+    /* attempt to read the newly received CAN message from its buffer. */
+    rxStatus = HAL_FDCAN_GetRxMessage(&canHandle, FDCAN_RX_FIFO0, &rxMsgHeader,
+                                      rxMsgData);
+  }
+
+  /* only continue processing the CAN message if something was received. */
+  if (rxStatus == HAL_OK)
   {
     /* check if this message has the configured CAN packet identifier. */
     if ((rxMsgId & 0x80000000) == 0)
     {
       /* was an 11-bit CAN message received that matches? */
-      if ( (rxMsgHeader.StdId == rxMsgId) &&
-           (rxMsgHeader.IDE == CAN_ID_STD) )
+      if ( (rxMsgHeader.Identifier == rxMsgId) &&
+           (rxMsgHeader.IdType == FDCAN_STANDARD_ID) )
       {
         /* set flag that a packet with a matching CAN identifier was received. */
         packetIdMatches = 1;
@@ -460,8 +464,8 @@ static void BootComCanCheckActivationRequest(void)
       /* negate the ID-type bit */
       rxMsgId &= ~0x80000000;
       /* was an 29-bit CAN message received that matches? */
-      if ( (rxMsgHeader.ExtId == rxMsgId) &&
-           (rxMsgHeader.IDE == CAN_ID_EXT) )
+      if ( (rxMsgHeader.Identifier == rxMsgId) &&
+           (rxMsgHeader.IdType == FDCAN_EXTENDED_ID) )
       {
         /* set flag that a packet with a matching CAN identifier was received. */
         packetIdMatches = 1;
@@ -471,8 +475,10 @@ static void BootComCanCheckActivationRequest(void)
     /* only continue if a packet with a matching CAN identifier was received. */
     if (packetIdMatches == 1)
     {
+      /* obtain the CAN message length. */
+      rxMsgLen = (unsigned char)(rxMsgHeader.DataLength >> 16U);
       /* check if this was an XCP CONNECT command */
-      if ((rxMsgData[0] == 0xff) && (rxMsgHeader.DLC == 2))
+      if ((rxMsgData[0] == 0xff) && (rxMsgLen == 2))
       {
         /* connection request received so start the bootloader */
         BootActivate();

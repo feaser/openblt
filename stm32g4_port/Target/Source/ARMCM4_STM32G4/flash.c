@@ -42,9 +42,6 @@
 /** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
 /** \brief Standard size of a flash block for writing. */
-/* TODO ##Port The FLASH_WRITE_BLOCK_SIZE should be at least 512. If for some reason this
- * is not large enough, double the size so: 512 -> 1024 -> 2048 -> 4096 etc.
- */
 #define FLASH_WRITE_BLOCK_SIZE          (512)
 /** \brief Standard size of a flash sector for erasing. */
 #define FLASH_ERASE_SECTOR_SIZE         (2048)
@@ -157,7 +154,7 @@ static const tFlashSector flashLayout[] =
   /* { 0x08001000, 0x00800,  2},           flash sector  2 - reserved for bootloader   */
   /* { 0x08001800, 0x00800,  3},           flash sector  3 - reserved for bootloader   */
   /* { 0x08002000, 0x00800,  4},           flash sector  4 - reserved for bootloader   */
-  { 0x08002800, 0x00800,  5},           /* flash sector  5 - 2kb                       */
+  /* { 0x08002800, 0x00800,  5},           flash sector  5 - reserved for bootloader   */
   { 0x08003000, 0x00800,  6},           /* flash sector  6 - 2kb                       */
   { 0x08003800, 0x00800,  7},           /* flash sector  7 - 2kb                       */
   { 0x08004000, 0x00800,  8},           /* flash sector  8 - 2kb                       */

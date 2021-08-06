@@ -138,7 +138,7 @@ void SystemClock_Config(void)
   {
   }
 
-  /* Insure 1µs transition state at intermediate medium speed clock based on DWT */
+  /* Insure 1ï¿½s transition state at intermediate medium speed clock based on DWT */
   CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
   DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
   DWT->CYCCNT = 0;
@@ -154,7 +154,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PCLK1);
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_HSE);
   LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
 }
 
