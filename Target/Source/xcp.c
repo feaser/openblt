@@ -1012,9 +1012,9 @@ static void XcpCmdGetSeed(blt_int8u *data)
   }
   /* determine number of seed bytes that fit in the first response */
   seedCurrentLen = seedRemainderLen;
-  if (seedCurrentLen > (XCP_CTO_PACKET_LEN-2))
+  if (seedCurrentLen > (XCP_DTO_PACKET_LEN-2))
   {
-    seedCurrentLen = XCP_CTO_PACKET_LEN-2;
+    seedCurrentLen = XCP_DTO_PACKET_LEN-2;
   }
   /* store the first part of the seed in the response */
   CpuMemCopy((blt_addr)(&xcpInfo.ctoData[2]), (blt_addr)seedCurrentPtr, seedCurrentLen);

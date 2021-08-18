@@ -401,7 +401,7 @@ static bool XcpLoaderStart(void)
             {
               keyCurrentLen = (xcpMaxCto - 2);
             }
-            /* The the (possible partial) unlock command. */
+            /* Send the (possible partial) unlock command. */
             if (!XcpLoaderSendCmdUnlock(keyPtr, keyRemainingLen, &currentlyProtectedResources))
             {
               result = false;
@@ -921,7 +921,7 @@ static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t mode, uint8_t * se
       if (result)
       {
         /* Check if the response was valid. */
-        if ( (resPacket.len <= 2) || (resPacket.len > xcpMaxCto) ||
+        if ( (resPacket.len <= 2) || (resPacket.len > xcpMaxDto) ||
              (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
         {
           /* Not a valid or positive response. */
@@ -935,9 +935,9 @@ static bool XcpLoaderSendCmdGetSeed(uint8_t resource, uint8_t mode, uint8_t * se
         *seedLen = resPacket.data[1];
         /* Determine the number of seed bytes in the current response */
         currentSeedLen = *seedLen;
-        if (currentSeedLen > (xcpMaxCto - 2))
+        if (currentSeedLen > ((uint8_t)xcpMaxDto - 2))
         {
-          currentSeedLen = (xcpMaxCto - 2);
+          currentSeedLen = ((uint8_t)xcpMaxDto - 2);
         }
         /* Store the seed bytes. */
         for (uint8_t idx = 0; idx < currentSeedLen; idx++)
