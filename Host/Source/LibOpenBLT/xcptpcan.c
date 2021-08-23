@@ -345,8 +345,6 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
           }
           /* Exit critical section. */
           UtilCriticalSectionExit();
-          /* Wait a little bit to not starve the CPU. */
-          UtilTimeDelayMs(1);
         }
         /* Enter critical section. */
         UtilCriticalSectionEnter();
