@@ -36,7 +36,7 @@
 /** \brief Minor version number of the bootloader core. */
 #define BOOT_VERSION_CORE_MINOR    (12u)
 /** \brief Patch number of the bootloader core. */
-#define BOOT_VERSION_CORE_PATCH    (0u)
+#define BOOT_VERSION_CORE_PATCH    (1u)
 
 
 /****************************************************************************************
