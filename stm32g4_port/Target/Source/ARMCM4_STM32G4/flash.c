@@ -118,6 +118,7 @@ static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector_idx, 
                                    blt_int8u last_sector_idx);
 static blt_int8u FlashGetSectorIdx(blt_addr address);
+static blt_bool  FlashVerifyBankMode(void);
 
 
 /****************************************************************************************
@@ -139,16 +140,6 @@ static blt_int8u FlashGetSectorIdx(blt_addr address);
  */
 static const tFlashSector flashLayout[] =
 {
-  /* TODO ##Port Update the contents of this array with the erase sector sizes as defined
-   * in the microcontroller's reference manual. The flash sector erase sizes are
-   * hardware specific and must therefore match, otherwise erase operations cannot be
-   * performed properly. 
-   * Besides controlling the flash erase size, this array also controls which sectors
-   * are reserved for the bootloader and will therefore never be erased. The current
-   * fictive implementation is for a microcontroller that can only erase flash memory
-   * in chunks of 16 KB and the first 32 KB are reserved for the bootloader. Its flash
-   * memory starts at 0x08000000 in the memory map.
-   */
   /* { 0x08000000, 0x00800,  0},           flash sector  0 - reserved for bootloader   */
   /* { 0x08000800, 0x00800,  1},           flash sector  1 - reserved for bootloader   */
   /* { 0x08001000, 0x00800,  2},           flash sector  2 - reserved for bootloader   */
@@ -169,13 +160,55 @@ static const tFlashSector flashLayout[] =
   { 0x08008000, 0x04000, 16},           /* flash sector 16 - 16kb                      */
   { 0x0800C000, 0x04000, 17},           /* flash sector 17 - 16kb                      */
 #endif
-#if (BOOT_NVM_SIZE_KB > 64)
+#if defined (FLASH_OPTR_DBANK) && (BOOT_NVM_SIZE_KB < 512)
+  /* The flash device is:
+   * - Category 3 with either 128kb or 256kb in dual bank mode.
+   *
+   * According to the reference manual, these have the second bank fixed at 0x0804000,
+   * resulting in a gap in the memory map. Therefore they need have their own separate
+   * layout defined in this table. They still have 2kb sectors (which are grouped here
+   * as 16kb blocks).
+   *
+   */
+ #if (BOOT_NVM_SIZE_KB < 128)
+ #error "BOOT_NVM_SIZE_KB > 128 in dual bank mode is currently not supported."
+ #endif
+ #if (BOOT_NVM_SIZE_KB == 128)
+  { 0x08040000, 0x4000,  18},            /* flash sector 18 - 16kb                      */
+  { 0x08044000, 0x4000,  19},            /* flash sector 19 - 16kb                      */
+  { 0x08048000, 0x4000,  20},            /* flash sector 20 - 16kb                      */
+  { 0x0804C000, 0x4000,  21},            /* flash sector 21 - 16kb                      */
+ #endif
+ #if (BOOT_NVM_SIZE_KB == 256)
   { 0x08010000, 0x4000,  18},            /* flash sector 18 - 16kb                      */
   { 0x08014000, 0x4000,  19},            /* flash sector 19 - 16kb                      */
   { 0x08018000, 0x4000,  20},            /* flash sector 20 - 16kb                      */
   { 0x0801C000, 0x4000,  21},            /* flash sector 21 - 16kb                      */
-#endif
-#if (BOOT_NVM_SIZE_KB > 128)
+  { 0x08040000, 0x4000,  22},            /* flash sector 22 - 16kb                      */
+  { 0x08044000, 0x4000,  23},            /* flash sector 23 - 16kb                      */
+  { 0x08048000, 0x4000,  24},            /* flash sector 24 - 16kb                      */
+  { 0x0804C000, 0x4000,  25},            /* flash sector 25 - 16kb                      */
+  { 0x08050000, 0x4000,  26},            /* flash sector 26 - 16kb                      */
+  { 0x08054000, 0x4000,  27},            /* flash sector 27 - 16kb                      */
+  { 0x08058000, 0x4000,  28},            /* flash sector 28 - 16kb                      */
+  { 0x0805C000, 0x4000,  29},            /* flash sector 29 - 16kb                      */
+ #endif
+#else
+ /* The flash device is:
+  * - Category 2
+  * - Category 3 with 512kb in dual bank mode
+  * - Category 4
+  *
+  * These all have 2kb sectors (which are grouped here as 16kb blocks) and no gaps in the
+  * memory map.
+  */
+ #if (BOOT_NVM_SIZE_KB > 64)
+  { 0x08010000, 0x4000,  18},            /* flash sector 18 - 16kb                      */
+  { 0x08014000, 0x4000,  19},            /* flash sector 19 - 16kb                      */
+  { 0x08018000, 0x4000,  20},            /* flash sector 20 - 16kb                      */
+  { 0x0801C000, 0x4000,  21},            /* flash sector 21 - 16kb                      */
+ #endif
+ #if (BOOT_NVM_SIZE_KB > 128)
   { 0x08020000, 0x4000, 22},            /* flash sector 22 - 16kb                      */
   { 0x08024000, 0x4000, 23},            /* flash sector 23 - 16kb                      */
   { 0x08028000, 0x4000, 24},            /* flash sector 24 - 16kb                      */
@@ -184,8 +217,8 @@ static const tFlashSector flashLayout[] =
   { 0x08034000, 0x4000, 27},            /* flash sector 27 - 16kb                      */
   { 0x08038000, 0x4000, 28},            /* flash sector 28 - 16kb                      */
   { 0x0803C000, 0x4000, 29},            /* flash sector 29 - 16kb                      */
-#endif
-#if (BOOT_NVM_SIZE_KB > 256)
+ #endif
+ #if (BOOT_NVM_SIZE_KB > 256)
   { 0x08040000, 0x4000, 30},            /* flash sector 30 - 16kb                      */
   { 0x08044000, 0x4000, 31},            /* flash sector 31 - 16kb                      */
   { 0x08048000, 0x4000, 32},            /* flash sector 32 - 16kb                      */
@@ -202,6 +235,7 @@ static const tFlashSector flashLayout[] =
   { 0x08074000, 0x4000, 43},            /* flash sector 43 - 16kb                      */
   { 0x08078000, 0x4000, 44},            /* flash sector 44 - 16kb                      */
   { 0x0807C000, 0x4000, 45},            /* flash sector 45 - 16kb                      */
+ #endif
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
 #error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
@@ -388,20 +422,24 @@ blt_bool FlashWriteChecksum(void)
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
 
-  /* TODO ##Port Calculate and write the signature checksum such that it appears at the
-   * address configured with macro BOOT_FLASH_VECTOR_TABLE_CS_OFFSET. Use the 
-   * FlashWrite() function for the actual write operation. For a typical microcontroller,
-   * the bootBlock holds the program code that includes the user program's interrupt
-   * vector table and after which the 32-bit for the signature checksum is reserved.
-   * 
-   * Note that this means one extra dummy entry must be added at the end of the user 
-   * program's vector table to reserve storage space for the signature checksum value,
-   * which is then overwritten by this function.
+  /* for the STM32 target we defined the checksum as the Two's complement value of the
+   * sum of the first 7 exception addresses.
    *
-   * The example here calculates a signature checksum by summing up the first 32-bit
-   * values in the bootBlock (so the first 7 interrupt vectors) and then taking the
-   * Two's complement of this sum. You can modify this to anything you like as long as
-   * the signature checksum is based on program code present in the bootBlock.
+   * Layout of the vector table:
+   *    0x08000000 Initial stack pointer
+   *    0x08000004 Reset Handler
+   *    0x08000008 NMI Handler
+   *    0x0800000C Hard Fault Handler
+   *    0x08000010 MPU Fault Handler
+   *    0x08000014 Bus Fault Handler
+   *    0x08000018 Usage Fault Handler
+   *
+   *    signature_checksum = Two's complement of (SUM(exception address values))
+   *
+   *    the bootloader writes this 32-bit checksum value right after the vector table
+   *    of the user program. note that this means one extra dummy entry must be added
+   *    at the end of the user program's vector table to reserve storage space for the
+   *    checksum.
    */
 
   /* first check that the bootblock contains valid data. if not, this means the
@@ -457,16 +495,6 @@ blt_bool FlashVerifyChecksum(void)
 {
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
-
-  /* TODO ##Port Implement code here that basically does the reverse of
-   * FlashWriteChecksum(). Just make sure to read the values directory from flash memory
-   * and NOT from the bootBlock. 
-   * The example implementation reads the first 7 32-bit from the user program flash
-   * memory and sums them up. The signature checksum written by FlashWriteChecksum() was
-   * the Two complement's value. This means that if you add the previously written
-   * signature checksum value to the sum of the first 7 32-bit values, the result is
-   * a value of 0 in case the signature checksum is valid.
-   */
 
   /* verify the checksum based on how it was written by FlashWriteChecksum(). */
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start));
@@ -773,6 +801,14 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
+  /* this flash driver currently supports only the default banking mode, as configured
+   * by ST in the option bytes. verify that this configuration has not been altered.
+   */
+  if (FlashVerifyBankMode() == BLT_FALSE)
+  {
+    result = BLT_FALSE;
+  }
+
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
@@ -844,6 +880,14 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
     }
   }
 
+  /* this flash driver currently supports only the default banking mode, as configured
+   * by ST in the option bytes. verify that this configuration has not been altered.
+   */
+  if (FlashVerifyBankMode() == BLT_FALSE)
+  {
+    result = BLT_FALSE;
+  }
+
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
@@ -913,6 +957,36 @@ static blt_int8u FlashGetSectorIdx(blt_addr address)
   /* give the result back to the caller */
   return result;
 } /*** end of FlashGetSectorIdx ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the flash banking mode is configured properly for this flash
+**            driver. This flash driver assumes that dual banking mode is configured,
+**            if the flash device supports dual banking mode. This is default mode as
+**            configured by ST in the option bytes.
+** \return    BLT_TRUE if the flash banking mode is configured properly as supported by
+**            this flash driver, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+static blt_bool FlashVerifyBankMode(void)
+{
+  blt_bool result = BLT_TRUE;
+
+  /* only need to verify banking mode, if the flash device actually supports different
+   * banking modes.
+   */
+#if defined (FLASH_OPTR_DBANK)
+  /* is the flash device configured for single bank mode? */
+  if ((FLASH->OPTR & FLASH_OPTR_DBANK) == 0U)
+  {
+    /* single bank mode is not supported. update the result accordingly. */
+    result = BLT_FALSE;
+  }
+#endif
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashVerifyBankMode ***/
 
 
 /*********************************** end of flash.c ************************************/
