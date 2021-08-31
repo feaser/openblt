@@ -43,8 +43,10 @@
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
 /** \brief Standard size of a flash block for writing. */
 #define FLASH_WRITE_BLOCK_SIZE          (512)
-/** \brief Standard size of a flash sector for erasing. */
-#define FLASH_ERASE_SECTOR_SIZE         (2048)
+/** \brief Standard size of a flash page for erasing. note that a flash sector can
+ *         have multiple pages.
+ */
+#define FLASH_ERASE_PAGE_SIZE           (FLASH_PAGE_SIZE)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 /** \brief End address of the bootloader programmable flash. */
@@ -77,6 +79,7 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
+/* TODO ##Port sector_num might not be needed. If so, remove it. */
 /** \brief Flash sector descriptor type. */
 typedef struct
 {
@@ -110,15 +113,17 @@ extern blt_bool FlashCryptoDecryptDataHook(blt_int8u * data, blt_int32u size);
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static blt_bool  FlashInitBlock(tFlashBlockInfo *block, blt_addr address);
+static blt_bool   FlashInitBlock(tFlashBlockInfo *block, blt_addr address);
 static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_addr);
-static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
-                                 blt_int8u *data, blt_int32u len);
-static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
-static blt_bool  FlashEraseSectors(blt_int8u first_sector_idx, 
-                                   blt_int8u last_sector_idx);
-static blt_int8u FlashGetSectorIdx(blt_addr address);
-static blt_bool  FlashVerifyBankMode(void);
+static blt_bool   FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
+                                  blt_int8u *data, blt_int32u len);
+static blt_bool   FlashWriteBlock(tFlashBlockInfo *block);
+static blt_bool   FlashEraseSectors(blt_int8u first_sector_idx,
+                                    blt_int8u last_sector_idx);
+static blt_int8u  FlashGetSectorIdx(blt_addr address);
+static blt_int32u FlashGetPage(blt_addr address);
+static blt_int32u FlashGetBank(blt_addr address);
+static blt_bool   FlashVerifyBankMode(void);
 
 
 /****************************************************************************************
@@ -133,10 +138,18 @@ static blt_bool  FlashVerifyBankMode(void);
  *           project.
  */
 #if (BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0)
-/** \brief   Array wit the layout of the flash memory.
- *  \details Also controls what part of the flash memory is reserved for the bootloader.
- *           If the bootloader size changes, the reserved sectors for the bootloader
- *           might need adjustment to make sure the bootloader doesn't get overwritten.
+/** \brief     Array wit the layout of the flash memory.
+ *  \details   Also controls what part of the flash memory is reserved for the
+ *             bootloader. If the bootloader size changes, the reserved sectors for the
+ *             bootloader might need adjustment to make sure the bootloader doesn't get
+ *             overwritten.
+ *  \attention For category 3 flash device, which have dual banking mode support, this
+ *             flash driver only supports dual banking mode configuration, not single
+ *             banking mode. Simply because that is the default configuration that ST
+ *             programs in the option bytes. This means that flash pages are always 2kb
+ *             in size. Some sectors span multiple pages in this table. The only reason
+ *             for this is to not make the table unnecessarily long, which would just
+ *             waste flash space.
  */
 static const tFlashSector flashLayout[] =
 {
@@ -160,55 +173,13 @@ static const tFlashSector flashLayout[] =
   { 0x08008000, 0x04000, 16},           /* flash sector 16 - 16kb                      */
   { 0x0800C000, 0x04000, 17},           /* flash sector 17 - 16kb                      */
 #endif
-#if defined (FLASH_OPTR_DBANK) && (BOOT_NVM_SIZE_KB < 512)
-  /* The flash device is:
-   * - Category 3 with either 128kb or 256kb in dual bank mode.
-   *
-   * According to the reference manual, these have the second bank fixed at 0x0804000,
-   * resulting in a gap in the memory map. Therefore they need have their own separate
-   * layout defined in this table. They still have 2kb sectors (which are grouped here
-   * as 16kb blocks).
-   *
-   */
- #if (BOOT_NVM_SIZE_KB < 128)
- #error "BOOT_NVM_SIZE_KB > 128 in dual bank mode is currently not supported."
- #endif
- #if (BOOT_NVM_SIZE_KB == 128)
-  { 0x08040000, 0x4000,  18},            /* flash sector 18 - 16kb                      */
-  { 0x08044000, 0x4000,  19},            /* flash sector 19 - 16kb                      */
-  { 0x08048000, 0x4000,  20},            /* flash sector 20 - 16kb                      */
-  { 0x0804C000, 0x4000,  21},            /* flash sector 21 - 16kb                      */
- #endif
- #if (BOOT_NVM_SIZE_KB == 256)
+#if (BOOT_NVM_SIZE_KB > 64)
   { 0x08010000, 0x4000,  18},            /* flash sector 18 - 16kb                      */
   { 0x08014000, 0x4000,  19},            /* flash sector 19 - 16kb                      */
   { 0x08018000, 0x4000,  20},            /* flash sector 20 - 16kb                      */
   { 0x0801C000, 0x4000,  21},            /* flash sector 21 - 16kb                      */
-  { 0x08040000, 0x4000,  22},            /* flash sector 22 - 16kb                      */
-  { 0x08044000, 0x4000,  23},            /* flash sector 23 - 16kb                      */
-  { 0x08048000, 0x4000,  24},            /* flash sector 24 - 16kb                      */
-  { 0x0804C000, 0x4000,  25},            /* flash sector 25 - 16kb                      */
-  { 0x08050000, 0x4000,  26},            /* flash sector 26 - 16kb                      */
-  { 0x08054000, 0x4000,  27},            /* flash sector 27 - 16kb                      */
-  { 0x08058000, 0x4000,  28},            /* flash sector 28 - 16kb                      */
-  { 0x0805C000, 0x4000,  29},            /* flash sector 29 - 16kb                      */
- #endif
-#else
- /* The flash device is:
-  * - Category 2
-  * - Category 3 with 512kb in dual bank mode
-  * - Category 4
-  *
-  * These all have 2kb sectors (which are grouped here as 16kb blocks) and no gaps in the
-  * memory map.
-  */
- #if (BOOT_NVM_SIZE_KB > 64)
-  { 0x08010000, 0x4000,  18},            /* flash sector 18 - 16kb                      */
-  { 0x08014000, 0x4000,  19},            /* flash sector 19 - 16kb                      */
-  { 0x08018000, 0x4000,  20},            /* flash sector 20 - 16kb                      */
-  { 0x0801C000, 0x4000,  21},            /* flash sector 21 - 16kb                      */
- #endif
- #if (BOOT_NVM_SIZE_KB > 128)
+#endif
+#if (BOOT_NVM_SIZE_KB > 128)
   { 0x08020000, 0x4000, 22},            /* flash sector 22 - 16kb                      */
   { 0x08024000, 0x4000, 23},            /* flash sector 23 - 16kb                      */
   { 0x08028000, 0x4000, 24},            /* flash sector 24 - 16kb                      */
@@ -217,8 +188,8 @@ static const tFlashSector flashLayout[] =
   { 0x08034000, 0x4000, 27},            /* flash sector 27 - 16kb                      */
   { 0x08038000, 0x4000, 28},            /* flash sector 28 - 16kb                      */
   { 0x0803C000, 0x4000, 29},            /* flash sector 29 - 16kb                      */
- #endif
- #if (BOOT_NVM_SIZE_KB > 256)
+#endif
+#if (BOOT_NVM_SIZE_KB > 256)
   { 0x08040000, 0x4000, 30},            /* flash sector 30 - 16kb                      */
   { 0x08044000, 0x4000, 31},            /* flash sector 31 - 16kb                      */
   { 0x08048000, 0x4000, 32},            /* flash sector 32 - 16kb                      */
@@ -235,7 +206,6 @@ static const tFlashSector flashLayout[] =
   { 0x08074000, 0x4000, 43},            /* flash sector 43 - 16kb                      */
   { 0x08078000, 0x4000, 44},            /* flash sector 44 - 16kb                      */
   { 0x0807C000, 0x4000, 45},            /* flash sector 45 - 16kb                      */
- #endif
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
 #error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
@@ -864,6 +834,9 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
   blt_int8u  sectorIdx;
   blt_addr   sectorBaseAddr;
   blt_int32u sectorSize;
+  blt_int32u pageTotal;
+  blt_int32u pageError = 0;
+  FLASH_EraseInitTypeDef eraseInitStruct = { 0 };
 
   /* validate the sector numbers */
   if (first_sector_idx > last_sector_idx)
@@ -891,7 +864,13 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
-    /* erase the sectors one by one */
+    /* unlock the flash peripheral to enable the flash control register access. */
+    HAL_FLASH_Unlock();
+
+    /* Clear OPTVERR bit set on virgin samples */
+    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_OPTVERR);
+
+     /* erase the sectors one by one */
     for (sectorIdx = first_sector_idx; sectorIdx <= last_sector_idx; sectorIdx++)
     {
       /* service the watchdog */
@@ -900,18 +879,24 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
       sectorBaseAddr = flashLayout[sectorIdx].sector_start;
       sectorSize = flashLayout[sectorIdx].sector_size;
       /* validate the sector information */
-      if ( (sectorBaseAddr == FLASH_INVALID_ADDRESS) || (sectorSize == 0) )
+      if ( (sectorBaseAddr == FLASH_INVALID_ADDRESS) || (sectorSize == 0) ||
+           ((sectorSize % FLASH_ERASE_PAGE_SIZE) != 0) )
       {
         /* invalid sector information. flag error and abort erase operation */
         result = BLT_FALSE;
         break;
       }
       
-      /* TODO ##Port Perform the flash erase operation of a sector that starts at
-       * 'sectorBaseAddr' and has a length of 'sectorSize' bytes. In case an error
-       * occured, set result to BLT_FALSE and break the loop.
-       */
-      if(1 == 0)
+      /* determine the total number of pages inside this sector. */
+      pageTotal = sectorSize / FLASH_ERASE_PAGE_SIZE;
+      /* initialize the erase info structure. */
+      eraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
+      eraseInitStruct.Banks = FlashGetBank(sectorBaseAddr);
+      eraseInitStruct.Page = FlashGetPage(sectorBaseAddr);
+      eraseInitStruct.NbPages= pageTotal;
+
+      /* perform the flash erase operation of the pages in the segment. */
+      if (HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&pageError) != HAL_OK)
       {
         /* could not perform erase operation */
         result = BLT_FALSE;
@@ -919,6 +904,8 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
         break;
       }
     }
+    /* lock the flash peripheral to disable the flash control register access. */
+    HAL_FLASH_Lock();
   }
 
   /* give the result back to the caller */
@@ -957,6 +944,64 @@ static blt_int8u FlashGetSectorIdx(blt_addr address)
   /* give the result back to the caller */
   return result;
 } /*** end of FlashGetSectorIdx ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the flash page number that the specified address belongs to.
+** \param     address Flash memory address.
+** \return    The flash page number that this address belongs to.
+**
+****************************************************************************************/
+static blt_int32u FlashGetPage(blt_addr address)
+{
+  blt_int32u result;
+
+  /* does the page belong to the first bank? */
+  if (FlashGetBank(address) == FLASH_BANK_1)
+  {
+    /* sanity check. */
+    ASSERT_RT(address >= FLASH_BASE);
+    /* calculate the page number. */
+    result = (address - FLASH_BASE) / FLASH_ERASE_PAGE_SIZE;
+  }
+  /* the page belongs to the second bank. */
+  else
+  {
+    /* sanity check. */
+    ASSERT_RT(address >= (FLASH_BASE + FLASH_BANK_SIZE));
+    /* calculate the page number. */
+    result = (address - (FLASH_BASE + FLASH_BANK_SIZE)) / FLASH_ERASE_PAGE_SIZE;
+  }
+
+  /* give the result back to the caller */
+  return result;
+} /*** end of FlashGetPage ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the flash bank number that the specified address belongs to.
+** \param     address Flash memory address.
+** \return    The flash bank number that this address belongs to. It can be either
+**            FLASH_BANK_1 or FLASH_BANK_2.
+**
+****************************************************************************************/
+static blt_int32u FlashGetBank(blt_addr address)
+{
+  blt_int32u result = FLASH_BANK_1;
+
+  /* address can only be in bank 2 if the flash device supports dual banking. */
+#if defined (FLASH_OPTR_DBANK)
+  /* is this an address in the second bank? */
+  if (address >= (FLASH_BASE + FLASH_BANK_SIZE))
+  {
+    /* update the result. */
+    result = FLASH_BANK_2;
+  }
+#endif
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashGetBank ***/
 
 
 /************************************************************************************//**
