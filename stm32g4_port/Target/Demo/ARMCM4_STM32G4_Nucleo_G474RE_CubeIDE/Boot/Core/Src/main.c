@@ -138,7 +138,7 @@ void SystemClock_Config(void)
   {
   }
 
-  /* Insure 1ï¿½s transition state at intermediate medium speed clock based on DWT */
+  /* Insure 1µs transition state at intermediate medium speed clock based on DWT */
   CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
   DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
   DWT->CYCCNT = 0;

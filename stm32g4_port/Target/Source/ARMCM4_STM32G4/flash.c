@@ -79,13 +79,11 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/* TODO ##Port sector_num might not be needed. If so, remove it. */
 /** \brief Flash sector descriptor type. */
 typedef struct
 {
   blt_addr   sector_start;                       /**< sector start address             */
   blt_int32u sector_size;                        /**< sector size in bytes             */
-  blt_int8u  sector_num;                         /**< sector number                    */
 } tFlashSector;
 
 /** \brief    Structure type for grouping flash block information.
@@ -153,59 +151,59 @@ static blt_bool   FlashVerifyBankMode(void);
  */
 static const tFlashSector flashLayout[] =
 {
-  /* { 0x08000000, 0x00800,  0},           flash sector  0 - reserved for bootloader   */
-  /* { 0x08000800, 0x00800,  1},           flash sector  1 - reserved for bootloader   */
-  /* { 0x08001000, 0x00800,  2},           flash sector  2 - reserved for bootloader   */
-  /* { 0x08001800, 0x00800,  3},           flash sector  3 - reserved for bootloader   */
-  /* { 0x08002000, 0x00800,  4},           flash sector  4 - reserved for bootloader   */
-  /* { 0x08002800, 0x00800,  5},           flash sector  5 - reserved for bootloader   */
-  { 0x08003000, 0x00800,  6},           /* flash sector  6 - 2kb                       */
-  { 0x08003800, 0x00800,  7},           /* flash sector  7 - 2kb                       */
-  { 0x08004000, 0x00800,  8},           /* flash sector  8 - 2kb                       */
-  { 0x08004800, 0x00800,  9},           /* flash sector  9 - 2kb                       */
-  { 0x08005000, 0x00800, 10},           /* flash sector 10 - 2kb                       */
-  { 0x08005800, 0x00800, 11},           /* flash sector 11 - 2kb                       */
-  { 0x08006000, 0x00800, 12},           /* flash sector 12 - 2kb                       */
-  { 0x08006800, 0x00800, 13},           /* flash sector 13 - 2kb                       */
-  { 0x08007000, 0x00800, 14},           /* flash sector 14 - 2kb                       */
-  { 0x08007800, 0x00800, 15},           /* flash sector 15 - 2kb                       */
+  /* { 0x08000000, 0x00800 },              flash sector  0 - reserved for bootloader   */
+  /* { 0x08000800, 0x00800 },              flash sector  1 - reserved for bootloader   */
+  /* { 0x08001000, 0x00800 },              flash sector  2 - reserved for bootloader   */
+  /* { 0x08001800, 0x00800 },              flash sector  3 - reserved for bootloader   */
+  /* { 0x08002000, 0x00800 },              flash sector  4 - reserved for bootloader   */
+  /* { 0x08002800, 0x00800 },              flash sector  5 - reserved for bootloader   */
+  { 0x08003000, 0x00800 },              /* flash sector  6 - 2kb                       */
+  { 0x08003800, 0x00800 },              /* flash sector  7 - 2kb                       */
+  { 0x08004000, 0x00800 },              /* flash sector  8 - 2kb                       */
+  { 0x08004800, 0x00800 },              /* flash sector  9 - 2kb                       */
+  { 0x08005000, 0x00800 },              /* flash sector 10 - 2kb                       */
+  { 0x08005800, 0x00800 },              /* flash sector 11 - 2kb                       */
+  { 0x08006000, 0x00800 },              /* flash sector 12 - 2kb                       */
+  { 0x08006800, 0x00800 },              /* flash sector 13 - 2kb                       */
+  { 0x08007000, 0x00800 },              /* flash sector 14 - 2kb                       */
+  { 0x08007800, 0x00800 },              /* flash sector 15 - 2kb                       */
 #if (BOOT_NVM_SIZE_KB > 32)
-  { 0x08008000, 0x04000, 16},           /* flash sector 16 - 16kb                      */
-  { 0x0800C000, 0x04000, 17},           /* flash sector 17 - 16kb                      */
+  { 0x08008000, 0x04000 },              /* flash sector 16 - 16kb                      */
+  { 0x0800C000, 0x04000 },              /* flash sector 17 - 16kb                      */
 #endif
 #if (BOOT_NVM_SIZE_KB > 64)
-  { 0x08010000, 0x4000,  18},            /* flash sector 18 - 16kb                      */
-  { 0x08014000, 0x4000,  19},            /* flash sector 19 - 16kb                      */
-  { 0x08018000, 0x4000,  20},            /* flash sector 20 - 16kb                      */
-  { 0x0801C000, 0x4000,  21},            /* flash sector 21 - 16kb                      */
+  { 0x08010000, 0x4000 },               /* flash sector 18 - 16kb                      */
+  { 0x08014000, 0x4000 },               /* flash sector 19 - 16kb                      */
+  { 0x08018000, 0x4000 },               /* flash sector 20 - 16kb                      */
+  { 0x0801C000, 0x4000 },               /* flash sector 21 - 16kb                      */
 #endif
 #if (BOOT_NVM_SIZE_KB > 128)
-  { 0x08020000, 0x4000, 22},            /* flash sector 22 - 16kb                      */
-  { 0x08024000, 0x4000, 23},            /* flash sector 23 - 16kb                      */
-  { 0x08028000, 0x4000, 24},            /* flash sector 24 - 16kb                      */
-  { 0x0802C000, 0x4000, 25},            /* flash sector 25 - 16kb                      */
-  { 0x08030000, 0x4000, 26},            /* flash sector 26 - 16kb                      */
-  { 0x08034000, 0x4000, 27},            /* flash sector 27 - 16kb                      */
-  { 0x08038000, 0x4000, 28},            /* flash sector 28 - 16kb                      */
-  { 0x0803C000, 0x4000, 29},            /* flash sector 29 - 16kb                      */
+  { 0x08020000, 0x4000 },               /* flash sector 22 - 16kb                      */
+  { 0x08024000, 0x4000 },               /* flash sector 23 - 16kb                      */
+  { 0x08028000, 0x4000 },               /* flash sector 24 - 16kb                      */
+  { 0x0802C000, 0x4000 },               /* flash sector 25 - 16kb                      */
+  { 0x08030000, 0x4000 },               /* flash sector 26 - 16kb                      */
+  { 0x08034000, 0x4000 },               /* flash sector 27 - 16kb                      */
+  { 0x08038000, 0x4000 },               /* flash sector 28 - 16kb                      */
+  { 0x0803C000, 0x4000 },               /* flash sector 29 - 16kb                      */
 #endif
 #if (BOOT_NVM_SIZE_KB > 256)
-  { 0x08040000, 0x4000, 30},            /* flash sector 30 - 16kb                      */
-  { 0x08044000, 0x4000, 31},            /* flash sector 31 - 16kb                      */
-  { 0x08048000, 0x4000, 32},            /* flash sector 32 - 16kb                      */
-  { 0x0804C000, 0x4000, 33},            /* flash sector 33 - 16kb                      */
-  { 0x08050000, 0x4000, 34},            /* flash sector 34 - 16kb                      */
-  { 0x08054000, 0x4000, 35},            /* flash sector 35 - 16kb                      */
-  { 0x08058000, 0x4000, 36},            /* flash sector 36 - 16kb                      */
-  { 0x0805C000, 0x4000, 37},            /* flash sector 37 - 16kb                      */
-  { 0x08060000, 0x4000, 38},            /* flash sector 38 - 16kb                      */
-  { 0x08064000, 0x4000, 39},            /* flash sector 39 - 16kb                      */
-  { 0x08068000, 0x4000, 40},            /* flash sector 40 - 16kb                      */
-  { 0x0806C000, 0x4000, 41},            /* flash sector 41 - 16kb                      */
-  { 0x08070000, 0x4000, 42},            /* flash sector 42 - 16kb                      */
-  { 0x08074000, 0x4000, 43},            /* flash sector 43 - 16kb                      */
-  { 0x08078000, 0x4000, 44},            /* flash sector 44 - 16kb                      */
-  { 0x0807C000, 0x4000, 45},            /* flash sector 45 - 16kb                      */
+  { 0x08040000, 0x4000 },               /* flash sector 30 - 16kb                      */
+  { 0x08044000, 0x4000 },               /* flash sector 31 - 16kb                      */
+  { 0x08048000, 0x4000 },               /* flash sector 32 - 16kb                      */
+  { 0x0804C000, 0x4000 },               /* flash sector 33 - 16kb                      */
+  { 0x08050000, 0x4000 },               /* flash sector 34 - 16kb                      */
+  { 0x08054000, 0x4000 },               /* flash sector 35 - 16kb                      */
+  { 0x08058000, 0x4000 },               /* flash sector 36 - 16kb                      */
+  { 0x0805C000, 0x4000 },               /* flash sector 37 - 16kb                      */
+  { 0x08060000, 0x4000 },               /* flash sector 38 - 16kb                      */
+  { 0x08064000, 0x4000 },               /* flash sector 39 - 16kb                      */
+  { 0x08068000, 0x4000 },               /* flash sector 40 - 16kb                      */
+  { 0x0806C000, 0x4000 },               /* flash sector 41 - 16kb                      */
+  { 0x08070000, 0x4000 },               /* flash sector 42 - 16kb                      */
+  { 0x08074000, 0x4000 },               /* flash sector 43 - 16kb                      */
+  { 0x08078000, 0x4000 },               /* flash sector 44 - 16kb                      */
+  { 0x0807C000, 0x4000 },               /* flash sector 45 - 16kb                      */
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
 #error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
@@ -261,6 +259,12 @@ void FlashInit(void)
   /* init the flash block info structs by setting the address to an invalid address */
   blockInfo.base_addr = FLASH_INVALID_ADDRESS;
   bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
+
+  /* make sure that the prefetch is enabled to prevent an occasional flash programming
+   * error at a random memory address. this is recommended by the reference manual in
+   * section "Adaptive real-time memory accelerator (ART Accelerator)".
+   */
+  __HAL_FLASH_PREFETCH_BUFFER_ENABLE();
 } /*** end of FlashInit ***/
 
 
@@ -746,8 +750,8 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
   blt_bool   result = BLT_TRUE;
   blt_addr   prog_addr;
-  blt_int32u prog_data;
-  blt_int32u word_cnt;
+  blt_int64u prog_data;
+  blt_int32u dword_cnt;
 
   /* check that the address is actually within flash */
   if (FlashGetSectorIdx(block->base_addr) == FLASH_INVALID_SECTOR_IDX)
@@ -782,37 +786,33 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
-    /* TODO ##Port Program the data contents in 'block' to flash memory here and read the
-     * programmed data values back directory from flash memory to verify that the flash
-     * program operation was successful. The example implementation assumes that flash
-     * data can be written 32-bits at a time.
-     */
 
-    /* program all words in the block one by one */
-    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+    /* unlock the flash peripheral to enable the flash control register access. */
+    HAL_FLASH_Unlock();
+
+    /* program all double words in the block one by one */
+    for (dword_cnt=0; dword_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int64u)); dword_cnt++)
     {
-      prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
-      prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+      prog_addr = block->base_addr + (dword_cnt * sizeof(blt_int64u));
+      prog_data = *(volatile blt_int64u *)(&block->data[dword_cnt * sizeof(blt_int64u)]);
       /* keep the watchdog happy */
       CopService();
-      /* TODO ##Port Program 32-bit 'prog_data' data value to memory address 'prog_addr'.
-       * In case an error occured, set result to BLT_FALSE and break the loop. 
-       */
-      if (1 == 0)
+      /* program 64-bit 'prog_data' data value to memory address 'prog_addr' */
+      if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, prog_addr, prog_data) != HAL_OK)
       {
         result = BLT_FALSE;
         break;
       }
       /* verify that the written data is actually there */
-      if (*(volatile blt_int32u *)prog_addr != prog_data)
+      if (*(volatile blt_int64u *)prog_addr != prog_data)
       {
-        /* TODO ##Port Uncomment the following two lines again. It was commented out so
-         * that a dry run with the flash driver is possible without it reporting errors.
-         */
-        /*result = BLT_FALSE;*/
-        /*break;*/
+        result = BLT_FALSE;
+        break;
       }
     }
+
+    /* lock the flash peripheral to disable the flash control register access. */
+    HAL_FLASH_Lock();
   }
 
   /* Give the result back to the caller. */
