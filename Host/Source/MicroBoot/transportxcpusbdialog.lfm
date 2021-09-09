@@ -1,19 +1,20 @@
 object TransportXcpUsbForm: TTransportXcpUsbForm
-  Left = 1285
+  Left = 528
   Height = 308
-  Top = 253
+  Top = 303
   Width = 407
   Caption = 'XCP on USB'
   ClientHeight = 308
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '2.0.12.0'
   object LblCommunication: TLabel
     Left = 8
-    Height = 15
+    Height = 20
     Top = 8
-    Width = 87
+    Width = 112
+    AutoSize = False
     Caption = 'Communication'
     Font.Style = [fsBold]
     ParentColor = False
@@ -47,17 +48,19 @@ object TransportXcpUsbForm: TTransportXcpUsbForm
   end
   object LblVID: TLabel
     Left = 24
-    Height = 15
+    Height = 20
     Top = 38
-    Width = 83
+    Width = 100
+    AutoSize = False
     Caption = 'Vendor ID (hex):'
     ParentColor = False
   end
   object LblPID: TLabel
     Left = 24
-    Height = 15
+    Height = 20
     Top = 78
-    Width = 88
+    Width = 97
+    AutoSize = False
     Caption = 'Product ID (hex):'
     ParentColor = False
   end

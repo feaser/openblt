@@ -13,7 +13,7 @@ object SettingsForm: TSettingsForm
   OnDestroy = FormDestroy
   OnKeyPress = FormKeyPress
   Position = poOwnerFormCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '2.0.12.0'
   object PnlFooter: TPanel
     Left = 0
     Height = 46
@@ -82,37 +82,38 @@ object SettingsForm: TSettingsForm
       TabOrder = 0
       object TabCommunicationInterface: TTabSheet
         Caption = 'Communication Interface'
-        ClientHeight = 364
-        ClientWidth = 412
+        ClientHeight = 367
+        ClientWidth = 414
         object PnlCommunicationTop: TPanel
           Left = 0
           Height = 44
           Top = 0
-          Width = 412
+          Width = 414
           Align = alTop
           BevelOuter = bvNone
           Caption = 'PnlCommunicationTop'
           ClientHeight = 44
-          ClientWidth = 412
+          ClientWidth = 414
           Color = clForm
           ParentColor = False
           TabOrder = 0
           object LblInterface: TLabel
             Left = 8
-            Height = 17
+            Height = 20
             Top = 11
-            Width = 107
+            Width = 112
+            AutoSize = False
             Caption = 'Interface selection:'
             ParentColor = False
           end
           object CmbInterface: TComboBox
             Left = 120
-            Height = 27
+            Height = 23
             Hint = 'Select the communication hardware interface to use during firmware updates'
             Top = 8
             Width = 200
             DropDownCount = 4
-            ItemHeight = 0
+            ItemHeight = 15
             ItemIndex = 0
             Items.Strings = (
               'XCP on RS232'
@@ -130,9 +131,9 @@ object SettingsForm: TSettingsForm
         end
         object PnlCommunicationBody: TPanel
           Left = 0
-          Height = 320
+          Height = 323
           Top = 44
-          Width = 412
+          Width = 414
           Align = alClient
           BevelOuter = bvNone
           Caption = 'PnlCommunicationBody'
@@ -143,27 +144,27 @@ object SettingsForm: TSettingsForm
       end
       object TabSessionProtocol: TTabSheet
         Caption = 'Session Protocol'
-        ClientHeight = 364
-        ClientWidth = 412
+        ClientHeight = 367
+        ClientWidth = 414
         object PnlSessionTop: TPanel
           Left = 0
           Height = 44
           Top = 0
-          Width = 412
+          Width = 414
           Align = alTop
           BevelOuter = bvNone
           Caption = 'PnlSessionTop'
           ClientHeight = 44
-          ClientWidth = 412
+          ClientWidth = 414
           TabOrder = 0
           object CmbProtocol: TComboBox
             Left = 120
-            Height = 31
+            Height = 23
             Hint = 'Select the communication protocol to use during firmware updates'
             Top = 8
             Width = 200
             DropDownCount = 4
-            ItemHeight = 0
+            ItemHeight = 15
             Items.Strings = (
               'XCP version 1.0'
             )
@@ -175,18 +176,19 @@ object SettingsForm: TSettingsForm
           end
           object LblProtocol: TLabel
             Left = 8
-            Height = 17
+            Height = 20
             Top = 11
-            Width = 102
+            Width = 112
+            AutoSize = False
             Caption = 'Protocol selection:'
             ParentColor = False
           end
         end
         object PnlSessionBody: TPanel
           Left = 0
-          Height = 320
+          Height = 323
           Top = 44
-          Width = 412
+          Width = 414
           Align = alClient
           BevelOuter = bvNone
           Caption = 'PnlSessionBody'
@@ -195,13 +197,13 @@ object SettingsForm: TSettingsForm
       end
       object TabMiscellaneous: TTabSheet
         Caption = 'Miscellaneous'
-        ClientHeight = 364
-        ClientWidth = 412
+        ClientHeight = 367
+        ClientWidth = 414
         object PnlMiscellaneousBody: TPanel
           Left = 0
-          Height = 364
+          Height = 367
           Top = 0
-          Width = 412
+          Width = 414
           Align = alClient
           BevelOuter = bvNone
           Caption = 'PnlMiscellaneousBody'

@@ -1,19 +1,20 @@
 object TransportXcpTcpIpForm: TTransportXcpTcpIpForm
-  Left = 1279
+  Left = 578
   Height = 308
-  Top = 273
+  Top = 343
   Width = 407
   Caption = 'XCP on TCP/IP'
   ClientHeight = 308
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '2.0.12.0'
   object LblCommunication: TLabel
     Left = 8
-    Height = 17
+    Height = 20
     Top = 8
-    Width = 96
+    Width = 104
+    AutoSize = False
     Caption = 'Communication'
     Font.Style = [fsBold]
     ParentColor = False
@@ -21,7 +22,7 @@ object TransportXcpTcpIpForm: TTransportXcpTcpIpForm
   end
   object EdtAddress: TEdit
     Left = 88
-    Height = 29
+    Height = 23
     Hint = 'The IP address or hostname of the target to connect to. For example 192.168.178.23 or mydevice.mydomain.com'
     Top = 35
     Width = 288
@@ -32,7 +33,7 @@ object TransportXcpTcpIpForm: TTransportXcpTcpIpForm
   end
   object EdtPort: TEdit
     Left = 88
-    Height = 29
+    Height = 23
     Hint = 'The TCP port number to use, as a 16-bit value (Default = 1000)'
     Top = 75
     Width = 144
@@ -45,17 +46,19 @@ object TransportXcpTcpIpForm: TTransportXcpTcpIpForm
   end
   object LblAddress: TLabel
     Left = 24
-    Height = 17
+    Height = 20
     Top = 38
-    Width = 49
+    Width = 56
+    AutoSize = False
     Caption = 'Address:'
     ParentColor = False
   end
   object LblPort: TLabel
     Left = 24
-    Height = 17
+    Height = 20
     Top = 78
-    Width = 26
+    Width = 57
+    AutoSize = False
     Caption = 'Port:'
     ParentColor = False
   end

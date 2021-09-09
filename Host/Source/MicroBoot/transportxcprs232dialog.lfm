@@ -1,19 +1,20 @@
 object TransportXcpRs232Form: TTransportXcpRs232Form
-  Left = 1297
+  Left = 558
   Height = 308
-  Top = 271
+  Top = 310
   Width = 407
   Caption = 'XCP on RS232'
   ClientHeight = 308
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '2.0.12.0'
   object LlbCommunication: TLabel
     Left = 8
-    Height = 15
+    Height = 20
     Top = 8
-    Width = 87
+    Width = 104
+    AutoSize = False
     Caption = 'Communication'
     Font.Style = [fsBold]
     ParentColor = False
@@ -33,9 +34,10 @@ object TransportXcpRs232Form: TTransportXcpRs232Form
   end
   object LblDevice: TLabel
     Left = 24
-    Height = 15
+    Height = 20
     Top = 38
-    Width = 38
+    Width = 64
+    AutoSize = False
     Caption = 'Device:'
     ParentColor = False
   end
@@ -62,9 +64,10 @@ object TransportXcpRs232Form: TTransportXcpRs232Form
   end
   object LblBaudrate: TLabel
     Left = 24
-    Height = 15
+    Height = 20
     Top = 78
-    Width = 50
+    Width = 66
+    AutoSize = False
     Caption = 'Baudrate:'
     ParentColor = False
   end

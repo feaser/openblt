@@ -85,7 +85,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '2.0.12.0'
   object PnlBody: TPanel
     Left = 0
     Height = 84
@@ -146,9 +146,10 @@ object MainForm: TMainForm
       end
       object LblFirmwareUpdateInfo: TLabel
         Left = 16
-        Height = 17
+        Height = 20
         Top = 14
-        Width = 135
+        Width = 399
+        AutoSize = False
         Caption = 'LblFirmwareUpdateInfo'
         ParentColor = False
       end
@@ -199,9 +200,10 @@ object MainForm: TMainForm
     end
     object LblElapsedTime: TLabel
       Left = 16
-      Height = 17
+      Height = 20
       Top = 14
-      Width = 91
+      Width = 306
+      AutoSize = False
       Caption = 'LblElapsedTime'
       ParentColor = False
     end
@@ -302,9 +304,10 @@ object MainForm: TMainForm
     end
     object LblProgramName: TLabel
       Left = 8
-      Height = 17
+      Height = 20
       Top = 8
-      Width = 64
+      Width = 88
+      AutoSize = False
       Caption = 'MicroBoot'
       Font.Style = [fsBold]
       ParentColor = False
@@ -312,9 +315,10 @@ object MainForm: TMainForm
     end
     object LblProgramConfig: TLabel
       Left = 16
-      Height = 17
+      Height = 20
       Top = 29
-      Width = 106
+      Width = 402
+      AutoSize = False
       Caption = 'LblProgramConfig'
       ParentColor = False
     end
@@ -322,12 +326,12 @@ object MainForm: TMainForm
   object OpenDialog: TOpenDialog
     Filter = ' Motorola S-record (*.s19;*.s28;*.s37;*.sx;*.srec;*.mot)|*.s19;*.s28;*.s37;*.sx;*.srec;*.mot|All files (*.*)|*.*'
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 384
+    Left = 384
   end
   object TmrClose: TTimer
     Enabled = False
     Interval = 200
     OnTimer = TmrCloseTimer
-    left = 312
+    Left = 312
   end
 end
