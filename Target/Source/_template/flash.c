@@ -778,7 +778,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   if (result == BLT_TRUE)
   {
     /* TODO ##Port Program the data contents in 'block' to flash memory here and read the
-     * programmed data values back directory from flash memory to verify that the flash
+     * programmed data values back directly from flash memory to verify that the flash
      * program operation was successful. The example implementation assumes that flash
      * data can be written 32-bits at a time.
      */

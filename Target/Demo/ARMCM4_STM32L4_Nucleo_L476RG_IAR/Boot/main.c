@@ -52,7 +52,7 @@ static void SystemClock_Config(void);
 ** \return    none.
 **
 ****************************************************************************************/
-int main(void)
+void main(void)
 {
   /* initialize the microcontroller */
   Init();
