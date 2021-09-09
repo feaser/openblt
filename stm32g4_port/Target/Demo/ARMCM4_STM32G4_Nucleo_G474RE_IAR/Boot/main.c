@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32L4_Nucleo_L476RG_IAR/Boot/main.c
+* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_IAR/Boot/main.c
 * \brief        Bootloader application source file.
-* \ingroup      Boot_ARMCM4_STM32L4_Nucleo_L476RG_IAR
+* \ingroup      Boot_ARMCM4_STM32G4_Nucleo_G474RE_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2018  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2021  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -30,13 +30,13 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "stm32l4xx.h"                           /* STM32 CPU and HAL header           */
-#include "stm32l4xx_ll_rcc.h"                    /* STM32 LL RCC header                */
-#include "stm32l4xx_ll_bus.h"                    /* STM32 LL BUS header                */
-#include "stm32l4xx_ll_pwr.h"                    /* STM32 LL PWR header                */
-#include "stm32l4xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
-#include "stm32l4xx_ll_utils.h"                  /* STM32 LL UTILS header              */
-#include "stm32l4xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
+#include "stm32g4xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32g4xx_ll_pwr.h"                    /* STM32 LL PWR header                */
+#include "stm32g4xx_ll_rcc.h"                    /* STM32 LL RCC header                */
+#include "stm32g4xx_ll_bus.h"                    /* STM32 LL BUS header                */
+#include "stm32g4xx_ll_system.h"                 /* STM32 LL SYSTEM header             */
+#include "stm32g4xx_ll_utils.h"                  /* STM32 LL UTILS header              */
+#include "stm32g4xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
 
 /****************************************************************************************
@@ -96,47 +96,63 @@ static void SystemClock_Config(void)
 {
   /* Set flash latency. */
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
-  /* Set flash latency. */
-  if (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_4)
+  while(LL_FLASH_GetLatency() != LL_FLASH_LATENCY_4)
+  {
+    /* Error setting flash latency. */
+    ASSERT_RT(BLT_FALSE);
+  }
+  
+  /* Enable boost mode and the HSE clock. */
+  LL_PWR_EnableRange1BoostMode();
+  LL_RCC_HSE_Enable();
+   /* Wait till HSE is ready */
+  while(LL_RCC_HSE_IsReady() != 1)
+  {
+    ;
+  }
+
+  /* Configure and enable the PLL. */
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_6, 85, LL_RCC_PLLR_DIV_2);
+  LL_RCC_PLL_EnableDomain_SYS();
+  LL_RCC_PLL_Enable();
+   /* Wait till PLL is ready */
+  while(LL_RCC_PLL_IsReady() != 1)
+  {
+    ;
+  }
+
+  /* Set the source for the system clock and the AHB prescaler. */
+  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
+  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_2);
+  /* Wait till System clock is ready */
+  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
+  {
+    ;
+  }
+
+  /* Insure 1µs transition state at intermediate medium speed clock based on DWT */
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+  DWT->CYCCNT = 0;
+  while(DWT->CYCCNT < 100);
+
+  /* Configure peripheral bus prescalers. */
+  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
+  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
+
+  /* Update the system clock speed setting. */
+  LL_SetSystemCoreClock(BOOT_CPU_SYSTEM_SPEED_KHZ * 1000u);
+  /* Update the time base */
+  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
   {
     /* Error setting flash latency. */
     ASSERT_RT(BLT_FALSE);
   }
 
-  /* Configure the main internal regulator output voltage. */
-  LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
-
-  /* Enable the HSI clock. */
-  LL_RCC_HSI_Enable();
-  /* Wait till HSI is ready */
-  while (LL_RCC_HSI_IsReady() != 1)
-  {
-    ;
-  }
-  LL_RCC_HSI_SetCalibTrimming(16);
-
-  /* Configure and enable the PLL. */
-  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_1, 10, LL_RCC_PLLR_DIV_2);
-  LL_RCC_PLL_EnableDomain_SYS();
-  LL_RCC_PLL_Enable();
-  /* Wait till PLL is ready */
-  while (LL_RCC_PLL_IsReady() != 1)
-  {
-    ;
-  }
-  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
-
-  /* Wait till System clock is ready */
-  while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
-  {
-    ;
-  }
-  /* Configure peripheral subsystem prescalers. */
-  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
-  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
-  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
-  /* Update the system clock speed setting. */
-  LL_SetSystemCoreClock(BOOT_CPU_SYSTEM_SPEED_KHZ * 1000u);
+  /* Set peripheral clock sources. */
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_HSE);
+  LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
 } /*** end of SystemClock_Config ***/
 
 
@@ -151,10 +167,11 @@ void HAL_MspInit(void)
 {
   LL_GPIO_InitTypeDef GPIO_InitStruct;
 
-  /* SYSCFG clock enable. */
+  /* PWR and SYSCFG clock enable. */
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
-  /* PWR clock enable. */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
+  /* Disable the internal pull-up in Dead Battery pins of UCPD peripheral. */
+  LL_PWR_DisableUCPDDeadBattery();
 
   /* GPIO ports clock enable. */
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
@@ -165,12 +182,10 @@ void HAL_MspInit(void)
   /* UART clock enable. */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2);
 #endif
-
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN clock enable. */
-  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_CAN1);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_FDCAN);
 #endif
-
   /* Configure GPIO pin for the LED. */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_5;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
@@ -178,7 +193,7 @@ void HAL_MspInit(void)
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
+  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);  
 
   /* Configure GPIO pin for (optional) backdoor entry input. */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_13;
@@ -190,13 +205,12 @@ void HAL_MspInit(void)
   /* UART TX and RX GPIO pin configuration. */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_2 | LL_GPIO_PIN_3;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 #endif
-
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN TX and RX GPIO pin configuration. */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_8 | LL_GPIO_PIN_9;
@@ -223,7 +237,7 @@ void HAL_MspDeInit(void)
   LL_RCC_DeInit();
   
   /* Reset GPIO pin for the LED to turn it off. */
-  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
+  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);  
 
   /* Deinit used GPIOs. */
   LL_GPIO_DeInit(GPIOC);
@@ -232,22 +246,22 @@ void HAL_MspDeInit(void)
 
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN clock disable. */
-  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_CAN1);
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_FDCAN);
 #endif
-
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART clock disable. */
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USART2);
 #endif
 
   /* GPIO ports clock disable. */
-  LL_AHB2_GRP1_DisableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
-  LL_AHB2_GRP1_DisableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
   LL_AHB2_GRP1_DisableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
+  LL_AHB2_GRP1_DisableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
+  LL_AHB2_GRP1_DisableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
 
-  /* PWR clock disable. */
+  /* Enable the internal pull-up in Dead Battery pins of UCPD peripheral. */
+  LL_PWR_EnableUCPDDeadBattery();
+  /* SYSCFG and PWR clock disable. */
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_PWR);
-  /* SYSCFG clock disable. */
   LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
 } /*** end of HAL_MspDeInit ***/
 
