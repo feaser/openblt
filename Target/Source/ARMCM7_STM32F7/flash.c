@@ -114,7 +114,9 @@ static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
 static blt_int8u FlashGetSector(blt_addr address);
+#if (BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0)
 static blt_bool  FlashIsSingleBankMode(void);
+#endif
 
 
 /****************************************************************************************
@@ -629,7 +631,9 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
     }
   }
 #endif
-  
+
+  /* Skip dual bank mode check if custom map is defined */
+#if (BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0)
   /* this flash driver currently supports single bank mode. report an error if it is
    * configured in dual bank mode. otherwise a tricky to debug hard fault might happen.
    */
@@ -638,6 +642,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
     /* cannot perform flash operation, because it is configured in dual bank mode. */
     return BLT_FALSE;
   }
+#endif
 
   /* unlock the flash peripheral to enable the flash control register access. */
   HAL_FLASH_Unlock();
@@ -696,6 +701,8 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
     result = BLT_FALSE;
   }
   
+  /* Skip dual bank mode check if custom map is defined */
+#if (BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0)
   /* this flash driver currently supports single bank mode. report an error if it is
    * configured in dual bank mode. otherwise a tricky to debug hard fault might happen.
    */
@@ -704,6 +711,7 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
     /* cannot perform flash operation, because it is configured in dual bank mode. */
     result = BLT_FALSE;
   }
+#endif
   
   /* only move forward with the erase operation if all is okay so far */
   if (result == BLT_TRUE)
@@ -773,7 +781,7 @@ static blt_int8u FlashGetSector(blt_addr address)
   return result;
 } /*** end of FlashGetSector ***/
 
-
+#if (BOOT_FLASH_CUSTOM_LAYOUT_ENABLE == 0)
 /************************************************************************************//**
 ** \brief     Determines the flash is configured in single bank mode, which is required
 **            by this flash driver.
@@ -799,6 +807,6 @@ static blt_bool FlashIsSingleBankMode(void)
   /* give the result back to the caller. */
   return result;
 } /*** end of FlashIsSingleBankMode ***/
-
+#endif
 
 /*********************************** end of flash.c ************************************/
