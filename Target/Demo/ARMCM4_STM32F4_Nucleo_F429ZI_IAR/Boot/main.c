@@ -287,6 +287,7 @@ void HAL_MspDeInit(void)
   HAL_GPIO_DeInit(GPIOD, GPIO_PIN_9);
   /* UART clock disable. */
   __HAL_RCC_USART3_CLK_DISABLE();
+#endif
 
   /* GPIO ports clock disable. */
   __HAL_RCC_GPIOD_CLK_DISABLE();
@@ -297,7 +298,6 @@ void HAL_MspDeInit(void)
   /* SYSCFG and PWR clock disable. */
   __HAL_RCC_PWR_CLK_DISABLE();
   __HAL_RCC_SYSCFG_CLK_DISABLE();
-#endif
 } /*** end of HAL_MspDeInit ***/
 
 
