@@ -44,17 +44,11 @@
 #define FLASH_WRITE_BLOCK_SIZE          (512)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
-/** \brief Mask for low-order bits of flash address range */
-#define FLASH_ADDRESS_MASK              (0x00ffffffu)
-/** \brief Start address of the bootloader programmable flash. */
-#define FLASH_START_ADDRESS             (flashLayout[0].sector_start & ~FLASH_ADDRESS_MASK)
 /** \brief End address of the bootloader programmable flash. */
 #define FLASH_END_ADDRESS               (flashLayout[FLASH_TOTAL_SECTORS-1].sector_start + \
                                          flashLayout[FLASH_TOTAL_SECTORS-1].sector_size - 1)
 /** \brief Hardware erase unit size (sectors must be multiples of this) */
-#define FLASH_ERASE_BLOCK_SIZE          (0x800)
-/** \brief Flash page (erase unit) number */
-#define FLASH_ERASE_BLOCK_NUM(adrs)     (((adrs) - FLASH_START_ADDRESS) / FLASH_ERASE_BLOCK_SIZE)
+#define FLASH_ERASE_BLOCK_SIZE          (FLASH_PAGE_SIZE)
 
 /** \brief Offset into the user program's vector table where the checksum is located. 
  *         For this target it is set to the end of the vector table. Note that the 
@@ -116,15 +110,17 @@ extern blt_bool FlashCryptoDecryptDataHook(blt_int8u * data, blt_int32u size);
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static blt_bool  FlashInitBlock(tFlashBlockInfo *block, blt_addr address);
+static blt_bool   FlashInitBlock(tFlashBlockInfo *block, blt_addr address);
 static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_addr);
-static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
-                                 blt_int8u *data, blt_int32u len);
-static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
-static blt_bool  FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
-static blt_int8u FlashGetSector(blt_addr address);
-static blt_addr  FlashGetSectorBaseAddr(blt_int8u sector);
-static blt_addr  FlashGetSectorSize(blt_int8u sector);
+static blt_bool   FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
+                                  blt_int8u *data, blt_int32u len);
+static blt_bool   FlashWriteBlock(tFlashBlockInfo *block);
+static blt_bool   FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
+static blt_int8u  FlashGetSector(blt_addr address);
+static blt_addr   FlashGetSectorBaseAddr(blt_int8u sector);
+static blt_addr   FlashGetSectorSize(blt_int8u sector);
+static blt_int32u FlashGetBank(blt_addr address);
+static blt_int32u FlashGetPage(blt_addr address);
 
 
 /****************************************************************************************
@@ -185,6 +181,22 @@ static const tFlashSector flashLayout[] =
   { 0x08018000, 0x08000, 18},           /* flash sector 18 - 32kb                       */
 #endif
 #if (BOOT_NVM_SIZE_KB > 128)
+  { 0x08020000, 0x08000, 19},           /* flash sector 17 - 32kb                       */
+  { 0x08028000, 0x08000, 20},           /* flash sector 18 - 32kb                       */
+  { 0x08030000, 0x08000, 21},           /* flash sector 17 - 32kb                       */
+  { 0x08038000, 0x08000, 22},           /* flash sector 18 - 32kb                       */
+#endif
+#if (BOOT_NVM_SIZE_KB > 256)
+  { 0x08040000, 0x08000, 23},           /* flash sector 17 - 32kb                       */
+  { 0x08048000, 0x08000, 24},           /* flash sector 18 - 32kb                       */
+  { 0x08050000, 0x08000, 25},           /* flash sector 17 - 32kb                       */
+  { 0x08058000, 0x08000, 26},           /* flash sector 18 - 32kb                       */
+  { 0x08060000, 0x08000, 27},           /* flash sector 17 - 32kb                       */
+  { 0x08068000, 0x08000, 28},           /* flash sector 18 - 32kb                       */
+  { 0x08070000, 0x08000, 29},           /* flash sector 17 - 32kb                       */
+  { 0x08078000, 0x08000, 30},           /* flash sector 18 - 32kb                       */
+#endif
+#if (BOOT_NVM_SIZE_KB > 512)
 #error "BOOT_NVM_SIZE_KB > 128 is currently not supported."
 #endif
 };
@@ -806,13 +818,15 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
     nr_of_blocks = (end_addr - start_addr + 1) / FLASH_ERASE_BLOCK_SIZE;
     /* prepare the erase initialization structure. */
     eraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
-    eraseInitStruct.Page      = FLASH_ERASE_BLOCK_NUM(start_addr);
     eraseInitStruct.NbPages   = 1;
     /* unlock the flash array */
     HAL_FLASH_Unlock();
     /* erase all blocks one by one */
     for (block_cnt=0; block_cnt<nr_of_blocks; block_cnt++)
     {
+      /* set the page and bank number for the current block. */
+      eraseInitStruct.Page  = FlashGetPage(start_addr);
+      eraseInitStruct.Banks = FlashGetBank(start_addr);
       /* keep the watchdog happy */
       CopService();
       /* erase block */
@@ -823,8 +837,8 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
         /* error detected so don't bother continuing with the loop */
         break;
       }
-      /* update the page number for the next sector. */
-      eraseInitStruct.Page += 1;
+      /* update the start address to that of the next block. */
+      start_addr += FLASH_ERASE_BLOCK_SIZE;
     }
     /* lock the flash array again */
     HAL_FLASH_Lock();
@@ -912,6 +926,80 @@ static blt_addr FlashGetSectorSize(blt_int8u sector)
   /* still here so no valid sector found */
   return 0;
 } /*** end of FlashGetSectorSize ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the flash bank that the address belongs to.
+** \param     address Flash memory address.
+** \return    FLASH_BANK_1 if the address belongs to bank 1, FLASH_BANK_2 otherwise.
+**
+****************************************************************************************/
+static blt_int32u FlashGetBank(blt_addr address)
+{
+  blt_int32u result = FLASH_BANK_1;
+
+  /* assert that the address is actually a valid flash address */
+  ASSERT_RT(address >= FLASH_BASE);
+  ASSERT_RT((address - FLASH_BASE) < FLASH_SIZE);
+
+  /* bank 2 is only possible on dual bank flash devices. for these devices, macro
+   * FLASH_DBANK_SUPPORT is defined.
+   */
+#if defined (FLASH_DBANK_SUPPORT)
+  /* is the address in bank 2? */
+  if ((address - FLASH_BASE) >= FLASH_BANK_SIZE)
+  {
+    /* update the result */
+    result = FLASH_BANK_2;
+  }
+#endif
+
+  /* give the result back to the caller */
+  return result;
+} /** end of FlashGetBank ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the flash page that the address belongs to.
+** \param     address Flash memory address.
+** \return    Page number.
+**
+****************************************************************************************/
+static blt_int32u FlashGetPage(blt_addr address)
+{
+  blt_int32u result = 0;
+
+  /* assert that the address is actually a valid flash address */
+  ASSERT_RT(address >= FLASH_BASE);
+  ASSERT_RT((address - FLASH_BASE) < FLASH_SIZE);
+
+  /* is the address in the first bank? */
+  if (FlashGetBank(address) == FLASH_BANK_1)
+  {
+    result = (address - FLASH_BASE) / FLASH_ERASE_BLOCK_SIZE;
+  }
+#if defined (FLASH_DBANK_SUPPORT)
+  /* the address is in the second bank, which can only happen on dual bank flash
+   * devices.
+   */
+  else
+  {
+    /* sanity check. the address must be equal or greater than the start address of
+     * the second bank.
+     */
+    ASSERT_RT(address >= (FLASH_BASE + FLASH_BANK_SIZE));
+
+    /* in the second bank, the page number always starts at 256. start by getting the
+     * page number from the start of the bank. next, add the 256 offset.
+     */
+    result  = (address - FLASH_BASE - FLASH_BANK_SIZE) / FLASH_ERASE_BLOCK_SIZE;
+    result += 256U;
+  }
+#endif
+
+  /* give the result back to the caller */
+  return result;
+} /*** end of FlashGetPage ***/
 
 
 /*********************************** end of flash.c ************************************/
