@@ -111,51 +111,45 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_2);
+  while(LL_FLASH_GetLatency() != LL_FLASH_LATENCY_2)
+  {
+  }
 
-  /** Configure the main internal regulator output voltage
-  */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV1;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
-  RCC_OscInitStruct.PLL.PLLN = 64;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV4;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  /* HSI configuration and activation */
+  LL_RCC_HSI_Enable();
+  while(LL_RCC_HSI_IsReady() != 1)
   {
-    Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  /* Main PLL configuration and activation */
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 64, LL_RCC_PLLR_DIV_4);
+  LL_RCC_PLL_Enable();
+  LL_RCC_PLL_EnableDomain_SYS();
+  while(LL_RCC_PLL_IsReady() != 1)
+  {
+  }
+
+  /* Set AHB prescaler*/
+  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
+
+  /* Sysclk activation on the main PLL */
+  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
+  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
+  {
+  }
+
+  /* Set APB1 prescaler*/
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
+  /* Update CMSIS variable (which can be updated also through SystemCoreClockUpdate function) */
+  LL_SetSystemCoreClock(64000000);
+
+   /* Update the time base */
+  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
   {
     Error_Handler();
   }
-  /** Initializes the peripherals clocks
-  */
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2;
-  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
 }
 
 /**
@@ -240,28 +234,27 @@ static void MX_USART2_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
-  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
-  LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOC);
-  LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 
-  /**/
-  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
 
-  /**/
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_13;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /**/
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_5;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  /*Configure GPIO pin : PA5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 
