@@ -124,8 +124,6 @@ void SystemClock_Config(void)
   }
 
   /* Main PLL configuration and activation */
-  LL_RCC_PLL_ConfigDomain_USB(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_1, 8, LL_RCC_PLLQ_DIV_4);
-  LL_RCC_PLL_EnableDomain_USB();
   LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_1, 8, LL_RCC_PLLR_DIV_2);
   LL_RCC_PLL_Enable();
   LL_RCC_PLL_EnableDomain_SYS();
@@ -143,7 +141,7 @@ void SystemClock_Config(void)
   }
 
   /* Set APB1 prescaler*/
-  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
   /* Update CMSIS variable (which can be updated also through SystemCoreClockUpdate function) */
   LL_SetSystemCoreClock(64000000);
 
@@ -153,7 +151,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
-  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL);
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PCLK1);
 }
 
 /**
