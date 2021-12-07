@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32L4_Nucleo_L476RG_Keil/Prog/main.c
+* \file         Demo/ARMCM0_STM32G0_Nucleo_G0B1RE_GCC/Prog/main.c
 * \brief        Demo program application source file.
-* \ingroup      Prog_ARMCM4_STM32L4_Nucleo_L476RG_Keil
+* \ingroup      Prog_ARMCM0_STM32G0_Nucleo_G0B1RE_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -20,9 +20,9 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It
+* You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-*
+* 
 * \endinternal
 ****************************************************************************************/
 
@@ -41,27 +41,28 @@ static void VectorBase_Config(void);
 
 
 /************************************************************************************//**
-** \brief     This is the entry point for the bootloader application and is called
+** \brief     This is the entry point for the bootloader application and is called 
 **            by the reset interrupt vector after the C-startup routines executed.
-** \return    Program exit code.
+** \return    Program return code.
 **
 ****************************************************************************************/
 int main(void)
 {
-  /* Initialize the microcontroller */
+  /* initialize the microcontroller */
   Init();
-  /* Initialize the bootloader interface */
+  /* initialize the bootloader interface */
   BootComInit();
 
   /* start the infinite program loop */
   while (1)
   {
-    /* Toggle LED with a fixed frequency. */
+    /* toggle LED with a fixed frequency */
     LedToggle();
-    /* Check for bootloader activation request. */
+    /* check for bootloader activation request */
     BootComCheckActivationRequest();
   }
-  /* Set program exit code. note that the program should never get here. */
+
+  /* program should never get here */
   return 0;
 } /*** end of main ***/
 
@@ -73,15 +74,15 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
-  /* Configure the vector table base address. */
+  /* configure the vector table base address. */
   VectorBase_Config();
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  /* reset of all peripherals, initializes the Flash interface and the Systick. */
   HAL_Init();
-  /* Configure the system clock. */
+  /* configure the system clock. */
   SystemClock_Config();
-  /* Initialize the timer driver. */
+  /* initialize the timer driver */
   TimerInit();
-  /* Initialize the led driver. */
+  /* initialize the led driver */
   LedInit();
 } /*** end of Init ***/
 
@@ -100,10 +101,10 @@ static void VectorBase_Config(void)
   /* The constant array with vectors of the vector table is declared externally in the
    * c-startup code.
    */
-  extern const unsigned long __Vectors[];
+  extern const unsigned long g_pfnVectors[];
 
   /* Remap the vector table to where the vector table is located for this program. */
-  SCB->VTOR = (unsigned long)&__Vectors[0];
+  SCB->VTOR = (unsigned long)&g_pfnVectors[0];
 } /*** end of VectorBase_Config ***/
 
 
@@ -115,19 +116,23 @@ static void VectorBase_Config(void)
 ****************************************************************************************/
 static void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
-  /* Initializes the CPU, AHB and APB busses clocks. */
+  /* Configure the main internal regulator output voltage. */
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+  /* Initialize the RCC Oscillators. */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = 16;
+  RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV1;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 10;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
-  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
+  RCC_OscInitStruct.PLL.PLLN = 8;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV4;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -138,25 +143,27 @@ static void SystemClock_Config(void)
   }
 
   /* Initializes the CPU, AHB and APB busses clocks. */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
+                                RCC_CLOCKTYPE_PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  /* Set the flash latency. */
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
-    /* Clock configuration incorrect or hardware failure. Hang the system to prevent
-     * damage.
+    /* Flash latency configuration incorrect or hardware failure. Hang the system to
+     * prevent damage.
      */
     while(1);
   }
-
-  /* Configure the main internal regulator output voltage. */
-  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+  /* Configure the peripheral clocks */
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FDCAN | RCC_PERIPHCLK_USART2;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInit.FdcanClockSelection = RCC_FDCANCLKSOURCE_PCLK1;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
-    /* Configuration of the regulator output voltage incorrect or hardware failure. Hang
-     * the system to prevent damage.
+    /* USART2 clock configuration incorrect or hardware failure. Hang the system to
+     * prevent damage.
      */
     while(1);
   }
@@ -174,37 +181,31 @@ void HAL_MspInit(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
 
-  /* SYSCFG clock enable. */
+  /* SYSCFG and PWR clock enable. */
   __HAL_RCC_SYSCFG_CLK_ENABLE();
-  /* PWR clock enable. */
   __HAL_RCC_PWR_CLK_ENABLE();
+  
   /* GPIO ports clock enable. */
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /* Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral. */
+  HAL_SYSCFG_StrobeDBattpinsConfig(SYSCFG_CFGR1_UCPD1_STROBE | SYSCFG_CFGR1_UCPD2_STROBE);
+    
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* Peripheral clock enable. */
   __HAL_RCC_USART2_CLK_ENABLE();
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* Peripheral clock enable. */
-  __HAL_RCC_CAN1_CLK_ENABLE();
+  __HAL_RCC_FDCAN_CLK_ENABLE();
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
-  /* Set priority grouping. */
-  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-  /* MemoryManagement_IRQn interrupt configuration. */
-  HAL_NVIC_SetPriority(MemoryManagement_IRQn, 0, 0);
-  /* BusFault_IRQn interrupt configuration. */
-  HAL_NVIC_SetPriority(BusFault_IRQn, 0, 0);
-  /* UsageFault_IRQn interrupt configuration. */
-  HAL_NVIC_SetPriority(UsageFault_IRQn, 0, 0);
-  /* SVCall_IRQn interrupt configuration. */
-  HAL_NVIC_SetPriority(SVCall_IRQn, 0, 0);
-  /* DebugMonitor_IRQn interrupt configuration. */
-  HAL_NVIC_SetPriority(DebugMonitor_IRQn, 0, 0);
-  /* PendSV_IRQn interrupt configuration. */
+  /* SVC_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SVC_IRQn, 0, 0);
+  /* PendSV_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(PendSV_IRQn, 0, 0);
-  /* SysTick_IRQn interrupt configuration. */
+  /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 
   /* Configure the LED GPIO pin. */
@@ -218,8 +219,8 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Pin = GPIO_PIN_2 | GPIO_PIN_3;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF1_USART2;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
 #if (BOOT_COM_CAN_ENABLE > 0)
@@ -227,8 +228,8 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF3_FDCAN1;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 } /*** end of HAL_MspInit ***/
@@ -257,7 +258,7 @@ void HAL_MspDeInit(void)
 
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* Peripheral clock disable. */
-  __HAL_RCC_CAN1_CLK_DISABLE();
+  __HAL_RCC_FDCAN_CLK_DISABLE();
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* Peripheral clock disable. */
@@ -266,9 +267,8 @@ void HAL_MspDeInit(void)
   /* GPIO ports clock disable. */
   __HAL_RCC_GPIOB_CLK_DISABLE();
   __HAL_RCC_GPIOA_CLK_DISABLE();
-  /* PWR clock disable. */
+  /* SYSCFG and PWR clock disable. */
   __HAL_RCC_PWR_CLK_DISABLE();
-  /* SYSCFG clock disable. */
   __HAL_RCC_SYSCFG_CLK_DISABLE();
 } /*** end of HAL_MspDeInit ***/
 
