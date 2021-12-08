@@ -256,7 +256,7 @@ void HAL_MspDeInit(void)
   HAL_GPIO_DeInit(GPIOA, GPIO_PIN_5);
 
 #if (BOOT_COM_CAN_ENABLE > 0)
-  /* Peripheral clock enable. */
+  /* Peripheral clock disable. */
   __HAL_RCC_CAN1_CLK_DISABLE();
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 #if (BOOT_COM_RS232_ENABLE > 0)

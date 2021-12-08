@@ -147,9 +147,11 @@ void HAL_MspInit(void)
 
   /* SYSCFG clock enable. */
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+  /* PWR clock enable. */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
   
-  /* Flash clock enable */
-  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_FLASH);
+  /* Disable the internal Pull-Up in Dead Battery pins of the UCPD peripheral. */
+  LL_SYSCFG_DisableDBATT(LL_SYSCFG_UCPD1_STROBE | LL_SYSCFG_UCPD2_STROBE);
 
   /* GPIO ports clock enable. */
   LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
@@ -216,9 +218,8 @@ void HAL_MspDeInit(void)
   LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOC);
   LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOA);
 
-  /* Flash clock disable */
-  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_FLASH);
-
+  /* PWR clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_PWR);
   /* SYSCFG clock disable. */
   LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
 } /*** end of HAL_MspDeInit ***/

@@ -104,10 +104,7 @@ void HAL_MspDeInit(void)
   LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOC);
   LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOA);
 
-  /* Flash clock disable */
-  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_FLASH);
-
-  /* SYSCFG clock disable. */
+  /* SYSCFG and PWR clock disable. */
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_PWR);
   LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
 }
