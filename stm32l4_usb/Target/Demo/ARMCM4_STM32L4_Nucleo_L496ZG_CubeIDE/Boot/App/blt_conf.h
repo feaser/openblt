@@ -63,7 +63,7 @@
  *
  */
 /** \brief Enable/disable USB transport layer. */
-#define BOOT_COM_USB_ENABLE             (0)
+#define BOOT_COM_USB_ENABLE             (1)
 /** \brief Configure number of bytes in the target->host data packet. */
 #define BOOT_COM_USB_TX_MAX_DATA        (63)
 /** \brief Configure number of bytes in the host->target data packet. */
@@ -100,6 +100,12 @@
  *         user program's vector table.
  */
 #define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET (0x1AC)
+/** \brief Enable support for a custom flash layout table. It is located in
+ *         flash_layout.c. This was done because the default flashLayout[] table
+ *         in the bootloader's core has more flash memory reserved for the bootloader
+ *         than is needed for this demo.
+ */
+#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (1)
 
 
 /****************************************************************************************
