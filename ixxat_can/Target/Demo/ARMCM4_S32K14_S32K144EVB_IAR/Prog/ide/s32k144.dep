@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <fileVersion>4</fileVersion>
+    <fileChecksum>3486298355</fileChecksum>
+    <configuration>
+        <name>Debug</name>
+        <outputs>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+            <file>$PROJ_DIR$\..\obj\main.o</file>
+            <file>$PROJ_DIR$\..\obj\led.__cstat.et</file>
+            <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+            <file>$PROJ_DIR$\..\bin\demoprog_s32k144.srec</file>
+            <file>$PROJ_DIR$\..\lib\S32K144_features.h</file>
+            <file>$PROJ_DIR$\..\lib\startup.h</file>
+            <file>$PROJ_DIR$\..\boot.c</file>
+            <file>$PROJ_DIR$\..\boot.h</file>
+            <file>$PROJ_DIR$\..\bin\openblt_s32k144.out</file>
+            <file>$PROJ_DIR$\..\led.h</file>
+            <file>$PROJ_DIR$\..\obj\timer.o</file>
+            <file>$PROJ_DIR$\..\lib\startup.c</file>
+            <file>$PROJ_DIR$\..\lib\system_S32K144.h</file>
+            <file>$PROJ_DIR$\..\obj\timer.xcl</file>
+            <file>$PROJ_DIR$\..\lib\system_S32K144.c</file>
+            <file>$PROJ_DIR$\..\obj\startup.xcl</file>
+            <file>$PROJ_DIR$\..\startup_S32K144.s</file>
+            <file>$PROJ_DIR$\..\obj\system_S32K144.xcl</file>
+            <file>$PROJ_DIR$\..\..\Boot\blt_conf.h</file>
+            <file>$PROJ_DIR$\..\led.c</file>
+            <file>$PROJ_DIR$\..\timer.h</file>
+            <file>$PROJ_DIR$\..\obj\openblt_s32k144.map</file>
+            <file>$PROJ_DIR$\..\obj\system_S32K144.__cstat.et</file>
+            <file>$PROJ_DIR$\..\obj\system_S32K144.o</file>
+            <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+            <file>$PROJ_DIR$\..\header.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+            <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
+            <file>$PROJ_DIR$\..\main.c</file>
+            <file>$PROJ_DIR$\..\timer.c</file>
+            <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+            <file>$PROJ_DIR$\..\lib\devassert.h</file>
+            <file>$PROJ_DIR$\..\lib\s32_core_cm4.h</file>
+            <file>$PROJ_DIR$\..\lib\S32K144.h</file>
+            <file>$PROJ_DIR$\..\lib\device_registers.h</file>
+            <file>$PROJ_DIR$\..\obj\main.xcl</file>
+            <file>$PROJ_DIR$\..\obj\timer.__cstat.et</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+            <file>$PROJ_DIR$\..\obj\startup.o</file>
+            <file>$PROJ_DIR$\..\obj\s32k144.pbd</file>
+            <file>$PROJ_DIR$\..\obj\boot.__cstat.et</file>
+            <file>$PROJ_DIR$\..\obj\led.o</file>
+            <file>$PROJ_DIR$\..\obj\boot.o</file>
+            <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+            <file>$PROJ_DIR$\..\obj\startup_S32K144.o</file>
+            <file>$PROJ_DIR$\..\obj\main.__cstat.et</file>
+            <file>$PROJ_DIR$\..\obj\led.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+            <file>$PROJ_DIR$\..\obj\boot.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+            <file>$PROJ_DIR$\..\obj\startup.__cstat.et</file>
+            <file>$PROJ_DIR$\..\S32K144_64_flash.icf</file>
+            <file>$PROJ_DIR$\..\obj\demoprog_s32k144.map</file>
+            <file>$PROJ_DIR$\..\bin\demoprog_s32k144.out</file>
+        </outputs>
+        <file>
+            <name>[ROOT_NODE]</name>
+            <outputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 55 54</file>
+                </tool>
+            </outputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\boot.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 43</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 50</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 41</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 26 19 8 10 21 35 33 34 27 51 44 45 0 49 5 32 38 13</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\bin\openblt_s32k144.out</name>
+            <outputs>
+                <tool>
+                    <name>OBJCOPY</name>
+                    <file> 4</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 53 43 42 1 39 46 24 11 31 3 28 25</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\lib\startup.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 39</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 16</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 52</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 6 27 51 44 45 0 49 35 33 34 5 32 38</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\lib\system_S32K144.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 24</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 18</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 23</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 35 33 34 27 51 44 45 0 49 5 32 38 13</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\startup_S32K144.s</name>
+            <outputs>
+                <tool>
+                    <name>AARM</name>
+                    <file> 46</file>
+                </tool>
+            </outputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\led.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 42</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 48</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 2</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 26 19 8 10 21 35 33 34 27 51 44 45 0 49 5 32 38 13</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\main.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 1</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 36</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 47</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 26 19 8 10 21 35 33 34 27 51 44 45 0 49 5 32 38 13</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\timer.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 11</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 14</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 37</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 26 19 8 10 21 35 33 34 27 51 44 45 0 49 5 32 38 13</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\bin\demoprog_s32k144.out</name>
+            <outputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 54</file>
+                </tool>
+                <tool>
+                    <name>OBJCOPY</name>
+                    <file> 4</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 53 43 42 1 39 46 24 11 31 3 28 25</file>
+                </tool>
+            </inputs>
+        </file>
+    </configuration>
+    <configuration>
+        <name>Release</name>
+        <outputs />
+        <forcedrebuild>
+            <name>[MULTI_TOOL]</name>
+            <tool>ILINK</tool>
+        </forcedrebuild>
+    </configuration>
+</project>
