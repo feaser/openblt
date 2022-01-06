@@ -220,7 +220,9 @@ begin
   else if FTransportXcpCanConfig.Device = 'lawicel_canusb' then
     CmbDevice.ItemIndex := 2
   else if FTransportXcpCanConfig.Device = 'vector_xldriver' then
-    CmbDevice.ItemIndex := 3;
+    CmbDevice.ItemIndex := 3
+  else if FTransportXcpCanConfig.Device = 'ixxat_vcidriver' then
+    CmbDevice.ItemIndex := 4;
   {$ENDIF}
   CmbChannel.ItemIndex := 0;
   if FTransportXcpCanConfig.Channel <= LongWord(CmbChannel.Items.Count) then
@@ -270,7 +272,9 @@ begin
   else if CmbDevice.ItemIndex = 2 then
     FTransportXcpCanConfig.Device := 'lawicel_canusb'
   else if CmbDevice.ItemIndex = 3 then
-    FTransportXcpCanConfig.Device := 'vector_xldriver';
+    FTransportXcpCanConfig.Device := 'vector_xldriver'
+  else if CmbDevice.ItemIndex = 4 then
+    FTransportXcpCanConfig.Device := 'ixxat_vcidriver';
   {$ENDIF}
   FTransportXcpCanConfig.Channel := CmbChannel.ItemIndex;
   case CmbBaudrate.ItemIndex of
