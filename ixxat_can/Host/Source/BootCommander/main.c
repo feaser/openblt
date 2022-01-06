@@ -532,6 +532,7 @@ static void DisplayProgramUsage(void)
   printf("                     kvaser_leaflight -> Kvaser Leaf Light V2.\n");
   printf("                     lawicel_canusb   -> Lawicel CANUSB.\n");
   printf("                     vector_xldriver  -> Vector XL Driver.\n");
+  printf("                     ixxat_vcidriver  -> Ixxat VCI Driver.\n");
   printf("  -c=[value]       Zero based index of the CAN channel if multiple CAN\n");
   printf("                   channels are supported for the CAN adapter, as a 32-\n");
   printf("                   bit value (Default = 0).\n");

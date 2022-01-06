@@ -40,6 +40,7 @@
 #include "leaflight.h"                      /* Kvaser Leaf Light v2 interface          */
 #include "canusb.h"                         /* Lawicel CANUSB interface                */
 #include "xldriver.h"                       /* Vector XL driver interface              */
+#include "vcidriver.h"                      /* Ixxat VCI driver interface              */
 #endif
 #if defined(PLATFORM_LINUX)
 #include "socketcan.h"                      /* SocketCAN interface                     */
@@ -98,6 +99,10 @@ void CanInit(tCanSettings const * settings)
       else if (strcmp(settings->devicename, "vector_xldriver") == 0)
       {
         canIfPtr = VectorXlGetInterface();
+      }
+      else if (strcmp(settings->devicename, "ixxat_vcidriver") == 0)
+      {
+        canIfPtr = IxxatVciGetInterface();
       }
 #endif
 #if defined(PLATFORM_LINUX)
