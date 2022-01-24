@@ -127,7 +127,7 @@ static uint16_t xcpMaxCto;
 /** \brief The max number of bytes in the command transmit object (master->slave) during
  *         a programming session.
  */
-static uint8_t xcpMaxProgCto;
+static uint16_t xcpMaxProgCto;
 
 /** \brief The max number of bytes in the data transmit object (slave->master). */
 static uint16_t xcpMaxDto;
