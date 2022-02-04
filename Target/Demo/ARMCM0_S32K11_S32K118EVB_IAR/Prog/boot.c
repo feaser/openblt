@@ -140,52 +140,50 @@ static void BootComRs232Init(void)
    * clock.
    */
   PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_CGC_MASK;
-  /* Select option 2 as the UART peripheral source clock and enable the clock. Option 2
-   * is the SIRCDIV2_CLK, which is available on all peripherals and configurations.
+  /* Reset the currently selected clock. */
+  PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_PCS_MASK;
+  /* Select option 3 as the UART peripheral source clock and enable the clock. Option 3
+   * is the FIRCDIV2_CLK, which is available on all peripherals and configurations. The
+   * FIRC clock also has a 3 times better accuracy than the SIRC clock.
    */
-  PCC->PCCn[PCC_LPUARTx_INDEX] |= PCC_PCCn_PCS(2) | PCC_PCCn_CGC_MASK;
-  /* Obtain the DIV2 divider value of the SIRC_CLK. */
-  div2RegValue = (SCG->SIRCDIV & SCG_SIRCDIV_SIRCDIV2_MASK) >> SCG_SIRCDIV_SIRCDIV2_SHIFT;
-  /* Check if the DIV2 register value for SIRC is 0. In this case SIRCDIV2_CLK is
+  PCC->PCCn[PCC_LPUARTx_INDEX] |= PCC_PCCn_PCS(3) | PCC_PCCn_CGC_MASK;
+  /* Obtain the DIV2 divider value of the FIRC_CLK. */
+  div2RegValue = (SCG->FIRCDIV & SCG_FIRCDIV_FIRCDIV2_MASK) >> SCG_FIRCDIV_FIRCDIV2_SHIFT;
+  /* Check if the DIV2 register value for FIRC is 0. In this case FIRCDIV2_CLK is
    * currently disabled.
    */
   if (div2RegValue == 0U)
   {
-    /* Configure the DIV2 for a default divide by 1 to make sure the SIRCDIV2_CLK is
+    /* Configure the DIV2 for a default divide by 1 to make sure the FIRCDIV2_CLK is
      * actually enabled.
      */
     div2RegValue = 1U;
-    SCG->SIRCDIV = SCG_SIRCDIV_SIRCDIV2(div2RegValue);
+    SCG->FIRCDIV |= SCG_FIRCDIV_FIRCDIV2(div2RegValue);
   }
-  /* Determine the SIRC clock frequency. If SIRC high range is enabled, it is 8 MHz. If
-   * SIRC low range is enabled, it is 2 MHz.
+  /* Determine the FIRCDIV2_CLK frequency. The FIRC_CLK is trimmed to 48 MHz during
+   * reset. Process the configued DIV2 divider factor to get the actual frequency
+   * of FIRCDIV2_CLK, which was selected as the source clock for the UART peripheral.
    */
-  sourceClockFreqHz = 8000000U;
-  if ((SCG->SIRCCFG & SCG_SIRCCFG_RANGE_MASK) == SCG_SIRCCFG_RANGE(0))
-  {
-    sourceClockFreqHz = 2000000U;
-  }
-  /* Now process the configured DIV2 divider factor to get the actual frequency of the
-   * UART peripheral source clock.
-   */
+  sourceClockFreqHz = 48000000UL;
   sourceClockFreqHz /= div2DividerLookup[div2RegValue];
   /* Configure the baudrate from BOOT_COM_RS232_BAUDRATE, taking into account that an
-   * oversampling of 8 will be configured. Default 8,n,1 format is used. Integer
+   * oversampling ratio of 4 will be configured. Default 8,n,1 format is used. Integer
    * rounding is used to get the best value for baudrateSbr0_12. Actual baudrate equals
-   * sourceClockFreqHz / 8 / baudrateSbr0_12.
+   * sourceClockFreqHz / 4 / baudrateSbr0_12.
    */
-  baudrateSbr0_12 = (((sourceClockFreqHz / BOOT_COM_RS232_BAUDRATE) + (8U - 1U)) / 8U) &
-                    LPUART_BAUD_SBR_MASK;
-  /* OSR=7: Over sampling ratio = 7+1=8.
+  baudrateSbr0_12 = (((sourceClockFreqHz / BOOT_COM_RS232_BAUDRATE) +
+                    (4UL - 2UL)) / 4UL) & LPUART_BAUD_SBR_MASK;
+  /* OSR=3: Over sampling ratio = 3+1=4.
    * SBNS=0: One stop bit.
-   * BOTHEDGE=0: receiver samples only on rising edge.
+   * BOTHEDGE=1: receiver samples only on rising edge.
    * M10=0: Rx and Tx use 7 to 9 bit data characters.
    * RESYNCDIS=0: Resync during rec'd data word supported.
    * LBKDIE, RXEDGIE=0: interrupts disable.
    * TDMAE, RDMAE, TDMAE=0: DMA requests disabled.
    * MAEN1, MAEN2,  MATCFG=0: Match disabled.
    */
-  LPUARTx->BAUD = LPUART_BAUD_SBR(baudrateSbr0_12) | LPUART_BAUD_OSR(7);
+  LPUARTx->BAUD = LPUART_BAUD_SBR(baudrateSbr0_12) | LPUART_BAUD_OSR(3) |
+                  LPUART_BAUD_BOTHEDGE(1);
   /* Clear the error/interrupt flags */
   LPUARTx->STAT = FEATURE_LPUART_STAT_REG_FLAGS_MASK;
   /* Reset all features/interrupts by default */
