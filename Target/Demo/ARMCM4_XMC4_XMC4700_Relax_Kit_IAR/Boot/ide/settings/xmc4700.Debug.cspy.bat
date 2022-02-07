@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.5\common\bin\cspybat" -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Boot\ide\settings\xmc4700.Debug.general.xcl" --backend -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Boot\ide\settings\xmc4700.Debug.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Boot\ide\settings\xmc4700.Debug.general.xcl" --backend -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Boot\ide\settings\xmc4700.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.5\common\bin\cspybat" -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Boot\ide\settings\xmc4700.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Boot\ide\settings\xmc4700.Debug.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Boot\ide\settings\xmc4700.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Work\software\OpenBLT\Target\Demo\ARMCM4_XMC4_XMC4700_Relax_Kit_IAR\Boot\ide\settings\xmc4700.Debug.driver.xcl" 
 
 @echo off 
 :end
