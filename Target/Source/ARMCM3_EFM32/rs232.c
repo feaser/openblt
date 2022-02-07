@@ -236,6 +236,8 @@ static blt_bool Rs232TransmitByte(blt_int8u data)
   }
   /* write byte to transmit holding register */
   LEUART_Tx(LEUART1, data);
+  /* set timeout time to wait for transmit completion. */
+  timeout = TimerGet() + RS232_BYTE_TX_TIMEOUT_MS;
   /* wait for tx holding register to be empty */
   while ((LEUART1->STATUS & LEUART_STATUS_TXBL) == 0)
   {

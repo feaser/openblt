@@ -9,9 +9,9 @@
         <debug>1</debug>
         <settings>
             <name>C-STAT</name>
-            <archiveVersion>264</archiveVersion>
+            <archiveVersion>515</archiveVersion>
             <data>
-                <version>264</version>
+                <version>515</version>
                 <cstatargs>
                     <useExtraArgs>0</useExtraArgs>
                     <extraArgs></extraArgs>
@@ -22,9 +22,10 @@
                     <enableFalsePositives>0</enableFalsePositives>
                     <messagesLimitEnabled>1</messagesLimitEnabled>
                     <messagesLimit>100</messagesLimit>
+                    <outputDir>stm32f303\C-STAT</outputDir>
                 </cstatargs>
                 <cstat_settings>
-                    <cstat_version>1.8.1</cstat_version>
+                    <cstat_version>2.3.1</cstat_version>
                     <checks_tree>
                         <package enabled="true" name="STDCHECKS">
                             <group enabled="true" name="ARR">
@@ -1175,8 +1176,7 @@
                             </group>
                             <group enabled="true" name="MISRAC++2008-5-3">
                                 <check enabled="true" name="MISRAC++2008-5-3-1" />
-                                <check enabled="true" name="MISRAC++2008-5-3-2_a" />
-                                <check enabled="true" name="MISRAC++2008-5-3-2_b" />
+                                <check enabled="true" name="MISRAC++2008-5-3-2" />
                                 <check enabled="true" name="MISRAC++2008-5-3-3" />
                                 <check enabled="true" name="MISRAC++2008-5-3-4" />
                             </group>
