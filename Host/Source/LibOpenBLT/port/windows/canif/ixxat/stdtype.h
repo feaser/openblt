@@ -40,6 +40,11 @@
   #define _COMPILER_ NILABWIN_C
 #endif
 
+#ifdef __GNUC__
+#define GNU_C __GNUC__
+#define _COMPILER_ GNU_C
+#endif
+
 #ifndef _COMPILER_
   #error "Compiler not supported"
 #endif
@@ -103,6 +108,12 @@
     #define _M_IX86_ _M_IX86
     #define _M_BYTE_ORDER _LITTLE_ENDIAN
   #endif
+#elif defined(GNU_C)
+  #if !defined(_M_IX86_) && defined(_M_IX86)
+    #define _M_BITS 32
+    #define _M_IX86_ _M_IX86
+    #define _M_BYTE_ORDER _LITTLE_ENDIAN
+  #endif
 #endif
 
 #ifndef _M_BITS
@@ -153,6 +164,15 @@
   #define __UINT8  unsigned __INT8
 #endif
 
+//
+// GNU C/C++ compiler
+//
+#ifdef GNU_C
+  #define __INT8            __int8
+  #define __SINT8  signed   __INT8
+  #define __UINT8  unsigned __INT8
+#endif
+
 
 //------------------------------------------------------------------------
 // 16 bit integer
@@ -193,6 +213,15 @@
   #define __UINT16 unsigned __INT16
 #endif
 
+//
+// GNU C/C++ compiler
+//
+#ifdef GNU_C
+  #define __INT16           __int16
+  #define __SINT16 signed   __INT16
+  #define __UINT16 unsigned __INT16
+#endif
+
 
 //------------------------------------------------------------------------
 // 32 bit integer
@@ -229,6 +258,15 @@
 //
 #ifdef NILABWIN_C
   #define __INT32             long
+  #define __SINT32 signed   __INT32
+  #define __UINT32 unsigned __INT32
+#endif
+
+//
+// GNU C/C++ compiler
+//
+#ifdef GNU_C
+  #define __INT32           __int32
   #define __SINT32 signed   __INT32
   #define __UINT32 unsigned __INT32
 #endif
@@ -279,6 +317,15 @@
   #define __SINT64 signed   __INT64
   #define __UINT64 unsigned __INT64
   #endif
+#endif
+
+//
+// GNU C/C++ compiler
+//
+#ifdef GNU_C
+  #define __INT64           __int64
+  #define __SINT64 signed   __INT64
+  #define __UINT64 unsigned __INT64
 #endif
 
 
