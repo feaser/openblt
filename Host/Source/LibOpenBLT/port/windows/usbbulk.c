@@ -34,56 +34,29 @@
 #include <stddef.h>                         /* for NULL declaration                    */
 #include <stdbool.h>                        /* for boolean type                        */
 #include <windows.h>                        /* for Windows API                         */
+#include <SetupAPI.h>                       /* for Windows setup and device installer  */
+#include <winusb.h>                         /* for Windows interface to winusb.dll     */
+#include <strsafe.h>                        /* for safer C string library              */
 #include "usbbulk.h"                        /* USB bulk driver                         */
 
 
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-/* USB bulk driver return values. */
-#define UBL_ERROR            (0u)
-#define UBL_OKAY             (1u)
-
-
-/****************************************************************************************
-* Type definitions
-****************************************************************************************/
-/* USB bulk driver interface functions. */
-typedef uint8_t (__stdcall * tUsbBulkLibFuncOpen)(LPGUID guid);
-typedef void    (__stdcall * tUsbBulkLibFuncClose)(void);
-typedef uint8_t (__stdcall * tUsbBulkLibFuncTransmit)(uint8_t * data, uint16_t len);
-typedef uint8_t (__stdcall * tUsbBulkLibFuncReceive)(uint8_t * data, uint16_t len, uint32_t timeout);
+/* USB bulk library return values. */
+#define UBL_OKAY             (0U)
+#define UBL_ERROR            (1U)
+#define UBL_TIMEOUT          (2U)
 
 
 /***************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-/* USB bulk driver handling. */
-static void UsbBulkLibLoadDll(void);
-static void UsbBulkLibUnloadDll(void);
-static uint8_t UsbBulkLibFuncOpen(LPGUID guid);
-static void UsbBulkLibFuncClose(void);
-static uint8_t UsbBulkLibFuncTransmit(uint8_t * data, uint16_t len);
-static uint8_t UsbBulkLibFuncReceive(uint8_t * data, uint16_t len, uint32_t timeout);
-
-
-/****************************************************************************************
-* Local data declarations
-****************************************************************************************/
-/** \brief Handle to the USB bulk driver dynamic link library. */
-static HINSTANCE usbBulkLibDllHandle;
-
-/** \brief Function pointer to the USB bulk driver library Open function. */
-static tUsbBulkLibFuncOpen usbBulkLibFuncOpenPtr;
-
-/** \brief Function pointer to the USB bulk driver library Close function. */
-static tUsbBulkLibFuncClose usbBulkLibFuncClosePtr;
-
-/** \brief Function pointer to the USB bulk driver library Transmit function. */
-static tUsbBulkLibFuncTransmit usbBulkLibFuncTransmitPtr;
-
-/** \brief Function pointer to the USB bulk driver library Receive function. */
-static tUsbBulkLibFuncReceive usbBulkLibFuncReceivePtr;
+/* USB bulk library interface. */
+static uint8_t UblOpen(LPCGUID guid);
+static void    UblClose(void);
+static uint8_t UblTransmit(uint8_t* data, uint16_t len);
+static uint8_t UblReceive(uint8_t* data, uint16_t len, uint32_t timeout);
 
 
 /************************************************************************************//**
@@ -92,15 +65,7 @@ static tUsbBulkLibFuncReceive usbBulkLibFuncReceivePtr;
 ****************************************************************************************/
 void UsbBulkInit(void)
 {
-  /* Initialize locals. */
-  usbBulkLibDllHandle = NULL;
-  /* Reset library function pointers. */
-  usbBulkLibFuncOpenPtr = NULL;
-  usbBulkLibFuncClosePtr = NULL;
-  usbBulkLibFuncTransmitPtr = NULL;
-  usbBulkLibFuncReceivePtr = NULL;
-  /* Perform initialization of USB bulk driver API. */
-  UsbBulkLibLoadDll();
+  /* Nothing to do here so just leave it empty. */
 } /*** end of UsbBulkInit ***/
 
 
@@ -110,8 +75,7 @@ void UsbBulkInit(void)
 ****************************************************************************************/
 void UsbBulkTerminate(void)
 {
-  /* Perform termination of USB bulk driver API. */
-  UsbBulkLibUnloadDll();
+  /* Nothing to do here so just leave it empty. */
 } /*** end of UsbBulkTerminate ***/
 
 
@@ -130,7 +94,7 @@ bool UsbBulkOpen(void)
   bool result = false;
 
   /* Open the connection with the USB device. */
-  if (UsbBulkLibFuncOpen(&deviceGuidOpenBLT) == UBL_OKAY)
+  if (UblOpen(&deviceGuidOpenBLT) == UBL_OKAY)
   {
     result = true;
   }
@@ -146,7 +110,7 @@ bool UsbBulkOpen(void)
 void UsbBulkClose(void)
 {
   /* Close the connection with the USB device. */
-  UsbBulkLibFuncClose();
+  UblClose();
 } /*** end of UsbBulkClose ***/
 
 
@@ -169,7 +133,7 @@ bool UsbBulkWrite(uint8_t const * data, uint16_t length)
   if ((data != NULL) && (length > 0)) /*lint !e774 */
   {
     /* Write data to the USB device. */
-    if (UsbBulkLibFuncTransmit((uint8_t *)data, length) == UBL_OKAY)
+    if (UblTransmit((uint8_t *)data, length) == UBL_OKAY)
     {
       result = true;
     }
@@ -201,7 +165,7 @@ bool UsbBulkRead(uint8_t * data, uint16_t length, uint32_t timeout)
   if ((data != NULL) && (length > 0)) /*lint !e774 */
   {
     /* Read data from the USB device. */
-    if (UsbBulkLibFuncReceive(data, length, timeout) == UBL_OKAY)
+    if (UblReceive(data, length, timeout) == UBL_OKAY)
     {
       result = true;
     }
@@ -211,84 +175,124 @@ bool UsbBulkRead(uint8_t * data, uint16_t length, uint32_t timeout)
 } /*** end of UsbBulkRead ***/
 
 
-/************************************************************************************//**
-** \brief     Loads the USB bulk driver DLL and initializes the API function pointers.
-**
+/****************************************************************************************
+*   U S B   B U L K   L I B R A R Y   F U N C T I O N S
 ****************************************************************************************/
-static void UsbBulkLibLoadDll(void)
-{
-  /* Start out by resetting the API function pointers. */
-  usbBulkLibFuncOpenPtr = NULL;
-  usbBulkLibFuncClosePtr = NULL;
-  usbBulkLibFuncTransmitPtr = NULL;
-  usbBulkLibFuncReceivePtr = NULL;
 
-  /* Attempt to load the library and obtain a handle to it. */
-  usbBulkLibDllHandle = LoadLibrary("UsbBulkLib");
-
-  /* Assert libary handle. */
-  assert(usbBulkLibDllHandle != NULL);
-
-  /* Only continue if the library was successfully loaded */
-  if (usbBulkLibDllHandle != NULL) /*lint !e774 */
-  {
-    /* Set UblOpen function pointer. */
-    usbBulkLibFuncOpenPtr = (tUsbBulkLibFuncOpen)GetProcAddress(usbBulkLibDllHandle, "UblOpen");
-    /* Set UblClose function pointer. */
-    usbBulkLibFuncClosePtr = (tUsbBulkLibFuncClose)GetProcAddress(usbBulkLibDllHandle, "UblClose");
-    /* Set UblTransmit function pointer. */
-    usbBulkLibFuncTransmitPtr = (tUsbBulkLibFuncTransmit)GetProcAddress(usbBulkLibDllHandle, "UblTransmit");
-    /* Set UblReceive function pointer. */
-    usbBulkLibFuncReceivePtr = (tUsbBulkLibFuncReceive)GetProcAddress(usbBulkLibDllHandle, "UblReceive");
-  }
-} /*** end of UsbBulkLibLoadDll ***/
-
-
-/************************************************************************************//**
-** \brief     Unloads the USB bulk driver DLL and resets the API function pointers.
-**
+/****************************************************************************************
+* Macro definitions
 ****************************************************************************************/
-static void UsbBulkLibUnloadDll(void)
-{
-  /* Reset the API function pointers. */
-  usbBulkLibFuncOpenPtr = NULL;
-  usbBulkLibFuncClosePtr = NULL;
-  usbBulkLibFuncTransmitPtr = NULL;
-  usbBulkLibFuncReceivePtr = NULL;
+/** \brief Max length of the device path. */
+#define MAX_DEVPATH_LENGTH    (128)
 
-  /* Unload the library and invalidate its handle. */
-  if (usbBulkLibDllHandle != NULL) 
-  {
-    (void)FreeLibrary(usbBulkLibDllHandle);
-    usbBulkLibDllHandle = NULL;
-  }
-} /*** end of UsbBulkLibUnloadDll ***/
+/** \brief Identifier value of an invalid USB PIPE. */
+#define INVALID_PIPE_ID       (255)
+
+
+/****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Type for grouping together all USB bulk device related data. */
+typedef struct
+{
+  HANDLE hDev;
+  WINUSB_INTERFACE_HANDLE hWinUSBDev;
+  UCHAR  pipeBulkIn;
+  UCHAR  pipeBulkOut;
+  HANDLE evReader;
+} tBulkUsbDev;
+
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+static tBulkUsbDev bulkUsbDev;
+
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+static HANDLE UblOpenDevice(LPCGUID InterfaceGuid);
+static BOOL   UblGetDevicePath(LPCGUID InterfaceGuid, PCHAR DevicePath, size_t BufLen);
 
 
 /************************************************************************************//**
 ** \brief     Opens and configures the connection with the USB bulk device.
-** \param     guid Pointer to GUID of the USB bulk device as found in the driver's 
+** \param     guid Pointer to GUID of the USB bulk device as found in the driver's
 **            INF-file.
 ** \return    UBL_OKAY if successful, UBL_ERROR otherwise.
 **
 ****************************************************************************************/
-static uint8_t UsbBulkLibFuncOpen(LPGUID guid)
+static uint8_t UblOpen(LPCGUID guid)
 {
-  uint8_t result = UBL_ERROR;
+  USB_INTERFACE_DESCRIPTOR ifaceDescriptor;
+  WINUSB_PIPE_INFORMATION pipeInfo;
+  uint32_t i;
 
-  /* Check function pointer and library handle. */
-  assert(usbBulkLibFuncOpenPtr != NULL);
-  assert(usbBulkLibDllHandle != NULL);
-
-  /* Only continue with valid function pointer and library handle. */
-  if ((usbBulkLibFuncOpenPtr != NULL) && (usbBulkLibDllHandle != NULL)) /*lint !e774 */
+  /* Init device members. */
+  bulkUsbDev.hDev = NULL;
+  bulkUsbDev.hWinUSBDev = NULL;
+  bulkUsbDev.pipeBulkIn = INVALID_PIPE_ID;
+  bulkUsbDev.pipeBulkOut = INVALID_PIPE_ID;
+  /* Open the usb device. */
+  bulkUsbDev.hDev = UblOpenDevice(guid);
+  if (bulkUsbDev.hDev == NULL)
   {
-    /* Call library function. */
-    result = usbBulkLibFuncOpenPtr(guid);
+    UblClose();
+    return UBL_ERROR;
   }
-  /* Give the result back to the caller. */
-  return result;
-} /*** end of UsbBulkLibFuncOpen ***/
+  /* Init the winusb device. */
+  if (WinUsb_Initialize(bulkUsbDev.hDev, &bulkUsbDev.hWinUSBDev) == FALSE)
+  {
+    UblClose();
+    return UBL_ERROR;
+  }
+  /* Obtain interface settings. */
+  if (WinUsb_QueryInterfaceSettings(bulkUsbDev.hWinUSBDev, 0, &ifaceDescriptor) == FALSE)
+  {
+    UblClose();
+    return UBL_ERROR;
+  }
+  /* Iterate through endpoint to find bulk IN and OUT. */
+  for (i = 0; i < ifaceDescriptor.bNumEndpoints; i++)
+  {
+    if (WinUsb_QueryPipe(bulkUsbDev.hWinUSBDev, 0, (UCHAR)i, &pipeInfo) == FALSE)
+    {
+      UblClose();
+      return UBL_ERROR;
+    }
+
+    /* Is this the bulk IN endpoint? */
+    if ((pipeInfo.PipeType == UsbdPipeTypeBulk) && \
+      (USB_ENDPOINT_DIRECTION_IN(pipeInfo.PipeId)))
+    {
+      bulkUsbDev.pipeBulkIn = pipeInfo.PipeId;
+    }
+    /* Is this the bulk OUT endpoint? */
+    else if ((pipeInfo.PipeType == UsbdPipeTypeBulk) && \
+      (USB_ENDPOINT_DIRECTION_OUT(pipeInfo.PipeId)))
+    {
+      bulkUsbDev.pipeBulkOut = pipeInfo.PipeId;
+    }
+  }
+  /* Verify that the bulk IN and OUT pipes were found. */
+  if ((bulkUsbDev.pipeBulkIn == INVALID_PIPE_ID) || \
+    (bulkUsbDev.pipeBulkOut == INVALID_PIPE_ID))
+  {
+    UblClose();
+    return UBL_ERROR;
+  }
+  /* Create the reader event handle. */
+  bulkUsbDev.evReader = CreateEvent(NULL, TRUE, FALSE, NULL);
+  if (bulkUsbDev.evReader == NULL)
+  {
+    UblClose();
+    return UBL_ERROR;
+  }
+
+  /* Still here so all is okay. */
+  return UBL_OKAY;
+} /*** end of UblOpen ***/
 
 
 /************************************************************************************//**
@@ -296,23 +300,31 @@ static uint8_t UsbBulkLibFuncOpen(LPGUID guid)
 **            handles.
 **
 ****************************************************************************************/
-static void UsbBulkLibFuncClose(void)
+static void UblClose(void)
 {
-  /* Check function pointer and library handle. */
-  assert(usbBulkLibFuncClosePtr != NULL);
-  assert(usbBulkLibDllHandle != NULL);
-
-  /* Only continue with valid function pointer and library handle. */
-  if ((usbBulkLibFuncClosePtr != NULL) && (usbBulkLibDllHandle != NULL)) /*lint !e774 */
+  /* close reader event handle */
+  if (bulkUsbDev.evReader != NULL)
   {
-    /* Call library function. */
-    usbBulkLibFuncClosePtr();
+    (void)CloseHandle(bulkUsbDev.evReader);
   }
-} /*** end of UsbBulkLibFuncClose ***/
+  /* close the winusb device */
+  if (bulkUsbDev.hWinUSBDev != NULL)
+  {
+    (void)WinUsb_Free(bulkUsbDev.hWinUSBDev);
+  }
+  /* reset bulk OUT and IN pipes */
+  bulkUsbDev.pipeBulkOut = INVALID_PIPE_ID;
+  bulkUsbDev.pipeBulkIn = INVALID_PIPE_ID;
+  /* close the usb device handle  */
+  if (bulkUsbDev.hDev != NULL)
+  {
+    (void)CloseHandle(bulkUsbDev.hDev);
+  }
+} /*** end of UblClose ***/
 
 
 /************************************************************************************//**
-** \brief     Starts transmission of the data on the bulk OUT pipe. Because USB bulk 
+** \brief     Starts transmission of the data on the bulk OUT pipe. Because USB bulk
 **            transmissions are quick, this function does not use the overlapped
 **            functionality, which means the caller is blocked until the tranmission
 **            completed.
@@ -321,23 +333,25 @@ static void UsbBulkLibFuncClose(void)
 ** \return    UBL_OKAY if successful, UBL_ERROR otherwise.
 **
 ****************************************************************************************/
-static uint8_t UsbBulkLibFuncTransmit(uint8_t * data, uint16_t len)
+static uint8_t UblTransmit(uint8_t * data, uint16_t len)
 {
-  uint8_t result = UBL_ERROR;
+  DWORD bytesWritten = 0;
 
-  /* Check function pointer and library handle. */
-  assert(usbBulkLibFuncTransmitPtr != NULL);
-  assert(usbBulkLibDllHandle != NULL);
-
-  /* Only continue with valid function pointer and library handle. */
-  if ((usbBulkLibFuncTransmitPtr != NULL) && (usbBulkLibDllHandle != NULL)) /*lint !e774 */
+  /* Submit the transmit request. */
+  if (WinUsb_WritePipe(bulkUsbDev.hWinUSBDev, bulkUsbDev.pipeBulkOut, data, len,
+                       &bytesWritten, NULL) == 0)
   {
-    /* Call library function. */
-    result = usbBulkLibFuncTransmitPtr(data, len);
+    /* Could not write the data. */
+    return UBL_ERROR;
   }
-  /* Give the result back to the caller. */
-  return result;
-} /*** end of UsbBulkLibFuncTransmit ***/
+  if (bytesWritten != len)
+  {
+    /* Not all data was written. */
+    return UBL_ERROR;
+  }
+  /* Still here so all is okay. */
+  return UBL_OKAY;
+} /*** end of UblTransmit ***/
 
 
 /************************************************************************************//**
@@ -346,28 +360,190 @@ static uint8_t UsbBulkLibFuncTransmit(uint8_t * data, uint16_t len)
 **            thread is placed into sleep mode until the reception is complete.
 ** \param     data Pointer to byte array where the data will be stored.
 ** \param     len Number of bytes to receive.
-** \param     timeout Maximum time in milliseconds for the read to complete.
-** \return    UBL_OKAY if successful, UBL_TIMEOUT if failure due to timeout or 
+** \param     timeout Max time in milliseconds for the read to complete.
+** \return    UBL_OKAY if all bytes were received, UBL_TIMEOUT if a timeout occured,
 **            UBL_ERROR otherwise.
 **
 ****************************************************************************************/
-static uint8_t UsbBulkLibFuncReceive(uint8_t * data, uint16_t len, uint32_t timeout)
+static uint8_t UblReceive(uint8_t * data, uint16_t len, uint32_t timeout)
 {
-  uint8_t result = UBL_ERROR;
+  OVERLAPPED osReader = { 0 };            /* overlapped structure for read operations  */
+  HANDLE     hArray[1];                   /* event handle array                        */
+  DWORD 	   dwRead;                      /* bytes actually read                       */
+  DWORD      dwRes;                       /* result from WaitForSingleObject           */
+  BOOL       bRes;                        /* result from WinUsb_ReadPipe               */
+  DWORD      bytesRead = 0;
+  DWORD      totalBytesRead = 0;
+  DWORD      dwStartTime;
 
-  /* Check function pointer and library handle. */
-  assert(usbBulkLibFuncReceivePtr != NULL);
-  assert(usbBulkLibDllHandle != NULL);
+  /* Get the current time and store it for timeout feature. */
+  dwStartTime = GetTickCount();
 
-  /* Only continue with valid function pointer and library handle. */
-  if ((usbBulkLibFuncReceivePtr != NULL) && (usbBulkLibDllHandle != NULL)) /*lint !e774 */
+  /* Create an overlapped structure for read events. */
+  osReader.hEvent = bulkUsbDev.evReader;
+  /* Build array with events to detect. */
+  hArray[0] = osReader.hEvent;
+
+  while (((GetTickCount() - dwStartTime) < timeout) && (totalBytesRead < len))
   {
-    /* Call library function. */
-    result = usbBulkLibFuncReceivePtr(data, len, timeout);
+    /* Start the read operation. */
+    bRes = WinUsb_ReadPipe(bulkUsbDev.hWinUSBDev, bulkUsbDev.pipeBulkIn, data, len, 
+                           &bytesRead, &osReader);
+
+    /* Upon positive return means the read was completed. */
+    if (bRes)
+    {
+      /* Update the total. */
+      totalBytesRead += bytesRead;
+      /* Check number of bytes read. */
+      if (totalBytesRead == len)
+      {
+        /* All bytes read from bulk IN pipe. */
+        return UBL_OKAY;
+      }
+      else
+      {
+        /* No I/O operation is pending, yet still not received all the bytes so
+         * restart the read operation.
+         */
+        continue;
+      }
+    }
+    /* Still here so this is either because of an error or because the read is delayed
+     * because of an overlapped operation this is in progress.
+     */
+    if (GetLastError() != ERROR_IO_PENDING)
+    {
+      /* Not delayed, but here due to an error. */
+      return UBL_ERROR;
+    }
+    /* Read is delayed so wait for it to complete or a timeout to occur. */
+    dwRes = WaitForMultipleObjects(1, hArray, FALSE, timeout);
+
+    /* Process the result. */
+    switch (dwRes)
+    {
+    case WAIT_OBJECT_0: /*lint !e835 */
+      /* Read operation returned so check the results. */
+      if (!GetOverlappedResult(bulkUsbDev.hDev, &osReader, &dwRead, FALSE))
+      {
+        if (GetLastError() != ERROR_OPERATION_ABORTED)
+        {
+          /* Read completed but with error. */
+          return UBL_ERROR;
+        }
+      }
+      else
+      {
+        /* See if all the data was now read. */
+        totalBytesRead += dwRead;
+        if (totalBytesRead == len)
+        {
+          return UBL_OKAY;
+        }
+      }
+      break;
+
+    case WAIT_TIMEOUT:
+      /* Timeout occurred so abort the pipe operation. */
+      (void)WinUsb_AbortPipe(bulkUsbDev.hWinUSBDev, bulkUsbDev.pipeBulkIn);
+      return UBL_TIMEOUT;
+
+    default:
+      /* Unexpected so abort the pipe operation. */
+      (void)WinUsb_AbortPipe(bulkUsbDev.hWinUSBDev, bulkUsbDev.pipeBulkIn);
+      return UBL_ERROR;
+    }
   }
-  /* Give the result back to the caller. */
-  return result;
-} /*** end of UsbBulkLibFuncReceive ***/
+  /* Still here so read incomplete due to timeout. */
+  return UBL_ERROR;
+} /*** end of UblReceive ***/
+
+
+/************************************************************************************//**
+** \brief     Opens the USB device and obtains its handle, which is needed to obtain a 
+**            handle to the WinUSB device.
+** \param     InterfaceGuid InterfaceGuid GUID of the device (not its class though).
+** \return    The handle to the USB device or NULL.
+**
+****************************************************************************************/
+static HANDLE UblOpenDevice(LPCGUID InterfaceGuid)
+{
+  HANDLE hDev = NULL;
+  char devicePath[MAX_DEVPATH_LENGTH] = { 0 };
+  BOOL retVal;
+
+  retVal = UblGetDevicePath(InterfaceGuid, devicePath, sizeof(devicePath));
+  if (retVal)
+  {
+    hDev = CreateFile(devicePath, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_WRITE |
+                      FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL |
+                      FILE_FLAG_OVERLAPPED, NULL);
+  }
+  return hDev;
+} /*** end of UblOpenDevice ***/
+
+
+/************************************************************************************//**
+** \brief     Attempts to obtain the path to the WinUSB device, based on its GUID.
+** \param     InterfaceGuid InterfaceGuid GUID of the device (not its class though).
+** \param     DevicePath Pointer to where the path should be stored.
+** \param     BufLen Maximum length of the path.
+** \return    TRUE if the device path was obtained, FALSE otherwise.
+**
+****************************************************************************************/
+static BOOL UblGetDevicePath(LPCGUID InterfaceGuid, PCHAR DevicePath, size_t BufLen)
+{
+  BOOL bResult;
+  HDEVINFO deviceInfo;
+  SP_DEVICE_INTERFACE_DATA interfaceData;
+  PSP_DEVICE_INTERFACE_DETAIL_DATA detailData;
+  ULONG length;
+  ULONG requiredLength = 0;
+  HRESULT hr;
+
+  deviceInfo = SetupDiGetClassDevs(InterfaceGuid, NULL, NULL, DIGCF_PRESENT | 
+                                   DIGCF_DEVICEINTERFACE);
+
+  interfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
+  (void)SetupDiEnumDeviceInterfaces(deviceInfo, NULL, InterfaceGuid, 0, 
+                                    &interfaceData);
+
+  (void)SetupDiGetDeviceInterfaceDetail(deviceInfo, &interfaceData, NULL, 0, &requiredLength,
+                                        NULL);
+  if (requiredLength == 0)
+  {
+    (void)SetupDiDestroyDeviceInfoList(deviceInfo);
+    return FALSE;
+  }
+  detailData = LocalAlloc(LMEM_FIXED, requiredLength);
+  if (detailData == NULL)
+  {
+    (void)SetupDiDestroyDeviceInfoList(deviceInfo);
+    return FALSE;
+  }
+  detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
+  length = requiredLength;
+  bResult = SetupDiGetDeviceInterfaceDetail(deviceInfo, &interfaceData, detailData,
+                                            length, &requiredLength, NULL);
+
+  if (bResult == FALSE)
+  {
+    LocalFree(detailData);
+    return FALSE;
+  }
+
+  hr = StringCchCopy(DevicePath, BufLen, detailData->DevicePath);
+  if (FAILED(hr))
+  {
+    (void)SetupDiDestroyDeviceInfoList(deviceInfo);
+    LocalFree(detailData);
+  }
+
+  LocalFree(detailData);
+
+  return bResult;
+} /*** end of UblGetDevicePath ***/
 
 
 /*********************************** end of usbbulk.c **********************************/

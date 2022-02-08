@@ -177,7 +177,7 @@ if(BUILD_SHARED)
     target_link_libraries(openblt_shared usb-1.0 dl "-Wl,-rpath,.")
   elseif(WIN32)
     # Link the Winsock library
-    target_link_libraries(openblt_shared ws2_32)
+    target_link_libraries(openblt_shared ws2_32 winusb setupapi)
   endif(UNIX)  
   if(CMAKE_C_COMPILER_ID MATCHES MSVC)
     # Microsoft Visual Studio does not add "lib" to the name of the DLL, whereas GCC
