@@ -32,9 +32,9 @@ These run-time libraries can be found in the ./Host directory of the OpenBLT boo
 
 ### Configure platform target
 
-Under Microsoft Windows, the LibOpenBLT shared library (**libopenblt.dll**) is 32-bit. For this reason you need to build your own C# program as a 32-bit application as well. 
+Under Microsoft Windows, the LibOpenBLT shared library (**libopenblt.dll**) is 64-bit ever since OpenBLT version 1.14. For this reason you need to build your own C# program as a 64-bit application as well.  To configure this, go to your project's properties in Microsoft Visual Studio. In the *Build* settings, set the **Platform target** to **x64**.
 
-To configure this, go to your project's properties in Microsoft Visual Studio. In the *Build* settings, set the **Platform target** to **x86**.
+If you use the LibOpenBLT shared library from before OpenBLT version 1.14 or if you rebuilt it yourself as 32-bit, then you need to build your own C# program as a 32-bit application. To configure this, go to your project's properties in Microsoft Visual Studio. In the *Build* settings, set the **Platform target** to **x86**.
 
 ### Example program
 

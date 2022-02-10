@@ -73,15 +73,27 @@ set(LIBOPENBLT_LIB ${PROJECT_OUTPUT_DIRECTORY})
 #****************************************************************************************
 # Compiler flags
 #****************************************************************************************
-# Set platform specific compiler macro PLATFORM_XXX
+# Set platform specific compiler macros PLATFORM_XXX
 if(WIN32)
-  if(CMAKE_C_COMPILER_ID MATCHES GNU)  
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS -std=gnu99")
+  if(CMAKE_C_COMPILER_ID MATCHES GNU) 
+    if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WINDOWS -DPLATFORM_32BIT -D_CRT_SECURE_NO_WARNINGS -std=gnu99")
+    else()
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WINDOWS -DPLATFORM_64BIT -D_CRT_SECURE_NO_WARNINGS -std=gnu99")
+    endif()
   elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WIN32 -D_CRT_SECURE_NO_WARNINGS")
+    if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WINDOWS -DPLATFORM_32BIT -D_CRT_SECURE_NO_WARNINGS")
+    else()
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WINDOWS -DPLATFORM_64BIT -D_CRT_SECURE_NO_WARNINGS")
+    endif()
   endif()
 elseif(UNIX)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -pthread -std=gnu99")
+  if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -DPLATFORM_32BIT -pthread -std=gnu99")
+  else()
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -DPLATFORM_64BIT -pthread -std=gnu99")
+  endif()
 endif(WIN32)
 
 # Configure a statically linked run-time library for msvc

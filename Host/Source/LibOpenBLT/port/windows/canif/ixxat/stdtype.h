@@ -113,6 +113,14 @@
     #define _M_BITS 32
     #define _M_IX86_ _M_IX86
     #define _M_BYTE_ORDER _LITTLE_ENDIAN
+  #elif !defined(_M_X64_) && defined(_M_X64)
+    #define _M_BITS 64
+    #define _M_X64_ _M_X64
+    #define _M_BYTE_ORDER _LITTLE_ENDIAN
+  #elif !defined(_M_AMD64_) && defined(_M_AMD64)
+    #define _M_BITS 64
+    #define _M_AMD64_ _M_AMD64
+    #define _M_BYTE_ORDER _LITTLE_ENDIAN
   #endif
 #endif
 

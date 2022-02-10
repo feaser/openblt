@@ -27,11 +27,9 @@ These run-time libraries can be found in the ./Host directory of the OpenBLT boo
 
 ### Lazarus and Delphi specifics on Windows
 
-Under Microsoft Windows, the LibOpenBLT shared library (**libopenblt.dll**) is 32-bit. This means that the application you develop needs to build as a 32-bit application as well. 
+Under Microsoft Windows, the LibOpenBLT shared library (**libopenblt.dll**) is 64-bit ever since OpenBLT version 1.14. This means that the application you develop needs to build as a 64-bit application as well. When using Lazarus, an easy solution is to install the [64-bit version of Lazarus](https://sourceforge.net/projects/lazarus/files/Lazarus%20Windows%2064%20bits/). That way your own application automatically builds as a 64-bit application as well.  When using Delphi, go to the *Project Manager* and configure just **64-bit Windows platform** for setting **Target Platforms**.
 
-When using Lazarus, an easy solution is to install the 32-bit version of Lazarus. That way your own application automatically builds as a 32-bit application as well. If you already installed the 64-bit version of Lazarus, then you can go to the *Project Options* and set **Target OS** to **Win32** and **Target CPU Family** to **i386**.
-
-When using Delphi, go to the *Project Manager* and configure just **32-bit Windows platform (Win32)** for setting **Target Platforms**.
+If you use the LibOpenBLT shared library from before OpenBLT version 1.14 or if you rebuilt it yourself as 32-bit, you need to build your Lazarus application as a 32-bit application. If you install the [32-bit version of Lazarus](https://sourceforge.net/projects/lazarus/files/Lazarus%20Windows%2032%20bits/), your application by default builds as a 32-bit. When using Delphi, go to the *Project Manager* and configure just **32-bit Windows platform** for setting **Target Platforms**.
 
 ### Lazarus specifics on Linux
 When running your program under Linux, you will most likely get the following error:

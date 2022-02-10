@@ -589,9 +589,14 @@ static void CanUsbLibLoadDll(void)
   canUsbLibFuncStatusPtr = NULL;
   canUsbLibFuncSetReceiveCallBackPtr = NULL;
 
-  /* Attempt to load the library and obtain a handle to it. */
+  /* Attempt to load the library and obtain a handle to it. Note that the 32-bit DLL
+   * has a different name than the 64-bit one.
+   */
+#ifdef PLATFORM_32BIT  
   canUsbDllHandle = LoadLibrary("canusbdrv");
-
+#else
+  canUsbDllHandle = LoadLibrary("canusbdrv64");
+#endif
   /* Assert libary handle. */
   assert(canUsbDllHandle != NULL);
 

@@ -35,15 +35,14 @@
 #include <stdbool.h>                        /* for boolean type                        */
 #include <string.h>                         /* for string library                      */
 #include "candriver.h"                      /* Generic CAN driver module               */
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_LINUX)
+#include "socketcan.h"                      /* SocketCAN interface                     */
+#else
 #include "pcanusb.h"                        /* Peak PCAN-USB interface                 */
 #include "leaflight.h"                      /* Kvaser Leaf Light v2 interface          */
 #include "canusb.h"                         /* Lawicel CANUSB interface                */
 #include "xldriver.h"                       /* Vector XL driver interface              */
 #include "vcidriver.h"                      /* Ixxat VCI driver interface              */
-#endif
-#if defined(PLATFORM_LINUX)
-#include "socketcan.h"                      /* SocketCAN interface                     */
 #endif
 
 
@@ -83,7 +82,12 @@ void CanInit(tCanSettings const * settings)
       /* Determine the pointer to the correct CAN interface, based on the specified
        * device name.
        */
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_LINUX)
+      /* On Linux, the device name is the name of the SocketCAN link, so always link
+       * the SocketCAN interface to the CAN driver.
+       */
+      canIfPtr = SocketCanGetInterface();
+#else
       if (strcmp(settings->devicename, "peak_pcanusb") == 0)
       {
         canIfPtr = PCanUsbGetInterface();
@@ -104,12 +108,6 @@ void CanInit(tCanSettings const * settings)
       {
         canIfPtr = IxxatVciGetInterface();
       }
-#endif
-#if defined(PLATFORM_LINUX)
-      /* On Linux, the device name is the name of the SocketCAN link, so always link
-       * the SocketCAN interface to the CAN driver.
-       */
-      canIfPtr = SocketCanGetInterface();
 #endif
       /* Check validity of the interface. */
       assert(canIfPtr != NULL);

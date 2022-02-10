@@ -42,4 +42,6 @@ These run-time libraries can be found in the ./Host directory of the OpenBLT boo
 
 Specific on Windows
 ------------------
-Under Microsoft Windows, the LibOpenBLT shared library (libopenblt.dll) is 32-bit. Therefore you need to run your Python application, that makes use of LibOpenBLT, using the 32-bit Python interpreter.
+Under Microsoft Windows, the LibOpenBLT shared library (libopenblt.dll) is 64-bit ever since OpenBLT version 1.14. Therefore you need to run your Python application, that makes use of LibOpenBLT, using the 64-bit Python interpreter.
+
+If you use the LibOpenBLT shared library from before OpenBLT version 1.14 or if you rebuilt it yourself as 32-bit, you need to run your Python application using the 32-bit Python interpreter.

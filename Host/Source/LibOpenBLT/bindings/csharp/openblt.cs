@@ -41,8 +41,15 @@ namespace OpenBLT
     /// </summary>
     /// <remarks>
     /// Note that under Microsoft Windows, the LibOpenBLT shared library (libopenblt.dll)
-    /// is 32-bit. For this reason, whatever project uses this wrapper class needs to
-    /// be built as a 32-bit application. 
+    /// is 64-bit, ever since OpenBLT version 1.14 . For this reason, whatever project
+    /// uses this wrapper class needs to be built as a 64-bit application. 
+    /// 
+    /// To configure this, go to your project's properties in Microsoft Visual Studio.
+    /// In the "Build" settings, set "Platform target" to "x64".
+    /// 
+    /// When using LibOpenBLT from before OpenBLT version 1.14 or if you rebuild the 
+    /// LibOpenBLT shared library yourself as 32-bit, then your project that uses this
+    /// wrapper class needs to be built as a 32-bit application.
     /// 
     /// To configure this, go to your project's properties in Microsoft Visual Studio.
     /// In the "Build" settings, set "Platform target" to "x86".
