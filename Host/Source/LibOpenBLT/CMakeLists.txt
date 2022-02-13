@@ -25,7 +25,7 @@
 # \endinternal
 #****************************************************************************************
 # Specify the version being used aswell as the language
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.10)
 
 
 #****************************************************************************************
