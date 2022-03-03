@@ -39,10 +39,10 @@
 /** \brief Structure type for grouping XCP internal module information. */
 typedef struct
 {
+  blt_int8u  ctoData[BOOT_COM_RX_MAX_DATA];         /**< cto packet data buffer        */
   blt_int8u  connected;                             /**< connection established        */
   blt_int8u  protection;                            /**< protection state              */
   blt_int8u  s_n_k_resource;                        /**< for seed/key sequence         */
-  blt_int8u  ctoData[BOOT_COM_RX_MAX_DATA];         /**< cto packet data buffer        */
   blt_int8u  ctoPending;                            /**< cto transmission pending flag */
   blt_int16s ctoLen;                                /**< cto current packet length     */
   blt_int32u mta;                                   /**< memory transfer address       */
@@ -65,8 +65,10 @@ static blt_int8u XcpVerifyKey(blt_int8u resource, blt_int8u *key, blt_int8u len)
 #endif
 
 /* general utility functions */
-static void XcpProtectResources(void);
-static void XcpSetCtoError(blt_int8u error);
+static void       XcpProtectResources(void);
+static void       XcpSetCtoError(blt_int8u error);
+static blt_int32u XcpGetOrderedLong(blt_int8u const * data);
+static void       XcpSetOrderedLong(blt_int32u value, blt_int8u *data);
 
 /* XCP command processors */
 static void XcpCmdConnect(blt_int8u *data);
@@ -457,6 +459,56 @@ static void XcpSetCtoError(blt_int8u error)
 
 
 /************************************************************************************//**
+** \brief     Obtains a 32-bit value from a byte buffer taking into account Intel
+**            or Motorola byte ordering.
+** \param     data Array to the buffer with the 32-bit value stored as bytes.
+** \return    The 32-bit value.
+**
+****************************************************************************************/
+static blt_int32u XcpGetOrderedLong(blt_int8u const * data)
+{
+  blt_int32u result = 0;
+
+#if (BOOT_CPU_BYTE_ORDER_MOTOROLA	== 0)
+  result |= (blt_int32u) data[0];
+  result |= (blt_int32u)(data[1] << 8);
+  result |= (blt_int32u)(data[2] << 16);
+  result |= (blt_int32u)(data[3] << 24);
+#else	
+  result |= (blt_int32u) data[3];
+  result |= (blt_int32u)(data[2] << 8);
+  result |= (blt_int32u)(data[1] << 16);
+  result |= (blt_int32u)(data[0] << 24);
+#endif
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of XcpGetOrderedLong ***/
+
+
+/************************************************************************************//**
+** \brief     Stores a 32-bit value into a byte buffer taking into account Intel
+**            or Motorola byte ordering.
+** \param     value The 32-bit value to store in the buffer.
+** \param     data Array to the buffer for storage.
+**
+****************************************************************************************/
+static void XcpSetOrderedLong(blt_int32u value, blt_int8u *data)
+{
+#if (BOOT_CPU_BYTE_ORDER_MOTOROLA	== 0)
+  data[0] = (blt_int8u) value;
+  data[1] = (blt_int8u)(value >>  8);
+  data[2] = (blt_int8u)(value >> 16);
+  data[3] = (blt_int8u)(value >> 24);
+#else
+  data[3] = (blt_int8u) value;
+  data[2] = (blt_int8u)(value >>  8);
+  data[1] = (blt_int8u)(value >> 16);
+  data[0] = (blt_int8u)(value >> 24);
+#endif
+} /*** end of XcpSetOrderedLong ***/
+
+
+/************************************************************************************//**
 ** \brief     XCP command processor function which handles the CONNECT command as
 **            defined by the protocol.
 ** \param     data Pointer to a byte buffer with the packet data.
@@ -625,6 +677,8 @@ static void XcpCmdSynch(blt_int8u *data)
 ****************************************************************************************/
 static void XcpCmdGetId(blt_int8u *data)
 {
+  blt_int32u stationIdLen;
+  
   /* suppress compiler warning for unused parameter */
   data = data;
 
@@ -642,7 +696,8 @@ static void XcpCmdGetId(blt_int8u *data)
   xcpInfo.ctoData[3] = 0;
 
   /* store station id length (excl. null termination) for response packet */
-  *(blt_int32u *)&xcpInfo.ctoData[4] = (sizeof(xcpStationId)/sizeof(xcpStationId[0])) - 1;
+  stationIdLen = (sizeof(xcpStationId)/sizeof(xcpStationId[0])) - 1;
+  XcpSetOrderedLong(stationIdLen, &xcpInfo.ctoData[4]);
 
   /* set packet length */
   xcpInfo.ctoLen = 8;
@@ -662,7 +717,7 @@ static void XcpCmdSetMta(blt_int8u *data)
   xcpInfo.ctoData[0] = XCP_PID_RES;
 
   /* update mta. current implementation ignores address extension */
-  xcpInfo.mta = *(blt_int32u *)&data[4];
+  xcpInfo.mta = XcpGetOrderedLong(&data[4]);
 
   /* set packet length */
   xcpInfo.ctoLen = 1;
@@ -756,7 +811,7 @@ static void XcpCmdShortUpload(blt_int8u *data)
   }
 
   /* update mta. current implementation ignores address extension */
-  xcpInfo.mta = *(blt_int32u *)&data[4];
+  xcpInfo.mta = XcpGetOrderedLong(&data[4]);
   /* read out the length of the requested upload operation */
   len = data[1];
   /* set the destination pointer */
@@ -888,12 +943,18 @@ static void XcpCmdDownloadMax(blt_int8u *data)
 ****************************************************************************************/
 static void XcpCmdBuildCheckSum(blt_int8u *data)
 {
+  blt_int32u checksumLen;
+  blt_int32u checksumVal = 0;
+  blt_int8u  checksumType;
+  
   /* set packet id to command response packet */
   xcpInfo.ctoData[0] = XCP_PID_RES;
 
   /* obtain checksum and checksum type */
-  xcpInfo.ctoData[1] = XcpComputeChecksum(xcpInfo.mta, *(blt_int32u *)&data[4],
-                                          (blt_int32u *)&xcpInfo.ctoData[4]);
+  checksumLen = XcpGetOrderedLong(&data[4]);
+  checksumType = XcpComputeChecksum(xcpInfo.mta, checksumLen, &checksumVal);
+  xcpInfo.ctoData[1] = checksumType;
+  XcpSetOrderedLong(checksumVal, &xcpInfo.ctoData[4]);
 
   /* initialize reserved parameters */
   xcpInfo.ctoData[2] = 0;
@@ -1343,6 +1404,9 @@ static void XcpCmdProgram(blt_int8u *data)
 ****************************************************************************************/
 static void XcpCmdProgramClear(blt_int8u *data)
 {
+  blt_int32u eraseLen;
+  blt_addr   eraseAddr;
+  
 #if (XCP_SEED_KEY_PROTECTION_EN == 1)
   /* check if PGM resource is unlocked */
   if ((xcpInfo.protection & XCP_RES_PGM) == XCP_RES_PGM)
@@ -1354,7 +1418,9 @@ static void XcpCmdProgramClear(blt_int8u *data)
 #endif
 
   /* erase the memory */
-  if (NvmErase((blt_addr)xcpInfo.mta, *(blt_int32u *)&data[4]) == BLT_FALSE)
+  eraseAddr = xcpInfo.mta;
+  eraseLen = XcpGetOrderedLong(&data[4]);
+  if (NvmErase(eraseAddr, eraseLen) == BLT_FALSE)
   {
     /* error occurred during erasure */
     XcpSetCtoError(XCP_ERR_GENERIC);
