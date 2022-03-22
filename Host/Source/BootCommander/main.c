@@ -90,7 +90,7 @@ typedef struct t_program_settings
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-static void DisplayProgramInfo(void);
+static void  DisplayProgramInfo(void);
 static void DisplayProgramUsage(void);
 static void DisplaySessionInfo(uint32_t sessionType, void const * sessionSettings);
 static void DisplayTransportInfo(uint32_t transportType, void const * transportSettings);
