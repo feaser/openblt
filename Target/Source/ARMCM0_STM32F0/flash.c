@@ -47,13 +47,8 @@
 /** \brief End address of the bootloader programmable flash. */
 #define FLASH_END_ADDRESS               (flashLayout[FLASH_TOTAL_SECTORS-1].sector_start + \
                                          flashLayout[FLASH_TOTAL_SECTORS-1].sector_size - 1)
-#if (BOOT_NVM_SIZE_KB > 64)
 /** \brief Number of bytes to erase per erase operation. */
-#define FLASH_ERASE_BLOCK_SIZE          (0x800)
-#else
-/** \brief Number of bytes to erase per erase operation. */
-#define FLASH_ERASE_BLOCK_SIZE          (0x400)
-#endif
+#define FLASH_ERASE_BLOCK_SIZE          (FLASH_PAGE_SIZE)
 /** \brief Offset into the user program's vector table where the checksum is located.
  *         For this target it is set to the end of the vector table. Note that the
  *         value can be overriden in blt_conf.h, because the size of the vector table
