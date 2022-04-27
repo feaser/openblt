@@ -38,6 +38,7 @@
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
+static void Init(void);
 static void PostInit(void);
 
 
@@ -49,6 +50,8 @@ static void PostInit(void);
 ****************************************************************************************/
 int main(void)
 {
+  /* initialize the microcontroller */
+  Init();
   /* initialize the bootloader */
   BootInit();
   /* post initialization of the microcontroller */
@@ -60,8 +63,21 @@ int main(void)
     /* run the bootloader task */
     BootTask();
   }
+  /* set program exit code. note that the program should never get here */
   return 0;
 } /*** end of main ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the microcontroller.
+** \return    none.
+**
+****************************************************************************************/
+static void Init(void)
+{
+  /* ensure that SystemCoreClock variable is set */
+  SystemCoreClockUpdate();
+} /*** end of Init ***/
 
 
 /************************************************************************************//**

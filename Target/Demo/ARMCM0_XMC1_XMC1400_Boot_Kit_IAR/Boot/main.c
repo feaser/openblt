@@ -73,6 +73,8 @@ void main(void)
 ****************************************************************************************/
 static void Init(void)
 {
+  /* ensure that SystemCoreClock variable is set */
+  SystemCoreClockUpdate();
 } /*** end of Init ***/
 
 

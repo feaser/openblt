@@ -69,6 +69,8 @@ void main(void)
 ****************************************************************************************/
 static void Init(void)
 {
+  /* ensure that SystemCoreClock variable is set */
+  SystemCoreClockUpdate();
   /* init the led driver */
   LedInit();
   /* init the timer driver */

@@ -115,6 +115,8 @@ static void Init(void)
   XMC_UART_CH_CONFIG_t rs232_config;
 #endif
 
+  /* ensure that SystemCoreClock variable is set */
+  SystemCoreClockUpdate();
   /* initialize LED1 on P5.9 as digital output */
   XMC_GPIO_SetMode(P5_9, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
   /* initialize BUTTON1 as digital input. */
