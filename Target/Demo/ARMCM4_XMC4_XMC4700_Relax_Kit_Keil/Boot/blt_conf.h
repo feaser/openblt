@@ -118,7 +118,7 @@
  * configuring the IP address, network mask and gateway address are no longer needed.
  */
 /** \brief Enable/disable the NET transport layer. */
-#define BOOT_COM_NET_ENABLE               (0)
+#define BOOT_COM_NET_ENABLE               (1)
 /** \brief Configure number of bytes in the target->host data packet. */
 #define BOOT_COM_NET_TX_MAX_DATA          (64)
 /** \brief Configure number of bytes in the host->target data packet. */
@@ -185,7 +185,7 @@
  * firmware update is completed by the bootloader.
  */
 /** \brief Enable/disable support for firmware updates from a locally attached storage.*/
-#define BOOT_FILE_SYS_ENABLE            (1)
+#define BOOT_FILE_SYS_ENABLE            (0)
 /** \brief Enable/disable logging messages during firmware updates. */
 #define BOOT_FILE_LOGGING_ENABLE        (1)
 /** \brief Enable/disable a hook function that is called upon detection of an error. */

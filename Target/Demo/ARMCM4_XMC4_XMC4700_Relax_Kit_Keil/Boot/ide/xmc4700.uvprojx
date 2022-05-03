@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>2</Optim>
+            <Optim>3</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -337,9 +337,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--diag_suppress=111</MiscControls>
-              <Define>XMC4700_F144x2048</Define>
+              <Define>XMC4700_F144x2048 XMC_ETH_PHY_KSZ8081RNB</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Boot;..\lib;..\lib\cmsis;..\lib\xmclib\inc;..\lib\FatFS;..\lib\FatFS\SDMMC_BLOCK;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_XMC4;..\..\..\..\Source\third_party\fatfs\src</IncludePath>
+              <IncludePath>..\..\Boot;..\lib;..\lib\cmsis;..\lib\xmclib\inc;..\lib\FatFS;..\lib\FatFS\SDMMC_BLOCK;..\lib\uip;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_XMC4;..\..\..\..\Source\third_party\fatfs\src;..\..\..\..\Source\third_party\uip\uip;..\..\..\..\Source\third_party\uip\apps\dhcpc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -361,7 +361,7 @@
             </VariousControls>
           </Aads>
           <LDads>
-            <umfTarg>1</umfTarg>
+            <umfTarg>0</umfTarg>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>
@@ -370,7 +370,7 @@
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>..\bin\openblt_xmc4700.sct</ScatterFile>
+            <ScatterFile>..\xmc4700.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -412,6 +412,16 @@
               <FileName>startup_XMC4700.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\startup_XMC4700.s</FilePath>
+            </File>
+            <File>
+              <FileName>shared_params.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\shared_params.c</FilePath>
+            </File>
+            <File>
+              <FileName>shared_params.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\shared_params.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1056,6 +1066,36 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Lib/uip</GroupName>
+          <Files>
+            <File>
+              <FileName>clock-arch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\uip\clock-arch.c</FilePath>
+            </File>
+            <File>
+              <FileName>clock-arch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\uip\clock-arch.h</FilePath>
+            </File>
+            <File>
+              <FileName>netdev.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\uip\netdev.c</FilePath>
+            </File>
+            <File>
+              <FileName>netdev.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\uip\netdev.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip-conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\uip\uip-conf.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Core</GroupName>
           <Files>
             <File>
@@ -1252,6 +1292,96 @@
               <FileName>unicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Core/third_party/uip</GroupName>
+          <Files>
+            <File>
+              <FileName>clock.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\clock.h</FilePath>
+            </File>
+            <File>
+              <FileName>lc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\lc.h</FilePath>
+            </File>
+            <File>
+              <FileName>lc-addrlabels.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\lc-addrlabels.h</FilePath>
+            </File>
+            <File>
+              <FileName>lc-switch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\lc-switch.h</FilePath>
+            </File>
+            <File>
+              <FileName>pt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\pt.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip.c</FilePath>
+            </File>
+            <File>
+              <FileName>uip.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip_arch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_arch.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip_arp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_arp.c</FilePath>
+            </File>
+            <File>
+              <FileName>uip_arp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_arp.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>uip_timer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>uiplib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uiplib.c</FilePath>
+            </File>
+            <File>
+              <FileName>uiplib.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uiplib.h</FilePath>
+            </File>
+            <File>
+              <FileName>uipopt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uipopt.h</FilePath>
+            </File>
+            <File>
+              <FileName>dhcpc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.c</FilePath>
+            </File>
+            <File>
+              <FileName>dhcpc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.h</FilePath>
             </File>
           </Files>
         </Group>

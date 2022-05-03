@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_Keil/Prog/header.h
-* \brief        Generic header file.
+* \file         Demo/ARMCM4_XMC4_XMC4700_Relax_Kit_Keil/Prog/shared_params.h
+* \brief        Shared RAM parameters header file.
 * \ingroup      Prog_ARMCM4_XMC4_XMC4700_Relax_Kit_Keil
 * \internal
 *----------------------------------------------------------------------------------------
@@ -22,23 +22,36 @@
 *
 * You have received a copy of the GNU General Public License along with OpenBLT. It 
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-*
+* 
 * \endinternal
 ****************************************************************************************/
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef SHARED_PARAMS_H
+#define SHARED_PARAMS_H
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "../Boot/blt_conf.h"                    /* bootloader configuration           */
-#include "XMC4700.h"                             /* XMC4700 peripheral access          */
-#include "boot.h"                                /* bootloader interface driver        */
-#include "led.h"                                 /* LED driver                         */
-#include "timer.h"                               /* Timer driver                       */
-#include "net.h"                                 /* TCP/IP server application          */
-#include "shared_params.h"                       /* Shared parameters header.          */
+#include <stdint.h>                                    /* Standard integer types.      */
+#include <stdbool.h>                                   /* Standard boolean types.      */
 
 
-#endif /* HEADER_H */
-/*********************************** end of header.h ***********************************/
+/****************************************************************************************
+* Configuration macros
+****************************************************************************************/
+/** \brief Configuration macro for specifying the size of the data inside the parameter
+ *         buffer. This is the length in bytes of the actual parameter data, so
+ *         excluding the bufferId and checksum.
+ */
+#define SHARED_PARAMS_CFG_BUFFER_DATA_LEN        (56u)
+
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+void SharedParamsInit(void);
+bool SharedParamsReadByIndex(uint32_t idx, uint8_t * value);
+bool SharedParamsWriteByIndex(uint32_t idx, uint8_t value);
+
+
+#endif /* SHARED_PARAMS_H */
+/*********************************** end of shared_params.h ****************************/
