@@ -339,7 +339,7 @@
               <MiscControls>--diag_suppress=111</MiscControls>
               <Define>XMC4700_F144x2048</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Boot;..\lib;..\lib\cmsis;..\lib\xmclib\inc;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_XMC4</IncludePath>
+              <IncludePath>..\..\Boot;..\lib;..\lib\cmsis;..\lib\xmclib\inc;..\lib\FatFS;..\lib\FatFS\SDMMC_BLOCK;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_XMC4;..\..\..\..\Source\third_party\fatfs\src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1006,6 +1006,56 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Lib/FatFS</GroupName>
+          <Files>
+            <File>
+              <FileName>ffconf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\FatFS\ffconf.h</FilePath>
+            </File>
+            <File>
+              <FileName>mmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\FatFS\mmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdmmc_block.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\FatFS\SDMMC_BLOCK\sdmmc_block.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdmmc_block.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\FatFS\SDMMC_BLOCK\sdmmc_block.h</FilePath>
+            </File>
+            <File>
+              <FileName>sdmmc_block_conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_conf.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdmmc_block_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_conf.h</FilePath>
+            </File>
+            <File>
+              <FileName>sdmmc_block_extern.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_extern.h</FilePath>
+            </File>
+            <File>
+              <FileName>sdmmc_block_private_sd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_private_sd.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdmmc_block_private_sd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\FatFS\SDMMC_BLOCK\sdmmc_block_private_sd.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Core</GroupName>
           <Files>
             <File>
@@ -1172,6 +1222,36 @@
               <FileName>cpu_comp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\ARMCM4_XMC4\Keil\cpu_comp.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Core/third_party/fatfs</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\src\diskio.h</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\src\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\src\ff.h</FilePath>
+            </File>
+            <File>
+              <FileName>integer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\src\integer.h</FilePath>
+            </File>
+            <File>
+              <FileName>unicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</FilePath>
             </File>
           </Files>
         </Group>
