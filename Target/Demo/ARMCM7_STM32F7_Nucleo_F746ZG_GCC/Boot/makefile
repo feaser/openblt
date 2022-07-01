@@ -40,7 +40,8 @@ PROJ_NAME=openblt_stm32f746
 # 8.3 short pathname format with forward slashes. To obtain the pathname in the 8.3
 # format, open the directory in the Windows command prompt and run the following command:
 #  cmd /c for %A in ("%cd%") do @echo %~sA 
-TOOL_PATH=/opt/gcc-arm-none-eabi-8-2018-q4-major/bin/
+#TOOL_PATH=/opt/gcc-arm-none-eabi-8-2018-q4-major/bin/
+TOOL_PATH=C:/PROGRA~2/GNUTOO~1/82018-~1/bin/
 
 
 #|--------------------------------------------------------------------------------------|
@@ -84,7 +85,6 @@ SZ = $(TOOL_PATH)arm-none-eabi-size
 #|--------------------------------------------------------------------------------------|
 PROJ_ASRCS  = $(filter %.s,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CSRCS  = $(filter %.c,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
-PROJ_CHDRS  = $(filter %.h,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 
 
 #|--------------------------------------------------------------------------------------|
@@ -103,12 +103,13 @@ LIB_PATH  =
 STDFLAGS    = -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g
 OPTFLAGS    = -Og
+DEPFLAGS  = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32F746xx
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
 LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-LFLAGS     += -Wl,-script="STM32F746ZG_FLASH.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -T"STM32F746ZG_FLASH.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS     += -specs=nano.specs -Wl,--gc-sections $(LIB_PATH)
 OFLAGS      = -O srec
 ODFLAGS     = -x
@@ -135,7 +136,6 @@ COBJS = $(patsubst %.c,%.o,$(PROJ_CSRCS))
 .PHONY: all
 all: $(BIN_PATH)/$(PROJ_NAME).srec
 
-
 $(BIN_PATH)/$(PROJ_NAME).srec : $(BIN_PATH)/$(PROJ_NAME).elf
 	@$(OC) $< $(OFLAGS) $@
 	@$(OD) $(ODFLAGS) $< > $(BIN_PATH)/$(PROJ_NAME).map
@@ -151,13 +151,13 @@ $(BIN_PATH)/$(PROJ_NAME).elf : $(AOBJS) $(COBJS)
 #|--------------------------------------------------------------------------------------|
 #| Compile and assemble                                                                 |
 #|--------------------------------------------------------------------------------------|
-$(AOBJS): %.o: %.s $(PROJ_CHDRS)
+$(AOBJS): %.o: %.s
 	@echo +++ Assembling [$(notdir $<)]
 	@$(AS) $(AFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
-$(COBJS): %.o: %.c $(PROJ_CHDRS)
+$(COBJS): %.o: %.c $(OBJ_PATH)/%.d
 	@echo +++ Compiling [$(notdir $<)]
-	@$(CC) $(CFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
+	@$(CC) $(DEPFLAGS) $(CFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
 
 #|--------------------------------------------------------------------------------------|
@@ -168,9 +168,18 @@ clean:
 	@echo +++ Cleaning build environment
 	@$(RM) $(RMFLAGS) $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
 	@$(RM) $(RMFLAGS) $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
+	@$(RM) $(RMFLAGS) $(patsubst %.o,%.lst,$(foreach file,$(AOBJS),$(OBJ_PATH)/$(file)))
 	@$(RM) $(RMFLAGS) $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
+	@$(RM) $(RMFLAGS) $(patsubst %.o,%.d,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
 	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
 	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).srec
 	@echo +++ Clean complete
 
-                                                                                                                                                                                                                                                                
+	
+#|--------------------------------------------------------------------------------------|
+#| Dependency generation                                                                |
+#|--------------------------------------------------------------------------------------|
+DEPFILES := $(PROJ_CSRCS:%.c=$(OBJ_PATH)/%.d)
+$(DEPFILES):
+include $(wildcard $(DEPFILES))	
+
