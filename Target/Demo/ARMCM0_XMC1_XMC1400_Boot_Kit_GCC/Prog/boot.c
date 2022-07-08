@@ -266,6 +266,12 @@ static void BootComCanInit(void)
   XMC_CAN_NODE_NOMINAL_BIT_TIME_CONFIG_t baud;
   unsigned long receiveId;
 
+  /* set the CAN peripheral into the disabled state. the call to XMC_CAN_Init
+   * below enables it again, which consequently brings the peripheral back into
+   * its reset state.
+   */
+  XMC_CAN_Disable(CAN);
+
   /* decide on fCAN frequency. it should be in the 5-120MHz range. according to the
    * datasheet, it must be at least 12MHz if 1 node (channel) is used with up to
    * 16 message objects. This is sufficient for this CAN driver.

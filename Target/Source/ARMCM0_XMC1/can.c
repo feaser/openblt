@@ -101,6 +101,11 @@ void CanInit(void)
    * in case a different CAN channel is configured.
    */
   ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX >= 0) && (BOOT_COM_CAN_CHANNEL_INDEX <= 1));
+  /* set the CAN peripheral into the disabled state. the call to XMC_CAN_Init
+   * below enables it again, which consequently brings the peripheral back into
+   * its reset state.
+   */
+  XMC_CAN_Disable(CAN);
 
   /* decide on fCAN frequency. it should be in the 5-120MHz range. according to the
    * datasheet, it must be at least 12MHz if 1 node (channel) is used with up to
