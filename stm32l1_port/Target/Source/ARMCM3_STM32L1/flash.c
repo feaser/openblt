@@ -147,7 +147,7 @@ static const tFlashSector flashLayout[] =
    */
   /* { 0x08000000, 0x01000 },              flash sector   0 - reserved for bootloader  */
   /* { 0x08001000, 0x01000 },              flash sector   1 - reserved for bootloader  */
-  { 0x08002000, 0x01000 },              /* flash sector   2 - 4kb                      */
+  /* { 0x08002000, 0x01000 },              flash sector   2 - reserved for bootloader  */
   { 0x08003000, 0x01000 },              /* flash sector   3 - 4kb                      */
   { 0x08004000, 0x01000 },              /* flash sector   4 - 4kb                      */
   { 0x08005000, 0x01000 },              /* flash sector   5 - 4kb                      */
@@ -673,10 +673,14 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_addr   prog_addr;
-  blt_int32u prog_data;
-  blt_int32u word_cnt;
-  blt_bool   result = BLT_TRUE;
+  blt_bool         result = BLT_TRUE;
+  blt_addr         half_page_addr;
+  blt_int32u *     half_page_data_ptr;
+  blt_int32u       half_page_cnt;
+  blt_int32u const half_page_size = 128U;
+  blt_addr         word_addr;
+  blt_int32u       word_data;
+  blt_int32u       word_cnt;
 
 #if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
   #if (BOOT_NVM_CHECKSUM_HOOKS_ENABLE == 0)
@@ -697,24 +701,46 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   /* unlock the flash peripheral to enable the flash control register access. */
   HAL_FLASH_Unlock();
 
-  /* program all words in the block one by one */
-  for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+  /* sanity check. make sure the block's destination address is aligned to a half page
+   * size.
+   */
+  ASSERT_RT((block->base_addr % half_page_size) == 0);
+
+  /* program the block in chunks of half a page (128 bytes) with the help of function
+   * HAL_FLASHEx_HalfPageProgram() that runs from RAM. Alternatively, you could use
+   * function HAL_FLASH_Program() that runs from flash and programs 4 bytes at a time.
+   * However, it turns out that this one runs really slow on the STM32L1.
+   */
+  for (half_page_cnt=0; half_page_cnt<(FLASH_WRITE_BLOCK_SIZE/half_page_size); half_page_cnt++)
   {
-    prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
-    prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+    half_page_addr = block->base_addr + (half_page_cnt * half_page_size);
+    half_page_data_ptr = (blt_int32u *)(&block->data[half_page_cnt * half_page_size]);
     /* keep the watchdog happy */
     CopService();
-    /* program the word */
-    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, prog_addr, prog_data) != HAL_OK)
+    /* program the half page */
+    if (HAL_FLASHEx_HalfPageProgram(half_page_addr, (uint32_t *)half_page_data_ptr) != HAL_OK)
     {
       result = BLT_FALSE;
       break;
     }
-    /* verify that the written data is actually there */
-    if (*(volatile blt_int32u *)prog_addr != prog_data)
+  }
+
+  /* only continue with the data verification, if no error was detected so far. */
+  if (result == BLT_TRUE)
+  {
+    /* verify all words in the block one by one. */
+    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
     {
-      result = BLT_FALSE;
-      break;
+      word_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
+      word_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+      /* keep the watchdog happy. */
+      CopService();
+      /* verify that the written data is actually there. */
+      if (*(volatile blt_int32u *)word_addr != word_data)
+      {
+        result = BLT_FALSE;
+        break;
+      }
     }
   }
 
