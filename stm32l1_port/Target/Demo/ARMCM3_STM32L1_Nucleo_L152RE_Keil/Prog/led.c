@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM3_STM32L1_Nucleo_L152RE_CubeIDE/Boot/App/led.c
+* \file         Demo/ARMCM3_STM32L1_Nucleo_L152RE_Keil/Prog/led.c
 * \brief        LED driver source file.
-* \ingroup      Boot_ARMCM3_STM32L1_Nucleo_L152RE_CubeIDE
+* \ingroup      Prog_ARMCM3_STM32L1_Nucleo_L152RE_Keil
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -29,73 +29,66 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "boot.h"                                /* bootloader generic header          */
-#include "led.h"                                 /* module header                      */
-#include "stm32l1xx.h"                           /* STM32 registers and drivers        */
-#include "stm32l1xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
+#include "header.h"                                    /* generic header               */
 
 
 /****************************************************************************************
-* Local data declarations
+* Macro definitions
 ****************************************************************************************/
-/** \brief Holds the desired LED blink interval time. */
-static blt_int16u ledBlinkIntervalMs;
+/** \brief Toggle interval time in milliseconds. */
+#define LED_TOGGLE_MS  (500)
 
 
 /************************************************************************************//**
-** \brief     Initializes the LED blink driver.
-** \param     interval_ms Specifies the desired LED blink interval time in milliseconds.
+** \brief     Initializes the LED. 
 ** \return    none.
 **
 ****************************************************************************************/
-void LedBlinkInit(blt_int16u interval_ms)
+void LedInit(void)
 {
-  /* store the interval time between LED toggles */
-  ledBlinkIntervalMs = interval_ms;
-} /*** end of LedBlinkInit ***/
+  /* Note that the initialization of the LED GPIO pin is done in HAL_MspInit(). All that
+   * is left to do here is to make sure the LED is turned off after initialization.
+   */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+} /*** end of LedInit ***/
 
 
 /************************************************************************************//**
-** \brief     Task function for blinking the LED as a fixed timer interval.
+** \brief     Toggles the LED at a fixed time interval.
 ** \return    none.
 **
 ****************************************************************************************/
-void LedBlinkTask(void)
+void LedToggle(void)
 {
-  static blt_bool ledOn = BLT_FALSE;
-  static blt_int32u nextBlinkEvent = 0;
+  static unsigned char led_toggle_state = 0;
+  static unsigned long timer_counter_last = 0;
+  unsigned long timer_counter_now;
 
-  /* check for blink event */
-  if (TimerGet() >= nextBlinkEvent)
+  /* check if toggle interval time passed */
+  timer_counter_now = TimerGet();
+  if ( (timer_counter_now - timer_counter_last) < LED_TOGGLE_MS)
   {
-    /* toggle the LED state */
-    if (ledOn == BLT_FALSE)
-    {
-      ledOn = BLT_TRUE;
-      LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_5);
-    }
-    else
-    {
-      ledOn = BLT_FALSE;
-      LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
-    }
-    /* schedule the next blink event */
-    nextBlinkEvent = TimerGet() + ledBlinkIntervalMs;
+    /* not yet time to toggle */
+    return;
   }
-} /*** end of LedBlinkTask ***/
 
+  /* determine toggle action */
+  if (led_toggle_state == 0)
+  {
+    led_toggle_state = 1;
+    /* turn the LED on */
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+  }
+  else
+  {
+    led_toggle_state = 0;
+    /* turn the LED off */
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+  }
 
-/************************************************************************************//**
-** \brief     Cleans up the LED blink driver. This is intended to be used upon program
-**            exit.
-** \return    none.
-**
-****************************************************************************************/
-void LedBlinkExit(void)
-{
-  /* turn the LED off */
-  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
-} /*** end of LedBlinkExit ***/
+  /* store toggle time to determine next toggle interval */
+  timer_counter_last = timer_counter_now;
+} /*** end of LedToggle ***/
 
 
 /*********************************** end of led.c **************************************/

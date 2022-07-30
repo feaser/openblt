@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM3_STM32L1_Nucleo_L152RE_CubeIDE/Boot/App/led.c
+* \file         Demo/ARMCM3_STM32L1_Nucleo_L152RE_Keil/Boot/led.c
 * \brief        LED driver source file.
-* \ingroup      Boot_ARMCM3_STM32L1_Nucleo_L152RE_CubeIDE
+* \ingroup      Boot_ARMCM3_STM32L1_Nucleo_L152RE_Keil
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T

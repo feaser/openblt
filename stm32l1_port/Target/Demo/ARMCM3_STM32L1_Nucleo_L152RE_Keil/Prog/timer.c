@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM3_STM32L1_Nucleo_L152RE_CubeIDE/Boot/App/led.c
-* \brief        LED driver source file.
-* \ingroup      Boot_ARMCM3_STM32L1_Nucleo_L152RE_CubeIDE
+* \file         Demo/ARMCM3_STM32L1_Nucleo_L152RE_Keil/Prog/timer.c
+* \brief        Timer driver source file.
+* \ingroup      Prog_ARMCM3_STM32L1_Nucleo_L152RE_Keil
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -29,73 +29,49 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "boot.h"                                /* bootloader generic header          */
-#include "led.h"                                 /* module header                      */
-#include "stm32l1xx.h"                           /* STM32 registers and drivers        */
-#include "stm32l1xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
-
-
-/****************************************************************************************
-* Local data declarations
-****************************************************************************************/
-/** \brief Holds the desired LED blink interval time. */
-static blt_int16u ledBlinkIntervalMs;
+#include "header.h"                                    /* generic header               */
 
 
 /************************************************************************************//**
-** \brief     Initializes the LED blink driver.
-** \param     interval_ms Specifies the desired LED blink interval time in milliseconds.
+** \brief     Initializes the timer.
 ** \return    none.
 **
 ****************************************************************************************/
-void LedBlinkInit(blt_int16u interval_ms)
+void TimerInit(void)
 {
-  /* store the interval time between LED toggles */
-  ledBlinkIntervalMs = interval_ms;
-} /*** end of LedBlinkInit ***/
+  /* Configure the Systick interrupt time for 1 millisecond. */
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+  /* Configure the Systick. */
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+  /* SysTick_IRQn interrupt configuration. */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+} /*** end of TimerInit ***/
 
 
 /************************************************************************************//**
-** \brief     Task function for blinking the LED as a fixed timer interval.
-** \return    none.
+** \brief     Obtains the counter value of the millisecond timer.
+** \return    Current value of the millisecond timer.
 **
 ****************************************************************************************/
-void LedBlinkTask(void)
+unsigned long TimerGet(void)
 {
-  static blt_bool ledOn = BLT_FALSE;
-  static blt_int32u nextBlinkEvent = 0;
-
-  /* check for blink event */
-  if (TimerGet() >= nextBlinkEvent)
-  {
-    /* toggle the LED state */
-    if (ledOn == BLT_FALSE)
-    {
-      ledOn = BLT_TRUE;
-      LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_5);
-    }
-    else
-    {
-      ledOn = BLT_FALSE;
-      LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
-    }
-    /* schedule the next blink event */
-    nextBlinkEvent = TimerGet() + ledBlinkIntervalMs;
-  }
-} /*** end of LedBlinkTask ***/
+  /* Read and return the tick counter value. */
+  return HAL_GetTick();
+} /*** end of TimerGet ***/
 
 
 /************************************************************************************//**
-** \brief     Cleans up the LED blink driver. This is intended to be used upon program
-**            exit.
+** \brief     Interrupt service routine of the timer.
 ** \return    none.
 **
 ****************************************************************************************/
-void LedBlinkExit(void)
+void SysTick_Handler(void)
 {
-  /* turn the LED off */
-  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
-} /*** end of LedBlinkExit ***/
+  /* Increment the tick counter. */
+  HAL_IncTick();
+  /* Invoke the system tick handler. */
+  HAL_SYSTICK_IRQHandler();
+} /*** end of SysTick_Handler ***/
 
 
-/*********************************** end of led.c **************************************/
+/*********************************** end of timer.c ************************************/

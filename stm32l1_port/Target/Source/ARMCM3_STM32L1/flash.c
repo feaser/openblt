@@ -381,7 +381,7 @@ blt_bool FlashWriteChecksum(void)
 {
   blt_int32u signature_checksum = 0;
 
-  /* for the STM32 target we defined the checksum as the Two's complement value of the
+  /* for the STM32L1 target we defined the checksum as the One's complement value of the
    * sum of the first 7 exception addresses.
    *
    * Layout of the vector table:
@@ -393,7 +393,7 @@ blt_bool FlashWriteChecksum(void)
    *    0x08000014 Bus Fault Handler
    *    0x08000018 Usage Fault Handler
    *
-   *    signature_checksum = Two's complement of (SUM(exception address values))
+   *    signature_checksum = One's complement of (SUM(exception address values))
    *
    *    the bootloader writes this 32-bit checksum value right after the vector table
    *    of the user program. note that this means one extra dummy entry must be added
@@ -431,7 +431,6 @@ blt_bool FlashWriteChecksum(void)
   signature_checksum += *((blt_int32u *)(&bootBlockInfo.data[0+0x14]));
   signature_checksum += *((blt_int32u *)(&bootBlockInfo.data[0+0x18]));
   signature_checksum  = ~signature_checksum; /* one's complement */
-  signature_checksum += 1; /* two's complement */
 
   /* write the checksum */
   return FlashWrite(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET,
@@ -448,6 +447,7 @@ blt_bool FlashWriteChecksum(void)
 blt_bool FlashVerifyChecksum(void)
 {
   blt_int32u signature_checksum = 0;
+  blt_int32u signature_checksum_rom;
 
   /* verify the checksum based on how it was written by CpuWriteChecksum() */
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start));
@@ -457,9 +457,14 @@ blt_bool FlashVerifyChecksum(void)
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x10));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x14));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x18));
-  signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET));
-  /* sum should add up to an unsigned 32-bit value of 0 */
-  if (signature_checksum == 0)
+  signature_checksum = ~signature_checksum; /* one's complement */
+  /* read the checksum value from flash that was written by the bootloader at the end
+   * of the last firmware update
+   */
+  signature_checksum_rom = *((blt_int32u *)(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET));
+
+  /* verify that they are both the same */
+  if (signature_checksum == signature_checksum_rom)
   {
     /* checksum okay */
     return BLT_TRUE;
