@@ -84,7 +84,9 @@ void Rs232Init(void)
    */
   ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 1) ||
-            (BOOT_COM_RS232_CHANNEL_INDEX == 2));
+            (BOOT_COM_RS232_CHANNEL_INDEX == 2) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 3) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 4));
 
   /* disable the UART peripheral */
   LL_USART_Disable(USART_CHANNEL);
@@ -95,6 +97,7 @@ void Rs232Init(void)
   USART_InitStruct.Parity = LL_USART_PARITY_NONE;
   USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
   USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
   /* initialize the UART peripheral */
   LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
   LL_USART_ConfigAsyncMode(USART_CHANNEL);
