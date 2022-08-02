@@ -72,7 +72,9 @@
 #define BOOT_COM_RS232_TX_MAX_DATA       (129)
 /** \brief Configure number of bytes in the host->target data packet. */
 #define BOOT_COM_RS232_RX_MAX_DATA       (129)
-/** \brief Select the desired UART peripheral as a zero based index. */
+/** \brief Select the desired UART peripheral as a zero based index. Note that the LPUART
+ *  peripherals come after the U(S)ART peripherals. 
+ */
 #define BOOT_COM_RS232_CHANNEL_INDEX     (1)
 
 
