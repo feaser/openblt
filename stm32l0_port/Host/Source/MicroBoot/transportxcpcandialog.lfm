@@ -1,0 +1,190 @@
+object TransportXcpCanForm: TTransportXcpCanForm
+  Left = 550
+  Height = 308
+  Top = 357
+  Width = 407
+  Caption = 'XCP on CAN'
+  ClientHeight = 308
+  ClientWidth = 407
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '2.0.12.0'
+  object LblCommunication: TLabel
+    Left = 8
+    Height = 20
+    Top = 8
+    Width = 106
+    AutoSize = False
+    Caption = 'Communication'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object CmbDevice: TComboBox
+    Left = 120
+    Height = 23
+    Hint = 'Name of the CAN adapter'
+    Top = 35
+    Width = 224
+    ItemHeight = 15
+    Items.Strings = (
+      'Peak System PCAN-USB'
+      'Kvaser Leaf Light v2'
+      'Lawicel CANUSB'
+      'Vector XL Driver'
+      'Ixxat VCI Driver'
+    )
+    ParentShowHint = False
+    ShowHint = True
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object LblDevice: TLabel
+    Left = 24
+    Height = 20
+    Top = 38
+    Width = 88
+    AutoSize = False
+    Caption = 'Device:'
+    ParentColor = False
+  end
+  object CmbChannel: TComboBox
+    Left = 120
+    Height = 23
+    Hint = 'Zero based index of the CAN channel, if multiple CAN channels are supported for the CAN adapter'
+    Top = 75
+    Width = 224
+    ItemHeight = 15
+    Items.Strings = (
+      '0'
+      '1'
+      '2'
+      '3'
+      '4'
+      '5'
+      '6'
+      '7'
+      '8'
+      '9'
+      '10'
+      '11'
+      '12'
+      '13'
+      '14'
+      '15'
+    )
+    ParentShowHint = False
+    ShowHint = True
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object LblChannel: TLabel
+    Left = 24
+    Height = 20
+    Top = 78
+    Width = 88
+    AutoSize = False
+    Caption = 'Channel:'
+    ParentColor = False
+  end
+  object CmbBaudrate: TComboBox
+    Left = 120
+    Height = 23
+    Hint = 'The communication speed in bits per second'
+    Top = 115
+    Width = 224
+    ItemHeight = 15
+    Items.Strings = (
+      '1 MBit/sec'
+      '800 kBit/sec'
+      '500 kBit/sec'
+      '250 kBit/sec'
+      '125 kBit/sec'
+      '100 kBit/sec'
+      '50 kBit/sec'
+      '20 kBit/sec'
+      '10 kBit/sec'
+    )
+    ParentShowHint = False
+    ShowHint = True
+    Style = csDropDownList
+    TabOrder = 2
+  end
+  object LblBaudrate: TLabel
+    Left = 24
+    Height = 20
+    Top = 118
+    Width = 90
+    AutoSize = False
+    Caption = 'Baudrate:'
+    ParentColor = False
+  end
+  object LblIdentifiers: TLabel
+    Left = 8
+    Height = 20
+    Top = 160
+    Width = 106
+    AutoSize = False
+    Caption = 'Identifiers'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object EdtTransmitId: TEdit
+    Left = 120
+    Height = 23
+    Hint = 'CAN identifier for transmitting XCP command messages from the host to the target, as a 32-bit hexadecimal value (Default = 667h)'
+    Top = 187
+    Width = 224
+    OnChange = EdtCanIdChange
+    OnKeyPress = EdtCanIdKeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+    Text = 'EdtTransmitId'
+  end
+  object LblTransmitId: TLabel
+    Left = 24
+    Height = 20
+    Top = 190
+    Width = 88
+    AutoSize = False
+    Caption = 'Transmit (hex):'
+    ParentColor = False
+  end
+  object EdtReceiveId: TEdit
+    Left = 120
+    Height = 23
+    Hint = 'CAN identifier for receiving XCP response messages from the target to the host, as a 32-bit hexadecimal value (Default = 7E1h)'
+    Top = 227
+    Width = 224
+    OnChange = EdtCanIdChange
+    OnKeyPress = EdtCanIdKeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+    Text = 'EdtReceiveId'
+  end
+  object LblReceiveId: TLabel
+    Left = 24
+    Height = 20
+    Top = 230
+    Width = 89
+    AutoSize = False
+    Caption = 'Receive (hex):'
+    ParentColor = False
+  end
+  object CbxExtended: TCheckBox
+    Left = 120
+    Height = 20
+    Hint = 'Check if the CAN identifiers are 29-bit extended (Default = 11-bit standard)'
+    Top = 267
+    Width = 224
+    AutoSize = False
+    Caption = '29-bit extended CAN identifiers'
+    OnChange = CbxExtendedChange
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
+  end
+end
