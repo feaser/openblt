@@ -682,7 +682,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   blt_addr         half_page_addr;
   blt_int32u *     half_page_data_ptr;
   blt_int32u       half_page_cnt;
-  blt_int32u const half_page_size = 128U;
+  blt_int32u const half_page_size = FLASH_PAGE_SIZE/2U;
   blt_addr         word_addr;
   blt_int32u       word_data;
   blt_int32u       word_cnt;
