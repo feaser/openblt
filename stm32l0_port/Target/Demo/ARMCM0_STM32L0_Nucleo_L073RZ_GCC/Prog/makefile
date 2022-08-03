@@ -28,7 +28,7 @@ SHELL = sh
 #|--------------------------------------------------------------------------------------|
 #| Configure project name                                                               |
 #|--------------------------------------------------------------------------------------|
-PROJ_NAME=openblt_stm32l152
+PROJ_NAME=demoprog_stm32l073
 
 
 #|--------------------------------------------------------------------------------------|
@@ -54,18 +54,8 @@ TOOL_PATH=C:/PROGRA~2/GNUTOO~1/82018-~1/bin/
 #     --> Returns all *.c files in the /lib directory and below
 rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d)))
 
-# Collect all application files in the current directory and its subdirectories, but 
-# exclude flash-layout.c as this one is directly included in a source file, when used.
-PROJ_FILES  = $(filter-out flash_layout.c, $(call rwildcard, , *.c *.h *.s))
-# Collect bootloader core files
-PROJ_FILES += $(wildcard ../../../Source/*.c)
-PROJ_FILES += $(wildcard ../../../Source/*.h)
-# Collect bootloader port files
-PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32L1/*.c)
-PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32L1/*.h)
-# Collect bootloader port compiler specific files
-PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32L1/GCC/*.c)
-PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32L1/GCC/*.h)
+# Collect all application files in the current directory and its subdirectories
+PROJ_FILES = $(call rwildcard, , *.c *.h *.s)
 
 
 #|--------------------------------------------------------------------------------------|
@@ -100,16 +90,16 @@ LIB_PATH  =
 #|--------------------------------------------------------------------------------------|
 #| Options for toolchain binaries                                                       |
 #|--------------------------------------------------------------------------------------|
-STDFLAGS    = -mcpu=cortex-m3 -mthumb -std=gnu11 -fstack-usage -specs=nano.specs
+STDFLAGS    = -mcpu=cortex-m0plus -mthumb -std=gnu11 -fstack-usage -specs=nano.specs
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g -Wno-strict-aliasing
 OPTFLAGS    = -Og
 DEPFLAGS    = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-CFLAGS     += -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32L152xE
+CFLAGS     += -DUSE_HAL_DRIVER -DSTM32L073xx
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
 LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-LFLAGS     += -T"STM32L152RETX.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -T"STM32L073RZTX.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS     += -Wl,--gc-sections $(LIB_PATH)
 OFLAGS      = -O srec
 ODFLAGS     = -x
