@@ -95,9 +95,9 @@ void HAL_MspDeInit(void)
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USART2);
 
   /* GPIO ports clock disable. */
-  LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOH);
-  LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOC);
-  LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
+  LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOH);
+  LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOC);
+  LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOA);
 
 
   /* COMP, SYSCFG and PWR clock disable. */
