@@ -267,4 +267,20 @@ void HAL_MspDeInit(void)
 } /*** end of HAL_MspDeInit ***/
 
 
+/************************************************************************************//**
+** \brief     This function handles the SysTick interrupt. The HAL driver is initialized
+**            before the bootloader disables the global interrupts and reconfigures the
+**            SysTick. It is theoretically possible that the SysTick interrupt still
+**            fires before the timer driver disables it. Therefore the handler is
+**            implemented here. If not, then the default handler from the C startup 
+**            code is used, which hangs the system.
+** \return    none.
+**
+****************************************************************************************/
+void SysTick_Handler(void)
+{
+  /* Nothing to do here. */
+} /*** end of SysTick_Handler ***/
+
+
 /*********************************** end of main.c *************************************/
