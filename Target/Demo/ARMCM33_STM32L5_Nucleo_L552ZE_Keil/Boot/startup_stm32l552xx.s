@@ -55,7 +55,6 @@ __heap_limit
 ; Vector Table Mapped to Address 0 at Reset
 
                 AREA    RESET, DATA, READONLY
-                IMPORT  SysTick_Handler
                 EXPORT  __Vectors
                 EXPORT  __Vectors_End
                 EXPORT  __Vectors_Size
@@ -252,6 +251,11 @@ DebugMon_Handler\
 PendSV_Handler\
                 PROC
                 EXPORT  PendSV_Handler            [WEAK]
+                B       .
+                ENDP
+SysTick_Handler\
+                PROC
+                EXPORT  SysTick_Handler           [WEAK]
                 B       .
                 ENDP
 

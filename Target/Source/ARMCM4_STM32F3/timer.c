@@ -126,21 +126,4 @@ uint32_t HAL_GetTick(void)
 } /*** end of HAL_GetTick ***/
 
 
-/************************************************************************************//**
-** \brief     This function handles the SysTick interrupt. The HAL driver is initialized
-**            before this timer driver. The HAL driver configures the SysTick for
-**            interrupt driven mode, which is afterwards disabled by the timer driver
-**            initialization. It is theoretically possible that the SysTick interrupt
-**            still fires before the timer driver disables it. Therefore the handler
-**            is implemented here. If not, then the default handler from cstart.s is
-**            used, which hangs the system.
-** \return    none.
-**
-****************************************************************************************/
-__weak void SysTick_Handler(void)
-{
-  /* Nothing to do here. */
-} /*** end of SysTick_Handler ***/
-
-
 /*********************************** end of timer.c ************************************/
