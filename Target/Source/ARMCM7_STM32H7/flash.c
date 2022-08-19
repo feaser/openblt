@@ -707,7 +707,7 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   blt_addr              prog_addr;
   blt_int8u  volatile * prog_data;
   blt_int32u            word_cnt;
-  blt_int8u  const      word_size = 32U;
+  blt_int8u  const      word_size = FLASH_NB_32BITWORD_IN_FLASHWORD * 4U;
   blt_int8u             byte_idx;
 
   /* check that the address is actually within flash */
