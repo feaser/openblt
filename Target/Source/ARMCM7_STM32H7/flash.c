@@ -41,7 +41,11 @@
 /** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
 /** \brief Standard size of a flash block for writing. */
+#ifdef  STM32H7A3xxQ
+#define FLASH_WRITE_BLOCK_SIZE          (8192)
+#else
 #define FLASH_WRITE_BLOCK_SIZE          (1024)
+#endif
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 /** \brief End address of the bootloader programmable flash. */
@@ -150,7 +154,266 @@ static const tFlashSector flashLayout[] =
     { 0x08140000, 0x20000, 2, 2},        /* flash sector idx  6 - 128kb                */
     { 0x08160000, 0x20000, 3, 2},        /* flash sector idx  7 - 128kb                */
 #elif (BOOT_NVM_SIZE_KB == 2048)
-    /* { 0x08000000, 0x20000, 0, 1 },     flash sector idx 0 - reserved for bootloader */
+#ifdef  STM32H7A3xxQ
+//	{0x8000000,0x2000,0,1},         /* flash sector idx 0 - 8kb     - reserved for bootloader    */
+//	{0x8002000,0x2000,1,1},         /* flash sector idx 1 - 8kb     - reserved for bootloader    */
+//	{0x8004000,0x2000,2,1},         /* flash sector idx 2 - 8kb     - reserved for bootloader    */
+//	{0x8006000,0x2000,3,1},         /* flash sector idx 3 - 8kb     - reserved for bootloader    */
+	{0x8008000,0x2000,4,1},         /* flash sector idx 4 - 8kb         */
+	{0x800A000,0x2000,5,1},         /* flash sector idx 5 - 8kb         */
+	{0x800C000,0x2000,6,1},         /* flash sector idx 6 - 8kb         */
+	{0x800E000,0x2000,7,1},         /* flash sector idx 7 - 8kb         */
+	{0x8010000,0x2000,8,1},         /* flash sector idx 8 - 8kb         */
+	{0x8012000,0x2000,9,1},         /* flash sector idx 9 - 8kb         */
+	{0x8014000,0x2000,10,1},        /* flash sector idx 10 - 8kb        */
+	{0x8016000,0x2000,11,1},        /* flash sector idx 11 - 8kb        */
+	{0x8018000,0x2000,12,1},        /* flash sector idx 12 - 8kb        */
+	{0x801A000,0x2000,13,1},        /* flash sector idx 13 - 8kb        */
+	{0x801C000,0x2000,14,1},        /* flash sector idx 14 - 8kb        */
+	{0x801E000,0x2000,15,1},        /* flash sector idx 15 - 8kb        */
+	{0x8020000,0x2000,16,1},        /* flash sector idx 16 - 8kb        */
+	{0x8022000,0x2000,17,1},        /* flash sector idx 17 - 8kb        */
+	{0x8024000,0x2000,18,1},        /* flash sector idx 18 - 8kb        */
+	{0x8026000,0x2000,19,1},        /* flash sector idx 19 - 8kb        */
+	{0x8028000,0x2000,20,1},        /* flash sector idx 20 - 8kb        */
+	{0x802A000,0x2000,21,1},        /* flash sector idx 21 - 8kb        */
+	{0x802C000,0x2000,22,1},        /* flash sector idx 22 - 8kb        */
+	{0x802E000,0x2000,23,1},        /* flash sector idx 23 - 8kb        */
+	{0x8030000,0x2000,24,1},        /* flash sector idx 24 - 8kb        */
+	{0x8032000,0x2000,25,1},        /* flash sector idx 25 - 8kb        */
+	{0x8034000,0x2000,26,1},        /* flash sector idx 26 - 8kb        */
+	{0x8036000,0x2000,27,1},        /* flash sector idx 27 - 8kb        */
+	{0x8038000,0x2000,28,1},        /* flash sector idx 28 - 8kb        */
+	{0x803A000,0x2000,29,1},        /* flash sector idx 29 - 8kb        */
+	{0x803C000,0x2000,30,1},        /* flash sector idx 30 - 8kb        */
+	{0x803E000,0x2000,31,1},        /* flash sector idx 31 - 8kb        */
+	{0x8040000,0x2000,32,1},        /* flash sector idx 32 - 8kb        */
+	{0x8042000,0x2000,33,1},        /* flash sector idx 33 - 8kb        */
+	{0x8044000,0x2000,34,1},        /* flash sector idx 34 - 8kb        */
+	{0x8046000,0x2000,35,1},        /* flash sector idx 35 - 8kb        */
+	{0x8048000,0x2000,36,1},        /* flash sector idx 36 - 8kb        */
+	{0x804A000,0x2000,37,1},        /* flash sector idx 37 - 8kb        */
+	{0x804C000,0x2000,38,1},        /* flash sector idx 38 - 8kb        */
+	{0x804E000,0x2000,39,1},        /* flash sector idx 39 - 8kb        */
+	{0x8050000,0x2000,40,1},        /* flash sector idx 40 - 8kb        */
+	{0x8052000,0x2000,41,1},        /* flash sector idx 41 - 8kb        */
+	{0x8054000,0x2000,42,1},        /* flash sector idx 42 - 8kb        */
+	{0x8056000,0x2000,43,1},        /* flash sector idx 43 - 8kb        */
+	{0x8058000,0x2000,44,1},        /* flash sector idx 44 - 8kb        */
+	{0x805A000,0x2000,45,1},        /* flash sector idx 45 - 8kb        */
+	{0x805C000,0x2000,46,1},        /* flash sector idx 46 - 8kb        */
+	{0x805E000,0x2000,47,1},        /* flash sector idx 47 - 8kb        */
+	{0x8060000,0x2000,48,1},        /* flash sector idx 48 - 8kb        */
+	{0x8062000,0x2000,49,1},        /* flash sector idx 49 - 8kb        */
+	{0x8064000,0x2000,50,1},        /* flash sector idx 50 - 8kb        */
+	{0x8066000,0x2000,51,1},        /* flash sector idx 51 - 8kb        */
+	{0x8068000,0x2000,52,1},        /* flash sector idx 52 - 8kb        */
+	{0x806A000,0x2000,53,1},        /* flash sector idx 53 - 8kb        */
+	{0x806C000,0x2000,54,1},        /* flash sector idx 54 - 8kb        */
+	{0x806E000,0x2000,55,1},        /* flash sector idx 55 - 8kb        */
+	{0x8070000,0x2000,56,1},        /* flash sector idx 56 - 8kb        */
+	{0x8072000,0x2000,57,1},        /* flash sector idx 57 - 8kb        */
+	{0x8074000,0x2000,58,1},        /* flash sector idx 58 - 8kb        */
+	{0x8076000,0x2000,59,1},        /* flash sector idx 59 - 8kb        */
+	{0x8078000,0x2000,60,1},        /* flash sector idx 60 - 8kb        */
+	{0x807A000,0x2000,61,1},        /* flash sector idx 61 - 8kb        */
+	{0x807C000,0x2000,62,1},        /* flash sector idx 62 - 8kb        */
+	{0x807E000,0x2000,63,1},        /* flash sector idx 63 - 8kb        */
+	{0x8080000,0x2000,64,1},        /* flash sector idx 64 - 8kb        */
+	{0x8082000,0x2000,65,1},        /* flash sector idx 65 - 8kb        */
+	{0x8084000,0x2000,66,1},        /* flash sector idx 66 - 8kb        */
+	{0x8086000,0x2000,67,1},        /* flash sector idx 67 - 8kb        */
+	{0x8088000,0x2000,68,1},        /* flash sector idx 68 - 8kb        */
+	{0x808A000,0x2000,69,1},        /* flash sector idx 69 - 8kb        */
+	{0x808C000,0x2000,70,1},        /* flash sector idx 70 - 8kb        */
+	{0x808E000,0x2000,71,1},        /* flash sector idx 71 - 8kb        */
+	{0x8090000,0x2000,72,1},        /* flash sector idx 72 - 8kb        */
+	{0x8092000,0x2000,73,1},        /* flash sector idx 73 - 8kb        */
+	{0x8094000,0x2000,74,1},        /* flash sector idx 74 - 8kb        */
+	{0x8096000,0x2000,75,1},        /* flash sector idx 75 - 8kb        */
+	{0x8098000,0x2000,76,1},        /* flash sector idx 76 - 8kb        */
+	{0x809A000,0x2000,77,1},        /* flash sector idx 77 - 8kb        */
+	{0x809C000,0x2000,78,1},        /* flash sector idx 78 - 8kb        */
+	{0x809E000,0x2000,79,1},        /* flash sector idx 79 - 8kb        */
+	{0x80A0000,0x2000,80,1},        /* flash sector idx 80 - 8kb        */
+	{0x80A2000,0x2000,81,1},        /* flash sector idx 81 - 8kb        */
+	{0x80A4000,0x2000,82,1},        /* flash sector idx 82 - 8kb        */
+	{0x80A6000,0x2000,83,1},        /* flash sector idx 83 - 8kb        */
+	{0x80A8000,0x2000,84,1},        /* flash sector idx 84 - 8kb        */
+	{0x80AA000,0x2000,85,1},        /* flash sector idx 85 - 8kb        */
+	{0x80AC000,0x2000,86,1},        /* flash sector idx 86 - 8kb        */
+	{0x80AE000,0x2000,87,1},        /* flash sector idx 87 - 8kb        */
+	{0x80B0000,0x2000,88,1},        /* flash sector idx 88 - 8kb        */
+	{0x80B2000,0x2000,89,1},        /* flash sector idx 89 - 8kb        */
+	{0x80B4000,0x2000,90,1},        /* flash sector idx 90 - 8kb        */
+	{0x80B6000,0x2000,91,1},        /* flash sector idx 91 - 8kb        */
+	{0x80B8000,0x2000,92,1},        /* flash sector idx 92 - 8kb        */
+	{0x80BA000,0x2000,93,1},        /* flash sector idx 93 - 8kb        */
+	{0x80BC000,0x2000,94,1},        /* flash sector idx 94 - 8kb        */
+	{0x80BE000,0x2000,95,1},        /* flash sector idx 95 - 8kb        */
+	{0x80C0000,0x2000,96,1},        /* flash sector idx 96 - 8kb        */
+	{0x80C2000,0x2000,97,1},        /* flash sector idx 97 - 8kb        */
+	{0x80C4000,0x2000,98,1},        /* flash sector idx 98 - 8kb        */
+	{0x80C6000,0x2000,99,1},        /* flash sector idx 99 - 8kb        */
+	{0x80C8000,0x2000,100,1},        /* flash sector idx 100 - 8kb        */
+	{0x80CA000,0x2000,101,1},        /* flash sector idx 101 - 8kb        */
+	{0x80CC000,0x2000,102,1},        /* flash sector idx 102 - 8kb        */
+	{0x80CE000,0x2000,103,1},        /* flash sector idx 103 - 8kb        */
+	{0x80D0000,0x2000,104,1},        /* flash sector idx 104 - 8kb        */
+	{0x80D2000,0x2000,105,1},        /* flash sector idx 105 - 8kb        */
+	{0x80D4000,0x2000,106,1},        /* flash sector idx 106 - 8kb        */
+	{0x80D6000,0x2000,107,1},        /* flash sector idx 107 - 8kb        */
+	{0x80D8000,0x2000,108,1},        /* flash sector idx 108 - 8kb        */
+	{0x80DA000,0x2000,109,1},        /* flash sector idx 109 - 8kb        */
+	{0x80DC000,0x2000,110,1},        /* flash sector idx 110 - 8kb        */
+	{0x80DE000,0x2000,111,1},        /* flash sector idx 111 - 8kb        */
+	{0x80E0000,0x2000,112,1},        /* flash sector idx 112 - 8kb        */
+	{0x80E2000,0x2000,113,1},        /* flash sector idx 113 - 8kb        */
+	{0x80E4000,0x2000,114,1},        /* flash sector idx 114 - 8kb        */
+	{0x80E6000,0x2000,115,1},        /* flash sector idx 115 - 8kb        */
+	{0x80E8000,0x2000,116,1},        /* flash sector idx 116 - 8kb        */
+	{0x80EA000,0x2000,117,1},        /* flash sector idx 117 - 8kb        */
+	{0x80EC000,0x2000,118,1},        /* flash sector idx 118 - 8kb        */
+	{0x80EE000,0x2000,119,1},        /* flash sector idx 119 - 8kb        */
+	{0x80F0000,0x2000,120,1},        /* flash sector idx 120 - 8kb        */
+	{0x80F2000,0x2000,121,1},        /* flash sector idx 121 - 8kb        */
+	{0x80F4000,0x2000,122,1},        /* flash sector idx 122 - 8kb        */
+	{0x80F6000,0x2000,123,1},        /* flash sector idx 123 - 8kb        */
+	{0x80F8000,0x2000,124,1},        /* flash sector idx 124 - 8kb        */
+	{0x80FA000,0x2000,125,1},        /* flash sector idx 125 - 8kb        */
+	{0x80FC000,0x2000,126,1},        /* flash sector idx 126 - 8kb        */
+	{0x80FE000,0x2000,127,1},        /* flash sector idx 127 - 8kb        */
+	{0x8100000,0x2000,0,2},        /* flash sector idx 0 - 8kb        */
+	{0x8102000,0x2000,1,2},        /* flash sector idx 1 - 8kb        */
+	{0x8104000,0x2000,2,2},        /* flash sector idx 2 - 8kb        */
+	{0x8106000,0x2000,3,2},        /* flash sector idx 3 - 8kb        */
+	{0x8108000,0x2000,4,2},        /* flash sector idx 4 - 8kb        */
+	{0x810A000,0x2000,5,2},        /* flash sector idx 5 - 8kb        */
+	{0x810C000,0x2000,6,2},        /* flash sector idx 6 - 8kb        */
+	{0x810E000,0x2000,7,2},        /* flash sector idx 7 - 8kb        */
+	{0x8110000,0x2000,8,2},        /* flash sector idx 8 - 8kb        */
+	{0x8112000,0x2000,9,2},        /* flash sector idx 9 - 8kb        */
+	{0x8114000,0x2000,10,2},        /* flash sector idx 10 - 8kb        */
+	{0x8116000,0x2000,11,2},        /* flash sector idx 11 - 8kb        */
+	{0x8118000,0x2000,12,2},        /* flash sector idx 12 - 8kb        */
+	{0x811A000,0x2000,13,2},        /* flash sector idx 13 - 8kb        */
+	{0x811C000,0x2000,14,2},        /* flash sector idx 14 - 8kb        */
+	{0x811E000,0x2000,15,2},        /* flash sector idx 15 - 8kb        */
+	{0x8120000,0x2000,16,2},        /* flash sector idx 16 - 8kb        */
+	{0x8122000,0x2000,17,2},        /* flash sector idx 17 - 8kb        */
+	{0x8124000,0x2000,18,2},        /* flash sector idx 18 - 8kb        */
+	{0x8126000,0x2000,19,2},        /* flash sector idx 19 - 8kb        */
+	{0x8128000,0x2000,20,2},        /* flash sector idx 20 - 8kb        */
+	{0x812A000,0x2000,21,2},        /* flash sector idx 21 - 8kb        */
+	{0x812C000,0x2000,22,2},        /* flash sector idx 22 - 8kb        */
+	{0x812E000,0x2000,23,2},        /* flash sector idx 23 - 8kb        */
+	{0x8130000,0x2000,24,2},        /* flash sector idx 24 - 8kb        */
+	{0x8132000,0x2000,25,2},        /* flash sector idx 25 - 8kb        */
+	{0x8134000,0x2000,26,2},        /* flash sector idx 26 - 8kb        */
+	{0x8136000,0x2000,27,2},        /* flash sector idx 27 - 8kb        */
+	{0x8138000,0x2000,28,2},        /* flash sector idx 28 - 8kb        */
+	{0x813A000,0x2000,29,2},        /* flash sector idx 29 - 8kb        */
+	{0x813C000,0x2000,30,2},        /* flash sector idx 30 - 8kb        */
+	{0x813E000,0x2000,31,2},        /* flash sector idx 31 - 8kb        */
+	{0x8140000,0x2000,32,2},        /* flash sector idx 32 - 8kb        */
+	{0x8142000,0x2000,33,2},        /* flash sector idx 33 - 8kb        */
+	{0x8144000,0x2000,34,2},        /* flash sector idx 34 - 8kb        */
+	{0x8146000,0x2000,35,2},        /* flash sector idx 35 - 8kb        */
+	{0x8148000,0x2000,36,2},        /* flash sector idx 36 - 8kb        */
+	{0x814A000,0x2000,37,2},        /* flash sector idx 37 - 8kb        */
+	{0x814C000,0x2000,38,2},        /* flash sector idx 38 - 8kb        */
+	{0x814E000,0x2000,39,2},        /* flash sector idx 39 - 8kb        */
+	{0x8150000,0x2000,40,2},        /* flash sector idx 40 - 8kb        */
+	{0x8152000,0x2000,41,2},        /* flash sector idx 41 - 8kb        */
+	{0x8154000,0x2000,42,2},        /* flash sector idx 42 - 8kb        */
+	{0x8156000,0x2000,43,2},        /* flash sector idx 43 - 8kb        */
+	{0x8158000,0x2000,44,2},        /* flash sector idx 44 - 8kb        */
+	{0x815A000,0x2000,45,2},        /* flash sector idx 45 - 8kb        */
+	{0x815C000,0x2000,46,2},        /* flash sector idx 46 - 8kb        */
+	{0x815E000,0x2000,47,2},        /* flash sector idx 47 - 8kb        */
+	{0x8160000,0x2000,48,2},        /* flash sector idx 48 - 8kb        */
+	{0x8162000,0x2000,49,2},        /* flash sector idx 49 - 8kb        */
+	{0x8164000,0x2000,50,2},        /* flash sector idx 50 - 8kb        */
+	{0x8166000,0x2000,51,2},        /* flash sector idx 51 - 8kb        */
+	{0x8168000,0x2000,52,2},        /* flash sector idx 52 - 8kb        */
+	{0x816A000,0x2000,53,2},        /* flash sector idx 53 - 8kb        */
+	{0x816C000,0x2000,54,2},        /* flash sector idx 54 - 8kb        */
+	{0x816E000,0x2000,55,2},        /* flash sector idx 55 - 8kb        */
+	{0x8170000,0x2000,56,2},        /* flash sector idx 56 - 8kb        */
+	{0x8172000,0x2000,57,2},        /* flash sector idx 57 - 8kb        */
+	{0x8174000,0x2000,58,2},        /* flash sector idx 58 - 8kb        */
+	{0x8176000,0x2000,59,2},        /* flash sector idx 59 - 8kb        */
+	{0x8178000,0x2000,60,2},        /* flash sector idx 60 - 8kb        */
+	{0x817A000,0x2000,61,2},        /* flash sector idx 61 - 8kb        */
+	{0x817C000,0x2000,62,2},        /* flash sector idx 62 - 8kb        */
+	{0x817E000,0x2000,63,2},        /* flash sector idx 63 - 8kb        */
+	{0x8180000,0x2000,64,2},        /* flash sector idx 64 - 8kb        */
+	{0x8182000,0x2000,65,2},        /* flash sector idx 65 - 8kb        */
+	{0x8184000,0x2000,66,2},        /* flash sector idx 66 - 8kb        */
+	{0x8186000,0x2000,67,2},        /* flash sector idx 67 - 8kb        */
+	{0x8188000,0x2000,68,2},        /* flash sector idx 68 - 8kb        */
+	{0x818A000,0x2000,69,2},        /* flash sector idx 69 - 8kb        */
+	{0x818C000,0x2000,70,2},        /* flash sector idx 70 - 8kb        */
+	{0x818E000,0x2000,71,2},        /* flash sector idx 71 - 8kb        */
+	{0x8190000,0x2000,72,2},        /* flash sector idx 72 - 8kb        */
+	{0x8192000,0x2000,73,2},        /* flash sector idx 73 - 8kb        */
+	{0x8194000,0x2000,74,2},        /* flash sector idx 74 - 8kb        */
+	{0x8196000,0x2000,75,2},        /* flash sector idx 75 - 8kb        */
+	{0x8198000,0x2000,76,2},        /* flash sector idx 76 - 8kb        */
+	{0x819A000,0x2000,77,2},        /* flash sector idx 77 - 8kb        */
+	{0x819C000,0x2000,78,2},        /* flash sector idx 78 - 8kb        */
+	{0x819E000,0x2000,79,2},        /* flash sector idx 79 - 8kb        */
+	{0x81A0000,0x2000,80,2},        /* flash sector idx 80 - 8kb        */
+	{0x81A2000,0x2000,81,2},        /* flash sector idx 81 - 8kb        */
+	{0x81A4000,0x2000,82,2},        /* flash sector idx 82 - 8kb        */
+	{0x81A6000,0x2000,83,2},        /* flash sector idx 83 - 8kb        */
+	{0x81A8000,0x2000,84,2},        /* flash sector idx 84 - 8kb        */
+	{0x81AA000,0x2000,85,2},        /* flash sector idx 85 - 8kb        */
+	{0x81AC000,0x2000,86,2},        /* flash sector idx 86 - 8kb        */
+	{0x81AE000,0x2000,87,2},        /* flash sector idx 87 - 8kb        */
+	{0x81B0000,0x2000,88,2},        /* flash sector idx 88 - 8kb        */
+	{0x81B2000,0x2000,89,2},        /* flash sector idx 89 - 8kb        */
+	{0x81B4000,0x2000,90,2},        /* flash sector idx 90 - 8kb        */
+	{0x81B6000,0x2000,91,2},        /* flash sector idx 91 - 8kb        */
+	{0x81B8000,0x2000,92,2},        /* flash sector idx 92 - 8kb        */
+	{0x81BA000,0x2000,93,2},        /* flash sector idx 93 - 8kb        */
+	{0x81BC000,0x2000,94,2},        /* flash sector idx 94 - 8kb        */
+	{0x81BE000,0x2000,95,2},        /* flash sector idx 95 - 8kb        */
+	{0x81C0000,0x2000,96,2},        /* flash sector idx 96 - 8kb        */
+	{0x81C2000,0x2000,97,2},        /* flash sector idx 97 - 8kb        */
+	{0x81C4000,0x2000,98,2},        /* flash sector idx 98 - 8kb        */
+	{0x81C6000,0x2000,99,2},        /* flash sector idx 99 - 8kb        */
+	{0x81C8000,0x2000,100,2},        /* flash sector idx 100 - 8kb        */
+	{0x81CA000,0x2000,101,2},        /* flash sector idx 101 - 8kb        */
+	{0x81CC000,0x2000,102,2},        /* flash sector idx 102 - 8kb        */
+	{0x81CE000,0x2000,103,2},        /* flash sector idx 103 - 8kb        */
+	{0x81D0000,0x2000,104,2},        /* flash sector idx 104 - 8kb        */
+	{0x81D2000,0x2000,105,2},        /* flash sector idx 105 - 8kb        */
+	{0x81D4000,0x2000,106,2},        /* flash sector idx 106 - 8kb        */
+	{0x81D6000,0x2000,107,2},        /* flash sector idx 107 - 8kb        */
+	{0x81D8000,0x2000,108,2},        /* flash sector idx 108 - 8kb        */
+	{0x81DA000,0x2000,109,2},        /* flash sector idx 109 - 8kb        */
+	{0x81DC000,0x2000,110,2},        /* flash sector idx 110 - 8kb        */
+	{0x81DE000,0x2000,111,2},        /* flash sector idx 111 - 8kb        */
+	{0x81E0000,0x2000,112,2},        /* flash sector idx 112 - 8kb        */
+	{0x81E2000,0x2000,113,2},        /* flash sector idx 113 - 8kb        */
+	{0x81E4000,0x2000,114,2},        /* flash sector idx 114 - 8kb        */
+	{0x81E6000,0x2000,115,2},        /* flash sector idx 115 - 8kb        */
+	{0x81E8000,0x2000,116,2},        /* flash sector idx 116 - 8kb        */
+	{0x81EA000,0x2000,117,2},        /* flash sector idx 117 - 8kb        */
+	{0x81EC000,0x2000,118,2},        /* flash sector idx 118 - 8kb        */
+	{0x81EE000,0x2000,119,2},        /* flash sector idx 119 - 8kb        */
+	{0x81F0000,0x2000,120,2},        /* flash sector idx 120 - 8kb        */
+	{0x81F2000,0x2000,121,2},        /* flash sector idx 121 - 8kb        */
+	{0x81F4000,0x2000,122,2},        /* flash sector idx 122 - 8kb        */
+	{0x81F6000,0x2000,123,2},        /* flash sector idx 123 - 8kb        */
+	{0x81F8000,0x2000,124,2},        /* flash sector idx 124 - 8kb        */
+	{0x81FA000,0x2000,125,2},        /* flash sector idx 125 - 8kb        */
+	{0x81FC000,0x2000,126,2},        /* flash sector idx 126 - 8kb        */
+	{0x81FE000,0x2000,127,2},        /* flash sector idx 127 - 8kb        */
+
+#else
+ /* { 0x08000000, 0x20000, 0, 1 },     flash sector idx 0 - reserved for bootloader */
     { 0x08020000, 0x20000, 1, 1},        /* flash sector idx  1 - 128kb                */
     { 0x08040000, 0x20000, 2, 1},        /* flash sector idx  2 - 128kb                */
     { 0x08060000, 0x20000, 3, 1},        /* flash sector idx  3 - 128kb                */
@@ -166,6 +429,8 @@ static const tFlashSector flashLayout[] =
     { 0x081A0000, 0x20000, 5, 2},        /* flash sector idx 13 - 128kb                */
     { 0x081C0000, 0x20000, 6, 2},        /* flash sector idx 14 - 128kb                */
     { 0x081E0000, 0x20000, 7, 2},        /* flash sector idx 15 - 128kb                */
+#endif
+
 #else
 #error "BOOT_NVM_SIZE_KB > 2048 is currently not supported."
 #endif
@@ -707,7 +972,11 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   blt_addr              prog_addr;
   blt_int8u  volatile * prog_data;
   blt_int32u            word_cnt;
+#ifdef  STM32H7A3xxQ
+  blt_int8u  const      word_size = 16U;
+#else
   blt_int8u  const      word_size = 32U;
+#endif
   blt_int8u             byte_idx;
 
   /* check that the address is actually within flash */
@@ -839,7 +1108,9 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
       
       /* intialize the sector erase info structure */
       eraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
+#ifndef STM32H7A3xxQ
       eraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+#endif
       eraseInitStruct.Banks = flashLayout[sectorIdx].bank_num;
       eraseInitStruct.Sector = flashLayout[sectorIdx].sector_num;
       eraseInitStruct.NbSectors = 1;
