@@ -1,0 +1,396 @@
+###############################################################################
+#
+# IAR ELF Linker V9.10.2.313/W64 for ARM                  03/Aug/2022  13:36:45
+# Copyright 2007-2021 IAR Systems AB.
+#
+#    Output file  =
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\bin\demoprog_stm32l073.out
+#    Map file     =
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\demoprog_stm32l073.map
+#    Command line =
+#        -f
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\bin\demoprog_stm32l073.out.rsp
+#        (C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\boot.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\led.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\main.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\startup_stm32l073xx.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_cortex.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_dma.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_exti.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_flash.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_flash_ex.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_flash_ramfunc.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_gpio.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_i2c.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_i2c_ex.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_pwr.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_pwr_ex.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_rcc.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_rcc_ex.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_tim.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_tim_ex.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_uart.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver\stm32l0xx_hal_uart_ex.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\system_stm32l0xx.o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\timer.o
+#        --no_out_extension -o
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\bin\demoprog_stm32l073.out
+#        --redirect _Printf=_PrintfSmallNoMb --redirect _Scanf=_ScanfSmallNoMb
+#        --map
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\demoprog_stm32l073.map
+#        --config
+#        C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\ide\..\stm32l073xx_flash.icf
+#        --semihosting --entry __iar_program_start --vfe --text_out locale)
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+__dlib_version  = 6
+
+
+*******************************************************************************
+*** HEAP SELECTION
+***
+
+The basic heap was selected because no calls to memory allocation
+functions were found in the application outside of system library
+functions, and there are calls to deallocation functions in the
+application.
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A0":  place at address 0x800'2000 { ro section .intvec };
+"P1":  place in [from 0x800'2000 to 0x802'ffff] { ro };
+define block CSTACK with size = 1K, alignment = 8 { };
+define block HEAP with size = 512, alignment = 8 { };
+"P2":  place in [from 0x2000'0000 to 0x2000'4fff] {
+          rw, block CSTACK, block HEAP };
+initialize by copy { rw };
+
+  Section            Kind         Address    Size  Object
+  -------            ----         -------    ----  ------
+"A0":                                        0xc4
+  .intvec            ro code   0x800'2000    0xc4  startup_stm32l073xx.o [1]
+                             - 0x800'20c4    0xc4
+
+"P1":                                      0x1aa2
+  .text              ro code   0x800'20c4   0x90c  stm32l0xx_hal_rcc.o [3]
+  .text              ro code   0x800'29d0     0xc  stm32l0xx_hal.o [3]
+  .text              ro code   0x800'29dc    0x50  stm32l0xx_hal.o [3]
+  .text              ro code   0x800'2a2c    0x32  I64Mul.o [5]
+  .text              ro code   0x800'2a5e    0x7c  I64DivMod.o [5]
+  .text              ro code   0x800'2ada    0xae  I32DivModFast.o [5]
+  .text              ro code   0x800'2b88   0x10c  stm32l0xx_hal_cortex.o [3]
+  .text              ro code   0x800'2c94     0x2  I64DivZer.o [5]
+  .text              ro code   0x800'2c96     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'2c98     0x2  IntDivZer.o [5]
+  .text              ro code   0x800'2c9a     0x2  stm32l0xx_hal_cortex.o [3]
+  .text              ro code   0x800'2c9c   0x724  stm32l0xx_hal_uart.o [3]
+  .text              ro code   0x800'33c0     0x2  stm32l0xx_hal_uart.o [3]
+  .text              ro code   0x800'33c2     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'33c4   0x208  stm32l0xx_hal_gpio.o [3]
+  .text              ro code   0x800'35cc   0x168  main.o [1]
+  .text              ro code   0x800'3734   0x144  boot.o [1]
+  .text              ro code   0x800'3878    0x64  led.o [1]
+  .text              ro code   0x800'38dc    0x2c  stm32l0xx_hal.o [3]
+  .text              ro code   0x800'3908    0x3a  timer.o [1]
+  .text              ro code   0x800'3942    0x14  memset.o [5]
+  .text              ro code   0x800'3956     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3958    0x18  stm32l0xx_hal.o [3]
+  .text              ro code   0x800'3970    0x4e  ABImemset.o [5]
+  .text              ro code   0x800'39be    0x3c  zero_init3.o [5]
+  .text              ro code   0x800'39fa    0x30  copy_init3.o [5]
+  .text              ro code   0x800'3a2a     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3a2c    0x28  data_init.o [5]
+  .iar.init_table    const     0x800'3a54    0x24  - Linker created -
+  .text              ro code   0x800'3a78    0x1e  cmain.o [5]
+  .text              ro code   0x800'3a96     0x4  low_level_init.o [4]
+  .text              ro code   0x800'3a9a     0x8  exit.o [4]
+  .text              ro code   0x800'3aa2     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3aa4     0xa  cexit.o [5]
+  .text              ro code   0x800'3aae     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3ab0    0x14  exit.o [6]
+  .text              ro code   0x800'3ac4    0x1c  cstartup_M.o [5]
+  .text              ro code   0x800'3ae0    0x18  startup_stm32l073xx.o [1]
+  .rodata            const     0x800'3af8    0x10  system_stm32l0xx.o [2]
+  .rodata            const     0x800'3b08     0xc  system_stm32l0xx.o [2]
+  Initializer bytes  const     0x800'3b14     0xc  <for P2-1>
+  .text              ro code   0x800'3b20     0x2  startup_stm32l073xx.o [1]
+  .rodata            const     0x800'3b24     0x8  system_stm32l0xx.o [2]
+  .text              ro code   0x800'3b2c     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b2e     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b30     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b32     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b34     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b36     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b38     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b3a     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b3c     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b3e     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b40     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b42     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b44     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b46     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b48     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b4a     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b4c     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b4e     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b50     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b52     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b54     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b56     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b58     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b5a     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b5c     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b5e     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b60     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b62     0x2  startup_stm32l073xx.o [1]
+  .text              ro code   0x800'3b64     0x2  system_stm32l0xx.o [2]
+  .rodata            const     0x800'3b66     0x0  zero_init3.o [5]
+  .rodata            const     0x800'3b66     0x0  copy_init3.o [5]
+                             - 0x800'3b66  0x1aa2
+
+"P2", part 1 of 3:                            0xc
+  P2-1                        0x2000'0000     0x9  <Init block>
+    .data            inited   0x2000'0000     0x4  stm32l0xx_hal.o [3]
+    .data            inited   0x2000'0004     0x4  system_stm32l0xx.o [2]
+    .data            inited   0x2000'0008     0x1  stm32l0xx_hal.o [3]
+                            - 0x2000'0009     0x9
+
+"P2", part 2 of 3:                          0x118
+  .bss               zero     0x2000'000c    0x84  boot.o [1]
+  .bss               zero     0x2000'0090    0x84  boot.o [1]
+  .bss               zero     0x2000'0114     0x4  boot.o [1]
+  .bss               zero     0x2000'0118     0x4  led.o [1]
+  .bss               zero     0x2000'011c     0x4  stm32l0xx_hal.o [3]
+  .bss               zero     0x2000'0120     0x1  boot.o [1]
+  .bss               zero     0x2000'0121     0x1  boot.o [1]
+  .bss               zero     0x2000'0122     0x1  led.o [1]
+                            - 0x2000'0123   0x117
+
+"P2", part 3 of 3:                          0x400
+  CSTACK                      0x2000'0128   0x400  <Block>
+    CSTACK           uninit   0x2000'0128   0x400  <Block tail>
+                            - 0x2000'0528   0x400
+
+Unused ranges:
+
+         From           To      Size
+         ----           --      ----
+   0x800'3b66   0x802'ffff  0x2'c49a
+  0x2000'0124  0x2000'0127       0x4
+  0x2000'0528  0x2000'4fff    0x4ad8
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address      Size
+          -------      ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0x117:
+          0x2000'000c  0x117
+
+Copy (__iar_copy_init3)
+    1 source range, total size 0xc (133% of destination):
+           0x800'3b14    0xc
+    1 destination range, total size 0x9:
+          0x2000'0000    0x9
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module                  ro code  ro data  rw data
+    ------                  -------  -------  -------
+command line/config:
+    -------------------------------------------------
+    Total:
+
+C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog: [1]
+    boot.o                      324               270
+    led.o                       100                 5
+    main.o                      360
+    startup_stm32l073xx.o       290
+    timer.o                      58
+    -------------------------------------------------
+    Total:                    1'132               275
+
+C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib: [2]
+    system_stm32l0xx.o            2       40        4
+    -------------------------------------------------
+    Total:                        2       40        4
+
+C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver: [3]
+    stm32l0xx_hal.o             160        5        9
+    stm32l0xx_hal_cortex.o      270
+    stm32l0xx_hal_gpio.o        520
+    stm32l0xx_hal_rcc.o       2'316
+    stm32l0xx_hal_uart.o      1'830
+    -------------------------------------------------
+    Total:                    5'096        5        9
+
+dl6M_tln.a: [4]
+    exit.o                        8
+    low_level_init.o              4
+    -------------------------------------------------
+    Total:                       12
+
+rt6M_tl.a: [5]
+    ABImemset.o                  78
+    I32DivModFast.o             174
+    I64DivMod.o                 124
+    I64DivZer.o                   2
+    I64Mul.o                     50
+    IntDivZer.o                   2
+    cexit.o                      10
+    cmain.o                      30
+    copy_init3.o                 48
+    cstartup_M.o                 28
+    data_init.o                  40
+    memset.o                     20
+    zero_init3.o                 60
+    -------------------------------------------------
+    Total:                      666
+
+shb_l.a: [6]
+    exit.o                       20
+    -------------------------------------------------
+    Total:                       20
+
+    Gaps                                   2
+    Linker created                        39    1'024
+-----------------------------------------------------
+    Grand Total:              6'928       86    1'312
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                       Address   Size  Type      Object
+-----                       -------   ----  ----      ------
+.iar.init_table$$Base    0x800'3a54          --   Gb  - Linker created -
+.iar.init_table$$Limit   0x800'3a78          --   Gb  - Linker created -
+?main                    0x800'3a79         Code  Gb  cmain.o [5]
+AHBPrescTable            0x800'3af8   0x10  Data  Gb  system_stm32l0xx.o [2]
+APBPrescTable            0x800'3b24    0x8  Data  Gb  system_stm32l0xx.o [2]
+BootActivate             0x800'3759    0x8  Code  Gb  boot.o [1]
+BootComCheckActivationRequest
+                         0x800'3751    0x8  Code  Gb  boot.o [1]
+BootComInit              0x800'3749    0x8  Code  Gb  boot.o [1]
+BootComRs232CheckActivationRequest
+                         0x800'37a9   0x94  Code  Lc  boot.o [1]
+BootComRs232CheckActivationRequest::xcpCtoReqPacket
+                        0x2000'0090   0x84  Data  Lc  boot.o [1]
+BootComRs232CheckActivationRequest::xcpCtoRxInProgress
+                        0x2000'0121    0x1  Data  Lc  boot.o [1]
+BootComRs232CheckActivationRequest::xcpCtoRxLength
+                        0x2000'0120    0x1  Data  Lc  boot.o [1]
+BootComRs232CheckActivationRequest::xcpCtoRxStartTime
+                        0x2000'0114    0x4  Data  Lc  boot.o [1]
+BootComRs232Init         0x800'3761   0x48  Code  Lc  boot.o [1]
+CSTACK$$Base            0x2000'0128          --   Gb  - Linker created -
+CSTACK$$Limit           0x2000'0528          --   Gb  - Linker created -
+HAL_GPIO_Init            0x800'33c5  0x1c8  Code  Gb  stm32l0xx_hal_gpio.o [3]
+HAL_GPIO_WritePin        0x800'35a5   0x14  Code  Gb  stm32l0xx_hal_gpio.o [3]
+HAL_GetTick              0x800'29d1    0xc  Code  Gb  stm32l0xx_hal.o [3]
+HAL_IncTick              0x800'3959   0x18  Code  Gb  stm32l0xx_hal.o [3]
+HAL_Init                 0x800'38dd   0x28  Code  Gb  stm32l0xx_hal.o [3]
+HAL_InitTick             0x800'29dd   0x50  Code  Gb  stm32l0xx_hal.o [3]
+HAL_MspInit              0x800'367d   0x9a  Code  Gb  main.o [1]
+HAL_NVIC_SetPriority     0x800'2c45    0xa  Code  Gb  stm32l0xx_hal_cortex.o [3]
+HAL_RCC_ClockConfig      0x800'26cd  0x1e2  Code  Gb  stm32l0xx_hal_rcc.o [3]
+HAL_RCC_GetHCLKFreq      0x800'2967    0x6  Code  Gb  stm32l0xx_hal_rcc.o [3]
+HAL_RCC_GetPCLK1Freq     0x800'296d   0x18  Code  Gb  stm32l0xx_hal_rcc.o [3]
+HAL_RCC_GetPCLK2Freq     0x800'2985   0x18  Code  Gb  stm32l0xx_hal_rcc.o [3]
+HAL_RCC_GetSysClockFreq
+                         0x800'28c5   0xa2  Code  Gb  stm32l0xx_hal_rcc.o [3]
+HAL_RCC_OscConfig        0x800'20c5  0x5dc  Code  Gb  stm32l0xx_hal_rcc.o [3]
+HAL_SYSTICK_CLKSourceConfig
+                         0x800'2c57   0x22  Code  Gb  stm32l0xx_hal_cortex.o [3]
+HAL_SYSTICK_Callback     0x800'2c9b    0x2  Code  Gb  stm32l0xx_hal_cortex.o [3]
+HAL_SYSTICK_Config       0x800'2c4f    0x8  Code  Gb  stm32l0xx_hal_cortex.o [3]
+HAL_SYSTICK_IRQHandler   0x800'2c79    0x8  Code  Gb  stm32l0xx_hal_cortex.o [3]
+HAL_UART_Init            0x800'2c9d   0x7a  Code  Gb  stm32l0xx_hal_uart.o [3]
+HAL_UART_MspInit         0x800'33c1    0x2  Code  Gb  stm32l0xx_hal_uart.o [3]
+HAL_UART_Receive         0x800'2d1d  0x14a  Code  Gb  stm32l0xx_hal_uart.o [3]
+Init                     0x800'35e1   0x18  Code  Lc  main.o [1]
+LedInit                  0x800'3879   0x10  Code  Gb  led.o [1]
+LedToggle                0x800'3889   0x4a  Code  Gb  led.o [1]
+LedToggle::led_toggle_state
+                        0x2000'0122    0x1  Data  Lc  led.o [1]
+LedToggle::timer_counter_last
+                        0x2000'0118    0x4  Data  Lc  led.o [1]
+PLLMulTable              0x800'3b08    0xc  Data  Gb  system_stm32l0xx.o [2]
+Region$$Table$$Base      0x800'3a54          --   Gb  - Linker created -
+Region$$Table$$Limit     0x800'3a78          --   Gb  - Linker created -
+Rs232ReceiveByte         0x800'383d   0x1c  Code  Lc  boot.o [1]
+SysTick_Config           0x800'2c15   0x30  Code  Lc  stm32l0xx_hal_cortex.o [3]
+SysTick_Handler          0x800'3937    0xc  Code  Gb  timer.o [1]
+SystemClock_Config       0x800'3601   0x7c  Code  Lc  main.o [1]
+SystemCoreClock         0x2000'0004    0x4  Data  Gb  system_stm32l0xx.o [2]
+SystemInit               0x800'3b65    0x2  Code  Gb  system_stm32l0xx.o [2]
+TimerGet                 0x800'392f    0x8  Code  Gb  timer.o [1]
+TimerInit                0x800'3909   0x26  Code  Gb  timer.o [1]
+UART_AdvFeatureConfig    0x800'3149   0xde  Code  Gb  stm32l0xx_hal_uart.o [3]
+UART_CheckIdleState      0x800'3235   0x6a  Code  Gb  stm32l0xx_hal_uart.o [3]
+UART_SetConfig           0x800'2e6d  0x2bc  Code  Gb  stm32l0xx_hal_uart.o [3]
+UART_WaitOnFlagUntilTimeout
+                         0x800'32a9   0xe6  Code  Gb  stm32l0xx_hal_uart.o [3]
+VectorBase_Config        0x800'35f9    0x8  Code  Lc  main.o [1]
+__NVIC_SetPriority       0x800'2b89   0x8c  Code  Lc  stm32l0xx_hal_cortex.o [3]
+__NVIC_SystemReset       0x800'3735   0x14  Code  Lc  boot.o [1]
+__aeabi_idiv0            0x800'2c99         Code  Gb  IntDivZer.o [5]
+__aeabi_ldiv0            0x800'2c95         Code  Gb  I64DivZer.o [5]
+__aeabi_lmul             0x800'2a2d         Code  Gb  I64Mul.o [5]
+__aeabi_memset           0x800'3971         Code  Gb  ABImemset.o [5]
+__aeabi_uidiv            0x800'2adb         Code  Gb  I32DivModFast.o [5]
+__aeabi_uidivmod         0x800'2adb         Code  Gb  I32DivModFast.o [5]
+__aeabi_uldivmod         0x800'2a5f         Code  Gb  I64DivMod.o [5]
+__cmain                  0x800'3a79         Code  Gb  cmain.o [5]
+__exit                   0x800'3ab1   0x14  Code  Gb  exit.o [6]
+__iar_Memset4_word       0x800'3991         Code  Gb  ABImemset.o [5]
+__iar_Memset_word        0x800'397d         Code  Gb  ABImemset.o [5]
+__iar_copy_init3         0x800'39fb   0x30  Code  Gb  copy_init3.o [5]
+__iar_data_init3         0x800'3a2d   0x28  Code  Gb  data_init.o [5]
+__iar_program_start      0x800'3ac5         Code  Gb  cstartup_M.o [5]
+__iar_zero_init3         0x800'39bf   0x3c  Code  Gb  zero_init3.o [5]
+__low_level_init         0x800'3a97    0x4  Code  Gb  low_level_init.o [4]
+__vector_table           0x800'2000         Data  Gb  startup_stm32l073xx.o [1]
+_call_main               0x800'3a85         Code  Gb  cmain.o [5]
+_exit                    0x800'3aa5         Code  Gb  cexit.o [5]
+exit                     0x800'3a9b    0x8  Code  Gb  exit.o [4]
+main                     0x800'35cd   0x14  Code  Gb  main.o [1]
+memset                   0x800'3943   0x14  Code  Gb  memset.o [5]
+rs232Handle             0x2000'000c   0x84  Data  Lc  boot.o [1]
+uwTick                  0x2000'011c    0x4  Data  Gb  stm32l0xx_hal.o [3]
+uwTickFreq              0x2000'0008    0x1  Data  Gb  stm32l0xx_hal.o [3]
+uwTickPrio              0x2000'0000    0x4  Data  Gb  stm32l0xx_hal.o [3]
+
+
+[1] = C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog
+[2] = C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib
+[3] = C:\Work\software\OpenBLT_STM32L0_port\Target\Demo\ARMCM0_STM32L0_Nucleo_L073RZ_IAR\Prog\obj\Prog\lib\HAL_Driver
+[4] = dl6M_tln.a
+[5] = rt6M_tl.a
+[6] = shb_l.a
+
+  6'928 bytes of readonly  code memory
+     86 bytes of readonly  data memory
+  1'312 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

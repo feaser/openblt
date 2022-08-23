@@ -1,0 +1,52 @@
+/**
+\mainpage BootCommander - Command Line Firmware Update Tool
+\details
+\tableofcontents
+\section into Introduction
+BootCommander is a command line program for performing a firmware update on a connected 
+microcontroller target that runs the OpenBLT bootloader. It is written in the C 
+programming language (C99) and is cross-platform. It has been successfully tested on a 
+Windows PC, Linux PC and even embedded Linux systems such as a Raspberry Pi and a Beagle 
+Board.
+
+BootCommander is built on top of the OpenBLT Host Library (LibOpenBLT), which embeds all 
+functionality needed to communicate with the OpenBLT bootloader on the microcontroller 
+target.
+
+\image html bootcommander_architecture.png
+\image latex bootcommander_architecture.png
+
+This program is specifically developed for those that prefer a command line program over
+a program with a graphical user interface, such as MicroBoot. Additionally, it can
+serve as a reference on how to use LibOpenBLT.
+
+Refer to the OpenBLT website for additional information regarding the usage of the 
+BootCommander program, including a description of the available command line parameters 
+and step-by-step instructions on how to build the BootCommander program from sources:
+https://www.feaser.com/openblt/doku.php?id=manual:bootcommander.
+
+\verbatim
+----------------------------------------------------------------------------------------
+                          C O P Y R I G H T
+----------------------------------------------------------------------------------------
+               Copyright (c) 2017 Feaser. All rights reserved.
+
+----------------------------------------------------------------------------------------
+                            L I C E N S E
+----------------------------------------------------------------------------------------
+ This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+ modify it under the terms of the GNU General Public License as published by the Free
+ Software Foundation, either version 3 of the License, or (at your option) any later
+ version.
+
+ OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE. See the GNU General Public License for more details.
+
+ You have received a copy of the GNU General Public License along with OpenBLT. It 
+ should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
+----------------------------------------------------------------------------------------
+\endverbatim
+
+*/
+ 
