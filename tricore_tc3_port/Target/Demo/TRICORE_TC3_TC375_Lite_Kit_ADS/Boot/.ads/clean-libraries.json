@@ -1,0 +1,23 @@
+{
+	"name" : "Clean AURIX Project",
+	
+	"commands" : [
+		{
+			"type": "DELETE", 
+			"path": "/Libraries", 
+			"recipe": ".ads/clean.json"
+		},
+		{
+			"type": "DELETE", 
+			"path": "/.ads" 
+		},
+		{
+			"type": "DELETE", 
+			"path": "/Lcf_Gnuc_Tricore_Tc.lsl" 
+		},
+		{
+			"type": "DELETE", 
+			"path": "/Lcf_Tasking_Tricore_Tc.lsl"
+		}
+	]
+}
