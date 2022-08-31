@@ -39,19 +39,17 @@
 /** \brief Local variable for storing the number of milliseconds that have elapsed since
  *         startup.
  */
-static blt_int32u millisecond_counter = 0;
+static blt_int32u millisecond_counter;
 
 /** \brief Buffer for storing the last value of the lower 32-bits of the free running
  *         counter.
  */
-static blt_int32u free_running_counter_last = 0;
+static blt_int32u free_running_counter_last;
 
 /** \brief Stores the number of counts of the free running counter that equals one
- *         millisecond. The system timer (STM) is clocked by the system PLL (fPLL0). The
- *         STM clock frequency (fSTM) is the fPLL0 divided by the STMDIV bits in register
- *         CCUCON0. After a system reset, STMDIV is 3.
+ *         millisecond.
  */
-static blt_int32u counts_per_millisecond = BOOT_CPU_SYSTEM_SPEED_KHZ / 3U;
+static blt_int32u counts_per_millisecond;
 
 
 /************************************************************************************//**
@@ -61,9 +59,10 @@ static blt_int32u counts_per_millisecond = BOOT_CPU_SYSTEM_SPEED_KHZ / 3U;
 ****************************************************************************************/
 void TimerInit(void)
 {
-  /* Recalculate the number of counts of the free running counter that equals one
-   * millisecond, just in case the startup software (Ssw) changed the STMDIV bits in
-   * register CCUCON0.
+  /* Reset the timer configuration. */
+  TimerReset();
+  /* Calculate the number of counts of the free running counter that equals one
+   * millisecond.
    */
   counts_per_millisecond = IfxStm_getFrequency(&MODULE_STM0) / 1000U;
   /* Initialize the last free running counter variable, which is used for delta
@@ -83,23 +82,8 @@ void TimerInit(void)
 ****************************************************************************************/
 void TimerReset(void)
 {
-  float32 reset_stm_freq;
-
-  /* The startup software could have changed the STMDIV bits in register CCUCON0. By
-   * default it is 3 after a system reset. Calculate the default fSTM frequency after a
-   * reset.
-   */
-  reset_stm_freq = IfxScuCcu_getSourceFrequency(IfxScuCcu_Fsource_0) / 3U;
-  /* Did the startup software change it? */
-  if (reset_stm_freq != IfxStm_getFrequency(&MODULE_STM0))
-  {
-    /* Restore the default configuration that resembles the system reset state. */
-    (void)IfxScuCcu_setStmFrequency(reset_stm_freq);
-  }
-  /* Note that this timer driver only used the free running counter for reading purposes.
-   * The free running counter regsiter is read-only and therefore cannot be reset to 0.
-   * Consequently, nothing more needs to be done here.
-   */
+  /* Bring the system timer back into its reset state. */
+  IfxStm_resetModule(&MODULE_STM0);
 } /*** end of TimerReset ***/
 
 
