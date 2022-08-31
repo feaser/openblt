@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "IfxCpu.h"                              /* CPU driver                         */
 
 
 /************************************************************************************//**
@@ -39,10 +40,11 @@
 ****************************************************************************************/
 void CpuIrqDisable(void)
 {
-  /* TODO ##Port Disable the global interrupts. For safety and stability reasons, the
-   * bootloader does not use interrupts. This function is called to disable the
-   * generation of interrupt. It is called upon bootloader initialization by CpuInit().
+  /* Disable the global interrupts. For safety and stability reasons, the bootloader does
+   * not use interrupts. This function is called to disable the generation of interrupt.
+   * It is called upon bootloader initialization by CpuInit().
    */
+  IfxCpu_disableInterrupts();
 } /*** end of CpuIrqDisable ***/
 
 
@@ -53,11 +55,12 @@ void CpuIrqDisable(void)
 ****************************************************************************************/
 void CpuIrqEnable(void)
 {
-  /* TODO ##Port Enable the global interrupts. Not all, but some microcontrollers have
+  /* Enable the global interrupts. Not all, but some microcontrollers have
    * global interrupts enabled right after reset. In this case the bootloader should
    * enable the global interrupts again, right before the user program is started in
    * function CpuStartUserProgram(). 
    */
+  IfxCpu_enableInterrupts();
 } /*** end of CpuIrqEnable ***/
 
 

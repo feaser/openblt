@@ -446,7 +446,9 @@ blt_bool FlashWriteChecksum(void)
 blt_bool FlashVerifyChecksum(void)
 {
   blt_bool   result = BLT_TRUE;
+#if 0
   blt_int32u signature_checksum = 0;
+#endif
 
   /* TODO ##Port Implement code here that basically does the reverse of
    * FlashWriteChecksum(). Just make sure to read the values directory from flash memory
@@ -458,6 +460,12 @@ blt_bool FlashVerifyChecksum(void)
    * a value of 0 in case the signature checksum is valid.
    */
 
+  /* TODO ##Vg The following causes a system trap, so it was disabled for now. Look into
+   * it once development of the flash driver continues.
+   */
+  result = BLT_FALSE;
+
+#if 0
   /* verify the checksum based on how it was written by FlashWriteChecksum(). */
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x04));
@@ -476,6 +484,7 @@ blt_bool FlashVerifyChecksum(void)
     /* checksum not okay */
     result = BLT_FALSE;
   }
+#endif
   
   /* give the result back to the caller */
   return result;

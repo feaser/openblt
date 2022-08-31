@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "Stm/Std/IfxStm.h"                      /* STM driver                         */
 
 
 /****************************************************************************************
@@ -38,7 +39,19 @@
 /** \brief Local variable for storing the number of milliseconds that have elapsed since
  *         startup.
  */
-static blt_int32u millisecond_counter;
+static blt_int32u millisecond_counter = 0;
+
+/** \brief Buffer for storing the last value of the lower 32-bits of the free running
+ *         counter.
+ */
+static blt_int32u free_running_counter_last = 0;
+
+/** \brief Stores the number of counts of the free running counter that equals one
+ *         millisecond. The system timer (STM) is clocked by the system PLL (fPLL0). The
+ *         STM clock frequency (fSTM) is the fPLL0 divided by the STMDIV bits in register
+ *         CCUCON0. After a system reset, STMDIV is 3.
+ */
+static blt_int32u counts_per_millisecond = BOOT_CPU_SYSTEM_SPEED_KHZ / 3U;
 
 
 /************************************************************************************//**
@@ -48,14 +61,15 @@ static blt_int32u millisecond_counter;
 ****************************************************************************************/
 void TimerInit(void)
 {
-  /* Reset the timer configuration. */
-  TimerReset();
-
-  /* TODO ##Port Configure a timer peripheral such that 1 millisecond events can be
-   * detected. Note that the bootloader does not use interrupts, so this driver should
-   * also not generate timer related interrupts. 
+  /* Recalculate the number of counts of the free running counter that equals one
+   * millisecond, just in case the startup software (Ssw) changed the STMDIV bits in
+   * register CCUCON0.
    */
-
+  counts_per_millisecond = IfxStm_getFrequency(&MODULE_STM0) / 1000U;
+  /* Initialize the last free running counter variable, which is used for delta
+   * calculations.
+   */
+  free_running_counter_last = IfxStm_getLower(&MODULE_STM0);
   /* Reset the millisecond counter value. */
   millisecond_counter = 0;
 } /*** end of TimerInit ***/
@@ -69,8 +83,24 @@ void TimerInit(void)
 ****************************************************************************************/
 void TimerReset(void)
 {
-  /* TODO ##Port Set the timer peripheral back into the default reset value. */
-} /* end of TimerReset */
+  float32 reset_stm_freq;
+
+  /* The startup software could have changed the STMDIV bits in register CCUCON0. By
+   * default it is 3 after a system reset. Calculate the default fSTM frequency after a
+   * reset.
+   */
+  reset_stm_freq = IfxScuCcu_getSourceFrequency(IfxScuCcu_Fsource_0) / 3U;
+  /* Did the startup software change it? */
+  if (reset_stm_freq != IfxStm_getFrequency(&MODULE_STM0))
+  {
+    /* Restore the default configuration that resembles the system reset state. */
+    (void)IfxScuCcu_setStmFrequency(reset_stm_freq);
+  }
+  /* Note that this timer driver only used the free running counter for reading purposes.
+   * The free running counter regsiter is read-only and therefore cannot be reset to 0.
+   * Consequently, nothing more needs to be done here.
+   */
+} /*** end of TimerReset ***/
 
 
 /************************************************************************************//**
@@ -80,18 +110,27 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* TODO ##Port Check with the timer peripheral if the 1 millisecond event occured. This
-   * is typically done by looking at a flag bit this is set by the timer peripheral. An
-   * alternative solution would use the timer peripheral's free running counter. Just
-   * keep in mind that with the latter case, you would have to store the free running
-   * counter value of the last time the millisecond event occured. This you can compare
-   * it with the current value of the free running counter to determine if a millisecond
-   * passed.
+  blt_int32u free_running_counter_now;
+  blt_int32u delta_counts;
+  blt_int32u ms_counts;
+
+  /* Get the current value of the lower 32-bits of the free running counter. */
+  free_running_counter_now = IfxStm_getLower(&MODULE_STM0);
+  /* Calculate the number of counts that passed since the detection of the last
+   * millisecond event. Note that this calculation also works, in case the free running
+   * counter overflowed, thanks to integer math.
    */
-  if (1 == 0)
+  delta_counts = free_running_counter_now - free_running_counter_last;
+
+  /* Did one or more milliseconds pass since the last event? */
+  if (delta_counts >= counts_per_millisecond)
   {
-    /* Increment the millisecond counter. */
-    millisecond_counter++;
+    /* Calculate how many milliseconds passed. */
+    ms_counts = delta_counts / counts_per_millisecond;
+    /* Update the millisecond counter. */
+    millisecond_counter += ms_counts;
+    /* Store the counter value of the last millisecond event, to detect the next one. */
+    free_running_counter_last += (ms_counts * counts_per_millisecond);
   }
 } /*** end of TimerUpdate ***/
 

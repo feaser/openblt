@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* module header                      */
+#include "IfxPort.h"                             /* GPIO driver                        */
 
 
 /****************************************************************************************
@@ -48,10 +49,11 @@ static blt_int16u ledBlinkIntervalMs;
 ****************************************************************************************/
 void LedBlinkInit(blt_int16u interval_ms)
 {
-  /* TODO ##Boot Configure the GPIO pin that the LED is connected to, as a digital output
-   * and make sure the LED is turned off after this configuration.
-   */
-
+  /* initialization of the LED's GPIO pin */
+  IfxPort_setPinModeOutput(&MODULE_P00, 5U, IfxPort_OutputMode_pushPull,
+                                            IfxPort_OutputIdx_general);
+  /* make sure the LED is turned off by default. Note that it is low active */
+  IfxPort_setPinHigh(&MODULE_P00, 5U);
   /* store the interval time between LED toggles */
   ledBlinkIntervalMs = interval_ms;
 } /*** end of LedBlinkInit ***/
@@ -74,12 +76,14 @@ void LedBlinkTask(void)
     if (ledOn == BLT_FALSE)
     {
       ledOn = BLT_TRUE;
-      /* TODO ##Boot Turn the LED on. */
+      /* Turn the LED on. */
+      IfxPort_setPinLow(&MODULE_P00, 5U);
     }
     else
     {
       ledOn = BLT_FALSE;
-      /* TODO ##Boot Turn the LED off. */
+      /* Turn the LED off. */
+      IfxPort_setPinHigh(&MODULE_P00, 5U);
     }
     /* schedule the next blink event */
     nextBlinkEvent = TimerGet() + ledBlinkIntervalMs;
@@ -95,9 +99,8 @@ void LedBlinkTask(void)
 ****************************************************************************************/
 void LedBlinkExit(void)
 {
-  /* TODO ##Boot Turn the LED off and reset the GPIO pin configuration that was
-   * configured to drive the LED.
-   */
+  /* Turn the LED off. */
+  IfxPort_setPinHigh(&MODULE_P00, 5U);
 } /*** end of LedBlinkExit ***/
 
 
