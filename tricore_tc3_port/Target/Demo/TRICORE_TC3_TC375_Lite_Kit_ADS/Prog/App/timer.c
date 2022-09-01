@@ -70,6 +70,9 @@ void TimerInit(void)
   IfxStm_initCompareConfig(&timer_config);
   /* Set configuration data to generate an event in one millisecond from now. */
   timer_config.comparator = IfxStm_Comparator_0;
+  timer_config.comparatorInterrupt = IfxStm_ComparatorInterrupt_ir0;
+  timer_config.compareOffset = IfxStm_ComparatorOffset_0;
+  timer_config.compareSize = IfxStm_ComparatorSize_32Bits;
   timer_config.triggerPriority = TIMER_ISR_PRIORITY;
   timer_config.typeOfService = IfxSrc_Tos_cpu0;
   timer_config.ticks = counts_per_millisecond;
@@ -98,11 +101,42 @@ unsigned long TimerGet(void)
 IFX_INTERRUPT(TimerInterrupt, 0, TIMER_ISR_PRIORITY);
 void TimerInterrupt(void)
 {
+  unsigned long free_running_counter_now;
+  unsigned long compare_counter;
+  unsigned long delta_counts;
+
   /* Increment the millisecond counter. */
   millisecond_counter++;
-  /* Reschedule the system timer event for one millisecond from now. */
-  IfxStm_clearCompareFlag(&MODULE_STM0, IfxStm_Comparator_0);
+  /* Reschedule the system timer event for one millisecond from the last time it was
+   * scheduled. Note that this is relative to the last event and not to the current
+   * counter value. Otherwise you won't get an accurate one millisecond interval.
+   */
   IfxStm_increaseCompare(&MODULE_STM0, IfxStm_Comparator_0, counts_per_millisecond);
+  /* Get the current value of the lower 32-bits of the free running counter. */
+  free_running_counter_now = IfxStm_getLower(&MODULE_STM0);
+  /* Read out the current counter value of the compare register, which is also configured
+   * as the lower 32-bits.
+   */
+  compare_counter = IfxStm_getCompare(&MODULE_STM0, IfxStm_Comparator_0);
+  /* Calculate the difference in counts. */
+  delta_counts = compare_counter - free_running_counter_now;
+  /* It should be less or equal than a millisecond. If not, then a counter overrun
+   * occured. This can happen during debugging or when a higher priority interrupt
+   * took longer than a millisecond to run.
+   */
+  if (delta_counts > counts_per_millisecond)
+  {
+    /* Missed the event due to a counter overrun. It will now take way too long for the
+     * timer event to trigger, because the lower 32-bit of the free running counter needs
+     * to completely wrap around to reach the compare register value. Intervene by
+     * rescheduling the next timer event to be one millisecond from now, as opposed to
+     * one millisecond since the last event.
+     */
+    IfxStm_updateCompare(&MODULE_STM0, IfxStm_Comparator_0,
+                         free_running_counter_now + counts_per_millisecond);
+  }
+  /* Clear the interrupt flag for the next compare match interrupt to trigger. */
+  IfxStm_clearCompareFlag(&MODULE_STM0, IfxStm_Comparator_0);
 } /*** end of TimerInterrupt ***/
 
 
