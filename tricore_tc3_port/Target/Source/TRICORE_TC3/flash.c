@@ -462,6 +462,12 @@ blt_bool FlashVerifyChecksum(void)
 
   /* TODO ##Vg The following causes a system trap, so it was disabled for now. Look into
    * it once development of the flash driver continues.
+   * Might just have to a sequency like this:
+   *
+   *  uint16 psw = IfxScuWdt_getCpuWatchdogPassword();
+   *  IfxScuWdt_clearCpuEndinit(psw);
+   *  ... do stuff...
+   *  IfxScuWdt_setCpuEndinit(psw);
    */
   result = BLT_FALSE;
 

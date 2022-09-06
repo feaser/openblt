@@ -30,6 +30,14 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "IfxPort.h"                             /* GPIO driver                        */
+#include "IfxAsclin.h"                           /* ASCLIN baisc driver                */
+
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+static void Init(void);
 
 
 /************************************************************************************//**
@@ -40,7 +48,9 @@
 ****************************************************************************************/
 void AppInit(void)
 {
-  /* initialize the bootloader */
+  /* Initialize the microcontroller. */
+  Init();
+  /* Initialize the bootloader */
   BootInit();
 } /*** end of AppInit ***/
 
@@ -56,6 +66,30 @@ void AppTask(void)
   /* Run the bootloader task. */
   BootTask();
 } /*** end of AppTask ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the microcontroller.
+** \return    none.
+**
+****************************************************************************************/
+static void Init(void)
+{
+  /* Configure the LED GPIO pin P00.5. */
+  IfxPort_setPinModeOutput(&MODULE_P00, 5U, IfxPort_OutputMode_pushPull,
+                                            IfxPort_OutputIdx_general);
+#if (BOOT_COM_RS232_ENABLE > 0)
+  /* Enable the ASCLIN0 module. */
+  IfxAsclin_enableModule(&MODULE_ASCLIN0);
+  /* Disable the clock before configuring the GPIO pins. */
+  IfxAsclin_setClockSource(&MODULE_ASCLIN0, IfxAsclin_ClockSource_noClock);
+  /* Configure the ASCLIN0 GPIO pins P14.1 Rx and P14.0 Tx. */
+  IfxAsclin_initRxPin(&IfxAsclin0_RXA_P14_1_IN, IfxPort_InputMode_pullUp,
+                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  IfxAsclin_initTxPin(&IfxAsclin0_TX_P14_0_OUT, IfxPort_OutputMode_pushPull,
+                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
+#endif
+} /*** end of Init ***/
 
 
 /*********************************** end of app.c **************************************/

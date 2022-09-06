@@ -42,10 +42,6 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/* TODO ##Port Adjust the type definitions such that they match the microcontroller
- * architecture for which this port is being developed. These type definitions are quite
- * generic and can typically be left as is.
- */
 typedef unsigned char   blt_bool;                     /**<  boolean type               */
 typedef char            blt_char;                     /**<  character type             */
 typedef unsigned long   blt_addr;                     /**<  memory address type        */

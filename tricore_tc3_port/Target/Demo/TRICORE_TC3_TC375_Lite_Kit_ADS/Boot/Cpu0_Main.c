@@ -34,7 +34,7 @@ void core0_main(void)
     /* Disable the CPU0 and safety watchdog. */
     IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
     IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
-    
+
     /* Initialize the bootloader application. */
     AppInit();
 

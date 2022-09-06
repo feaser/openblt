@@ -49,9 +49,6 @@ static blt_int16u ledBlinkIntervalMs;
 ****************************************************************************************/
 void LedBlinkInit(blt_int16u interval_ms)
 {
-  /* initialization of the LED's GPIO pin */
-  IfxPort_setPinModeOutput(&MODULE_P00, 5U, IfxPort_OutputMode_pushPull,
-                                            IfxPort_OutputIdx_general);
   /* make sure the LED is turned off by default. Note that it is low active */
   IfxPort_setPinHigh(&MODULE_P00, 5U);
   /* store the interval time between LED toggles */
