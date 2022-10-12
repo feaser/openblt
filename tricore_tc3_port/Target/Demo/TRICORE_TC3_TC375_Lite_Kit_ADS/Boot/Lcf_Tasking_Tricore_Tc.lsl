@@ -208,21 +208,12 @@ derivative tc37
     memory pfls0
     {
         mau = 8;
-        size = 3M;
+        size = 32k; /* Size reserved for the bootloader. Matches flashLayout[]. */
         type = rom;
-        map     cached (dest=bus:sri, dest_offset=0x80000000,           size=3M);
-        map not_cached (dest=bus:sri, dest_offset=0xa0000000, reserved, size=3M);
+        map     cached (dest=bus:sri, dest_offset=0x80000000,           size=32k);
+        map not_cached (dest=bus:sri, dest_offset=0xa0000000, reserved, size=32k);
     }
-    
-    memory pfls1
-    {
-        mau = 8;
-        size = 3M;
-        type = rom;
-        map     cached (dest=bus:sri, dest_offset=0x80300000,           size=3M);
-        map not_cached (dest=bus:sri, dest_offset=0xa0300000, reserved, size=3M);
-    }
-    
+
     memory dfls0
     {
         mau = 8;
@@ -326,8 +317,8 @@ derivative tc37
         );
     }
 
-    /*Sections located at absolute fixed address*/
 
+    /*Sections located at absolute fixed address*/
     section_layout :vtc:linear
     {
         /*Fixed memory Allocations for stack memory and CSA*/
@@ -856,7 +847,7 @@ derivative tc37
         }
     }
     
-    /* PSRAM Code selections*/
+    
     section_layout :vtc:linear
     {
         /*Code Sections, selectable with patterns and user defined sections*/
