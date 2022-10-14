@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "Ifx_Ssw_Infra.h"                       /* startup software (SSW) driver.     */
+#include "IfxCpu.h"                              /* CPU driver.                        */
 
 
 /****************************************************************************************
@@ -39,6 +40,12 @@
 #if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
 extern blt_bool CpuUserProgramStartHook(void);
 #endif
+
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+static void CpuEnableUncorrectableEccErrorTrap(blt_bool enable);
 
 
 /************************************************************************************//**
@@ -53,6 +60,8 @@ void CpuInit(void)
    * be that the user program did not properly disable the interrupt generation of 
    * peripherals. */
   CpuIrqDisable();
+  /* disable the CPU trap when reading from an erased flash page. */
+  CpuEnableUncorrectableEccErrorTrap(BLT_FALSE);
 } /*** end of CpuInit ***/
 
 
@@ -100,6 +109,8 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the timer */
   TimerReset();
+  /* re-enable the CPU trap when reading from an erased flash page. */
+  CpuEnableUncorrectableEccErrorTrap(BLT_TRUE);
   
   /* after a reset, the global interrupts are disabled (ICR.IE=0) and the user program's
    * startup code is responsible for initializing the interrupt vector table and trap
@@ -175,5 +186,42 @@ void CpuMemSet(blt_addr dest, blt_int8u value, blt_int16u len)
   }
 } /*** end of CpuMemSet ***/
 
+
+/************************************************************************************//**
+** \brief     Enables or disables the reporting of an uncorrectable ECC error to the CPU.
+**            On this microcontroller, directly reading data from flash memory can result
+**            in a CPU trap, when that particular flash page is in the erased state. This
+**            is caused because an unprogrammed flash page also doesn't have its ECC bits
+**            set.
+** \param     enable BLT_TRUE to enable generation of the CPU trap, BLT_FALSE to disable.
+** \return    none.
+**
+****************************************************************************************/
+static void CpuEnableUncorrectableEccErrorTrap(blt_bool enable)
+{
+  IfxCpu_ResourceCpu coreIndex;
+  blt_int16u         password;
+  Ifx_CPU *          cpu;
+  blt_int8u          maskUEccVal;
+
+  /* get the index of the CPU that the bootloader runs on. */
+  coreIndex = IfxCpu_getCoreIndex();
+  /* access the core's CPU registers. */
+  cpu = IfxCpu_getAddress(coreIndex);
+  /* determine the MASKUECC value. */
+  if (enable)
+  {
+    maskUEccVal = 2; /* %10 */
+  }
+  else
+  {
+    maskUEccVal = 1; /* %01 */
+  }
+  /* write the new value of the MASKUECC bit field. */
+  password = IfxScuWdt_getGlobalEndinitPassword();
+  IfxScuWdt_clearGlobalEndinit(password);
+  cpu->FLASHCON1.B.MASKUECC = maskUEccVal;
+  IfxScuWdt_setGlobalEndinit(password);
+} /*** end of CpuEnableUncorrectableEccErrorTrap ***/
 
 /*********************************** end of cpu.c **************************************/

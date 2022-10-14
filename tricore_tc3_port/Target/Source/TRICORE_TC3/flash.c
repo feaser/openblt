@@ -378,20 +378,15 @@ blt_bool FlashWriteChecksum(void)
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
 
-  /* TODO ##Port Calculate and write the signature checksum such that it appears at the
-   * address configured with macro BOOT_FLASH_VECTOR_TABLE_CS_OFFSET. Use the 
-   * FlashWrite() function for the actual write operation. For a typical microcontroller,
-   * the bootBlock holds the program code that includes the user program's interrupt
-   * vector table and after which the 32-bit for the signature checksum is reserved.
-   * 
-   * Note that this means one extra dummy entry must be added at the end of the user 
-   * program's vector table to reserve storage space for the signature checksum value,
-   * which is then overwritten by this function.
+  /* for the TriCore TC3 target we defined the checksum as the One's complement value of
+   * the sum of the first 0x1C bytes in flash, which is the code of the reset handler.
    *
-   * The example here calculates a signature checksum by summing up the first 32-bit
-   * values in the bootBlock (so the first 7 interrupt vectors) and then taking the
-   * Two's complement of this sum. You can modify this to anything you like as long as
-   * the signature checksum is based on program code present in the bootBlock.
+   * signature_checksum = One's complement of (SUM(32-bit values in first 0x1C))
+   *
+   * the bootloader writes this 32-bit checksum value right the code reserved for the
+   * reset handler (0x1C). note that the user program linker script needs to be adjusted
+   * for this, to make sure 32-bits at 0x1C after that start of the user program is
+   * reserved for this, because the bootloader will overwrite it.
    */
 
   /* first check that the bootblock contains valid data. if not, this means the
@@ -424,7 +419,6 @@ blt_bool FlashWriteChecksum(void)
       signature_checksum += *((blt_int32u *)(&bootBlockInfo.data[0+0x14]));
       signature_checksum += *((blt_int32u *)(&bootBlockInfo.data[0+0x18]));
       signature_checksum  = ~signature_checksum; /* one's complement */
-      signature_checksum += 1; /* two's complement */
 
       /* write the checksum */
       result = FlashWrite(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET,
@@ -446,32 +440,9 @@ blt_bool FlashWriteChecksum(void)
 blt_bool FlashVerifyChecksum(void)
 {
   blt_bool   result = BLT_TRUE;
-#if 0
   blt_int32u signature_checksum = 0;
-#endif
+  blt_int32u signature_checksum_rom;
 
-  /* TODO ##Port Implement code here that basically does the reverse of
-   * FlashWriteChecksum(). Just make sure to read the values directory from flash memory
-   * and NOT from the bootBlock. 
-   * The example implementation reads the first 7 32-bit from the user program flash
-   * memory and sums them up. The signature checksum written by FlashWriteChecksum() was
-   * the Two complement's value. This means that if you add the previously written
-   * signature checksum value to the sum of the first 7 32-bit values, the result is
-   * a value of 0 in case the signature checksum is valid.
-   */
-
-  /* TODO ##Vg The following causes a system trap, so it was disabled for now. Look into
-   * it once development of the flash driver continues.
-   * Might just have to a sequency like this:
-   *
-   *  uint16 psw = IfxScuWdt_getCpuWatchdogPassword();
-   *  IfxScuWdt_clearCpuEndinit(psw);
-   *  ... do stuff...
-   *  IfxScuWdt_setCpuEndinit(psw);
-   */
-  result = BLT_FALSE;
-
-#if 0
   /* verify the checksum based on how it was written by FlashWriteChecksum(). */
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x04));
@@ -480,17 +451,19 @@ blt_bool FlashVerifyChecksum(void)
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x10));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x14));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x18));
-  /* add the checksum value that was written by FlashWriteChecksum(). Since this was a
-   * Two complement's value, the resulting value should equal 0.
-   */ 
-  signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET));
-  /* sum should add up to an unsigned 32-bit value of 0 */
-  if (signature_checksum != 0)
+  signature_checksum = ~signature_checksum; /* one's complement */
+
+  /* read the checksum value from flash that was writtin by the bootloader at the end
+   * of the last firmware update
+   */
+  signature_checksum_rom = *((blt_int32u *)(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET));
+
+  /* verify that checksums. they should both be the same. */
+  if (signature_checksum != signature_checksum_rom)
   {
     /* checksum not okay */
     result = BLT_FALSE;
   }
-#endif
   
   /* give the result back to the caller */
   return result;
