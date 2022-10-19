@@ -204,10 +204,6 @@ static void CpuEnableUncorrectableEccErrorTrap(blt_bool enable)
   Ifx_CPU *          cpu;
   blt_int8u          maskUEccVal;
 
-  /* get the index of the CPU that the bootloader runs on. */
-  coreIndex = IfxCpu_getCoreIndex();
-  /* access the core's CPU registers. */
-  cpu = IfxCpu_getAddress(coreIndex);
   /* determine the MASKUECC value. */
   if (enable)
   {
@@ -217,10 +213,25 @@ static void CpuEnableUncorrectableEccErrorTrap(blt_bool enable)
   {
     maskUEccVal = 1; /* %01 */
   }
-  /* write the new value of the MASKUECC bit field. */
+  /* get the current global endinit password for the CPU WDT Hardware module. */
   password = IfxScuWdt_getGlobalEndinitPassword();
+  /* disable EndInit protection. */
   IfxScuWdt_clearGlobalEndinit(password);
-  cpu->FLASHCON1.B.MASKUECC = maskUEccVal;
+  /* loop through all CPU cores. */
+  for (coreIndex = 0; coreIndex < IfxCpu_ResourceCpu_none; coreIndex++)
+  {
+    /* access the core's CPU registers. */
+    cpu = IfxCpu_getAddress(coreIndex);
+    /* assert pointer validity. */
+    ASSERT_RT(cpu != NULL_PTR);
+    /* only continue with a valid pointer. */
+    if (cpu != NULL_PTR)
+    {
+      /* write the new value of the MASKUECC bit field. */
+      cpu->FLASHCON1.B.MASKUECC = maskUEccVal;
+    }
+  }
+  /* re-enable EndInit protection. */
   IfxScuWdt_setGlobalEndinit(password);
 } /*** end of CpuEnableUncorrectableEccErrorTrap ***/
 
