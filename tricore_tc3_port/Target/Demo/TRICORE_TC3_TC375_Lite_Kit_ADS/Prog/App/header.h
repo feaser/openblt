@@ -37,6 +37,8 @@
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
 #include "IfxPort.h"                                   /* GPIO driver                  */
+#include "IfxScuRcu.h"                                 /* SCU driver                   */
+#include "IfxAsclin.h"                                 /* ASCLIN baisc driver          */
 #include "IfxStm.h"                                    /* System timer driver          */
 
 

@@ -78,6 +78,8 @@ static void Init(void)
   /* Configure the LED GPIO pin P00.5. */
   IfxPort_setPinModeOutput(&MODULE_P00, 5U, IfxPort_OutputMode_pushPull,
                                             IfxPort_OutputIdx_general);
+  /* Configure the pushbutton GPIO pin P00.7. */
+  IfxPort_setPinMode(&MODULE_P00, 7U, IfxPort_Mode_inputPullUp);
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* Enable the ASCLIN0 module. */
   IfxAsclin_enableModule(&MODULE_ASCLIN0);

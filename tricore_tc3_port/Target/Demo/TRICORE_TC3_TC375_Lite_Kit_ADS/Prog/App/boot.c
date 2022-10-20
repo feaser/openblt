@@ -75,12 +75,8 @@ void BootComCheckActivationRequest(void)
 ****************************************************************************************/
 void BootActivate(void)
 {
-  /* TODO ##Prog The bootloader is typically executed by performing a software reset. 
-   * Performing a software reset it typically supported by a microcontroller target. If
-   * not, then an alternative is to enable the watchdog here and then enter an infinite
-   * loop, which will trigger a watchdog reset. After a reset event the bootloader always
-   * runs first, so this is a valid method for activating the bootloader. 
-   */
+  /* trigger a system reset to activate the bootloader. */
+  IfxScuRcu_performReset(IfxScuRcu_ResetType_system, 0);
 } /*** end of BootActivate ***/
 
 
@@ -111,11 +107,65 @@ static unsigned char Rs232ReceiveByte(unsigned char *data);
 ****************************************************************************************/
 static void BootComRs232Init(void)
 {
-  /* TODO ##Prog Configure and initialize the UART peripheral for the configured UART
-   * channel. The communication speed should be set to the value configured with
-   * BOOT_COM_RS232_BAUDRATE in blt_conf.h. Further communication settings are: 
-   * 8 databits, no parity, and 1 stopbit. 
+  /* Enable the ASCLIN0 module. */
+  IfxAsclin_enableModule(&MODULE_ASCLIN0);
+  /* Disable the clock before configuring the GPIO pins. */
+  IfxAsclin_setClockSource(&MODULE_ASCLIN0, IfxAsclin_ClockSource_noClock);
+  /* Configure the ASCLIN0 GPIO pins P14.1 Rx and P14.0 Tx. */
+  IfxAsclin_initRxPin(&IfxAsclin0_RXA_P14_1_IN, IfxPort_InputMode_pullUp,
+                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  IfxAsclin_initTxPin(&IfxAsclin0_TX_P14_0_OUT, IfxPort_OutputMode_pushPull,
+                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  /* Enter initialization mode. */
+  IfxAsclin_setFrameMode(&MODULE_ASCLIN0, IfxAsclin_FrameMode_initialise);
+  /* Temporarily enable the clock source for the baudrate configuration. */
+  IfxAsclin_setClockSource(&MODULE_ASCLIN0, IfxAsclin_ClockSource_ascFastClock);
+  /* Configure the baudrate generator prescaler. */
+  IfxAsclin_setPrescaler(&MODULE_ASCLIN0, 1);
+  /* Configure the communication speed, while using an oversampling of 16 bits and sample
+   * three bits in the middle (7,8 and 9).
    */
+  (void)IfxAsclin_setBitTiming(&MODULE_ASCLIN0, (float32)BOOT_COM_RS232_BAUDRATE,
+                               IfxAsclin_OversamplingFactor_16,
+                               IfxAsclin_SamplePointPosition_9,
+                               IfxAsclin_SamplesPerBit_three);
+  /* Disable the clock again for now. */
+  IfxAsclin_setClockSource(&MODULE_ASCLIN0, IfxAsclin_ClockSource_noClock);
+  /* Disable loopback mode. */
+  IfxAsclin_enableLoopBackMode(&MODULE_ASCLIN0, FALSE);
+  /* Configure shift direction. */
+  IfxAsclin_setShiftDirection(&MODULE_ASCLIN0, IfxAsclin_ShiftDirection_lsbFirst);
+  /* Disable idle delay. */
+  IfxAsclin_setIdleDelay(&MODULE_ASCLIN0, IfxAsclin_IdleDelay_0);
+  /* Configure 8,N,1 format. */
+  IfxAsclin_enableParity(&MODULE_ASCLIN0, FALSE);
+  IfxAsclin_setStopBit(&MODULE_ASCLIN0, IfxAsclin_StopBit_1);
+  IfxAsclin_setDataLength(&MODULE_ASCLIN0, IfxAsclin_DataLength_8);
+  /* Configure transmit FIFO. Use the "Combined Mode", 8-bit wide write and generate a
+   * refill event when the filling level falls to 15 or below.
+   */
+  IfxAsclin_setTxFifoInletWidth(&MODULE_ASCLIN0, IfxAsclin_TxFifoInletWidth_1);
+  IfxAsclin_setTxFifoInterruptLevel(&MODULE_ASCLIN0, IfxAsclin_TxFifoInterruptLevel_15);
+  IfxAsclin_setTxFifoInterruptMode(&MODULE_ASCLIN0, IfxAsclin_FifoInterruptMode_combined);
+  /* Configure the receive FIFO. Use the "Combined Mode", 8-bit wide read and generate
+   * a drain event when the filling level rises to 1 or above.
+   */
+  IfxAsclin_setRxFifoOutletWidth(&MODULE_ASCLIN0, IfxAsclin_RxFifoOutletWidth_1);
+  IfxAsclin_setRxFifoInterruptLevel(&MODULE_ASCLIN0, IfxAsclin_RxFifoInterruptLevel_1);
+  IfxAsclin_setRxFifoInterruptMode(&MODULE_ASCLIN0, IfxAsclin_FifoInterruptMode_combined);
+  /* Leave initialization mode and switch to ASC mode. */
+  IfxAsclin_setFrameMode(&MODULE_ASCLIN0, IfxAsclin_FrameMode_asc);
+  /* Enable the clock source. */
+  IfxAsclin_setClockSource(&MODULE_ASCLIN0, IfxAsclin_ClockSource_ascFastClock);
+  /* Disable and clear all event flags. */
+  IfxAsclin_disableAllFlags(&MODULE_ASCLIN0);
+  IfxAsclin_clearAllFlags(&MODULE_ASCLIN0);
+  /* Enable the transmit and receive FIFOs. */
+  IfxAsclin_enableRxFifoInlet(&MODULE_ASCLIN0, TRUE);
+  IfxAsclin_enableTxFifoOutlet(&MODULE_ASCLIN0, TRUE);
+  /* Flush the FIFOs. */
+  IfxAsclin_flushRxFifo(&MODULE_ASCLIN0);
+  IfxAsclin_flushTxFifo(&MODULE_ASCLIN0);
 } /*** end of BootComRs232Init ***/
 
 
@@ -198,16 +248,11 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
 {
   unsigned char result = 0;
 
-  /* TODO ##Prog Check if a new byte was received on the configured channel. This is
-   * typically done by checking the reception register not empty flag. If a new byte 
-   * was received, read it out and store it in '*data'. Next, clear the reception flag
-   * such that a new byte can be received again. Finally, set 'result' to 1 to indicate
-   * to the caller of this function that a new byte was received and stored.
-   */
-  if (1 == 0)
+  /* check if a new byte was received on the configured channel. */
+  if (IfxAsclin_getRxFifoFillLevel(&MODULE_ASCLIN0) > 0)
   {
-    /* retrieve and store the newly received byte */
-    *data = 0;
+    /* retrieve and store the newly received byte, */
+    (void)IfxAsclin_read8(&MODULE_ASCLIN0, data, 1);
     /* update the result */
     result = 1;
   }

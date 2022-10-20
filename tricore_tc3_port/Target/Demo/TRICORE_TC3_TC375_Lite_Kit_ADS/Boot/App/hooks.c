@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* LED driver header                  */
+#include "IfxPort.h"                             /* GPIO driver                        */
 
 
 /****************************************************************************************
@@ -80,11 +81,7 @@ blt_bool CpuUserProgramStartHook(void)
   /* additional and optional backdoor entry through the pushbutton on the board. to
    * force the bootloader to stay active after reset, keep it pressed during reset.
    */
-  /* TODO ##Boot Optionally configure an extra backdoor entry to force the bootloader
-   * to stay active and not start the user program. For example if a digital input is
-   * in a specific state.
-   */ 
-  if (1 == 1)
+  if (IfxPort_getPinState(&MODULE_P00, 7U) == 0U)
   {
     /* pushbutton pressed, so do not start the user program and keep the
      * bootloader active instead.
