@@ -31,7 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_RS232_ENABLE > 0)
-#include "IfxAsclin.h"                           /* ASCLIN baisc driver                */
+#include "IfxAsclin.h"                           /* ASCLIN basic driver                */
 
 
 /****************************************************************************************

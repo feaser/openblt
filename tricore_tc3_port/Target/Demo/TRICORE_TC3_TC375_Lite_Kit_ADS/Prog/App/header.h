@@ -38,7 +38,8 @@
 #include "timer.h"                                     /* Timer driver                 */
 #include "IfxPort.h"                                   /* GPIO driver                  */
 #include "IfxScuRcu.h"                                 /* SCU driver                   */
-#include "IfxAsclin.h"                                 /* ASCLIN baisc driver          */
+#include "IfxAsclin.h"                                 /* ASCLIN basic driver          */
+#include "IfxCan.h"                                    /* MSMCAN basic driver          */
 #include "IfxStm.h"                                    /* System timer driver          */
 
 

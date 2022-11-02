@@ -31,7 +31,8 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "IfxPort.h"                             /* GPIO driver                        */
-#include "IfxAsclin.h"                           /* ASCLIN baisc driver                */
+#include "IfxAsclin.h"                           /* ASCLIN basic driver                */
+#include "IfxCan.h"                              /* MSMCAN basic driver                */
 
 
 /****************************************************************************************
@@ -90,6 +91,21 @@ static void Init(void)
                       IfxPort_PadDriver_cmosAutomotiveSpeed1);
   IfxAsclin_initTxPin(&IfxAsclin0_TX_P14_0_OUT, IfxPort_OutputMode_pushPull,
                       IfxPort_PadDriver_cmosAutomotiveSpeed1);
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Configure the STBY GPIO pin P20.6 as a digital output. */
+  IfxPort_setPinModeOutput(&MODULE_P20, 6U, IfxPort_OutputMode_pushPull,
+                                            IfxPort_OutputIdx_general);
+  /* Switch the CAN transceiver to normal mode by setting the STBY GPIO pin logic low. */
+  IfxPort_setPinLow(&MODULE_P20, 6U);
+  /* Enable the MODULE_CAN0 module. */
+  IfxCan_enableModule(&MODULE_CAN0);
+  /* Configure MCMCAN0 GPIO pins P20.8 Tx and P20.7 Rx (node 0). */
+  IfxCan_Node_initTxPin(&IfxCan_TXD00_P20_8_OUT, IfxPort_OutputMode_pushPull,
+                        IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  IfxCan_Node_initRxPin(&MODULE_CAN0.N[IfxCan_NodeId_0], &IfxCan_RXD00B_P20_7_IN,
+                        IfxPort_InputMode_pullUp,
+                        IfxPort_PadDriver_cmosAutomotiveSpeed1);
 #endif
 } /*** end of Init ***/
 
