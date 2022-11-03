@@ -279,117 +279,10 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
 ****************************************************************************************/
 
 /****************************************************************************************
-* Macro definitions
+* Local data declarations
 ****************************************************************************************/
-/** \brief Map the MCMCAN module that the selected communication node belongs to. */
-#define MCMCAN_MODULE   (&MODULE_CAN0)
-
-/** \brief Map the communication node to use. */
-#define MCMCAN_NODE     (&MODULE_CAN0.N[IfxCan_NodeId_0])
-
-/** \brief Start address in message RAM for storing the message reception acceptance
- * filters for 11-bit standard identifiers.
- */
-#define CAN_RX_FILTER_STD_MESSAGE_RAM_BASE_ADDR  (0x100)
-
-/** \brief Start address in message RAM for storing the message reception acceptance
- * filters for 29-bit extended identifiers.
- */
-#define CAN_RX_FILTER_EXT_MESSAGE_RAM_BASE_ADDR  (0x200)
-
-/** \brief Start address in message RAM for storing the received messages. */
-#define CAN_RX_BUFFERS_MESSAGE_RAM_BASE_ADDR     (0x300)
-
-/** \brief Start address in message RAM for storing the transmit messages. */
-#define CAN_TX_BUFFERS_MESSAGE_RAM_BASE_ADDR     (0x400)
-
-
-/****************************************************************************************
-* Type definitions
-****************************************************************************************/
-/** \brief Structure type for grouping CAN bus timing related information. */
-typedef struct t_can_bus_timing
-{
-  unsigned char tseg1;                                /**< CAN time segment 1          */
-  unsigned char tseg2;                                /**< CAN time segment 2          */
-} tCanBusTiming;
-
-
-/****************************************************************************************
-* Local constant declarations
-****************************************************************************************/
-/** \brief CAN bittiming table for dynamically calculating the bittiming settings.
- *  \details According to the CAN protocol 1 bit-time can be made up of between 8..25
- *           time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC
- *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) *
- *           100%. This array contains possible and valid time quanta configurations with
- *           a sample point between 68..78%.
- */
-static const tCanBusTiming canTiming[] =
-{                       /*  TQ | TSEG1 | TSEG2 | SP  */
-                        /* ------------------------- */
-    {  5, 2 },          /*   8 |   5   |   2   | 75% */
-    {  6, 2 },          /*   9 |   6   |   2   | 78% */
-    {  6, 3 },          /*  10 |   6   |   3   | 70% */
-    {  7, 3 },          /*  11 |   7   |   3   | 73% */
-    {  8, 3 },          /*  12 |   8   |   3   | 75% */
-    {  9, 3 },          /*  13 |   9   |   3   | 77% */
-    {  9, 4 },          /*  14 |   9   |   4   | 71% */
-    { 10, 4 },          /*  15 |  10   |   4   | 73% */
-    { 11, 4 },          /*  16 |  11   |   4   | 75% */
-    { 12, 4 },          /*  17 |  12   |   4   | 76% */
-    { 12, 5 },          /*  18 |  12   |   5   | 72% */
-    { 13, 5 },          /*  19 |  13   |   5   | 74% */
-    { 14, 5 },          /*  20 |  14   |   5   | 75% */
-    { 15, 5 },          /*  21 |  15   |   5   | 76% */
-    { 15, 6 },          /*  22 |  15   |   6   | 73% */
-    { 16, 6 },          /*  23 |  16   |   6   | 74% */
-    { 16, 7 },          /*  24 |  16   |   7   | 71% */
-    { 16, 8 }           /*  25 |  16   |   8   | 68% */
-};
-
-
-/************************************************************************************//**
-** \brief     Search algorithm to match the desired baudrate to a possible bus
-**            timing configuration.
-** \param     baud The desired baudrate in kbps. Valid values are 10..1000.
-** \param     prescaler Pointer to where the value for the prescaler will be stored.
-** \param     tseg1 Pointer to where the value for TSEG2 will be stored.
-** \param     tseg2 Pointer to where the value for TSEG2 will be stored.
-** \return    1 if the CAN bustiming register values were found, 0 otherwise.
-**
-****************************************************************************************/
-static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *prescaler,
-                                       unsigned char *tseg1, unsigned char *tseg2)
-{
-  unsigned char cnt;
-  unsigned long canClockFreqkHz;
-
-  /* determine the clock frequency that sources the CAN controller and is used for the
-   * baudrate generation.
-   */
-  canClockFreqkHz = ((unsigned long)IfxCan_getModuleFrequency()) / 1000;
-  /* loop through all possible time quanta configurations to find a match */
-  for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
-  {
-    if ((canClockFreqkHz % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
-    {
-      /* compute the prescaler that goes with this TQ configuration */
-      *prescaler = (unsigned short)(canClockFreqkHz/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1)));
-      /* make sure the prescaler is valid */
-      if ((*prescaler > 0) && (*prescaler <= 512))
-      {
-        /* store the bustiming configuration */
-        *tseg1 = canTiming[cnt].tseg1;
-        *tseg2 = canTiming[cnt].tseg2;
-        /* found a good bus timing configuration */
-        return 1;
-      }
-    }
-  }
-  /* could not find a good bus timing configuration */
-  return 0;
-} /*** end of CanGetSpeedConfig ***/
+/** \brief CAN node data structure. */
+static IfxCan_Can_Node canNode;
 
 
 /************************************************************************************//**
@@ -399,139 +292,75 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
 ****************************************************************************************/
 static void BootComCanInit(void)
 {
-  unsigned short prescaler = 0;
-  unsigned char  tseg1 = 0, tseg2 = 0;
-  unsigned long  rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
-  const IfxCan_ClockSelect clockSelectLookup[] =
-  {
-    IfxCan_ClockSelect_0,
-    IfxCan_ClockSelect_1,
-    IfxCan_ClockSelect_2,
-    IfxCan_ClockSelect_3
-  };
+  IfxCan_Can_Config canConfig;
+  IfxCan_Can canModule;
+  IfxCan_Can_NodeConfig canNodeConfig;
+  IfxCan_Can_Pins canPins;
+  IfxCan_Filter canFilter;
+  uint32 canRxMsgId = BOOT_COM_CAN_RX_MSG_ID & (~0x80000000);
+  boolean canRxMsgIdExtended = (BOOT_COM_CAN_RX_MSG_ID & 0x80000000) ? TRUE : FALSE;
 
-  /* Configure the STBY GPIO pin P20.6 as a digital output. */
+  /* configure the STBY GPIO pin P20.6 as a digital output. */
   IfxPort_setPinModeOutput(&MODULE_P20, 6U, IfxPort_OutputMode_pushPull,
                                             IfxPort_OutputIdx_general);
-  /* Switch the CAN transceiver to normal mode by setting the STBY GPIO pin logic low. */
+  /* switch the CAN transceiver to normal mode by setting the STBY GPIO pin logic low. */
   IfxPort_setPinLow(&MODULE_P20, 6U);
-  /* Enable the MCM CAN module. */
-  IfxCan_enableModule(MCMCAN_MODULE);
-  /* Configure MCMCAN0 GPIO pins P20.8 Tx and P20.7 Rx (node 0). */
-  IfxCan_Node_initTxPin(&IfxCan_TXD00_P20_8_OUT, IfxPort_OutputMode_pushPull,
-                        IfxPort_PadDriver_cmosAutomotiveSpeed1);
-  IfxCan_Node_initRxPin(MCMCAN_NODE, &IfxCan_RXD00B_P20_7_IN, IfxPort_InputMode_pullUp,
-                        IfxPort_PadDriver_cmosAutomotiveSpeed1);
-  /* enable both the synchronous and asynchronous clocks. The synchronous clock is used
-   * as the source for the register and RAM interface of the CAN controller. The
-   * asynchronous clock is used for the CAN baudrate generation.
+  /* prepare CAN Rx and Tx pin configuration. */
+  canPins.rxPin = &IfxCan_RXD00B_P20_7_IN;
+  canPins.rxPinMode = IfxPort_InputMode_pullUp;
+  canPins.txPin = &IfxCan_TXD00_P20_8_OUT;
+  canPins.txPinMode = IfxPort_OutputMode_pushPull;
+  canPins.padDriver = IfxPort_PadDriver_cmosAutomotiveSpeed2;
+  /* initialize the CAN module configuration structure and the module itself to enable
+   * it.
    */
-  IfxCan_setClockSource(MCMCAN_MODULE, clockSelectLookup[BOOT_COM_CAN_CHANNEL_INDEX % 4],
-                        IfxCan_ClockSource_both);
-  /* obtain bittiming configuration information. */
-  (void)CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &tseg1, &tseg2);
-  /* enable configuration change for the selected node. */
-  IfxCan_Node_enableConfigurationChange(MCMCAN_NODE);
-  /* configure the bittiming values for the baudrate configuration .*/
-  IfxCan_Node_setBitTimingValues(MCMCAN_NODE, 0, tseg1-1, tseg2-1, prescaler-1);
-  /* transmit frame configuration. this driver currently supports classic can, so the
-   * data field size is always max 8 bytes.
+  IfxCan_Can_initModuleConfig(&canConfig, &MODULE_CAN0);
+  IfxCan_Can_initModule(&canModule, &canConfig);
+  /* initialize the CAN node configuration structure. */
+  IfxCan_Can_initNodeConfig(&canNodeConfig, &canModule);
+  /* prepare CAN node configuration. note that this CAN driver just needs to receive
+   * one specific message with either a 11-bit or 29-bit CAN identifier in dedicated
+   * reception buffer 0, in a polling manner.
    */
-  IfxCan_Node_setTxBufferDataFieldSize(MCMCAN_NODE, IfxCan_DataFieldSize_8);
-  /* this driver uses one dedicated transmit buffer. this CAN module with 4 nodes has
-   * 16kb message RAM. That's more than plenty, since this driver only uses one node.
-   * basically just pick an address in RAM where you want to place the transmit message.
-   * note that the entry of a transmit message with a datafield of 8 requires 4 32-bit
-   * elements, so 16 (0x10) bytes.
-   */
-  IfxCan_Node_setTxBuffersStartAddress(MCMCAN_NODE, CAN_TX_BUFFERS_MESSAGE_RAM_BASE_ADDR);
-  /* configure the number of dedicated transmit buffers to use. this driver only needs to
-   * transmit one specific CAN message. therefore only one transmit buffer is needed.
-   */
-  IfxCan_Node_setDedicatedTxBuffersNumber(MCMCAN_NODE, 1);
-  /* reception frame configuration. this driver currently supports classic can, so the
-   * data field size is always max 8 bytes.
-   */
-  IfxCan_Node_setRxBufferDataFieldSize(MCMCAN_NODE, IfxCan_DataFieldSize_8);
-  /* just pick an address in mesage RAM where you want to place the received message.
-   * note that the entry of a reception message with a datafield of 8 requires 4 32-bit
-   * elements, so 16 (0x10) bytes.
-   */
-  IfxCan_Node_setRxBuffersStartAddress(MCMCAN_NODE, CAN_RX_BUFFERS_MESSAGE_RAM_BASE_ADDR);
-  /* set the message RAM base addresses for storing reception filters configuration. This
-   * driver only uses one filter. Note that the entry of a reception filter requires a
-   * 32-bit word, so 4 bytes.
-   */
-  IfxCan_Node_setStandardFilterListStartAddress(MCMCAN_NODE,
-                                                CAN_RX_FILTER_STD_MESSAGE_RAM_BASE_ADDR);
-  IfxCan_Node_setExtendedFilterListStartAddress(MCMCAN_NODE,
-                                                CAN_RX_FILTER_EXT_MESSAGE_RAM_BASE_ADDR);
-  /* does the message that this driver is supposed to receive have an 11-bit standard
-   * identifier?
-   */
-  if ((rxMsgId & 0x80000000) == 0)
+  canNodeConfig.nodeId = IfxCan_NodeId_0;
+  canNodeConfig.pins = &canPins;
+  canNodeConfig.baudRate.baudrate = BOOT_COM_CAN_BAUDRATE;
+  canNodeConfig.filterConfig.rejectRemoteFramesWithStandardId = 1;
+  canNodeConfig.filterConfig.rejectRemoteFramesWithExtendedId = 1;
+  canNodeConfig.filterConfig.standardFilterForNonMatchingFrames = IfxCan_NonMatchingFrame_reject;
+  canNodeConfig.filterConfig.extendedFilterForNonMatchingFrames = IfxCan_NonMatchingFrame_reject;
+  canNodeConfig.filterConfig.standardListSize = 1;
+  canNodeConfig.filterConfig.extendedListSize = 1;
+  /* configure the ID type of the message to receive. */
+  if (canRxMsgIdExtended == FALSE)
   {
-    /* configure the number of reception acceptance filter accordingly. */
-    IfxCan_Node_setStandardFilterListSize(MCMCAN_NODE, 1);
-    IfxCan_Node_setExtendedFilterListSize(MCMCAN_NODE, 0);
-    /* obtain message RAM pointer for the reception filter buffer 0. */
-    Ifx_CAN_STDMSG * rxFilter0;
-    rxFilter0 = IfxCan_Node_getStandardFilterElementAddress((unsigned long)MCMCAN_MODULE->RAM,
-                                                            CAN_RX_FILTER_STD_MESSAGE_RAM_BASE_ADDR,
-                                                            0);
-    /* link the filter to the dedicated reception buffer 0. */
-    IfxCan_Node_setStandardFilterRxBufferOffset(rxFilter0, IfxCan_RxBufferId_0);
-    /* store the message identifier that the reception filter should accept. */
-    IfxCan_Node_setStandardFilterId1(rxFilter0, rxMsgId);
-    /* configure the filter to store an identifier matched newly received message
-     * directly in the dedicated reception buffer 0.
-     */
-    IfxCan_Node_setStandardFilterConfiguration(rxFilter0, IfxCan_FilterElementConfiguration_storeInRxBuffer);
-    /* note that there is no need to call IfxCan_Node_setStandardFilterType() because
-     * this setting (SFT-bits) is ignored when the filter is configured to store the
-     * received message directly in the dedicated reception buffer
-     * (IfxCan_FilterElementConfiguration_storeInRxBuffer)
-     */
+    canNodeConfig.filterConfig.messageIdLength = IfxCan_MessageIdLength_standard;
   }
-  /* the message to receive has a 29-bit extented identifier. */
   else
   {
-    /* negate the ID-type bit */
-    rxMsgId &= ~0x80000000;
-    /* configure the number of reception acceptance filter accordingly. */
-    IfxCan_Node_setStandardFilterListSize(MCMCAN_NODE, 0);
-    IfxCan_Node_setExtendedFilterListSize(MCMCAN_NODE, 1);
-    /* obtain message RAM pointer for the reception filter buffer 0. */
-    Ifx_CAN_EXTMSG * rxFilter0;
-    rxFilter0 = IfxCan_Node_getExtendedFilterElementAddress((unsigned long)MCMCAN_MODULE->RAM,
-                                                            CAN_RX_FILTER_EXT_MESSAGE_RAM_BASE_ADDR,
-                                                            0);
-    /* link the filter to the dedicated reception buffer 0. */
-    IfxCan_Node_setExtendedFilterRxBufferOffset(rxFilter0, IfxCan_RxBufferId_0);
-    /* store the message identifier that the reception filter should accept. */
-    IfxCan_Node_setExtendedFilterId1(rxFilter0, rxMsgId);
-    /* configure the filter to store an identifier matched newly received message
-     * directly in the dedicated reception buffer 0.
-     */
-    IfxCan_Node_setExtendedFilterConfiguration(rxFilter0, IfxCan_FilterElementConfiguration_storeInRxBuffer);
-    /* note that there is no need to call IfxCan_Node_setExtendedFilterType() because
-     * this setting (SFT-bits) is ignored when the filter is configured to store the
-     * received message directly in the dedicated reception buffer
-     * (IfxCan_FilterElementConfiguration_storeInRxBuffer)
-     */
+    canNodeConfig.filterConfig.messageIdLength = IfxCan_MessageIdLength_extended;
   }
-  /* no need to forward other message identifiers to a reception FIFO. */
-  IfxCan_Node_configureStandardFilterForNonMatchingFrames(MCMCAN_NODE,
-                                                          IfxCan_NonMatchingFrame_reject);
-  IfxCan_Node_configureExtendedFilterForNonMatchingFrames(MCMCAN_NODE,
-                                                          IfxCan_NonMatchingFrame_reject);
-  /* this driver is not interested in receiving remote frames either. */
-  IfxCan_Node_rejectRemoteFramesWithStandardId(MCMCAN_NODE);
-  IfxCan_Node_rejectRemoteFramesWithExtendedId(MCMCAN_NODE);
-  /* this driver only needs to send and receive standard (classic) CAN frames. */
-  IfxCan_Node_setFrameMode(MCMCAN_NODE, IfxCan_FrameMode_standard);
-  /* disable configuration for the selected node. */
-  IfxCan_Node_disableConfigurationChange(MCMCAN_NODE);
+  /* initialize the CAN node. */
+  IfxCan_Can_initNode(&canNode, &canNodeConfig);
+  /* prepare reception acceptance filter 0 configuration for the dedicated reception
+   * buffer 0.
+   */
+  canFilter.number = 0;
+  canFilter.elementConfiguration = IfxCan_FilterElementConfiguration_storeInRxBuffer;
+  canFilter.rxBufferOffset = IfxCan_RxBufferId_0;
+  canFilter.id1 = canRxMsgId;
+  /* does the reception message have an 11-bit standard identifier? */
+  if (canRxMsgIdExtended == FALSE)
+  {
+    /* assign the filter to the node. */
+    IfxCan_Can_setStandardFilter(&canNode, &canFilter);
+  }
+  /* it has a 29-bit extended identifier. */
+  else
+  {
+    /* assign the filter to the node. */
+    IfxCan_Can_setExtendedFilter(&canNode, &canFilter);
+  }
 } /*** end of BootComCanInit ***/
 
 
@@ -543,56 +372,32 @@ static void BootComCanInit(void)
 ****************************************************************************************/
 static void BootComCanCheckActivationRequest(void)
 {
-  /* lookup table for converting the DLC value (0..8) into the data length code type that
-   * the driver library uses.
-   */
-  const IfxCan_DataLengthCode dataLenLookup[] =
-  {
-    IfxCan_DataLengthCode_0,
-    IfxCan_DataLengthCode_1,
-    IfxCan_DataLengthCode_2,
-    IfxCan_DataLengthCode_3,
-    IfxCan_DataLengthCode_4,
-    IfxCan_DataLengthCode_5,
-    IfxCan_DataLengthCode_6,
-    IfxCan_DataLengthCode_7,
-    IfxCan_DataLengthCode_8
-  };
-  Ifx_CAN_RXMSG * rxBuf0;
-  unsigned long rxMsgData[2];
-  unsigned char rxByte0;
-  unsigned char rxMsgLen;
+  IfxCan_Message rxMsg;
+  uint32 rxMsgData[2];
+  uint8 rxMsgLen;
+  uint8 rxByte0;
 
   /* was the expected CAN message received in the dedicated reception buffer 0? */
-  if (IfxCan_Node_isRxBufferNewDataUpdated(MCMCAN_NODE, IfxCan_RxBufferId_0) == TRUE)
+  if (IfxCan_Can_isNewDataReceived(&canNode, IfxCan_RxBufferId_0) > 0)
   {
-    /* obtain message RAM pointer for the dedicated reception buffer 0. */
-    rxBuf0 = IfxCan_Node_getRxBufferElementAddress(MCMCAN_NODE,
-                                                   (unsigned long)MCMCAN_MODULE->RAM,
-                                                   CAN_RX_BUFFERS_MESSAGE_RAM_BASE_ADDR,
-                                                   IfxCan_RxBufferId_0);
-    /* note that the reception acceptance filter for this dedicated reception buffer 0
-     * is already configured to only receive the one message with identfier
-     * BOOT_COM_CAN_RX_MSG_ID and correct type (STD/EXT), so there is no need to double
-     * check the identifier here. continue with reading out the data length.
+    /* initialize the message structure. */
+    IfxCan_Can_initMessage(&rxMsg);
+    /* read out the message and its data. note that the reception acceptance filter for
+     * this dedicated reception buffer 0 is already configured to only receive the one
+     * message with identfier BOOT_COM_CAN_RX_MSG_ID and correct type (STD/EXT), so there
+     * is no need to double check the identifier here.
      */
-    rxMsgLen = (unsigned char)IfxCan_Node_getDataLengthCode(rxBuf0);
-    /* only continue with the message reception if the length is valid. */
-    if (rxMsgLen <= 8)
+    IfxCan_Can_readMessage(&canNode, &rxMsg, rxMsgData);
+    /* read the message length. */
+    rxMsgLen = (uint8)rxMsg.dataLengthCode;
+    /* read out the first data byte. */
+    rxByte0 = (unsigned char)(rxMsgData[0] & 0x000000FF);
+    /* check if this was an XCP CONNECT command. */
+    if ((rxByte0 == 0xff) && (rxMsgLen == 2))
     {
-      /* retrieve the data bytes. */
-      IfxCan_Node_readData(rxBuf0, dataLenLookup[rxMsgLen], (uint32 *)rxMsgData);
-      /* read out the first data byte. */
-      rxByte0 = (unsigned char)(rxMsgData[0] & 0x000000FF);
-      /* check if this was an XCP CONNECT command */
-      if ((rxByte0 == 0xff) && (rxMsgLen == 2))
-      {
-        /* connection request received so start the bootloader */
-        BootActivate();
-      }
+      /* connection request received so start the bootloader */
+      BootActivate();
     }
-    /* clear newdata flag after reading. */
-    IfxCan_Node_clearRxBufferNewDataFlag(MCMCAN_NODE, IfxCan_RxBufferId_0);
   }
 } /*** end of BootComCanCheckActivationRequest ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */

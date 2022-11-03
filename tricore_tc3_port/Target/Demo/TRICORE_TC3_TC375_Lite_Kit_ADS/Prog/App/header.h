@@ -40,6 +40,7 @@
 #include "IfxScuRcu.h"                                 /* SCU driver                   */
 #include "IfxAsclin.h"                                 /* ASCLIN basic driver          */
 #include "IfxCan.h"                                    /* MSMCAN basic driver          */
+#include "IfxCan_Can.h"                                /* MSMCAN detailed driver       */
 #include "IfxStm.h"                                    /* System timer driver          */
 
 
