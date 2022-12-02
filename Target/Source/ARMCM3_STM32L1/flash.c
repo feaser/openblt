@@ -49,8 +49,13 @@
 /** \brief End address of the bootloader programmable flash. */
 #define FLASH_END_ADDRESS               (flashLayout[FLASH_LAST_SEGMENT_IDX].sector_start + \
                                          flashLayout[FLASH_LAST_SEGMENT_IDX].sector_size - 1)
-/** \brief Number of bytes to erase per erase operation. */
-#define FLASH_ERASE_BLOCK_SIZE          (FLASH_PAGE_SIZE)
+/** \brief Number of bytes to erase per erase operation. Usually this is set to the value
+ *         as defined by hardware (FLASH_PAGE_SIZE). However, on the STM32L1, this value
+ *         is less than FLASH_WRITE_BLOCK_SIZE, which would lead to problems. Therefore
+ *         this macro was set to a value that is a multiple of bothFLASH_WRITE_BLOCK_SIZE
+ *         and FLASH_PAGE_SIZE.
+ */
+#define FLASH_ERASE_BLOCK_SIZE          (2048)
 /** \brief Offset into the user program's vector table where the checksum is located. 
  *         For this target it is set to the end of the vector table. Note that the 
  *         value can be overridden in blt_conf.h, because the size of the vector table
@@ -134,7 +139,7 @@ static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
  *           If the bootloader size changes, the reserved sectors for the bootloader
  *           might need adjustment to make sure the bootloader doesn't get overwritten.
  *           The current flash layout does not reflect the minimum sector size of the
- *           physical flash (1 - 2kb), because this would make the table quit long and
+ *           physical flash (128 bytes), because this would make the table quit long and
  *           a waste of ROM. The minimum sector size is only really needed when erasing
  *           the flash. This can still be done in combination with macro
  *           FLASH_ERASE_BLOCK_SIZE.
@@ -145,40 +150,48 @@ static const tFlashSector flashLayout[] =
    * interfaces enabled. when for example only UART is needed, than the space required
    * for the bootloader can be made a lot smaller here.
    */
-  /* { 0x08000000, 0x01000 },              flash sector   0 - reserved for bootloader  */
-  /* { 0x08001000, 0x01000 },              flash sector   1 - reserved for bootloader  */
-  { 0x08002000, 0x01000 },              /* flash sector   2 - 4kb                      */
-  { 0x08003000, 0x01000 },              /* flash sector   3 - 4kb                      */
-  { 0x08004000, 0x01000 },              /* flash sector   4 - 4kb                      */
-  { 0x08005000, 0x01000 },              /* flash sector   5 - 4kb                      */
-  { 0x08006000, 0x01000 },              /* flash sector   6 - 4kb                      */
-  { 0x08007000, 0x01000 },              /* flash sector   7 - 4kb                      */
+  /* { 0x08000000, 0x00800 },              flash sector   0 - reserved for bootloader  */
+  /* { 0x08000800, 0x00800 },              flash sector   1 - reserved for bootloader  */
+  /* { 0x08001000, 0x00800 },              flash sector   2 - reserved for bootloader  */
+  /* { 0x08001800, 0x00800 },              flash sector   3 - reserved for bootloader  */
+  { 0x08002000, 0x00800 },              /* flash sector   4 - 2kb                      */
+  { 0x08002800, 0x00800 },              /* flash sector   5 - 2kb                      */
+  { 0x08003000, 0x00800 },              /* flash sector   6 - 2kb                      */
+  { 0x08003800, 0x00800 },              /* flash sector   7 - 2kb                      */
+  { 0x08004000, 0x00800 },              /* flash sector   8 - 2kb                      */
+  { 0x08004800, 0x00800 },              /* flash sector   9 - 2kb                      */
+  { 0x08005000, 0x00800 },              /* flash sector  10 - 2kb                      */
+  { 0x08005800, 0x00800 },              /* flash sector  11 - 2kb                      */
+  { 0x08006000, 0x00800 },              /* flash sector  12 - 2kb                      */
+  { 0x08006800, 0x00800 },              /* flash sector  13 - 2kb                      */
+  { 0x08007000, 0x00800 },              /* flash sector  14 - 2kb                      */
+  { 0x08007800, 0x00800 },              /* flash sector  15 - 2kb                      */
 #if (BOOT_NVM_SIZE_KB > 32)
-  { 0x08008000, 0x08000 },              /* flash sector   8-15 - 32kb                  */
+  { 0x08008000, 0x08000 },              /* flash sector  16-31  - 32kb                 */
 #endif
 #if (BOOT_NVM_SIZE_KB > 64)
-  { 0x08010000, 0x08000 },              /* flash sector  16-23 - 32kb                  */
-  { 0x08018000, 0x08000 },              /* flash sector  24-31 - 32kb                  */
+  { 0x08010000, 0x08000 },              /* flash sector  32-47  - 32kb                 */
+  { 0x08018000, 0x08000 },              /* flash sector  48-63  - 32kb                 */
 #endif
 #if (BOOT_NVM_SIZE_KB > 128)
-  { 0x08020000, 0x08000 },              /* flash sector  32-39 - 32kb                  */
-  { 0x08028000, 0x08000 },              /* flash sector  40-47 - 32kb                  */
+  { 0x08020000, 0x08000 },              /* flash sector  64-79  - 32kb                 */
+  { 0x08028000, 0x08000 },              /* flash sector  80-95  - 32kb                 */
 #endif
 #if (BOOT_NVM_SIZE_KB > 192)
-  { 0x08030000, 0x08000 },              /* flash sector  48-55 - 32kb                  */
-  { 0x08038000, 0x08000 },              /* flash sector  56-63 - 32kb                  */
+  { 0x08030000, 0x08000 },              /* flash sector  96-111 - 32kb                 */
+  { 0x08038000, 0x08000 },              /* flash sector 112-127 - 32kb                 */
 #endif
 #if (BOOT_NVM_SIZE_KB > 256)
-  { 0x08040000, 0x08000 },              /* flash sector  64-71 - 32kb                  */
-  { 0x08048000, 0x08000 },              /* flash sector  72-79 - 32kb                  */
-  { 0x08050000, 0x08000 },              /* flash sector  80-87 - 32kb                  */
-  { 0x08058000, 0x08000 },              /* flash sector  88-95 - 32kb                  */
+  { 0x08040000, 0x08000 },              /* flash sector 128-143 - 32kb                 */
+  { 0x08048000, 0x08000 },              /* flash sector 144-159 - 32kb                 */
+  { 0x08050000, 0x08000 },              /* flash sector 160-175 - 32kb                 */
+  { 0x08058000, 0x08000 },              /* flash sector 176-191 - 32kb                 */
 #endif
 #if (BOOT_NVM_SIZE_KB > 384)
-  { 0x08060000, 0x08000 },              /* flash sector  96-103 - 32kb                 */
-  { 0x08068000, 0x08000 },              /* flash sector 104-111 - 32kb                 */
-  { 0x08070000, 0x08000 },              /* flash sector 112-119 - 32kb                 */
-  { 0x08078000, 0x08000 },              /* flash sector 120-127 - 32kb                 */
+  { 0x08060000, 0x08000 },              /* flash sector 192-207 - 32kb                 */
+  { 0x08068000, 0x08000 },              /* flash sector 208-223 - 32kb                 */
+  { 0x08070000, 0x08000 },              /* flash sector 224-239 - 32kb                 */
+  { 0x08078000, 0x08000 },              /* flash sector 240-255 - 32kb                 */
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
 #error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
@@ -231,6 +244,21 @@ static tFlashBlockInfo bootBlockInfo;
 ****************************************************************************************/
 void FlashInit(void)
 {
+  /* configuration checks. the flash organization of the STM32L1 is a bit unusual as 
+   * the minimum size to erase as defined by hardware (FLASH_PAGE_SIZE), is smaller than
+   * the write block size (FLASH_WRITE_BLOCK_SIZE). this leads to problems because it
+   * is then possible to erase a chunk that is less than FLASH_WRITE_BLOCK_SIZE, but
+   * write operations will always write at least FLASH_WRITE_BLOCK_SIZE. This can lead
+   * to a situation where unerased flash gets written, which will not work.
+   *
+   * Therefore FLASH_ERASE_BLOCK_SIZE was set to a higher value than both FLASH_PAGE_SIZE
+   * and FLASH_WRITE_BLOCK_SIZE. Just verify that its configuration is actually valid.
+   */
+  ASSERT_CT(FLASH_ERASE_BLOCK_SIZE >= FLASH_WRITE_BLOCK_SIZE);
+  ASSERT_CT((FLASH_ERASE_BLOCK_SIZE % FLASH_WRITE_BLOCK_SIZE == 0));
+  ASSERT_CT(FLASH_ERASE_BLOCK_SIZE >= FLASH_PAGE_SIZE);
+  ASSERT_CT((FLASH_ERASE_BLOCK_SIZE % FLASH_PAGE_SIZE) == 0);
+  
   /* init the flash block info structs by setting the address to an invalid address */
   blockInfo.base_addr = FLASH_INVALID_ADDRESS;
   bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
@@ -337,7 +365,7 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
   /* prepare the erase initialization structure. */
   eraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
   eraseInitStruct.PageAddress = erase_base_addr;
-  eraseInitStruct.NbPages     = 1;
+  eraseInitStruct.NbPages     = FLASH_ERASE_BLOCK_SIZE/FLASH_PAGE_SIZE;
 
   /* unlock the flash peripheral to enable the flash control register access. */
   HAL_FLASH_Unlock();
