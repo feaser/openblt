@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32F4_Nucleo_F429ZI_Keil/Bootled.c
+* \file         Demo/ARMCM4_STM32F4_Nucleo_F429ZI_Keil/Boot/led.c
 * \brief        LED driver source file.
 * \ingroup      Boot_ARMCM4_STM32F4_Nucleo_F429ZI_Keil
 * \internal

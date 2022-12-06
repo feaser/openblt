@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32F4_Nucleo_F429ZI_GCC/Bootshared_params.h
+* \file         Demo/ARMCM4_STM32F4_Nucleo_F429ZI_GCC/Boot/shared_params.h
 * \brief        Shared RAM parameters header file.
 * \ingroup      Boot_ARMCM4_STM32F4_Nucleo_F429ZI_GCC
 * \internal
