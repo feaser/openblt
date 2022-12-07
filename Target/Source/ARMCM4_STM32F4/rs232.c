@@ -55,14 +55,20 @@
 /** \brief Set UART base address to USART3. */
 #define USART_CHANNEL   USART3
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 3)
-/** \brief Set UART base address to USART4. */
-#define USART_CHANNEL   USART4
+/** \brief Set UART base address to UART4. */
+#define USART_CHANNEL   UART4
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 4)
-/** \brief Set UART base address to USART5. */
-#define USART_CHANNEL   USART5
+/** \brief Set UART base address to UART5. */
+#define USART_CHANNEL   UART5
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 5)
-/** \brief Set UART base address to USART6. */
+/** \brief Set UART base address to UART6. */
 #define USART_CHANNEL   USART6
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 6)
+/** \brief Set UART base address to UART7. */
+#define USART_CHANNEL   UART7
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 7)
+/** \brief Set UART base address to UART8. */
+#define USART_CHANNEL   UART8
 #endif
 
 
@@ -90,7 +96,9 @@ void Rs232Init(void)
             (BOOT_COM_RS232_CHANNEL_INDEX == 2) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 3) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 4) ||
-            (BOOT_COM_RS232_CHANNEL_INDEX == 5));
+            (BOOT_COM_RS232_CHANNEL_INDEX == 5) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 6) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 7));
 
   /* disable the UART peripheral */
   LL_USART_Disable(USART_CHANNEL);
