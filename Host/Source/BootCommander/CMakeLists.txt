@@ -140,6 +140,16 @@ endif()
 
 
 #***************************************************************************************
+# Search path
+#****************************************************************************************
+# Add the path of the executable to the library search path. This way the LibOpenBLT
+# shared library can simply be in the same directory as the BootCommander executable.
+set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "\$ORIGIN")
+
+
+#***************************************************************************************
 # Targets
 #****************************************************************************************
 # Set main target. Use "make BootCommander" to individually build the program.
@@ -148,21 +158,8 @@ add_executable(
   ${PROG_SRCS}
 )
 
-# Add libraries. Note that when compiling with GNU GCC the path of the executable is
-# added to the run-time search path for libraries. This way LibOpenBLT's shared
-# object file (.so) does not have to be installed in the Linux's library path as long
-# as it is located in the same directory as BootCommander's executable.
-if(CMAKE_C_COMPILER_ID MATCHES GNU)
-  # According to the CMake docs, item names starting with '-', but not '-l' or 
-  # '-framework', are treated as linker flags. This means "-Wl" type linker flags can be
-  # specified here. Use this to add the path of the executable to the library search 
-  # path. This way the LibOpenBLT shared library can simply be in the same directory as
-  # the BootCommander executable.
-  target_link_libraries(BootCommander ${LIBOPENBLT_LIBNAME} "-Wl,-rpath,.")
-elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
-  target_link_libraries(BootCommander ${LIBOPENBLT_LIBNAME})
-endif()
-
+# Add libraries.
+target_link_libraries(BootCommander ${LIBOPENBLT_LIBNAME})
 
 # Only generate the PC-lint taget if the option is enabled. Use "make BootCommander_LINT"
 # to lint the project sources

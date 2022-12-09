@@ -158,6 +158,17 @@ set(
 
 
 #***************************************************************************************
+# Search path
+#****************************************************************************************
+# Add the path of the shared library to the library search path. This way an (optional)
+# seed and key shared library file can simply be in the same directory as the LibOpenBLT
+# shared library.
+set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "\$ORIGIN")
+
+
+#***************************************************************************************
 # Targets
 #****************************************************************************************
 # Only generate the static library taget if the option is enabled. Use 
@@ -177,16 +188,11 @@ if(BUILD_SHARED)
   add_library(openblt_shared SHARED ${LIB_SRCS})
   if(UNIX)
     # Under Unix the LibUsb library (http://libusb.info/) is needed for the USB support.
-    # Make sure the libusb-1.0-0 and  libusb-1.0-0-dev packages are installed to be able to
-    # build LibOpenBLT. Example under Debian/Ubuntu:
+    # Make sure the libusb-1.0-0 and  libusb-1.0-0-dev packages are installed to be able
+    # to build LibOpenBLT. Example under Debian/Ubuntu:
     #   sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev
     # Additionally, the LibDL is needed for dynamic library loading.
-    # According to the CMake docs, item names starting with '-', but not '-l' or 
-    # '-framework', are treated as linker flags. This means "-Wl" type linker flags can be
-    # specified here. Use this to add the path of the shared library to the library search 
-    # path. This way an (optional) seed and key shared library file can simply be in the
-    # same directory as the LibOpenBLT shared library.
-    target_link_libraries(openblt_shared usb-1.0 dl "-Wl,-rpath,.")
+    target_link_libraries(openblt_shared usb-1.0 dl)
   elseif(WIN32)
     # Link the Winsock library
     target_link_libraries(openblt_shared ws2_32 winusb setupapi)
