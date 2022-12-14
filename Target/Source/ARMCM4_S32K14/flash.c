@@ -109,7 +109,8 @@ typedef struct
 * Hook functions
 ****************************************************************************************/
 #if (BOOT_FLASH_CRYPTO_HOOKS_ENABLE > 0)
-extern blt_bool FlashCryptoDecryptDataHook(blt_int8u * data, blt_int32u size);
+extern blt_bool FlashCryptoDecryptDataHook(blt_addr address, blt_int8u * data, 
+                                           blt_int32u size);
 #endif
 
 
@@ -419,7 +420,8 @@ blt_bool FlashWriteChecksum(void)
     /* perform decryption of the bootblock, before calculating the checksum and writing it
      * to flash memory.
      */
-    if (FlashCryptoDecryptDataHook(bootBlockInfo.data, FLASH_WRITE_BLOCK_SIZE) == BLT_FALSE)
+    if (FlashCryptoDecryptDataHook(bootBlockInfo.base_addr, bootBlockInfo.data, 
+                                   FLASH_WRITE_BLOCK_SIZE) == BLT_FALSE)
     {
       result = BLT_FALSE;
     }
@@ -764,7 +766,8 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   #endif
   {
     /* perform decryption of the program data before writing it to flash memory. */
-    if (FlashCryptoDecryptDataHook(block->data, FLASH_WRITE_BLOCK_SIZE) == BLT_FALSE)
+    if (FlashCryptoDecryptDataHook(block->base_addr, block->data, 
+                                   FLASH_WRITE_BLOCK_SIZE) == BLT_FALSE)
     {
       result = BLT_FALSE;
     }
