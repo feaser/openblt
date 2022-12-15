@@ -95,7 +95,7 @@ LIB_PATH  =
 #| Options for toolchain binaries                                                       |
 #|--------------------------------------------------------------------------------------|
 STDFLAGS    = -fdata-sections -ffunction-sections -Wall -g -Wno-strict-aliasing
-STDFLAGS   += -Wno-pointer-to-int-cast
+STDFLAGS   += -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
 OPTFLAGS    = -Og
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += $(INC_PATH)
