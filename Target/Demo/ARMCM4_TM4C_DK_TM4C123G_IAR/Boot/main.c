@@ -80,6 +80,11 @@ static void Init(void)
 {
   /* set the clocking to run at 50MHz from the PLL */
   SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
+  /* enable the peripheral for the LED GPIO */
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
+  /* configure the LED as digital output and turn off the LED */
+  GPIOPinTypeGPIOOutput(GPIO_PORTG_BASE, GPIO_PIN_2);
+  GPIOPinWrite(GPIO_PORTG_BASE, GPIO_PIN_2, 0);
 #if (BOOT_COM_RS232_ENABLE > 0)
   #if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
   /* enable and configure UART0 related peripherals and pins */
