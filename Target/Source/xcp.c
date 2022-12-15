@@ -470,15 +470,15 @@ static blt_int32u XcpGetOrderedLong(blt_int8u const * data)
   blt_int32u result = 0;
 
 #if (BOOT_CPU_BYTE_ORDER_MOTOROLA	== 0)
-  result |= (blt_int32u) data[0];
-  result |= (blt_int32u)(data[1] << 8);
-  result |= (blt_int32u)(data[2] << 16);
-  result |= (blt_int32u)(data[3] << 24);
+  result |= (blt_int32u)data[0];
+  result |= (blt_int32u)((blt_int32u)data[1] << 8);
+  result |= (blt_int32u)((blt_int32u)data[2] << 16);
+  result |= (blt_int32u)((blt_int32u)data[3] << 24);
 #else	
-  result |= (blt_int32u) data[3];
-  result |= (blt_int32u)(data[2] << 8);
-  result |= (blt_int32u)(data[1] << 16);
-  result |= (blt_int32u)(data[0] << 24);
+  result |= (blt_int32u)data[3];
+  result |= (blt_int32u)((blt_int32u)data[2] << 8);
+  result |= (blt_int32u)((blt_int32u)data[1] << 16);
+  result |= (blt_int32u)((blt_int32u)data[0] << 24);
 #endif
   /* Give the result back to the caller. */
   return result;
