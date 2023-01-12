@@ -33,6 +33,7 @@
 #include "xmc_gpio.h"                            /* GPIO module                        */
 #include "xmc_uart.h"                            /* UART driver header                 */
 #include "xmc_can.h"                             /* CAN driver header                  */
+#include "xmc_scu.h"                             /* System control unit driver         */
 #include "shared_params.h"                       /* Shared parameters header           */
 
 
@@ -110,10 +111,51 @@ int main(void)
 ****************************************************************************************/
 static void Init(void)
 {
+  /* Clock configuration based on a 12MHz external crystal oscillator:
+   * fPLL    = 288MHz
+   * fUSBPLL = 192MHz
+   * fSYS    = 144MHz
+   * fCPU    = 144MHz
+   * fCCU    = 144MHz
+   * fUSB    = 48MHz
+   * fSDMMC  = 48MHz
+   * fPERIPH = 144MHz
+   * fDMA    = 144MHz
+   */
+  const XMC_SCU_CLOCK_CONFIG_t clock_config =
+  {
+    .syspll_config.n_div = 48U,
+    .syspll_config.p_div = 2U,
+    .syspll_config.k_div = 1U,
+    .syspll_config.mode = XMC_SCU_CLOCK_SYSPLL_MODE_NORMAL,
+    .syspll_config.clksrc = XMC_SCU_CLOCK_SYSPLLCLKSRC_OSCHP,
+    .enable_oschp = true,
+    .enable_osculp = false,
+    .calibration_mode = XMC_SCU_CLOCK_FOFI_CALIBRATION_MODE_FACTORY,
+    .fstdby_clksrc = XMC_SCU_HIB_STDBYCLKSRC_OSI,
+    .fsys_clksrc = XMC_SCU_CLOCK_SYSCLKSRC_PLL,
+    .fsys_clkdiv = 2U,
+    .fcpu_clkdiv = 1U,
+    .fccu_clkdiv = 1U,
+    .fperipheral_clkdiv = 1U
+  };
 #if (BOOT_FILE_LOGGING_ENABLE > 0) && (BOOT_COM_RS232_ENABLE == 0)
   XMC_UART_CH_CONFIG_t rs232_config;
 #endif
 
+  /* initialize the SCU clock */
+  XMC_SCU_CLOCK_Init(&clock_config);
+  /* set RTC source clock source */
+  XMC_SCU_HIB_SetRtcClockSource(XMC_SCU_HIB_RTCCLKSRC_OSI);
+  /* set USB/SDMMC source clock source */
+  XMC_SCU_CLOCK_SetUsbClockSource(XMC_SCU_CLOCK_USBCLKSRC_USBPLL);
+  /* USB/SDMMC divider setting */
+  XMC_SCU_CLOCK_SetUsbClockDivider(4U);
+  /* start USB PLL */
+  XMC_SCU_CLOCK_EnableUsbPll();
+  XMC_SCU_CLOCK_StartUsbPll(1U, 32U);
+  /* enable the USB clock */
+  XMC_SCU_CLOCK_EnableClock(XMC_SCU_CLOCK_USB);
   /* ensure that SystemCoreClock variable is set */
   SystemCoreClockUpdate();
   /* initialize LED1 on P5.9 as digital output */
@@ -136,6 +178,11 @@ static void Init(void)
   XMC_USIC_CH_RXFIFO_Configure(XMC_UART0_CH0,  0U, XMC_USIC_CH_FIFO_SIZE_16WORDS, 1U);
   /* start UART */
   XMC_UART_CH_Start(XMC_UART0_CH0);
+#endif
+#if (BOOT_COM_USB_ENABLE > 0)
+  /* enable USB power */
+  XMC_SCU_RESET_DeassertPeripheralReset(XMC_SCU_PERIPHERAL_RESET_USB0);
+  XMC_SCU_POWER_EnableUsb();
 #endif
 } /*** end of Init ***/
 

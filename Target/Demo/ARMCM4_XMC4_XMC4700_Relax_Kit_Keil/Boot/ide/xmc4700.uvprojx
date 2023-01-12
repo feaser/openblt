@@ -339,7 +339,7 @@
               <MiscControls>--diag_suppress=111</MiscControls>
               <Define>XMC4700_F144x2048 XMC_ETH_PHY_KSZ8081RNB</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Boot;..\lib;..\lib\cmsis;..\lib\xmclib\inc;..\lib\FatFS;..\lib\FatFS\SDMMC_BLOCK;..\lib\uip;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_XMC4;..\..\..\..\Source\third_party\fatfs\src;..\..\..\..\Source\third_party\uip\uip;..\..\..\..\Source\third_party\uip\apps\dhcpc</IncludePath>
+              <IncludePath>..\..\Boot;..\lib;..\lib\cmsis;..\lib\xmclib\inc;..\lib\FatFS;..\lib\FatFS\SDMMC_BLOCK;..\lib\TinyUSB\cfg;..\lib\TinyUSB\src;..\lib\uip;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_XMC4;..\..\..\..\Source\third_party\fatfs\src;..\..\..\..\Source\third_party\uip\uip;..\..\..\..\Source\third_party\uip\apps\dhcpc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1066,6 +1066,151 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Lib/TinyUSB</GroupName>
+          <Files>
+            <File>
+              <FileName>tusb_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\cfg\tusb_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>usb_descriptors.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\TinyUSB\cfg\usb_descriptors.c</FilePath>
+            </File>
+            <File>
+              <FileName>dcd_dwc2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\TinyUSB\port\infineon\xmc4000\dcd_dwc2.c</FilePath>
+            </File>
+            <File>
+              <FileName>dwc2_type.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\port\infineon\xmc4000\dwc2_type.h</FilePath>
+            </File>
+            <File>
+              <FileName>dwc2_xmc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\port\infineon\xmc4000\dwc2_xmc.h</FilePath>
+            </File>
+            <File>
+              <FileName>hid.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\class\hid\hid.h</FilePath>
+            </File>
+            <File>
+              <FileName>vendor_device.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\TinyUSB\src\class\vendor\vendor_device.c</FilePath>
+            </File>
+            <File>
+              <FileName>vendor_device.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\class\vendor\vendor_device.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_common.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_common.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_compiler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_compiler.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_debug.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_debug.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_fifo.c</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_fifo.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_fifo.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_mcu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_mcu.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_private.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_private.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_timeout.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_timeout.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_types.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_types.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_verify.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\common\tusb_verify.h</FilePath>
+            </File>
+            <File>
+              <FileName>dcd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\device\dcd.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\TinyUSB\src\device\usbd.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\device\usbd.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\TinyUSB\src\device\usbd_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_pvt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\device\usbd_pvt.h</FilePath>
+            </File>
+            <File>
+              <FileName>osal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\osal\osal.h</FilePath>
+            </File>
+            <File>
+              <FileName>osal_none.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\osal\osal_none.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\TinyUSB\src\tusb.c</FilePath>
+            </File>
+            <File>
+              <FileName>tusb.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\tusb.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_option.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\src\tusb_option.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/uip</GroupName>
           <Files>
             <File>
@@ -1262,6 +1407,11 @@
               <FileName>cpu_comp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\ARMCM4_XMC4\Keil\cpu_comp.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\ARMCM4_XMC4\usb.c</FilePath>
             </File>
           </Files>
         </Group>
