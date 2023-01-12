@@ -131,8 +131,8 @@ XMC_ETH_MAC_t eth_mac =
 /*---------------------------------------------------------------------------*/
 void netdev_init(void)
 {
-  XMC_ETH_MAC_PORT_CTRL_t port_control = { 0 };
-  XMC_GPIO_CONFIG_t gpio_confi;
+  XMC_ETH_MAC_PORT_CTRL_t port_control;
+  XMC_GPIO_CONFIG_t gpio_config;
   gpio_config.output_level = XMC_GPIO_OUTPUT_LEVEL_LOW;
   gpio_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
 
