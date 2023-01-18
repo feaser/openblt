@@ -58,7 +58,7 @@
  *         verification will always fail.
  */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
-#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x018)
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x01C)
 #endif
 
 /** \brief Maximum time for a sector erase operation as specified by the XCM1xxx data-

@@ -134,11 +134,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>-1</DriverSelection>
+            <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -361,7 +361,7 @@
             </VariousControls>
           </Aads>
           <LDads>
-            <umfTarg>1</umfTarg>
+            <umfTarg>0</umfTarg>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>
@@ -370,7 +370,7 @@
             <TextAddressRange>0x10001000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
+            <ScatterFile>..\XMC1400x0200.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -504,69 +504,14 @@
               <FilePath>..\lib\xmclib\inc\xmc_common.h</FilePath>
             </File>
             <File>
-              <FileName>xmc_dac.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_dac.h</FilePath>
-            </File>
-            <File>
               <FileName>xmc_device.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\xmclib\inc\xmc_device.h</FilePath>
             </File>
             <File>
-              <FileName>xmc_dma.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_dma.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_dma_map.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_dma_map.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_dsd.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_dsd.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_ebu.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_ebu.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_ecat.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_ecat.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_ecat_map.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_ecat_map.h</FilePath>
-            </File>
-            <File>
               <FileName>xmc_eru.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\xmclib\inc\xmc_eru.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_eth_mac.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_eth_mac.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_eth_mac_map.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_eth_mac_map.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_eth_phy.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_eth_phy.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_fce.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_fce.h</FilePath>
             </File>
             <File>
               <FileName>xmc_flash.h</FileName>
@@ -577,16 +522,6 @@
               <FileName>xmc_gpio.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\xmclib\inc\xmc_gpio.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_hrpwm.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_hrpwm.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_hrpwm_map.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_hrpwm_map.h</FilePath>
             </File>
             <File>
               <FileName>xmc_i2c.h</FileName>
@@ -639,11 +574,6 @@
               <FilePath>..\lib\xmclib\inc\xmc_scu.h</FilePath>
             </File>
             <File>
-              <FileName>xmc_sdmmc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_sdmmc.h</FilePath>
-            </File>
-            <File>
               <FileName>xmc_spi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\xmclib\inc\xmc_spi.h</FilePath>
@@ -652,21 +582,6 @@
               <FileName>xmc_uart.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\xmclib\inc\xmc_uart.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_usbd.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_usbd.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_usbd_regs.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_usbd_regs.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_usbh.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc_usbh.h</FilePath>
             </File>
             <File>
               <FileName>xmc_usic.h</FileName>
@@ -734,51 +649,6 @@
               <FilePath>..\lib\xmclib\inc\xmc1_usic_map.h</FilePath>
             </File>
             <File>
-              <FileName>xmc4_ccu4_map.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc4_ccu4_map.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_ccu8_map.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc4_ccu8_map.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_eru_map.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc4_eru_map.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_flash.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc4_flash.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_gpio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc4_gpio.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_gpio_map.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc4_gpio_map.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_rtc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc4_rtc.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_scu.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc4_scu.h</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_usic_map.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\xmclib\inc\xmc4_usic_map.h</FilePath>
-            </File>
-            <File>
               <FileName>xmc_acmp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\xmclib\src\xmc_acmp.c</FilePath>
@@ -809,69 +679,14 @@
               <FilePath>..\lib\xmclib\src\xmc_common.c</FilePath>
             </File>
             <File>
-              <FileName>xmc_dac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_dac.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_dsd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_dsd.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_ebu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_ebu.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_ecat.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_ecat.c</FilePath>
-            </File>
-            <File>
               <FileName>xmc_eru.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\xmclib\src\xmc_eru.c</FilePath>
             </File>
             <File>
-              <FileName>xmc_eth_mac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_eth_mac.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_eth_phy_dp83848.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_eth_phy_dp83848.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_eth_phy_ksz8031rnl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_eth_phy_ksz8031rnl.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_eth_phy_ksz8081rnb.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_eth_phy_ksz8081rnb.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_fce.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_fce.c</FilePath>
-            </File>
-            <File>
               <FileName>xmc_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\xmclib\src\xmc_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_hrpwm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_hrpwm.c</FilePath>
             </File>
             <File>
               <FileName>xmc_i2c.c</FileName>
@@ -914,11 +729,6 @@
               <FilePath>..\lib\xmclib\src\xmc_rtc.c</FilePath>
             </File>
             <File>
-              <FileName>xmc_sdmmc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_sdmmc.c</FilePath>
-            </File>
-            <File>
               <FileName>xmc_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\xmclib\src\xmc_spi.c</FilePath>
@@ -927,16 +737,6 @@
               <FileName>xmc_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\xmclib\src\xmc_uart.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_usbd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_usbd.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_usbh.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc_usbh.c</FilePath>
             </File>
             <File>
               <FileName>xmc_usic.c</FileName>
@@ -977,31 +777,6 @@
               <FileName>xmc1_scu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\xmclib\src\xmc1_scu.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_eru.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc4_eru.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc4_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc4_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_rtc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc4_rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc4_scu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\xmclib\src\xmc4_scu.c</FilePath>
             </File>
           </Files>
         </Group>

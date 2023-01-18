@@ -2095,19 +2095,16 @@
             <group>
                 <name>cmsis</name>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\cmsis\cmsis_gcc.h</name>
+                    <name>$PROJ_DIR$\..\lib\cmsis\cmsis_compiler.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\cmsis\cmsis_iccarm.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\cmsis\cmsis_version.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\cmsis\core_cm0.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\cmsis\core_cmFunc.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\cmsis\core_cmInstr.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\cmsis\core_cmSimd.h</name>
                 </file>
             </group>
             <group>
@@ -2194,67 +2191,13 @@
                     <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_common.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_dac.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_dac.h</name>
-                </file>
-                <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_device.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_dma.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_dma.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_dma_map.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_dsd.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_dsd.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_ebu.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_ebu.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_ecat.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_ecat.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_ecat_map.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_eru.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_eru.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_eth_mac.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_eth_mac.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_eth_mac_map.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_eth_phy.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_fce.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_fce.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_flash.h</name>
@@ -2264,15 +2207,6 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_gpio.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_hrpwm.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_hrpwm.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_hrpwm_map.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_i2c.c</name>
@@ -2311,6 +2245,9 @@
                     <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_posif.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_posif_map.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_prng.c</name>
                 </file>
                 <file>
@@ -2326,12 +2263,6 @@
                     <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_scu.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_sdmmc.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_sdmmc.h</name>
-                </file>
-                <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_spi.c</name>
                 </file>
                 <file>
@@ -2342,21 +2273,6 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_uart.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_usbd.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_usbd.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_usbd_regs.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_usbh.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\xmclib\inc\xmc_usbh.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\xmclib\src\xmc_usic.c</name>

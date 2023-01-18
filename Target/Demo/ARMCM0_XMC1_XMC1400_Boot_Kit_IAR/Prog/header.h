@@ -32,7 +32,10 @@
 * Include files
 ****************************************************************************************/
 #include "../Boot/blt_conf.h"                    /* bootloader configuration           */
-#include "XMC1400.h"                             /* XMC1400 peripheral access          */
+#include "xmc_scu.h"                             /* SCU driver header                  */
+#include "xmc_gpio.h"                            /* GPIO driver header                 */
+#include "xmc_uart.h"                            /* UART driver header                 */
+#include "xmc_can.h"                             /* CAN driver header                  */
 #include "boot.h"                                /* bootloader interface driver        */
 #include "led.h"                                 /* LED driver                         */
 #include "timer.h"                               /* Timer driver                       */
