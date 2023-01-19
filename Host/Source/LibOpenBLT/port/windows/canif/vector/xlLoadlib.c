@@ -263,13 +263,13 @@ XLstatus xlLoadLibrary(char const * library){
   
   if (!hxlDll){
 #ifdef _MFC_VER
-  #ifdef WIN64
+  #ifdef _WIN64
       MessageBox(NULL,"Dynamic XL Driver Library - not found (vxlapi64.dll)","XL API",MB_OK|MB_ICONEXCLAMATION);
   #else
       MessageBox(NULL,"Dynamic XL Driver Library - not found (vxlapi.dll)","XL API",MB_OK|MB_ICONEXCLAMATION);
   #endif
 #else
-  #ifdef WIN64
+  #ifdef _WIN64
     printf("Dynamic XL Driver Library - not found (vxlapi64.dll)\n");
   #else
     printf("Dynamic XL Driver Library - not found (vxlapi.dll)\n");
@@ -531,7 +531,7 @@ XLstatus xlUnloadLibrary(void){
 
 XLstatus xlOpenDriver(void){
   
-#ifdef WIN64
+#ifdef _WIN64
   if (xlLoadLibrary("vxlapi64")!=XL_SUCCESS) return XL_ERR_CANNOT_OPEN_DRIVER;
 #else
   if (xlLoadLibrary("vxlapi")!=XL_SUCCESS) return XL_ERR_CANNOT_OPEN_DRIVER;
