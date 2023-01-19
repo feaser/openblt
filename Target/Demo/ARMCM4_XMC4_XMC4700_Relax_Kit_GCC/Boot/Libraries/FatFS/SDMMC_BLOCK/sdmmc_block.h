@@ -73,9 +73,8 @@
 #include "xmc_gpio.h"
 
 #if (!((XMC_LIB_MAJOR_VERSION == 2U) && \
-       (XMC_LIB_MINOR_VERSION >= 1U) && \
-       (XMC_LIB_PATCH_VERSION >= 10U)))
-#error "SDMMC_BLOCK requires XMC Peripheral Library v2.1.10 or higher"
+       (XMC_LIB_MINOR_VERSION >= 2U)))
+#error "SDMMC_BLOCK requires XMC Peripheral Library v2.2.0 or higher"
 #endif
 
 /**********************************************************************************************************************
