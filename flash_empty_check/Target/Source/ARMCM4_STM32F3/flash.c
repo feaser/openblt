@@ -163,13 +163,24 @@ static const tFlashSector flashLayout[] =
   { 0x08008000, 0x08000 },              /* flash sectors 16 to 31 - 32kb               */
 #endif
 #if (BOOT_NVM_SIZE_KB > 64)
-  { 0x08010000, 0x10000 },              /* flash sectors 32 to 63 - 64kb               */
+  { 0x08010000, 0x08000 },              /* flash sectors 32 to 47   - 32kb             */
+  { 0x08018000, 0x08000 },              /* flash sectors 48 to 63   - 32kb             */
 #endif
 #if (BOOT_NVM_SIZE_KB > 128)
-  { 0x08020000, 0x20000 },              /* flash sectors 64 to 127 - 128kb             */
+  { 0x08020000, 0x08000 },              /* flash sectors 64 to 79   - 32kb             */
+  { 0x08028000, 0x08000 },              /* flash sectors 80 to 95   - 32kb             */
+  { 0x08030000, 0x08000 },              /* flash sectors 96 to 111  - 32kb             */
+  { 0x08038000, 0x08000 },              /* flash sectors 112 to 127 - 32kb             */
 #endif
 #if (BOOT_NVM_SIZE_KB > 256)
-  { 0x08040000, 0x40000 },              /* flash sectors 128 to 255 - 256kb            */
+  { 0x08040000, 0x08000 },              /* flash sectors 128 to 143 - 32kb             */
+  { 0x08048000, 0x08000 },              /* flash sectors 144 to 159 - 32kb             */
+  { 0x08050000, 0x08000 },              /* flash sectors 160 to 175 - 32kb             */
+  { 0x08058000, 0x08000 },              /* flash sectors 176 to 191 - 32kb             */
+  { 0x08060000, 0x08000 },              /* flash sectors 192 to 207 - 32kb             */
+  { 0x08068000, 0x08000 },              /* flash sectors 207 to 223 - 32kb             */
+  { 0x08070000, 0x08000 },              /* flash sectors 224 to 239 - 32kb             */
+  { 0x08078000, 0x08000 },              /* flash sectors 240 to 255 - 32kb             */
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
 #error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
