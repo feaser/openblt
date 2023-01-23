@@ -114,6 +114,7 @@ static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
                                  blt_int8u *data, blt_int32u len);
 static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
+static blt_bool  FlashEmptyCheckSector(blt_int8u sector_num);
 static blt_int8u FlashGetSector(blt_addr address);
 
 
@@ -661,6 +662,70 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 
 
 /************************************************************************************//**
+** \brief     Checks if the flash sector is already completely erased.
+** \param     sector_num Sector number. Note that this is the sector_num element of the
+**            flashLayout array, not an index into the array.
+** \return    BLT_TRUE if the flash sector is already erased, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+static blt_bool FlashEmptyCheckSector(blt_int8u sector_num)
+{
+  blt_bool   result = BLT_FALSE;
+  blt_addr   sectorAddr;
+  blt_int32u sectorSize;
+  blt_int8u  sectorIdx;
+  blt_int32u wordCnt;
+  blt_int32u volatile const * wordPtr;
+  
+  /* find the index of this sector into the flashLayout array */
+  for (sectorIdx = 0; sectorIdx < FLASH_TOTAL_SECTORS; sectorIdx++)
+  {
+    /* is this the index that the sector number belongs to? */
+    if (flashLayout[sectorIdx].sector_num == sector_num)
+    {
+      /* retrieve sector info */
+      sectorAddr = flashLayout[sectorIdx].sector_start;
+      sectorSize = flashLayout[sectorIdx].sector_size;
+      
+      /* sanity check. sector base address should be 32-bit aligned and the size
+       * should be a multiple of 32-bits.
+       */
+      ASSERT_RT(((sectorAddr % sizeof(blt_int32u)) == 0) && 
+                ((sectorSize % sizeof(blt_int32u)) == 0));  
+      
+      /* update result to success for now */
+      result = BLT_TRUE;
+      /* initialize the pointer to the first word in the sector */
+      wordPtr = (blt_int32u volatile const *)sectorAddr;
+      /* read sector 32-bits at a time */
+      for (wordCnt = 0; wordCnt < (sectorSize/sizeof(blt_int32u)); wordCnt++)
+      {
+        /* service the watchdog every 256th loop iteration */
+        if ((wordCnt % 256) == 0)
+        {
+          CopService();
+        }
+        /* word not in the erased state? */
+        if (*wordPtr != 0xFFFFFFFFu)
+        {
+          /* sector not empty, update the result accordingly */
+          result = BLT_FALSE;
+          /* no point in continuing the sector empty check */
+          break;
+        }
+        /* set pointer to the next word in the sector */
+        wordPtr++;
+      }
+      /* sector index found and checked. no need to continue with another one.*/
+      break;
+    }
+  }  
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashEmptyCheckSector ***/
+
+
+/************************************************************************************//**
 ** \brief     Erases the flash sectors from first_sector up until last_sector.
 ** \param     first_sector First flash sector number.
 ** \param     last_sector  Last flash sector number.
@@ -699,17 +764,21 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
     /* erase all sectors one by one */
     for (sectorIdx=first_sector; sectorIdx<= last_sector; sectorIdx++)
     {
-      /* keep the watchdog happy */
-      CopService();
-      /* set the sector to erase */
-      eraseInitStruct.Sector = sectorIdx;
-      /* submit the sector erase request */
-      if(HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&eraseSectorError) != HAL_OK)
+      /* no need to erase the sector if it is already empty */
+      if (FlashEmptyCheckSector(sectorIdx) == BLT_FALSE)
       {
-        /* could not perform erase operation */
-        result = BLT_FALSE;
-        /* error detected so don't bother continuing with the loop */
-        break;
+        /* keep the watchdog happy */
+        CopService();
+        /* set the sector to erase */
+        eraseInitStruct.Sector = sectorIdx;
+        /* submit the sector erase request */
+        if(HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&eraseSectorError) != HAL_OK)
+        {
+          /* could not perform erase operation */
+          result = BLT_FALSE;
+          /* error detected so don't bother continuing with the loop */
+          break;
+        }
       }
     }
 
