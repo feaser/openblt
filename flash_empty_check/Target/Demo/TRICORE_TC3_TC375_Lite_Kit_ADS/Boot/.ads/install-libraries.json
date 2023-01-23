@@ -1,0 +1,131 @@
+{
+	"name" : "Install AURIX Libraries and Linker scripts",
+	
+	"maps": [
+		{"variable": "device", "from": "TC21xL_A-Step", "to": "TC21A"},
+		{"variable": "device", "from": "TC22xL_A-Step", "to": "TC22A"},
+		{"variable": "device", "from": "TC23xLP_A-Step", "to": "TC23A"},
+		{"variable": "device", "from": "TC23xLA/LX_A-Step", "to": "TC23A"},
+		{"variable": "device", "from": "TC26xD_B-Step", "to": "TC26B"},	
+		{"variable": "device", "from": "TC26xDA_B-Step", "to": "TC26B"},
+		{"variable": "device", "from": "TC27xTP_D-Step", "to": "TC27D"},
+		{"variable": "device", "from": "TC27xTF_D-Step", "to": "TC27D"},
+		{"variable": "device", "from": "TC29xTP_B-Step", "to": "TC29B"},
+		{"variable": "device", "from": "TC29xTA/TX_B-Step", "to": "TC29B"},
+		{"variable": "device", "from": "TC39xXX_B-Step", "to": "TC39B"},
+		{"variable": "device", "from": "TC39xXP_B-Step", "to": "TC39B"},
+		{"variable": "device", "from": "TC38xQP_A-Step", "to": "TC38A"},
+		{"variable": "device", "from": "TC37xTX_A-Step", "to": "TC37AED"},
+		{"variable": "device", "from": "TC37xTP_A-Step", "to": "TC37A"},
+		{"variable": "device", "from": "TC36xDP_A-Step", "to": "TC36A"},
+		{"variable": "device", "from": "TC35xTA_A-Step", "to": "TC35A"},
+		{"variable": "device", "from": "TC33xLP_A-Step", "to": "TC33A"},
+		{"variable": "device", "from": "TC33xDA_A-Step", "to": "TC33AED"}
+	],
+	
+	"commands" : [
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC21A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_0_1__TC21A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC22A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_0_1__TC22A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC23A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_0_1__TC23A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC26B"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_0_1__TC26B.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC27D"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_0_1__TC27D.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC29B"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_0_1__TC29B.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC33A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_1_1__TC33A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC33AED"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_1_1__TC33AED.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC35A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_1_1__TC35A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC36A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_1_1__TC36A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC37A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_1_1__TC37A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC37AED"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_1_1__TC37AED.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC38A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_1_1__TC38A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC39B"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_12_1_1__TC39B.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{"type": "CONTENT", "from": "Linker_conf/Tasking/${device#remap}", "to": "/"},
+		{"type": "CONTENT", "from": "Linker_conf/GnuC/${device#remap}", "to": "/"},
+		{"type": "CONTENT", "from": ".ads", "to": "/.ads"},
+		{"type": "CONTENT", "from": "package.json", "to": "/.ads/package.json"}
+
+	]
+}

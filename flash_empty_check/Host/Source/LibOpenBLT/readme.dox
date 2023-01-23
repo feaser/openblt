@@ -1,0 +1,50 @@
+/**
+\mainpage OpenBLT Host Library  (LibOpenBLT)   
+\details
+\tableofcontents
+\section into Introduction
+LibOpenBLT is a host library for the OpenBLT bootloader. Its purpose is to allow quick and 
+easy creation of programs that can connect to and perform firmware updates on a 
+microcontroller that runs the OpenBLT bootloader.
+
+LibOpenBLT is written in the C programming language (C99) and is cross-platform. It has 
+been successfully tested on a Windows PC, Linux PC and even embedded Linux systems such 
+as a Raspberry Pi and a Beagle Board.
+
+\image html libopenblt_architecture.png
+\image latex libopenblt_architecture.png
+
+Both the MicroBoot (GUI) and BootCommander (CLI) firmware updater tools, which are part 
+of the OpenBLT bootloader package, make use of the OpenBLT Host Library. The source code
+of these two tools serve as an additional reference on how to use the OpenBLT Host 
+Library when your are developing your own custom tool.
+
+Refer to the OpenBLT website for additional information regarding the OpenBLT Host 
+Library, including step-by-step instructions on how to build both that shared and static 
+library from sources: https://www.feaser.com/openblt/doku.php?id=manual:libopenblt.
+
+\verbatim
+----------------------------------------------------------------------------------------
+                          C O P Y R I G H T
+----------------------------------------------------------------------------------------
+               Copyright (c) 2017 Feaser. All rights reserved.
+
+----------------------------------------------------------------------------------------
+                            L I C E N S E
+----------------------------------------------------------------------------------------
+ This file is part of OpenBLT. OpenBLT is free software: you can redistribute it and/or
+ modify it under the terms of the GNU General Public License as published by the Free
+ Software Foundation, either version 3 of the License, or (at your option) any later
+ version.
+
+ OpenBLT is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE. See the GNU General Public License for more details.
+
+ You have received a copy of the GNU General Public License along with OpenBLT. It 
+ should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
+----------------------------------------------------------------------------------------
+\endverbatim
+
+*/
+ 
