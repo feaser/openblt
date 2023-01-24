@@ -114,6 +114,7 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
 static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
                                  blt_int8u *data, blt_int32u len);
 static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
+static blt_bool  FlashEmptyCheckSector(blt_int8u sector_idx);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector_idx, 
                                    blt_int8u last_sector_idx);
 static blt_int8u FlashGetSectorIdx(blt_addr address);
@@ -787,6 +788,56 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 
 
 /************************************************************************************//**
+** \brief     Checks if the flash sector is already completely erased.
+** \param     sector_idx flash sector number index into flashLayout[].
+** \return    BLT_TRUE if the flash sector is already erased, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+static blt_bool FlashEmptyCheckSector(blt_int8u sector_idx)
+{
+  blt_bool   result = BLT_TRUE;
+  blt_addr   sectorAddr;
+  blt_int32u sectorSize;
+  blt_int32u wordCnt;
+  blt_int32u volatile const * wordPtr;
+
+  /* retrieve sector info */
+  sectorAddr = flashLayout[sector_idx].sector_start;
+  sectorSize = flashLayout[sector_idx].sector_size;
+
+  /* sanity check. sector base address should be 32-bit aligned and the size
+   * should be a multiple of 32-bits.
+   */
+  ASSERT_RT(((sectorAddr % sizeof(blt_int32u)) == 0) &&
+            ((sectorSize % sizeof(blt_int32u)) == 0));
+
+  /* initialize the pointer to the first word in the sector */
+  wordPtr = (blt_int32u volatile const *)sectorAddr;
+  /* read sector 32-bits at a time */
+  for (wordCnt = 0; wordCnt < (sectorSize/sizeof(blt_int32u)); wordCnt++)
+  {
+    /* service the watchdog every 256th loop iteration */
+    if ((wordCnt % 256) == 0)
+    {
+      CopService();
+    }
+    /* word not in the erased state? */
+    if (*wordPtr != 0xFFFFFFFFu)
+    {
+      /* sector not empty, update the result accordingly */
+      result = BLT_FALSE;
+      /* no point in continuing the sector empty check */
+      break;
+    }
+    /* set pointer to the next word in the sector */
+    wordPtr++;
+  }
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashEmptyCheckSector ***/
+
+
+/************************************************************************************//**
 ** \brief     Erases the flash sectors from indices first_sector_idx up until
 **            last_sector_idx into the flashLayout[] array.
 ** \param     first_sector_idx First flash sector number index into flashLayout[].
@@ -827,35 +878,38 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
     /* erase the sectors one by one */
     for (sectorIdx = first_sector_idx; sectorIdx <= last_sector_idx; sectorIdx++)
     {
-      /* service the watchdog */
-      CopService();
-      /* get information about the sector */
-      sectorBaseAddr = flashLayout[sectorIdx].sector_start;
-      sectorSize = flashLayout[sectorIdx].sector_size;
-      /* validate the sector information */
-      if ( (sectorBaseAddr == FLASH_INVALID_ADDRESS) || (sectorSize == 0) )
+      /* no need to erase the sector if it is already empty */
+      if (FlashEmptyCheckSector(sectorIdx) == BLT_FALSE)
       {
-        /* invalid sector information. flag error and abort erase operation */
-        result = BLT_FALSE;
-        break;
-      }
-      
-      /* intialize the sector erase info structure */
-      eraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
-      eraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
-      eraseInitStruct.Banks = flashLayout[sectorIdx].bank_num;
-      eraseInitStruct.Sector = flashLayout[sectorIdx].sector_num;
-      eraseInitStruct.NbSectors = 1;
+        /* service the watchdog */
+        CopService();
+        /* get information about the sector */
+        sectorBaseAddr = flashLayout[sectorIdx].sector_start;
+        sectorSize = flashLayout[sectorIdx].sector_size;
+        /* validate the sector information */
+        if ( (sectorBaseAddr == FLASH_INVALID_ADDRESS) || (sectorSize == 0) )
+        {
+          /* invalid sector information. flag error and abort erase operation */
+          result = BLT_FALSE;
+          break;
+        }
 
-      /* submit the sector erase request */
-      if (HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&eraseSectorError) != HAL_OK)
-      {
-        /* could not perform erase operation */
-        result = BLT_FALSE;
-        /* error detected so don't bother continuing with the loop */
-        break;
-      }
+        /* intialize the sector erase info structure */
+        eraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
+        eraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+        eraseInitStruct.Banks = flashLayout[sectorIdx].bank_num;
+        eraseInitStruct.Sector = flashLayout[sectorIdx].sector_num;
+        eraseInitStruct.NbSectors = 1;
 
+        /* submit the sector erase request */
+        if (HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&eraseSectorError) != HAL_OK)
+        {
+          /* could not perform erase operation */
+          result = BLT_FALSE;
+          /* error detected so don't bother continuing with the loop */
+          break;
+        }
+      }
     }
     /* lock the flash array again */
     HAL_FLASH_Lock();
