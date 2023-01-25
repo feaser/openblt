@@ -53,9 +53,13 @@ static const tFlashSector flashLayout[] =
   { 0x08006800, 0x00800 },              /* flash sector 13 - 2kb                       */
   { 0x08007000, 0x00800 },              /* flash sector 14 - 2kb                       */
   { 0x08007800, 0x00800 },              /* flash sector 15 - 2kb                       */
-  { 0x08008000, 0x08000 },              /* flash sectors 16 to 31 - 32kb               */
-  { 0x08010000, 0x10000 },              /* flash sectors 32 to 63 - 64kb               */
-  { 0x08020000, 0x20000 },              /* flash sectors 64 to 127 - 128kb             */
+  { 0x08008000, 0x08000 },              /* flash sectors 16 to 31   - 32kb             */
+  { 0x08010000, 0x08000 },              /* flash sectors 32 to 47   - 32kb             */
+  { 0x08018000, 0x08000 },              /* flash sectors 48 to 63   - 32kb             */
+  { 0x08020000, 0x08000 },              /* flash sectors 64 to 79   - 32kb             */
+  { 0x08028000, 0x08000 },              /* flash sectors 80 to 95   - 32kb             */
+  { 0x08030000, 0x08000 },              /* flash sectors 96 to 111  - 32kb             */
+  { 0x08038000, 0x08000 },              /* flash sectors 112 to 127 - 32kb             */
 };
 
 
