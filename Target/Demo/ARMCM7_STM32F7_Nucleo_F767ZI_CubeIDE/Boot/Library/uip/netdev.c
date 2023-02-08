@@ -56,7 +56,7 @@
 
 
 /*---------------------------------------------------------------------------*/
-ETH_HandleTypeDef heth;
+extern ETH_HandleTypeDef heth;
 
 
 #if defined ( __ICCARM__ ) /*!< IAR Compiler */
