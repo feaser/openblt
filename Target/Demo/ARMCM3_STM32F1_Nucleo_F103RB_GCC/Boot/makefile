@@ -28,7 +28,7 @@ SHELL = sh
 #|--------------------------------------------------------------------------------------|
 #| Configure project name                                                               |
 #|--------------------------------------------------------------------------------------|
-PROJ_NAME=openblt_nucleo_stm32f103rb
+PROJ_NAME=openblt_stm32f103
 
 
 #|--------------------------------------------------------------------------------------|
@@ -41,7 +41,8 @@ PROJ_NAME=openblt_nucleo_stm32f103rb
 # format, open the directory in the Windows command prompt and run the following command:
 #  cmd /c for %A in ("%cd%") do @echo %~sA 
 #TOOL_PATH=/opt/gcc-arm-none-eabi-8-2018-q4-major/bin/
-TOOL_PATH=C:/PROGRA~2/GNUTOO~1/82018-~1/bin/
+#TOOL_PATH=C:/PROGRA~2/GNUTOO~1/82018-~1/bin/
+TOOL_PATH=
 
 
 #|--------------------------------------------------------------------------------------|
