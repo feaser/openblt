@@ -167,11 +167,16 @@ void HAL_MspInit(void)
 
   /* GPIO ports clock enable. */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* Peripheral clock enable. */
   __HAL_RCC_USART2_CLK_ENABLE();
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Peripheral clock enable. */
+  __HAL_RCC_CAN1_CLK_ENABLE();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 
   /* Set priority grouping. */
   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
@@ -209,6 +214,20 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  /* Re-map CAN1 pins to PB8 and PB9. */
+  __HAL_AFIO_REMAP_CAN1_2();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 } /*** end of HAL_MspInit ***/
 
 
@@ -221,6 +240,10 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Reset CAN GPIO pin configuration. */
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9);
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* Reset UART GPIO pin configuration. */
   HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2|GPIO_PIN_3);
@@ -229,12 +252,17 @@ void HAL_MspDeInit(void)
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
   HAL_GPIO_DeInit(GPIOA, GPIO_PIN_5);
 
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Peripheral clock enable. */
+  __HAL_RCC_CAN1_CLK_DISABLE();
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* Peripheral clock disable. */
   __HAL_RCC_USART2_CLK_DISABLE();
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
 
   /* GPIO ports clock disable. */
+  __HAL_RCC_GPIOB_CLK_DISABLE();
   __HAL_RCC_GPIOA_CLK_DISABLE();
 
   /* AFIO and PWR clock disable. */
