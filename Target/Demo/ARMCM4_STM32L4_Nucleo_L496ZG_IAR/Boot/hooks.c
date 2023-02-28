@@ -185,34 +185,6 @@ void UsbLeaveLowPowerModeHook(void)
 
 
 /****************************************************************************************
-*   B A C K D O O R   E N T R Y   H O O K   F U N C T I O N S
-****************************************************************************************/
-
-#if (BOOT_BACKDOOR_HOOKS_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Initializes the backdoor entry option.
-** \return    none.
-**
-****************************************************************************************/
-void BackDoorInitHook(void)
-{
-} /*** end of BackDoorInitHook ***/
-
-
-/************************************************************************************//**
-** \brief     Checks if a backdoor entry is requested.
-** \return    BLT_TRUE if the backdoor entry is requested, BLT_FALSE otherwise.
-**
-****************************************************************************************/
-blt_bool BackDoorEntryHook(void)
-{
-  /* default implementation always activates the bootloader after a reset */
-  return BLT_TRUE;
-} /*** end of BackDoorEntryHook ***/
-#endif /* BOOT_BACKDOOR_HOOKS_ENABLE > 0 */
-
-
-/****************************************************************************************
 *   N O N - V O L A T I L E   M E M O R Y   D R I V E R   H O O K   F U N C T I O N S
 ****************************************************************************************/
 
