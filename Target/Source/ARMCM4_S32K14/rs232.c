@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Source/ARMCM4_S32K14/uart.c
+* \file         Source/ARMCM4_S32K14/rs232.c
 * \brief        Bootloader RS232 communication interface source file.
 * \ingroup      Target_ARMCM4_S32K14
 * \internal
