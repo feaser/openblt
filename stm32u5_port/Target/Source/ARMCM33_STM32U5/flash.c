@@ -41,7 +41,7 @@
 /** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
 /** \brief Standard size of a flash block for writing. */
-#define FLASH_WRITE_BLOCK_SIZE          (512)
+#define FLASH_WRITE_BLOCK_SIZE          (1024)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 /** \brief End address of the bootloader programmable flash. */
@@ -55,19 +55,7 @@
  *         verification will always fail.
  */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
-/* TODO ##Port The bootloader uses a 32-bit checksum signature value to determine if a 
- * a valid user program is present or not. This checksum value is written by the
- * bootloader at the end of a firmware update with function FlashWriteChecksum(). Right
- * before a user program is about to be started, function FlashVerifyChecksum() is called
- * to verify the presence of a user program. Space must be reserved in the user program
- * for the checksum signature value and the bootloader needs to know where this space
- * is reserved. It is recommended to place the signature checksum right after the 
- * user program's vector table. Using this approach it is easy to reserved space for the
- * checksum signature in the user program by simply adding one more dummy entry into the
- * vector table. This macro should be set to the size of the vector table, which can then
- * be used to determine the memory address of the signature checksum.
- */
-#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x188)
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x234)
 #endif
 
 
@@ -148,28 +136,65 @@ static blt_int8u FlashGetSectorIdx(blt_addr address);
  */
 static const tFlashSector flashLayout[] =
 {
-  /* { 0x08000000, 0x04000,  0},           flash sector  0 - reserved for bootloader   */
-  /* { 0x08004000, 0x04000,  1},           flash sector  1 - reserved for bootloader   */
-  { 0x08008000, 0x04000,  2},           /* flash sector  2 - 16kb                      */
-  { 0x0800C000, 0x04000,  3},           /* flash sector  3 - 16kb                      */
-#if (BOOT_NVM_SIZE_KB > 64)
-  { 0x08010000, 0x4000,  4},            /* flash sector  4 - 16kb                      */
-  { 0x08014000, 0x4000,  5},            /* flash sector  5 - 16kb                      */
-  { 0x08018000, 0x4000,  6},            /* flash sector  6 - 16kb                      */
-  { 0x0801C000, 0x4000,  7},            /* flash sector  7 - 16kb                      */
-#endif
+  /* { 0x08000000, 0x02000 },              flash sector  0 - reserved for bootloader   */
+  /* { 0x08002000, 0x02000 },              flash sector  1 - reserved for bootloader   */
+  /* { 0x08004000, 0x02000 },              flash sector  2 - reserved for bootloader   */
+  /* { 0x08006000, 0x02000 },              flash sector  3 - reserved for bootloader   */
+  { 0x08008000, 0x02000 },              /* flash sector  4 -   8kb                     */
+  { 0x0800A000, 0x02000 },              /* flash sector  5 -   8kb                     */
+  { 0x0800C000, 0x02000 },              /* flash sector  6 -   8kb                     */
+  { 0x0800E000, 0x02000 },              /* flash sector  7 -   8kb                     */
+  { 0x08010000, 0x02000 },              /* flash sector  8 -   8kb                     */
+  { 0x08012000, 0x02000 },              /* flash sector  9 -   8kb                     */
+  { 0x08014000, 0x02000 },              /* flash sector 10 -   8kb                     */
+  { 0x08016000, 0x02000 },              /* flash sector 11 -   8kb                     */
+  { 0x08018000, 0x02000 },              /* flash sector 12 -   8kb                     */
+  { 0x0801A000, 0x02000 },              /* flash sector 13 -   8kb                     */
+  { 0x0801C000, 0x02000 },              /* flash sector 14 -   8kb                     */
+  { 0x0801E000, 0x02000 },              /* flash sector 15 -   8kb                     */
 #if (BOOT_NVM_SIZE_KB > 128)
-  { 0x08020000, 0x4000,  8},            /* flash sector  8 - 16kb                      */
-  { 0x08024000, 0x4000,  9},            /* flash sector  9 - 16kb                      */
-  { 0x08028000, 0x4000, 10},            /* flash sector 10 - 16kb                      */
-  { 0x0802C000, 0x4000, 11},            /* flash sector 11 - 16kb                      */
-  { 0x08030000, 0x4000, 12},            /* flash sector 12 - 16kb                      */
-  { 0x08034000, 0x4000, 13},            /* flash sector 13 - 16kb                      */
-  { 0x08038000, 0x4000, 14},            /* flash sector 14 - 16kb                      */
-  { 0x0803C000, 0x4000, 15},            /* flash sector 15 - 16kb                      */
+  { 0x08020000, 0x20000 },              /* flash sector 16 - 128kb                     */
+#endif
+#if (BOOT_NVM_SIZE_KB > 256)
+  { 0x08040000, 0x20000 },              /* flash sector 17 - 128kb                     */
+  { 0x08060000, 0x20000 },              /* flash sector 18 - 128kb                     */
+#endif
+#if (BOOT_NVM_SIZE_KB > 512)
+  { 0x08080000, 0x20000 },              /* flash sector 19 - 128kb                     */
+  { 0x080A0000, 0x20000 },              /* flash sector 20 - 128kb                     */
+  { 0x080C0000, 0x20000 },              /* flash sector 21 - 128kb                     */
+  { 0x080E0000, 0x20000 },              /* flash sector 22 - 128kb                     */
+#endif
+#if (BOOT_NVM_SIZE_KB > 1024)
+  { 0x08100000, 0x20000 },              /* flash sector 23 - 128kb                     */
+  { 0x08120000, 0x20000 },              /* flash sector 24 - 128kb                     */
+  { 0x08140000, 0x20000 },              /* flash sector 25 - 128kb                     */
+  { 0x08160000, 0x20000 },              /* flash sector 26 - 128kb                     */
+  { 0x08180000, 0x20000 },              /* flash sector 27 - 128kb                     */
+  { 0x081A0000, 0x20000 },              /* flash sector 28 - 128kb                     */
+  { 0x081C0000, 0x20000 },              /* flash sector 29 - 128kb                     */
+  { 0x081E0000, 0x20000 },              /* flash sector 30 - 128kb                     */
 #endif
 #if (BOOT_NVM_SIZE_KB > 2048)
-#error "BOOT_NVM_SIZE_KB > 2048 is currently not supported."
+  { 0x08200000, 0x20000 },              /* flash sector 31 - 128kb                     */
+  { 0x08220000, 0x20000 },              /* flash sector 32 - 128kb                     */
+  { 0x08240000, 0x20000 },              /* flash sector 33 - 128kb                     */
+  { 0x08260000, 0x20000 },              /* flash sector 34 - 128kb                     */
+  { 0x08280000, 0x20000 },              /* flash sector 35 - 128kb                     */
+  { 0x082A0000, 0x20000 },              /* flash sector 36 - 128kb                     */
+  { 0x082C0000, 0x20000 },              /* flash sector 37 - 128kb                     */
+  { 0x082E0000, 0x20000 },              /* flash sector 38 - 128kb                     */
+  { 0x08300000, 0x20000 },              /* flash sector 39 - 128kb                     */
+  { 0x08320000, 0x20000 },              /* flash sector 40 - 128kb                     */
+  { 0x08340000, 0x20000 },              /* flash sector 41 - 128kb                     */
+  { 0x08360000, 0x20000 },              /* flash sector 42 - 128kb                     */
+  { 0x08380000, 0x20000 },              /* flash sector 43 - 128kb                     */
+  { 0x083A0000, 0x20000 },              /* flash sector 44 - 128kb                     */
+  { 0x083C0000, 0x20000 },              /* flash sector 45 - 128kb                     */
+  { 0x083E0000, 0x20000 },              /* flash sector 46 - 128kb                     */
+#endif
+#if (BOOT_NVM_SIZE_KB > 4096)
+#error "BOOT_NVM_SIZE_KB > 4096 is currently not supported."
 #endif
 };
 #else
