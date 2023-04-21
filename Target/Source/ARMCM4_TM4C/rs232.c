@@ -47,7 +47,7 @@
 /** \brief Timeout time for the reception of a CTO packet. The timer is started upon
  *         reception of the first packet byte.
  */
-#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
+#define RS232_CTO_RX_PACKET_TIMEOUT_MS (200u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define RS232_BYTE_TX_TIMEOUT_MS       (10u)
 
