@@ -107,10 +107,8 @@ void BootActivate(void)
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
-#if 0
 /** \brief UART handle to be used in API calls. */
 static UART_HandleTypeDef rs232Handle;
-#endif
 
 
 /****************************************************************************************
@@ -126,22 +124,21 @@ static unsigned char Rs232ReceiveByte(unsigned char *data);
 ****************************************************************************************/
 static void BootComRs232Init(void)
 {
-#if 0
   /* Configure UART peripheral. */
-  rs232Handle.Instance = LPUART1;
-  rs232Handle.Init.BaudRate = 57600;
+  rs232Handle.Instance = USART1;
+  rs232Handle.Init.BaudRate = BOOT_COM_RS232_BAUDRATE;
   rs232Handle.Init.WordLength = UART_WORDLENGTH_8B;
   rs232Handle.Init.StopBits = UART_STOPBITS_1;
   rs232Handle.Init.Parity = UART_PARITY_NONE;
   rs232Handle.Init.Mode = UART_MODE_TX_RX;
   rs232Handle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  rs232Handle.Init.OverSampling = UART_OVERSAMPLING_16;
   rs232Handle.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  rs232Handle.Init.ClockPrescaler = UART_PRESCALER_DIV4;
+  rs232Handle.Init.ClockPrescaler = UART_PRESCALER_DIV8;
   rs232Handle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   rs232Handle.FifoMode = UART_FIFOMODE_DISABLE;
   /* Initialize the UART peripheral. */
   HAL_UART_Init(&rs232Handle);
-#endif  
 } /*** end of BootComRs232Init ***/
 
 
@@ -153,7 +150,6 @@ static void BootComRs232Init(void)
 ****************************************************************************************/
 static void BootComRs232CheckActivationRequest(void)
 {
-#if 0
   static unsigned char xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];
   static unsigned char xcpCtoRxLength;
   static unsigned char xcpCtoRxInProgress = 0;
@@ -212,7 +208,6 @@ static void BootComRs232CheckActivationRequest(void)
       }
     }
   }
-#endif  
 } /*** end of BootComRs232CheckActivationRequest ***/
 
 
@@ -224,7 +219,6 @@ static void BootComRs232CheckActivationRequest(void)
 ****************************************************************************************/
 static unsigned char Rs232ReceiveByte(unsigned char *data)
 {
-#if 0
   HAL_StatusTypeDef result;
 
   /* receive a byte in a non-blocking manner */
@@ -235,7 +229,6 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
     /* success */
     return 1;
   }
-#endif  
   /* error occurred */
   return 0;
 } /*** end of Rs232ReceiveByte ***/

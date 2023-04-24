@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32u5xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32u5xx_ll_icache.h"                 /* STM32 LL internal cache header     */
 
 
 /****************************************************************************************
@@ -47,6 +48,7 @@
 /** \brief End address of the bootloader programmable flash. */
 #define FLASH_END_ADDRESS               (flashLayout[FLASH_TOTAL_SECTORS-1].sector_start + \
                                          flashLayout[FLASH_TOTAL_SECTORS-1].sector_size - 1)
+#ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
 /** \brief Offset into the user program's vector table where the checksum is located. 
  *         For this target it is set to the end of the vector table. Note that the 
  *         value can be overriden in blt_conf.h, because the size of the vector table
@@ -54,7 +56,6 @@
  *         of the checksum in the user program accordingly. Otherwise the checksum
  *         verification will always fail.
  */
-#ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
 #define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x234)
 #endif
 
@@ -112,9 +113,12 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
 static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
                                  blt_int8u *data, blt_int32u len);
 static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
+static blt_bool  FlashEmptyCheckSector(blt_int8u sector_idx);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector_idx, 
                                    blt_int8u last_sector_idx);
 static blt_int8u FlashGetSectorIdx(blt_addr address);
+static blt_int32u FlashGetBank(blt_addr address);
+static blt_int32u FlashGetPage(blt_addr address);
 
 
 /****************************************************************************************
@@ -247,6 +251,8 @@ void FlashInit(void)
   /* init the flash block info structs by setting the address to an invalid address */
   blockInfo.base_addr = FLASH_INVALID_ADDRESS;
   bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
+  /* make sure the instruction cache is disabled prior to updating cacheable memory. */
+  LL_ICACHE_Disable();
 } /*** end of FlashInit ***/
 
 
@@ -378,20 +384,24 @@ blt_bool FlashWriteChecksum(void)
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
 
-  /* TODO ##Port Calculate and write the signature checksum such that it appears at the
-   * address configured with macro BOOT_FLASH_VECTOR_TABLE_CS_OFFSET. Use the 
-   * FlashWrite() function for the actual write operation. For a typical microcontroller,
-   * the bootBlock holds the program code that includes the user program's interrupt
-   * vector table and after which the 32-bit for the signature checksum is reserved.
-   * 
-   * Note that this means one extra dummy entry must be added at the end of the user 
-   * program's vector table to reserve storage space for the signature checksum value,
-   * which is then overwritten by this function.
+  /* for the STM32 target we defined the checksum as the Two's complement value of the
+   * sum of the first 7 exception addresses.
    *
-   * The example here calculates a signature checksum by summing up the first 32-bit
-   * values in the bootBlock (so the first 7 interrupt vectors) and then taking the
-   * Two's complement of this sum. You can modify this to anything you like as long as
-   * the signature checksum is based on program code present in the bootBlock.
+   * Layout of the vector table:
+   *    0x08000000 Initial stack pointer
+   *    0x08000004 Reset Handler
+   *    0x08000008 NMI Handler
+   *    0x0800000C Hard Fault Handler
+   *    0x08000010 MPU Fault Handler
+   *    0x08000014 Bus Fault Handler
+   *    0x08000018 Usage Fault Handler
+   *
+   *    signature_checksum = Two's complement of (SUM(exception address values))
+   *
+   *    the bootloader writes this 32-bit checksum value right after the vector table
+   *    of the user program. note that this means one extra dummy entry must be added
+   *    at the end of the user program's vector table to reserve storage space for the
+   *    checksum.
    */
 
   /* first check that the bootblock contains valid data. if not, this means the
@@ -448,16 +458,6 @@ blt_bool FlashVerifyChecksum(void)
 {
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
-
-  /* TODO ##Port Implement code here that basically does the reverse of
-   * FlashWriteChecksum(). Just make sure to read the values directory from flash memory
-   * and NOT from the bootBlock. 
-   * The example implementation reads the first 7 32-bit from the user program flash
-   * memory and sums them up. The signature checksum written by FlashWriteChecksum() was
-   * the Two complement's value. This means that if you add the previously written
-   * signature checksum value to the sum of the first 7 32-bit values, the result is
-   * a value of 0 in case the signature checksum is valid.
-   */
 
   /* verify the checksum based on how it was written by FlashWriteChecksum(). */
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start));
@@ -737,10 +737,14 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_bool   result = BLT_TRUE;
-  blt_addr   prog_addr;
-  blt_int32u prog_data;
-  blt_int32u word_cnt;
+  blt_bool        result = BLT_TRUE;
+  blt_addr        prog_addr;
+  blt_int32u      data_addr;
+  blt_int32u      qword_cnt;
+  const blt_int8u qword_byte_num = 16U;
+  blt_addr        word_addr;
+  blt_int32u      word_data;
+  blt_int32u      word_cnt;
 
   /* check that the address is actually within flash */
   if (FlashGetSectorIdx(block->base_addr) == FLASH_INVALID_SECTOR_IDX)
@@ -765,45 +769,105 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
-  /* only continue if all is okay so far */
+  /* only continue with programming if all is okay so far */
   if (result == BLT_TRUE)
   {
-    /* TODO ##Port Program the data contents in 'block' to flash memory here and read the
-     * programmed data values back directly from flash memory to verify that the flash
-     * program operation was successful. The example implementation assumes that flash
-     * data can be written 32-bits at a time.
-     */
+    /* unlock the flash peripheral to enable the flash control register access */
+    HAL_FLASH_Unlock();
 
-    /* program all words in the block one by one */
-    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+    /* program all quad words (128 bits = 16 bytes) in the block one by one */
+    for (qword_cnt=0; qword_cnt<(FLASH_WRITE_BLOCK_SIZE/qword_byte_num); qword_cnt++)
     {
-      prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
-      prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+      /* calculate the destination address in flash of this quad word */
+      prog_addr = block->base_addr + (qword_cnt * qword_byte_num);
+      /* set the base address in ram that holds the data to program */
+      data_addr = (blt_int32u)(&block->data[qword_cnt * qword_byte_num]);
       /* keep the watchdog happy */
       CopService();
-      /* TODO ##Port Program 32-bit 'prog_data' data value to memory address 'prog_addr'.
-       * In case an error occured, set result to BLT_FALSE and break the loop. 
-       */
-      if (1 == 0)
+      /* program the quad word data at 'data_addr' to memory address 'prog_addr' */
+      if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_QUADWORD, prog_addr, data_addr) != HAL_OK)
       {
         result = BLT_FALSE;
         break;
       }
-      /* verify that the written data is actually there */
-      if (*(volatile blt_int32u *)prog_addr != prog_data)
+    }
+
+    /* lock the flash peripheral to disable the flash control register access */
+    HAL_FLASH_Lock();
+  }
+
+  /* only continue with verification if all is okay so far */
+  if (result == BLT_TRUE)
+  {
+    /* keep the watchdog happy */
+    CopService();
+    /* verify all words in the block one by one */
+    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+    {
+      word_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
+      word_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+      /* verify that the written data is actually there. */
+      if (*(volatile blt_int32u *)word_addr != word_data)
       {
-        /* TODO ##Port Uncomment the following two lines again. It was commented out so
-         * that a dry run with the flash driver is possible without it reporting errors.
-         */
-        /*result = BLT_FALSE;*/
-        /*break;*/
+        result = BLT_FALSE;
+        break;
       }
     }
   }
 
-  /* Give the result back to the caller. */
+  /* give the result back to the caller */
   return result;
 } /*** end of FlashWriteBlock ***/
+
+
+/************************************************************************************//**
+** \brief     Checks if the flash sector is already completely erased.
+** \param     sector_idx flash sector number index into flashLayout[].
+** \return    BLT_TRUE if the flash sector is already erased, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+static blt_bool FlashEmptyCheckSector(blt_int8u sector_idx)
+{
+  blt_bool   result = BLT_TRUE;
+  blt_addr   sectorAddr;
+  blt_int32u sectorSize;
+  blt_int32u wordCnt;
+  blt_int32u volatile const * wordPtr;
+
+  /* retrieve sector info */
+  sectorAddr = flashLayout[sector_idx].sector_start;
+  sectorSize = flashLayout[sector_idx].sector_size;
+
+  /* sanity check. sector base address should be 32-bit aligned and the size
+   * should be a multiple of 32-bits.
+   */
+  ASSERT_RT(((sectorAddr % sizeof(blt_int32u)) == 0) &&
+            ((sectorSize % sizeof(blt_int32u)) == 0));
+
+  /* initialize the pointer to the first word in the sector */
+  wordPtr = (blt_int32u volatile const *)sectorAddr;
+  /* read sector 32-bits at a time */
+  for (wordCnt = 0; wordCnt < (sectorSize/sizeof(blt_int32u)); wordCnt++)
+  {
+    /* service the watchdog every 256th loop iteration */
+    if ((wordCnt % 256) == 0)
+    {
+      CopService();
+    }
+    /* word not in the erased state? */
+    if (*wordPtr != 0xFFFFFFFFu)
+    {
+      /* sector not empty, update the result accordingly */
+      result = BLT_FALSE;
+      /* no point in continuing the sector empty check */
+      break;
+    }
+    /* set pointer to the next word in the sector */
+    wordPtr++;
+  }
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashEmptyCheckSector ***/
 
 
 /************************************************************************************//**
@@ -816,10 +880,15 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 ****************************************************************************************/
 static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sector_idx)
 {
-  blt_bool   result = BLT_TRUE;
-  blt_int8u  sectorIdx;
-  blt_addr   sectorBaseAddr;
-  blt_int32u sectorSize;
+  blt_bool               result = BLT_TRUE;
+  blt_int8u              sectorIdx;
+  blt_addr               sectorBaseAddr;
+  blt_int32u             sectorSize;
+  FLASH_EraseInitTypeDef eraseInitStruct;
+  uint32_t               pageEraseError = 0;
+  uint32_t               sectorBank;
+  uint32_t               sectorFirstPage;
+  uint32_t               sectorTotalPages;
 
   /* validate the sector numbers */
   if (first_sector_idx > last_sector_idx)
@@ -839,34 +908,57 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
+
+    /* unlock the flash peripheral to enable the flash control register access. */
+    HAL_FLASH_Unlock();
+
     /* erase the sectors one by one */
     for (sectorIdx = first_sector_idx; sectorIdx <= last_sector_idx; sectorIdx++)
     {
-      /* service the watchdog */
-      CopService();
-      /* get information about the sector */
-      sectorBaseAddr = flashLayout[sectorIdx].sector_start;
-      sectorSize = flashLayout[sectorIdx].sector_size;
-      /* validate the sector information */
-      if ( (sectorBaseAddr == FLASH_INVALID_ADDRESS) || (sectorSize == 0) )
+      /* no need to erase the sector if it is already empty */
+      if (FlashEmptyCheckSector(sectorIdx) == BLT_FALSE)
       {
-        /* invalid sector information. flag error and abort erase operation */
-        result = BLT_FALSE;
-        break;
-      }
-      
-      /* TODO ##Port Perform the flash erase operation of a sector that starts at
-       * 'sectorBaseAddr' and has a length of 'sectorSize' bytes. In case an error
-       * occured, set result to BLT_FALSE and break the loop.
-       */
-      if(1 == 0)
-      {
-        /* could not perform erase operation */
-        result = BLT_FALSE;
-        /* error detected so don't bother continuing with the loop */
-        break;
+        /* service the watchdog */
+        CopService();
+        /* get information about the sector */
+        sectorBaseAddr = flashLayout[sectorIdx].sector_start;
+        sectorSize = flashLayout[sectorIdx].sector_size;
+        /* validate the sector information */
+        if ( (sectorBaseAddr == FLASH_INVALID_ADDRESS) || (sectorSize == 0) )
+        {
+          /* invalid sector information. flag error and abort erase operation */
+          result = BLT_FALSE;
+          break;
+        }
+
+        /* assert that the sector size is an exact multiple of the page size */
+        ASSERT_RT((sectorSize % FLASH_PAGE_SIZE) == 0);
+        /* determine how many pages the sector contains */
+        sectorTotalPages = sectorSize / FLASH_PAGE_SIZE;
+        /* determine the flash bank that the sector falls into */
+        sectorBank = FlashGetBank(sectorBaseAddr);
+        /* determine the page number of the first page in the sector */
+        sectorFirstPage = FlashGetPage(sectorBaseAddr);
+
+        /* prepare the information for the erase operation */
+        eraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
+        eraseInitStruct.Banks = sectorBank;
+        eraseInitStruct.Page = sectorFirstPage;
+        eraseInitStruct.NbPages = sectorTotalPages;
+
+        /* perform the flash erase operation of the sector */
+        if (HAL_FLASHEx_Erase(&eraseInitStruct, &pageEraseError) != HAL_OK)
+        {
+          /* could not perform erase operation */
+          result = BLT_FALSE;
+          /* error detected so don't bother continuing with the loop */
+          break;
+        }
       }
     }
+
+    /* lock the flash peripheral to disable the flash control register access. */
+    HAL_FLASH_Lock();
   }
 
   /* give the result back to the caller */
@@ -905,6 +997,64 @@ static blt_int8u FlashGetSectorIdx(blt_addr address)
   /* give the result back to the caller */
   return result;
 } /*** end of FlashGetSectorIdx ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the flash bank that the address belongs to.
+** \param     address Flash memory address.
+** \return    FLASH_BANK_1 if the address belongs to bank 1, FLASH_BANK_2 otherwise.
+**
+****************************************************************************************/
+static blt_int32u FlashGetBank(blt_addr address)
+{
+  blt_int32u result = FLASH_BANK_1;
+
+  /* assert that the address is actually a valid flash address */
+  ASSERT_RT(address >= FLASH_BASE);
+  ASSERT_RT((address - FLASH_BASE) < FLASH_SIZE);
+
+  /* is the address in bank 2? */
+  if ((address - FLASH_BASE) >= FLASH_BANK_SIZE)
+  {
+    /* update the result */
+    result = FLASH_BANK_2;
+  }
+
+  /* give the result back to the caller */
+  return result;
+} /** end of FlashGetBank ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the flash page that the address belongs to.
+** \param     address Flash memory address.
+** \return    Page number.
+**
+****************************************************************************************/
+static blt_int32u FlashGetPage(blt_addr address)
+{
+  blt_int32u result = 0;
+
+  /* assert that the address is actually a valid flash address */
+  ASSERT_RT(address >= FLASH_BASE);
+  ASSERT_RT((address - FLASH_BASE) < FLASH_SIZE);
+
+  /* does the address fall in the first bank? */
+  if (FlashGetBank(address) == FLASH_BANK_1)
+  {
+    /* determine the page number */
+    result = (address - FLASH_BASE) / FLASH_PAGE_SIZE;
+  }
+  /* address falls in the second bank */
+  else
+  {
+    /* determine the page number */
+    result = (address - (FLASH_BASE + FLASH_BANK_SIZE)) / FLASH_PAGE_SIZE;
+  }
+
+  /* give the result back to the caller */
+  return result;
+} /*** end of FlashGetPage ***/
 
 
 /*********************************** end of flash.c ************************************/
