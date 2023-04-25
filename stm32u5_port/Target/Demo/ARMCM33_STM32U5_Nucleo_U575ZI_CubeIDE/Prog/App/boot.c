@@ -288,10 +288,8 @@ static const tCanBusTiming canTiming[] =
 /****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
-#if 0
 /** \brief CAN handle to be used in API calls. */
 static FDCAN_HandleTypeDef canHandle;
-#endif
 
 
 /************************************************************************************//**
@@ -307,7 +305,6 @@ static FDCAN_HandleTypeDef canHandle;
 static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *prescaler,
                                        unsigned char *tseg1, unsigned char *tseg2)
 {
-#if 0
   unsigned char      cnt;
   unsigned long      canClockFreqkHz;
   RCC_OscInitTypeDef oscConfig = {0};
@@ -315,7 +312,7 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
   /* obtain the current clock configuration */
   HAL_RCC_GetOscConfig(&oscConfig);
   /* determine the CAN peripheral clock frequency in kHz. this code assumes that the
-   * PLL is used as the FDCAN clock source. you basically need to determine the PLLQ
+   * PLL1Q is used as the FDCAN clock source. you basically need to determine the PLL1Q
    * frequency in kHz.
    */
   canClockFreqkHz = (HAL_RCC_GetSysClockFreq() / 1000u);
@@ -323,8 +320,8 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
   canClockFreqkHz /= oscConfig.PLL.PLLQ;
   /* the CAN peripheral clock should not be higher than 48 MHz. so only continue if
    * this is the case. when too high, increase the Q divider in the clock configuration
-   * to get to a PLLQ frequency that is below 48 MHz. A multiple of 8 MHz for the
-   * PLLQ frequency gives the best support for most commonly CAN baudrates.
+   * to get to a PLL1Q frequency that is below 48 MHz. A multiple of 8 MHz for the
+   * PLL1Q frequency gives the best support for most commonly CAN baudrates.
    */
   if (canClockFreqkHz <= 48000u)
   {
@@ -348,7 +345,6 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
       }
     }
   }
-#endif
   /* could not find a good bus timing configuration */
   return 0;
 } /*** end of CanGetSpeedConfig ***/
@@ -361,7 +357,6 @@ static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *pres
 ****************************************************************************************/
 static void BootComCanInit(void)
 {
-#if 0
   unsigned short prescaler = 0;
   unsigned char tseg1 = 0, tseg2 = 0;
   FDCAN_FilterTypeDef filterConfig;
@@ -372,6 +367,7 @@ static void BootComCanInit(void)
 
   /* set the CAN controller configuration. */
   canHandle.Instance = FDCAN1;
+  canHandle.Init.ClockDivider = FDCAN_CLOCK_DIV1;
   canHandle.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
   canHandle.Init.Mode = FDCAN_MODE_NORMAL;
   canHandle.Init.AutoRetransmission = ENABLE;
@@ -432,7 +428,6 @@ static void BootComCanInit(void)
   /* start the CAN peripheral. no need to evaluate the return value as there is nothing
    * we can do about a faulty CAN controller. */
   (void)HAL_FDCAN_Start(&canHandle);
-#endif  
 } /*** end of BootComCanInit ***/
 
 
@@ -444,7 +439,6 @@ static void BootComCanInit(void)
 ****************************************************************************************/
 static void BootComCanCheckActivationRequest(void)
 {
-#if 0
   unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   unsigned char packetIdMatches = 0;
   FDCAN_RxHeaderTypeDef rxMsgHeader;
@@ -501,7 +495,6 @@ static void BootComCanCheckActivationRequest(void)
       }
     }
   }
-#endif  
 } /*** end of BootComCanCheckActivationRequest ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 

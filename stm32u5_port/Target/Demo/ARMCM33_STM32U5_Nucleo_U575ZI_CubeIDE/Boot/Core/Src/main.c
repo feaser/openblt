@@ -146,7 +146,7 @@ void SystemClock_Config(void)
   }
 
   LL_RCC_PLL1_ConfigDomain_SYS(LL_RCC_PLL1SOURCE_HSI, 1, 10, 1);
-  LL_RCC_PLL1_ConfigDomain_48M(LL_RCC_PLL1SOURCE_HSI, 1, 10, 2);
+  LL_RCC_PLL1_ConfigDomain_48M(LL_RCC_PLL1SOURCE_HSI, 1, 10, 4);
   LL_RCC_PLL1_EnableDomain_48M();
   LL_RCC_PLL1_EnableDomain_SYS();
   LL_RCC_SetPll1EPodPrescaler(LL_RCC_PLL1MBOOST_DIV_1);
@@ -230,7 +230,7 @@ void MX_FDCAN1_Init(void)
   hfdcan1.Init.AutoRetransmission = ENABLE;
   hfdcan1.Init.TransmitPause = DISABLE;
   hfdcan1.Init.ProtocolException = DISABLE;
-  hfdcan1.Init.NominalPrescaler = 16;
+  hfdcan1.Init.NominalPrescaler = 8;
   hfdcan1.Init.NominalSyncJumpWidth = 1;
   hfdcan1.Init.NominalTimeSeg1 = 2;
   hfdcan1.Init.NominalTimeSeg2 = 7;
