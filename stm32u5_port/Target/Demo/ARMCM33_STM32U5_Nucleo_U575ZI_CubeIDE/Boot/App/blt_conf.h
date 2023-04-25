@@ -63,7 +63,7 @@
  *
  */
 /** \brief Enable/disable USB transport layer. */
-#define BOOT_COM_USB_ENABLE             (0)
+#define BOOT_COM_USB_ENABLE             (1)
 /** \brief Configure number of bytes in the target->host data packet. */
 #define BOOT_COM_USB_TX_MAX_DATA        (63)
 /** \brief Configure number of bytes in the host->target data packet. */

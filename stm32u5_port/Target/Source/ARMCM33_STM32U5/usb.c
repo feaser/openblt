@@ -32,7 +32,9 @@
 #include "boot.h"                                     /* bootloader generic header     */
 #if (BOOT_COM_USB_ENABLE > 0)
 #include "usb.h"                                      /* USB bootloader driver         */
-/* TODO ##Port Include microcontroller peripheral driver header files here. */
+#include "usbd_core.h"                                /* USB driver core               */
+#include "usbd_desc.h"                                /* USB driver descriptor         */
+#include "usbd_bulk.h"                                /* USB driver bulk device        */
 
 
 /****************************************************************************************
@@ -56,14 +58,11 @@
 * Macro definitions
 ****************************************************************************************/
 /** \brief Total number of fifo buffers. */
-#define FIFO_MAX_BUFFERS          (2)
+#define FIFO_MAX_BUFFERS         (2)
 /** \brief Invalid value for a fifo buffer handle. */
-#define FIFO_ERR_INVALID_HANDLE   (255)
+#define FIFO_ERR_INVALID_HANDLE  (255)
 /** \brief Number of bytes that fit in the fifo pipe. */
-#define FIFO_PIPE_SIZE            (64)
-
-/** \brief Endpoint IN & OUT Packet size. */
-#define BULK_DATA_MAX_PACKET_SIZE (64)
+#define FIFO_PIPE_SIZE           (64)
 
 
 /****************************************************************************************
@@ -113,6 +112,8 @@ static tFifoCtrl *fifoCtrlFree;
 static tFifoPipe  fifoPipeBulkIN;
 /** \brief Fifo pipe used for the bulk out endpoint. */
 static tFifoPipe  fifoPipeBulkOUT;
+/** \brief USB device handle. */
+static USBD_HandleTypeDef hUsbDeviceFS;
 
 
 /************************************************************************************//**
@@ -130,11 +131,16 @@ void UsbInit(void)
   /* validate fifo handles */
   ASSERT_RT((fifoPipeBulkIN.handle  != FIFO_ERR_INVALID_HANDLE) && \
             (fifoPipeBulkOUT.handle != FIFO_ERR_INVALID_HANDLE));
-  
-  /* TODO ##Port Initialize the USB communication stack library. */             
-
+  /* initialize the USB device libary */
+  USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
+  /* register the bootloader's custom USB Bulk based class */
+  USBD_RegisterClass(&hUsbDeviceFS, &USBD_Bulk);
   /* inform application about the connect event */
   UsbConnectHook(BLT_TRUE);
+  /* start the USB device */
+  USBD_Start(&hUsbDeviceFS);
+  /* perform low level connect of the device */
+  HAL_PCD_DevConnect((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
   /* extend the time that the backdoor is open in case the default timed backdoor
    * mechanism is used.
    */
@@ -154,8 +160,10 @@ void UsbInit(void)
 ****************************************************************************************/
 void UsbFree(void)
 {
-  /* TODO ##Port Unitialize the USB communication stack library. */             
-
+  /* perform low level disconnect of the device */
+  HAL_PCD_DevDisconnect((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
+  /* uninitialize the device */
+  USBD_DeInit(&hUsbDeviceFS);
   /* inform application about the disconnect event */
   UsbConnectHook(BLT_FALSE);
 } /*** end of UsbFree ***/
@@ -205,9 +213,8 @@ blt_bool UsbReceivePacket(blt_int8u *data, blt_int8u *len)
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
 
-  /* TODO ##Port Poll USB interrupt flags to process USB related events. This is a good
-   * location for this, since this function is called continuously by the bootloader.
-   */
+  /* poll USB interrupt flags to process USB related events */
+  HAL_PCD_IRQHandler((PCD_HandleTypeDef *)hUsbDeviceFS.pData);
 
   /* start of cto packet received? */
   if (xcpCtoRxInProgress == BLT_FALSE)
@@ -320,10 +327,9 @@ void UsbTransmitPipeBulkIN(void)
     /* store it in the endpoint's RAM */
     USB_Tx_Buffer[byte_counter] = byte_value;
   }
-  /* TODO ##Port Copy data to IN-endpoint's RAM and start the transmission. The data is
-   * located in local array 'USB_Tx_Buffer' and the number of bytes is stored in
-   * 'nr_of_bytes_for_tx_endpoint'
-   */
+  /* copy data to endpoint's RAM and start the transmission */
+  USBD_LL_Transmit(&hUsbDeviceFS, BULK_IN_EP, &USB_Tx_Buffer[0],
+                   nr_of_bytes_for_tx_endpoint);
 } /*** end of UsbTransmitPipeBulkIN ***/
 
 
@@ -332,20 +338,18 @@ void UsbTransmitPipeBulkIN(void)
 ** \return    none.
 **
 ****************************************************************************************/
-void UsbReceivePipeBulkOUT(void)
+void UsbReceivePipeBulkOUT(blt_int8u epnum)
 {
   blt_int16u USB_Rx_Cnt=0;
   blt_int8u *usbRxBufferPtr;
   blt_int16u byte_counter;
   blt_bool result;
 
-  /* TODO ##Port Get the number of received bytes and set the pointer to where the 
-   * received bytes are currently located.
-   */
-  usbRxBufferPtr = BLT_NULL;
-  USB_Rx_Cnt = 0;
+  /* Get the received data buffer and the number of received bytes */
+  usbRxBufferPtr = USBD_Bulk_GetRxBufferPtr();
+  USB_Rx_Cnt = USBD_LL_GetRxDataSize(&hUsbDeviceFS, epnum);
 
-  /* USB data will be immediately processed, this allows next USB traffic being
+  /* USB data will be immediately processed, this allow next USB traffic being
    * NAKed till the end of the USART Xfer
    */
   for (byte_counter=0; byte_counter<USB_Rx_Cnt; byte_counter++)
@@ -355,7 +359,11 @@ void UsbReceivePipeBulkOUT(void)
     /* verify that the fifo wasn't full */
     ASSERT_RT(result == BLT_TRUE);
   }
-  /* TODO ##Port Prepare the OUT endpoint to receive next packet. */
+  /* Prepare Out endpoint to receive next packet */
+  USBD_LL_PrepareReceive(&hUsbDeviceFS,
+                         BULK_OUT_EP,
+                         USBD_Bulk_GetRxBufferPtr(),
+                         BULK_DATA_FS_OUT_PACKET_SIZE);
 } /*** end of UsbReceivePipeBulkOUT ***/
 
 
