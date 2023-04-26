@@ -98,8 +98,7 @@ static void SystemClock_Config(void)
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
   while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_4)
   {
-    /* Error setting flash latency. */
-    ASSERT_RT(BLT_FALSE);
+    ;
   }
 
   /* Configure the main internal regulator output voltage. */
