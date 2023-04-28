@@ -237,6 +237,8 @@ void FlashInit(void)
   /* init the flash block info structs by setting the address to an invalid address */
   blockInfo.base_addr = FLASH_INVALID_ADDRESS;
   bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
+  /* make sure the instruction cache is disabled prior to updating cacheable memory. */
+  HAL_ICACHE_Disable();
 } /*** end of FlashInit ***/
 
 
