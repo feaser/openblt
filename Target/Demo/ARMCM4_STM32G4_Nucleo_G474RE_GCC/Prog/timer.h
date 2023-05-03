@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_GCC/Prog/App/timer.h
+* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_GCC/Prog/timer.h
 * \brief        Timer driver header file.
 * \ingroup      Prog_ARMCM4_STM32G4_Nucleo_G474RE_GCC
 * \internal

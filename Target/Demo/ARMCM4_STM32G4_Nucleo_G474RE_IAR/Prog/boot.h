@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_IAR/Prog/App/boot.h
+* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_IAR/Prog/boot.h
 * \brief        Demo program bootloader interface header file.
 * \ingroup      Prog_ARMCM4_STM32G4_Nucleo_G474RE_IAR
 * \internal

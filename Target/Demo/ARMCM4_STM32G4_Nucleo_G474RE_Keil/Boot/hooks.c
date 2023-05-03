@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_Keil/Boot/App/hooks.c
+* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_Keil/Boot/hooks.c
 * \brief        Bootloader callback source file.
 * \ingroup      Boot_ARMCM4_STM32G4_Nucleo_G474RE_Keil
 * \internal

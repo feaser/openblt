@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_Keil/Prog/App/header.h
+* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_Keil/Prog/header.h
 * \brief        Generic header file.
 * \ingroup      Prog_ARMCM4_STM32G4_Nucleo_G474RE_Keil
 * \internal

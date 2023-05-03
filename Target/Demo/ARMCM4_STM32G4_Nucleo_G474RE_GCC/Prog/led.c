@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_GCC/Prog/App/led.c
+* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_GCC/Prog/led.c
 * \brief        LED driver source file.
 * \ingroup      Prog_ARMCM4_STM32G4_Nucleo_G474RE_GCC
 * \internal

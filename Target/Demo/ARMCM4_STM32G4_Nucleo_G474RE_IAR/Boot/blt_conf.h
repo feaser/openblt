@@ -1,5 +1,5 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_IAR/Boot/App/blt_conf.h
+* \file         Demo/ARMCM4_STM32G4_Nucleo_G474RE_IAR/Boot/blt_conf.h
 * \brief        Bootloader configuration header file.
 * \ingroup      Boot_ARMCM4_STM32G4_Nucleo_G474RE_IAR
 * \internal
