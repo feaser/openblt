@@ -101,8 +101,7 @@ static void SystemClock_Config(void)
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
   while(LL_FLASH_GetLatency() != LL_FLASH_LATENCY_4)
   {
-    /* Error setting flash latency. */
-    ASSERT_RT(BLT_FALSE);
+    ;
   }
   
   /* Enable boost mode and the HSE clock. */
@@ -149,7 +148,7 @@ static void SystemClock_Config(void)
   /* Update the time base */
   if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
   {
-    /* Error setting flash latency. */
+    /* Error updating the time base. */
     ASSERT_RT(BLT_FALSE);
   }
 
