@@ -1,0 +1,17 @@
+{
+	"name" : "Rollback AURIX Project",
+	
+	"commands" : [
+		{
+			"type": "CONTENT", 
+			"from": "/Libraries", 
+			"to": "/Libraries",
+			"recipe": ".ads/rollback.json"
+		},
+		{
+			"type": "CONTENT", 
+			"from": "/", 
+			"to": "/"
+		}
+	]
+}
