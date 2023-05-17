@@ -141,6 +141,49 @@ void CopServiceHook(void)
 
 
 /****************************************************************************************
+*   U S B   C O M M U N I C A T I O N   I N T E R F A C E   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_COM_USB_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB device should be connected
+**            to the USB bus.
+** \param     connect BLT_TRUE to connect and BLT_FALSE to disconnect.
+** \return    none.
+**
+****************************************************************************************/
+void UsbConnectHook(blt_bool connect)
+{
+  /* Note that this is handled automatically by the OTG peripheral. */
+} /*** end of UsbConnect ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device
+**            to enter a low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbEnterLowPowerModeHook(void)
+{
+  /* support to enter a low power mode can be implemented here */
+} /*** end of UsbEnterLowPowerMode ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device to
+**            exit low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbLeaveLowPowerModeHook(void)
+{
+  /* support to leave a low power mode can be implemented here */
+} /*** end of UsbLeaveLowPowerMode ***/
+#endif /* BOOT_COM_USB_ENABLE > 0 */
+
+
+/****************************************************************************************
 *   N O N - V O L A T I L E   M E M O R Y   D R I V E R   H O O K   F U N C T I O N S
 ****************************************************************************************/
 
