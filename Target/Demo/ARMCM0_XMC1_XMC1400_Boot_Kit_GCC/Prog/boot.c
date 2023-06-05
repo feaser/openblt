@@ -119,9 +119,9 @@ static unsigned char Rs232ReceiveByte(unsigned char *data);
 ****************************************************************************************/
 static void BootComRs232Init(void)
 {
-  XMC_GPIO_CONFIG_t rx_config;
-  XMC_GPIO_CONFIG_t tx_config;
-  XMC_UART_CH_CONFIG_t rs232_config;
+  XMC_GPIO_CONFIG_t rx_config = { 0 };
+  XMC_GPIO_CONFIG_t tx_config = { 0 };
+  XMC_UART_CH_CONFIG_t rs232_config = { 0 };
 
   /* set configuration and initialize UART channel */
   rs232_config.baudrate = BOOT_COM_RS232_BAUDRATE;
@@ -259,11 +259,11 @@ static XMC_CAN_MO_t receiveMsgObj;
 ****************************************************************************************/
 static void BootComCanInit(void)
 {
-  XMC_GPIO_CONFIG_t rx_can_config;
-  XMC_GPIO_CONFIG_t tx_can_config;
+  XMC_GPIO_CONFIG_t rx_can_config = { 0 };
+  XMC_GPIO_CONFIG_t tx_can_config = { 0 };
   unsigned char byteIdx;
   unsigned long canModuleFreqHz;
-  XMC_CAN_NODE_NOMINAL_BIT_TIME_CONFIG_t baud;
+  XMC_CAN_NODE_NOMINAL_BIT_TIME_CONFIG_t baud = { 0 };
   unsigned long receiveId;
 
   /* set the CAN peripheral into the disabled state. the call to XMC_CAN_Init
@@ -276,7 +276,7 @@ static void BootComCanInit(void)
    * datasheet, it must be at least 12MHz if 1 node (channel) is used with up to
    * 16 message objects. This is sufficient for this CAN driver.
    */
-  canModuleFreqHz = XMC_SCU_CLOCK_GetPeripheralClockFrequency();
+  canModuleFreqHz = BOOT_CPU_XTAL_SPEED_KHZ * 1000UL;
   /* increase if too low */
   while (canModuleFreqHz < 12000000)
   {
@@ -288,8 +288,12 @@ static void BootComCanInit(void)
     canModuleFreqHz /= 2;
   }
 
-  /* configure CAN module*/
-  XMC_CAN_Init(CAN, XMC_CAN_CANCLKSRC_MCLK, canModuleFreqHz);
+  /* configure CAN module. use the external high speed clock (FOHP), typically driven
+   * by a high accuracy crystal oscillator. the MCU clock (MCLK) is often configured to
+   * be driven by the internal 48 MHz DCO1 oscillator, which does not have the needed
+   * accurate to meet the clock tolerance requirements of the CAN 2.0B specification.
+   */
+  XMC_CAN_Init(CAN, XMC_CAN_CANCLKSRC_FOHP, canModuleFreqHz);
 
   /* configure CAN node baudrate */
   baud.can_frequency = canModuleFreqHz;

@@ -79,4 +79,23 @@ static void Init(void)
 } /*** end of Init ***/
 
 
+/************************************************************************************//**
+** \brief     Initializes the microcontroller core clock.
+** \return    none.
+**
+****************************************************************************************/
+void SystemCoreClockSetup(void)
+{
+  /* this firmware is started by the bootloader, which already initialized the core
+   * clock. for this reason, nothing more needs to be done here.
+   *
+   * this assumes that your firmware uses the same core clock configuration as the
+   * bootloader. this will most likely always be the case.
+   *
+   * alternatively and optionally, you can reset the clock configuration made by the
+   * bootloader here and then reconfigure it as desired.
+   */
+} /*** end of SystemCoreClockSetup ***/
+
+
 /*********************************** end of main.c *************************************/

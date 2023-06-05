@@ -111,7 +111,7 @@ void CanInit(void)
    * datasheet, it must be at least 12MHz if 1 node (channel) is used with up to
    * 16 message objects. This is sufficient for this CAN driver.
    */
-  canModuleFreqHz = XMC_SCU_CLOCK_GetPeripheralClockFrequency();
+  canModuleFreqHz = BOOT_CPU_XTAL_SPEED_KHZ * 1000UL;
   /* increase if too low */
   while (canModuleFreqHz < 12000000)
   {
@@ -127,8 +127,12 @@ void CanInit(void)
     CopService();
   }
 
-  /* configure CAN module*/
-  XMC_CAN_Init(CAN, XMC_CAN_CANCLKSRC_MCLK, canModuleFreqHz);
+  /* configure CAN module. use the external high speed clock (FOHP), typically driven
+   * by a high accuracy crystal oscillator. the MCU clock (MCLK) is often configured to
+   * be driven by the internal 48 MHz DCO1 oscillator, which does not have the needed
+   * accurate to meet the clock tolerance requirements of the CAN 2.0B specification.
+   */
+  XMC_CAN_Init(CAN, XMC_CAN_CANCLKSRC_FOHP, canModuleFreqHz);
 
   /* configure CAN node baudrate */
   baud.can_frequency = canModuleFreqHz;

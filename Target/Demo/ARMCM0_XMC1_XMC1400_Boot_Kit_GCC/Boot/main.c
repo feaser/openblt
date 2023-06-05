@@ -33,6 +33,7 @@
 #include "xmc_gpio.h"                            /* GPIO module                        */
 #include "xmc_uart.h"                            /* UART driver header                 */
 #include "xmc_can.h"                             /* CAN driver header                  */
+#include "xmc_scu.h"                             /* System control header              */
 
 
 /****************************************************************************************
@@ -89,13 +90,18 @@ static void Init(void)
 static void PostInit(void)
 {
 #if (BOOT_COM_RS232_ENABLE > 0)
-  XMC_GPIO_CONFIG_t rx_rs232_config;
-  XMC_GPIO_CONFIG_t tx_rs232_config;
+  XMC_GPIO_CONFIG_t rx_rs232_config = { 0 };
+  XMC_GPIO_CONFIG_t tx_rs232_config = { 0 };
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
-  XMC_GPIO_CONFIG_t rx_can_config;
-  XMC_GPIO_CONFIG_t tx_can_config;
+  XMC_GPIO_CONFIG_t rx_can_config = { 0 };
+  XMC_GPIO_CONFIG_t tx_can_config = { 0 };
 #endif
+  XMC_GPIO_CONFIG_t backdoor_config = { 0 };
+
+  /* configure the (optional) P2.2 backdoor entry digital input. */
+  backdoor_config.mode = XMC_GPIO_MODE_INPUT_PULL_UP;
+  XMC_GPIO_Init(P2_2, &backdoor_config);
   
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* initialize UART Rx pin */
@@ -124,6 +130,40 @@ static void PostInit(void)
   XMC_CAN_NODE_DisableConfigurationChange(CAN_NODE1);
 #endif
 } /*** end of PostInit ***/
+
+
+/************************************************************************************//**
+** \brief     Initializes the microcontroller core clock.
+** \details   The following configuration selects the internal 48 MHz DCO1 to source
+**            the MCU and the peripherals:
+**              - MCLK = 48 MHz
+**              - PCLK = 96 MHz
+**            The RTC and watchdog systems are sourced by the internal 32.768 kHz DCO2:
+**              -  RTC_CLOCK = 32.768 kHz
+**              -  WDT_CLOCK = 32.768 kHz
+**            Furthermore, the oscillator circuit for the external 20 MHz crystal
+**            oscillator is enabled. The crystal offers a higher accuracy clock signal,
+**            which is needed for CAN communication.
+** \return    none.
+**
+****************************************************************************************/
+void SystemCoreClockSetup(void)
+{
+  const XMC_SCU_CLOCK_CONFIG_t CLOCK_XMC1_0_CONFIG =
+  {
+    .pclk_src = XMC_SCU_CLOCK_PCLKSRC_DOUBLE_MCLK,
+    .rtc_src = XMC_SCU_CLOCK_RTCCLKSRC_DCO2,
+    .fdiv = 0U,  /* 8/10 bit fractional divider. */
+    .idiv = 1U,  /* 8 bit integer divider. */
+
+    .dclk_src = XMC_SCU_CLOCK_DCLKSRC_DCO1,
+    .oschp_mode = XMC_SCU_CLOCK_OSCHP_MODE_OSC,
+    .osclp_mode = XMC_SCU_CLOCK_OSCLP_MODE_DISABLED
+  };
+
+  /* configure FDIV, IDIV, PCLKSEL dividers. */
+  XMC_SCU_CLOCK_Init(&CLOCK_XMC1_0_CONFIG);
+} /*** end of SystemCoreClockSetup ***/
 
 
 /*********************************** end of main.c *************************************/
