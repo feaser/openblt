@@ -103,6 +103,19 @@
 /** \brief Select the desired UART peripheral as a zero based index. */
 #define BOOT_COM_RS232_CHANNEL_INDEX     (2)
 
+/* The USB communication interface is selected by setting the BOOT_COM_USB_ENABLE
+ * configurable to 1. The maximum amount of data bytes in a message for data transmission
+ * and reception is set through BOOT_COM_USB_TX_MAX_DATA and BOOT_COM_USB_RX_MAX_DATA,
+ * respectively.
+ *
+ */
+/** \brief Enable/disable USB transport layer. */
+#define BOOT_COM_USB_ENABLE             (1)
+/** \brief Configure number of bytes in the target->host data packet. */
+#define BOOT_COM_USB_TX_MAX_DATA        (63)
+/** \brief Configure number of bytes in the host->target data packet. */
+#define BOOT_COM_USB_RX_MAX_DATA        (63)
+
 
 /****************************************************************************************
 *   B A C K D O O R   E N T R Y   C O N F I G U R A T I O N

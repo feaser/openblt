@@ -67,6 +67,65 @@ blt_bool CpuUserProgramStartHook(void)
 
 
 /****************************************************************************************
+*   U S B   C O M M U N I C A T I O N   I N T E R F A C E   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_COM_USB_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB device should be connected
+**            to the USB bus. 
+** \details   The connect to the USB bus, a pull-up resistor on the USB D+ line needs to
+**            be activated. The DISC (PC12) GPIO controls the gate of a P-MOSFET, which
+**            in turn controls the enabling/disabling of the pull-up resistor on the
+**            USB D+ line. When DISC is low (default), the Vgs is 0 - Vcc. With a
+**            negative Vgs, the P-MOSFET is on and the pull-up enabled. When DISC is
+**            high the P-MOSFET is off, disabling the pull-up.
+** \param     connect BLT_TRUE to connect and BLT_FALSE to disconnect.
+** \return    none.
+**
+****************************************************************************************/
+void UsbConnectHook(blt_bool connect)
+{
+  /* determine if the USB should be connected or disconnected */
+  if (connect == BLT_TRUE)
+  {
+    /* the GPIO has a pull-up so to connect to the USB bus the pin needs to go low */
+    LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_12);
+  }
+  else
+  {
+    /* the GPIO has a pull-up so to disconnect to the USB bus the pin needs to go high */
+    LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_12);
+  }
+} /*** end of UsbConnect ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device
+**            to enter a low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbEnterLowPowerModeHook(void)
+{
+  /* support to enter a low power mode can be implemented here */
+} /*** end of UsbEnterLowPowerMode ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called whenever the USB host requests the device to
+**            exit low power mode.
+** \return    none.
+**
+****************************************************************************************/
+void UsbLeaveLowPowerModeHook(void)
+{
+  /* support to leave a low power mode can be implemented here */
+} /*** end of UsbLeaveLowPowerMode ***/
+#endif /* BOOT_COM_USB_ENABLE > 0 */
+
+
+/****************************************************************************************
 *   W A T C H D O G   D R I V E R   H O O K   F U N C T I O N S
 ****************************************************************************************/
 
