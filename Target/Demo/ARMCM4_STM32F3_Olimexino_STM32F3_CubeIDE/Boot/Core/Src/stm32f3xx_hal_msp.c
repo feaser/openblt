@@ -235,13 +235,17 @@ void HAL_MspDeInit(void)
   LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
 
   /* Deinit used GPIOs, except GPIOC to make sure USB DISC (PC12) stays high. */
+  LL_GPIO_DeInit(GPIOD);
   LL_GPIO_DeInit(GPIOB);
   LL_GPIO_DeInit(GPIOA);
 
   /* UART clock disable. */
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USART3);
+  /* SPI clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_SPI2);
 
   /* GPIO ports clock disable, except GPIOC to make sure USB DISC (PC12) stays high. */
+  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
   LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
   LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
 

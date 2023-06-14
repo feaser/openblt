@@ -53,7 +53,22 @@ static const tFlashSector flashLayout[] =
   /* { 0x08006800, 0x00800 },           flash sector 13 - 2kb (reserved for bootloader)*/
   /* { 0x08007000, 0x00800 },           flash sector 14 - 2kb (reserved for bootloader)*/
   /* { 0x08007800, 0x00800 },           flash sector 15 - 2kb (reserved for bootloader)*/
-  { 0x08008000, 0x08000 },              /* flash sectors 16 to 31   - 32kb             */
+  /* { 0x08008000, 0x00800 },           flash sector 16 - 2kb (reserved for bootloader)*/
+  /* { 0x08008800, 0x00800 },           flash sector 17 - 2kb (reserved for bootloader)*/
+  /* { 0x08009000, 0x00800 },           flash sector 18 - 2kb (reserved for bootloader)*/
+  /* { 0x08009800, 0x00800 },           flash sector 19 - 2kb (reserved for bootloader)*/
+  { 0x0800A000, 0x00800 },              /* flash sector 20 - 2kb                       */
+  { 0x0800A800, 0x00800 },              /* flash sector 21 - 2kb                       */
+  { 0x0800B000, 0x00800 },              /* flash sector 22 - 2kb                       */
+  { 0x0800B800, 0x00800 },              /* flash sector 23 - 2kb                       */
+  { 0x0800C000, 0x00800 },              /* flash sector 24 - 2kb                       */
+  { 0x0800C800, 0x00800 },              /* flash sector 25 - 2kb                       */
+  { 0x0800D000, 0x00800 },              /* flash sector 26 - 2kb                       */
+  { 0x0800D800, 0x00800 },              /* flash sector 27 - 2kb                       */
+  { 0x0800E000, 0x00800 },              /* flash sector 28 - 2kb                       */
+  { 0x0800E800, 0x00800 },              /* flash sector 29 - 2kb                       */
+  { 0x0800F000, 0x00800 },              /* flash sector 30 - 2kb                       */
+  { 0x0800F800, 0x00800 },              /* flash sector 31 - 2kb                       */
   { 0x08010000, 0x08000 },              /* flash sectors 32 to 47   - 32kb             */
   { 0x08018000, 0x08000 },              /* flash sectors 48 to 63   - 32kb             */
   { 0x08020000, 0x08000 },              /* flash sectors 64 to 79   - 32kb             */

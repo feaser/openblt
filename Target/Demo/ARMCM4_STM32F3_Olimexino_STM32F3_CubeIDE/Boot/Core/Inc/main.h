@@ -36,6 +36,7 @@ extern "C" {
 #include "stm32f3xx_ll_utils.h"
 #include "stm32f3xx_ll_pwr.h"
 #include "stm32f3xx_ll_dma.h"
+#include "stm32f3xx_ll_spi.h"
 #include "stm32f3xx_ll_usart.h"
 #include "stm32f3xx_ll_gpio.h"
 
@@ -63,6 +64,7 @@ extern "C" {
 void Error_Handler(void);
 void   MX_CAN_Init(void);
 void   MX_USB_PCD_Init(void);
+void   MX_SPI2_Init(void);
 
 /* USER CODE BEGIN EFP */
 
