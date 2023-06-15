@@ -43,6 +43,11 @@
 /************************************************************************************//**
 ** \brief     Callback that gets called whenever the USB device should be connected
 **            to the USB bus. 
+** \details   The connect to the USB bus, a pull-up resistor on the USB D+ line needs to
+**            be activated. The DISC (PC12) GPIO controls the base of a PNP transistor,
+**            which in turn controls the enabling/disabling of the pull-up resistor on
+**            the USB D+ line. When DISC is low (default), the pull-up enabled. When DISC
+**            is high, the pull-up is disabled.
 ** \param     connect BLT_TRUE to connect and BLT_FALSE to disconnect.
 ** \return    none.
 **
@@ -52,12 +57,12 @@ void UsbConnectHook(blt_bool connect)
   /* determine if the USB should be connected or disconnected */
   if (connect == BLT_TRUE)
   {
-    /* the GPIO has a pull-up so to connect to the USB bus the pin needs to go low */
+    /* to connect to the USB bus, the pin needs to go low */
     LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_12);
   }
   else
   {
-    /* the GPIO has a pull-up so to disconnect to the USB bus the pin needs to go high */
+    /* to disconnect from the USB bus, the pin needs to go high */
     LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_12);
   }
 } /*** end of UsbConnect ***/

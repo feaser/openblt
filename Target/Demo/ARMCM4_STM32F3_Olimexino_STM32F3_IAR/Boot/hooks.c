@@ -89,12 +89,12 @@ void UsbConnectHook(blt_bool connect)
   /* determine if the USB should be connected or disconnected */
   if (connect == BLT_TRUE)
   {
-    /* the GPIO has a pull-up so to connect to the USB bus the pin needs to go low */
+    /* to connect to the USB bus, the pin needs to go low */
     LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_12);
   }
   else
   {
-    /* the GPIO has a pull-up so to disconnect to the USB bus the pin needs to go high */
+    /* to disconnect from the USB bus, the pin needs to go high */
     LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_12);
   }
 } /*** end of UsbConnect ***/
