@@ -68,6 +68,8 @@
   */
 
 #include "stm32f3xx.h"
+#include "stm32f3xx_ll_bus.h"
+#include "stm32f3xx_ll_gpio.h"
 
 /**
   * @}
@@ -150,6 +152,8 @@ const uint8_t APBPrescTable[8]  = {0, 0, 0, 0, 1, 2, 3, 4};
   */
 void SystemInit(void)
 {
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+
 /* FPU settings --------------------------------------------------------------*/
 #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
   SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  /* set CP10 and CP11 Full Access */
@@ -160,6 +164,31 @@ void SystemInit(void)
 #else
   SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH */
 #endif
+
+  /* The STM32F3-Discovery board has a pull-up on the USB_DP line, which is always
+   * enabled by default. If the board already enumerated, then it might stay in that
+   * state, even after a reset.
+   *
+   * It is therefore best to first make sure the USB device disconnects from the USB
+   * host. This is done by configuring the USB_DP line as a digital output and setting it
+   * to logic low.
+   *
+   * At the start of a debugging session, the code typically runs to an automatically
+   * placed breakpoint in main(). To aid debugging, the USB device disconnection is
+   * therefore done here in SystemInit(), because this function runs before main().
+   *
+   * During the actual USB initialization, the pin will be reconfigured for USB usage.
+   * Consequently, the USB D+ pull-up activates again, which is needed for the host
+   * to start the enumaration process.
+   */
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+  LL_GPIO_ResetOutputPin(GPIOA, GPIO_PIN_12);
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 /**

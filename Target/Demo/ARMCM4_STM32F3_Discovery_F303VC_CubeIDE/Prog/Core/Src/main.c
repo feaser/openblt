@@ -81,17 +81,6 @@ static void VectorBase_Config(void)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  /* The STM32F3-Discovery board has a pull-up on the USB_DP line, which is always
-   * enabled by default. If the USB USER cable is connected (for example after a
-   * firmware update with the bootloader), this pull-up causes the USB host to try
-   * and enumerate the USB device. This enumeration will fail if this application itself
-   * does not make use of the USB peripheral. This failed enumeration is not a problem
-   * for this application, but will cause the bootloader to not enumerate properly after
-   * starting it via a system reset.
-   * To prevent enumeration by the USB host, the USB device needs to stay in a
-   * disconnected state, which is done by configuring the USB_DP line as a digital
-   * output and setting it to logic low.
-   */
   /* Configure the vector table base address. */
   VectorBase_Config();
   /* USER CODE END 1 */
@@ -182,13 +171,9 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PE8 */
   GPIO_InitStruct.Pin = GPIO_PIN_8;
@@ -196,13 +181,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PA12 */
-  GPIO_InitStruct.Pin = GPIO_PIN_12;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 

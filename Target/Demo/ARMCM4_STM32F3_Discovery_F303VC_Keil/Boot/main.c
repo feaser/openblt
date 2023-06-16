@@ -203,15 +203,36 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* The STM32F3-Discovery board has a pull-up on the USB_DP line, which is always
+   * enabled by default. If the USB USER cable is connected (for example after a
+   * firmware update with the bootloader), this pull-up causes the USB host to try
+   * and enumerate the USB device.
+   * This enumeration will fail if the user program itself does not make use of the USB
+   * peripheral. This failed enumeration is not a problem for the user program, but might
+   * cause the bootloader to not enumerate properly after starting it via a system reset.
+   * To prevent enumeration by the USB host, place the USB device in a disconnected
+   * state, which is done by configuring the USB_DP line as a digital output and setting
+   * it to logic low.
+   */
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+  LL_GPIO_ResetOutputPin(GPIOA, GPIO_PIN_12);
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   /* Reset the RCC clock configuration to the default reset state. */
   LL_RCC_DeInit();
   
   /* Reset GPIO pin for the LED to turn it off. */
   LL_GPIO_ResetOutputPin(GPIOE, LL_GPIO_PIN_8);
 
-  /* Deinit used GPIOs. */
+  /* Deinit used GPIOs, except GPIOA to make sure USB D+ (PA12) stays low. */
   LL_GPIO_DeInit(GPIOE);
-  LL_GPIO_DeInit(GPIOA);
 
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART clock disable. */
@@ -219,9 +240,8 @@ void HAL_MspDeInit(void)
 
 #endif
 
-  /* GPIO ports clock disable. */
+  /* GPIO ports clock disable, except GPIOA to make sure USB D+ (PA12) stays low. */
   LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
-  LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
   LL_AHB1_GRP1_DisableClock(LL_AHB1_GRP1_PERIPH_GPIOF);
 
   /* SYSCFG clock disable. */
