@@ -67,6 +67,8 @@
   */
 
 #include "stm32f3xx.h"
+#include "stm32f3xx_ll_bus.h"
+#include "stm32f3xx_ll_gpio.h"
 
 /**
   * @}
@@ -169,6 +171,8 @@ const uint8_t APBPrescTable[8]  = {0, 0, 0, 0, 1, 2, 3, 4};
   */
 void SystemInit(void)
 {
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+
 /* FPU settings --------------------------------------------------------------*/
 #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
   SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  /* set CP10 and CP11 Full Access */
@@ -178,6 +182,31 @@ void SystemInit(void)
 #if defined(USER_VECT_TAB_ADDRESS)
   SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM */
 #endif /* USER_VECT_TAB_ADDRESS */
+
+  /* Out of reset, the Olimexino-STM32F3 board enables a pull-up on the USB_DP line. If
+   * the board already enumerated, then it might stay in that state, even after a reset.
+   *
+   * It is therefore best to first make sure the USB device disconnects from the USB
+   * host. This is done by configuring USB DISC (PC12) as a digital output and setting
+   * it logic high, to turn the P-MOSFET off, which disables the pull-up on the USB_DP
+   * line.
+   *
+   * At the start of a debugging session, the code typically runs to an automatically
+   * placed breakpoint in main(). To aid debugging, the USB device disconnection is
+   * therefore done here in SystemInit(), because this function runs before main().
+   *
+   * During the actual USB initialization, the USB DISC pin state will be chaged, such
+   * that the  USB_DP pull-up activates again, which is needed for the host to start the
+   * enumeration process.
+   */
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
+  LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_12);
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_12;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 }
 
 /**
