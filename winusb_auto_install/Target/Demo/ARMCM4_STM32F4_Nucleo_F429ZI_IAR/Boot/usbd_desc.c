@@ -23,6 +23,7 @@
 #include "usbd_core.h"
 #include "usbd_desc.h"
 #include "usbd_conf.h"
+#include "usbd_bulk.h"
 
 /* USER CODE BEGIN INCLUDE */
 
@@ -68,10 +69,11 @@
 #define USBD_MANUFACTURER_STRING     "OpenBLT User"
 #define USBD_PID_FS     0x60ac
 #define USBD_PRODUCT_STRING_FS     "WinUSB Bulk Device"
+#define USBD_SERIALNUMBER_STRING_FS     "00000000050C"
 #define USBD_CONFIGURATION_STRING_FS     "Default"
 #define USBD_INTERFACE_STRING_FS     "WinUSB Bulk Interface"
 
-#define USB_SIZ_BOS_DESC            0x0C
+#define USB_SIZ_BOS_DESC            0x21
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
 
@@ -102,13 +104,14 @@
   * @brief Private functions declaration.
   * @{
   */
-
+  
 static void Get_SerialNum(void);
 static void IntToUnicode(uint32_t value, uint8_t * pbuf, uint8_t len);
-
+  
 /**
   * @}
-  */
+  */  
+  
 
 /** @defgroup USBD_DESC_Private_FunctionPrototypes USBD_DESC_Private_FunctionPrototypes
   * @brief Private functions declaration for FS.
@@ -122,9 +125,9 @@ uint8_t * USBD_FS_ProductStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length
 uint8_t * USBD_FS_SerialStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
 uint8_t * USBD_FS_ConfigStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
 uint8_t * USBD_FS_InterfaceStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
-#if (USBD_LPM_ENABLED == 1)
+#if (USBD_WINUSB_ENABLED == 1)
 uint8_t * USBD_FS_USR_BOSDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
-#endif /* (USBD_LPM_ENABLED == 1) */
+#endif
 
 /**
   * @}
@@ -144,7 +147,7 @@ USBD_DescriptorsTypeDef FS_Desc =
 , USBD_FS_SerialStrDescriptor
 , USBD_FS_ConfigStrDescriptor
 , USBD_FS_InterfaceStrDescriptor
-#if (USBD_LPM_ENABLED == 1)
+#if (USBD_WINUSB_ENABLED == 1)
 , USBD_FS_USR_BOSDescriptor
 #endif /* (USBD_LPM_ENABLED == 1) */
 };
@@ -157,8 +160,13 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
 {
   0x12,                       /*bLength */
   USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
-  0x10,                       /*bcdUSB */
-  0x01,
+#if (USBD_WINUSB_ENABLED == 1)
+  0x01,                       /*bcdUSB changed to USB version 2.01 to enable BOS */
+                              /*descriptor for reading the MS OS 2.0 descriptors. */
+#else
+  0x00,                       /*bcdUSB */
+#endif
+  0x02,
   0x00,                       /*bDeviceClass*/
   0x00,                       /*bDeviceSubClass*/
   0x00,                       /*bDeviceProtocol*/
@@ -167,7 +175,7 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
   HIBYTE(USBD_VID),           /*idVendor*/
   LOBYTE(USBD_PID_FS),        /*idProduct*/
   HIBYTE(USBD_PID_FS),        /*idProduct*/
-  0x00,                       /*bcdDevice rel. 2.00*/
+  0x00,                       /*bcdDevice rel. 1.00*/
   0x01,
   USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
   USBD_IDX_PRODUCT_STR,       /*Index of product string*/
@@ -176,6 +184,37 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
 };
 
 /* USB_DeviceDescriptor */
+/** BOS descriptor. */
+#if (USBD_WINUSB_ENABLED == 1)
+#if defined ( __ICCARM__ ) /* IAR Compiler */
+  #pragma data_alignment=4
+#endif /* defined ( __ICCARM__ ) */
+__ALIGN_BEGIN uint8_t USBD_FS_BOSDesc[USB_SIZ_BOS_DESC] __ALIGN_END =
+{
+  0x05,                       /* Descriptor size (5 bytes) */
+  USB_DESC_TYPE_BOS,          /* Descriptor type (BOS) */
+  0x21, 0x00,                 /* Length of this + subordinate descriptors (33 bytes) */
+  0x01,                       /* Number of subordinate descriptors */
+
+  /* Microsoft OS 2.0 Platform Capability Descriptor */
+  0x1C,                       /* Descriptor size (28 bytes) */
+  USB_DEVICE_CAPABITY_TYPE,   /* Descriptor type (Device Capability) */
+  0x05,                       /* Capability type (Platform) */
+  0x00,                       /* Reserved */
+
+  /* MS OS 2.0 Platform Capability ID (D8DD60DF-4589-4CC7-9CD2-659D9E648A9F) */
+  0xDF, 0x60, 0xDD, 0xD8,
+  0x89, 0x45,
+  0xC7, 0x4C,
+  0x9C, 0xD2,
+  0x65, 0x9D, 0x9E, 0x64, 0x8A, 0x9F,
+
+  0x00, 0x00, 0x03, 0x06,     /* Windows version (8.1) (0x06030000) */
+  0x9E, 0x00,                 /* Size, MS OS 2.0 descriptor set (158 bytes) */
+  USB_BULK_MS_VENDORCODE,     /* Vendor-assigned bMS_VendorCode */
+  0x00                        /* Doesn’t support alternate enumeration */
+};
+#endif /* (USBD_WINUSB_ENABLED == 1) */
 
 /**
   * @}
@@ -206,7 +245,7 @@ __ALIGN_BEGIN uint8_t USBD_LangIDDesc[USB_LEN_LANGID_STR_DESC] __ALIGN_END =
 __ALIGN_BEGIN uint8_t USBD_StrDesc[USBD_MAX_STR_DESC_SIZ] __ALIGN_END;
 
 #if defined ( __ICCARM__ ) /*!< IAR Compiler */
-  #pragma data_alignment=4
+  #pragma data_alignment=4   
 #endif
 __ALIGN_BEGIN uint8_t USBD_StringSerial[USB_SIZ_STRING_SERIAL] __ALIGN_END = {
   USB_SIZ_STRING_SERIAL,
@@ -295,7 +334,7 @@ uint8_t * USBD_FS_SerialStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
    * ID */
   Get_SerialNum();
   /* USER CODE BEGIN USBD_FS_SerialStrDescriptor */
-
+  
   /* USER CODE END USBD_FS_SerialStrDescriptor */
   return (uint8_t *) USBD_StringSerial;
 }
@@ -338,9 +377,24 @@ uint8_t * USBD_FS_InterfaceStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *leng
   return USBD_StrDesc;
 }
 
+#if (USBD_WINUSB_ENABLED == 1)
 /**
-  * @brief  Create the serial number string descriptor
-  * @param  None
+  * @brief  Return the BOS descriptor
+  * @param  speed : Current device speed
+  * @param  length : Pointer to data length variable
+  * @retval Pointer to descriptor buffer
+  */
+uint8_t * USBD_FS_USR_BOSDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
+{
+  UNUSED(speed);
+  *length = sizeof(USBD_FS_BOSDesc);
+  return (uint8_t*)USBD_FS_BOSDesc;
+}
+#endif /* (USBD_WINUSB_ENABLED == 1) */
+
+/**
+  * @brief  Create the serial number string descriptor 
+  * @param  None 
   * @retval None
   */
 static void Get_SerialNum(void)
@@ -361,9 +415,9 @@ static void Get_SerialNum(void)
 }
 
 /**
-  * @brief  Convert Hex 32Bits value into char
+  * @brief  Convert Hex 32Bits value into char 
   * @param  value: value to convert
-  * @param  pbuf: pointer to the buffer
+  * @param  pbuf: pointer to the buffer 
   * @param  len: buffer length
   * @retval None
   */
