@@ -1,0 +1,486 @@
+object SessionXcpForm: TSessionXcpForm
+  Left = 582
+  Height = 308
+  Top = 371
+  Width = 407
+  Caption = 'XCP Session'
+  ClientHeight = 308
+  ClientWidth = 407
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '2.0.12.0'
+  object LblTimeouts: TLabel
+    Left = 8
+    Height = 20
+    Top = 160
+    Width = 68
+    AutoSize = False
+    Caption = 'Timeouts'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object LblTimeoutT1: TLabel
+    Left = 23
+    Height = 20
+    Top = 187
+    Width = 53
+    AutoSize = False
+    Caption = 'T1 (ms):'
+    ParentColor = False
+  end
+  object EdtTimeoutT1: TEdit
+    Left = 80
+    Height = 23
+    Hint = 'Command response timeout in milliseconds as a 16-bit value (Default = 1000 ms)'
+    Top = 184
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+  end
+  object LblTimeoutT3: TLabel
+    Left = 23
+    Height = 20
+    Top = 227
+    Width = 50
+    AutoSize = False
+    Caption = 'T3 (ms):'
+    ParentColor = False
+  end
+  object EdtTimeoutT3: TEdit
+    Left = 80
+    Height = 23
+    Hint = 'Start programming timeout in milliseconds as a 16-bit value (Default = 2000 ms)'
+    Top = 224
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+  end
+  object LblTimeoutT4: TLabel
+    Left = 23
+    Height = 20
+    Top = 267
+    Width = 51
+    AutoSize = False
+    Caption = 'T4 (ms):'
+    ParentColor = False
+  end
+  object EdtTimeoutT4: TEdit
+    Left = 80
+    Height = 23
+    Hint = 'Erase memory timeout in milliseconds as a 16-bit value (Default = 10000 ms)'
+    Top = 264
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
+  end
+  object LblTimeoutT5: TLabel
+    Left = 226
+    Height = 20
+    Top = 187
+    Width = 46
+    AutoSize = False
+    Caption = 'T5 (ms):'
+    ParentColor = False
+  end
+  object EdtTimeoutT5: TEdit
+    Left = 280
+    Height = 23
+    Hint = 'Program memory and target reset timeout in milliseconds as a 16-bit value (Default = 1000 ms)'
+    Top = 184
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 6
+  end
+  object LblTimeoutT7: TLabel
+    Left = 226
+    Height = 20
+    Top = 267
+    Width = 46
+    AutoSize = False
+    Caption = 'T7 (ms):'
+    ParentColor = False
+  end
+  object EdtTimeoutT7: TEdit
+    Left = 280
+    Height = 23
+    Hint = 'Busy wait timer timeout in milliseconds as a 16-bit value (Default = 2000 ms)'
+    Top = 264
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
+  end
+  object LblConnection: TLabel
+    Left = 8
+    Height = 20
+    Top = 8
+    Width = 80
+    AutoSize = False
+    Caption = 'Connection'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object LblConnectMode: TLabel
+    Left = 23
+    Height = 20
+    Top = 38
+    Width = 49
+    AutoSize = False
+    Caption = 'Mode:'
+    ParentColor = False
+  end
+  object CmbConnectMode: TComboBox
+    Left = 80
+    Height = 23
+    Hint = 'Connection mode value sent in the XCP connect command as a 8-bit value (Default=0)'
+    Top = 35
+    Width = 120
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      '0'
+      '1'
+      '2'
+      '3'
+      '4'
+      '5'
+      '6'
+      '7'
+      '8'
+      '9'
+      '10'
+      '11'
+      '12'
+      '13'
+      '14'
+      '15'
+      '16'
+      '17'
+      '18'
+      '19'
+      '20'
+      '21'
+      '22'
+      '23'
+      '24'
+      '25'
+      '26'
+      '27'
+      '28'
+      '29'
+      '30'
+      '31'
+      '32'
+      '33'
+      '34'
+      '35'
+      '36'
+      '37'
+      '38'
+      '39'
+      '40'
+      '41'
+      '42'
+      '43'
+      '44'
+      '45'
+      '46'
+      '47'
+      '48'
+      '49'
+      '50'
+      '51'
+      '52'
+      '53'
+      '54'
+      '55'
+      '56'
+      '57'
+      '58'
+      '59'
+      '60'
+      '61'
+      '62'
+      '63'
+      '64'
+      '65'
+      '66'
+      '67'
+      '68'
+      '69'
+      '70'
+      '71'
+      '72'
+      '73'
+      '74'
+      '75'
+      '76'
+      '77'
+      '78'
+      '79'
+      '80'
+      '81'
+      '82'
+      '83'
+      '84'
+      '85'
+      '86'
+      '87'
+      '88'
+      '89'
+      '90'
+      '91'
+      '92'
+      '93'
+      '94'
+      '95'
+      '96'
+      '97'
+      '98'
+      '99'
+      '100'
+      '101'
+      '102'
+      '103'
+      '104'
+      '105'
+      '106'
+      '107'
+      '108'
+      '109'
+      '110'
+      '111'
+      '112'
+      '113'
+      '114'
+      '115'
+      '116'
+      '117'
+      '118'
+      '119'
+      '120'
+      '121'
+      '122'
+      '123'
+      '124'
+      '125'
+      '126'
+      '127'
+      '128'
+      '129'
+      '130'
+      '131'
+      '132'
+      '133'
+      '134'
+      '135'
+      '136'
+      '137'
+      '138'
+      '139'
+      '140'
+      '141'
+      '142'
+      '143'
+      '144'
+      '145'
+      '146'
+      '147'
+      '148'
+      '149'
+      '150'
+      '151'
+      '152'
+      '153'
+      '154'
+      '155'
+      '156'
+      '157'
+      '158'
+      '159'
+      '160'
+      '161'
+      '162'
+      '163'
+      '164'
+      '165'
+      '166'
+      '167'
+      '168'
+      '169'
+      '170'
+      '171'
+      '172'
+      '173'
+      '174'
+      '175'
+      '176'
+      '177'
+      '178'
+      '179'
+      '180'
+      '181'
+      '182'
+      '183'
+      '184'
+      '185'
+      '186'
+      '187'
+      '188'
+      '189'
+      '190'
+      '191'
+      '192'
+      '193'
+      '194'
+      '195'
+      '196'
+      '197'
+      '198'
+      '199'
+      '200'
+      '201'
+      '202'
+      '203'
+      '204'
+      '205'
+      '206'
+      '207'
+      '208'
+      '209'
+      '210'
+      '211'
+      '212'
+      '213'
+      '214'
+      '215'
+      '216'
+      '217'
+      '218'
+      '219'
+      '220'
+      '221'
+      '222'
+      '223'
+      '224'
+      '225'
+      '226'
+      '227'
+      '228'
+      '229'
+      '230'
+      '231'
+      '232'
+      '233'
+      '234'
+      '235'
+      '236'
+      '237'
+      '238'
+      '239'
+      '240'
+      '241'
+      '242'
+      '243'
+      '244'
+      '245'
+      '246'
+      '247'
+      '248'
+      '249'
+      '250'
+      '251'
+      '252'
+      '253'
+      '254'
+      '255'
+    )
+    ParentShowHint = False
+    ShowHint = True
+    Style = csDropDownList
+    TabOrder = 0
+    Text = '0'
+  end
+  object LblSecurity: TLabel
+    Left = 8
+    Height = 20
+    Top = 72
+    Width = 64
+    AutoSize = False
+    Caption = 'Security'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object LblSeedKey: TLabel
+    Left = 23
+    Height = 20
+    Top = 96
+    Width = 369
+    AutoSize = False
+    Caption = 'Select your seed/key algorithm shared library file:'
+    ParentColor = False
+  end
+  object EdtSeedKey: TEdit
+    Left = 23
+    Height = 23
+    Hint = 'Seed/key algorithm shared library filename (Optional)'
+    Top = 120
+    Width = 281
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+  object BtnSeedKey: TButton
+    Left = 312
+    Height = 28
+    Top = 120
+    Width = 83
+    Caption = 'Browse..'
+    OnClick = BtnSeedKeyClick
+    TabOrder = 2
+  end
+  object LblTimeoutT6: TLabel
+    Left = 224
+    Height = 20
+    Top = 227
+    Width = 50
+    AutoSize = False
+    Caption = 'T6 (ms):'
+    ParentColor = False
+  end
+  object EdtTimeoutT6: TEdit
+    Left = 280
+    Height = 23
+    Hint = 'Connect response timeout in milliseconds as a 16-bit value (Default = 50 ms)'
+    Top = 224
+    Width = 115
+    OnChange = EdtTimeoutChange
+    OnKeyPress = EdtTimeoutKeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+  end
+  object OpenDialog: TOpenDialog
+    Filter = 'Shared libraries (*.dll;*.so)|*.dll;*.so|All files (*.*)|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 344
+    Top = 31
+  end
+end

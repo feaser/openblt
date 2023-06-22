@@ -1,0 +1,60 @@
+/* s-record file with linear addresses for MicroBoot/OpenBLT */
+OPENFILE "%ABS_FILE%.sx"
+format = motorola
+busWidth = 1
+len = 0x4000
+
+/* logical non banked flash at $4000 and $C000 to physical */
+origin = 0x004000
+destination = 0x34000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+origin = 0x00C000
+destination = 0x3C000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+/* logical 128 kB banked flash to physical */
+origin = 0x088000
+destination = 0x020000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+origin = 0x098000
+destination = 0x024000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+origin = 0x0A8000
+destination = 0x028000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+origin = 0x0B8000
+destination = 0x02C000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+origin = 0x0C8000
+destination = 0x030000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+origin = 0x0D8000
+destination = 0x034000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+origin = 0x0E8000
+destination = 0x038000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+origin = 0x0F8000
+destination = 0x03C000
+len = 0x4000
+SENDBYTE 1 "%ABS_FILE%"
+
+CLOSE
+
