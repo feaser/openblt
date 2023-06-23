@@ -58,6 +58,8 @@
 #define USB_BULK_CONFIG_DESC_SIZ                    32
 #define USB_BULK_DESC_SIZ                           (32-9)
 
+#define USB_BULK_MS_VENDORCODE                      0x01 /* bMS_VendorCode */
+
 #define BULK_DESCRIPTOR_TYPE                        0x21
 
 

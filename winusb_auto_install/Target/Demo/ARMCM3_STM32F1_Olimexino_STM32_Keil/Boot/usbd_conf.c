@@ -87,7 +87,7 @@ static USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status);
 /* USER CODE END 1 */
 #if (USE_HAL_PCD_REGISTER_CALLBACKS == 1U)
 static void PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state);
-else
+#else
 void HAL_PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state);
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 
@@ -195,13 +195,10 @@ static void PCD_SuspendCallback(PCD_HandleTypeDef *hpcd)
 void HAL_PCD_SuspendCallback(PCD_HandleTypeDef *hpcd)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 {
-#if (BOOT_COM_USB_ENABLE > 0)
   /* Invoke hook function to allow the application to prepare entry into low power
    * mode.
    */
   UsbEnterLowPowerModeHook();
-#endif /* (BOOT_COM_USB_ENABLE > 0) */
-
   /* Inform USB library that core enters in suspend Mode. */
   USBD_LL_Suspend((USBD_HandleTypeDef*)hpcd->pData);
   /* Enter in STOP mode. */
@@ -230,12 +227,10 @@ void HAL_PCD_ResumeCallback(PCD_HandleTypeDef *hpcd)
 
   /* USER CODE END 3 */
   USBD_LL_Resume((USBD_HandleTypeDef*)hpcd->pData);
-#if (BOOT_COM_USB_ENABLE > 0)
   /* Invoke hook function to allow the application to process exit from low power
    * mode.
    */
   UsbLeaveLowPowerModeHook();
-#endif /* (BOOT_COM_USB_ENABLE > 0) */
 }
 
 /**
@@ -315,7 +310,6 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   hpcd_USB_FS.Instance = USB;
   hpcd_USB_FS.Init.dev_endpoints = 8;
   hpcd_USB_FS.Init.speed = PCD_SPEED_FULL;
-  hpcd_USB_FS.Init.ep0_mps = DEP0CTL_MPS_8;
   hpcd_USB_FS.Init.low_power_enable = DISABLE;
   hpcd_USB_FS.Init.lpm_enable = DISABLE;
   hpcd_USB_FS.Init.battery_charging_enable = DISABLE;
@@ -608,17 +602,13 @@ void HAL_PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state)
   /* USER CODE BEGIN 6 */
   if (state == 1)
   {
-#if (BOOT_COM_USB_ENABLE > 0)
     /* Configure Low connection state. */
     UsbConnectHook(BLT_TRUE);
-#endif /* (BOOT_COM_USB_ENABLE > 0) */
   }
   else
   {
-#if (BOOT_COM_USB_ENABLE > 0)
     /* Configure High connection state. */
     UsbConnectHook(BLT_FALSE);
-#endif /* (BOOT_COM_USB_ENABLE > 0) */
   }
   /* USER CODE END 6 */
 }
@@ -652,6 +642,5 @@ USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status)
   }
   return usb_status;
 }
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
