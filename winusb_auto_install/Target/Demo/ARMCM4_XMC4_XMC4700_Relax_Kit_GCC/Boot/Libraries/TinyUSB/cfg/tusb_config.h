@@ -71,6 +71,11 @@
 // require tud_int_handler() to be called continuously in the program's infinite loop.
 #define CFG_TUSB_POLLING_ENABLED  1
 
+// Enable/disable the loading of the WinUSB GUID through MS OS 2.0 descriptors. This
+// makes it possible to automatically install WinUSB devices without having to provide
+// a device specific INF file.
+#define CFG_TUD_WINUSB_ENABLED     1
+
 /* USB DMA on some MCUs can only access a specific SRAM region with restriction on alignment.
  * Tinyusb use follows macros to declare transferring memory so that they can be put
  * into those specific section.
