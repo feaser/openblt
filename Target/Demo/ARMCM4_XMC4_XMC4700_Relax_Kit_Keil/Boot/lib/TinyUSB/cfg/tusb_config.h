@@ -30,6 +30,31 @@
  extern "C" {
 #endif
 
+// ================= IMPORTANT - Keil Linker Issue Workaround =================
+// The Keil MDK linker removes certain callback functions, even though they are
+// actually used. It seems to apply to certain callbacks specified with the
+// TU_ATTR_WEAK attribute. For example, the following callbacks are removed:
+//
+// - tud_descriptor_bos_cb          (usb_descriptors.c)
+// - tud_vendor_control_xfer_cb     (usb_descriptors.c)
+// - tud_mount_cb                   (usb.c)
+// - tud_umount_cb                  (usb.c)
+// - tud_suspend_cb                 (usb.c)
+// - tud_resume_cb                  (usb.c)
+//
+// To fix this problem, uncheck the One ELF Section per Function" compiler
+// option. Unfortunately, actually unused functions are then also not
+// remmove, resulting in an unnecessarily large ROM footprint. The
+// workaround is to uncheck the "One ELF Section per Function" option for
+// just the affected source-files:
+// - usb_descriptors.c
+// - usb.c
+//
+// You can do so by right-clicking the individual source-file and selecting
+// "Options for file xxx". The go the to "C/C++" tab and uncheck the 
+// "One ELF Section per Function" option.
+
+
 //--------------------------------------------------------------------+
 // Board Specific Configuration
 //--------------------------------------------------------------------+
@@ -70,6 +95,11 @@
 // Added feature in the port to support polling only mode, without interrupts. This does
 // require tud_int_handler() to be called continuously in the program's infinite loop.
 #define CFG_TUSB_POLLING_ENABLED  1
+
+// Enable/disable the loading of the WinUSB GUID through MS OS 2.0 descriptors. This
+// makes it possible to automatically install WinUSB devices without having to provide
+// a device specific INF file.
+#define CFG_TUD_WINUSB_ENABLED     1
 
 /* USB DMA on some MCUs can only access a specific SRAM region with restriction on alignment.
  * Tinyusb use follows macros to declare transferring memory so that they can be put

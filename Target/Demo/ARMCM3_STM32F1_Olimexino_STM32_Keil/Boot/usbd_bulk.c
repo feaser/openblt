@@ -31,9 +31,8 @@
 #include "usbd_bulk.h"
 #include "usbd_desc.h"
 #include "usbd_ctlreq.h"
-#include "boot.h"
 
-#if (BOOT_COM_USB_ENABLE > 0)
+
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
   */
@@ -193,6 +192,62 @@ __ALIGN_BEGIN uint8_t USBD_Bulk_CfgFSDesc[USB_BULK_CONFIG_DESC_SIZ] __ALIGN_END 
 } ;
 
 
+#if (USBD_WINUSB_ENABLED == 1)
+/* USB Bulk device Microsoft OS 2.0 Descriptor Set. */
+#define USB_LEN_MSOS20_DESC   (0x9E)
+
+__ALIGN_BEGIN uint8_t USBD_Bulk_MSOS20Desc[USB_LEN_MSOS20_DESC] __ALIGN_END =
+{
+  0x0A, 0x00,                 /* Descriptor size (10 bytes) */
+  0x00, 0x00,                 /* MS OS 2.0 descriptor set header */
+  0x00, 0x00, 0x03, 0x06,     /* Windows version (8.1) (0x06030000) */
+  0x9E, 0x00,                 /* Size, MS OS 2.0 descriptor set (158 bytes) */
+
+  /* Microsoft OS 2.0 compatible ID descriptor */
+  0x14, 0x00,                 /* Descriptor size (20 bytes) */
+  0x03, 0x00,                 /* MS OS 2.0 compatible ID descriptor */
+  0x57, 0x49, 0x4E, 0x55, 0x53, 0x42, 0x00, 0x00,     /* WINUSB string */
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,     /* Sub-compatible ID */
+
+  /* Registry property descriptor */
+  0x80, 0x00,                 /* Descriptor size (130 bytes) */
+  0x04, 0x00,                 /* Registry Property descriptor */
+  0x01, 0x00,                 /* Strings are null-terminated Unicode */
+  0x28, 0x00,                 /* Size of Property Name (40 bytes) */
+
+  /* Property Name ("DeviceInterfaceGUID") */
+  0x44, 0x00, 0x65, 0x00, 0x76, 0x00, 0x69, 0x00, 0x63, 0x00, 0x65, 0x00,
+  0x49, 0x00, 0x6E, 0x00, 0x74, 0x00, 0x65, 0x00, 0x72, 0x00, 0x66, 0x00,
+  0x61, 0x00, 0x63, 0x00, 0x65, 0x00, 0x47, 0x00, 0x55, 0x00, 0x49, 0x00,
+  0x44, 0x00, 0x00, 0x00,
+
+  0x4E, 0x00,                 /* Size of Property Data (78 bytes) */
+
+  /* Vendor-defined Property Data: "{807999C3-E4E0-40EA-8188-48E852B54F2B}\0" */
+  0x7B, 0x00, 0x38, 0x00, /* {8 */
+  0x30, 0x00, 0x37, 0x00, /* 07 */
+  0x39, 0x00, 0x39, 0x00, /* 99 */
+  0x39, 0x00, 0x43, 0x00, /* 9C */
+  0x33, 0x00, 0x2D, 0x00, /* 3- */
+  0x45, 0x00, 0x34, 0x00, /* E4 */
+  0x45, 0x00, 0x30, 0x00, /* E0 */
+  0x2D, 0x00, 0x34, 0x00, /* -4 */
+  0x30, 0x00, 0x45, 0x00, /* 0E */
+  0x41, 0x00, 0x2D, 0x00, /* A- */
+  0x38, 0x00, 0x31, 0x00, /* 81 */
+  0x38, 0x00, 0x38, 0x00, /* 88 */
+  0x2D, 0x00, 0x34, 0x00, /* -4 */
+  0x38, 0x00, 0x45, 0x00, /* 8E */
+  0x38, 0x00, 0x35, 0x00, /* 85 */
+  0x32, 0x00, 0x42, 0x00, /* 2B */
+  0x35, 0x00, 0x34, 0x00, /* 54 */
+  0x46, 0x00, 0x32, 0x00, /* F2 */
+  0x42, 0x00, 0x7D, 0x00, /* B} */
+  0x00, 0x00  /* \0 */
+};
+#endif /* (USBD_WINUSB_ENABLED == 1) */
+
+
 /**
   * @}
   */ 
@@ -270,6 +325,25 @@ static uint8_t  USBD_Bulk_Setup (USBD_HandleTypeDef *pdev,
 
   switch (req->bmRequest & USB_REQ_TYPE_MASK)
   {
+#if (USBD_WINUSB_ENABLED == 1)
+  case USB_REQ_TYPE_VENDOR:
+    switch (req->bRequest)
+    {
+    case USB_BULK_MS_VENDORCODE: /* bMS_VendorCode */
+      if (req->wIndex == 7) /*This is defined by the MS spec (Table 6)*/
+      {
+        pbuf = USBD_Bulk_MSOS20Desc;
+        len = USB_LEN_MSOS20_DESC;
+        USBD_CtlSendData(pdev, pbuf, len);
+        break;
+      }
+
+    default:
+      break;
+    }
+    break;
+#endif /* (USBD_WINUSB_ENABLED == 1) */
+
   case USB_REQ_TYPE_STANDARD:
     switch (req->bRequest)
     {
@@ -397,6 +471,5 @@ uint8_t * USBD_Bulk_GetRxBufferPtr(void)
 /**
   * @}
   */ 
-#endif /* (BOOT_COM_USB_ENABLE > 0) */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

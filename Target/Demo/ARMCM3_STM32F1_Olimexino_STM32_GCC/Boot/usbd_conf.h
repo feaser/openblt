@@ -61,7 +61,6 @@
 #include <string.h>
 #include "stm32f1xx.h"
 #include "stm32f1xx_hal.h"
-#include "usbd_def.h"
 
 /* USER CODE BEGIN INCLUDE */
 
@@ -100,6 +99,12 @@
 #define USBD_DEBUG_LEVEL     0U
 /*---------- -----------*/
 #define USBD_SELF_POWERED     1U
+/*---------- -----------*/
+/* Enable/disable the loading of the WinUSB GUID through MS OS 2.0 descriptors. This
+ * makes it possible to automatically install WinUSB devices without having to provide
+ * a device specific INF file.
+ */
+#define USBD_WINUSB_ENABLED     1U
 
 /****************************************/
 /* #define for FS and HS identification */
@@ -113,6 +118,13 @@
   * @brief Aliases.
   * @{
   */
+
+#if (USBD_WINUSB_ENABLED == 1)
+/* Reading out the MS OS 2.0 descriptors, requires support for BOS descriptors. This
+ * is currently enabled in the ST USB stack by enabled the USBD_LPM_ENABLED feature.
+ */
+#define USBD_LPM_ENABLED     1U
+#endif
 
 /* Memory management macros */
 

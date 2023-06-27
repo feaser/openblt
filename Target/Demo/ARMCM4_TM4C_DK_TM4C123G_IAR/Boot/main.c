@@ -109,6 +109,11 @@ static void Init(void)
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOL);
   GPIOPinTypeUSBAnalog(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
   GPIOPinTypeUSBAnalog(GPIO_PORTL_BASE, GPIO_PIN_6 | GPIO_PIN_7);
+  /* reset the USB peripheral */
+  SysCtlPeripheralReset(SYSCTL_PERIPH_USB0);
+  /* enable the USB peripheral and turn on the USB Phy clock */
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
+  SysCtlUSBPLLEnable();
 #endif  
   /* enable the GPIO port to which the SELECT button is connected */
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOM);
