@@ -320,6 +320,9 @@ static void UblClose(void)
   {
     (void)CloseHandle(bulkUsbDev.hDev);
   }
+  bulkUsbDev.evReader = NULL;
+  bulkUsbDev.hWinUSBDev = NULL;
+  bulkUsbDev.hDev = NULL;
 } /*** end of UblClose ***/
 
 
