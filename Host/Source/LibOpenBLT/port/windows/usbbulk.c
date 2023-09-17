@@ -232,6 +232,7 @@ static uint8_t UblOpen(LPCGUID guid)
   /* Init device members. */
   bulkUsbDev.hDev = NULL;
   bulkUsbDev.hWinUSBDev = NULL;
+  bulkUsbDev.evReader = NULL;
   bulkUsbDev.pipeBulkIn = INVALID_PIPE_ID;
   bulkUsbDev.pipeBulkOut = INVALID_PIPE_ID;
   /* Open the usb device. */
@@ -306,11 +307,13 @@ static void UblClose(void)
   if (bulkUsbDev.evReader != NULL)
   {
     (void)CloseHandle(bulkUsbDev.evReader);
+    bulkUsbDev.evReader = NULL;
   }
   /* close the winusb device */
   if (bulkUsbDev.hWinUSBDev != NULL)
   {
     (void)WinUsb_Free(bulkUsbDev.hWinUSBDev);
+    bulkUsbDev.hWinUSBDev = NULL;
   }
   /* reset bulk OUT and IN pipes */
   bulkUsbDev.pipeBulkOut = INVALID_PIPE_ID;
@@ -319,6 +322,7 @@ static void UblClose(void)
   if (bulkUsbDev.hDev != NULL)
   {
     (void)CloseHandle(bulkUsbDev.hDev);
+    bulkUsbDev.hDev = NULL;
   }
 } /*** end of UblClose ***/
 
