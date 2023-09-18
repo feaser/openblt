@@ -12,7 +12,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="demoprog_tc375" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" description="" id="com.infineon.aurix.buildsystem.managed.configuration.binary.512281327" name="Debug" parent="com.infineon.aurix.buildsystem.managed.configuration.binary" postannouncebuildStep="" postbuildStep="">
+				<configuration artifactName="demoprog_tc375" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" description="" id="com.infineon.aurix.buildsystem.managed.configuration.binary.512281327" name="Debug" parent="com.infineon.aurix.buildsystem.managed.configuration.binary" postannouncebuildStep="Perform post-build operations" postbuildStep="${ProjDirPath}/Cmd/postbuild.bat &quot;${BuildArtifactFileBaseName}.srec&quot;">
 					<folderInfo id="com.infineon.aurix.buildsystem.managed.configuration.binary.512281327." name="/" resourcePath="">
 						<toolChain id="com.infineon.aurix.buildsystem.managed.toolChain.tasking.exe.binary.340967246" name="AURIX Toolchain" superClass="com.infineon.aurix.buildsystem.managed.toolChain.tasking.exe.binary">
 							<option id="com.tasking.ctc.cpu.850401455" name="Processor" superClass="com.tasking.ctc.cpu" useByScannerDiscovery="false" value="tc37x" valueType="string"/>
@@ -76,8 +76,15 @@
 							<tool id="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking.714051102" name="TASKING Assembler" superClass="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking">
 								<inputType id="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking.input.89068689" superClass="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking.input"/>
 							</tool>
-							<tool commandLinePattern="${COMMAND} -lrt -lfp_fpu -lcs_fpu  ${FLAGS}   ${OUTPUT_FLAG}&quot;${BuildArtifactFileBaseName}.elf&quot; -Wl${OUTPUT_FLAG}&quot;${BuildArtifactFileBaseName}.srec:SREC&quot; --lsl-core=vtc  --lsl-file=../Lcf_Tasking_Tricore_Tc.lsl ${INPUTS}" id="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking.1695773604" name="TASKING Linker" superClass="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking"/>
-							<tool command="elfsize" commandLinePattern="${COMMAND} ${INPUTS} ${FLAGS} &amp;&amp; ${ProjDirPath}/Cmd/postbuild.bat &quot;${BuildArtifactFileBaseName}.srec&quot;" id="com.infineon.aurix.buildsystem.managed.tool.printsize.tasking.769552939" name="Print Size" superClass="com.infineon.aurix.buildsystem.managed.tool.printsize.tasking"/>
+							<tool commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}&quot;${BuildArtifactFileBaseName}.elf&quot; -Wl${OUTPUT_FLAG}&quot;${BuildArtifactFileBaseName}.srec:SREC&quot; ${INPUTS}" id="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking.1695773604" name="TASKING Linker" superClass="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking.otherOptions.410438888" name="Other options" superClass="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking.otherOptions" useByScannerDiscovery="false" valueType="stringList">
+									<listOptionValue builtIn="false" value="-lrt"/>
+									<listOptionValue builtIn="false" value="-lfp_fpu"/>
+									<listOptionValue builtIn="false" value="-lcs_fpu"/>
+									<listOptionValue builtIn="false" value="--lsl-core=vtc"/>
+								</option>
+							</tool>
+							<tool command="elfsize" commandLinePattern="${COMMAND} ${INPUTS} ${FLAGS}" id="com.infineon.aurix.buildsystem.managed.tool.printsize.tasking.769552939" name="Print Size" superClass="com.infineon.aurix.buildsystem.managed.tool.printsize.tasking"/>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>

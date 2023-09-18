@@ -82,7 +82,14 @@
 							<tool id="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking.1729546959" name="TASKING Assembler" superClass="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking">
 								<inputType id="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking.input.2121339028" superClass="com.infineon.aurix.buildsystem.managed.tool.c.assembler.tasking.input"/>
 							</tool>
-							<tool commandLinePattern="${COMMAND} -lrt -lfp_fpu -lcs_fpu  ${FLAGS}   ${OUTPUT_FLAG}&quot;${BuildArtifactFileBaseName}.elf&quot; -Wl${OUTPUT_FLAG}&quot;${BuildArtifactFileBaseName}.srec:SREC&quot; --lsl-core=vtc  --lsl-file=../Lcf_Tasking_Tricore_Tc.lsl ${INPUTS}" id="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking.30522672" name="TASKING Linker" superClass="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking"/>
+							<tool commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}&quot;${BuildArtifactFileBaseName}.elf&quot; -Wl${OUTPUT_FLAG}&quot;${BuildArtifactFileBaseName}.srec:SREC&quot; ${INPUTS}" id="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking.30522672" name="TASKING Linker" superClass="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking.otherOptions.1668147280" name="Other options" superClass="com.infineon.aurix.buildsystem.managed.tool.c.linker.tasking.otherOptions" useByScannerDiscovery="false" valueType="stringList">
+									<listOptionValue builtIn="false" value="-lrt"/>
+									<listOptionValue builtIn="false" value="-lfp_fpu"/>
+									<listOptionValue builtIn="false" value="-lcs_fpu"/>
+									<listOptionValue builtIn="false" value="--lsl-core=vtc"/>
+								</option>
+							</tool>
 							<tool id="com.infineon.aurix.buildsystem.managed.tool.printsize.tasking.1234101682" name="Print Size" superClass="com.infineon.aurix.buildsystem.managed.tool.printsize.tasking"/>
 						</toolChain>
 					</folderInfo>
