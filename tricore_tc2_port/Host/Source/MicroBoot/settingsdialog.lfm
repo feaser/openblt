@@ -1,0 +1,215 @@
+object SettingsForm: TSettingsForm
+  Left = 533
+  Height = 441
+  Top = 323
+  Width = 422
+  ActiveControl = BtnOk
+  BorderStyle = bsDialog
+  Caption = 'Settings'
+  ClientHeight = 441
+  ClientWidth = 422
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyPress = FormKeyPress
+  Position = poOwnerFormCenter
+  LCLVersion = '2.0.12.0'
+  object PnlFooter: TPanel
+    Left = 0
+    Height = 46
+    Top = 395
+    Width = 422
+    Align = alBottom
+    BevelOuter = bvNone
+    Caption = 'PnlFooter'
+    ClientHeight = 46
+    ClientWidth = 422
+    Color = clForm
+    ParentColor = False
+    TabOrder = 1
+    object PnlFooterButtons: TPanel
+      Left = 228
+      Height = 46
+      Top = 0
+      Width = 194
+      Align = alRight
+      BevelOuter = bvNone
+      Caption = 'PnlFooterButtons'
+      ClientHeight = 46
+      ClientWidth = 194
+      TabOrder = 0
+      object BtnCancel: TButton
+        Left = 102
+        Height = 28
+        Top = 8
+        Width = 83
+        Caption = 'Cancel'
+        OnClick = BtnCancelClick
+        TabOrder = 1
+      end
+      object BtnOk: TButton
+        Left = 8
+        Height = 28
+        Top = 8
+        Width = 83
+        Caption = 'OK'
+        OnClick = BtnOkClick
+        TabOrder = 0
+      end
+    end
+  end
+  object PnlBody: TPanel
+    Left = 0
+    Height = 395
+    Top = 0
+    Width = 422
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = 'PnlBody'
+    ClientHeight = 395
+    ClientWidth = 422
+    Color = clForm
+    ParentColor = False
+    TabOrder = 0
+    object PageCtrlSettings: TPageControl
+      Left = 0
+      Height = 395
+      Top = 0
+      Width = 422
+      ActivePage = TabCommunicationInterface
+      Align = alClient
+      TabIndex = 0
+      TabOrder = 0
+      object TabCommunicationInterface: TTabSheet
+        Caption = 'Communication Interface'
+        ClientHeight = 367
+        ClientWidth = 414
+        object PnlCommunicationTop: TPanel
+          Left = 0
+          Height = 44
+          Top = 0
+          Width = 414
+          Align = alTop
+          BevelOuter = bvNone
+          Caption = 'PnlCommunicationTop'
+          ClientHeight = 44
+          ClientWidth = 414
+          Color = clForm
+          ParentColor = False
+          TabOrder = 0
+          object LblInterface: TLabel
+            Left = 8
+            Height = 20
+            Top = 11
+            Width = 112
+            AutoSize = False
+            Caption = 'Interface selection:'
+            ParentColor = False
+          end
+          object CmbInterface: TComboBox
+            Left = 120
+            Height = 23
+            Hint = 'Select the communication hardware interface to use during firmware updates'
+            Top = 8
+            Width = 200
+            DropDownCount = 4
+            ItemHeight = 15
+            ItemIndex = 0
+            Items.Strings = (
+              'XCP on RS232'
+              'XCP on CAN'
+              'XCP on USB'
+              'XCP on TCP/IP'
+            )
+            OnChange = CmbInterfaceChange
+            ParentShowHint = False
+            ShowHint = True
+            Style = csDropDownList
+            TabOrder = 0
+            Text = 'XCP on RS232'
+          end
+        end
+        object PnlCommunicationBody: TPanel
+          Left = 0
+          Height = 323
+          Top = 44
+          Width = 414
+          Align = alClient
+          BevelOuter = bvNone
+          Caption = 'PnlCommunicationBody'
+          Color = clForm
+          ParentColor = False
+          TabOrder = 1
+        end
+      end
+      object TabSessionProtocol: TTabSheet
+        Caption = 'Session Protocol'
+        ClientHeight = 367
+        ClientWidth = 414
+        object PnlSessionTop: TPanel
+          Left = 0
+          Height = 44
+          Top = 0
+          Width = 414
+          Align = alTop
+          BevelOuter = bvNone
+          Caption = 'PnlSessionTop'
+          ClientHeight = 44
+          ClientWidth = 414
+          TabOrder = 0
+          object CmbProtocol: TComboBox
+            Left = 120
+            Height = 23
+            Hint = 'Select the communication protocol to use during firmware updates'
+            Top = 8
+            Width = 200
+            DropDownCount = 4
+            ItemHeight = 15
+            Items.Strings = (
+              'XCP version 1.0'
+            )
+            OnChange = CmbProtocolChange
+            ParentShowHint = False
+            ShowHint = True
+            Style = csDropDownList
+            TabOrder = 0
+          end
+          object LblProtocol: TLabel
+            Left = 8
+            Height = 20
+            Top = 11
+            Width = 112
+            AutoSize = False
+            Caption = 'Protocol selection:'
+            ParentColor = False
+          end
+        end
+        object PnlSessionBody: TPanel
+          Left = 0
+          Height = 323
+          Top = 44
+          Width = 414
+          Align = alClient
+          BevelOuter = bvNone
+          Caption = 'PnlSessionBody'
+          TabOrder = 1
+        end
+      end
+      object TabMiscellaneous: TTabSheet
+        Caption = 'Miscellaneous'
+        ClientHeight = 367
+        ClientWidth = 414
+        object PnlMiscellaneousBody: TPanel
+          Left = 0
+          Height = 367
+          Top = 0
+          Width = 414
+          Align = alClient
+          BevelOuter = bvNone
+          Caption = 'PnlMiscellaneousBody'
+          TabOrder = 0
+        end
+      end
+    end
+  end
+end
