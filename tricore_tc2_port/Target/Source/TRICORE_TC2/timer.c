@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "Stm/Std/IfxStm.h"                      /* STM driver                         */
 
 
 /****************************************************************************************
@@ -39,6 +40,16 @@
  *         startup.
  */
 static blt_int32u millisecond_counter;
+
+/** \brief Buffer for storing the last value of the lower 32-bits of the free running
+ *         counter.
+ */
+static blt_int32u free_running_counter_last;
+
+/** \brief Stores the number of counts of the free running counter that equals one
+ *         millisecond.
+ */
+static blt_int32u counts_per_millisecond;
 
 
 /************************************************************************************//**
@@ -50,12 +61,14 @@ void TimerInit(void)
 {
   /* Reset the timer configuration. */
   TimerReset();
-
-  /* TODO ##Port Configure a timer peripheral such that 1 millisecond events can be
-   * detected. Note that the bootloader does not use interrupts, so this driver should
-   * also not generate timer related interrupts. 
+  /* Calculate the number of counts of the free running counter that equals one
+   * millisecond.
    */
-
+  counts_per_millisecond = IfxStm_getFrequency(&MODULE_STM0) / 1000U;
+  /* Initialize the last free running counter variable, which is used for delta
+   * calculations.
+   */
+  free_running_counter_last = IfxStm_getLower(&MODULE_STM0);
   /* Reset the millisecond counter value. */
   millisecond_counter = 0;
 } /*** end of TimerInit ***/
@@ -69,8 +82,10 @@ void TimerInit(void)
 ****************************************************************************************/
 void TimerReset(void)
 {
-  /* TODO ##Port Set the timer peripheral back into the default reset value. */
-} /* end of TimerReset */
+  /* Bring the system timer back into its reset state. */
+  /* TODO ##Port Figure out why this function causes an unresolved linker error. */
+  //IfxStm_resetModule(&MODULE_STM0);
+} /*** end of TimerReset ***/
 
 
 /************************************************************************************//**
@@ -80,18 +95,27 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* TODO ##Port Check with the timer peripheral if the 1 millisecond event occured. This
-   * is typically done by looking at a flag bit this is set by the timer peripheral. An
-   * alternative solution would use the timer peripheral's free running counter. Just
-   * keep in mind that with the latter case, you would have to store the free running
-   * counter value of the last time the millisecond event occured. This you can compare
-   * it with the current value of the free running counter to determine if a millisecond
-   * passed.
+  blt_int32u free_running_counter_now;
+  blt_int32u delta_counts;
+  blt_int32u ms_counts;
+
+  /* Get the current value of the lower 32-bits of the free running counter. */
+  free_running_counter_now = IfxStm_getLower(&MODULE_STM0);
+  /* Calculate the number of counts that passed since the detection of the last
+   * millisecond event. Note that this calculation also works, in case the free running
+   * counter overflowed, thanks to integer math.
    */
-  if (1 == 0)
+  delta_counts = free_running_counter_now - free_running_counter_last;
+
+  /* Did one or more milliseconds pass since the last event? */
+  if (delta_counts >= counts_per_millisecond)
   {
-    /* Increment the millisecond counter. */
-    millisecond_counter++;
+    /* Calculate how many milliseconds passed. */
+    ms_counts = delta_counts / counts_per_millisecond;
+    /* Update the millisecond counter. */
+    millisecond_counter += ms_counts;
+    /* Store the counter value of the last millisecond event, to detect the next one. */
+    free_running_counter_last += (ms_counts * counts_per_millisecond);
   }
 } /*** end of TimerUpdate ***/
 
