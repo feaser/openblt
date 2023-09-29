@@ -31,7 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_RS232_ENABLE > 0)
-/* TODO ##Port Include microcontroller peripheral driver header files here. */
+#include "IfxAsclin.h"                           /* ASCLIN basic driver                */
 
 
 /****************************************************************************************
@@ -43,6 +43,20 @@
 #define RS232_CTO_RX_PACKET_TIMEOUT_MS (200u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define RS232_BYTE_TX_TIMEOUT_MS       (10u)
+/* Map the configured UART channel index to the TriCore's ASCLIN peripheral. */
+#if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
+/** \brief Set UART base address to ASCLIN0. */
+#define ASCLIN_CHANNEL   &MODULE_ASCLIN0
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 1)
+/** \brief Set UART base address to ASCLIN1. */
+#define ASCLIN_CHANNEL   &MODULE_ASCLIN1
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 2)
+/** \brief Set UART base address to ASCLIN2. */
+#define ASCLIN_CHANNEL   &MODULE_ASCLIN2
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 3)
+/** \brief Set UART base address to ASCLIN3 */
+#define ASCLIN_CHANNEL   &MODULE_ASCLIN3
+#endif
 
 
 /****************************************************************************************
@@ -59,21 +73,64 @@ static void     Rs232TransmitByte(blt_int8u data);
 ****************************************************************************************/
 void Rs232Init(void)
 {
-  /* TODO ##Port Perform compile time assertion to check that the configured UART channel
-   * is actually supported by this driver. The example is for a driver where UART
-   * channels 0 - 2 are supported. 
+#if 0
+  /* The current implementation supports ASCLIN0 - ASCLIN11. Throw an assertion error in
+   * case a different channel is configured.
    */
-  ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) ||
-            (BOOT_COM_RS232_CHANNEL_INDEX == 1) ||
-            (BOOT_COM_RS232_CHANNEL_INDEX == 2));
+  ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0)  ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 1)  ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 2)  ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 3));
 
-  /* TODO ##Port Configure and initialize the UART peripheral for the configured UART
-   * channel. The communication speed should be set to the value configured with
-   * BOOT_COM_RS232_BAUDRATE. Further communication settings are: 8 databits, no parity,
-   * and 1 stopbit. Keep in mind that the bootloader runs in polling mode so without
-   * interrupts. For this reason make sure not to configure the UART peripheral for
-   * interrupt driven operation.
+  /* Enter initialization mode. */
+  IfxAsclin_setFrameMode(ASCLIN_CHANNEL, IfxAsclin_FrameMode_initialise);
+  /* Temporarily enable the clock source for the baudrate configuration. */
+  IfxAsclin_setClockSource(ASCLIN_CHANNEL, IfxAsclin_ClockSource_ascFastClock);
+  /* Configure the baudrate generator prescaler. */
+  IfxAsclin_setPrescaler(ASCLIN_CHANNEL, 1);
+  /* Configure the communication speed, while using an oversampling of 16 bits and sample
+   * three bits in the middle (7,8 and 9).
    */
+  (void)IfxAsclin_setBitTiming(ASCLIN_CHANNEL, (float32)BOOT_COM_RS232_BAUDRATE,
+                               IfxAsclin_OversamplingFactor_16,
+                               IfxAsclin_SamplePointPosition_9,
+                               IfxAsclin_SamplesPerBit_three);
+  /* Disable the clock again for now. */
+  IfxAsclin_setClockSource(ASCLIN_CHANNEL, IfxAsclin_ClockSource_noClock);
+  /* Disable loopback mode. */
+  IfxAsclin_enableLoopBackMode(ASCLIN_CHANNEL, FALSE);
+  /* Configure shift direction. */
+  IfxAsclin_setShiftDirection(ASCLIN_CHANNEL, IfxAsclin_ShiftDirection_lsbFirst);
+  /* Disable idle delay. */
+  IfxAsclin_setIdleDelay(ASCLIN_CHANNEL, IfxAsclin_IdleDelay_0);
+  /* Configure 8,N,1 format. */
+  IfxAsclin_enableParity(ASCLIN_CHANNEL, FALSE);
+  IfxAsclin_setStopBit(ASCLIN_CHANNEL, IfxAsclin_StopBit_1);
+  IfxAsclin_setDataLength(ASCLIN_CHANNEL, IfxAsclin_DataLength_8);
+  /* Configure transmit FIFO for 8-bit wide write and generate a refill event when the
+   * filling level falls to 15 or below.
+   */
+  IfxAsclin_setTxFifoInletWidth(ASCLIN_CHANNEL, IfxAsclin_TxFifoInletWidth_1);
+  IfxAsclin_setTxFifoInterruptLevel(ASCLIN_CHANNEL, IfxAsclin_TxFifoInterruptLevel_15);
+  /* Configure the receive FIFO for 8-bit wide read and generate a drain event when the
+   * filling level rises to 1 or above.
+   */
+  IfxAsclin_setRxFifoOutletWidth(ASCLIN_CHANNEL, IfxAsclin_RxFifoOutletWidth_1);
+  IfxAsclin_setRxFifoInterruptLevel(ASCLIN_CHANNEL, IfxAsclin_RxFifoInterruptLevel_1);
+  /* Leave initialization mode and switch to ASC mode. */
+  IfxAsclin_setFrameMode(ASCLIN_CHANNEL, IfxAsclin_FrameMode_asc);
+  /* Enable the clock source. */
+  IfxAsclin_setClockSource(ASCLIN_CHANNEL, IfxAsclin_ClockSource_ascFastClock);
+  /* Disable and clear all event flags. */
+  IfxAsclin_disableAllFlags(ASCLIN_CHANNEL);
+  IfxAsclin_clearAllFlags(ASCLIN_CHANNEL);
+  /* Enable the transmit and receive FIFOs. */
+  IfxAsclin_enableRxFifoInlet(ASCLIN_CHANNEL, TRUE);
+  IfxAsclin_enableTxFifoOutlet(ASCLIN_CHANNEL, TRUE);
+  /* Flush the FIFOs. */
+  IfxAsclin_flushRxFifo(ASCLIN_CHANNEL);
+  IfxAsclin_flushTxFifo(ASCLIN_CHANNEL);
+#endif
 } /*** end of Rs232Init ***/
 
 
@@ -185,21 +242,17 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
   blt_bool result = BLT_FALSE;
 
-  /* TODO ##Port Check if a new byte was received on the configured channel. This is
-   * typically done by checking the reception register not empty flag. If a new byte 
-   * was received, read it out and store it in '*data'. Next, clear the reception flag
-   * such that a new byte can be received again. Finally, set 'result' to BLT_TRUE to
-   * indicate to the caller of this function that a new byte was received and stored.
-   */
-  if (1 == 0)
+#if 0
+  /* Poll the receive FIFO level to see if new data is available. */
+  if (IfxAsclin_getRxFifoFillLevel(ASCLIN_CHANNEL) > 0)
   {
-    /* retrieve and store the newly received byte */
-    *data = 0;
-    /* update the result */
+    /* Retrieve and store the newly received byte */
+    (void)IfxAsclin_read8(ASCLIN_CHANNEL, data, 1);
+    /* Update the result */
     result = BLT_TRUE;
   }
-  
-  /* give the result back to the caller */
+#endif
+  /* Give the result back to the caller */
   return result;
 } /*** end of Rs232ReceiveByte ***/
 
@@ -212,31 +265,27 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static void Rs232TransmitByte(blt_int8u data)
 {
+#if 0
   blt_int32u timeout;
 
-  /* TODO ##Port Write the byte value in 'data' to the transmit register of the UART 
-   * peripheral such that the transmission of the byte value is started.
-   */
+  /* Write the data value to the ASCLIN peripheral's transmit FIFO. */
+  (void)IfxAsclin_write8(ASCLIN_CHANNEL, &data, 1);
 
-  /* set timeout time to wait for transmit completion. */
+  /* Set timeout time to wait for transmit completion. */
   timeout = TimerGet() + RS232_BYTE_TX_TIMEOUT_MS;
   
-  /* TODO ##Port Wait in a loop, with timeout, until the UART peripheral reports that the
-   * data was successfully completed. This is typically done by reading out a transmit
-   * register empty flag.
-   */
-  
-  /* wait for tx holding register to be empty */
-  while (1 == 0)
+  /* Wait for the transmit FIFO to be empty. */
+  while (IfxAsclin_getTxFifoFillLevel(ASCLIN_CHANNEL) != 0)
   {
-    /* keep the watchdog happy */
+    /* Keep the watchdog happy */
     CopService();
-    /* break loop upon timeout. this would indicate a hardware failure. */
+    /* Break loop upon timeout. This would indicate a hardware failure. */
     if (TimerGet() > timeout)
     {
       break;
     }
   }
+#endif
 } /*** end of Rs232TransmitByte ***/
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
 

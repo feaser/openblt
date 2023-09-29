@@ -83,8 +83,7 @@ void TimerInit(void)
 void TimerReset(void)
 {
   /* Bring the system timer back into its reset state. */
-  /* TODO ##Port Figure out why this function causes an unresolved linker error. */
-  //IfxStm_resetModule(&MODULE_STM0);
+  IfxStm_resetModule(&MODULE_STM0);
 } /*** end of TimerReset ***/
 
 

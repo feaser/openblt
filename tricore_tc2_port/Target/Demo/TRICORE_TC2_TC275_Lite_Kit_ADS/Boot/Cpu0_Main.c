@@ -30,7 +30,6 @@
 #include "Cpu/CStart/IfxCpu_CStart.h"
 #include "app.h"
 
-
 int core0_main(void)
 {
     /* When core 1 (or 2) is disabled with a IFX_CFG_CPU_CSTART_ENABLE_TRICOREx macro in

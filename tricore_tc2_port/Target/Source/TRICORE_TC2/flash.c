@@ -40,36 +40,30 @@
 /** \brief Value for an invalid flash address. */
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
 /** \brief Standard size of a flash block for writing. */
-/* TODO ##Port The FLASH_WRITE_BLOCK_SIZE should be at least 512. If for some reason this
- * is not large enough, double the size so: 512 -> 1024 -> 2048 -> 4096 etc.
- */
 #define FLASH_WRITE_BLOCK_SIZE          (512)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 /** \brief End address of the bootloader programmable flash. */
 #define FLASH_END_ADDRESS               (flashLayout[FLASH_TOTAL_SECTORS-1].sector_start + \
                                          flashLayout[FLASH_TOTAL_SECTORS-1].sector_size - 1)
-/** \brief Offset into the user program's vector table where the checksum is located. 
- *         For this target it is set to the end of the vector table. Note that the 
- *         value can be overriden in blt_conf.h, because the size of the vector table
- *         could vary. When changing this value, don't forget to update the location
- *         of the checksum in the user program accordingly. Otherwise the checksum
- *         verification will always fail.
+/** \brief Offset into the user program where the checksum is located. For this target it
+ *         is set to the last 32-bits of the 32 byte (0x20) section at the start of the
+ *         user program, which is meant for the reset handler. The reset handler doesn't
+ *         need the full 32 bytes that's reserved for it. Therefore this section can be
+ *         shrunk in the user program's linker script, to only be 28 bytes (0x1C) in
+ *         size. This then makes 4 bytes (32-bits) available for storing the bootloader's
+ *         signature checksum placeholder.
+ *         Note that this macro value can be overriden in blt_conf.h, in case you want to
+ *         reserve space for the signature checksum at a different memory location. Just
+ *         make sure it is located in the first FLASH_WRITE_BLOCK_SIZE bytes of the
+ *         user program. When changing this value, don't forget to update the location
+ *         where you reserve space for the signature checksum in the user program
+ *         accordingly. Otherwise the bootloader might overwrite important program code
+ *         with the calculated signature checksum value, which can result in your user
+ *         program not running properly.
  */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
-/* TODO ##Port The bootloader uses a 32-bit checksum signature value to determine if a 
- * a valid user program is present or not. This checksum value is written by the
- * bootloader at the end of a firmware update with function FlashWriteChecksum(). Right
- * before a user program is about to be started, function FlashVerifyChecksum() is called
- * to verify the presence of a user program. Space must be reserved in the user program
- * for the checksum signature value and the bootloader needs to know where this space
- * is reserved. It is recommended to place the signature checksum right after the 
- * user program's vector table. Using this approach it is easy to reserved space for the
- * checksum signature in the user program by simply adding one more dummy entry into the
- * vector table. This macro should be set to the size of the vector table, which can then
- * be used to determine the memory address of the signature checksum.
- */
-#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x188)
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x1C)
 #endif
 
 
@@ -458,20 +452,15 @@ blt_bool FlashWriteChecksum(void)
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
 
-  /* TODO ##Port Calculate and write the signature checksum such that it appears at the
-   * address configured with macro BOOT_FLASH_VECTOR_TABLE_CS_OFFSET. Use the 
-   * FlashWrite() function for the actual write operation. For a typical microcontroller,
-   * the bootBlock holds the program code that includes the user program's interrupt
-   * vector table and after which the 32-bit for the signature checksum is reserved.
-   * 
-   * Note that this means one extra dummy entry must be added at the end of the user 
-   * program's vector table to reserve storage space for the signature checksum value,
-   * which is then overwritten by this function.
+  /* for the TriCore TC2 target we defined the checksum as the One's complement value of
+   * the sum of the first 0x1C bytes in flash, which is the code of the reset handler.
    *
-   * The example here calculates a signature checksum by summing up the first 32-bit
-   * values in the bootBlock (so the first 7 interrupt vectors) and then taking the
-   * Two's complement of this sum. You can modify this to anything you like as long as
-   * the signature checksum is based on program code present in the bootBlock.
+   * signature_checksum = One's complement of (SUM(32-bit values in first 0x1C))
+   *
+   * the bootloader writes this 32-bit checksum value right the code reserved for the
+   * reset handler (0x1C). note that the user program linker script needs to be adjusted
+   * for this, to make sure 32-bits at 0x1C after that start of the user program is
+   * reserved for this, because the bootloader will overwrite it.
    */
 
   /* first check that the bootblock contains valid data. if not, this means the
@@ -505,7 +494,6 @@ blt_bool FlashWriteChecksum(void)
       signature_checksum += *((blt_int32u *)(&bootBlockInfo.data[0+0x14]));
       signature_checksum += *((blt_int32u *)(&bootBlockInfo.data[0+0x18]));
       signature_checksum  = ~signature_checksum; /* one's complement */
-      signature_checksum += 1; /* two's complement */
 
       /* write the checksum */
       result = FlashWrite(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET,
@@ -528,16 +516,7 @@ blt_bool FlashVerifyChecksum(void)
 {
   blt_bool   result = BLT_TRUE;
   blt_int32u signature_checksum = 0;
-
-  /* TODO ##Port Implement code here that basically does the reverse of
-   * FlashWriteChecksum(). Just make sure to read the values directory from flash memory
-   * and NOT from the bootBlock. 
-   * The example implementation reads the first 7 32-bit from the user program flash
-   * memory and sums them up. The signature checksum written by FlashWriteChecksum() was
-   * the Two complement's value. This means that if you add the previously written
-   * signature checksum value to the sum of the first 7 32-bit values, the result is
-   * a value of 0 in case the signature checksum is valid.
-   */
+  blt_int32u signature_checksum_rom;
 
   /* verify the checksum based on how it was written by FlashWriteChecksum(). */
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start));
@@ -547,12 +526,15 @@ blt_bool FlashVerifyChecksum(void)
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x10));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x14));
   signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+0x18));
-  /* add the checksum value that was written by FlashWriteChecksum(). Since this was a
-   * Two complement's value, the resulting value should equal 0.
-   */ 
-  signature_checksum += *((blt_int32u *)(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET));
-  /* sum should add up to an unsigned 32-bit value of 0 */
-  if (signature_checksum != 0)
+  signature_checksum = ~signature_checksum; /* one's complement */
+
+  /* read the checksum value from flash that was writtin by the bootloader at the end
+   * of the last firmware update
+   */
+  signature_checksum_rom = *((blt_int32u *)(flashLayout[0].sector_start+BOOT_FLASH_VECTOR_TABLE_CS_OFFSET));
+
+  /* verify that checksums. they should both be the same. */
+  if (signature_checksum != signature_checksum_rom)
   {
     /* checksum not okay */
     result = BLT_FALSE;

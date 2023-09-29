@@ -30,7 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "IfxCpu.h"                              /* CPU driver.                        */
+#include "IfxCpu.h"                              /* CPU driver                         */
 
 
 /****************************************************************************************
@@ -39,6 +39,12 @@
 #if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
 extern blt_bool CpuUserProgramStartHook(void);
 #endif
+
+
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+static void CpuEnableUncorrectableBitErrorTrap(blt_bool enable);
 
 
 /************************************************************************************//**
@@ -53,9 +59,8 @@ void CpuInit(void)
    * be that the user program did not properly disable the interrupt generation of 
    * peripherals. */
   CpuIrqDisable();
-  /* TODO ##Port Figure out how to disable the trap when reading from flash. Make sure
-   * to enabled it again before starting the user progra.
-   */
+  /* disable the CPU trap when reading from a flash page. */
+  CpuEnableUncorrectableBitErrorTrap(BLT_FALSE);
 } /*** end of CpuInit ***/
 
 
@@ -103,6 +108,8 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the timer */
   TimerReset();
+  /* re-enable the CPU trap when reading from a flash page. */
+  CpuEnableUncorrectableBitErrorTrap(BLT_TRUE);
   
   /* after a reset, the global interrupts are disabled (ICR.IE=0) and the user program's
    * startup code is responsible for initializing the interrupt vector table and trap
@@ -177,6 +184,33 @@ void CpuMemSet(blt_addr dest, blt_int8u value, blt_int16u len)
     CopService();
   }
 } /*** end of CpuMemSet ***/
+
+
+/************************************************************************************//**
+** \brief     Enables or disables the reporting of an uncorrectable bit error to the CPU.
+**            On this microcontroller, directly reading data from flash memory can result
+**            in a CPU trap, when that particular flash page was not previously newly
+**            programmed (IfxCpu_Trap_Bus_Id_dataAccessSynchronousError).
+** \param     enable BLT_TRUE to enable generation of the CPU trap, BLT_FALSE to disable.
+** \return    none.
+**
+****************************************************************************************/
+static void CpuEnableUncorrectableBitErrorTrap(blt_bool enable)
+{
+  blt_int16u         password;
+  blt_int8u          trapDisBitVal;
+
+  /* determine the TRAPDIS value. */
+  trapDisBitVal = (enable == BLT_TRUE) ? 0 : 1;
+  /* get the current endinit password for the CPU WDT Hardware module. */
+  password = IfxScuWdt_getCpuWatchdogPassword();
+  /* disable EndInit protection. */
+  IfxScuWdt_clearCpuEndinit(password);
+  /* write the new value of the TRAPDIS bit field in the MARP register. */
+  FLASH0_MARP.B.TRAPDIS = trapDisBitVal;
+  /* re-enable EndInit protection. */
+  IfxScuWdt_setCpuEndinit(password);
+} /*** end of CpuEnableUncorrectableBitErrorTrap ***/
 
 
 /*********************************** end of cpu.c **************************************/

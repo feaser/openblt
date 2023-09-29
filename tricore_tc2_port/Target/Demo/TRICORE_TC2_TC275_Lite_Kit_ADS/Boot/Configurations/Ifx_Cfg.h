@@ -41,7 +41,7 @@
 /*********************************************************************************************************************/
 /*-----------------------------------Configuration of CPU cores------------------------------------------------------*/
 /*********************************************************************************************************************/
-/* The OpenBLT bootloader only requires once core. Leave the others in their default state. */
+/* The OpenBLT bootloader only requires one core. Leave the others in their default state. */
 #define IFX_CFG_CPU_CSTART_ENABLE_TRICORE0     (1U)
 #define IFX_CFG_CPU_CSTART_ENABLE_TRICORE1     (0U)
 #define IFX_CFG_CPU_CSTART_ENABLE_TRICORE2     (0U)
