@@ -33,6 +33,16 @@
 
 
 /****************************************************************************************
+* Global constant declarations
+****************************************************************************************/
+#pragma section farrom "cssig"
+/** \brief   Signature checksum placeholder. Should be linked to the address as
+ *           configured with macro BOOT_FLASH_VECTOR_TABLE_CS_OFFSET.
+ */
+const unsigned long bltChecksumSignature = 0x55AA11EE;
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);

@@ -34,6 +34,13 @@
 
 
 /****************************************************************************************
+* Macro definitions
+****************************************************************************************/
+/** \brief Pointer to the user program's reset vector. */
+#define CPU_USER_PROGRAM_STARTADDR_PTR    ((blt_addr)(NvmGetUserProgBaseAddress() + 0x00000020))
+
+
+/****************************************************************************************
 * Hook functions
 ****************************************************************************************/
 #if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
@@ -120,7 +127,8 @@ void CpuStartUserProgram(void)
   /* the first program code in the user program will be the reset handler _START(). to
    * start the user program, the bootloader needs to jump to this function.
    */
-  Ifx__jumpToFunction((void *)NvmGetUserProgBaseAddress());
+  Ifx__jumpToFunction((void *)CPU_USER_PROGRAM_STARTADDR_PTR);
+
 
 #if (BOOT_COM_DEFERRED_INIT_ENABLE > 0) && (BOOT_COM_ENABLE > 0)
   /* theoretically, the code never gets here because the user program should now be

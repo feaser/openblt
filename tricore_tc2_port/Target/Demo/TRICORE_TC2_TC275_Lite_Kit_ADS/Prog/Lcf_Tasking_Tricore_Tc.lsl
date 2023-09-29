@@ -26,6 +26,17 @@
  * IN THE SOFTWARE.
  *********************************************************************************************************************/
  
+/** \brief   Macro that configures the size of the bootloader. This should match the
+ *           entries that are commented out in the flash driver's flashLayout[] array.
+ *  \details Everything at the start of program flash 0 (pfls0) needs to be moved forward
+ *           to make space for the bootloader. This is done automatically with the help
+ *           of this macro.
+ *           Note that you can temporarily change this value to zero if you want to debug
+ *           this firmware standalone.
+ */
+#define OPENBLT_RESERVED_SIZE 0x8000
+
+
 #define LCF_CSA0_SIZE       8k
 #define LCF_USTACK0_SIZE    2k
 #define LCF_ISTACK0_SIZE    1k
@@ -78,7 +89,7 @@
 #define LCF_INTVEC1_START   0x801F5000
 #define LCF_INTVEC2_START   0x801F3000
 
-#define LCF_TRAPVEC0_START  0x80000100
+#define LCF_TRAPVEC0_START  0x80000100 + OPENBLT_RESERVED_SIZE
 #define LCF_TRAPVEC1_START  0x801F6200
 #define LCF_TRAPVEC2_START  0x801F6000
 
@@ -90,7 +101,7 @@
 #define TRAPTAB1            (LCF_TRAPVEC1_START)
 #define TRAPTAB2            (LCF_TRAPVEC2_START)
 
-#define RESET 0x80000020
+#define RESET 0x80000020 + OPENBLT_RESERVED_SIZE
 
 #include "tc1v1_6_x.lsl"
 
@@ -201,10 +212,10 @@ derivative tc27D
     memory pfls0
     {
         mau = 8;
-        size = 2M;
+        size = 2M - OPENBLT_RESERVED_SIZE;
         type = rom;
-        map     cached (dest=bus:sri, dest_offset=0x80000000,           size=2M);
-        map not_cached (dest=bus:sri, dest_offset=0xa0000000, reserved, size=2M);
+        map     cached (dest=bus:sri, dest_offset=0x80000000 + OPENBLT_RESERVED_SIZE,           size=2M - OPENBLT_RESERVED_SIZE);
+        map not_cached (dest=bus:sri, dest_offset=0xa0000000 + OPENBLT_RESERVED_SIZE, reserved, size=2M - OPENBLT_RESERVED_SIZE);
     }
     
     memory pfls1
@@ -553,7 +564,7 @@ derivative tc27D
     
     section_layout :vtc:linear
     {       
-        group  bmh_0 (ordered, run_addr=0x80000000)
+        group  bmh_0 (ordered, run_addr=0x80000000 + OPENBLT_RESERVED_SIZE)
         {
             select "*.bmhd_0";
         }
@@ -561,11 +572,15 @@ derivative tc27D
         {
             select "*.bmhd_1";
         }
-        group  reset (ordered, run_addr=0x80000020)
+        group  reset (ordered, run_addr=0x80000020 + OPENBLT_RESERVED_SIZE)
         {
             select "*.start";
         }
-        group  interface_const (ordered, run_addr=0x80000040)
+        group  cssig (ordered, run_addr=0x8000003C + OPENBLT_RESERVED_SIZE)
+        {
+            select ".rodata.cssig";
+        }
+        group  interface_const (ordered, run_addr=0x80000040 + OPENBLT_RESERVED_SIZE)
         {
             select "*.interface_const";
         }

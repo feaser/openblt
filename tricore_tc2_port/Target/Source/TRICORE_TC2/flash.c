@@ -47,12 +47,12 @@
 #define FLASH_END_ADDRESS               (flashLayout[FLASH_TOTAL_SECTORS-1].sector_start + \
                                          flashLayout[FLASH_TOTAL_SECTORS-1].sector_size - 1)
 /** \brief Offset into the user program where the checksum is located. For this target it
- *         is set to the last 32-bits of the 32 byte (0x20) section at the start of the
- *         user program, which is meant for the reset handler. The reset handler doesn't
- *         need the full 32 bytes that's reserved for it. Therefore this section can be
- *         shrunk in the user program's linker script, to only be 28 bytes (0x1C) in
- *         size. This then makes 4 bytes (32-bits) available for storing the bootloader's
- *         signature checksum placeholder.
+ *         is set to the last 32-bits of the 64 byte (0x40) section at the start of the
+ *         user program. The first 32 bytes (0x00..0x1F) are reserved for the BMHD table.
+ *         The following 32 bytes (0x20..0x3F) is meant for the reset handler. The reset
+ *         handler doesn't need the full 32 bytes that's reserved for it. Therefore the
+ *         last 32-bit (0x3C..0x3F) can be used for storing the bootloader's signature
+ *         checksum placeholder.
  *         Note that this macro value can be overriden in blt_conf.h, in case you want to
  *         reserve space for the signature checksum at a different memory location. Just
  *         make sure it is located in the first FLASH_WRITE_BLOCK_SIZE bytes of the
@@ -63,8 +63,16 @@
  *         program not running properly.
  */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
-#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x1C)
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x3C)
 #endif
+
+/** \brief Base address in the memory map for uncached flash. It is hardware dependent.
+ */
+#define FLASH_UNCACHED_BASE_ADDR        (0xa0000000UL)
+
+/** \brief Base address in the memory map for cached flash. It is hardware dependent.
+ */
+#define FLASH_CACHED_BASE_ADDR          (0x80000000UL)
 
 
 /****************************************************************************************
@@ -124,6 +132,7 @@ static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector_idx, 
                                    blt_int8u last_sector_idx);
 static blt_int8u FlashGetSectorIdx(blt_addr address);
+static blt_addr  FlashTranslateToNonCachedAddress(blt_addr address);
 
 
 /****************************************************************************************
@@ -352,6 +361,9 @@ blt_bool FlashWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
   blt_bool result = BLT_TRUE;
   blt_addr base_addr;
 
+  /* automatically translate cached memory addresses to non-cached */
+  addr = FlashTranslateToNonCachedAddress(addr);
+
   /* validate the len parameter */
   if ((len - 1) > (FLASH_END_ADDRESS - addr))
   {
@@ -405,6 +417,9 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
   blt_bool  result = BLT_TRUE;
   blt_int8u first_sector_idx;
   blt_int8u last_sector_idx;
+
+  /* automatically translate cached memory addresses to non-cached */
+  addr = FlashTranslateToNonCachedAddress(addr);
 
   /* validate the len parameter */
   if ((len - 1) > (FLASH_END_ADDRESS - addr))
@@ -967,6 +982,37 @@ static blt_int8u FlashGetSectorIdx(blt_addr address)
   /* give the result back to the caller */
   return result;
 } /*** end of FlashGetSectorIdx ***/
+
+
+/************************************************************************************//**
+** \brief     The TC2 has its PFLASH accessible in the memory map in two regions.
+**            One is the non-cached region starting at FLASH_UNCACHED_BASE_ADDR and the
+**            other is the cached region starting at FLASH_CACHED_BASE_ADDR. Flash
+**            erase and programming operations need to operate on addresses in the
+**            non-cached region. It is possible that the caller of this driver's API
+**            functions, specifies memory addresses in the cached region. This function
+**            automatically translates the memory address from cached to non-cached.
+** \param     address Address to translate.
+** \return    Translated address.
+**
+****************************************************************************************/
+static blt_addr FlashTranslateToNonCachedAddress(blt_addr address)
+{
+  blt_addr translatedAddr;
+
+  /* initialize local */
+  translatedAddr = address;
+
+  /* determine is this address is in the cached region by looking at the address' MSB */
+  if ( ((address >> 24) & 0x000000ffu) == ((FLASH_CACHED_BASE_ADDR >> 24) & 0x000000ffu) )
+  {
+    /* translate address by adding offset to the non-cached region */
+    translatedAddr += (FLASH_UNCACHED_BASE_ADDR - FLASH_CACHED_BASE_ADDR);
+  }
+
+  /* give back the translated address */
+  return translatedAddr;
+} /*** end of FlashTranslateToNonCachedAddress ***/
 
 
 /*********************************** end of flash.c ************************************/
