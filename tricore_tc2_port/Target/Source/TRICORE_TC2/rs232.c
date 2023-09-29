@@ -73,7 +73,6 @@ static void     Rs232TransmitByte(blt_int8u data);
 ****************************************************************************************/
 void Rs232Init(void)
 {
-#if 0
   /* The current implementation supports ASCLIN0 - ASCLIN11. Throw an assertion error in
    * case a different channel is configured.
    */
@@ -130,7 +129,6 @@ void Rs232Init(void)
   /* Flush the FIFOs. */
   IfxAsclin_flushRxFifo(ASCLIN_CHANNEL);
   IfxAsclin_flushTxFifo(ASCLIN_CHANNEL);
-#endif
 } /*** end of Rs232Init ***/
 
 
@@ -242,7 +240,6 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
   blt_bool result = BLT_FALSE;
 
-#if 0
   /* Poll the receive FIFO level to see if new data is available. */
   if (IfxAsclin_getRxFifoFillLevel(ASCLIN_CHANNEL) > 0)
   {
@@ -251,7 +248,6 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
     /* Update the result */
     result = BLT_TRUE;
   }
-#endif
   /* Give the result back to the caller */
   return result;
 } /*** end of Rs232ReceiveByte ***/
@@ -265,7 +261,6 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
 ****************************************************************************************/
 static void Rs232TransmitByte(blt_int8u data)
 {
-#if 0
   blt_int32u timeout;
 
   /* Write the data value to the ASCLIN peripheral's transmit FIFO. */
@@ -285,7 +280,6 @@ static void Rs232TransmitByte(blt_int8u data)
       break;
     }
   }
-#endif
 } /*** end of Rs232TransmitByte ***/
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
 
