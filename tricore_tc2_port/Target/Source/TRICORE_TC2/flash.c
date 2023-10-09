@@ -30,6 +30,9 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "ram_func.h"                            /* RAM function macros                */
+#include "IfxCpu.h"                              /* CPU driver                         */
+#include "IfxFlash.h"                            /* Flash driver                       */
 
 
 /****************************************************************************************
@@ -131,6 +134,8 @@ static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector_idx, 
                                    blt_int8u last_sector_idx);
+static blt_bool  FlashEraseLogicalSector(blt_addr log_sector_base_addr);
+static blt_bool  FlashWritePage(blt_addr page_base_addr, blt_int8u const * page_data);
 static blt_int8u FlashGetSectorIdx(blt_addr address);
 static blt_addr  FlashTranslateToNonCachedAddress(blt_addr address);
 
@@ -814,10 +819,13 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 ****************************************************************************************/
 static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
 {
-  blt_bool   result = BLT_TRUE;
-  blt_addr   prog_addr;
-  blt_int32u prog_data;
-  blt_int32u word_cnt;
+  blt_bool           result = BLT_TRUE;
+  blt_addr           page_addr;
+  blt_int8u        * page_data;
+  blt_int32u         page_cnt;
+
+  /* configuration check. */
+  ASSERT_CT((FLASH_WRITE_BLOCK_SIZE % IFXFLASH_PFLASH_PAGE_LENGTH) == 0);
 
   /* check that the address is actually within flash */
   if (FlashGetSectorIdx(block->base_addr) == FLASH_INVALID_SECTOR_IDX)
@@ -845,35 +853,20 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
-    /* TODO ##Port Program the data contents in 'block' to flash memory here and read the
-     * programmed data values back directly from flash memory to verify that the flash
-     * program operation was successful. The example implementation assumes that flash
-     * data can be written 32-bits at a time.
-     */
-
-    /* program all words in the block one by one */
-    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+    /* program all pages in the block one by one. */
+    for (page_cnt=0; page_cnt < (FLASH_WRITE_BLOCK_SIZE/IFXFLASH_PFLASH_PAGE_LENGTH); page_cnt++)
     {
-      prog_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
-      prog_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+      /* determine the page's base address and data pointer. */
+      page_addr = block->base_addr + (page_cnt * IFXFLASH_PFLASH_PAGE_LENGTH);
+      page_data = &block->data[page_cnt * IFXFLASH_PFLASH_PAGE_LENGTH];
       /* keep the watchdog happy */
       CopService();
-      /* TODO ##Port Program 32-bit 'prog_data' data value to memory address 'prog_addr'.
-       * In case an error occured, set result to BLT_FALSE and break the loop. 
-       */
-      if (1 == 0)
+      /* program the data to the page. */
+      if (FlashWritePage(page_addr, page_data) == BLT_FALSE)
       {
+        /* flag the error and stop the loop. */
         result = BLT_FALSE;
         break;
-      }
-      /* verify that the written data is actually there */
-      if (*(volatile blt_int32u *)prog_addr != prog_data)
-      {
-        /* TODO ##Port Uncomment the following two lines again. It was commented out so
-         * that a dry run with the flash driver is possible without it reporting errors.
-         */
-        /*result = BLT_FALSE;*/
-        /*break;*/
       }
     }
   }
@@ -931,12 +924,11 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
         result = BLT_FALSE;
         break;
       }
-      
-      /* TODO ##Port Perform the flash erase operation of a sector that starts at
-       * 'sectorBaseAddr' and has a length of 'sectorSize' bytes. In case an error
-       * occured, set result to BLT_FALSE and break the loop.
+      /* perform the flash erase operation of a sector that starts at 'sectorBaseAddr'.
+       * the hardware knows the sector size and therefore does not need to be
+       * specified.
        */
-      if(1 == 0)
+      if(FlashEraseLogicalSector(sectorBaseAddr) == BLT_FALSE)
       {
         /* could not perform erase operation */
         result = BLT_FALSE;
@@ -949,6 +941,171 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
   /* give the result back to the caller */
   return result;
 } /*** end of FlashEraseSectors ***/
+
+
+/************************************************************************************//**
+** \brief     Erases one logical sector starting at the specified base address.
+** \attention This function must run from program scratch RAM and not from flash. As
+**            such, it should also not call any functions that are not in RAM. Calling
+**            inline functions is okay though.
+** \param     log_sector_base_addr Base address of the logical sector to erase.
+** \return    BLT_TRUE if the logical sector was successfully erased, BLT_FALSE
+**            otherwise.
+**
+****************************************************************************************/
+BLT_RAM_FUNC_BEGIN
+static blt_bool FlashEraseLogicalSector(blt_addr log_sector_base_addr)
+{
+  blt_bool   result = BLT_TRUE;
+  blt_int16u endInitSafetyPassword;
+  blt_bool   alreadyErased = BLT_FALSE;
+
+  /* clear all error and status flags. */
+  IfxFlash_clearStatus(0);
+  /* perform an erase verify of the sector. it might already be erased. */
+  IfxFlash_eraseVerifySector(log_sector_base_addr);
+  /* wait until the command complete. */
+  IfxFlash_waitUnbusyAll();
+  /* only evaluate the result if no sequence error was detected. */
+  if (FLASH0_FSR.B.SQER == 0)
+  {
+    /* if the sector is already erased, no verification error is detected. */
+    if (FLASH0_FSR.B.EVER == 0)
+    {
+      alreadyErased = BLT_TRUE;
+    }
+  }
+
+  /* only continue if the sectors are not in the erase state. */
+  if (alreadyErased == BLT_FALSE)
+  {
+    /* clear all error and status flags. */
+    IfxFlash_clearStatus(0);
+    /* get the current password of the Safety WatchDog module and disable EndInit
+     * protection.
+     */
+    endInitSafetyPassword = IfxScuWdt_getSafetyWatchdogPasswordInline();
+    IfxScuWdt_clearSafetyEndinitInline(endInitSafetyPassword);
+    /* erase the sector. */
+    IfxFlash_eraseSector(log_sector_base_addr);
+    /* re-enable EndInit protection. */
+    IfxScuWdt_setSafetyEndinitInline(endInitSafetyPassword);
+    /* wait until the sector is erased. */
+    IfxFlash_waitUnbusyAll();
+    /* check if errors were flagged while attempting to erase the sector:
+     * - SQER: sequence error if the base address is not the start of a sector.
+     * - PROER: error due to an active write protection of the sector.
+     * - EVER: error occurred during the erase operation.
+     */
+    if ((FLASH0_FSR.B.SQER != 0) || (FLASH0_FSR.B.PROER != 0) || (FLASH0_FSR.B.EVER != 0))
+    {
+      /* erase operation was not successful. update the result accordingly. */
+      result = BLT_FALSE;
+    }
+  }
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashEraseLogicalSector ***/
+BLT_RAM_FUNC_END
+
+
+/************************************************************************************//**
+** \brief     Programs data to a flash page starting at the specified base address.
+** \attention This function must run from program scratch RAM and not from flash. As
+**            such, it should also not call any functions that are not in RAM. Calling
+**            inline functions is okay though.
+** \param     page_base_addr Base address of the flash page.
+** \param     page_data Pointer to the byte array with data to program to the flash page.
+** \return    BLT_TRUE if the page was successfully programmed, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+BLT_RAM_FUNC_BEGIN
+static blt_bool FlashWritePage(blt_addr page_base_addr, blt_int8u const * page_data)
+{
+  blt_bool           result = BLT_TRUE;
+  blt_int16u         endInitSafetyPassword;
+  blt_int32u         dword_cnt;
+  blt_int32u const * page_data_ptr;
+  blt_int32u const * word_flash_ptr;
+  blt_int32u const * word_data_ptr;
+  blt_int32u         word_cnt;
+
+  /* only continue if the specified address is properly aligned to a flash page. */
+  if ((page_base_addr % IFXFLASH_PFLASH_PAGE_LENGTH) != 0)
+  {
+    return BLT_FALSE;
+  }
+
+  /* get the current password of the Safety WatchDog module. */
+  endInitSafetyPassword = IfxScuWdt_getSafetyWatchdogPasswordInline();
+  /* initialize the data pointer to point to the first word for the page. */
+  page_data_ptr = (blt_int32u const *)page_data;
+  /* clear all error and status flags. */
+  IfxFlash_clearStatus(0);
+  /* enter page mode which is needed before loading data into the assembly buffer and
+   * then writing the data to the page.
+   */
+  IfxFlash_enterPageMode(page_base_addr);
+  /* wait until the command completed. */
+  IfxFlash_waitUnbusyAll();
+  /* write the data into the assembly buffer, two words at a time. */
+  for (dword_cnt=0; dword_cnt<(IFXFLASH_PFLASH_PAGE_LENGTH/(sizeof(blt_int32u) * 2)); dword_cnt++)
+  {
+    /* write to the assembly buffer. note that flash command processor automatically
+     * increments the write pointer for the next call. this means that there is no need
+     * to increment the page's base address.
+     */
+    IfxFlash_loadPage2X32(page_base_addr, page_data_ptr[0], page_data_ptr[1]);
+    /* update the page data pointer to point to the next two words. */
+    page_data_ptr++;
+    page_data_ptr++;
+  }
+  /* disable EndInit protection. */
+  IfxScuWdt_clearSafetyEndinitInline(endInitSafetyPassword);
+  /* write the page. note that this automatically leaves page mode. */
+  IfxFlash_writePage(page_base_addr);
+  /* re-enable EndInit protection. */
+  IfxScuWdt_setSafetyEndinitInline(endInitSafetyPassword);
+  /* wait until the command completed. */
+  IfxFlash_waitUnbusyAll();
+  /* check if errors were flagged while attempting to program the page:
+   * - SQER: sequence error if the base address is not the start of a sector.
+   * - PROER: error due to an active write protection of the sector.
+   * - PVER: error occurred during the programming operation.
+   */
+  if ((FLASH0_FSR.B.SQER != 0) || (FLASH0_FSR.B.PROER != 0) || (FLASH0_FSR.B.PVER != 0))
+  {
+    /* write operation was not successful. update the result accordingly. */
+    result = BLT_FALSE;
+  }
+
+  /* page programming completed without an error? */
+  if (result == BLT_TRUE)
+  {
+    /* initialize flash and data pointers to the start of the page. */
+    word_flash_ptr = (blt_int32u const *)page_base_addr;
+    word_data_ptr  = (blt_int32u const *)page_data;
+    /* verify that the written data is actually there, one word at a time. */
+    for (word_cnt=0; word_cnt<(IFXFLASH_PFLASH_PAGE_LENGTH/sizeof(blt_int32u)); word_cnt++)
+    {
+      /* does the data written to flash have the expected value? */
+      if (*word_flash_ptr != *word_data_ptr)
+      {
+        /* flag the error and stop the verification loop. */
+        result = BLT_FALSE;
+        break;
+      }
+      /* update pointers for the next word to check. */
+      word_flash_ptr++;
+      word_data_ptr++;
+    }
+  }
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashWritePage ***/
+BLT_RAM_FUNC_END
 
 
 /************************************************************************************//**
