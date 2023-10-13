@@ -74,13 +74,17 @@
 #define LCF_HEAP1_OFFSET    (LCF_USTACK1_OFFSET - LCF_HEAP_SIZE)
 #define LCF_HEAP2_OFFSET    (LCF_USTACK2_OFFSET - LCF_HEAP_SIZE)
 
-#define LCF_INTVEC0_START   0x801F4000
-#define LCF_INTVEC1_START   0x801F5000
-#define LCF_INTVEC2_START   0x801F3000
+// Moved the interrupt vector table base addresses such that they are within the flash
+// memory reserved for the bootloader.
+#define LCF_INTVEC0_START   0x80001000 // 0x801F4000
+#define LCF_INTVEC1_START   0x80002000 // 0x801F5000
+#define LCF_INTVEC2_START   0x80003000 // 0x801F3000
 
 #define LCF_TRAPVEC0_START  0x80000100
-#define LCF_TRAPVEC1_START  0x801F6200
-#define LCF_TRAPVEC2_START  0x801F6000
+// Moved CPU1 and CPU2 trap tables to make sure that are within the flash memory reserved
+// for the bootloader
+#define LCF_TRAPVEC1_START  0x80000200  // 0x801F6200
+#define LCF_TRAPVEC2_START  0x80000300  // 0x801F6000
 
 #define INTTAB0             (LCF_INTVEC0_START)
 #define INTTAB1             (LCF_INTVEC1_START)
@@ -557,10 +561,13 @@ derivative tc27D
         {
             select "*.bmhd_0";
         }
-        group  bmh_1 (ordered, run_addr=0x80020000)
-        {
-            select "*.bmhd_1";
-        }
+        // Bootloader only needs Boot Mode Header 0 (BMH0). BMH1 is commented out to
+        // prevent it from being linked outside of the flash memory reserved for the 
+        // bootloader.
+        //group  bmh_1 (ordered, run_addr=0x80020000)
+        //{
+        //    select "*.bmhd_1";
+        //}
         group  reset (ordered, run_addr=0x80000020)
         {
             select "*.start";
