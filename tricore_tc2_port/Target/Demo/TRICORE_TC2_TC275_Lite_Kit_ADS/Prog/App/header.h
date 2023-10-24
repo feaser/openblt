@@ -39,6 +39,7 @@
 #include "IfxCpu.h"                                    /* CPU driver                   */
 #include "IfxPort.h"                                   /* GPIO driver                  */
 #include "IfxAsclin.h"                                 /* ASCLIN basic driver          */
+#include "IfxMultican_Can.h"                           /* MultiCAN detailed driver     */
 #include "IfxStm.h"                                    /* System timer driver          */
 
 

@@ -39,6 +39,10 @@
 static void BootComRs232Init(void);
 static void BootComRs232CheckActivationRequest(void);
 #endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+static void BootComCanInit(void);
+static void BootComCanCheckActivationRequest(void);
+#endif
 
 
 /************************************************************************************//**
@@ -50,6 +54,9 @@ void BootComInit(void)
 {
 #if (BOOT_COM_RS232_ENABLE > 0)
   BootComRs232Init();
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  BootComCanInit();
 #endif
 } /*** end of BootComInit ***/
 
@@ -64,6 +71,9 @@ void BootComCheckActivationRequest(void)
 {
 #if (BOOT_COM_RS232_ENABLE > 0)
   BootComRs232CheckActivationRequest();
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  BootComCanCheckActivationRequest();
 #endif
 } /*** end of BootComCheckActivationRequest ***/
 
@@ -271,6 +281,108 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
   return result;
 } /*** end of Rs232ReceiveByte ***/
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
+
+
+#if (BOOT_COM_CAN_ENABLE > 0)
+/****************************************************************************************
+*        C O N T R O L L E R   A R E A   N E T W O R K   I N T E R F A C E
+****************************************************************************************/
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief Data for grouping CAN driver related information. */
+static struct
+{
+  /** \brief CAN module handle to HW module SFR set. */
+  IfxMultican_Can              can;
+  /** \brief CAN module configuration structure. */
+  IfxMultican_Can_Config       canConfig;
+  /** \brief CAN source node handle data structure. */
+  IfxMultican_Can_Node         canNode;
+  /** \brief CAN node configuration structure. */
+  IfxMultican_Can_NodeConfig   canNodeConfig;
+  /** \brief CAN receive message object handle data structure. */
+  IfxMultican_Can_MsgObj       canRxMsgObj;
+  /** \brief CAN receive message object configuration structure. */
+  IfxMultican_Can_MsgObjConfig canRxMsgObjConfig;
+} canDriver;
+
+
+/************************************************************************************//**
+** \brief     Initializes the CAN communication interface.
+** \return    none.
+**
+****************************************************************************************/
+static void BootComCanInit(void)
+{
+  uint32 extendedFrame;
+
+  /* configure the STBY GPIO pin P20.6 as a digital output. */
+  IfxPort_setPinModeOutput(&MODULE_P20, 6U, IfxPort_OutputMode_pushPull,
+                                            IfxPort_OutputIdx_general);
+  /* switch the CAN transceiver to normal mode by setting the STBY GPIO pin logic low. */
+  IfxPort_setPinLow(&MODULE_P20, 6U);
+
+  /* load the default CAN module configuration into its structure. */
+  IfxMultican_Can_initModuleConfig(&canDriver.canConfig, &MODULE_CAN);
+  /* initialize the CAN module. note that it can hold multiple CAN nodes. */
+  IfxMultican_Can_initModule(&canDriver.can, &canDriver.canConfig);
+
+  /* load the default CAN node configuration into its structure. */
+  IfxMultican_Can_Node_initConfig(&canDriver.canNodeConfig, &canDriver.can);
+  /* configure the node identifier, baudrate and rx/tx pins. */
+  canDriver.canNodeConfig.nodeId = IfxMultican_NodeId_0;
+  canDriver.canNodeConfig.baudrate = BOOT_COM_CAN_BAUDRATE;
+  canDriver.canNodeConfig.rxPin = &IfxMultican_RXD0B_P20_7_IN;
+  canDriver.canNodeConfig.txPin = &IfxMultican_TXD0_P20_8_OUT;
+  /* initialize the CAN node. */
+  IfxMultican_Can_Node_init(&canDriver.canNode, &canDriver.canNodeConfig);
+
+  /* load default CAN message object configuration into configuration structure. */
+  IfxMultican_Can_MsgObj_initConfig(&canDriver.canRxMsgObjConfig, &canDriver.canNode);
+  /* configure the message object for the reception message. */
+  canDriver.canRxMsgObjConfig.msgObjId = ((IfxMultican_MsgObjId)1);
+  /* store the message identifier and type. */
+  extendedFrame = ((BOOT_COM_CAN_RX_MSG_ID & 0x80000000) == 0) ? FALSE : TRUE;
+  canDriver.canRxMsgObjConfig.messageId = BOOT_COM_CAN_RX_MSG_ID & ~0x80000000;
+  canDriver.canRxMsgObjConfig.control.extendedFrame = extendedFrame;
+  canDriver.canRxMsgObjConfig.frame = IfxMultican_Frame_receive;
+  canDriver.canRxMsgObjConfig.rxInterrupt.enabled = FALSE;
+  /* initialize the CAN receive message object. */
+  IfxMultican_Can_MsgObj_init(&canDriver.canRxMsgObj, &canDriver.canRxMsgObjConfig);
+} /*** end of BootComCanInit ***/
+
+
+/************************************************************************************//**
+** \brief     Receives the CONNECT request from the host, which indicates that the
+**            bootloader should be activated and, if so, activates it.
+** \return    none.
+**
+****************************************************************************************/
+static void BootComCanCheckActivationRequest(void)
+{
+  IfxMultican_Message rxMsg;
+  uint8               rxMsgLen;
+  uint8               rxByte0;
+
+  /* was the expected CAN message received in the dedicated reception object? */
+  if (IfxMultican_Can_MsgObj_readMessage(&canDriver.canRxMsgObj, &rxMsg) ==
+      IfxMultican_Status_newData)
+  {
+    /* read the message length. */
+    rxMsgLen = (uint8)rxMsg.lengthCode;
+    /* read out the first data byte. */
+    rxByte0 = (uint8)(rxMsg.data[0] & 0x000000FF);
+    /* check if this was an XCP CONNECT command. */
+    if ((rxByte0 == 0xff) && (rxMsgLen == 2))
+    {
+      /* connection request received so start the bootloader */
+      BootActivate();
+    }
+  }
+} /*** end of BootComCanCheckActivationRequest ***/
+#endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 
 /*********************************** end of boot.c *************************************/
