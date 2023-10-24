@@ -44,6 +44,10 @@ static void Init(void);
 /****************************************************************************************
 * External data declarations
 ****************************************************************************************/
+#if (BOOT_COM_RS232_ENABLE > 0)
+extern IfxAsclin_Rx_In     * rs232RxPin;
+extern IfxAsclin_Tx_Out    * rs232TxPin;
+#endif
 #if (BOOT_COM_CAN_ENABLE > 0)
 extern IfxMultican_Rxd_In  * canRxPin;
 extern IfxMultican_Txd_Out * canTxPin;
@@ -91,15 +95,9 @@ static void Init(void)
   /* Configure the pushbutton GPIO pin P00.7. */
   IfxPort_setPinMode(&MODULE_P00, 7U, IfxPort_Mode_inputPullUp);
 #if (BOOT_COM_RS232_ENABLE > 0)
-  /* Enable the ASCLIN0 module. */
-  IfxAsclin_enableModule(&MODULE_ASCLIN0);
-  /* Disable the clock before configuring the GPIO pins. */
-  IfxAsclin_setClockSource(&MODULE_ASCLIN0, IfxAsclin_ClockSource_noClock);
-  /* Configure the ASCLIN0 GPIO pins P14.1 Rx and P14.0 Tx. */
-  IfxAsclin_initRxPin(&IfxAsclin0_RXA_P14_1_IN, IfxPort_InputMode_pullUp,
-                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
-  IfxAsclin_initTxPin(&IfxAsclin0_TX_P14_0_OUT, IfxPort_OutputMode_pushPull,
-                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  /* Configure ASCLIN0 GPIO pins P14.0 Tx and P14.1 Rx (node 0). */
+  rs232RxPin = &IfxAsclin0_RXA_P14_1_IN;
+  rs232TxPin = &IfxAsclin0_TX_P14_0_OUT;
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* Configure the STBY GPIO pin P20.6 as a digital output. */

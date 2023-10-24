@@ -60,6 +60,20 @@
 
 
 /****************************************************************************************
+* Global data declarations
+****************************************************************************************/
+/** \brief Specifies the UART Rx pin. It is expected that the application overwrites this
+ *         value with the correct one, before BootInit() is called.
+ */
+IfxAsclin_Rx_In * rs232RxPin = NULL_PTR;
+
+/** \brief Specifies the UART Tx pin. It is expected that the application overwrites this
+ *         value with the correct one, before BootInit() is called.
+ */
+IfxAsclin_Tx_Out * rs232TxPin = NULL_PTR;
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static blt_bool Rs232ReceiveByte(blt_int8u *data);
@@ -73,7 +87,7 @@ static void     Rs232TransmitByte(blt_int8u data);
 ****************************************************************************************/
 void Rs232Init(void)
 {
-  /* The current implementation supports ASCLIN0 - ASCLIN11. Throw an assertion error in
+  /* the current implementation supports ASCLIN0 - ASCLIN11. throw an assertion error in
    * case a different channel is configured.
    */
   ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0)  ||
@@ -81,52 +95,61 @@ void Rs232Init(void)
             (BOOT_COM_RS232_CHANNEL_INDEX == 2)  ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 3));
 
-  /* Enter initialization mode. */
+  /* enable the ASCLIN module. */
+  IfxAsclin_enableModule(ASCLIN_CHANNEL);
+  /* disable the clock before configuring the GPIO pins. */
+  IfxAsclin_setClockSource(ASCLIN_CHANNEL, IfxAsclin_ClockSource_noClock);
+  /* configure the ASCLIN UART Tx and Rx pins. */
+  IfxAsclin_initRxPin(rs232RxPin, IfxPort_InputMode_pullUp,
+                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  IfxAsclin_initTxPin(rs232TxPin, IfxPort_OutputMode_pushPull,
+                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  /* enter initialization mode. */
   IfxAsclin_setFrameMode(ASCLIN_CHANNEL, IfxAsclin_FrameMode_initialise);
-  /* Temporarily enable the clock source for the baudrate configuration. */
+  /* temporarily enable the clock source for the baudrate configuration. */
   IfxAsclin_setClockSource(ASCLIN_CHANNEL, IfxAsclin_ClockSource_ascFastClock);
-  /* Configure the baudrate generator prescaler. */
+  /* configure the baudrate generator prescaler. */
   IfxAsclin_setPrescaler(ASCLIN_CHANNEL, 1);
-  /* Configure the communication speed, while using an oversampling of 16 bits and sample
+  /* configure the communication speed, while using an oversampling of 16 bits and sample
    * three bits in the middle (7,8 and 9).
    */
   (void)IfxAsclin_setBitTiming(ASCLIN_CHANNEL, (float32)BOOT_COM_RS232_BAUDRATE,
                                IfxAsclin_OversamplingFactor_16,
                                IfxAsclin_SamplePointPosition_9,
                                IfxAsclin_SamplesPerBit_three);
-  /* Disable the clock again for now. */
+  /* disable the clock again for now. */
   IfxAsclin_setClockSource(ASCLIN_CHANNEL, IfxAsclin_ClockSource_noClock);
-  /* Disable loopback mode. */
+  /* disable loopback mode. */
   IfxAsclin_enableLoopBackMode(ASCLIN_CHANNEL, FALSE);
-  /* Configure shift direction. */
+  /* configure shift direction. */
   IfxAsclin_setShiftDirection(ASCLIN_CHANNEL, IfxAsclin_ShiftDirection_lsbFirst);
-  /* Disable idle delay. */
+  /* disable idle delay. */
   IfxAsclin_setIdleDelay(ASCLIN_CHANNEL, IfxAsclin_IdleDelay_0);
-  /* Configure 8,N,1 format. */
+  /* configure 8,N,1 format. */
   IfxAsclin_enableParity(ASCLIN_CHANNEL, FALSE);
   IfxAsclin_setStopBit(ASCLIN_CHANNEL, IfxAsclin_StopBit_1);
   IfxAsclin_setDataLength(ASCLIN_CHANNEL, IfxAsclin_DataLength_8);
-  /* Configure transmit FIFO for 8-bit wide write and generate a refill event when the
+  /* configure transmit FIFO for 8-bit wide write and generate a refill event when the
    * filling level falls to 15 or below.
    */
   IfxAsclin_setTxFifoInletWidth(ASCLIN_CHANNEL, IfxAsclin_TxFifoInletWidth_1);
   IfxAsclin_setTxFifoInterruptLevel(ASCLIN_CHANNEL, IfxAsclin_TxFifoInterruptLevel_15);
-  /* Configure the receive FIFO for 8-bit wide read and generate a drain event when the
+  /* configure the receive FIFO for 8-bit wide read and generate a drain event when the
    * filling level rises to 1 or above.
    */
   IfxAsclin_setRxFifoOutletWidth(ASCLIN_CHANNEL, IfxAsclin_RxFifoOutletWidth_1);
   IfxAsclin_setRxFifoInterruptLevel(ASCLIN_CHANNEL, IfxAsclin_RxFifoInterruptLevel_1);
-  /* Leave initialization mode and switch to ASC mode. */
+  /* leave initialization mode and switch to ASC mode. */
   IfxAsclin_setFrameMode(ASCLIN_CHANNEL, IfxAsclin_FrameMode_asc);
-  /* Enable the clock source. */
+  /* enable the clock source. */
   IfxAsclin_setClockSource(ASCLIN_CHANNEL, IfxAsclin_ClockSource_ascFastClock);
-  /* Disable and clear all event flags. */
+  /* disable and clear all event flags. */
   IfxAsclin_disableAllFlags(ASCLIN_CHANNEL);
   IfxAsclin_clearAllFlags(ASCLIN_CHANNEL);
-  /* Enable the transmit and receive FIFOs. */
+  /* enable the transmit and receive FIFOs. */
   IfxAsclin_enableRxFifoInlet(ASCLIN_CHANNEL, TRUE);
   IfxAsclin_enableTxFifoOutlet(ASCLIN_CHANNEL, TRUE);
-  /* Flush the FIFOs. */
+  /* flush the FIFOs. */
   IfxAsclin_flushRxFifo(ASCLIN_CHANNEL);
   IfxAsclin_flushTxFifo(ASCLIN_CHANNEL);
 } /*** end of Rs232Init ***/
@@ -240,15 +263,15 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
   blt_bool result = BLT_FALSE;
 
-  /* Poll the receive FIFO level to see if new data is available. */
+  /* poll the receive FIFO level to see if new data is available. */
   if (IfxAsclin_getRxFifoFillLevel(ASCLIN_CHANNEL) > 0)
   {
-    /* Retrieve and store the newly received byte */
+    /* retrieve and store the newly received byte */
     (void)IfxAsclin_read8(ASCLIN_CHANNEL, data, 1);
-    /* Update the result */
+    /* update the result */
     result = BLT_TRUE;
   }
-  /* Give the result back to the caller */
+  /* give the result back to the caller */
   return result;
 } /*** end of Rs232ReceiveByte ***/
 
@@ -263,18 +286,18 @@ static void Rs232TransmitByte(blt_int8u data)
 {
   blt_int32u timeout;
 
-  /* Write the data value to the ASCLIN peripheral's transmit FIFO. */
+  /* write the data value to the ASCLIN peripheral's transmit FIFO. */
   (void)IfxAsclin_write8(ASCLIN_CHANNEL, &data, 1);
 
-  /* Set timeout time to wait for transmit completion. */
+  /* set timeout time to wait for transmit completion. */
   timeout = TimerGet() + RS232_BYTE_TX_TIMEOUT_MS;
   
-  /* Wait for the transmit FIFO to be empty. */
+  /* wait for the transmit FIFO to be empty. */
   while (IfxAsclin_getTxFifoFillLevel(ASCLIN_CHANNEL) != 0)
   {
-    /* Keep the watchdog happy */
+    /* keep the watchdog happy */
     CopService();
-    /* Break loop upon timeout. This would indicate a hardware failure. */
+    /* break loop upon timeout. This would indicate a hardware failure. */
     if (TimerGet() > timeout)
     {
       break;

@@ -46,6 +46,9 @@
 ****************************************************************************************/
 void LedInit(void)
 {
+  /* configure the LED GPIO pin P00.5. */
+  IfxPort_setPinModeOutput(&MODULE_P00, 5U, IfxPort_OutputMode_pushPull,
+                                            IfxPort_OutputIdx_general);
   /* make sure the LED is turned off by default. Note that it is low active */
   IfxPort_setPinHigh(&MODULE_P00, 5U);
 } /*** end of LedInit ***/
