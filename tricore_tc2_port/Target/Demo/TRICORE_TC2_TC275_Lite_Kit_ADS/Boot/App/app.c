@@ -32,12 +32,22 @@
 #include "boot.h"                                /* bootloader generic header          */
 #include "IfxPort.h"                             /* GPIO driver                        */
 #include "IfxAsclin.h"                           /* ASCLIN basic driver                */
+#include "IfxMultican.h"                         /* MultiCAN basic driver              */
 
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static void Init(void);
+
+
+/****************************************************************************************
+* External data declarations
+****************************************************************************************/
+#if (BOOT_COM_CAN_ENABLE > 0)
+extern IfxMultican_Rxd_In  * canRxPin;
+extern IfxMultican_Txd_Out * canTxPin;
+#endif
 
 
 /************************************************************************************//**
@@ -90,6 +100,16 @@ static void Init(void)
                       IfxPort_PadDriver_cmosAutomotiveSpeed1);
   IfxAsclin_initTxPin(&IfxAsclin0_TX_P14_0_OUT, IfxPort_OutputMode_pushPull,
                       IfxPort_PadDriver_cmosAutomotiveSpeed1);
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* Configure the STBY GPIO pin P20.6 as a digital output. */
+  IfxPort_setPinModeOutput(&MODULE_P20, 6U, IfxPort_OutputMode_pushPull,
+                                            IfxPort_OutputIdx_general);
+  /* Switch the CAN transceiver to normal mode by setting the STBY GPIO pin logic low. */
+  IfxPort_setPinLow(&MODULE_P20, 6U);
+  /* Configure MultiCAN GPIO pins P20.8 Tx and P20.7 Rx (node 0). */
+  canRxPin = &IfxMultican_RXD0B_P20_7_IN;
+  canTxPin = &IfxMultican_TXD0_P20_8_OUT;
 #endif
 } /*** end of Init ***/
 
