@@ -42,7 +42,7 @@
  */
 #define RS232_CTO_RX_PACKET_TIMEOUT_MS (200u)
 /** \brief Timeout for transmitting a byte in milliseconds. */
-#define RS232_BYTE_TX_TIMEOUT_MS       (1000u)
+#define RS232_BYTE_TX_TIMEOUT_MS       (10u)
 /* Map the configured UART channel index to the TriCore's ASCLIN peripheral. */
 #if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
 /** \brief Set UART base address to ASCLIN0. */
