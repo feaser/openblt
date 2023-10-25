@@ -41,6 +41,19 @@
 static void Init(void);
 
 
+/****************************************************************************************
+* External data declarations
+****************************************************************************************/
+#if (BOOT_COM_RS232_ENABLE > 0)
+extern IfxAsclin_Rx_In  * rs232RxPin;
+extern IfxAsclin_Tx_Out * rs232TxPin;
+#endif
+#if (BOOT_COM_CAN_ENABLE > 0)
+extern IfxCan_Rxd_In    * canRxPin;
+extern IfxCan_Txd_Out   * canTxPin;
+#endif
+
+
 /************************************************************************************//**
 ** \brief     Initializes the bootloader application. Should be called once during
 **            software program initialization.
@@ -82,15 +95,9 @@ static void Init(void)
   /* Configure the pushbutton GPIO pin P00.7. */
   IfxPort_setPinMode(&MODULE_P00, 7U, IfxPort_Mode_inputPullUp);
 #if (BOOT_COM_RS232_ENABLE > 0)
-  /* Enable the ASCLIN0 module. */
-  IfxAsclin_enableModule(&MODULE_ASCLIN0);
-  /* Disable the clock before configuring the GPIO pins. */
-  IfxAsclin_setClockSource(&MODULE_ASCLIN0, IfxAsclin_ClockSource_noClock);
-  /* Configure the ASCLIN0 GPIO pins P14.1 Rx and P14.0 Tx. */
-  IfxAsclin_initRxPin(&IfxAsclin0_RXA_P14_1_IN, IfxPort_InputMode_pullUp,
-                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
-  IfxAsclin_initTxPin(&IfxAsclin0_TX_P14_0_OUT, IfxPort_OutputMode_pushPull,
-                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  /* Configure ASCLIN0 GPIO pins P14.0 Tx and P14.1 Rx (node 0). */
+  rs232RxPin = &IfxAsclin0_RXA_P14_1_IN;
+  rs232TxPin = &IfxAsclin0_TX_P14_0_OUT;
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* Configure the STBY GPIO pin P20.6 as a digital output. */
@@ -98,14 +105,9 @@ static void Init(void)
                                             IfxPort_OutputIdx_general);
   /* Switch the CAN transceiver to normal mode by setting the STBY GPIO pin logic low. */
   IfxPort_setPinLow(&MODULE_P20, 6U);
-  /* Enable the MODULE_CAN0 module. */
-  IfxCan_enableModule(&MODULE_CAN0);
-  /* Configure MCMCAN0 GPIO pins P20.8 Tx and P20.7 Rx (node 0). */
-  IfxCan_Node_initTxPin(&IfxCan_TXD00_P20_8_OUT, IfxPort_OutputMode_pushPull,
-                        IfxPort_PadDriver_cmosAutomotiveSpeed1);
-  IfxCan_Node_initRxPin(&MODULE_CAN0.N[IfxCan_NodeId_0], &IfxCan_RXD00B_P20_7_IN,
-                        IfxPort_InputMode_pullUp,
-                        IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  /* Configure MultiCAN GPIO pins P20.8 Tx and P20.7 Rx (node 0). */
+  canRxPin = &IfxCan_RXD00B_P20_7_IN;
+  canTxPin = &IfxCan_TXD00_P20_8_OUT;
 #endif
 } /*** end of Init ***/
 

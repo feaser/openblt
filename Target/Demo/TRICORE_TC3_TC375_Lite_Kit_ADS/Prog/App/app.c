@@ -42,12 +42,6 @@
 const unsigned long bltChecksumSignature = 0x55AA11EE;
 
 
-/****************************************************************************************
-* Function prototypes
-****************************************************************************************/
-static void Init(void);
-
-
 /************************************************************************************//**
 ** \brief     Initializes the user program application. Should be called once during
 **            software program initialization.
@@ -56,8 +50,6 @@ static void Init(void);
 ****************************************************************************************/
 void AppInit(void)
 {
-  /* Initialize the microcontroller. */
-  Init();
   /* Initialize the timer driver. */
   TimerInit();
   /* Initialize the led driver. */
@@ -80,19 +72,6 @@ void AppTask(void)
   /* check for bootloader activation request */
   BootComCheckActivationRequest();
 } /*** end of AppTask ***/
-
-
-/************************************************************************************//**
-** \brief     Initializes the microcontroller.
-** \return    none.
-**
-****************************************************************************************/
-static void Init(void)
-{
-  /* Configure the LED GPIO pin P00.5. */
-  IfxPort_setPinModeOutput(&MODULE_P00, 5U, IfxPort_OutputMode_pushPull,
-                                            IfxPort_OutputIdx_general);
-} /*** end of Init ***/
 
 
 /*********************************** end of app.c **************************************/

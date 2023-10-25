@@ -108,6 +108,20 @@ typedef struct t_can_bus_timing
 
 
 /****************************************************************************************
+* Global data declarations
+****************************************************************************************/
+/** \brief Specifies the CAN Rx pin. It is expected that the application overwrites this
+ *         value with the correct one, before BootInit() is called.
+ */
+IfxCan_Rxd_In * canRxPin = NULL_PTR;
+
+/** \brief Specifies the CAN Tx pin. It is expected that the application overwrites this
+ *         value with the correct one, before BootInit() is called.
+ */
+IfxCan_Txd_Out * canTxPin = NULL_PTR;
+
+
+/****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
 /** \brief CAN bittiming table for dynamically calculating the bittiming settings.
@@ -234,6 +248,13 @@ void CanInit(void)
             (BOOT_COM_CAN_CHANNEL_INDEX == 10) ||
             (BOOT_COM_CAN_CHANNEL_INDEX == 11));
 
+  /* enable the CAN module. */
+  IfxCan_enableModule(MCMCAN_MODULE);
+  /* configure the CAN Tx and Rx GPIO pins. */
+  IfxCan_Node_initTxPin(canTxPin, IfxPort_OutputMode_pushPull,
+                        IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  IfxCan_Node_initRxPin(MCMCAN_NODE, canRxPin, IfxPort_InputMode_pullUp,
+                        IfxPort_PadDriver_cmosAutomotiveSpeed1);
   /* enable both the synchronous and asynchronous clocks. The synchronous clock is used
    * as the source for the register and RAM interface of the CAN controller. The
    * asynchronous clock is used for the CAN baudrate generation.

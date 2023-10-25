@@ -84,6 +84,20 @@
 
 
 /****************************************************************************************
+* Global data declarations
+****************************************************************************************/
+/** \brief Specifies the UART Rx pin. It is expected that the application overwrites this
+ *         value with the correct one, before BootInit() is called.
+ */
+IfxAsclin_Rx_In * rs232RxPin = NULL_PTR;
+
+/** \brief Specifies the UART Tx pin. It is expected that the application overwrites this
+ *         value with the correct one, before BootInit() is called.
+ */
+IfxAsclin_Tx_Out * rs232TxPin = NULL_PTR;
+
+
+/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static blt_bool Rs232ReceiveByte(blt_int8u *data);
@@ -113,6 +127,15 @@ void Rs232Init(void)
             (BOOT_COM_RS232_CHANNEL_INDEX == 10) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 11));
 
+  /* Enable the ASCLIN module. */
+  IfxAsclin_enableModule(ASCLIN_CHANNEL);
+  /* Disable the clock before configuring the GPIO pins. */
+  IfxAsclin_setClockSource(ASCLIN_CHANNEL, IfxAsclin_ClockSource_noClock);
+  /* Configure the ASCLIN UART Tx and Rx pins. */
+  IfxAsclin_initRxPin(rs232RxPin, IfxPort_InputMode_pullUp,
+                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
+  IfxAsclin_initTxPin(rs232TxPin, IfxPort_OutputMode_pushPull,
+                      IfxPort_PadDriver_cmosAutomotiveSpeed1);
   /* Enter initialization mode. */
   IfxAsclin_setFrameMode(ASCLIN_CHANNEL, IfxAsclin_FrameMode_initialise);
   /* Temporarily enable the clock source for the baudrate configuration. */
