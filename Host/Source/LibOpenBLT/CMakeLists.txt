@@ -63,6 +63,8 @@ option(LINT_ENABLED "Configurable to enable/disable the PC-lint target" OFF)
 # Set the port directory, which is platform specific
 if(WIN32)
   set(PROJECT_PORT_DIR ${PROJECT_SOURCE_DIR}/port/windows)
+elseif(APPLE)
+  set(PROJECT_PORT_DIR ${PROJECT_SOURCE_DIR}/port/macos)
 elseif(UNIX)
   set(PROJECT_PORT_DIR ${PROJECT_SOURCE_DIR}/port/linux)
 endif(WIN32)
@@ -100,6 +102,9 @@ if(WIN32)
       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_WINDOWS -DPLATFORM_64BIT -D_CRT_SECURE_NO_WARNINGS")
     endif()
   endif()
+elseif(APPLE)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_MACOS -DPLATFORM_64BIT -pthread -std=gnu99")
+  set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 elseif(UNIX)
   if(CMAKE_SIZEOF_VOID_P EQUAL 4)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPLATFORM_LINUX -DPLATFORM_32BIT -pthread -std=gnu99")
@@ -186,7 +191,9 @@ endif(BUILD_STATIC)
 # "make openblt_shared" to build individually  shared library.
 if(BUILD_SHARED)
   add_library(openblt_shared SHARED ${LIB_SRCS})
-  if(UNIX)
+  if (APPLE)
+    # Nothing to do here, but we need the case as UNIX will also be defined
+  elseif(UNIX)
     # Under Unix the LibUsb library (http://libusb.info/) is needed for the USB support.
     # Make sure the libusb-1.0-0 and  libusb-1.0-0-dev packages are installed to be able
     # to build LibOpenBLT. Example under Debian/Ubuntu:
@@ -196,7 +203,7 @@ if(BUILD_SHARED)
   elseif(WIN32)
     # Link the Winsock library
     target_link_libraries(openblt_shared ws2_32 winusb setupapi)
-  endif(UNIX)  
+  endif(APPLE)  
   if(CMAKE_C_COMPILER_ID MATCHES MSVC)
     # Microsoft Visual Studio does not add "lib" to the name of the DLL, whereas GCC
     # (including MinGW) does. Correct this here.
