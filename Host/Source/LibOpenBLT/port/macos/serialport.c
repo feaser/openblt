@@ -162,33 +162,11 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
 
     if (result)
     {
-      /* Input modes - clear indicated ones giving: no break, no CR to NL,
-       * no parity check, no strip char, no start/stop output (sic) control.
-       */
-      options.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-      /* Output modes - clear giving: no post processing such as NL to CR+NL. */
-      options.c_oflag &= ~(OPOST);
-      /* Control modes - set 8 bit chars */
-      options.c_cflag |= (CS8);
-      /* Local modes - clear giving: echoing off, canonical off (no erase with
-       * backspace, ^U,...),  no extended functions, no signal chars (^Z,^C).
-       */
-      options.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-      /* Configure timeouts. */
-      options.c_cc[VMIN]  = 0;
-      options.c_cc[VTIME] = 1; /* in units of 1/10th of a second */
-      /* Set the new options for the port. */
-      if (tcsetattr(portHandle, TCSAFLUSH, &options) == -1)
-      {
-        SerialPortClose();
-        result = false;
-      }
-    }
-    /* Turn on DTR. */
-    if (result)
-    {
-      iFlags = TIOCM_DTR;
-      if (ioctl(portHandle, TIOCMBIS, &iFlags) == -1)
+      options.c_cflag |= ( CLOCAL | CREAD |  CS8);    // Configure the device : 8 bits, no parity, no control
+      options.c_iflag |= ( IGNPAR | IGNBRK );
+      options.c_cc[VTIME]=0;                          // Timer unused
+      options.c_cc[VMIN]=0;                           // At least on character before satisfy reading
+      if (tcsetattr(portHandle, TCSANOW, &options) == -1)
       {
         SerialPortClose();
         result = false;
