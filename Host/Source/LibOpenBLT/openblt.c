@@ -39,8 +39,10 @@
 #include "session.h"                        /* Communication session module            */
 #include "xcploader.h"                      /* XCP loader module                       */
 #include "xcptpuart.h"                      /* XCP UART transport layer                */
+#ifndef NO_CAN_OR_USB
 #include "xcptpcan.h"                       /* XCP CAN transport layer                 */
 #include "xcptpusb.h"                       /* XCP USB transport layer                 */
+#endif // NO_CAN_OR_USB
 #include "xcptpnet.h"                       /* XCP TCP/IP transport layer              */
 
 
@@ -173,6 +175,7 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
           xcpLoaderSettings.transport = XcpTpUartGetTransport();
         }
       }
+#ifndef NO_CAN_OR_USB
       else if (transportType == BLT_TRANSPORT_XCP_V10_CAN)
       {
         /* Verify transportSettings parameters because the XCP CAN transport layer 
@@ -210,6 +213,7 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
         /* Link the transport layer to the XCP loader settings. */
         xcpLoaderSettings.transport = XcpTpUsbGetTransport();
       }
+#endif // NO_CAN_OR_USB
       else if (transportType == BLT_TRANSPORT_XCP_V10_NET)
       {
         /* Verify transportSettings parameters because the XCP NET transport layer
