@@ -198,7 +198,7 @@ static const tFlashSector flashLayout[] =
   { 0x08078000, 0x08000, 30},           /* flash sector 18 - 32kb                       */
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
-#error "BOOT_NVM_SIZE_KB > 128 is currently not supported."
+#error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
 #endif
 };
 #else
