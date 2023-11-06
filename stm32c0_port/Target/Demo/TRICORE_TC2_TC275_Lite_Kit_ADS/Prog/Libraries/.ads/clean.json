@@ -1,0 +1,33 @@
+{
+	"name" : "Clean iLLD",
+		
+	"commands" : [
+		{
+			"type": "DELETE-PROJECT-METADATA", 
+			"entries": [
+				{"key": "AURIX-LIBRARY-PATH", "value": "${dest-path}/iLLD"},
+				{"key": "AURIX-LIBRARY-PATH", "value": "${dest-path}/Infra"},
+				{"key": "AURIX-LIBRARY-PATH", "value": "${dest-path}/Service"},
+				{"key": "AURIX-LIBRARY-PATH", "value": "${dest-path}/.ads"},
+				{"key": "NEVER-EXCLUDE-FROM-BUILD", "value": "${dest-path}/iLLD/TC27D/Tricore/Cpu/CStart"},
+				{"key": "NEVER-EXCLUDE-FROM-BUILD", "value": "${dest-path}/iLLD/TC27D/Tricore/Cpu/Trap"}
+			]		
+		},
+		{
+			"type": "DELETE", 
+			"path": "/iLLD"
+		},
+		{
+			"type": "DELETE", 
+			"path": "/Infra" 
+		},
+		{
+			"type": "DELETE", 
+			"path": "/Service" 
+		},
+		{
+			"type": "DELETE", 
+			"path": "/.ads" 
+		}
+	]
+}
