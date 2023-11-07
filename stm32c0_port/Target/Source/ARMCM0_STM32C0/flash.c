@@ -57,19 +57,7 @@
  *         verification will always fail.
  */
 #ifndef BOOT_FLASH_VECTOR_TABLE_CS_OFFSET
-/* TODO ##Port The bootloader uses a 32-bit checksum signature value to determine if a 
- * a valid user program is present or not. This checksum value is written by the
- * bootloader at the end of a firmware update with function FlashWriteChecksum(). Right
- * before a user program is about to be started, function FlashVerifyChecksum() is called
- * to verify the presence of a user program. Space must be reserved in the user program
- * for the checksum signature value and the bootloader needs to know where this space
- * is reserved. It is recommended to place the signature checksum right after the 
- * user program's vector table. Using this approach it is easy to reserved space for the
- * checksum signature in the user program by simply adding one more dummy entry into the
- * vector table. This macro should be set to the size of the vector table, which can then
- * be used to determine the memory address of the signature checksum.
- */
-#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0x188)
+#define BOOT_FLASH_VECTOR_TABLE_CS_OFFSET    (0xC0)
 #endif
 
 
@@ -168,7 +156,7 @@ static const tFlashSector flashLayout[] =
   /* { 0x08000800, 0x00800,  1},           flash sector  1 - reserved for bootloader   */
   /* { 0x08001000, 0x00800,  2},           flash sector  2 - reserved for bootloader   */
   /* { 0x08001800, 0x00800,  3},           flash sector  3 - reserved for bootloader   */
-  /* { 0x08002000, 0x00800,  4},           flash sector  4 - reserved for bootloader   */
+  { 0x08002000, 0x00800,  4},           /* flash sector  4 - 2kb                       */
   { 0x08002800, 0x00800,  5},           /* flash sector  5 - 2kb                       */
   { 0x08003000, 0x00800,  6},           /* flash sector  6 - 2kb                       */
   { 0x08003800, 0x00800,  7},           /* flash sector  7 - 2kb                       */
