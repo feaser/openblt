@@ -45,7 +45,7 @@ void AppInit(void)
   /* Initialize the led driver. */
   LedInit();
   /* initialize the bootloader interface */
-  //BootComInit();
+  BootComInit();
 } /*** end of AppInit ***/
 
 
@@ -60,7 +60,7 @@ void AppTask(void)
   /* Toggle LED with a fixed frequency. */
   LedToggle();
   /* check for bootloader activation request */
-  //BootComCheckActivationRequest();
+  BootComCheckActivationRequest();
 } /*** end of AppTask ***/
 
 

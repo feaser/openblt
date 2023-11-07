@@ -1,6 +1,6 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM0_STM32C0_Nucleo_C031C6_CubeIDE/Prog/App/header.h
-* \brief        Generic header file.
+* \file         Demo/ARMCM0_STM32C0_Nucleo_C031C6_CubeIDE/Prog/App/boot.h
+* \brief        Demo program bootloader interface header file.
 * \ingroup      Prog_ARMCM0_STM32C0_Nucleo_C031C6_CubeIDE
 * \internal
 *----------------------------------------------------------------------------------------
@@ -25,19 +25,16 @@
 * 
 * \endinternal
 ****************************************************************************************/
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef BOOT_H
+#define BOOT_H
 
 /****************************************************************************************
-* Include files
+* Function prototypes
 ****************************************************************************************/
-#include "../../Boot/App/blt_conf.h"                   /* bootloader configuration     */
-#include "stm32c0xx.h"                                 /* STM32 CPU and HAL header     */
-#include "app.h"                                       /* Application header           */
-#include "boot.h"                                      /* bootloader interface driver  */
-#include "led.h"                                       /* LED driver                   */
-#include "timer.h"                                     /* Timer driver                 */
+void BootComInit(void);
+void BootComCheckActivationRequest(void);
+void BootActivate(void);
 
 
-#endif /* HEADER_H */
-/*********************************** end of header.h ***********************************/
+#endif /* BOOT_H */
+/*********************************** end of boot.h *************************************/
