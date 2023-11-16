@@ -68,7 +68,6 @@ SZ = $(TOOL_PATH)size
 #|--------------------------------------------------------------------------------------|
 PROJ_ASRCS  = $(filter %.s,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CSRCS  = $(filter %.c,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
-PROJ_CHDRS  = $(filter %.h,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 
 
 #|--------------------------------------------------------------------------------------|
@@ -86,6 +85,7 @@ LIB_PATH  =
 #|--------------------------------------------------------------------------------------|
 STDFLAGS    = -fdata-sections -ffunction-sections -Wall -g -Wno-strict-aliasing
 OPTFLAGS    = -Og
+DEPFLAGS    = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
@@ -117,7 +117,6 @@ COBJS = $(patsubst %.c,%.o,$(PROJ_CSRCS))
 .PHONY: all
 all: $(BIN_PATH)/$(PROJ_NAME).srec
 
-
 $(BIN_PATH)/$(PROJ_NAME).srec : $(BIN_PATH)/$(PROJ_NAME).elf
 	@$(OC) $< $(OFLAGS) $@
 	@$(OD) $(ODFLAGS) $< > $(BIN_PATH)/$(PROJ_NAME).map
@@ -133,13 +132,13 @@ $(BIN_PATH)/$(PROJ_NAME).elf : $(AOBJS) $(COBJS)
 #|--------------------------------------------------------------------------------------|
 #| Compile and assemble                                                                 |
 #|--------------------------------------------------------------------------------------|
-$(AOBJS): %.o: %.s $(PROJ_CHDRS)
+$(AOBJS): %.o: %.s
 	@echo +++ Assembling [$(notdir $<)]
 	@$(AS) $(AFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
-$(COBJS): %.o: %.c $(PROJ_CHDRS)
+$(COBJS): %.o: %.c $(OBJ_PATH)/%.d
 	@echo +++ Compiling [$(notdir $<)]
-	@$(CC) $(CFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
+	@$(CC) $(DEPFLAGS) $(CFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 
 
 #|--------------------------------------------------------------------------------------|
@@ -150,9 +149,18 @@ clean:
 	@echo +++ Cleaning build environment
 	@$(RM) $(RMFLAGS) $(foreach file,$(AOBJS),$(OBJ_PATH)/$(file))
 	@$(RM) $(RMFLAGS) $(foreach file,$(COBJS),$(OBJ_PATH)/$(file))
+	@$(RM) $(RMFLAGS) $(patsubst %.o,%.lst,$(foreach file,$(AOBJS),$(OBJ_PATH)/$(file)))
 	@$(RM) $(RMFLAGS) $(patsubst %.o,%.lst,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
+	@$(RM) $(RMFLAGS) $(patsubst %.o,%.d,$(foreach file,$(COBJS),$(OBJ_PATH)/$(file)))
 	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).elf $(BIN_PATH)/$(PROJ_NAME).map
 	@$(RM) $(RMFLAGS) $(BIN_PATH)/$(PROJ_NAME).srec
 	@echo +++ Clean complete
 
-                                                                                                                                                                                                                                                                
+	
+#|--------------------------------------------------------------------------------------|
+#| Dependency generation                                                                |
+#|--------------------------------------------------------------------------------------|
+DEPFILES := $(PROJ_CSRCS:%.c=$(OBJ_PATH)/%.d)
+$(DEPFILES):
+include $(wildcard $(DEPFILES))	
+
