@@ -1,0 +1,154 @@
+================ Revision history ============================================
+2.3.2:
+ - Fixed IAR startup files, corrected alignment of interrupt vector table
+ - Updated efm32usb library with fixes
+ - Updated efm32lib with new Tiny Gecko and Giant Gecko features
+
+2.3.0:
+ - Added DEVICE_FAMILY defines to identify Gecko/Tiny/Leopard/Giant parts
+ - Fixed missing EMU_IRQ definitions in Leopard Gecko startup files
+ - Added USART location to Tiny Gecko parts
+ - Added LEUART locations to Tiny Gecko parts
+ - Updated efm32lib with new Giant Gecko features (see separate readme)
+ - Updated efm32usb with USB Host stack support (see separate readme)
+
+2.2.2:
+ - Removed huge AF_PORT, AF_PIN macros from header files, only peripheral
+   specific alternate function defines are included
+ - Updated efm32usb library with fixes
+ - Updated efm32lib library with fixes
+
+2.2.1:
+ - Added interleave to all Giant Gecko parts
+ - Updated efm32lib with more Giant Gecko features
+ - Added efm32usb, USB Device stack for Giant Gecko USB parts
+ - Added LOCATION defines for all I2C alternate locations on Tiny Gecko
+
+2.1.1:
+ - Added header files for Giant Gecko and Leopard Gecko devices
+ - Minor fix for Gecko devices, EMU_CTRL_MASK was wrong
+ - Fix for linker issue alignment of .data section in codesourcery .ld files
+
+2.0.1:
+ - DAC_OPAnMUX_POSSEL_OPAnIN changed to DAC_OPAnMUX_POSSEL_OPAnINP for Tiny 
+   Gecko
+ - Added CMU_ROUTE_LOCATION, LOC2 for Tiny Gecko
+ - PRS #define fixes, remove extra IRDA fields only available on USART0
+ 
+2.0.0:
+ - This release based on CMSIS_2_00, includes DSP_Lib (for Keil MDKARM, IAR has 
+   a port included with EWARM)
+ - Removed "shadow" example that used to be in CMSIS directory earlier, use 
+   "blink" from board examples as starting point instead
+ - Restructured header files to comply with CMSIS_2_00
+ - CMU_CALCTRL_REFSEL is renamed to CMU_CALCTRL_UPSEL to match reference 
+   manual and clearify new DOWNSEL calibrartion features for Tiny Gecko
+ - Added header files for new package types for Gecko devices 
+ - Added header files for Tiny Gecko devices
+
+1.3.0:
+ - DMA register WAITSTATUS changed to CHWAITSTATUS for consistency
+   DMA test req/sreq registers added, CHSREQSTATUS and CHREQSTATUS  
+ - IFS and IFC interrupt registers are now marked as readable for several
+   peripherals
+ - TIMER, CCC renamed to CDTI
+ - TIMER, QEM has been renamed to QDM
+ - AF_DBG_SWV/TCLK/TDIO renamed to more commonly used AF_DBG_SWD/SWDIO/SWDCLK
+ - AF_EBI_ADDRDAT renamed to AF_EBI_AD
+ - Removed bit fields for extra LCD segment registers for Gecko parts
+ - Fixed LCD_SEGEN_MASK, bit width was too narrow in version 1.2.x
+ - Fixed LCD_SYNCBUSY bit fields
+ - CMU_PCNTCTRL reset values corrected
+ - PCNT_TOP and PCNT_TOPB reset values corrected
+ - ADC_LPFMODE_RCFILT and LPFMOD_DECAP definitions corrected (they were 
+   reversed)
+ - USART_RXDATAFULLRIGHT and USART_RXDATAVRIGHT removed for Gecko parts
+ - GPIO, renamed INSENSE_PRSSENSE to INSENSE_PRS, similar for INT
+   to be consistent with updated documentation (Reference Manual)
+
+1.2.1:
+ - Fixed DEVINFO calibration shift and mask value for temperature sensor
+   fixed in rev.C Gecko devices
+
+1.2.0:
+ - Added new subgroup "Parts" for all part definitions in doxygen format
+ - Removed unused _PARAM_ type definitions, less clutter in header files
+ - _CMU_PCNTCTRL_RESETVALUE corrected
+ - Added C startup file for IAR, can be used as replacement for assembly file
+ - Use #defines instead of "numeric values reentered" in bit field definitions
+ - TIMER_PARAM_CCNUM(i) changed to TIMER_PARAM_CC_NUM(i)
+ - DPI_CHAN_COUNT changed to PRS_CHAN_COUNT
+
+1.1.4:
+ - TIMER_INIT_DEFAULT fix to efm32lib 
+
+1.1.3:
+ - Removed ADC ROUTE register
+ - Renamed DEVINFO DACCAL  -> DAC0CAL for all 3 calibration registers and bit
+   fields
+ - Updated efm32lib with new peripherals
+
+1.1.2:
+ - Added support for CodeSourcery Sourcery G++ compiler and startup files
+ - Device Information page (DEVINFO_TypeDef) - fixed several issues with
+   endianness, and other changes to support test revision 4 and above parts.
+   This has led to a small incompatibilty with test rev <= 4 and rev A parts,
+   in that the flash and sram size bit fields has changed location.
+ - DMA_CONTROL_TypeDef changed name to DMA_DESCRIPTOR_TypeDef to be better 
+   aligned with PL230 manual and code
+ - DMA bit fields not supported on EFM32 was removed for the PL230 controller
+ - DMA CTRL bit fields renamed to be more consistent with PL230 TRM manual
+ - Added additional volatile statements to pointers in DMA Control structure
+ - Fixed several registers that were readable, and was marked as __O (output 
+   only)
+
+1.1.1:
+ - Fixed startup code, CMSIS SystemInit cannot update global variable
+
+1.1.0:
+ - Note - some register bit field updates in this release are _not_ backward 
+   compatible
+ - Updated register bit fields to comply with documentation updates, i.e. 
+   reference manual version > 0.83
+ - Apply patch to CMSIS core for GCC issues
+ - Added DMA_CONTROL_TypeDef control block for PrimeCell PL230 DMA controller
+ - Added ROMTABLE PID / CHIP revision table and masks
+ - Revised and updated Device Information page structure "DEVINFO page"
+   This structure is ONLY valid for rev.B production devices
+ - GPIO EXTIPSEL bit field marked "16" changed to 15 (bug correction) 
+ - Added more bit fields to TIMER_ROUTE registers
+ - Cosmetic updates in doxygen comments and copyright statements
+
+1.0.4:
+ - ACMP INPUTSEL bit fields changed from ohm rating to res-n,
+ - Added bit-band base addresses for peripherals and sram
+
+1.0.3:
+ - ADC SCANMODE and SCANCTRL bit field updates and corrections
+ - Moved Readme.txt and Changes.txt to CMSIS/Readme-EFM32.txt and 
+   CMSIS/Changes-EFM32.txt
+ - CCPEN and CDTIPEN splitted in TIMER_ROUTE
+ - EMVREG in EMU_CTRL enumeration changed
+ - LCD DISPCTRL volatage levels are part specific, changed settings changed to 
+   reflect this
+ - Added "UL" (unsigned long) to some bit fields giving warnings due to sign 
+   conversion
+
+1.0.2:
+ - Corrected revision numbers in file headers
+ - Removed example code that was moved into BSP/DVK installer package
+
+1.0.1:
+ - Updated to use official CMSIS1V30 release
+ - Corrected IRQ vector table in assembly startup files, IMEM to MSC, 
+   UDMA to DMA
+ - DMA peripheral/signal names corrected
+ - Example Blinky application updated to work on all EFM32 MCU-Modules on DVK
+ - Added "simple" board support package to example
+ - Added "UL" (unsigned long) tag to several fields
+
+1.0.0: 
+ - Initial release
+ - Includes CMSIS1V30 2nd PreRelease
+ - Now requires two include paths, CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32 and 
+   CMSIS/CM3/CoreSupport

@@ -1,0 +1,66 @@
+{
+	"name" : "Install AURIX Libraries and Linker scripts",
+	
+	"maps": [
+		{"variable": "device", "from": "TC21xL_A-Step", "to": "TC21A"},
+		{"variable": "device", "from": "TC22xL_A-Step", "to": "TC22A"},
+		{"variable": "device", "from": "TC23xLP_A-Step", "to": "TC23A"},
+		{"variable": "device", "from": "TC23xLA/LX_A-Step", "to": "TC23A"},
+		{"variable": "device", "from": "TC26xD_B-Step", "to": "TC26B"},	
+		{"variable": "device", "from": "TC26xDA_B-Step", "to": "TC26B"},
+		{"variable": "device", "from": "TC27xTP_D-Step", "to": "TC27D"},
+		{"variable": "device", "from": "TC27xTF_D-Step", "to": "TC27D"},
+		{"variable": "device", "from": "TC29xTP_B-Step", "to": "TC29B"},
+		{"variable": "device", "from": "TC29xTA/TX_B-Step", "to": "TC29B"}
+	],
+	
+	"commands" : [
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC21A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_16_1__TC21A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC22A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_16_1__TC22A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC23A"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_16_1__TC23A.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC26B"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_16_1__TC26B.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC27D"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_16_1__TC27D.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{
+			"type": "CONTENT", 
+			"enabledWhen": [{"value": "${device#remap}", "equals": "TC29B"}],
+			"from": "iLLDs/Full_Set/iLLD_1_0_1_16_1__TC29B.zip", 
+			"to": "/Libraries",
+			"recipe": ".ads/install.json"
+		},
+		{"type": "CONTENT", "from": "Linker_conf/Tasking/${device#remap}/TriCore", "to": "/"},
+		{"type": "CONTENT", "from": "Linker_conf/GnuC/${device#remap}", "to": "/"},
+		{"type": "CONTENT", "from": ".ads", "to": "/.ads"},
+		{"type": "CONTENT", "from": "package.json", "to": "/.ads/package.json"}
+
+	]
+}
