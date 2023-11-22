@@ -113,6 +113,11 @@ LIBOPENBLT_EXPORT char const * BltVersionGetString(void);
  */
 #define BLT_TRANSPORT_XCP_V10_NET      ((uint32_t)3u)
 
+/** \brief Transport layer for the XCP v1.0 protocol that uses Modbus RTU
+ *         communication for data exchange.
+ */
+#define BLT_TRANSPORT_XCP_V10_MBRTU    ((uint32_t)4u)
+
 
 /****************************************************************************************
 * Type definitions
@@ -176,6 +181,20 @@ typedef struct t_blt_transport_settings_xcp_v10_net
   char const * address;          /**< Target IP-address or hostname on the network.    */
   uint16_t port;                 /**< TCP port to use.                                 */
 } tBltTransportSettingsXcpV10Net;
+
+/** \brief Structure layout of the XCP version 1.0 Modbus RTU transport layer settings.
+ *         The portName field is platform dependent. On Linux based systems this should
+ *         be the filename of the tty-device, such as "/dev/tty0". On Windows based
+ *         systems it should be the name of the COM-port, such as "COM1".
+ */
+typedef struct t_blt_transport_settings_xcp_v10_mbrtu
+{
+  char const * portName;         /**< Communication port name such as /dev/tty0.       */
+  uint32_t baudrate;             /**< Communication speed in bits/sec.                 */
+  uint8_t parity;                /**< Parity (0 for none, 1 for odd, 2 for even).      */
+  uint8_t stopbits;              /**< Stopbits (1 for one, 2 for two stopbits).        */
+  uint8_t destinationAddr;       /**< Destination address (receiver node ID).          */
+} tBltTransportSettingsXcpV10MbRtu;
 
 
 /****************************************************************************************

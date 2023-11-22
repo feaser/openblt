@@ -161,6 +161,12 @@ namespace OpenBLT
             private const UInt32 TRANSPORT_XCP_V10_NET = 3;
 
             /// <summary>
+            /// Transport layer for the XCP v1.0 protocol that uses Modbus RTU for data
+            /// exchange.
+            /// </summary>
+            private const UInt32 TRANSPORT_XCP_V10_MBRTU = 4;
+
+            /// <summary>
             /// Structure layout of the XCP version 1.0 session settings.
             /// </summary>
             public struct SessionSettingsXcpV10
@@ -359,6 +365,58 @@ namespace OpenBLT
             {
                 public IntPtr address;
                 public UInt16 port;
+            }
+            
+            /// <summary>
+            /// Structure layout of the XCP version 1.0 Modbus RTU transport layer settings.
+            /// </summary>
+            /// <remarks>
+            /// The portName field is platform dependent. On Linux based systems this should be
+            /// the filename of the tty-device, such as "/dev/tty0". On Windows based systems
+            /// it should be the name of the COM-port, such as "COM1".
+            /// </remarks>
+            public struct TransportSettingsXcpV10MbRtu
+            {
+                /// <summary>
+                /// Communication port name such as /dev/tty0.
+                /// </summary>
+                public String portName;
+
+                /// <summary>
+                /// Communication speed in bits/sec.
+                /// </summary>
+                public UInt32 baudrate;
+
+                /// <summary>
+                /// Parity (0 for none, 1 for odd, 2 for even).
+                /// </summary>
+                public Byte parity;
+
+                /// <summary>
+                /// Stopbits (1 for one, 2 for two stopbits).
+                /// </summary>
+                public Byte stopbits;
+
+                /// <summary>
+                /// Destination address (receiver node ID).
+                /// </summary>
+                public Byte destinationAddr;
+            }
+
+            /// <summary>
+            /// Unmanaged structure layout of the XCP version 1.0 Modbus RTU transport layer settings.
+            /// </summary>
+            /// <remarks>
+            /// Only used internally when calling the API function inside the DLL.
+            /// </remarks>
+            [StructLayout(LayoutKind.Sequential)]
+            private struct TransportSettingsXcpV10MbRtuUnmanaged
+            {
+                public IntPtr portName;
+                public UInt32 baudrate;
+                public Byte parity;
+                public Byte stopbits;
+                public Byte destinationAddr;
             }
 
             [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
@@ -670,6 +728,90 @@ namespace OpenBLT
                     Marshal.FreeHGlobal(transportSettingsUnmanagedPtr);
                     Marshal.FreeHGlobal(sessionSettingsUnmanagedPtr);
                     Marshal.FreeHGlobal(transportSettingsUnmanaged.address);
+                    Marshal.FreeHGlobal(sessionSettingsUnmanaged.seedKeyFile);
+                }
+            }
+            
+            /// <summary>
+            /// Initializes the firmware update session for the XCP v1.0 communication
+            /// protocol and Modbus RTU as the transport layer. This function is typically
+            /// called once at the start of the firmware update.
+            /// </summary>
+            /// <param name="sessionSettings">XCP V1.0 protocol settings</param>
+            /// <param name="transportSettings">Modbus RTU transport layer settings</param>
+            /// <example>
+            /// <code>
+            ///  OpenBLT.Lib.Session.SessionSettingsXcpV10 sessionSettings;
+            ///  sessionSettings.timeoutT1 = 1000;
+            ///  sessionSettings.timeoutT3 = 2000;
+            ///  sessionSettings.timeoutT4 = 10000;
+            ///  sessionSettings.timeoutT5 = 1000;
+            ///  sessionSettings.timeoutT6 = 50;
+            ///  sessionSettings.timeoutT7 = 2000;
+            ///  sessionSettings.seedKeyFile = "";
+            ///  sessionSettings.connectMode = 0;
+            ///  
+            ///  OpenBLT.Lib.Session.TransportSettingsXcpV10MbRtu transportSettings;
+            ///  transportSettings.portName = "COM8";
+            ///  transportSettings.baudrate = 57600;
+            ///  transportSettings.parity = 2;
+            ///  transportSettings.stopbits = 1;
+            ///  transportSettings.destinationAddr = 1;
+            ///  
+            ///  OpenBLT.Lib.Session.Init(sessionSettings, transportSettings);
+            /// </code>
+            /// </example>
+            public static void Init(SessionSettingsXcpV10 sessionSettings, TransportSettingsXcpV10MbRtu transportSettings)
+            {
+                // Copy the managed session settings to an unmanaged structure.
+                SessionSettingsXcpV10Unmanaged sessionSettingsUnmanaged;
+                sessionSettingsUnmanaged.timeoutT1 = sessionSettings.timeoutT1;
+                sessionSettingsUnmanaged.timeoutT3 = sessionSettings.timeoutT3;
+                sessionSettingsUnmanaged.timeoutT4 = sessionSettings.timeoutT4;
+                sessionSettingsUnmanaged.timeoutT5 = sessionSettings.timeoutT5;
+                sessionSettingsUnmanaged.timeoutT6 = sessionSettings.timeoutT6;
+                sessionSettingsUnmanaged.timeoutT7 = sessionSettings.timeoutT7;
+                // Convert string to unmanged string.
+                sessionSettingsUnmanaged.seedKeyFile = (IntPtr)Marshal.StringToHGlobalAnsi(sessionSettings.seedKeyFile);
+                sessionSettingsUnmanaged.connectMode = sessionSettings.connectMode;
+
+                // Copy the managed transport settings to an unmanaged structure.
+                TransportSettingsXcpV10MbRtuUnmanaged transportSettingsUnmanaged;
+                // Convert string to unmanaged string.
+                transportSettingsUnmanaged.portName = (IntPtr)Marshal.StringToHGlobalAnsi(transportSettings.portName);
+                transportSettingsUnmanaged.baudrate = transportSettings.baudrate;
+                transportSettingsUnmanaged.parity = transportSettings.parity;
+                transportSettingsUnmanaged.stopbits = transportSettings.stopbits;
+                transportSettingsUnmanaged.destinationAddr = transportSettings.destinationAddr;
+
+                // The structures are now formatted to be converted to unmanaged memory. Start by allocating
+                // memory on the heap for this.
+                IntPtr sessionSettingsUnmanagedPtr = Marshal.AllocHGlobal(Marshal.SizeOf(sessionSettingsUnmanaged));
+                IntPtr transportSettingsUnmanagedPtr = Marshal.AllocHGlobal(Marshal.SizeOf(transportSettingsUnmanaged));
+
+                // Assert the heap allocations.
+                Debug.Assert(sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero);
+                Debug.Assert(transportSettingsUnmanaged.portName != IntPtr.Zero);
+                Debug.Assert(sessionSettingsUnmanagedPtr != IntPtr.Zero);
+                Debug.Assert(transportSettingsUnmanagedPtr != IntPtr.Zero);
+
+                // Only continue if all the heap allocations were successful.
+                if ((sessionSettingsUnmanaged.seedKeyFile != IntPtr.Zero) &&
+                     (transportSettingsUnmanaged.portName != IntPtr.Zero) &&
+                     (sessionSettingsUnmanagedPtr != IntPtr.Zero) &&
+                     (transportSettingsUnmanagedPtr != IntPtr.Zero))
+                {
+                    // Copy the structures to unmanaged memory.
+                    Marshal.StructureToPtr(sessionSettingsUnmanaged, sessionSettingsUnmanagedPtr, false);
+                    Marshal.StructureToPtr(transportSettingsUnmanaged, transportSettingsUnmanagedPtr, false);
+
+                    // Call the API function inside the DLL.
+                    BltSessionInit(SESSION_XCP_V10, sessionSettingsUnmanagedPtr, TRANSPORT_XCP_V10_MBRTU, transportSettingsUnmanagedPtr);
+
+                    // Free memory allocated on the heap.
+                    Marshal.FreeHGlobal(transportSettingsUnmanagedPtr);
+                    Marshal.FreeHGlobal(sessionSettingsUnmanagedPtr);
+                    Marshal.FreeHGlobal(transportSettingsUnmanaged.portName);
                     Marshal.FreeHGlobal(sessionSettingsUnmanaged.seedKeyFile);
                 }
             }

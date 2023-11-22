@@ -143,6 +143,27 @@ type
     property Baudrate: Integer read FBaudrate write FBaudrate;
   end;
 
+  //------------------------------ TTransportXcpMbRtuConfig -----------------------------
+  TTransportXcpMbRtuConfig = class (TConfigGroup)
+  private
+    FDevice: String;
+    FBaudrate: Integer;
+    FParity: Byte;
+    FStopbits: Byte;
+    FDestinationAddress: Byte;
+  public
+    const GROUP_NAME='Transport/Xcp/MbRtu';
+    constructor Create;
+    procedure Defaults; override;
+    procedure LoadFromFile(XmlConfig: TXMLConfig); override;
+    procedure SaveToFile(XmlConfig: TXMLConfig); override;
+    property Device: String read FDevice write FDevice;
+    property Baudrate: Integer read FBaudrate write FBaudrate;
+    property Parity: Byte read FParity write FParity;
+    property Stopbits: Byte read FStopbits write FStopbits;
+    property DestinationAddress: Byte read FDestinationAddress write FDestinationAddress;
+  end;
+
   //------------------------------ TTransportXcpCanConfig -------------------------------
   TTransportXcpCanConfig = class (TConfigGroup)
   private
@@ -645,6 +666,89 @@ begin
   // Store all settings.
   XmlConfig.SetValue('device', UnicodeString(FDevice));
   XmlConfig.SetValue('baudrate', FBaudrate);
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of SaveToFile ***
+
+
+//---------------------------------------------------------------------------------------
+//-------------------------------- TTransportXcpMbRtuConfig -----------------------------
+//---------------------------------------------------------------------------------------
+//***************************************************************************************
+// NAME:           Create
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Class constructor.
+//
+//***************************************************************************************
+constructor TTransportXcpMbRtuConfig.Create;
+begin
+  // Call inherited constructor.
+  inherited Create;
+  // Set fields.
+  FName := GROUP_NAME;
+  Defaults;
+end; //*** end of Create ***
+
+
+//***************************************************************************************
+// NAME:           Defaults
+// PARAMETER:      none
+// RETURN VALUE:   none
+// DESCRIPTION:    Sets default values for this group's settings.
+//
+//***************************************************************************************
+procedure TTransportXcpMbRtuConfig.Defaults;
+begin
+  FDevice := '';
+  FBaudrate := 57600;
+  FParity := 2;
+  FStopbits := 1;
+  FDestinationAddress := 1;
+end; //*** end of Defaults ***
+
+
+//***************************************************************************************
+// NAME:           LoadFromFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Loads this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpMbRtuConfig.LoadFromFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Load all settings.
+  FDevice := String(XmlConfig.GetValue('device', UnicodeString(FDevice)));
+  FBaudrate := XmlConfig.GetValue('baudrate', FBaudrate);
+  FParity := XmlConfig.GetValue('parity', FParity);
+  FStopbits := XmlConfig.GetValue('stopbits', FStopbits);
+  FDestinationAddress := XmlConfig.GetValue('destination_address', FDestinationAddress);
+  // Close this group's key.
+  XmlConfig.CloseKey;
+end; //*** end of LoadFromFile ***/
+
+
+//***************************************************************************************
+// NAME:           SaveToFile
+// PARAMETER:      XmlConfig XML configuration instance.
+// RETURN VALUE:   none
+// DESCRIPTION:    Saves this group's configuration settings using the XML configuration
+//                 instance.
+//
+//***************************************************************************************
+procedure TTransportXcpMbRtuConfig.SaveToFile(XmlConfig: TXMLConfig);
+begin
+  // Open this group's key.
+  XmlConfig.OpenKey(UnicodeString(Self.Name));
+  // Store all settings.
+  XmlConfig.SetValue('device', UnicodeString(FDevice));
+  XmlConfig.SetValue('baudrate', FBaudrate);
+  XmlConfig.SetValue('parity', FParity);
+  XmlConfig.SetValue('stopbits', FStopbits);
+  XmlConfig.SetValue('destination_address', FDestinationAddress);
   // Close this group's key.
   XmlConfig.CloseKey;
 end; //*** end of SaveToFile ***

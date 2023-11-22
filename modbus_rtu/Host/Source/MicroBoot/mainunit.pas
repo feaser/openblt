@@ -164,6 +164,7 @@ begin
   FCurrentConfig.AddGroup(TSessionXcpConfig.Create);
   FCurrentConfig.AddGroup(TTransportConfig.Create);
   FCurrentConfig.AddGroup(TTransportXcpRs232Config.Create);
+  FCurrentConfig.AddGroup(TTransportXcpMbRtuConfig.Create);
   FCurrentConfig.AddGroup(TTransportXcpCanConfig.Create);
   FCurrentConfig.AddGroup(TTransportXcpUsbConfig.Create);
   FCurrentConfig.AddGroup(TTransportXcpTcpIpConfig.Create);
@@ -606,6 +607,10 @@ begin
     if transportConfig.Transport = 'xcp_rs232' then
     begin
       Result := Result +  'on RS232';
+    end
+    else if transportConfig.Transport = 'xcp_mbrtu' then
+    begin
+      Result := Result +  'on Modbus RTU';
     end
     else if transportConfig.Transport = 'xcp_can' then
     begin

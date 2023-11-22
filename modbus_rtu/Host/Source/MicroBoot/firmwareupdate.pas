@@ -756,12 +756,14 @@ var
   sessionXcpConfig: TSessionXcpConfig;
   transportConfig: TTransportConfig;
   transportXcpRs232Config: TTransportXcpRs232Config;
+  transportXcpMbRtuConfig: TTransportXcpMbRtuConfig;
   transportXcpCanConfig: TTransportXcpCanConfig;
   transportXcpTcpIpConfig: TTransportXcpTcpIpConfig;
   sessionType: LongWord;
   transportType: LongWord;
   sessionSettingsXcp: tBltSessionSettingsXcpV10;
   transportSettingsXcpRs232: tBltTransportSettingsXcpV10Rs232;
+  transportSettingsXcpMbRtu: tBltTransportSettingsXcpV10MbRtu;
   transportSettingsXcpCan: tBltTransportSettingsXcpV10Can;
   transportSettingsXcpNet: tBltTransportSettingsXcpV10Net;
   sessionSettingsPtr: Pointer;
@@ -810,6 +812,23 @@ begin
       transportSettingsXcpRs232.baudrate := transportXcpRs232Config.Baudrate;
       // Point the transport settings pointer to this one.
       transportSettingsPtr := @transportSettingsXcpRs232;
+    end
+    // ---------------------------------- XCP on Modbus RTU -----------------------------
+    else if transportConfig.Transport = 'xcp_mbrtu' then
+    begin
+      // Store the transport layer type.
+      transportType := BLT_TRANSPORT_XCP_V10_MBRTU;
+      // Obtain access to the related configuration group.
+      transportXcpMbRtuConfig := FFirmwareUpdate.FCurrentConfig.Groups[TTransportXcpMbRtuConfig.GROUP_NAME]
+                                 as TTransportXcpMbRtuConfig;
+      // Copy over the settings.
+      transportSettingsXcpMbRtu.portName := PAnsiChar(AnsiString(transportXcpMbRtuConfig.Device));
+      transportSettingsXcpMbRtu.baudrate := transportXcpMbRtuConfig.Baudrate;
+      transportSettingsXcpMbRtu.parity := transportXcpMbRtuConfig.Parity;
+      transportSettingsXcpMbRtu.stopbits := transportXcpMbRtuConfig.Stopbits;
+      transportSettingsXcpMbRtu.destinationAddr := transportXcpMbRtuConfig.DestinationAddress;
+      // Point the transport settings pointer to this one.
+      transportSettingsPtr := @transportSettingsXcpMbRtu;
     end
     // ---------------------------------- XCP on CAN ------------------------------------
     else if transportConfig.Transport = 'xcp_can' then
@@ -969,6 +988,10 @@ begin
   begin
     Result := 'XCP on RS232';
   end
+  else if transportConfig.Transport = 'xcp_mbrtu' then
+  begin
+    Result := 'XCP on Modbus RTU';
+  end
   else if transportConfig.Transport = 'xcp_can' then
   begin
     Result := 'XCP on CAN';
@@ -996,8 +1019,10 @@ procedure TFirmwareUpdateThread.LogTransportLayerSettings;
 var
   transportConfig: TTransportConfig;
   transportXcpRs232Config: TTransportXcpRs232Config;
+  transportXcpMbRtuConfig: TTransportXcpMbRtuConfig;
   transportXcpCanConfig: TTransportXcpCanConfig;
   transportXcpTcpIpConfig: TTransportXcpTcpIpConfig;
+  parityStr: string;
 begin
   // Obtain access to the related configuration group.
   transportConfig := FFirmwareUpdate.FCurrentConfig.Groups[TTransportConfig.GROUP_NAME]
@@ -1012,6 +1037,30 @@ begin
     FLogString := '  -> Device: ' + transportXcpRs232Config.Device;
     Synchronize(@SynchronizeLogEvent);
     FLogString := '  -> Baudrate: ' + IntToStr(transportXcpRs232Config.Baudrate) + ' bit/sec';
+    Synchronize(@SynchronizeLogEvent);
+  end
+  // ------------------------------------ XCP on Modbus RTU -----------------------------
+  else if transportConfig.Transport = 'xcp_mbrtu' then
+  begin
+    // Obtain access to the related configuration group.
+    transportXcpMbRtuConfig := FFirmwareUpdate.FCurrentConfig.Groups[TTransportXcpMbRtuConfig.GROUP_NAME]
+                               as TTransportXcpMbRtuConfig;
+    FLogString := '  -> Device: ' + transportXcpMbRtuConfig.Device;
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Baudrate: ' + IntToStr(transportXcpMbRtuConfig.Baudrate) + ' bit/sec';
+    Synchronize(@SynchronizeLogEvent);
+    case transportXcpMbRtuConfig.Parity of
+      0: parityStr := 'None';
+      1: parityStr := 'Odd';
+      2: parityStr := 'Even';
+    else
+      parityStr := 'Invalid';
+    end;
+    FLogString := '  -> Parity: ' + parityStr;
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Stopbits: ' + IntToStr(transportXcpMbRtuConfig.Stopbits);
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Destination address: ' + IntToStr(transportXcpMbRtuConfig.DestinationAddress);
     Synchronize(@SynchronizeLogEvent);
   end
   // ------------------------------------ XCP on CAN ------------------------------------

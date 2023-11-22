@@ -80,14 +80,16 @@ void SerialPortTerminate(void)
 
 
 /************************************************************************************//**
-** \brief     Opens the connection with the serial port configured as 8,N,1 and no flow
-**            control.
+** \brief     Opens the connection with the serial port.
 ** \param     portname The name of the serial port to open, i.e. COM4.
 ** \param     baudrate The desired communication speed.
+** \param     parity The desired parity configuration.
+** \param     stopbits The desired stop bits configuration.
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
+bool SerialPortOpen(char const* portname, tSerialPortBaudrate baudrate,
+                    tSerialPortParity parity, tSerialPortStopbits stopbits)
 {
   bool result = false;
   COMMTIMEOUTS timeouts = { 0 };
@@ -132,8 +134,34 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
     {
       dcbSerialParams.BaudRate = SerialConvertBaudrate(baudrate);
       dcbSerialParams.ByteSize = 8;
-      dcbSerialParams.StopBits = ONESTOPBIT;
-      dcbSerialParams.Parity = NOPARITY;
+      if (stopbits == SERIALPORT_STOPBITS1)
+      {
+        dcbSerialParams.StopBits = ONESTOPBIT;
+      }
+      else
+      {
+        dcbSerialParams.StopBits = TWOSTOPBITS;
+      }
+
+      dcbSerialParams.ErrorChar = '\0';
+      if (parity == SERIALPORT_PARITY_NONE)
+      {
+        dcbSerialParams.Parity = NOPARITY;
+        dcbSerialParams.fParity = FALSE;
+        dcbSerialParams.fErrorChar = FALSE;
+      }
+      else if (parity == SERIALPORT_PARITY_ODD)
+      {
+        dcbSerialParams.Parity = ODDPARITY;
+        dcbSerialParams.fParity = TRUE;
+        dcbSerialParams.fErrorChar = TRUE;
+      }
+      else
+      {
+        dcbSerialParams.Parity = EVENPARITY;
+        dcbSerialParams.fParity = TRUE;
+        dcbSerialParams.fErrorChar = TRUE;
+      }
       dcbSerialParams.fOutX = FALSE;
       dcbSerialParams.fInX = FALSE;
       dcbSerialParams.fRtsControl = RTS_CONTROL_DISABLE;

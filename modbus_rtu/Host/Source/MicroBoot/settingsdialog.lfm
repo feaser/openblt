@@ -112,7 +112,7 @@ object SettingsForm: TSettingsForm
             Hint = 'Select the communication hardware interface to use during firmware updates'
             Top = 8
             Width = 200
-            DropDownCount = 4
+            DropDownCount = 5
             ItemHeight = 15
             ItemIndex = 0
             Items.Strings = (
@@ -120,6 +120,7 @@ object SettingsForm: TSettingsForm
               'XCP on CAN'
               'XCP on USB'
               'XCP on TCP/IP'
+              'XCP on Modbus RTU'
             )
             OnChange = CmbInterfaceChange
             ParentShowHint = False

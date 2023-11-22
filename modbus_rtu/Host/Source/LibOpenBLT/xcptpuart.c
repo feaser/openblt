@@ -193,7 +193,8 @@ static bool XcpTpUartConnect(void)
         break;
     }
     /* Connect to the serial port. */
-    result = SerialPortOpen(tpUartSettings.portname, baudrate);
+    result = SerialPortOpen(tpUartSettings.portname, baudrate, 
+                            SERIALPORT_PARITY_NONE, SERIALPORT_STOPBITS1);
   }
   /* Give the result back to the caller. */
   return result;
