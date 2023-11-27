@@ -34,10 +34,10 @@
 #include "../../Boot/App/blt_conf.h"                   /* bootloader configuration     */
 #include "stm32f4xx.h"                                 /* STM32 CPU and HAL header     */
 #include "app.h"                                       /* Application header           */
-#include "boot.h"                                      /* bootloader interface driver  */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
-
+#include "microtbx.h"                                  /* MicroTBX library             */
+#include "microtbxmodbus.h"                            /* MicroTBX-Modbus library      */
 
 #endif /* HEADER_H */
 /*********************************** end of header.h ***********************************/

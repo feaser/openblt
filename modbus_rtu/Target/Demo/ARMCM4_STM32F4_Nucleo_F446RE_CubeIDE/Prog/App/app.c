@@ -32,6 +32,23 @@
 #include "header.h"                                    /* generic header               */
 
 
+/****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+static tTbxMbServerResult AppReadInputReg(tTbxMbServer channel, uint16_t addr,
+                                          uint16_t * value);
+
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief Modbus RTU transport layer handle. */
+static tTbxMbTp modbusRtuTransport;
+
+/** \brief Modbus server channel handle. */
+static tTbxMbServer modbusServer;
+
+
 /************************************************************************************//**
 ** \brief     Initializes the user program application. Should be called once during
 **            software program initialization.
@@ -44,8 +61,13 @@ void AppInit(void)
   TimerInit();
   /* Initialize the led driver. */
   LedInit();
-  /* initialize the bootloader interface */
-  BootComInit();
+  /* Create a Modbus RTU transport layer object. */
+  modbusRtuTransport = TbxMbRtuCreate(0x01, TBX_MB_UART_PORT1, TBX_MB_UART_57600BPS,
+                                     TBX_MB_UART_1_STOPBITS, TBX_MB_EVEN_PARITY);
+  /* Create a Modbus server channel object and link the RTU transport layer object. */
+  modbusServer = TbxMbServerCreate(modbusRtuTransport);
+  /* Set the callbacks for accessing the Modbus data tables. */
+  TbxMbServerSetCallbackReadInputReg(modbusServer, AppReadInputReg);
 } /*** end of AppInit ***/
 
 
@@ -59,9 +81,56 @@ void AppTask(void)
 {
   /* Toggle LED with a fixed frequency. */
   LedToggle();
-  /* check for bootloader activation request */
-  BootComCheckActivationRequest();
+  /* Continuously call the Modbus stack event task function. */
+  TbxMbEventTask();
 } /*** end of AppTask ***/
+
+
+/************************************************************************************//**
+** \brief     Reads a data element from the input registers data table.
+** \details   Write the value of the input register in your CPUs native endianess. The
+**            MicroTBX-Modbus stack will automatically convert this to the big endianess
+**            that the Modbus protocol requires.
+**            Note that the element is specified by its zero-based address in the range
+**            0 - 65535, not its element number (1 - 65536).
+** \param     channel Handle to the Modbus server channel object that triggered the
+**            callback.
+** \param     addr Element address (0..65535).
+** \param     value Pointer to write the value of the input register to.
+** \return    TBX_MB_SERVER_OK if successful, TBX_MB_SERVER_ERR_ILLEGAL_DATA_ADDR if the
+**            specific data element address is not supported by this server,
+**            TBX_MB_SERVER_ERR_DEVICE_FAILURE otherwise.
+**
+****************************************************************************************/
+static tTbxMbServerResult AppReadInputReg(tTbxMbServer channel, uint16_t addr,
+                                          uint16_t * value)
+{
+  tTbxMbServerResult result = TBX_MB_SERVER_OK;
+
+  TBX_UNUSED_ARG(channel);
+
+  /* Filter on the requested input register address. */
+  switch (addr)
+  {
+  case 30000U:
+    /* Store the current value of the millisecond counter. */
+    *value = (uint16_t)TimerGet();
+    break;
+
+  case 30001U:
+    /* Store a constant value. */
+    *value = 12345;
+    break;
+
+  default:
+    /* Unsupported input register address. */
+    result = TBX_MB_SERVER_ERR_ILLEGAL_DATA_ADDR;
+    break;
+  }
+
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of ModbusReadInputReg ***/
 
 
 /*********************************** end of app.c **************************************/
