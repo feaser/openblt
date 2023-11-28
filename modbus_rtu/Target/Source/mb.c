@@ -117,6 +117,41 @@ blt_int16u MbRtuCrcCalculate(blt_int8u const *data, blt_int16u len)
   /* return the result formatted as 16-bit unsigned. */
   return (locCRCHi << 8 | locCRCLo) ;
 } /*** end of MbRtuCrcCalculate ***/
+
+
+/************************************************************************************//**
+** \brief     Delay loop. Note that number of microseconds should be a multiple of 10.
+** \param     delay_us Number of microseconds to delay.
+** \return    none.
+**
+****************************************************************************************/
+void MbRtuDelay(blt_int16u delay_us)
+{
+  blt_int16u startTimeTicks;
+  blt_int16u deltaTimeTicks;
+  blt_int16u currentTimeTicks;
+  blt_int16u delayTimeTicks;
+
+  /* calculate the number of ticks of the free running counter to delay. Note that one
+   * tick equals 10 us. The result is rounded up to the next 10 us.
+   */
+  delayTimeTicks = (blt_int16u)(delay_us + (9U) / 10U);
+
+  /* wait for the delay time to expire. */
+  startTimeTicks = MbRtuFreeRunningCounterGetHook();
+  do
+  {
+    /* service the watchdog. */
+    CopService();
+    /* get the current value of the free running counter. */
+    currentTimeTicks = MbRtuFreeRunningCounterGetHook();
+    /* calculate the number of ticks that elapsed since the start. Note that this
+     * calculation works, even if the free running counter overflowed.
+     */
+    deltaTimeTicks = currentTimeTicks - startTimeTicks;
+  }
+  while (deltaTimeTicks < delayTimeTicks);
+} /*** end of MbRtuDelay ***/
 #endif /* BOOT_COM_MBRTU_ENABLE > 0 */
 
 

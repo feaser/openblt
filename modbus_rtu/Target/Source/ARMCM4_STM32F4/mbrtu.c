@@ -31,7 +31,6 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_MBRTU_ENABLE > 0)
-#include "mb.h"                                  /* modbus driver module               */
 #include "stm32f4xx.h"                           /* STM32 CPU and HAL header           */
 #include "stm32f4xx_ll_usart.h"                  /* STM32 LL USART header              */
 
@@ -39,42 +38,6 @@
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-#ifndef BOOT_COM_MBRTU_FCT_CODE_USER_XCP
-/** \brief This module embeds the bootloader's XCP communication packets inside Modbus
- *         RTU communication packets. As this is a non-standard functionality of Modbus,
- *         a user-defined function code is used to extend the Modbus functionality for
- *         the purpose of embedded XCP packets. User-defined function codes are allowed,
- *         as long as they are in the range 65..72 or 100..110. By default, the user-
- *         defined function code 109 is selected. However, some other Modbus device on
- *         the network might also already use this. For this reason, you can override
- *         the assigned function code by placing this macro in "blt_conf.h" with a
- *         different value assigned to it.
- */
-#define BOOT_COM_MBRTU_FCT_CODE_USER_XCP  (109u)
-#endif
-
-#ifndef BOOT_COM_MBRTU_DRIVER_OUTPUT_ENABLE_DELAY_US
-/** \brief Depending on the hardware, RS485 wire length and capacities, the communication
- *         link might need some time to stabilize after changing the DE/NRE GPIO pin.
- *         With this macro you can configure a delay time before and after the DE/NRE
- *         GPIO pin was toggled to enable transmit mode. Values should be a multiple of
- *         10. Note that you can override the value by placing this macro in "blt_conf.h"
- *         with a different value assigned to it.
- */
-#define BOOT_COM_MBRTU_DRIVER_OUTPUT_ENABLE_DELAY_US  (10u)
-#endif
-
-#ifndef BOOT_COM_MBRTU_DRIVER_OUTPUT_DISABLE_DELAY_US
-/** \brief Depending on the hardware, RS485 wire length and capacities, the communication
- *         link might need some time to stabilize after changing the DE/NRE GPIO pin.
- *         With this macro you can configure a delay time before and after the DE/NRE
- *         GPIO pin was toggled to enable reception mode. Values should be a multiple of
- *         10. Note that you can override the value by placing this macro in "blt_conf.h"
- *         with a different value assigned to it.
- */
-#define BOOT_COM_MBRTU_DRIVER_OUTPUT_DISABLE_DELAY_US (10u)
-#endif
-
 /** \brief Timeout for transmitting a byte in milliseconds. */
 #define MBRTU_BYTE_TX_TIMEOUT_MS          (10u)
 /* map the configured UART channel index to the STM32's USART peripheral */
@@ -115,18 +78,10 @@ static blt_int16u mbRtuT3_5Ticks;
 
 
 /****************************************************************************************
-* Hook functions
-****************************************************************************************/
-extern void       MbRtuDriverOutputControlHook(blt_bool enable);
-extern blt_int16u MbRtuFreeRunningCounterGetHook(void);
-
-
-/****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 static blt_bool   MbRtuReceiveByte(blt_int8u *data);
 static void       MbRtuTransmitByte(blt_int8u data, blt_bool end_of_packet);
-static void       MbRtuDelay(blt_int16u delay_us);
 
 
 /************************************************************************************//**
@@ -521,41 +476,6 @@ static void MbRtuTransmitByte(blt_int8u data, blt_bool end_of_packet)
     }
   }
 } /*** end of MbRtuTransmitByte ***/
-
-
-/************************************************************************************//**
-** \brief     Delay loop. Note that number of microseconds should be a multiple of 10.
-** \param     delay_us Number of microseconds to delay.
-** \return    none.
-**
-****************************************************************************************/
-static void MbRtuDelay(blt_int16u delay_us)
-{
-  uint16_t startTimeTicks;
-  uint16_t deltaTimeTicks;
-  uint16_t currentTimeTicks;
-  uint16_t delayTimeTicks;
-
-  /* calculate the number of ticks of the free running counter to delay. Note that one
-   * tick equals 10 us. The result is rounded up to the next 10 us.
-   */
-  delayTimeTicks = (blt_int16u)(delay_us + (9U) / 10U);
-
-  /* wait for the delay time to expire. */
-  startTimeTicks = MbRtuFreeRunningCounterGetHook();
-  do
-  {
-    /* service the watchdog. */
-    CopService();
-    /* get the current value of the free running counter. */
-    currentTimeTicks = MbRtuFreeRunningCounterGetHook();
-    /* calculate the number of ticks that elapsed since the start. Note that this
-     * calculation works, even if the free running counter overflowed.
-     */
-    deltaTimeTicks = currentTimeTicks - startTimeTicks;
-  }
-  while (deltaTimeTicks < delayTimeTicks);
-} /*** end of MbRtuDelay ***/
 #endif /* BOOT_COM_MBRTU_ENABLE > 0 */
 
 /*********************************** end of mbrtu.c ************************************/

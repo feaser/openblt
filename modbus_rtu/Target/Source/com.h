@@ -33,6 +33,9 @@
 * Include files
 ****************************************************************************************/
 #include "xcp.h"                                      /* xcp communication layer       */
+#if (BOOT_COM_MBRTU_ENABLE > 0)
+#include "mb.h"                                       /* modbus driver module          */
+#endif /* BOOT_COM_MBRTU_ENABLE > 0 */
 
 
 /****************************************************************************************
