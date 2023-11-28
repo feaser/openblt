@@ -37,6 +37,10 @@
 ****************************************************************************************/
 static tTbxMbServerResult AppReadInputReg(tTbxMbServer channel, uint16_t addr,
                                           uint16_t * value);
+static uint8_t            AppCustomFunctionCallback(tTbxMbServer    channel,
+                                                    uint8_t const * rxPdu,
+                                                    uint8_t       * txPdu,
+                                                    uint8_t       * len);
 
 
 /****************************************************************************************
@@ -71,6 +75,8 @@ void AppInit(void)
   modbusServer = TbxMbServerCreate(modbusRtuTransport);
   /* Set the callbacks for accessing the Modbus data tables. */
   TbxMbServerSetCallbackReadInputReg(modbusServer, AppReadInputReg);
+  /* Set the callback for handling custom function codes. */
+  TbxMbServerSetCallbackCustomFunction(modbusServer, AppCustomFunctionCallback);
 } /*** end of AppInit ***/
 
 
@@ -130,10 +136,56 @@ static tTbxMbServerResult AppReadInputReg(tTbxMbServer channel, uint16_t addr,
     result = TBX_MB_SERVER_ERR_ILLEGAL_DATA_ADDR;
     break;
   }
-
   /* Give the result back to the caller. */
   return result;
 } /*** end of ModbusReadInputReg ***/
+
+
+/************************************************************************************//**
+** \brief     Callback for handling custom Modbus function codes.
+** \details   Note that the PDU parameters are byte arrays with the function code in the
+**            first byte, followed by the data bytes.
+** \param     channel Handle to the Modbus server channel object that triggered the
+**            callback.
+** \param     rxPdu Pointer to the PDU that was received from the client.
+** \param     txPdu Pointer to the PDU that will be transmitted back to the client.
+** \param     len Pointer to the length of the received PDU and also where this function
+**            should store the length of the response PDU.
+** \return    TBX_TRUE if this function processed the received PDU and prepared a
+**            response PDU and set its length. TBX_FALSE otherwise.
+**
+****************************************************************************************/
+static uint8_t AppCustomFunctionCallback(tTbxMbServer    channel,
+                                         uint8_t const * rxPdu,
+                                         uint8_t       * txPdu,
+                                         uint8_t       * len)
+{
+  uint8_t result = TBX_FALSE;
+
+  /* Check if this PDU contains an embedded XCP command:
+   * - Function code: 109 (BOOT_COM_MBRTU_FCT_CODE_USER_XCP in the bootloader)
+   */
+  if (rxPdu[0] == 109U)
+  {
+    /* Check if this was an XCP CONNECT command. Its expected contents are 4 bytes:
+     * - Function code
+     * - XCP packet length: 2
+     * - XCP connect command id: 0xff
+     * - XCP connect mode (slave id): 0..255
+     */
+    if ((*len == 4U) && (rxPdu[1] == 2) && (rxPdu[2] == 0xFF))
+    {
+      /* This is a request to connect to the bootloader, so we need to stop our firmware
+       * and start the bootoader. This can be done by issueing a software reset. Since
+       * this function does not return, there is no need to prepare a response PDU nor
+       * update the result.
+       */
+      NVIC_SystemReset();
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of AppCustomFunctionCallback ***/
 
 
 /*********************************** end of app.c **************************************/
