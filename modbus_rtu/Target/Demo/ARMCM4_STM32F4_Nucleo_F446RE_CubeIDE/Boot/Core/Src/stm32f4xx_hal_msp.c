@@ -90,11 +90,15 @@ void HAL_MspDeInit(void)
   /* Reset GPIO pin for the LED to turn it off. */
   LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
 
+  /* Reset GPIO pin to place the RS485 receiver in reception mode. */
+  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_8);
+
   /* Deinit used GPIOs. */
   LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOA);
 
   /* UART clock disable. */
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_USART1);
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USART2);
 
   /* GPIO ports clock disable. */

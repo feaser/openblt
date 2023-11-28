@@ -49,6 +49,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -88,6 +89,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_TIM6_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   /* Initialize the bootloader application. */
   AppInit();
@@ -191,6 +193,59 @@ static void MX_TIM6_Init(void)
 }
 
 /**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+  /* Note that the USART initialization that follows here is don't care. It is
+   * reconfigured upon bootloader initialization with function MbRtuInit().
+   */
+  /* USER CODE END USART1_Init 0 */
+
+  LL_USART_InitTypeDef USART_InitStruct = {0};
+
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* Peripheral clock enable */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART1);
+
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+  /**USART1 GPIO Configuration
+  PA9   ------> USART1_TX
+  PA10   ------> USART1_RX
+  */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_9|LL_GPIO_PIN_10;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  USART_InitStruct.BaudRate = 57600;
+  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_9B;
+  USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
+  USART_InitStruct.Parity = LL_USART_PARITY_EVEN;
+  USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
+  USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
+  USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
+  LL_USART_Init(USART1, &USART_InitStruct);
+  LL_USART_ConfigAsyncMode(USART1);
+  LL_USART_Enable(USART1);
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -224,13 +279,13 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE BEGIN USART2_Init 1 */
   /* Note that the USART initialization that follows here is don't care. It is
-   * reconfigured upon bootloader initialization with function Rs232Init().
+   * reconfigured upon bootloader initialization with function MbRtuInit().
    */
   /* USER CODE END USART2_Init 1 */
   USART_InitStruct.BaudRate = 57600;
-  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
+  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_9B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
-  USART_InitStruct.Parity = LL_USART_PARITY_NONE;
+  USART_InitStruct.Parity = LL_USART_PARITY_EVEN;
   USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
   USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
   USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
@@ -258,7 +313,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_8, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
@@ -266,8 +321,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  /*Configure GPIO pins : PA5 PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_8;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

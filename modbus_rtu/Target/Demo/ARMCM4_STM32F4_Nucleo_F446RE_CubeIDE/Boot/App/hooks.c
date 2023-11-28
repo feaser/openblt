@@ -109,16 +109,24 @@ blt_int16u MbRtuFreeRunningCounterGetHook(void)
 ****************************************************************************************/
 void MbRtuDriverOutputControlHook(blt_bool enable)
 {
+  /* Note that this only applies if the Waveshare RS485/CAN shield is installed and
+   * RS485 communication is used for firmware updates via Modbus RTU.
+   */
+#if (BOOT_COM_MBRTU_CHANNEL_INDEX == 0)
+
   /* Should the driver output be enabled (transmit)? */
   if (enable == BLT_TRUE)
   {
     /* If needed, set DE and NRE pins to high to enable the driver output. */
+    LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_8);
   }
   /* The receiver output should be enabled (receive). */
   else
   {
     /* If needed, set DE and NRE pins to low to enable the receiver input. */
+    LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_8);
   }
+#endif
 } /*** end of MbRtuDriverOutputControlHook ***/
 #endif /* BOOT_COM_MBRTU_ENABLE > 0 */
 

@@ -81,7 +81,12 @@
 #define BOOT_COM_MBRTU_TX_MAX_DATA       (129)
 /** \brief Configure number of bytes in the host->target data packet. */
 #define BOOT_COM_MBRTU_RX_MAX_DATA       (129)
-/** \brief Select the desired UART peripheral as a zero based index. */
+/** \brief Select the desired UART peripheral as a zero based index:
+ *         - Set to 0 to use USART1 for RS485 communication in combination with the
+ *           Waveshare RS485/CAN shield.
+ *         - Set to 1 to use USART2 for RS232 communication through the USB-CDC class
+ *           of the on-board ST-Link/V2.1 debugger.
+ */
 #define BOOT_COM_MBRTU_CHANNEL_INDEX     (1)
 /** \brief The 8-bit node identifier of this node. Should be between 1 and 247. */
 #define BOOT_COM_MBRTU_NODE_ID           (1)
