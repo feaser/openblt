@@ -57,12 +57,15 @@ static tTbxMbServer modbusServer;
 ****************************************************************************************/
 void AppInit(void)
 {
+  tTbxMbUartPort port;
+
   /* Initialize the timer driver. */
   TimerInit();
   /* Initialize the led driver. */
   LedInit();
   /* Create a Modbus RTU transport layer object. */
-  modbusRtuTransport = TbxMbRtuCreate(0x01, TBX_MB_UART_PORT1, TBX_MB_UART_57600BPS,
+  port = (BOOT_COM_MBRTU_CHANNEL_INDEX == 0) ? TBX_MB_UART_PORT1 : TBX_MB_UART_PORT2;
+  modbusRtuTransport = TbxMbRtuCreate(0x01, port, TBX_MB_UART_57600BPS,
                                      TBX_MB_UART_1_STOPBITS, TBX_MB_EVEN_PARITY);
   /* Create a Modbus server channel object and link the RTU transport layer object. */
   modbusServer = TbxMbServerCreate(modbusRtuTransport);
