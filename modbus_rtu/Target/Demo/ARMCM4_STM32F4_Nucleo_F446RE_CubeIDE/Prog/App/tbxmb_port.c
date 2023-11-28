@@ -39,6 +39,7 @@
 ****************************************************************************************/
 #include "microtbx.h"                            /* MicroTBX library                   */
 #include "microtbxmodbus.h"                      /* MicroTBX-Modbus library            */
+#include "stm32f4xx_hal.h"                       /* STM32 HAL drivers                  */
 
 
 /****************************************************************************************
@@ -169,23 +170,25 @@ uint8_t TbxMbPortUartTransmit(tTbxMbUartPort         port,
 ****************************************************************************************/
 uint16_t TbxMbPortTimerCount(void)
 {
-  /* TODO ##Port 
-   * 
-   * Read out the current value of the timer's free running counter and return it.
-   * 
-   * This assumes you already initialized a timer, during application initialization, to
-   * have its free running counter counting upwards at 20 kHz. With other words, each
-   * count of the free running counter equals 50 microseconds.
-   * 
-   * Theoretically you could also use a timer to generate an interrupt every 50 us. The 
-   * interrupt service routine then increments a 16-bit unsigned integer counter. This
-   * function would then return this counter value. However, this interrupt driven timer
-   * approach would cause a high interrupt load. It is therefore better from a run-time
-   * performance perspective to simply  configure your timer to increment its free
-   * running counter every 50 microseconds.
-   */
+  static uint8_t           initialized = TBX_FALSE;
+  static TIM_HandleTypeDef timHandle   = { 0 };
 
-  return 0U;
+  /* Perform one-time initialization. */
+  if (initialized == TBX_FALSE)
+  {
+    initialized = TBX_TRUE;
+    /* The basic timer is clock by PCLK1 * 2 on the STM32F4. */
+    uint32_t timFreq = HAL_RCC_GetPCLK1Freq() * 2;
+    timHandle.Instance = TIM7;
+    timHandle.Init.Prescaler = (timFreq / 20000U) - 1U;
+    timHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
+    timHandle.Init.Period = 65535;
+    timHandle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+    HAL_TIM_Base_Init(&timHandle);
+    __HAL_TIM_ENABLE(&timHandle);
+  }
+  /* Read out the current value of the timer's free running counter and return it. */
+  return (uint16_t)__HAL_TIM_GET_COUNTER(&timHandle);
 } /*** end of TbxMbPortTimerCount ***/
 
 
