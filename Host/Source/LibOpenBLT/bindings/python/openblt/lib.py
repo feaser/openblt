@@ -816,6 +816,7 @@ BLT_TRANSPORT_XCP_V10_RS232 = 0
 BLT_TRANSPORT_XCP_V10_CAN = 1
 BLT_TRANSPORT_XCP_V10_USB = 2
 BLT_TRANSPORT_XCP_V10_NET = 3
+BLT_TRANSPORT_XCP_V10_MBRTU = 4
 
 
 # ***************************************************************************************
@@ -901,6 +902,25 @@ class BltTransportSettingsXcpV10Net:
         self.port = 1000              # TCP port to use.
 
 
+class BltTransportSettingsXcpV10MbRtu:
+    """
+    Class with the layout of the XCP version 1.0 Modbus RTU transport layer settings. The
+    portName field is platform dependent. On Linux based systems this should be the 
+    filename of the tty-device, such as "/dev/tty0". On Windows based systems it should 
+    be the name of the COM-port, such as "COM1".
+    """
+    def __init__(self):
+        """
+        Class constructor.
+        """
+        # Set default values for instance variables.
+        self.portName = ''            # Communication port name such as /dev/tty0.
+        self.baudrate = 57600         # Communication speed in bits/sec.
+        self.parity = 2               # Parity (0 for none, 1 for odd, 2 for even).
+        self.stopbits = 1             # Stopbits (1 for one, 2 for two stopbits).
+        self.destinationAddr = 1      # Destination address (receiver node ID).
+
+
 # ***************************************************************************************
 #  Functions
 # ***************************************************************************************
@@ -979,6 +999,16 @@ def session_init(session_type, session_settings, transport_type, transport_setti
         _fields_ = [('address', ctypes.c_char_p),
                     ('port',    ctypes.c_uint16)]
 
+    class struct_t_blt_transport_settings_xcp_v10_mbrtu(ctypes.Structure):
+        """
+        C-types structure for mapping to BltTransportSettingsXcpV10MbRtu
+        """
+        _fields_ = [('portName', ctypes.c_char_p),
+                    ('baudrate', ctypes.c_uint32),
+                    ('parity', ctypes.c_uint8),
+                    ('stopbits', ctypes.c_uint8),
+                    ('destinationAddr', ctypes.c_uint8)]
+
     # Convert session settings to the correct c-types structure.
     session_settings_struct = None
     if session_type == BLT_SESSION_XCP_V10:
@@ -1021,6 +1051,14 @@ def session_init(session_type, session_settings, transport_type, transport_setti
             ctypes.c_char_p(transport_settings.address.encode('utf-8'))
         transport_settings_struct.port = \
             ctypes.c_uint16(transport_settings.port)
+    elif transport_type == BLT_TRANSPORT_XCP_V10_MBRTU:
+        transport_settings_struct = struct_t_blt_transport_settings_xcp_v10_mbrtu()
+        transport_settings_struct.portName = \
+            ctypes.c_char_p(transport_settings.portName.encode('utf-8'))
+        transport_settings_struct.baudrate = ctypes.c_uint32(transport_settings.baudrate)
+        transport_settings_struct.parity = ctypes.c_uint8(transport_settings.parity)
+        transport_settings_struct.stopbits = ctypes.c_uint8(transport_settings.stopbits)
+        transport_settings_struct.destinationAddr = ctypes.c_uint8(transport_settings.destinationAddr)
 
     # Check if the shared library function could be imported.
     if BltSessionInit is not None:

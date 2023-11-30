@@ -93,14 +93,16 @@ void SerialPortTerminate(void)
 
 
 /************************************************************************************//**
-** \brief     Opens the connection with the serial port configured as 8,N,1 and no flow
-**            control.
+** \brief     Opens the connection with the serial port.
 ** \param     portname The name of the serial port to open, i.e. /dev/ttyUSB0.
 ** \param     baudrate The desired communication speed.
+** \param     parity The desired parity configuration.
+** \param     stopbits The desired stop bits configuration.
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate) 
+bool SerialPortOpen(char const* portname, tSerialPortBaudrate baudrate,
+                    tSerialPortParity parity, tSerialPortStopbits stopbits)
 {
   bool result = false;
   struct termios options = { 0 }; 
@@ -168,8 +170,28 @@ bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate)
       options.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
       /* Output modes - clear giving: no post processing such as NL to CR+NL. */
       options.c_oflag &= ~(OPOST);
-      /* Control modes - set 8 bit chars */
+
+      /* Control modes - reset databits and parity configuration. */
+      options.c_cflag &= ~(CSIZE | PARENB | PARODD);
+      /* Control modes - set 8 bit chars. */
       options.c_cflag |= (CS8);
+      /* Control modes - set stop bits. Default is 1 stop bit. */
+      if (stopbits == SERIALPORT_STOPBITS2)
+      {
+        options.c_cflag |= (CSTOPB);
+      }
+      /* Control modes - set parity. Default is no parity. */
+      if (parity == SERIALPORT_PARITY_ODD)
+      {
+        options.c_cflag |= (PARENB | PARODD); /* Odd parity for I/O.*/
+        options.c_iflag |= (INPCK); /* Enable input parity check. */
+      }
+      else if (parity == SERIALPORT_PARITY_EVEN)
+      {
+        options.c_cflag |= (PARENB); /* Even parity for I/O.*/
+        options.c_iflag |= (INPCK); /* Enable input parity check. */
+      }
+
       /* Local modes - clear giving: echoing off, canonical off (no erase with
        * backspace, ^U,...),  no extended functions, no signal chars (^Z,^C).
        */

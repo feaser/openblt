@@ -36,6 +36,9 @@
 #if (BOOT_COM_RS232_ENABLE > 0)
 #include "rs232.h"                               /* rs232 driver module                */
 #endif
+#if (BOOT_COM_MBRTU_ENABLE > 0)
+#include "mb.h"                                  /* modbus driver module               */
+#endif
 #if (BOOT_COM_USB_ENABLE > 0)
 #include "usb.h"                                 /* usb driver module                  */
 #endif
@@ -73,6 +76,12 @@ void ComInit(void)
   Rs232Init();
   /* set it as active */
   comActiveInterface = COM_IF_RS232;
+#endif
+#if (BOOT_COM_MBRTU_ENABLE > 0)
+  /* initialize the Modbus RTU interface */
+  MbRtuInit();
+  /* set it as active */
+  comActiveInterface = COM_IF_MBRTU;
 #endif
 #if (BOOT_COM_USB_ENABLE > 0)
   /* initialize the USB interface */
@@ -117,6 +126,15 @@ void ComTask(void)
   {
     /* make this the active interface */
     comActiveInterface = COM_IF_RS232;
+    /* process packet */
+    XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
+  }
+#endif
+#if (BOOT_COM_MBRTU_ENABLE > 0)
+  if (MbRtuReceivePacket(&xcpCtoReqPacket[0], &xcpPacketLen) == BLT_TRUE)
+  {
+    /* make this the active interface */
+    comActiveInterface = COM_IF_MBRTU;
     /* process packet */
     XcpPacketReceived(&xcpCtoReqPacket[0], xcpPacketLen);
   }
@@ -183,6 +201,15 @@ void ComTransmitPacket(blt_int8u *data, blt_int16u len)
     Rs232TransmitPacket(data, (blt_int8u)len);
   }
 #endif
+#if (BOOT_COM_MBRTU_ENABLE > 0)
+  /* transmit the packet. note that len is limited to 255 in the plausibility check,
+   * so cast is okay.
+   */
+  if (comActiveInterface == COM_IF_MBRTU)
+  {
+    MbRtuTransmitPacket(data, (blt_int8u)len);
+  }
+#endif
 #if (BOOT_COM_USB_ENABLE > 0)
   /* transmit the packet */
   if (comActiveInterface == COM_IF_USB)
@@ -218,6 +245,10 @@ blt_int16u ComGetActiveInterfaceMaxRxLen(void)
   {
     case COM_IF_RS232:
       result = BOOT_COM_RS232_RX_MAX_DATA;
+      break;
+
+    case COM_IF_MBRTU:
+      result = BOOT_COM_MBRTU_RX_MAX_DATA;
       break;
 
     case COM_IF_CAN:
@@ -256,6 +287,10 @@ blt_int16u ComGetActiveInterfaceMaxTxLen(void)
   {
     case COM_IF_RS232:
       result = BOOT_COM_RS232_TX_MAX_DATA;
+      break;
+
+    case COM_IF_MBRTU:
+      result = BOOT_COM_MBRTU_TX_MAX_DATA;
       break;
 
     case COM_IF_CAN:

@@ -40,8 +40,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, ComCtrls, CurrentConfig, ConfigGroups, SessionXcpDialog,
-  TransportXcpRs232Dialog, TransportXcpCanDialog, TransportXcpUsbDialog,
-  TransportXcpTcpIpDialog, MiscellaneousDialog;
+  TransportXcpRs232Dialog, TransportXcpMbRtuDialog, TransportXcpCanDialog,
+  TransportXcpUsbDialog, TransportXcpTcpIpDialog, MiscellaneousDialog;
 
 
 //***************************************************************************************
@@ -81,6 +81,7 @@ type
     FTransportConfig: TTransportConfig;
     FSessionXcpForm: TSessionXcpForm;
     FTransportXcpRs232Form: TTransportXcpRs232Form;
+    FTransportXcpMbRtuForm: TTransportXcpMbRtuForm;
     FTransportXcpCanForm: TTransportXcpCanForm;
     FTransportXcpUsbForm: TTransportXcpUsbForm;
     FTransportXcpTcpIpForm: TTransportXcpTcpIpForm;
@@ -113,6 +114,7 @@ var
   miscellaneousConfig: TMiscellaneousConfig;
   sessionXcpConfig: TSessionXcpConfig;
   transportXcpRs232Config: TTransportXcpRs232Config;
+  transportXcpMbRtuConfig: TTransportXcpMbRtuConfig;
   transportXcpCanConfig: TTransportXcpCanConfig;
   transportXcpUsbConfig: TTransportXcpUsbConfig;
   transportXcpTcpIpConfig: TTransportXcpTcpIpConfig;
@@ -165,6 +167,14 @@ begin
   transportXcpRs232Config := FCurrentConfig.Groups[TTransportXcpRs232Config.GROUP_NAME]
                              as TTransportXcpRs232Config;
   FTransportXcpRs232Form.LoadConfig(transportXcpRs232Config);
+  // XCP on Modbus RTU transport layer embeddable dialog.
+  FTransportXcpMbRtuForm := TTransportXcpMbRtuForm.Create(Self);
+  FTransportXcpMbRtuForm.Parent := PnlCommunicationBody;
+  FTransportXcpMbRtuForm.BorderStyle := bsNone;
+  FTransportXcpMbRtuForm.Align := alClient;
+  transportXcpMbRtuConfig := FCurrentConfig.Groups[TTransportXcpMbRtuConfig.GROUP_NAME]
+                             as TTransportXcpMbRtuConfig;
+  FTransportXcpMbRtuForm.LoadConfig(transportXcpMbRtuConfig);
   // XCP on CAN transport layer embeddable dialog.
   FTransportXcpCanForm := TTransportXcpCanForm.Create(Self);
   FTransportXcpCanForm.Parent := PnlCommunicationBody;
@@ -257,6 +267,7 @@ var
   miscellaneousConfig: TMiscellaneousConfig;
   transportConfig: TTransportConfig;
   transportXcpRs232Config: TTransportXcpRs232Config;
+  transportXcpMbRtuConfig: TTransportXcpMbRtuConfig;
   transportXcpCanConfig: TTransportXcpCanConfig;
   transportXcpUsbConfig: TTransportXcpUsbConfig;
   transportXcpTcpIpConfig: TTransportXcpTcpIpConfig;
@@ -280,6 +291,10 @@ begin
   transportXcpRs232Config := FCurrentConfig.Groups[TTransportXcpRs232Config.GROUP_NAME]
                              as TTransportXcpRs232Config;
   FTransportXcpRs232Form.SaveConfig(transportXcpRs232Config);
+  // Update the XCP on Modbus RTU transport layer settings in current config.
+  transportXcpMbRtuConfig := FCurrentConfig.Groups[TTransportXcpMbRtuConfig.GROUP_NAME]
+                             as TTransportXcpMbRtuConfig;
+  FTransportXcpMbRtuForm.SaveConfig(transportXcpMbRtuConfig);
   // Update the XCP on CAN transport layer settings in current config.
   transportXcpCanConfig := FCurrentConfig.Groups[TTransportXcpCanConfig.GROUP_NAME]
                            as TTransportXcpCanConfig;
@@ -363,6 +378,10 @@ begin
   begin
     FTransportConfig.Transport := 'xcp_net';
   end
+  else if CmbInterface.Text = 'XCP on Modbus RTU' then
+  begin
+    FTransportConfig.Transport := 'xcp_mbrtu';
+  end
   // Unknown protocol session
   else
   begin
@@ -411,6 +430,7 @@ procedure TSettingsForm.UpdateCommunicationPanel;
 begin
   // First hide all communication interface related forms.
   FTransportXcpRs232Form.Hide;
+  FTransportXcpMbRtuForm.Hide;
   FTransportXcpCanForm.Hide;
   FTransportXcpUsbForm.Hide;
   FTransportXcpTcpIpForm.Hide;
@@ -434,6 +454,11 @@ begin
   begin
     CmbInterface.ItemIndex := 3;
     FTransportXcpTcpIpForm.Show;
+  end
+  else if FTransportConfig.Transport = 'xcp_mbrtu' then
+  begin
+    CmbInterface.ItemIndex := 4;
+    FTransportXcpMbRtuForm.Show;
   end
   // Default configuration
   else

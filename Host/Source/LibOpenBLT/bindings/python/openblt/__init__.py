@@ -52,10 +52,12 @@ from openblt.lib import BLT_TRANSPORT_XCP_V10_RS232
 from openblt.lib import BLT_TRANSPORT_XCP_V10_CAN
 from openblt.lib import BLT_TRANSPORT_XCP_V10_USB
 from openblt.lib import BLT_TRANSPORT_XCP_V10_NET
+from openblt.lib import BLT_TRANSPORT_XCP_V10_MBRTU
 from openblt.lib import BltSessionSettingsXcpV10
 from openblt.lib import BltTransportSettingsXcpV10Rs232
 from openblt.lib import BltTransportSettingsXcpV10Can
 from openblt.lib import BltTransportSettingsXcpV10Net
+from openblt.lib import BltTransportSettingsXcpV10MbRtu
 from openblt.lib import session_init
 from openblt.lib import session_terminate
 from openblt.lib import session_start

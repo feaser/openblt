@@ -495,6 +495,7 @@ static void DisplayProgramUsage(void)
   printf("                     xcp (default) -> XCP version 1.0.\n");
   printf("  -t=[name]        Name of the communication transport layer:\n");
   printf("                     xcp_rs232 (default) -> XCP on RS232.\n");
+  printf("                     xcp_mbrtu           -> XCP on Modbus RTU.\n");
   printf("                     xcp_can             -> XCP on CAN.\n");
   printf("                     xcp_usb             -> XCP on USB.\n");
   printf("                     xcp_net             -> XCP on TCP/IP.\n");
@@ -523,6 +524,22 @@ static void DisplayProgramUsage(void)
   printf("                   second, as a 32-bit value (Default = 57600).\n");
   printf("                   Supported values: 9600, 19200, 38400, 57600, 115200.\n");
   printf("\n");  
+  printf("XCP on Modbus RTU settings (xcp_mbrtu):\n");
+  printf("  -d=[name]        Name of the communication device. For example COM1 or\n");
+  printf("                   /dev/ttyUSB0 (Mandatory).\n");
+  printf("  -b=[value]       The communication speed, a.k.a baudrate in bits per\n");
+  printf("                   second, as a 32-bit value (Default = 57600).\n");
+  printf("                   Supported values: 9600, 19200, 38400, 57600, 115200.\n");
+  printf("  -pa=[value]      The UART parity bit configuration as a 8-bit value.\n");
+  printf("                   (Default = 2).\n");
+  printf("                   Supported values: 0 (none), 1 (odd), 2 (even).\n");
+  printf("  -sb=[value]      The number of UART stopbits as a 8-bit value.\n");
+  printf("                   (Default = 1).\n");
+  printf("                   Supported values: 1, 2.\n");
+  printf("  -da=[value]      Destination address, i.e. the node ID of the receiver,\n");
+  printf("                   as a 8-bit value (Default = 1).\n");
+  printf("                   Supported values: between 1 and 247.\n");
+  printf("\n");
   printf("XCP on CAN settings (xcp_can):\n");
   printf("  -d=[name]        Name of the CAN device (Mandatory). On Linux this is\n");
   printf("                   the name of the SocketCAN network interface, such as\n");
@@ -649,6 +666,9 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
     case BLT_TRANSPORT_XCP_V10_RS232:
       printf("XCP on RS232\n");
       break;
+    case BLT_TRANSPORT_XCP_V10_MBRTU:
+      printf("XCP on Modbus RTU\n");
+      break;
     case BLT_TRANSPORT_XCP_V10_CAN:
       printf("XCP on CAN\n");
       break;
@@ -692,6 +712,52 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
           printf("Unknown\n");
         }
         printf("  -> Baudrate: %u bit/sec\n", xcpRs232Settings->baudrate);
+      }
+      break;
+    }
+    case BLT_TRANSPORT_XCP_V10_MBRTU:
+    {
+      /* Check settings pointer. */
+      assert(transportSettings);
+      if (transportSettings == NULL) /*lint !e774 */
+      {
+        /* No valid settings present. */
+        printf("  -> Invalid settings specified\n");
+      }
+      else
+      {
+        tBltTransportSettingsXcpV10MbRtu * xcpMbRtuSettings = 
+          (tBltTransportSettingsXcpV10MbRtu *)transportSettings;
+        
+        /* Output the settings to the user. */
+        printf("  -> Device: ");
+        if (xcpMbRtuSettings->portName != NULL)
+        {
+          printf("%s\n", xcpMbRtuSettings->portName);
+        }
+        else
+        {
+          printf("Unknown\n");
+        }
+        /* Build parity string. */
+        char parityStr[5] = "";
+        switch (xcpMbRtuSettings->parity)
+        {
+          case 0:
+            strcat(parityStr, "None");
+            break;
+          case 1:
+            strcat(parityStr, "Odd");
+            break;
+          case 2:
+          default:
+            strcat(parityStr, "Even");
+            break;
+        }
+        printf("  -> Baudrate: %u bit/sec\n", xcpMbRtuSettings->baudrate);
+        printf("  -> Parity: %s\n", parityStr);
+        printf("  -> Stopbits: %hhu\n", xcpMbRtuSettings->stopbits);
+        printf("  -> Destination address: %hhu\n", xcpMbRtuSettings->destinationAddr);
       }
       break;
     }
@@ -1064,7 +1130,8 @@ static uint32_t ExtractTransportTypeFromCommandLine(int argc, char const * const
     { .name = "xcp_rs232", .value = BLT_TRANSPORT_XCP_V10_RS232 },
     { .name = "xcp_can", .value = BLT_TRANSPORT_XCP_V10_CAN },
     { .name = "xcp_usb", .value = BLT_TRANSPORT_XCP_V10_USB },
-    { .name = "xcp_net", .value = BLT_TRANSPORT_XCP_V10_NET }
+    { .name = "xcp_net", .value = BLT_TRANSPORT_XCP_V10_NET },
+    { .name = "xcp_mbrtu", .value = BLT_TRANSPORT_XCP_V10_MBRTU }
   };
   
   /* Set the default transport type in case nothing was specified on the command line. */
@@ -1170,6 +1237,88 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
             {
               /* Extract the baudrate value. */
               sscanf(&argv[paramIdx][3], "%u", &(rs232Settings->baudrate));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+          }
+        }
+        break;
+      /* -------------------------- XCP on Modbus RTU -------------------------------- */
+      case BLT_TRANSPORT_XCP_V10_MBRTU:
+        /* The following transport layer specific command line parameters are supported:
+         *   -d=[name]      -> Device name: /dev/ttyUSB0, COM1, etc.
+         *   -b=[value]     -> Baudrate in bits per second.
+         *   -pa=[value]    -> Parity (0 for none, 1 for odd, 2 for even).
+         *   -sb=[value]    -> Stopbits (1 for one, 2 for two stopbits).
+         *   -da=[value]    -> Destination address.
+         */
+        /* Allocate memory for storing the settings and check the result. */
+        result = malloc(sizeof(tBltTransportSettingsXcpV10MbRtu));
+        assert(result != NULL);
+        if (result != NULL) /*lint !e774 */
+        {
+          /* Create typed pointer for easy reading. */
+          tBltTransportSettingsXcpV10MbRtu * mbRtuSettings = 
+            (tBltTransportSettingsXcpV10MbRtu *)result;
+          /* Set default values. */
+          mbRtuSettings->portName = NULL;
+          mbRtuSettings->baudrate = 57600;
+          mbRtuSettings->parity = 2;
+          mbRtuSettings->stopbits = 1;
+          mbRtuSettings->destinationAddr = 1;
+          /* Loop through all the command line parameters, just skip the 1st one because 
+           * this  is the name of the program, which we are not interested in.
+           */
+          for (paramIdx = 1; paramIdx < argc; paramIdx++)
+          {
+            /* Is this the -d=[name] parameter? */
+            if ( (strstr(argv[paramIdx], "-d=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 3) )
+            {
+              /* Store the pointer to the device name. */
+              mbRtuSettings->portName = &argv[paramIdx][3];
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -b=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-b=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 3) )
+            {
+              /* Extract the baudrate value. */
+              sscanf(&argv[paramIdx][3], "%u", &(mbRtuSettings->baudrate));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -pa=[value] parameter? */
+            if ((strstr(argv[paramIdx], "-pa=") != NULL) &&
+              (strlen(argv[paramIdx]) > 4))
+            {
+              /* Extract the parity value. */
+              static uint8_t tempParity;
+              sscanf(&argv[paramIdx][4], "%hhu", &tempParity);
+              mbRtuSettings->parity = tempParity;
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -sb=[value] parameter? */
+            if ((strstr(argv[paramIdx], "-sb=") != NULL) &&
+              (strlen(argv[paramIdx]) > 4))
+            {
+              /* Extract the parity value. */
+              static uint8_t tempStopbits;
+              sscanf(&argv[paramIdx][4], "%hhu", &tempStopbits);
+              mbRtuSettings->stopbits = tempStopbits;
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -da=[value] parameter? */
+            if ( (strstr(argv[paramIdx], "-da=") != NULL) && 
+                 (strlen(argv[paramIdx]) > 4) )
+            {
+              /* Extract the destination address value. */
+              static uint8_t tempDestinationAddr;
+              sscanf(&argv[paramIdx][4], "%hhu", &tempDestinationAddr);
+              mbRtuSettings->destinationAddr = tempDestinationAddr;
               /* Continue with next loop iteration. */
               continue;
             }

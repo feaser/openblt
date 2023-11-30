@@ -77,6 +77,9 @@ const
   BLT_TRANSPORT_XCP_V10_USB: LongWord = 2;
   // Transport layer for the XCP v1.0 protocol that uses TCP/IP for data exchange.
   BLT_TRANSPORT_XCP_V10_NET: LongWord = 3;
+  // Transport layer for the XCP v1.0 protocol that uses Modbus RTU communication for
+  // data exchange.
+  BLT_TRANSPORT_XCP_V10_MBRTU: LongWord = 4;
 
 
 type
@@ -112,6 +115,15 @@ type
   tBltTransportSettingsXcpV10Net = record
     address: PAnsiChar;           // Target IP-address or hostname on the network.
     port: Word;                   // TCP port to use.
+  end;
+
+  // Structure layout of the XCP version 1.0 Modbus RTU transport layer settings.
+  tBltTransportSettingsXcpV10MbRtu = record
+    portName: PAnsiChar;          // Communication port name such as /dev/tty0.
+    baudrate: LongWord;           // Communication speed in bits/sec.
+    parity: Byte;                 // Parity (0 for none, 1 for odd, 2 for even).
+    stopbits: Byte;               // Stopbits (1 for one, 2 for two stopbits).
+    destinationAddr: Byte;        // Destination address (receiver node ID).
   end;
 
 

@@ -50,13 +50,29 @@ typedef enum
   SERIALPORT_BR115200 = 4                   /**< 115200 bits/sec                       */
 } tSerialPortBaudrate;
 
+/** \brief Enumeration of the supported parities. */
+typedef enum
+{
+  SERIALPORT_PARITY_NONE = 0,               /**< no parity bit                         */
+  SERIALPORT_PARITY_ODD  = 1,               /**< odd parity bit                        */
+  SERIALPORT_PARITY_EVEN = 2                /**< even parity bit                       */
+} tSerialPortParity;
+
+/** \brief Enumeration of the supported stop bits. */
+typedef enum
+{
+  SERIALPORT_STOPBITS1 = 0,                 /**< 1 stop bit                            */
+  SERIALPORT_STOPBITS2 = 1                  /**< 2 stop bits                           */
+} tSerialPortStopbits;
+
 
 /****************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 void SerialPortInit(void);
 void SerialPortTerminate(void);
-bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate);
+bool SerialPortOpen(char const * portname, tSerialPortBaudrate baudrate, 
+                    tSerialPortParity parity, tSerialPortStopbits stopbits);
 void SerialPortClose(void);
 bool SerialPortWrite(uint8_t const * data, uint32_t length);
 bool SerialPortRead(uint8_t * data, uint32_t length);
