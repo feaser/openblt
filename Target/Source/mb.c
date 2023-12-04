@@ -138,13 +138,13 @@ void MbRtuDelay(blt_int16u delay_us)
   delayTimeTicks = (blt_int16u)(delay_us + (9U) / 10U);
 
   /* wait for the delay time to expire. */
-  startTimeTicks = MbRtuFreeRunningCounterGetHook();
+  startTimeTicks = MbRtuFreeRunningCounterGet();
   do
   {
     /* service the watchdog. */
     CopService();
     /* get the current value of the free running counter. */
-    currentTimeTicks = MbRtuFreeRunningCounterGetHook();
+    currentTimeTicks = MbRtuFreeRunningCounterGet();
     /* calculate the number of ticks that elapsed since the start. Note that this
      * calculation works, even if the free running counter overflowed.
      */

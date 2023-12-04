@@ -33,7 +33,6 @@
 #include "led.h"                                 /* LED driver header                  */
 #include "stm32f4xx.h"                           /* STM32 CPU and HAL header           */
 #include "stm32f4xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
-#include "stm32f4xx_ll_tim.h"                    /* STM32 LL TIM header                */
 
 
 /****************************************************************************************
@@ -76,29 +75,6 @@ blt_bool CpuUserProgramStartHook(void)
 ****************************************************************************************/
 
 #if (BOOT_COM_MBRTU_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Obtains the counter value of the 100 kHz free running counter. Note that
-**            each count represent 10 us. The Modbus RTU communication module uses this
-**            free running counter for Modbus RTU packet timing related purposes. The
-**            already available 1 ms timer does not have the needed resolution for this
-**            purpose.
-** \return    Current value of the free running counter.
-**
-****************************************************************************************/
-blt_int16u MbRtuFreeRunningCounterGetHook(void)
-{
-  blt_int16u result;
-
-  /* Obtain the current value of the free running counter. Note that TIM6 has a 16-bit
-   * counter, hence the typecast.
-   */
-  result = (blt_int16u)LL_TIM_GetCounter(TIM6);
-
-  /* give the result back to the caller. */
-  return result;
-} /*** end of MbRtuFreeRunningCounterGetHook ***/
-
-
 /************************************************************************************//**
 ** \brief     Controls the state of the DE/NRE GPIO pin on an RS485 transceiver.
 ** \param     enable When enable is BLT_TRUE, the pin should go logic high to enable the

@@ -161,13 +161,13 @@ void MbRtuInit(void)
   MbRtuDriverOutputControlHook(BLT_FALSE);
 
   /* wait for idle line detection. This is T3_5 time after reception of the last byte. */
-  startTimeTicks = MbRtuFreeRunningCounterGetHook();
+  startTimeTicks = MbRtuFreeRunningCounterGet();
   do
   {
     /* service the watchdog. */
     CopService();
     /* get the current value of the free running counter. */
-    currentTimeTicks = MbRtuFreeRunningCounterGetHook();
+    currentTimeTicks = MbRtuFreeRunningCounterGet();
     /* check if a byte was received while waiting for the idle line. */
     if (MbRtuReceiveByte(&rxDummy) == BLT_TRUE)
     {
@@ -284,7 +284,7 @@ blt_bool MbRtuReceivePacket(blt_int8u *data, blt_int8u *len)
   static blt_int16u lastRxByteTimeTicks = 0;
 
   /* get the current value of the free running counter. */
-  currentTimeTicks = MbRtuFreeRunningCounterGetHook();
+  currentTimeTicks = MbRtuFreeRunningCounterGet();
 
   /* check for a newly received byte. */
   if (MbRtuReceiveByte(&rxByte) == BLT_TRUE)
@@ -476,6 +476,30 @@ static void MbRtuTransmitByte(blt_int8u data, blt_bool end_of_packet)
     }
   }
 } /*** end of MbRtuTransmitByte ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the counter value of the 100 kHz free running counter. Note that
+**            each count represent 10 us. The Modbus RTU communication module uses this
+**            free running counter for Modbus RTU packet timing related purposes. The
+**            already available 1 ms timer does not have the needed resolution for this
+**            purpose.
+** \return    Current value of the free running counter.
+**
+****************************************************************************************/
+blt_int16u MbRtuFreeRunningCounterGet(void)
+{
+  blt_int16u result;
+
+  /* This port's timer module is based on a 100 kHz free running counter, which is
+   * already configured and running. Therefore we just need to read out its free running
+   * counter value.
+   */
+  result = (blt_int16u)TIM1->CNT;
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of MbRtuFreeRunningCounterGet ***/
 #endif /* BOOT_COM_MBRTU_ENABLE > 0 */
 
 /*********************************** end of mbrtu.c ************************************/

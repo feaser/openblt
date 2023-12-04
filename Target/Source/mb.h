@@ -95,8 +95,7 @@
 /****************************************************************************************
 * Hook functions
 ****************************************************************************************/
-extern void       MbRtuDriverOutputControlHook(blt_bool enable);
-extern blt_int16u MbRtuFreeRunningCounterGetHook(void);
+extern void MbRtuDriverOutputControlHook(blt_bool enable);
 
 
 /****************************************************************************************
@@ -107,6 +106,7 @@ void       MbRtuTransmitPacket(blt_int8u *data, blt_int8u len);
 blt_bool   MbRtuReceivePacket(blt_int8u *data, blt_int8u *len);
 blt_int16u MbRtuCrcCalculate(blt_int8u const *data, blt_int16u len);
 void       MbRtuDelay(blt_int16u delay_us);
+blt_int16u MbRtuFreeRunningCounterGet(void);
 
 #endif /* BOOT_COM_MBRTU_ENABLE > 0 */
 
