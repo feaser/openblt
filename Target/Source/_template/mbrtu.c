@@ -461,6 +461,29 @@ static void MbRtuTransmitByte(blt_int8u data, blt_bool end_of_packet)
     }
   }
 } /*** end of MbRtuTransmitByte ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the counter value of the 100 kHz free running counter. Note that
+**            each count represent 10 us. The Modbus RTU communication module uses this
+**            free running counter for Modbus RTU packet timing related purposes. The
+**            already available 1 ms timer does not have the needed resolution for this
+**            purpose.
+** \return    Current value of the free running counter.
+**
+****************************************************************************************/
+blt_int16u MbRtuFreeRunningCounterGet(void)
+{
+  blt_int16u result;
+
+  /* TODO ##Port Store the current value of the 100 kHz free running counter in the
+   * result variable.
+   */
+  result = 0;
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of MbRtuFreeRunningCounterGet ***/
 #endif /* BOOT_COM_MBRTU_ENABLE > 0 */
 
 /*********************************** end of mbrtu.c ************************************/
