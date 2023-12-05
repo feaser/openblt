@@ -31,6 +31,20 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32c0xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32c0xx_ll_bus.h"                    /* STM32 LL BUS header                */
+#include "stm32c0xx_ll_rcc.h"                    /* STM32 LL RCC header                */
+
+
+/****************************************************************************************
+* Macro definitions
+****************************************************************************************/
+/** \brief Frequency of the configured timer peripheral's free running counter in Hz.
+ *         This shoud be 100 kHz.
+ */
+#define TIMER_COUNTER_FREQ_HZ     (100000U)
+
+/** \brief Number of free running counter counts that equal one millisecond. */
+#define TIMER_COUNTS_PER_MS       (TIMER_COUNTER_FREQ_HZ / 1000U)
 
 
 /****************************************************************************************
@@ -41,6 +55,9 @@
  */
 static blt_int32u millisecond_counter;
 
+/** \brief Buffer for storing the last value of the free running counter. */
+static blt_int16u free_running_counter_last;
+
 
 /************************************************************************************//**
 ** \brief     Initializes the polling based millisecond timer driver.
@@ -49,16 +66,35 @@ static blt_int32u millisecond_counter;
 ****************************************************************************************/
 void TimerInit(void)
 {
-  /* Reset the timer configuration. */
-  TimerReset();
-  /* configure the systick frequency as a 1 ms event generator */
-  SysTick->LOAD = BOOT_CPU_SYSTEM_SPEED_KHZ - 1;
-  /* reset the current counter value */
-  SysTick->VAL = 0;
-  /* select core clock as source and enable the timer */
-  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
-  /* reset the millisecond counter value */
+  blt_int8u  tim_multiplier;
+  blt_int32u pclk_frequency;
+  blt_int32u pclk_tim_frequency;
+
+  /* All STM32C0 derivatives support a TIM1 peripheral. Its free running counter will be
+   * used to realize the polling based millisecond time reference in this module.
+   * Start by enabling the periperhal.
+   */
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM1);
+  /* The TIM1 peripheral clock is derived from PCLK. Obtain the PCLK frequency. */
+  pclk_frequency = __LL_RCC_CALC_PCLK1_FREQ(SystemCoreClock, LL_RCC_GetAPB1Prescaler());
+  /* According to the clock tree diagram in the RCC chapter of the reference manual,
+   * the TPCLK frequency = PLCK * 1, when the APB1 prescaler is 1, otherwise it is
+   * PCLK * 2.
+   */
+  tim_multiplier = (LL_RCC_GetAPB1Prescaler() == LL_RCC_APB1_DIV_1) ? 1U : 2U;
+  /* Obtain the TPCLK frequency. */
+  pclk_tim_frequency = pclk_frequency * tim_multiplier;
+  /* Configure the free running counter as a 16-bit upwards counter that runs at the
+   * desired frequency and enable it.
+   */
+  TIM1->CR1 = TIM_CR1_CEN;
+  TIM1->ARR = 65535U;
+  TIM1->PSC = (pclk_tim_frequency / TIMER_COUNTER_FREQ_HZ) - 1U;
+  /* Generate an update event to reload the prescaler immediately. */
+  TIM1->EGR |= TIM_EGR_UG;
+  /* Initialize locals. */
   millisecond_counter = 0;
+  free_running_counter_last = (blt_int16u)TIM1->CNT;
 } /*** end of TimerInit ***/
 
 
@@ -70,7 +106,13 @@ void TimerInit(void)
 ****************************************************************************************/
 void TimerReset(void)
 {
-  /* set the systick's registers back into the default reset value. */
+  /* Bring the TIM1 peripheral back into its reset state and disable its clock. */
+  LL_APB2_GRP1_ForceReset(LL_APB2_GRP1_PERIPH_TIM1);
+  LL_APB2_GRP1_ReleaseReset(LL_APB2_GRP1_PERIPH_TIM1);
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_TIM1);
+  /* Set the SysTick's registers back into the default reset value. Note that this module
+   * does not use the SysTick, but HAL_Init() did initialize it.
+   */
   SysTick->CTRL = 0;
   SysTick->LOAD = 0;
   SysTick->VAL = 0;
@@ -84,11 +126,27 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* check if the millisecond event occurred */
-  if ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) != 0)
+  blt_int16u free_running_counter_now;
+  blt_int16u delta_counts;
+  blt_int16u ms_counts;
+
+  /* Get the current value of the free running counter. */
+  free_running_counter_now = (blt_int16u)TIM1->CNT;
+  /* Calculate the number of counts that passed since the detection of the last
+   * millisecond event. Note that this calculation also works, in case the free running
+   * counter overflowed, thanks to integer math.
+   */
+  delta_counts = free_running_counter_now - free_running_counter_last;
+
+  /* Did one or more milliseconds pass since the last event? */
+  if (delta_counts >= TIMER_COUNTS_PER_MS)
   {
-    /* Increment the millisecond counter. */
-    millisecond_counter++;
+    /* Calculate how many milliseconds passed. */
+    ms_counts = delta_counts / TIMER_COUNTS_PER_MS;
+    /* Update the millisecond counter. */
+    millisecond_counter += ms_counts;
+    /* Store the counter value of the last millisecond event, to detect the next one. */
+    free_running_counter_last += (ms_counts * TIMER_COUNTS_PER_MS);
   }
 } /*** end of TimerUpdate ***/
 

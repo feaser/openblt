@@ -58,6 +58,12 @@
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 3)
 /** \brief Set UART base address to USART4. */
 #define USART_CHANNEL   USART4
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 4)
+/** \brief Set UART base address to USART5. */
+#define USART_CHANNEL   USART5
+#elif (BOOT_COM_RS232_CHANNEL_INDEX == 5)
+/** \brief Set UART base address to USART6. */
+#define USART_CHANNEL   USART6
 #endif
 
 
@@ -75,15 +81,17 @@ static void     Rs232TransmitByte(blt_int8u data);
 ****************************************************************************************/
 void Rs232Init(void)
 {
-  LL_USART_InitTypeDef USART_InitStruct;
+  LL_USART_InitTypeDef USART_InitStruct = {0};
 
-  /* the current implementation supports USART1 - USART4. throw an assertion error in
+  /* the current implementation supports USART1 - USART6. throw an assertion error in
    * case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 1) ||
             (BOOT_COM_RS232_CHANNEL_INDEX == 2) ||
-            (BOOT_COM_RS232_CHANNEL_INDEX == 3));
+            (BOOT_COM_RS232_CHANNEL_INDEX == 3) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 4) ||
+            (BOOT_COM_RS232_CHANNEL_INDEX == 5));
 
   /* disable the UART peripheral */
   LL_USART_Disable(USART_CHANNEL);
