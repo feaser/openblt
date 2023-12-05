@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Source/ARMCM4_STM32F4/mbrtu.c
+* \file         Source/ARMCM3_STM32F1/mbrtu.c
 * \brief        Bootloader Modbus RTU communication interface source file.
-* \ingroup      Target_ARMCM4_STM32F4
+* \ingroup      Target_ARMCM3_STM32F1
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -31,8 +31,8 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_MBRTU_ENABLE > 0)
-#include "stm32f4xx.h"                           /* STM32 CPU and HAL header           */
-#include "stm32f4xx_ll_usart.h"                  /* STM32 LL USART header              */
+#include "stm32f1xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32f1xx_ll_usart.h"                  /* STM32 LL USART header              */
 
 
 /****************************************************************************************
@@ -50,21 +50,6 @@
 #elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 2)
 /** \brief Set UART base address to USART3. */
 #define USART_CHANNEL   USART3
-#elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 3)
-/** \brief Set UART base address to UART4. */
-#define USART_CHANNEL   UART4
-#elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 4)
-/** \brief Set UART base address to UART5. */
-#define USART_CHANNEL   UART5
-#elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 5)
-/** \brief Set UART base address to UART6. */
-#define USART_CHANNEL   USART6
-#elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 6)
-/** \brief Set UART base address to UART7. */
-#define USART_CHANNEL   UART7
-#elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 7)
-/** \brief Set UART base address to UART8. */
-#define USART_CHANNEL   UART8
 #endif
 
 
@@ -100,17 +85,12 @@ void MbRtuInit(void)
 
   LL_USART_InitTypeDef USART_InitStruct = {0};
 
-  /* the current implementation supports USART1 - UART8. throw an assertion error in
+  /* the current implementation supports USART1 - USART3. throw an assertion error in
    * case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_MBRTU_CHANNEL_INDEX == 0) ||
             (BOOT_COM_MBRTU_CHANNEL_INDEX == 1) ||
-            (BOOT_COM_MBRTU_CHANNEL_INDEX == 2) ||
-            (BOOT_COM_MBRTU_CHANNEL_INDEX == 3) ||
-            (BOOT_COM_MBRTU_CHANNEL_INDEX == 4) ||
-            (BOOT_COM_MBRTU_CHANNEL_INDEX == 5) ||
-            (BOOT_COM_MBRTU_CHANNEL_INDEX == 6) ||
-            (BOOT_COM_MBRTU_CHANNEL_INDEX == 7));
+            (BOOT_COM_MBRTU_CHANNEL_INDEX == 2));
 
   /* calculate the 3.5 character delay time in free running counter ticks. note that
    * the free running counter runs at 100 kHz, so one tick is 10 us. For baudrates >
@@ -156,6 +136,7 @@ void MbRtuInit(void)
   USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
   /* initialize the UART peripheral */
   LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
+  LL_USART_ConfigAsyncMode(USART_CHANNEL);
   LL_USART_Enable(USART_CHANNEL);
   /* enable the receiver output to be able to receive. */
   MbRtuDriverOutputControlHook(BLT_FALSE);

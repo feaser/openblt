@@ -55,11 +55,11 @@
 /** \brief Set UART base address to USART3. */
 #define USART_CHANNEL   USART3
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 3)
-/** \brief Set UART base address to USART4. */
-#define USART_CHANNEL   USART4
+/** \brief Set UART base address to UART4. */
+#define USART_CHANNEL   UART4
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 4)
-/** \brief Set UART base address to USART5. */
-#define USART_CHANNEL   USART5
+/** \brief Set UART base address to UART5. */
+#define USART_CHANNEL   UART5
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 5)
 /** \brief Set UART base address to USART6. */
 #define USART_CHANNEL   USART6
