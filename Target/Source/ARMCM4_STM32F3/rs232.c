@@ -73,7 +73,7 @@ void Rs232Init(void)
 {
   LL_USART_InitTypeDef USART_InitStruct;
 
-  /* the current implementation supports USART1 - USART5. throw an assertion error in
+  /* the current implementation supports USART1 - USART3. throw an assertion error in
    * case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0) ||

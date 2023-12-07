@@ -70,7 +70,7 @@ void TimerInit(void)
   blt_int32u pclk1_frequency;
   blt_int32u pclk1_tim_frequency;
 
-  /* All STM32L0 derivatives support a TIM2 peripheral. Its free running counter will be
+  /* All STM32L4 derivatives support a TIM2 peripheral. Its free running counter will be
    * used to realize the polling based millisecond time reference in this module.
    * Start by enabling the periperhal.
    */

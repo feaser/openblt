@@ -116,7 +116,7 @@ void TimerReset(void)
   SysTick->CTRL = 0;
   SysTick->LOAD = 0;
   SysTick->VAL = 0;
-} /* end of TimerReset */
+} /*** end of TimerReset */
 
 
 /************************************************************************************//**
