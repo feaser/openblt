@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Source/ARMCM0_STM32L0/mbrtu.c
+* \file         Source/ARMCM4_STM32L4/mbrtu.c
 * \brief        Bootloader Modbus RTU communication interface source file.
-* \ingroup      Target_ARMCM0_STM32L0
+* \ingroup      Target_ARMCM4_STM32L4
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -31,11 +31,11 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_MBRTU_ENABLE > 0)
-#include "stm32l0xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32l4xx.h"                           /* STM32 CPU and HAL header           */
 #if (BOOT_COM_MBRTU_CHANNEL_INDEX < 5) /* USART or UART channel */
-#include "stm32l0xx_ll_usart.h"                  /* STM32 LL USART header              */
+#include "stm32l4xx_ll_usart.h"                  /* STM32 LL USART header              */
 #else /* LPUART channel */
-#include "stm32l0xx_ll_lpuart.h"                 /* STM32 LL LPUART header             */
+#include "stm32l4xx_ll_lpuart.h"                 /* STM32 LL LPUART header             */
 #endif
 
 
@@ -53,12 +53,15 @@
 #elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 1)
 /** \brief Set UART base address to USART2. */
 #define USART_CHANNEL   USART2
+#elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 2)
+/** \brief Set UART base address to USART3. */
+#define USART_CHANNEL   USART3
 #elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 3)
 /** \brief Set UART base address to UART4. */
-#define USART_CHANNEL   USART4
+#define USART_CHANNEL   UART4
 #elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 4)
 /** \brief Set UART base address to UART5. */
-#define USART_CHANNEL   USART5
+#define USART_CHANNEL   UART5
 #elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 5)
 /** \brief Set UART base address to LPUART1. */
 #define USART_CHANNEL   LPUART1
@@ -101,11 +104,12 @@ void MbRtuInit(void)
   LL_LPUART_InitTypeDef LPUART_InitStruct = {0};
 #endif
 
-  /* the current implementation supports USART1, 2, 4 and 5 and LPUART1. throw an
-   * assertion error in case a different UART channel is configured.
+  /* The current implementation supports USART1 - UART5 and LPUART1. throw an assertion
+   * error in case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_MBRTU_CHANNEL_INDEX == 0) ||
             (BOOT_COM_MBRTU_CHANNEL_INDEX == 1) ||
+            (BOOT_COM_MBRTU_CHANNEL_INDEX == 2) ||
             (BOOT_COM_MBRTU_CHANNEL_INDEX == 3) ||
             (BOOT_COM_MBRTU_CHANNEL_INDEX == 4) ||
             (BOOT_COM_MBRTU_CHANNEL_INDEX == 5));

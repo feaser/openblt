@@ -114,6 +114,9 @@ void Rs232Init(void)
   LL_USART_ConfigAsyncMode(USART_CHANNEL);
   LL_USART_Enable(USART_CHANNEL);
 #else /* LPUART channel */
+  /* disable the peripheral */
+  LL_LPUART_Disable(USART_CHANNEL);
+  /* configure UART peripheral */
   LPUART_InitStruct.BaudRate = BOOT_COM_RS232_BAUDRATE;
   LPUART_InitStruct.DataWidth = LL_LPUART_DATAWIDTH_8B;
   LPUART_InitStruct.StopBits = LL_LPUART_STOPBITS_1;

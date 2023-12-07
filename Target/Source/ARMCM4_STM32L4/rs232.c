@@ -115,6 +115,7 @@ void Rs232Init(void)
   USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
   /* initialize the UART peripheral */
   LL_USART_Init(USART_CHANNEL, &USART_InitStruct);
+  LL_USART_ConfigAsyncMode(USART_CHANNEL);
   LL_USART_Enable(USART_CHANNEL);
 #else /* LPUART channel */
   /* disable the peripheral */
@@ -126,7 +127,7 @@ void Rs232Init(void)
   LPUART_InitStruct.Parity = LL_LPUART_PARITY_NONE;
   LPUART_InitStruct.TransferDirection = LL_LPUART_DIRECTION_TX_RX;
   LPUART_InitStruct.HardwareFlowControl = LL_LPUART_HWCONTROL_NONE;
-  /* initialize the UART peripheral */
+  /* initialize the LPUART peripheral */
   LL_LPUART_Init(USART_CHANNEL, &LPUART_InitStruct);
   LL_LPUART_Enable(USART_CHANNEL);
 #endif
