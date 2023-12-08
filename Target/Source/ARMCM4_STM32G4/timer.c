@@ -61,6 +61,8 @@ static blt_int16u free_running_counter_last;
 
 /************************************************************************************//**
 ** \brief     Initializes the polling based millisecond timer driver.
+** \attention To keep the ROM footprint low, this function aims to only use LL driver
+**            inline functions.
 ** \return    none.
 **
 ****************************************************************************************/
@@ -78,7 +80,7 @@ void TimerInit(void)
   /* The TIM1 peripheral clock is derived from PCLK. Obtain the PCLK frequency. */
   pclk_frequency = __LL_RCC_CALC_PCLK2_FREQ(SystemCoreClock, LL_RCC_GetAPB2Prescaler());
   /* According to the clock tree diagram in the RCC chapter of the reference manual,
-   * the TPCLK frequency = PLCK * 1, when the APB1 prescaler is 1, otherwise it is
+   * the TPCLK frequency = PLCK * 1, when the APB2 prescaler is 1, otherwise it is
    * PCLK * 2.
    */
   tim_multiplier = (LL_RCC_GetAPB2Prescaler() == LL_RCC_APB2_DIV_1) ? 1U : 2U;

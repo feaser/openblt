@@ -61,6 +61,8 @@ static blt_int16u free_running_counter_last;
 
 /************************************************************************************//**
 ** \brief     Initializes the polling based millisecond timer driver.
+** \attention To keep the ROM footprint low, this function aims to only use LL driver
+**            inline functions.
 ** \return    none.
 **
 ****************************************************************************************/
