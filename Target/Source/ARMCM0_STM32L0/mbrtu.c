@@ -176,7 +176,6 @@ void MbRtuInit(void)
   #else
   LPUART_InitStruct.Parity = LL_LPUART_PARITY_EVEN;
   LPUART_InitStruct.DataWidth = LL_LPUART_DATAWIDTH_9B;
-  USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_9B;
   #endif
   LPUART_InitStruct.TransferDirection = LL_LPUART_DIRECTION_TX_RX;
   LPUART_InitStruct.HardwareFlowControl = LL_LPUART_HWCONTROL_NONE;
