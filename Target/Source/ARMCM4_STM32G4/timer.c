@@ -76,12 +76,12 @@ void TimerInit(void)
    */
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM1);
   /* The TIM1 peripheral clock is derived from PCLK. Obtain the PCLK frequency. */
-  pclk_frequency = __LL_RCC_CALC_PCLK1_FREQ(SystemCoreClock, LL_RCC_GetAPB1Prescaler());
+  pclk_frequency = __LL_RCC_CALC_PCLK2_FREQ(SystemCoreClock, LL_RCC_GetAPB2Prescaler());
   /* According to the clock tree diagram in the RCC chapter of the reference manual,
    * the TPCLK frequency = PLCK * 1, when the APB1 prescaler is 1, otherwise it is
    * PCLK * 2.
    */
-  tim_multiplier = (LL_RCC_GetAPB1Prescaler() == LL_RCC_APB1_DIV_1) ? 1U : 2U;
+  tim_multiplier = (LL_RCC_GetAPB2Prescaler() == LL_RCC_APB2_DIV_1) ? 1U : 2U;
   /* Obtain the TPCLK frequency. */
   pclk_tim_frequency = pclk_frequency * tim_multiplier;
   /* Configure the free running counter as a 16-bit upwards counter that runs at the

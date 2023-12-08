@@ -80,6 +80,10 @@ void TimerInit(void)
   /* All STM32G0 derivatives support a TIM1 peripheral. Its free running counter will be
    * used to realize the polling based millisecond time reference in this module.
    * Start by enabling the periperhal.
+   *
+   * Note that the STM32G0 features one PCLK clock that drives both APB1 and APB2 busses.
+   * The RCC LL drivers call PCLK PCLK1 and APB APB1. Therefore the following lines
+   * use the PCLK1/APB1 APIs, even though TIM1 is actually on ABP2.
    */
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM1);
   /* The TIM1 peripheral clock is derived from PCLK. Obtain the PCLK frequency. */
