@@ -29,7 +29,88 @@
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
+#include <hidef.h>                               /* common defines and macros          */
 #include "boot.h"                                /* bootloader generic header          */
+#include "led.h"                                 /* LED driver header                  */
+#include "derivative.h"                          /* derivative-specific definitions    */
+
+
+/****************************************************************************************
+*   C P U   D R I V E R   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called when the bootloader is about to exit and
+**            hand over control to the user program. This is the last moment that
+**            some final checking can be performed and if necessary prevent the
+**            bootloader from activiting the user program.
+** \return    BLT_TRUE if it is okay to start the user program, BLT_FALSE to keep
+**            keep the bootloader active.
+**
+****************************************************************************************/
+blt_bool CpuUserProgramStartHook(void)
+{
+  /* additional and optional backdoor entry through the pushbutton SW5 on the board. to
+   * force the bootloader to stay active after reset, keep the pushbutton pressed while
+   * resetting the microcontroller. this assumes that DIP1 is in the off (up) position.
+   */
+  if (PTIH_PTIH0 == 0) 
+  {
+    /* pushbutton pressed, so do not start the user program and keep the bootloader 
+     * active instead.
+     */
+    return BLT_FALSE;
+  }
+
+  /* clean up the LED driver */
+  LedBlinkExit();
+
+  /* okay to start the user program */
+  return BLT_TRUE;
+} /*** end of CpuUserProgramStartHook ***/
+#endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */
+
+
+/****************************************************************************************
+*   W A T C H D O G   D R I V E R   H O O K   F U N C T I O N S
+****************************************************************************************/
+
+#if (BOOT_COP_HOOKS_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called at the end of the internal COP driver
+**            initialization routine. It can be used to configure and enable the
+**            watchdog.
+** \return    none.
+**
+****************************************************************************************/
+void CopInitHook(void)
+{
+  /* this function is called upon initialization. might as well use it to initialize
+   * the LED driver. It is kind of a visual watchdog anyways.
+   */
+  LedBlinkInit(100);
+} /*** end of CopInitHook ***/
+
+
+/************************************************************************************//**
+** \brief     Callback that gets called at the end of the internal COP driver
+**            service routine. This gets called upon initialization and during
+**            potential long lasting loops and routine. It can be used to service
+**            the watchdog to prevent a watchdog reset.
+** \return    none.
+**
+****************************************************************************************/
+void CopServiceHook(void)
+{
+  /* run the LED blink task. this is a better place to do it than in the main() program
+   * loop. certain operations such as flash erase can take a long time, which would cause
+   * a blink interval to be skipped. this function is also called during such operations,
+   * so no blink intervals will be skipped when calling the LED blink task here.
+   */
+  LedBlinkTask();
+} /*** end of CopServiceHook ***/
+#endif /* BOOT_COP_HOOKS_ENABLE > 0 */
 
 
 /****************************************************************************************
@@ -58,28 +139,6 @@ blt_bool BackDoorEntryHook(void)
   return BLT_TRUE;
 } /*** end of BackDoorEntryHook ***/
 #endif /* BOOT_BACKDOOR_HOOKS_ENABLE > 0 */
-
-
-/****************************************************************************************
-*   C P U   D R I V E R   H O O K   F U N C T I O N S
-****************************************************************************************/
-
-#if (BOOT_CPU_USER_PROGRAM_START_HOOK > 0)
-/************************************************************************************//**
-** \brief     Callback that gets called when the bootloader is about to exit and
-**            hand over control to the user program. This is the last moment that
-**            some final checking can be performed and if necessary prevent the
-**            bootloader from activiting the user program.
-** \return    BLT_TRUE if it is okay to start the user program, BLT_FALSE to keep
-**            keep the bootloader active.
-**
-****************************************************************************************/
-blt_bool CpuUserProgramStartHook(void)
-{
-  /* okay to start the user program */
-  return BLT_TRUE;
-} /*** end of CpuUserProgramStartHook ***/
-#endif /* BOOT_CPU_USER_PROGRAM_START_HOOK > 0 */
 
 
 /****************************************************************************************
@@ -186,37 +245,6 @@ blt_bool NvmWriteChecksumHook(void)
   return BLT_TRUE;
 }
 #endif /* BOOT_NVM_CHECKSUM_HOOKS_ENABLE > 0 */
-
-
-/****************************************************************************************
-*   W A T C H D O G   D R I V E R   H O O K   F U N C T I O N S
-****************************************************************************************/
-
-#if (BOOT_COP_HOOKS_ENABLE > 0)
-/************************************************************************************//**
-** \brief     Callback that gets called at the end of the internal COP driver
-**            initialization routine. It can be used to configure and enable the
-**            watchdog.
-** \return    none.
-**
-****************************************************************************************/
-void CopInitHook(void)
-{
-} /*** end of CopInitHook ***/
-
-
-/************************************************************************************//**
-** \brief     Callback that gets called at the end of the internal COP driver
-**            service routine. This gets called upon initialization and during
-**            potential long lasting loops and routine. It can be used to service
-**            the watchdog to prevent a watchdog reset.
-** \return    none.
-**
-****************************************************************************************/
-void CopServiceHook(void)
-{
-} /*** end of CopServiceHook ***/
-#endif /* BOOT_COP_HOOKS_ENABLE > 0 */
 
 
 /****************************************************************************************

@@ -71,7 +71,7 @@ static void Init(void)
 {
   blt_int8u  synrCnt;
   blt_int8u  refdvCnt;
-  blt_int32u systemSpeed;
+  blt_int32u systemSpeed;              
   blt_bool   found = BLT_FALSE;
 
   /* initialize the system clock to BOOT_CPU_SYSTEM_SPEED_KHZ by configuring the PLL 
