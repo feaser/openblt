@@ -125,13 +125,13 @@ void MbRtuInit(void)
   MbRtuDriverOutputControlHook(BLT_FALSE);
 
   /* wait for idle line detection. This is T3_5 time after reception of the last byte. */
-  startTimeTicks = MbRtuFreeRunningCounterGetHook();
+  startTimeTicks = MbRtuFreeRunningCounterGet();
   do
   {
     /* service the watchdog. */
     CopService();
     /* get the current value of the free running counter. */
-    currentTimeTicks = MbRtuFreeRunningCounterGetHook();
+    currentTimeTicks = MbRtuFreeRunningCounterGet();
     /* check if a byte was received while waiting for the idle line. */
     if (MbRtuReceiveByte(&rxDummy) == BLT_TRUE)
     {
@@ -248,7 +248,7 @@ blt_bool MbRtuReceivePacket(blt_int8u *data, blt_int8u *len)
   static blt_int16u lastRxByteTimeTicks = 0;
 
   /* get the current value of the free running counter. */
-  currentTimeTicks = MbRtuFreeRunningCounterGetHook();
+  currentTimeTicks = MbRtuFreeRunningCounterGet();
 
   /* check for a newly received byte. */
   if (MbRtuReceiveByte(&rxByte) == BLT_TRUE)
