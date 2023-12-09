@@ -64,8 +64,6 @@ typedef struct
 #define TIMER_REGS_BASE_ADDRESS  (0x0040)
 /** \brief Macro for accessing the flash related control registers. */
 #define TIMER                    ((volatile tTimerRegs *)TIMER_REGS_BASE_ADDRESS)
-/** \brief Number of free running counter ticks in one millisecond. */
-#define TIMER_COUNTS_PER_MS      (BOOT_CPU_SYSTEM_SPEED_KHZ)
 
 
 /****************************************************************************************
@@ -76,16 +74,26 @@ typedef struct
  */
 static blt_int32u millisecond_counter;
 
+/** \brief Buffer for storing the last value of the free running counter. */
+static blt_int16u free_running_counter_last;
+
+/** \brief Stores the number of counts of the free running counter that equals one
+ *         millisecond.
+ */
+static blt_int16u counts_per_millisecond;
+
 
 /****************************************************************************************
 * Register definitions
 ****************************************************************************************/
 /** \brief TSCR1 - timer enable bit. */
 #define TEN_BIT     (0x80)
-/** \brief TIOS  - channel 0 ic/oc configuration bit. */
-#define IOS0_BIT    (0x01)
-/** \brief TFLG1 - channel 0 ic/oc event flag bit. */
-#define C0F_BIT     (0x01)
+/** \brief TSCR2 - timer prescaler select bit 0. */
+#define PR0_BIT     (0x01)
+/** \brief TSCR2 - timer prescaler select bit 1. */
+#define PR1_BIT     (0x02)
+/** \brief TSCR2 - timer prescaler select bit 2. */
+#define PR2_BIT     (0x04)
 
 
 /************************************************************************************//**
@@ -95,21 +103,21 @@ static blt_int32u millisecond_counter;
 ****************************************************************************************/
 void TimerInit(void)
 {
-  /* reset the timer configuration. note that this also sets the default prescaler
-   * to 1, so the free running counter runs at the same speed as the system
-   * (BOOT_CPU_SYSTEM_SPEED_KHZ).
-   */
+  /* make sure the timer system is in its reset state. */
   TimerReset();
-  /* configure timer channel 0 as a 1 millisecond software timer */
-  TIMER->tios |= IOS0_BIT;
-  /* make sure timer 0 interrupt flag is cleared */
-  TIMER->tflg1 = C0F_BIT;
-  /* generate output compare event in 1 milliseconds from now */
-  TIMER->tc[0] = TIMER->tcnt + TIMER_COUNTS_PER_MS;
-  /* enable the timer subsystem */
+  /* S12 derivatives support system speeds up to 32 MHz. Typical speeds are a multiple
+   * of 4 MHz. Scale the timer's free running counter down a bit to get a better
+   * time range between free running counter overflows. Use a fixed prescaler of 4.
+   */
+  TIMER->tscr2 &= ~(PR2_BIT | PR1_BIT | PR0_BIT);
+  TIMER->tscr2 |= PR1_BIT;
+  /* calculate how many counts equal 1 millisecond. */
+  counts_per_millisecond = BOOT_CPU_SYSTEM_SPEED_KHZ/4;
+  /* enable the timer subsystem to start the free running counter. */
   TIMER->tscr1 |= TEN_BIT;
-  /* reset the millisecond counter value */
+  /* initialize remaining locals. */
   millisecond_counter = 0;
+  free_running_counter_last = TIMER->tcnt;
 } /*** end of TimerInit ***/
 
 
@@ -141,15 +149,27 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* check if the millisecond event occurred */
-  if ((TIMER->tflg1 & C0F_BIT) == C0F_BIT)
+  blt_int16u free_running_counter_now;
+  blt_int16u delta_counts;
+  blt_int16u ms_counts;
+
+  /* get the current value of the free running counter. */
+  free_running_counter_now = TIMER->tcnt;
+  /* calculate the number of counts that passed since the detection of the last
+   * millisecond event. Note that this calculation also works, in case the free running
+   * counter overflowed, thanks to integer math.
+   */
+  delta_counts = free_running_counter_now - free_running_counter_last;
+
+  /* did one or more milliseconds pass since the last event? */
+  if (delta_counts >= counts_per_millisecond)
   {
-    /* make sure timer 0 interrupt flag is cleared */
-    TIMER->tflg1 = C0F_BIT;
-    /* generate output compare event in 1 milliseconds from now */
-    TIMER->tc[0] += TIMER_COUNTS_PER_MS;
-    /* increment the millisecond counter */
-    millisecond_counter++;
+    /* calculate how many milliseconds passed. */
+    ms_counts = delta_counts / counts_per_millisecond;
+    /* update the millisecond counter. */
+    millisecond_counter += ms_counts;
+    /* store the counter value of the last millisecond event, to detect the next one. */
+    free_running_counter_last += (ms_counts * counts_per_millisecond);
   }
 } /*** end of TimerUpdate ***/
 
