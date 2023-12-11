@@ -34,6 +34,15 @@
 
 
 /****************************************************************************************
+* External data declarations
+****************************************************************************************/
+/** \brief The system clock frequency supplied to the SysTick timer and the processor
+ *         core clock.
+ */
+extern blt_int32u SystemCoreClock;
+
+
+/****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
 /** \brief Local variable for storing the number of milliseconds that have elapsed since
@@ -41,9 +50,23 @@
  */
 static blt_int32u millisecond_counter;
 
+/** \brief Buffer for storing the last value of the free running counter. */
+static blt_int32u free_running_counter_last;
+
+/** \brief Stores the number of counts of the free running counter that equals one
+ *         millisecond.
+ */
+static blt_int32u counts_per_millisecond;
+
 
 /************************************************************************************//**
 ** \brief     Initializes the polling based millisecond timer driver.
+** \details   Ideally a 100 kHz free running counter is uses as the foundation for the
+**            timer modules, as this gives 10us ticks that can be reused by other
+**            modules. The S32K11 timers unfortunately do not offer a flexible prescaler
+**            for their timers to realize such a 100 kHz free running counter. For this
+**            reason, the SysTick counter is used instead. Its 24-bit free running
+**            down-counter runs at the system speed.
 ** \return    none.
 **
 ****************************************************************************************/
@@ -51,14 +74,17 @@ void TimerInit(void)
 {
   /* Reset the timer configuration. */
   TimerReset();
-  /* Configure the systick frequency as a 1 ms event generator. */
-  S32_SysTick->RVR = BOOT_CPU_SYSTEM_SPEED_KHZ - 1;
+  /* Configure the reload value such that the full 24-bit range is used. */
+  S32_SysTick->RVR = (0xFFFFFFFFUL & S32_SysTick_RVR_RELOAD_MASK);
   /* Reset the current counter value. */
-  S32_SysTick->CVR = 0u;
+  S32_SysTick->CVR = 0UL;
   /* Select core clock as source and enable the timer. */
   S32_SysTick->CSR = S32_SysTick_CSR_ENABLE_MASK | S32_SysTick_CSR_CLKSOURCE_MASK;
-  /* Reset the millisecond counter value. */
+  /* Calculate how many counts equal 1 millisecond. */
+  counts_per_millisecond = SystemCoreClock/1000U;
+  /* Initialize remaining locals. */
   millisecond_counter = 0;
+  free_running_counter_last = (S32_SysTick->CVR & S32_SysTick_CVR_CURRENT_MASK);
 } /*** end of TimerInit ***/
 
 
@@ -74,7 +100,7 @@ void TimerReset(void)
   S32_SysTick->CSR = 0;
   S32_SysTick->RVR = 0;
   S32_SysTick->CVR = 0;
-} /* end of TimerReset */
+} /*** end of TimerReset ***/
 
 
 /************************************************************************************//**
@@ -84,11 +110,30 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* Check if the millisecond event occurred. */
-  if ((S32_SysTick->CSR & S32_SysTick_CSR_COUNTFLAG_MASK) != 0)
+  blt_int32u free_running_counter_now;
+  blt_int32u delta_counts;
+  blt_int32u ms_counts;
+
+  /* Get the current value of the free running counter. */
+  free_running_counter_now = (S32_SysTick->CVR & S32_SysTick_CVR_CURRENT_MASK);
+  /* Calculate the number of counts that passed since the detection of the last
+   * millisecond event. Keep in mind that the SysTick has a down-counting 24-bit free
+   * running counter. Note that this calculation also works, in case the free running
+   * counter overflowed, thanks to integer math.
+   */
+  delta_counts = free_running_counter_last - free_running_counter_now;
+  delta_counts &= S32_SysTick_CVR_CURRENT_MASK;
+
+  /* Did one or more milliseconds pass since the last event? */
+  if (delta_counts >= counts_per_millisecond)
   {
-    /* Increment the millisecond counter. */
-    millisecond_counter++;
+    /* Calculate how many milliseconds passed. */
+    ms_counts = delta_counts / counts_per_millisecond;
+    /* Update the millisecond counter. */
+    millisecond_counter += ms_counts;
+    /* Store the counter value of the last millisecond event, to detect the next one. */
+    free_running_counter_last -= (ms_counts * counts_per_millisecond);
+    free_running_counter_last &= S32_SysTick_CVR_CURRENT_MASK;
   }
 } /*** end of TimerUpdate ***/
 
