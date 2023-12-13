@@ -61,7 +61,7 @@ static blt_int32u counts_per_millisecond;
 
 /************************************************************************************//**
 ** \brief     Initializes the polling based millisecond timer driver.
-** \details   Ideally a 100 kHz free running counter is uses as the foundation for the
+** \details   Ideally a 100 kHz free running counter is used as the foundation for the
 **            timer modules, as this gives 10us ticks that can be reused by other
 **            modules. The S32K14 timers unfortunately do not offer a flexible prescaler
 **            for their timers to realize such a 100 kHz free running counter. For this

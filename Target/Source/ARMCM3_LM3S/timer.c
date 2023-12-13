@@ -30,29 +30,9 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-
-
-/****************************************************************************************
-* Type definitions
-****************************************************************************************/
-/** \brief Systick registers. */
-typedef struct
-{
-  volatile blt_int32u CTRL;                   /**< SysTick Control and Status Register */
-  volatile blt_int32u LOAD;                   /**< SysTick Reload Value Register       */
-  volatile blt_int32u VAL;                    /**< SysTick Current Value Register      */
-} tSysTickRegs;
-
-
-/****************************************************************************************
-* Macro definitions
-****************************************************************************************/
-/** \brief CLKSOURCE bit of the system tick. */
-#define SYSTICK_BIT_CLKSOURCE    ((blt_int32u)0x00000004)
-/** \brief ENABLE bit of the system tick. */
-#define SYSTICK_BIT_ENABLE       ((blt_int32u)0x00000001)
-/** \brief COUNTERFLAG bit of the system tick. */
-#define SYSTICK_BIT_COUNTERFLAG  ((blt_int32u)0x00010000)
+#include "inc/hw_types.h"
+#include "inc/hw_nvic.h"
+#include "driverlib/sysctl.h"
 
 
 /****************************************************************************************
@@ -63,12 +43,13 @@ typedef struct
  */
 static blt_int32u millisecond_counter;
 
+/** \brief Buffer for storing the last value of the free running counter. */
+static blt_int32u free_running_counter_last;
 
-/****************************************************************************************
-* Register definitions
-****************************************************************************************/
-/** \brief Macro to access the system tick registers. */
-#define SYSTICK          ((tSysTickRegs *) (blt_int32u)0xE000E010)
+/** \brief Stores the number of counts of the free running counter that equals one
+ *         millisecond.
+ */
+static blt_int32u counts_per_millisecond;
 
 
 /************************************************************************************//**
@@ -78,16 +59,19 @@ static blt_int32u millisecond_counter;
 ****************************************************************************************/
 void TimerInit(void)
 {
-  /* reset the timer configuration */
+  /* reset the timer configuration. */
   TimerReset();
-  /* configure the systick frequency as a 1 ms event generator */
-  SYSTICK->LOAD = BOOT_CPU_SYSTEM_SPEED_KHZ - 1;
-  /* reset the current counter value */
-  SYSTICK->VAL = 0;
-  /* select core clock as source and enable the timer */
-  SYSTICK->CTRL = SYSTICK_BIT_CLKSOURCE | SYSTICK_BIT_ENABLE;
-  /* reset the millisecond counter value */
+  /* configure the reload value such that the full 24-bit range is used. */
+  HWREG(NVIC_ST_RELOAD) = (0xFFFFFFFFUL & NVIC_ST_RELOAD_M);
+  /* reset the current counter value. */
+  HWREG(NVIC_ST_CURRENT) = 0UL;
+  /* select core clock as source and enable the timer. */
+  HWREG(NVIC_ST_CTRL) = NVIC_ST_CTRL_ENABLE | NVIC_ST_CTRL_CLK_SRC;
+  /* calculate how many counts equal 1 millisecond. */
+  counts_per_millisecond = SysCtlClockGet() / 1000UL;
+  /* initialize remaining locals. */
   millisecond_counter = 0;
+  free_running_counter_last = (HWREG(NVIC_ST_CURRENT) & NVIC_ST_CURRENT_M);
 } /*** end of TimerInit ***/
 
 
@@ -100,10 +84,10 @@ void TimerInit(void)
 void TimerReset(void)
 {
   /* set the systick's registers back into the default reset value */
-  SYSTICK->CTRL = 0;
-  SYSTICK->LOAD = 0;
-  SYSTICK->VAL = 0;
-} /* end of TimerReset */
+  HWREG(NVIC_ST_CTRL) = 0UL;
+  HWREG(NVIC_ST_RELOAD) = 0UL;
+  HWREG(NVIC_ST_CURRENT) = 0UL;
+} /*** end of TimerReset ***/
 
 
 /************************************************************************************//**
@@ -113,11 +97,30 @@ void TimerReset(void)
 ****************************************************************************************/
 void TimerUpdate(void)
 {
-  /* check if the millisecond event occurred */
-  if ((SYSTICK->CTRL & SYSTICK_BIT_COUNTERFLAG) != 0)
+  blt_int32u free_running_counter_now;
+  blt_int32u delta_counts;
+  blt_int32u ms_counts;
+
+  /* get the current value of the free running counter. */
+  free_running_counter_now = (HWREG(NVIC_ST_CURRENT) & NVIC_ST_CURRENT_M);
+  /* calculate the number of counts that passed since the detection of the last
+   * millisecond event. keep in mind that the SysTick has a down-counting 24-bit free
+   * running counter. note that this calculation also works, in case the free running
+   * counter overflowed, thanks to integer math.
+   */
+  delta_counts = free_running_counter_last - free_running_counter_now;
+  delta_counts &= NVIC_ST_CURRENT_M;
+
+  /* did one or more milliseconds pass since the last event? */
+  if (delta_counts >= counts_per_millisecond)
   {
-    /* increment the millisecond counter */
-    millisecond_counter++;
+    /* calculate how many milliseconds passed. */
+    ms_counts = delta_counts / counts_per_millisecond;
+    /* update the millisecond counter. */
+    millisecond_counter += ms_counts;
+    /* store the counter value of the last millisecond event, to detect the next one. */
+    free_running_counter_last -= (ms_counts * counts_per_millisecond);
+    free_running_counter_last &= NVIC_ST_CURRENT_M;
   }
 } /*** end of TimerUpdate ***/
 

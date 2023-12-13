@@ -35,10 +35,8 @@
 #if (BOOT_COM_RS232_ENABLE > 0)
 #include "driverlib/sysctl.h"
 #include "driverlib/uartlib.h"
-#endif
 
 
-#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
