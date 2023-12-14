@@ -30,13 +30,13 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#if (BOOT_COM_RS232_ENABLE > 0)
 #include "efm32.h"
 #include "efm32_cmu.h"
 #include "efm32_gpio.h"
 #include "efm32_leuart.h"
 
 
-#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
@@ -205,7 +205,7 @@ static blt_bool Rs232ReceiveByte(blt_int8u *data)
 {
   blt_bool result = BLT_FALSE;
 
-  /* check to see if a new bytes was received */
+  /* check to see if a new byte was received */
   if ((LEUART1->IF & LEUART_IF_RXDATAV) != 0)
   {
     /* store the received data byte and set return value to positive */
