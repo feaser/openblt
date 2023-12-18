@@ -87,7 +87,7 @@ static void     Rs232TransmitByte(blt_int8u data);
 ****************************************************************************************/
 void Rs232Init(void)
 {
-  /* the current implementation supports ASCLIN0 - ASCLIN11. throw an assertion error in
+  /* the current implementation supports ASCLIN0 - ASCLIN3. throw an assertion error in
    * case a different channel is configured.
    */
   ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX == 0)  ||
