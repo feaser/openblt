@@ -30,10 +30,10 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#if (BOOT_COM_RS232_ENABLE > 0)
 #include "xmc_uart.h"                            /* UART driver header                 */
 
 
-#if (BOOT_COM_RS232_ENABLE > 0)
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
@@ -86,7 +86,7 @@ void Rs232Init(void)
   XMC_UART_CH_CONFIG_t uart_config;
 
   /* the current implementation supports XMC_UART0_CH0 to XMC_UART2_CH1. throw an
-   * assertion error in case a different CAN channel is configured.
+   * assertion error in case a different UART channel is configured.
    */
   ASSERT_CT((BOOT_COM_RS232_CHANNEL_INDEX >= 0) && (BOOT_COM_RS232_CHANNEL_INDEX <= 5));
 
