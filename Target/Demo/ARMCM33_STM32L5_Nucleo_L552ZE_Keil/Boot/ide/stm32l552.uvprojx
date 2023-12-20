@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>STM32L552ZETxQ</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32L5xx_DFP.1.3.0</PackID>
+          <PackID>Keil.STM32L5xx_DFP.1.4.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000-0x2003FFFF) IROM(0x8000000-0x807FFFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ DSP</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -1032,6 +1032,21 @@
               <FileName>cpu_comp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\ARMCM33_STM32L5\Keil\cpu_comp.c</FilePath>
+            </File>
+            <File>
+              <FileName>mb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\mb.c</FilePath>
+            </File>
+            <File>
+              <FileName>mb.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\mb.h</FilePath>
+            </File>
+            <File>
+              <FileName>mbrtu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\ARMCM33_STM32L5\mbrtu.c</FilePath>
             </File>
           </Files>
         </Group>
