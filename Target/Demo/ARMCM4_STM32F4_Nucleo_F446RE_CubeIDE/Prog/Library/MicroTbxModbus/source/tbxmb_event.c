@@ -86,11 +86,11 @@ typedef struct
 ****************************************************************************************/
 void TbxMbEventTask(void)
 {
-  static tTbxList       * pollerList = NULL;
-  static uint8_t          pollerListInitialized = TBX_FALSE;
-  static const uint16_t   defaultWaitTimeoutMs = 5000U;
-  static uint16_t         waitTimeoutMS = defaultWaitTimeoutMs;
-  tTbxMbEvent             newEvent = { 0 };
+  static tTbxList * pollerList = NULL;
+  static uint8_t    pollerListInitialized = TBX_FALSE;
+  const  uint16_t   defaultWaitTimeoutMs = 5000U;
+  static uint16_t   waitTimeoutMS = 5000U;
+  tTbxMbEvent       newEvent = { 0 };
 
   /* Only initialize the event poller once, */
   if (pollerListInitialized == TBX_FALSE)
