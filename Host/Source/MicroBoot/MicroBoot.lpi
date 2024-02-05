@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="11"/>
+    <Version Value="12"/>
     <General>
+      <Flags>
+        <CompatibilityMode Value="True"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <Title Value="MicroBoot"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -82,6 +84,7 @@
           <Linking>
             <Debugging>
               <GenerateDebugInfo Value="False"/>
+              <DebugInfoType Value="dsDwarf3"/>
             </Debugging>
             <LinkSmart Value="True"/>
             <Options>
@@ -94,7 +97,7 @@
           </Linking>
           <Other>
             <CompilerMessages>
-              <IgnoredMessages idx5058="True" idx5036="True"/>
+              <IgnoredMessages idx6058="True" idx5058="True" idx5036="True" idx3124="True" idx3123="True"/>
             </CompilerMessages>
             <CustomOptions Value="-dUseCThreads"/>
             <OtherDefines Count="1">
