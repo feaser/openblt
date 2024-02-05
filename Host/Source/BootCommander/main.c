@@ -186,6 +186,8 @@ int main(int argc, char const * const argv[])
   {
     /* Display firmware file. */
     printf("Detected firmware file: %s\n", appFirmwareFile);
+    /* Display the LibOpenBLT version. */
+    printf("Using LibOpenBLT version: %s\n", BltVersionGetString());
     /* Display session info. */
     DisplaySessionInfo(appSessionType, appSessionSettings);
     /* Display transport info. */
