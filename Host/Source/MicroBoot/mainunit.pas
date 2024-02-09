@@ -277,11 +277,31 @@ end; //*** end of PnlBodyMainResize ***
 //
 //***************************************************************************************
 procedure TMainForm.TmrCloseTimer(Sender: TObject);
+var
+  miscellaneousConfig: TMiscellaneousConfig;
 begin
+  // Get access to the misellaneous configuration settings.
+  miscellaneousConfig := FCurrentConfig.Groups[TMiscellaneousConfig.GROUP_NAME]
+                         as TMiscellaneousConfig;
   // Disable the timer, because it is a one-shot timer.
   TmrClose.Enabled := False;
-  // Close the program.
-  Close;
+  // Check if the user wants to close the program at the end of the firmware update.
+  if miscellaneousConfig.StayOpen = 0 then
+  begin
+    // Close the program.
+    Close;
+  end
+  // Program should stay open. Reset the user interface such that a new firmware update
+  // can be started.
+  else
+  begin
+    // Stop the stop watch refresh timer.
+    FStopWatch.Stop;
+    // Update the user interface setting.
+    FUISetting := UIS_DEFAULT;
+    // Update the user interface.
+    UpdateUserInterface;
+  end;
 end; //*** end of TmrCloseTimer ***
 
 

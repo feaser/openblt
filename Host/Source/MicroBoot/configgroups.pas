@@ -65,6 +65,7 @@ type
   private
     FLogging: Integer;
     FLogFile: String;
+    FStayOpen: Integer;
   public
     const GROUP_NAME='Miscellaneus';
     constructor Create;
@@ -73,6 +74,7 @@ type
     procedure SaveToFile(XmlConfig: TXMLConfig); override;
     property Logging: Integer read FLogging write FLogging;
     property LogFile: String read FLogFile write FLogFile;
+    property StayOpen: Integer read FStayOpen write FStayOpen;
   end;
 
   //------------------------------ TSessionConfig ---------------------------------------
@@ -320,6 +322,7 @@ procedure TMiscellaneousConfig.Defaults;
 begin
   FLogging := 0;
   FLogFile := '';
+  FStayOpen := 0;
 end; //*** end of Defaults ***
 
 
@@ -338,6 +341,7 @@ begin
   // Load all settings.
   FLogging := XmlConfig.GetValue('logging', FLogging);
   FLogFile := String(XmlConfig.GetValue('log_file', UnicodeString(FLogFile)));
+  FStayOpen := XmlConfig.GetValue('stay_open', FStayOpen);
   // Close this group's key.
   XmlConfig.CloseKey;
 end; //*** end of LoadFromFile ***/
@@ -358,6 +362,7 @@ begin
   // Store all settings.
   XmlConfig.SetValue('logging', FLogging);
   XmlConfig.SetValue('log_file', UnicodeString(FLogFile));
+  XmlConfig.SetValue('stay_open', FStayOpen);
   // Close this group's key.
   XmlConfig.CloseKey;
 end; //*** end of SaveToFile ***

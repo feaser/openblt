@@ -8,7 +8,7 @@ object MiscellaneousForm: TMiscellaneousForm
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.2.6.0'
   object LblLogging: TLabel
     Left = 8
     Height = 20
@@ -61,6 +61,30 @@ object MiscellaneousForm: TMiscellaneousForm
     AutoSize = False
     Caption = 'Log-file name and location:'
     ParentColor = False
+  end
+  object LblFirmwareUpdate: TLabel
+    Left = 8
+    Height = 20
+    Top = 133
+    Width = 128
+    AutoSize = False
+    Caption = 'Firmware update'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object CbxStayOpen: TCheckBox
+    Left = 23
+    Height = 20
+    Hint = 'Check this box to keep MicroBoot open when the firmware update completes.'
+    Top = 160
+    Width = 281
+    AutoSize = False
+    Caption = 'Stay open after the firmware update'
+    OnChange = CbxLoggingChange
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
   end
   object SaveDialog: TSaveDialog
     Title = 'Log-file selection'

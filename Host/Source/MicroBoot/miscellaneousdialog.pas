@@ -52,9 +52,11 @@ type
   TMiscellaneousForm = class(TForm)
     BtnLogFile: TButton;
     CbxLogging: TCheckBox;
+    CbxStayOpen: TCheckBox;
     EdtLogFile: TEdit;
     LblLogFile: TLabel;
     LblLogging: TLabel;
+    LblFirmwareUpdate: TLabel;
     SaveDialog: TSaveDialog;
     procedure BtnLogFileClick(Sender: TObject);
     procedure CbxLoggingChange(Sender: TObject);
@@ -190,12 +192,17 @@ begin
   // Load configuration.
   FMiscellaneousConfig.Logging := Config.Logging;
   FMiscellaneousConfig.LogFile := Config.LogFile;
+  FMiscellaneousConfig.StayOpen := Config.StayOpen;
   // Initialize user interface.
   if FMiscellaneousConfig.Logging = 0 then
     CbxLogging.Checked := False
   else
     CbxLogging.Checked := True;
   EdtLogFile.Text := FMiscellaneousConfig.LogFile;
+  if FMiscellaneousConfig.StayOpen = 0 then
+    CbxStayOpen.Checked := False
+  else
+    CbxStayOpen.Checked := True;
   // Update the user interface.
   UpdateUserInterface;
 end; //*** end of LoadConfig ***
@@ -219,9 +226,14 @@ begin
   else
     FMiscellaneousConfig.Logging := 0;
   FMiscellaneousConfig.LogFile := EdtLogFile.Text;
+  if CbxStayOpen.Checked then
+    FMiscellaneousConfig.StayOpen := 1
+  else
+    FMiscellaneousConfig.StayOpen := 0;
   // Store configuration.
   Config.Logging := FMiscellaneousConfig.Logging;
   Config.LogFile := FMiscellaneousConfig.LogFile;
+  Config.StayOpen := FMiscellaneousConfig.StayOpen;
 end; //*** end of SaveConfig ***
 
 end.
