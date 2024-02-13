@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "led.h"                                 /* LED driver header                  */
+#include "memdrv.h"                              /* memory device driver header        */
 #include "stm32l1xx.h"                           /* STM32 registers and drivers        */
 #include "stm32l1xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
 
@@ -153,6 +154,8 @@ void CopServiceHook(void)
 ****************************************************************************************/
 void NvmInitHook(void)
 {
+  /* Initialize the additional memory device driver. */
+  MemDrvInit();
 } /*** end of NvmInitHook ***/
 
 
@@ -164,6 +167,7 @@ void NvmInitHook(void)
 ****************************************************************************************/
 void NvmReinitHook(void)
 {
+  /* Nothing extra needs to be done here. */
 } /*** end of NvmReinitHook ***/
 
 
@@ -183,7 +187,23 @@ void NvmReinitHook(void)
 ****************************************************************************************/
 blt_int8u NvmWriteHook(blt_addr addr, blt_int32u len, blt_int8u *data)
 {
-  return BLT_NVM_NOT_IN_RANGE;
+  blt_int8u result = BLT_NVM_NOT_IN_RANGE;
+
+  /* Is this data destined for the additional memory device? */
+  if ( (addr >= MemDrvGetBaseAddress()) &&
+       ((addr + len) <= (MemDrvGetBaseAddress() + MemDrvGetSize())) )
+  {
+    /* In range of the memory device, so update the result. */
+    result = BLT_NVM_ERROR;
+    /* Perform the write operation. */
+    if (MemDrvWrite(addr, len, data) == BLT_TRUE)
+    {
+      /* Success. */
+      result = BLT_NVM_OKAY;
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
 } /*** end of NvmWriteHook ***/
 
 
@@ -202,7 +222,23 @@ blt_int8u NvmWriteHook(blt_addr addr, blt_int32u len, blt_int8u *data)
 ****************************************************************************************/
 blt_int8u NvmEraseHook(blt_addr addr, blt_int32u len)
 {
-  return BLT_NVM_NOT_IN_RANGE;
+  blt_int8u result = BLT_NVM_NOT_IN_RANGE;
+
+  /* Is this data destined for the additional memory device? */
+  if ( (addr >= MemDrvGetBaseAddress()) &&
+       ((addr + len) <= (MemDrvGetBaseAddress() + MemDrvGetSize())) )
+  {
+    /* In range of the memory device, so update the result. */
+    result = BLT_NVM_ERROR;
+    /* Perform the erase operation. */
+    if (MemDrvErase(addr, len) == BLT_TRUE)
+    {
+      /* Success. */
+      result = BLT_NVM_OKAY;
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
 } /*** end of NvmEraseHook ***/
 
 
@@ -213,7 +249,8 @@ blt_int8u NvmEraseHook(blt_addr addr, blt_int32u len)
 ****************************************************************************************/
 blt_bool NvmDoneHook(void)
 {
-  return BLT_TRUE;
+  /* Finalizes the additional memory device driver operations. */
+  return MemDrvDone();
 } /*** end of NvmDoneHook ***/
 #endif /* BOOT_NVM_HOOKS_ENABLE > 0 */
 
