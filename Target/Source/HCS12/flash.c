@@ -418,19 +418,6 @@ void FlashInit(void)
 
 
 /************************************************************************************//**
-** \brief     Reinitializes the flash driver.
-** \return    none.
-**
-****************************************************************************************/
-void FlashReinit(void)
-{
-  /* init the flash block info structs by setting the address to an invalid address */
-  blockInfo.base_addr = FLASH_INVALID_ADDRESS;
-  bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
-} /*** end of FlashReinit ***/
-
-
-/************************************************************************************//**
 ** \brief     Writes the data to flash through a flash block manager. Note that this
 **            function also checks that no data is programmed outside the flash
 **            memory region, so the bootloader can never be overwritten.

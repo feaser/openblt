@@ -38,7 +38,6 @@
 ****************************************************************************************/
 #if (BOOT_NVM_HOOKS_ENABLE > 0)
 extern void      NvmInitHook(void);
-extern void      NvmReinitHook(void);
 extern blt_int8u NvmWriteHook(blt_addr addr, blt_int32u len, blt_int8u *data);
 extern blt_int8u NvmEraseHook(blt_addr addr, blt_int32u len);
 extern blt_bool  NvmDoneHook(void);
@@ -67,27 +66,6 @@ void NvmInit(void)
   /* init the internal driver */
   FlashInit();
 } /*** end of NvmInit ***/
-
-
-/************************************************************************************//**
-** \brief     Reinitializes the NVM driver. This function is called at the start of each
-**            firmware update as opposed to NvmInit, which is only called once during
-**            power on.
-** \return    none.
-**
-****************************************************************************************/
-void NvmReinit(void)
-{
-#if (BOOT_NVM_HOOKS_ENABLE > 0)
-  /* give the application a chance to re-initialize a driver for operating on NVM
-   * that is not by default supported by this driver.
-   */
-  NvmReinitHook();
-#endif
-
-  /* reinitialize the internal driver */
-  FlashReinit();
-} /*** end of NvmReinit ***/
 
 
 /************************************************************************************//**
