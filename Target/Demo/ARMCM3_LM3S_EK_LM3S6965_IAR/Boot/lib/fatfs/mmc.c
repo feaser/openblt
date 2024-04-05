@@ -26,6 +26,7 @@
 #include "driverlib/gpio.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
+#include "ff.h"
 #include "diskio.h"
 #include "boot.h"
 
@@ -110,7 +111,7 @@ static
 void send_initial_clock_train(void)
 {
     unsigned int i;
-    DWORD dat;
+    unsigned long dat;
 
     /* Ensure CS is held high. */
     CS_HIGH();
@@ -214,7 +215,7 @@ void power_off (void)
 static
 BYTE xchg_spi (BYTE dat)
 {
-    DWORD rcvdat;
+    unsigned long rcvdat;
 
     SSIDataPut(SDC_SSI_BASE, dat); /* write data */
 
@@ -482,7 +483,7 @@ DSTATUS disk_status (
 DRESULT disk_read (
 	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
 	BYTE *buff,		/* Data buffer to store read data */
-	DWORD sector,	/* Sector address in LBA */
+	LBA_t sector,	/* Sector address in LBA */
 	UINT count		/* Number of sectors to read */
 )
 {
@@ -519,7 +520,7 @@ DRESULT disk_read (
 DRESULT disk_write (
 	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
 	const BYTE *buff,	/* Data to be written */
-	DWORD sector,		/* Sector address in LBA */
+	LBA_t sector,		/* Sector address in LBA */
 	UINT count			/* Number of sectors to write */
 )
 {

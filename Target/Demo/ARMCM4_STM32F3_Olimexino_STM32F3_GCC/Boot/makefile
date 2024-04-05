@@ -68,9 +68,8 @@ PROJ_FILES += $(wildcard ../../../Source/ARMCM4_STM32F3/*.h)
 PROJ_FILES += $(wildcard ../../../Source/ARMCM4_STM32F3/GCC/*.c)
 PROJ_FILES += $(wildcard ../../../Source/ARMCM4_STM32F3/GCC/*.h)
 # Collect FatFS third party library files
-PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/src/*.c)
-PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/src/*.h)
-PROJ_FILES += ../../../Source/third_party/fatfs/src/option/unicode.c
+PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/source/*.c)
+PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/source/*.h)
 
 
 #|--------------------------------------------------------------------------------------|
@@ -108,7 +107,7 @@ LIB_PATH  =
 STDFLAGS    = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
 OPTFLAGS    = -Og
-DEPFLAGS  = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
+DEPFLAGS    = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32F303xC
 CFLAGS     += -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))"

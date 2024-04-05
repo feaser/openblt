@@ -62,7 +62,7 @@
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+                    <state>A compact configuration of the C/C++14 runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -364,7 +364,7 @@
                     <state>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_STM32F1</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2503,19 +2503,19 @@
             <group>
                 <name>fatfs</name>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\diskio.h</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\diskio.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ff.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.h</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ff.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\integer.h</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ffsystem.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ffunicode.c</name>
                 </file>
             </group>
         </group>

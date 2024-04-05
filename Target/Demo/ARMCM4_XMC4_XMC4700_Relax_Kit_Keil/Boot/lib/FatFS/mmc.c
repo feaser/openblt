@@ -19,6 +19,7 @@
  * to work with an existing timer and for operation in polling mode.
  *
  */
+#include "ff.h"
 #include "diskio.h"
 #include "boot.h"
 #include "sdmmc_block.h"
@@ -119,7 +120,7 @@ DSTATUS disk_status (
 DRESULT disk_read (
 	BYTE pdrv,     /* Physical drive nmuber to identify the drive */
 	BYTE *buff,    /* Data buffer to store read data */
-	DWORD sector,  /* Sector address in LBA */
+	LBA_t sector,  /* Sector address in LBA */
 	UINT count     /* Number of sectors to read */
 )
 {
@@ -157,7 +158,7 @@ DRESULT disk_read (
 DRESULT disk_write (
 	BYTE pdrv,         /* Physical drive nmuber to identify the drive */
 	const BYTE *buff,  /* Data to be written */
-	DWORD sector,      /* Sector address in LBA */
+	LBA_t sector,      /* Sector address in LBA */
 	UINT count         /* Number of sectors to write */
 )
 {

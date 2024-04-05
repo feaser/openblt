@@ -36,11 +36,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Full formatting.</state>
+                    <state>Full formatting, without multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Full formatting.</state>
+                    <state>Full formatting, without multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -62,7 +62,7 @@
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+                    <state>A compact configuration of the C/C++14 runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -354,7 +354,7 @@
                 <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\..\..\Source</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM3_LM3S</state>
@@ -1010,7 +1010,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>###Unitialized###</state>
+                    <state>lm3s6965_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -2365,19 +2365,19 @@
             <group>
                 <name>fatfs</name>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\diskio.h</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\diskio.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ff.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.h</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ff.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\integer.h</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ffsystem.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ffunicode.c</name>
                 </file>
             </group>
             <group>

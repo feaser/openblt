@@ -360,7 +360,7 @@
                     <state>$PROJ_DIR$\..\lib\fatfs</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32F4</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2439,6 +2439,12 @@
             <name>$PROJ_DIR$\..\blt_conf.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\flash_layout.c</name>
+            <excluded>
+                <configuration>Debug</configuration>
+            </excluded>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\hooks.c</name>
         </file>
         <file>
@@ -2521,19 +2527,19 @@
             <group>
                 <name>fatfs</name>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\diskio.h</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\diskio.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ff.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\ff.h</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ff.h</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\integer.h</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ffsystem.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\fatfs\source\ffunicode.c</name>
                 </file>
             </group>
         </group>

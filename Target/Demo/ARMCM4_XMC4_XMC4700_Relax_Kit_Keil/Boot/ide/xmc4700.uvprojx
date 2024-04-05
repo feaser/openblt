@@ -339,7 +339,7 @@
               <MiscControls>--diag_suppress=111, --diag_suppress=66, --diag_suppress=188</MiscControls>
               <Define>XMC4700_F144x2048 XMC_ETH_PHY_KSZ8081RNB</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Boot;..\lib;..\lib\cmsis;..\lib\xmclib\inc;..\lib\FatFS;..\lib\FatFS\SDMMC_BLOCK;..\lib\TinyUSB\cfg;..\lib\TinyUSB\src;..\lib\uip;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_XMC4;..\..\..\..\Source\third_party\fatfs\src;..\..\..\..\Source\third_party\uip\uip;..\..\..\..\Source\third_party\uip\apps\dhcpc</IncludePath>
+              <IncludePath>..\..\Boot;..\lib;..\lib\cmsis;..\lib\xmclib\inc;..\lib\FatFS;..\lib\FatFS\SDMMC_BLOCK;..\lib\TinyUSB\cfg;..\lib\TinyUSB\src;..\lib\uip;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_XMC4;..\..\..\..\Source\third_party\fatfs\source;..\..\..\..\Source\third_party\uip\uip;..\..\..\..\Source\third_party\uip\apps\dhcpc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1418,27 +1418,27 @@
             <File>
               <FileName>diskio.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\diskio.h</FilePath>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\diskio.h</FilePath>
             </File>
             <File>
               <FileName>ff.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\ff.c</FilePath>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ff.c</FilePath>
             </File>
             <File>
               <FileName>ff.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\ff.h</FilePath>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ff.h</FilePath>
             </File>
             <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\integer.h</FilePath>
-            </File>
-            <File>
-              <FileName>unicode.c</FileName>
+              <FileName>ffsystem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</FilePath>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ffsystem.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffunicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ffunicode.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -18,6 +18,7 @@
  * evaluation board.
  *
  */
+#include "ff.h"
 #include "diskio.h"
 #include "stm32f4xx.h"                           /* STM32 registers and drivers        */
 #include "stm32f4xx_ll_bus.h"                    /* STM32 LL BUS header                */
@@ -556,7 +557,7 @@ DSTATUS disk_status (
 DRESULT disk_read (
 	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
 	BYTE *buff,		/* Data buffer to store read data */
-	DWORD sector,	/* Sector address in LBA */
+	LBA_t sector,	/* Sector address in LBA */
 	UINT count		/* Number of sectors to read */
 )
 {
@@ -595,7 +596,7 @@ DRESULT disk_read (
 DRESULT disk_write (
 	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
 	const BYTE *buff,	/* Data to be written */
-	DWORD sector,		/* Sector address in LBA */
+	LBA_t sector,		/* Sector address in LBA */
 	UINT count			/* Number of sectors to write */
 )
 {

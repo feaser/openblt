@@ -339,7 +339,7 @@
               <MiscControls>--diag_suppress=111 --diag_suppress=550</MiscControls>
               <Define>USE_FULL_LL_DRIVER,USE_HAL_DRIVER,STM32F103xB,reset_handler=Reset_Handler</Define>
               <Undefine></Undefine>
-              <IncludePath>..\lib;..\lib\fatfs;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32F1xx\Include;..\lib\STM32F1xx_HAL_Driver\Inc;..\lib\STM32F1xx_HAL_Driver\Inc\Legacy;..\..\..\..\Source;..\..\..\..\Source\ARMCM3_STM32F1;..\..\..\..\Source\ARMCM3_STM32F1\Keil;..\..\..\..\Source\third_party\fatfs\src;..\..\Boot</IncludePath>
+              <IncludePath>..\lib;..\lib\fatfs;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32F1xx\Include;..\lib\STM32F1xx_HAL_Driver\Inc;..\lib\STM32F1xx_HAL_Driver\Inc\Legacy;..\..\..\..\Source;..\..\..\..\Source\ARMCM3_STM32F1;..\..\..\..\Source\ARMCM3_STM32F1\Keil;..\..\..\..\Source\third_party\fatfs\source;..\..\Boot</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -814,31 +814,6 @@
               <FilePath>..\..\..\..\Source\xcp.h</FilePath>
             </File>
             <File>
-              <FileName>diskio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\diskio.h</FilePath>
-            </File>
-            <File>
-              <FileName>ff.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\ff.c</FilePath>
-            </File>
-            <File>
-              <FileName>ff.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\ff.h</FilePath>
-            </File>
-            <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\integer.h</FilePath>
-            </File>
-            <File>
-              <FileName>unicode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</FilePath>
-            </File>
-            <File>
               <FileName>can.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\ARMCM3_STM32F1\can.c</FilePath>
@@ -918,6 +893,31 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\ARMCM3_STM32F1\mbrtu.c</FilePath>
             </File>
+            <File>
+              <FileName>diskio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\diskio.h</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ff.h</FilePath>
+            </File>
+            <File>
+              <FileName>ffsystem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ffsystem.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffunicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ffunicode.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
@@ -929,5 +929,14 @@
     <components/>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>stm32f103</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>

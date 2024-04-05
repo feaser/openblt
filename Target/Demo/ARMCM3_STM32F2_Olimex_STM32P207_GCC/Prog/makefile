@@ -41,7 +41,8 @@ PROJ_NAME=demoprog_stm32f207
 # format, open the directory in the Windows command prompt and run the following command:
 #  cmd /c for %A in ("%cd%") do @echo %~sA 
 #TOOL_PATH=/opt/gcc-arm-none-eabi-8-2018-q4-major/bin/
-TOOL_PATH=C:/PROGRA~2/GNUTOO~1/82018-~1/bin/
+#TOOL_PATH=C:/PROGRA~2/GNUTOO~1/82018-~1/bin/
+TOOL_PATH=
 
 
 #|--------------------------------------------------------------------------------------|
@@ -95,7 +96,7 @@ STACK_SIZE  = 0x0800
 STDFLAGS    = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
 OPTFLAGS    = -Og
-DEPFLAGS  = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
+DEPFLAGS    = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_HAL_DRIVER -DSTM32F207xx
 CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)

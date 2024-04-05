@@ -128,7 +128,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source/ARMCM4_XMC4&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source/third_party/uip/uip&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source/third_party/uip/apps/dhcpc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source/third_party/fatfs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../Source/third_party/fatfs/source&quot;"/>
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.preprocessor.def.73574838" name="Defined symbols (-D)" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="XMC4700_F144x2048"/>
@@ -177,6 +177,23 @@
 							</tool>
 							<tool id="com.ifx.xmc4000.appDebug.createlisting.1987280903" name="ARM-GCC Create Listing" superClass="com.ifx.xmc4000.appDebug.createlisting"/>
 							<tool id="com.ifx.xmc4000.printsize.836594278" name="ARM-GCC Print Size" superClass="com.ifx.xmc4000.printsize"/>
+						</toolChain>
+					</folderInfo>
+					<folderInfo id="com.ifx.xmc4000.appDebug.49229221.1289663609" name="/" resourcePath="Core/third_party/fatfs">
+						<toolChain id="com.ifx.xmc4000.appDebug.toolChain.1773514244" name="ARM-GCC Application" superClass="com.ifx.xmc4000.appDebug.toolChain" unusedChildren="">
+							<option id="com.ifx.xmc4000.option.debugging.level.1364554860.1627060774" name="Debug level" superClass="com.ifx.xmc4000.option.debugging.level.1364554860"/>
+							<option id="com.ifx.xmc4000.option.targetPath.1288557067.1197657256" name="Target Path" superClass="com.ifx.xmc4000.option.targetPath.1288557067"/>
+							<option id="com.ifx.xmc4000.option.target.fpu.387189908.933731336" name="Fpu (-mfpu)" superClass="com.ifx.xmc4000.option.target.fpu.387189908"/>
+							<option id="com.ifx.xmc4000.option.targetName.182409064.523416824" name="Target Name" superClass="com.ifx.xmc4000.option.targetName.182409064"/>
+							<tool id="com.ifx.xmc4000.appDebug.compiler.1737495721" name="ARM-GCC C Compiler" superClass="com.ifx.xmc4000.appDebug.compiler.993199492"/>
+							<tool id="com.ifx.xmc4000.appDebug.cppcompiler.727794972" name="ARM-GCC C++ Compiler" superClass="com.ifx.xmc4000.appDebug.cppcompiler.1452880549"/>
+							<tool id="com.ifx.xmc4000.appDebug.assembler.1726336919" name="ARM-GCC Assembler" superClass="com.ifx.xmc4000.appDebug.assembler.573678005"/>
+							<tool id="com.ifx.xmc4000.appDebug.linker.1527073245" name="ARM-GCC C Linker" superClass="com.ifx.xmc4000.appDebug.linker.665810848"/>
+							<tool id="com.ifx.xmc4000.appDebug.cpplinker.954040817" name="ARM-GCC C++ Linker" superClass="com.ifx.xmc4000.appDebug.cpplinker.535380220"/>
+							<tool id="com.ifx.xmc4000.libLinker.434539260" name="ARM-GCC Archiver" superClass="com.ifx.xmc4000.libLinker.761797841"/>
+							<tool id="com.ifx.xmc4000.appDebug.createflash.931535388" name="ARM-GCC Create Flash Image" superClass="com.ifx.xmc4000.appDebug.createflash.958972428"/>
+							<tool id="com.ifx.xmc4000.appDebug.createlisting.912955521" name="ARM-GCC Create Listing" superClass="com.ifx.xmc4000.appDebug.createlisting.1987280903"/>
+							<tool id="com.ifx.xmc4000.printsize.1760794225" name="ARM-GCC Print Size" superClass="com.ifx.xmc4000.printsize.836594278"/>
 						</toolChain>
 					</folderInfo>
 				</configuration>

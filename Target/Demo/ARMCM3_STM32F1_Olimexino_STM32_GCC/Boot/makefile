@@ -68,9 +68,8 @@ PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/*.h)
 PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/GCC/*.c)
 PROJ_FILES += $(wildcard ../../../Source/ARMCM3_STM32F1/GCC/*.h)
 # Collect FatFS third party library files
-PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/src/*.c)
-PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/src/*.h)
-PROJ_FILES += ../../../Source/third_party/fatfs/src/option/unicode.c
+PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/source/*.c)
+PROJ_FILES += $(wildcard ../../../Source/third_party/fatfs/source/*.h)
 
 
 #|--------------------------------------------------------------------------------------|

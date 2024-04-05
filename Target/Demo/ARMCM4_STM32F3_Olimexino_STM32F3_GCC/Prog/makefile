@@ -94,7 +94,7 @@ LIB_PATH  =
 STDFLAGS    = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
 OPTFLAGS    = -Og
-DEPFLAGS  = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
+DEPFLAGS    = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32F303xC
 CFLAGS     += -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))"

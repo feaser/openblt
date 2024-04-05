@@ -339,7 +339,7 @@
               <MiscControls>--diag_suppress=111</MiscControls>
               <Define>USE_FULL_LL_DRIVER,USE_HAL_DRIVER,STM32F303xC</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Boot;..\lib;..\lib\CMSIS\Device\ST\STM32F3xx\Include;..\lib\CMSIS\Include;..\lib\FatFS;..\lib\STM32_USB_Device_Library\Core\Inc;..\lib\STM32F3xx_HAL_Driver\Inc;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_STM32F3;..\..\..\..\Source\ARMCM4_STM32F3\Keil;..\..\..\..\Source\third_party\fatfs\src</IncludePath>
+              <IncludePath>..\..\Boot;..\lib;..\lib\CMSIS\Device\ST\STM32F3xx\Include;..\lib\CMSIS\Include;..\lib\FatFS;..\lib\STM32_USB_Device_Library\Core\Inc;..\lib\STM32F3xx_HAL_Driver\Inc;..\..\..\..\Source;..\..\..\..\Source\ARMCM4_STM32F3;..\..\..\..\Source\ARMCM4_STM32F3\Keil;..\..\..\..\Source\third_party\fatfs\source</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1045,31 +1045,6 @@
               <FilePath>..\..\..\..\Source\ARMCM4_STM32F3\Keil\cpu_comp.c</FilePath>
             </File>
             <File>
-              <FileName>diskio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\diskio.h</FilePath>
-            </File>
-            <File>
-              <FileName>ff.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\ff.c</FilePath>
-            </File>
-            <File>
-              <FileName>ff.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\ff.h</FilePath>
-            </File>
-            <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\integer.h</FilePath>
-            </File>
-            <File>
-              <FileName>unicode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\third_party\fatfs\src\option\unicode.c</FilePath>
-            </File>
-            <File>
               <FileName>mb.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\mb.c</FilePath>
@@ -1083,6 +1058,31 @@
               <FileName>mbrtu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\ARMCM4_STM32F3\mbrtu.c</FilePath>
+            </File>
+            <File>
+              <FileName>diskio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\diskio.h</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ff.h</FilePath>
+            </File>
+            <File>
+              <FileName>ffsystem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ffsystem.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffunicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\fatfs\source\ffunicode.c</FilePath>
             </File>
           </Files>
         </Group>
