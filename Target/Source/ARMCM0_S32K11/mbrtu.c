@@ -26,16 +26,6 @@
 * \endinternal
 ****************************************************************************************/
 
-/************************************************************************************//**
-* \defgroup   Target__template_mbrtu Modbus RTU driver of a port
-* \brief      This module implements the Modbus RTU driver of a microcontroller port. 
-* \details    For the most parts, this driver is already implemented. The only parts that
-*             need porting are the UART initialization, byte reception and byte
-*             transmission.
-* \ingroup    Target__template
-****************************************************************************************/
-
-
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
