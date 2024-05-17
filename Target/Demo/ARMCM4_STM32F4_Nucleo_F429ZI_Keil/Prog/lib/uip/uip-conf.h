@@ -122,9 +122,12 @@ typedef unsigned short uip_stats_t;
 /**
  * uIP buffer size.
  *
+ * The standard size of an MTU on Ethernet is 1500. If you include the
+ * Ethernet header of max. 20 bytes, this is 1520.
+ *
  * \hideinitializer
  */
-#define UIP_CONF_BUFFER_SIZE     1600
+#define UIP_CONF_BUFFER_SIZE     1520
 
 /**
  * CPU byte order.
@@ -150,7 +153,6 @@ typedef unsigned short uip_stats_t;
 
 /* Here we include the header file for the application(s) we use in
    our project. */
-#include "header.h"
 #include "net.h"
 #include "dhcpc.h"
 

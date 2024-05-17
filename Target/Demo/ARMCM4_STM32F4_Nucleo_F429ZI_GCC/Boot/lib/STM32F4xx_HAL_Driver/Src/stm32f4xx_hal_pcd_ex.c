@@ -10,13 +10,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -116,7 +115,9 @@ HAL_StatusTypeDef HAL_PCDEx_SetRxFiFo(PCD_HandleTypeDef *hpcd, uint16_t size)
 
   return HAL_OK;
 }
-#if defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx) || defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) || defined(STM32F413xx) || defined(STM32F423xx)
+#if defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx) || defined(STM32F412Zx) \
+ || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) || defined(STM32F413xx) \
+ || defined(STM32F423xx)
 /**
   * @brief  Activate LPM feature.
   * @param  hpcd PCD handle
@@ -149,8 +150,11 @@ HAL_StatusTypeDef HAL_PCDEx_DeActivateLPM(PCD_HandleTypeDef *hpcd)
 
   return HAL_OK;
 }
-#endif /* defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx) || defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) || defined(STM32F413xx) || defined(STM32F423xx) */
-#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) || defined(STM32F413xx) || defined(STM32F423xx)
+#endif /* defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx) || defined(STM32F412Zx) ||
+          defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) || defined(STM32F413xx) ||
+          defined(STM32F423xx) */
+#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) \
+ || defined(STM32F412Cx) || defined(STM32F413xx) || defined(STM32F423xx)
 /**
   * @brief  Handle BatteryCharging Process.
   * @param  hpcd PCD handle
@@ -164,26 +168,10 @@ void HAL_PCDEx_BCD_VBUSDetect(PCD_HandleTypeDef *hpcd)
   /* Enable DCD : Data Contact Detect */
   USBx->GCCFG |= USB_OTG_GCCFG_DCDEN;
 
-  /* Wait Detect flag or a timeout is happen*/
-  while ((USBx->GCCFG & USB_OTG_GCCFG_DCDET) == 0U)
-  {
-    /* Check for the Timeout */
-    if ((HAL_GetTick() - tickstart) > 1000U)
-    {
-#if (USE_HAL_PCD_REGISTER_CALLBACKS == 1U)
-      hpcd->BCDCallback(hpcd, PCD_BCD_ERROR);
-#else
-      HAL_PCDEx_BCD_Callback(hpcd, PCD_BCD_ERROR);
-#endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
+  /* Wait for Min DCD Timeout */
+  HAL_Delay(300U);
 
-      return;
-    }
-  }
-
-  /* Right response got */
-  HAL_Delay(200U);
-
-  /* Check Detect flag*/
+  /* Check Detect flag */
   if ((USBx->GCCFG & USB_OTG_GCCFG_DCDET) == USB_OTG_GCCFG_DCDET)
   {
 #if (USE_HAL_PCD_REGISTER_CALLBACKS == 1U)
@@ -193,11 +181,11 @@ void HAL_PCDEx_BCD_VBUSDetect(PCD_HandleTypeDef *hpcd)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
   }
 
-  /*Primary detection: checks if connected to Standard Downstream Port
+  /* Primary detection: checks if connected to Standard Downstream Port
   (without charging capability) */
-  USBx->GCCFG &= ~ USB_OTG_GCCFG_DCDEN;
+  USBx->GCCFG &= ~USB_OTG_GCCFG_DCDEN;
   HAL_Delay(50U);
-  USBx->GCCFG |=  USB_OTG_GCCFG_PDEN;
+  USBx->GCCFG |= USB_OTG_GCCFG_PDEN;
   HAL_Delay(50U);
 
   if ((USBx->GCCFG & USB_OTG_GCCFG_PDET) == 0U)
@@ -213,9 +201,9 @@ void HAL_PCDEx_BCD_VBUSDetect(PCD_HandleTypeDef *hpcd)
   {
     /* start secondary detection to check connection to Charging Downstream
     Port or Dedicated Charging Port */
-    USBx->GCCFG &= ~ USB_OTG_GCCFG_PDEN;
+    USBx->GCCFG &= ~(USB_OTG_GCCFG_PDEN);
     HAL_Delay(50U);
-    USBx->GCCFG |=  USB_OTG_GCCFG_SDEN;
+    USBx->GCCFG |= USB_OTG_GCCFG_SDEN;
     HAL_Delay(50U);
 
     if ((USBx->GCCFG & USB_OTG_GCCFG_SDET) == USB_OTG_GCCFG_SDET)
@@ -229,7 +217,7 @@ void HAL_PCDEx_BCD_VBUSDetect(PCD_HandleTypeDef *hpcd)
     }
     else
     {
-      /* case Charging Downstream Port  */
+      /* case Charging Downstream Port */
 #if (USE_HAL_PCD_REGISTER_CALLBACKS == 1U)
       hpcd->BCDCallback(hpcd, PCD_BCD_CHARGING_DOWNSTREAM_PORT);
 #else
@@ -241,11 +229,23 @@ void HAL_PCDEx_BCD_VBUSDetect(PCD_HandleTypeDef *hpcd)
   /* Battery Charging capability discovery finished */
   (void)HAL_PCDEx_DeActivateBCD(hpcd);
 
+  /* Check for the Timeout, else start USB Device */
+  if ((HAL_GetTick() - tickstart) > 1000U)
+  {
 #if (USE_HAL_PCD_REGISTER_CALLBACKS == 1U)
-  hpcd->BCDCallback(hpcd, PCD_BCD_DISCOVERY_COMPLETED);
+    hpcd->BCDCallback(hpcd, PCD_BCD_ERROR);
 #else
-  HAL_PCDEx_BCD_Callback(hpcd, PCD_BCD_DISCOVERY_COMPLETED);
+    HAL_PCDEx_BCD_Callback(hpcd, PCD_BCD_ERROR);
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
+  }
+  else
+  {
+#if (USE_HAL_PCD_REGISTER_CALLBACKS == 1U)
+    hpcd->BCDCallback(hpcd, PCD_BCD_DISCOVERY_COMPLETED);
+#else
+    HAL_PCDEx_BCD_Callback(hpcd, PCD_BCD_DISCOVERY_COMPLETED);
+#endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
+  }
 }
 
 /**
@@ -290,7 +290,8 @@ HAL_StatusTypeDef HAL_PCDEx_DeActivateBCD(PCD_HandleTypeDef *hpcd)
 
   return HAL_OK;
 }
-#endif /* defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) || defined(STM32F413xx) || defined(STM32F423xx) */
+#endif /* defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) ||
+          defined(STM32F412Cx) || defined(STM32F413xx) || defined(STM32F423xx) */
 #endif /* defined (USB_OTG_FS) || defined (USB_OTG_HS) */
 
 /**
@@ -344,5 +345,3 @@ __weak void HAL_PCDEx_BCD_Callback(PCD_HandleTypeDef *hpcd, PCD_BCD_MsgTypeDef m
 /**
   * @}
   */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
