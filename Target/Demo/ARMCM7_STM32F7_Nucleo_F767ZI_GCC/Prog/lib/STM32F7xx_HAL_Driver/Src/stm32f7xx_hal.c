@@ -5,6 +5,17 @@
   * @brief   HAL module driver.
   *          This is the common part of the HAL initialization
   *
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
   @verbatim
   ==============================================================================
                      ##### How to use this driver #####
@@ -18,33 +29,6 @@
          (+) Services HAL APIs
 
   @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
   ******************************************************************************
   */ 
 
@@ -66,11 +50,11 @@
   * @{
   */
 /**
- * @brief STM32F7xx HAL Driver version number V1.2.5
+ * @brief STM32F7xx HAL Driver version number V1.3.0
    */
 #define __STM32F7xx_HAL_VERSION_MAIN   (0x01) /*!< [31:24] main version */
-#define __STM32F7xx_HAL_VERSION_SUB1   (0x02) /*!< [23:16] sub1 version */
-#define __STM32F7xx_HAL_VERSION_SUB2   (0x05) /*!< [15:8]  sub2 version */
+#define __STM32F7xx_HAL_VERSION_SUB1   (0x03) /*!< [23:16] sub1 version */
+#define __STM32F7xx_HAL_VERSION_SUB2   (0x00) /*!< [15:8]  sub2 version */
 #define __STM32F7xx_HAL_VERSION_RC     (0x00) /*!< [7:0]  release candidate */ 
 #define __STM32F7xx_HAL_VERSION         ((__STM32F7xx_HAL_VERSION_MAIN << 24)\
                                         |(__STM32F7xx_HAL_VERSION_SUB1 << 16)\
@@ -83,8 +67,8 @@
   */
 
 /* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/** @addtogroup HAL_Private_Variables
+/* Exported variables ---------------------------------------------------------*/
+/** @addtogroup HAL_Exported_Variables
   * @{
   */
 __IO uint32_t uwTick;
@@ -154,9 +138,9 @@ HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT;  /* 1KHz */
 HAL_StatusTypeDef HAL_Init(void)
 {
   /* Configure Instruction cache through ART accelerator */ 
-#if (ART_ACCLERATOR_ENABLE != 0)
-   __HAL_FLASH_ART_ENABLE();
-#endif /* ART_ACCLERATOR_ENABLE */
+#if (ART_ACCELERATOR_ENABLE != 0)
+  __HAL_FLASH_ART_ENABLE();
+#endif /* ART_ACCELERATOR_ENABLE */
 
   /* Configure Flash prefetch */
 #if (PREFETCH_ENABLE != 0U)
@@ -168,10 +152,10 @@ HAL_StatusTypeDef HAL_Init(void)
 
   /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
   HAL_InitTick(TICK_INT_PRIORITY);
-  
+
   /* Init the low level hardware */
   HAL_MspInit();
-  
+
   /* Return function status */
   return HAL_OK;
 }
@@ -201,7 +185,7 @@ HAL_StatusTypeDef HAL_DeInit(void)
 
   /* De-Init the low level hardware */
   HAL_MspDeInit();
-    
+
   /* Return function status */
   return HAL_OK;
 }
@@ -335,14 +319,26 @@ uint32_t HAL_GetTickPrio(void)
 HAL_StatusTypeDef HAL_SetTickFreq(HAL_TickFreqTypeDef Freq)
 {
   HAL_StatusTypeDef status  = HAL_OK;
+  HAL_TickFreqTypeDef prevTickFreq;
+
   assert_param(IS_TICKFREQ(Freq));
 
   if (uwTickFreq != Freq)
   {
+    /* Back up uwTickFreq frequency */
+    prevTickFreq = uwTickFreq;
+
+    /* Update uwTickFreq global variable used by HAL_InitTick() */
     uwTickFreq = Freq;
 
     /* Apply the new tick Freq  */
     status = HAL_InitTick(uwTickPrio);
+
+    if (status != HAL_OK)
+    {
+      /* Restore previous tick frequency */
+      uwTickFreq = prevTickFreq;
+    }
   }
 
   return status;
@@ -422,7 +418,7 @@ __weak void HAL_ResumeTick(void)
   */
 uint32_t HAL_GetHalVersion(void)
 {
- return __STM32F7xx_HAL_VERSION;
+  return __STM32F7xx_HAL_VERSION;
 }
 
 /**
@@ -449,7 +445,7 @@ uint32_t HAL_GetDEVID(void)
   */
 uint32_t HAL_GetUIDw0(void)
 {
-   return(READ_REG(*((uint32_t *)UID_BASE)));
+  return(READ_REG(*((uint32_t *)UID_BASE)));
 }
 
 /**
@@ -458,7 +454,7 @@ uint32_t HAL_GetUIDw0(void)
   */
 uint32_t HAL_GetUIDw1(void)
 {
-   return(READ_REG(*((uint32_t *)(UID_BASE + 4U))));
+  return(READ_REG(*((uint32_t *)(UID_BASE + 4U))));
 }
 
 /**
@@ -467,7 +463,7 @@ uint32_t HAL_GetUIDw1(void)
   */
 uint32_t HAL_GetUIDw2(void)
 {
-   return(READ_REG(*((uint32_t *)(UID_BASE + 8U))));
+  return(READ_REG(*((uint32_t *)(UID_BASE + 8U))));
 }
 
 /**
@@ -569,7 +565,6 @@ void HAL_EnableFMCMemorySwapping(void)
   */
 void HAL_DisableFMCMemorySwapping(void)
 {
-
   SYSCFG->MEMRMP &= (uint32_t)~((uint32_t)SYSCFG_MEMRMP_SWP_FMC);
 }
 
@@ -621,4 +616,4 @@ void HAL_DisableMemorySwappingBank(void)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+

@@ -6,30 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 #if defined(USE_FULL_LL_DRIVER)
@@ -179,7 +161,7 @@ uint32_t RCC_PLLI2S_GetFreqDomain_SPDIFRX(void);
   */
 ErrorStatus LL_RCC_DeInit(void)
 {
-  uint32_t vl_mask = 0xFFFFFFFFU;
+  __IO uint32_t vl_mask;
 
   /* Set HSION bit */
   LL_RCC_HSI_Enable();
@@ -191,10 +173,13 @@ ErrorStatus LL_RCC_DeInit(void)
   /* Reset CFGR register */
   LL_RCC_WriteReg(CFGR, 0x00000000U);
 
+  /* Read CR register */
+  vl_mask = LL_RCC_ReadReg(CR);
+  
   /* Reset HSEON, HSEBYP, PLLON, CSSON, PLLI2SON and PLLSAION bits */
   CLEAR_BIT(vl_mask, (RCC_CR_HSEON | RCC_CR_HSEBYP | RCC_CR_PLLON | RCC_CR_CSSON | RCC_CR_PLLSAION | RCC_CR_PLLI2SON));
 
-  /* Write new mask in CR register */
+  /* Write new value in CR register */
   LL_RCC_WriteReg(CR, vl_mask);
 
   /* Set HSITRIM bits to the reset value*/
@@ -771,7 +756,6 @@ uint32_t LL_RCC_GetLPTIMClockFreq(uint32_t LPTIMxSource)
   *         @arg @ref LL_RCC_SAI2_CLKSOURCE
   * @retval SAI clock frequency (in Hz)
   *         - @ref  LL_RCC_PERIPH_FREQUENCY_NO indicates that PLL is not ready
-  *         - @ref  LL_RCC_PERIPH_FREQUENCY_NA indicates that external clock is used
   */
 uint32_t LL_RCC_GetSAIClockFreq(uint32_t SAIxSource)
 {
@@ -821,8 +805,10 @@ uint32_t LL_RCC_GetSAIClockFreq(uint32_t SAIxSource)
         break;
 #endif /* RCC_SAI1SEL_PLLSRC_SUPPORT */
       case LL_RCC_SAI1_CLKSOURCE_PIN:        /* External input clock used as SAI1 clock source */
+        sai_frequency = EXTERNAL_SAI1_CLOCK_VALUE;
+        break;
+
       default:
-        sai_frequency = LL_RCC_PERIPH_FREQUENCY_NA;
         break;
     }
   }
@@ -869,9 +855,11 @@ uint32_t LL_RCC_GetSAIClockFreq(uint32_t SAIxSource)
         break;
 #endif /* RCC_SAI2SEL_PLLSRC_SUPPORT */
         case LL_RCC_SAI2_CLKSOURCE_PIN:      /* External input clock used as SAI2 clock source */
-        default:
-          sai_frequency = LL_RCC_PERIPH_FREQUENCY_NA;
+          sai_frequency = EXTERNAL_SAI2_CLOCK_VALUE;
           break;
+
+      default:
+        break;
       }
     }
   }
@@ -1590,4 +1578,3 @@ uint32_t RCC_PLLI2S_GetFreqDomain_I2S(void)
 
 #endif /* USE_FULL_LL_DRIVER */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

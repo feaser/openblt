@@ -70,30 +70,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */ 
 
@@ -676,8 +658,13 @@ static void FLASH_Program_DoubleWord(uint32_t Address, uint64_t Data)
   FLASH->CR |= FLASH_PSIZE_DOUBLE_WORD;
   FLASH->CR |= FLASH_CR_PG;
 
-  /* Program the double-word */
+  /* Program first word */
   *(__IO uint32_t*)Address = (uint32_t)Data;
+  /* Barrier to ensure programming is performed in 2 steps, in right order
+    (independently of compiler optimization behavior) */
+  __ISB();
+
+  /* Program second word */
   *(__IO uint32_t*)(Address+4) = (uint32_t)(Data >> 32);
 
   /* Data synchronous Barrier (DSB) Just after the write operation
@@ -689,7 +676,7 @@ static void FLASH_Program_DoubleWord(uint32_t Address, uint64_t Data)
 /**
   * @brief  Program word (32-bit) at a specified address.
   * @note   This function must be used when the device voltage range is from
-  *         2.7V to 3.6V.
+  *         2.7V to 3.3V.
   *
   * @note   If an erase and a program operations are requested simultaneously,    
   *         the erase operation is performed before the program one.
@@ -718,7 +705,7 @@ static void FLASH_Program_Word(uint32_t Address, uint32_t Data)
 /**
   * @brief  Program a half-word (16-bit) at a specified address.
   * @note   This function must be used when the device voltage range is from
-  *         2.7V to 3.6V.
+  *         2.1V to 3.6V.
   *
   * @note   If an erase and a program operations are requested simultaneously,    
   *         the erase operation is performed before the program one.
@@ -748,7 +735,7 @@ static void FLASH_Program_HalfWord(uint32_t Address, uint16_t Data)
 /**
   * @brief  Program byte (8-bit) at a specified address.
   * @note   This function must be used when the device voltage range is from
-  *         2.7V to 3.6V.
+  *         1.7V to 3.6V.
   *
   * @note   If an erase and a program operations are requested simultaneously,    
   *         the erase operation is performed before the program one.
@@ -830,4 +817,3 @@ static void FLASH_SetErrorCode(void)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -557,9 +557,9 @@ void HAL_ETH_RxLinkCallback(void     ** pStart,
 *            H A L   M S P   R O U T I N E S
 ****************************************************************************************/
 /************************************************************************************//**
-** \brief     EETH MSP Initialization.
+** \brief     ETH MSP Initialization.
 ** \details   This function configures the hardware resources used in this example.
-** \param     heth ETH handle pointer,
+** \param     heth ETH handle pointer.
 **
 ****************************************************************************************/
 void HAL_ETH_MspInit(ETH_HandleTypeDef* heth)
@@ -619,7 +619,7 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* heth)
 /************************************************************************************//**
 ** \brief     ETH MSP De-Initialization.
 ** \details   This function freeze the hardware resources used in this example.
-** \param     heth ETH handle pointer,
+** \param     heth ETH handle pointer.
 **
 ****************************************************************************************/
 void HAL_ETH_MspDeInit(ETH_HandleTypeDef* heth)
