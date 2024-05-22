@@ -63,6 +63,7 @@ static void MX_USART2_UART_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -113,6 +114,7 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
+
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_1);
 
   /* HSE configuration and activation */
@@ -122,7 +124,7 @@ void SystemClock_Config(void)
   }
 
   /* Set AHB prescaler*/
-  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
+  LL_RCC_SetAHBPrescaler(LL_RCC_HCLK_DIV_1);
 
   /* Sysclk activation on the HSE */
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_HSE);
@@ -222,6 +224,8 @@ static void MX_USART2_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOC);
@@ -245,6 +249,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

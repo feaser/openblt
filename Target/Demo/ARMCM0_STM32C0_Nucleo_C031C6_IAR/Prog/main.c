@@ -173,7 +173,7 @@ void HAL_MspInit(void)
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
 
   /* SVC_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SVC_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(SVCall_IRQn, 0, 0);
   /* PendSV_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(PendSV_IRQn, 0, 0);
   /* SysTick_IRQn interrupt configuration */
