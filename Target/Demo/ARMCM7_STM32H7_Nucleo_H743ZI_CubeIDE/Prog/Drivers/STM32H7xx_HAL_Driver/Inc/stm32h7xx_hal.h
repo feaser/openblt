@@ -7,13 +7,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -53,7 +52,9 @@ typedef enum
   */
 
 /* Exported constants --------------------------------------------------------*/
-
+/** @defgroup HAL_Exported_Constants HAL Exported Constants
+  * @{
+  */
 /** @defgroup REV_ID device revision ID
   * @{
   */
@@ -65,14 +66,18 @@ typedef enum
 /**
   * @}
   */
+  
+/** @defgroup SYSCFG_Exported_Constants SYSCFG Exported Constants
+  * @{
+  */
 
 /** @defgroup SYSCFG_VREFBUF_VoltageScale VREFBUF Voltage Scale
   * @{
   */
-#define SYSCFG_VREFBUF_VOLTAGE_SCALE0   VREFBUF_CSR_VRS_OUT2   /*!< Voltage reference scale 0 (VREF_OUT2) */
-#define SYSCFG_VREFBUF_VOLTAGE_SCALE1   VREFBUF_CSR_VRS_OUT1   /*!< Voltage reference scale 1 (VREF_OUT1) */
-#define SYSCFG_VREFBUF_VOLTAGE_SCALE2   VREFBUF_CSR_VRS_OUT4   /*!< Voltage reference scale 2 (VREF_OUT4) */
-#define SYSCFG_VREFBUF_VOLTAGE_SCALE3   VREFBUF_CSR_VRS_OUT3   /*!< Voltage reference scale 3 (VREF_OUT3) */
+#define SYSCFG_VREFBUF_VOLTAGE_SCALE0   VREFBUF_CSR_VRS_OUT1   /*!< Voltage reference scale 0 (VREF_OUT1) */
+#define SYSCFG_VREFBUF_VOLTAGE_SCALE1   VREFBUF_CSR_VRS_OUT2   /*!< Voltage reference scale 1 (VREF_OUT2) */
+#define SYSCFG_VREFBUF_VOLTAGE_SCALE2   VREFBUF_CSR_VRS_OUT3   /*!< Voltage reference scale 2 (VREF_OUT3) */
+#define SYSCFG_VREFBUF_VOLTAGE_SCALE3   VREFBUF_CSR_VRS_OUT4   /*!< Voltage reference scale 3 (VREF_OUT4) */
 
 
 #define IS_SYSCFG_VREFBUF_VOLTAGE_SCALE(__SCALE__)  (((__SCALE__) == SYSCFG_VREFBUF_VOLTAGE_SCALE0) || \
@@ -231,7 +236,9 @@ typedef enum
   * @}
   */
 
-
+/**
+  * @}
+  */
 
 
 /** @defgroup EXTI_Event_Input_Config  Event Input Config
@@ -697,9 +704,14 @@ typedef enum
 /**
   * @}
   */
-
+/**
+  * @}
+  */
 
 /* Exported macro ------------------------------------------------------------*/
+/** @defgroup HAL_Exported_Macros HAL Exported Macros
+  * @{
+  */
 #if defined(DUAL_CORE)
 /** @defgroup ART_Exported_Macros ART Exported Macros
   * @{
@@ -834,6 +846,10 @@ typedef enum
 #endif /* !SYSCFG_PMCR_BOOSTEN */
 /**
   * @}
+  */
+
+/** @defgroup DBG_Exported_Macros DBG Exported Macros
+  * @{
   */
 
 /** @brief  Freeze/Unfreeze Peripherals in Debug mode
@@ -1003,6 +1019,12 @@ typedef enum
 #define __HAL_DBGMCU_UnFreeze2_IWDG1()          (DBGMCU->APB4FZ2  &= ~ (DBGMCU_APB4FZ2_DBG_IWDG1))
 
 #endif /*DUAL_CORE*/
+/**
+  * @}
+  */
+/**
+  * @}
+  */
 
 /** @defgroup HAL_Private_Macros HAL Private Macros
   * @{
@@ -1027,15 +1049,27 @@ extern HAL_TickFreqTypeDef uwTickFreq;
   */
 
 /* Exported functions --------------------------------------------------------*/
-
+/** @defgroup HAL_Exported_Functions HAL Exported Functions
+  * @{
+  */
 /* Initialization and de-initialization functions  ******************************/
+/** @defgroup HAL_Group1 Initialization and de-initialization Functions
+  * @{
+  */
 HAL_StatusTypeDef HAL_Init(void);
 HAL_StatusTypeDef HAL_DeInit(void);
 void HAL_MspInit(void);
 void HAL_MspDeInit(void);
 HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority);
 
+/**
+  * @}
+  */
+
 /* Peripheral Control functions  ************************************************/
+/** @defgroup HAL_Group2 HAL Control functions
+ *
+ */
 void HAL_IncTick(void);
 void HAL_Delay(uint32_t Delay);
 uint32_t HAL_GetTick(void);
@@ -1079,12 +1113,12 @@ void HAL_SYSCFG_CompensationCodeConfig(uint32_t SYSCFG_PMOSCode, uint32_t SYSCFG
 #if defined(SYSCFG_CCCR_NCC_MMC)
 void HAL_SYSCFG_VDDMMC_CompensationCodeConfig(uint32_t SYSCFG_PMOSCode, uint32_t SYSCFG_NMOSCode);
 #endif /* SYSCFG_CCCR_NCC_MMC */
-void HAL_EnableDBGSleepMode(void);
-void HAL_DisableDBGSleepMode(void);
-void HAL_EnableDBGStopMode(void);
-void HAL_DisableDBGStopMode(void);
-void HAL_EnableDBGStandbyMode(void);
-void HAL_DisableDBGStandbyMode(void);
+void HAL_DBGMCU_EnableDBGSleepMode(void);
+void HAL_DBGMCU_DisableDBGSleepMode(void);
+void HAL_DBGMCU_EnableDBGStopMode(void);
+void HAL_DBGMCU_DisableDBGStopMode(void);
+void HAL_DBGMCU_EnableDBGStandbyMode(void);
+void HAL_DBGMCU_DisableDBGStandbyMode(void);
 #if defined(DUAL_CORE)
 void HAL_EnableDomain2DBGSleepMode(void);
 void HAL_DisableDomain2DBGSleepMode(void);
@@ -1093,10 +1127,14 @@ void HAL_DisableDomain2DBGStopMode(void);
 void HAL_EnableDomain2DBGStandbyMode(void);
 void HAL_DisableDomain2DBGStandbyMode(void);
 #endif /*DUAL_CORE*/
+#if defined(DBGMCU_CR_DBG_STOPD3)
 void HAL_EnableDomain3DBGStopMode(void);
 void HAL_DisableDomain3DBGStopMode(void);
+#endif /*DBGMCU_CR_DBG_STOPD3*/
+#if defined(DBGMCU_CR_DBG_STANDBYD3)
 void HAL_EnableDomain3DBGStandbyMode(void);
 void HAL_DisableDomain3DBGStandbyMode(void);
+#endif /*DBGMCU_CR_DBG_STANDBYD3*/
 void HAL_EXTI_EdgeConfig(uint32_t EXTI_Line , uint32_t EXTI_Edge );
 void HAL_EXTI_GenerateSWInterrupt(uint32_t EXTI_Line);
 #if defined(DUAL_CORE)
@@ -1130,10 +1168,18 @@ void HAL_SYSCFG_ADC2ALT_Rout1Config(uint32_t Adc2AltRout1);
   * @}
   */
 
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* STM32H7xx_HAL_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
