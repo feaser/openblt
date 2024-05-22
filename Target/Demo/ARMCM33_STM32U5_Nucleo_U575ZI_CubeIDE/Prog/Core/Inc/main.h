@@ -51,8 +51,8 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-void   MX_FDCAN1_Init(void);
-void   MX_USART1_UART_Init(void);
+void MX_FDCAN1_Init(void);
+void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN EFP */
 

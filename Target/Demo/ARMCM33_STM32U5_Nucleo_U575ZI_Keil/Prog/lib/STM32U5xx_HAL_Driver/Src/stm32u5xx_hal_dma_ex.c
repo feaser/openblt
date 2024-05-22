@@ -25,7 +25,7 @@
   **********************************************************************************************************************
   @verbatim
   ======================================================================================================================
-                                 ############### How to use this driver ###############
+                                 ##### How to use this driver #####
   ======================================================================================================================
     [..]
       Alternatively to the normal programming mode, a DMA channel can be programmed by a list of transfers, known as
@@ -162,6 +162,8 @@
               in memory.
               Placing DMA linked-list in SRAM must be done in accordance to product specification to ensure that the
               link access port can access to the specified SRAM.
+              (++) The DMA linked-list node parameter address should be 32bit aligned and should not exceed the 64 KByte
+              addressable space.
 
           (+) Use HAL_DMAEx_List_GetNodeConfig() to get the specified configuration parameter on building node.
               This API can be used when need to change few parameter to build new node.
@@ -376,8 +378,8 @@
       In order to avoid some CPU data processing in several cases, the DMA channel provides some features related to
       FIFO capabilities titled data handling.
                 (++) Padding pattern
-                     Padding selected patter (zero padding or sign extension) when the source data width is smaller than
-                     the destination data width at single level.
+                     Padding selected pattern (zero padding or sign extension) when the source data width is smaller
+                     than the destination data width at single level.
                      Zero padding       (Source : 0xABAB ------> Destination : 0xABAB0000)
                      Sign bit extension (Source : 0x0ABA ------> Destination : 0x00000ABA)
                                         (Source : 0xFABA ------> Destination : 0xFFFFFABA)
@@ -393,16 +395,17 @@
                      UnPack (Source : 0xABCD     ------> Destination : 0xAB, 0xCD)
                 (++) Exchange :
                      Exchange data at byte and half-word on the destination and at byte level on the source.
-                     Source byte exchange (Source : 0xAB12CD34 ------> Destination : 0xABCD1234)
-                     Destination byte exchange (Source : 0xAB12CD34 ------> Destination : 0x12AB34CD)
-                     Destination half-word exchange (Source : 0xAB12CD34 ------> Destination : 0xCD34AB12)
+                     Considering source and destination are both word type. Exchange operation can be as follows.
+                     In examples below, one exchange setting is enabled at a time.
+                     Source byte exchange only (Source : 0xAB12CD34 ------> Destination : 0xABCD1234)
+                     Destination byte exchange only (Source : 0xAB12CD34 ------> Destination : 0x12AB34CD)
+                     Destination half-word exchange only (Source : 0xAB12CD34 ------> Destination : 0xCD34AB12)
 
           (+) Use HAL_DMAEx_ConfigDataHandling() to configure data handling features. Previous elementary explained
               can be combined according to application needs.
               (++) This API is complementary of normal transfers.
               (++) This API must not be called for linked-list transfers as data handling information are configured at
                    node level.
-              (++) This API must be called only for DMA channel that supports data handling feature.
 
     *** User sequence ***
     [..]
@@ -578,7 +581,7 @@ static void DMA_List_CleanQueue(DMA_QListTypeDef *const pQList);
   *
 @verbatim
   ======================================================================================================================
-                 ############### Linked-List Initialization and De-Initialization Functions ###############
+                 ##### Linked-List Initialization and De-Initialization Functions #####
   ======================================================================================================================
     [..]
       This section provides functions allowing to initialize and de-initialize the DMA channel in linked-list mode.
@@ -669,8 +672,10 @@ HAL_StatusTypeDef HAL_DMAEx_List_Init(DMA_HandleTypeDef *const hdma)
   */
 HAL_StatusTypeDef HAL_DMAEx_List_DeInit(DMA_HandleTypeDef *const hdma)
 {
+
   /* Get DMA instance */
   DMA_TypeDef *p_dma_instance;
+
   /* Get tick number */
   uint32_t tickstart = HAL_GetTick();
 
@@ -682,6 +687,7 @@ HAL_StatusTypeDef HAL_DMAEx_List_DeInit(DMA_HandleTypeDef *const hdma)
 
   /* Check the parameters */
   assert_param(IS_DMA_ALL_INSTANCE(hdma->Instance));
+
 
   /* Get DMA instance */
   p_dma_instance = GET_DMA_INSTANCE(hdma);
@@ -722,13 +728,15 @@ HAL_StatusTypeDef HAL_DMAEx_List_DeInit(DMA_HandleTypeDef *const hdma)
     hdma->Instance->CBR2 = 0U;
   }
 
+
   /* Clear privilege attribute */
   CLEAR_BIT(p_dma_instance->PRIVCFGR, (1UL << (GET_DMA_CHANNEL(hdma) & 0x1FU)));
+
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
   /* Clear secure attribute */
   CLEAR_BIT(p_dma_instance->SECCFGR, (1UL << (GET_DMA_CHANNEL(hdma) & 0x1FU)));
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
 
   /* Clear all flags */
   __HAL_DMA_CLEAR_FLAG(hdma, (DMA_FLAG_TC | DMA_FLAG_HT | DMA_FLAG_DTE | DMA_FLAG_ULE | DMA_FLAG_USE | DMA_FLAG_SUSP |
@@ -780,7 +788,7 @@ HAL_StatusTypeDef HAL_DMAEx_List_DeInit(DMA_HandleTypeDef *const hdma)
   *
 @verbatim
   ======================================================================================================================
-                         ############### Linked-List IO Operation Functions ###############
+                         ##### Linked-List IO Operation Functions #####
   ======================================================================================================================
     [..]
       This section provides functions allowing to :
@@ -946,7 +954,7 @@ HAL_StatusTypeDef HAL_DMAEx_List_Start_IT(DMA_HandleTypeDef *const hdma)
   *
 @verbatim
   ======================================================================================================================
-                         ############### Linked-List Management Functions ###############
+                         ##### Linked-List Management Functions #####
   ======================================================================================================================
     [..]
       This section provides functions allowing to :
@@ -1030,6 +1038,8 @@ HAL_StatusTypeDef HAL_DMAEx_List_Start_IT(DMA_HandleTypeDef *const hdma)
   *                       specified DMA linked-list Node.
   * @param  pNode       : Pointer to a DMA_NodeTypeDef structure that contains linked-list node registers
   *                       configurations.
+  * @note   The DMA linked-list node parameter address should be 32bit aligned and should not exceed the 64 KByte
+  *         addressable space.
   * @retval HAL status.
   */
 HAL_StatusTypeDef HAL_DMAEx_List_BuildNode(DMA_NodeConfTypeDef const *const pNodeConfig,
@@ -1054,6 +1064,7 @@ HAL_StatusTypeDef HAL_DMAEx_List_BuildNode(DMA_NodeConfTypeDef const *const pNod
   assert_param(IS_DMA_DIRECTION(pNodeConfig->Init.Direction));
   assert_param(IS_DMA_TCEM_EVENT_MODE(pNodeConfig->Init.TransferEventMode));
   assert_param(IS_DMA_BLOCK_HW_REQUEST(pNodeConfig->Init.BlkHWRequest));
+  assert_param(IS_DMA_MODE(pNodeConfig->Init.Mode));
 
   /* Check DMA channel parameters */
   if ((pNodeConfig->NodeType & DMA_CHANNEL_TYPE_GPDMA) == DMA_CHANNEL_TYPE_GPDMA)
@@ -1090,7 +1101,7 @@ HAL_StatusTypeDef HAL_DMAEx_List_BuildNode(DMA_NodeConfTypeDef const *const pNod
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
   assert_param(IS_DMA_ATTRIBUTES(pNodeConfig->SrcSecure));
   assert_param(IS_DMA_ATTRIBUTES(pNodeConfig->DestSecure));
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
 
   /* Build the DMA channel node */
   DMA_List_BuildNode(pNodeConfig, pNode);
@@ -3210,7 +3221,7 @@ HAL_StatusTypeDef HAL_DMAEx_List_UnLinkQ(DMA_HandleTypeDef *const hdma)
   *
 @verbatim
   ======================================================================================================================
-             ############### Data handling, repeated block and trigger configuration functions ###############
+             ##### Data handling, repeated block and trigger configuration functions #####
   ======================================================================================================================
     [..]
       This section provides functions allowing to :
@@ -3437,7 +3448,7 @@ HAL_StatusTypeDef HAL_DMAEx_ConfigRepeatBlock(DMA_HandleTypeDef *const hdma,
   *
 @verbatim
   ======================================================================================================================
-                         ############### Suspend and resume operation functions ###############
+                         ##### Suspend and resume operation functions #####
   ======================================================================================================================
     [..]
       This section provides functions allowing to :
@@ -3600,7 +3611,7 @@ HAL_StatusTypeDef HAL_DMAEx_Resume(DMA_HandleTypeDef *const hdma)
   *
 @verbatim
   ======================================================================================================================
-                               ############### Fifo status function ###############
+                               ##### Fifo status function #####
   ======================================================================================================================
     [..]
       This section provides function allowing to get DMA channel FIFO level.
@@ -3722,7 +3733,7 @@ static void DMA_List_BuildNode(DMA_NodeConfTypeDef const *const pNodeConfig,
   {
     pNode->LinkRegisters[NODE_CTR1_DEFAULT_OFFSET] |= DMA_CTR1_DSEC;
   }
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
 
   /* Add parameters related to DMA configuration */
   if ((pNodeConfig->NodeType & DMA_CHANNEL_TYPE_GPDMA) == DMA_CHANNEL_TYPE_GPDMA)
@@ -3833,7 +3844,6 @@ static void DMA_List_BuildNode(DMA_NodeConfTypeDef const *const pNodeConfig,
   /* Update CDAR register value ***************************************************************************************/
   pNode->LinkRegisters[NODE_CDAR_DEFAULT_OFFSET] = pNodeConfig->DstAddress;
   /*********************************************************************************** CDAR register value is updated */
-
 
   /* Check if the selected channel is 2D addressing */
   if ((pNodeConfig->NodeType & DMA_CHANNEL_TYPE_2D_ADDR) == DMA_CHANNEL_TYPE_2D_ADDR)
@@ -3958,7 +3968,7 @@ static void DMA_List_GetNodeConfig(DMA_NodeConfTypeDef *const pNodeConfig,
   {
     pNodeConfig->DestSecure = DMA_CHANNEL_DEST_NSEC;
   }
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
   /*********************************************************************************** CTR1 fields values are updated */
 
 
@@ -4360,7 +4370,7 @@ static void DMA_List_FillNode(DMA_NodeTypeDef const *const pSrcNode,
                               DMA_NodeTypeDef *const pDestNode)
 {
   /* Repeat for all register nodes */
-  for (uint32_t reg_idx = 0U; reg_idx < NODE_CLLR_IDX_POS; reg_idx++)
+  for (uint32_t reg_idx = 0U; reg_idx < NODE_MAXIMUM_SIZE; reg_idx++)
   {
     pDestNode->LinkRegisters[reg_idx] = pSrcNode->LinkRegisters[reg_idx];
   }
@@ -4385,12 +4395,12 @@ static void DMA_List_ConvertNodeToDynamic(uint32_t ContextNodeAddr,
   uint32_t cllr_idx = RegisterNumber - 1U;
   DMA_NodeTypeDef *context_node = (DMA_NodeTypeDef *)ContextNodeAddr;
   DMA_NodeTypeDef *current_node = (DMA_NodeTypeDef *)CurrentNodeAddr;
-  uint32_t update_link[NODE_CLLR_IDX_POS] = {DMA_CLLR_UT1, DMA_CLLR_UT2, DMA_CLLR_UB1, DMA_CLLR_USA,
+  uint32_t update_link[NODE_MAXIMUM_SIZE] = {DMA_CLLR_UT1, DMA_CLLR_UT2, DMA_CLLR_UB1, DMA_CLLR_USA,
                                              DMA_CLLR_UDA, DMA_CLLR_UT3, DMA_CLLR_UB2, DMA_CLLR_ULL
                                             };
 
   /* Update ULL position according to register number */
-  update_link[cllr_idx] = update_link[NODE_CLLR_IDX_POS - 1U];
+  update_link[cllr_idx] = update_link[NODE_MAXIMUM_SIZE - 1U];
 
   /* Repeat for all node registers */
   while (contextnode_reg_counter != RegisterNumber)
@@ -4450,12 +4460,12 @@ static void DMA_List_ConvertNodeToStatic(uint32_t ContextNodeAddr,
   uint32_t cllr_mask;
   DMA_NodeTypeDef *context_node = (DMA_NodeTypeDef *)ContextNodeAddr;
   DMA_NodeTypeDef *current_node = (DMA_NodeTypeDef *)CurrentNodeAddr;
-  uint32_t update_link[NODE_CLLR_IDX_POS] = {DMA_CLLR_UT1, DMA_CLLR_UT2, DMA_CLLR_UB1, DMA_CLLR_USA,
+  uint32_t update_link[NODE_MAXIMUM_SIZE] = {DMA_CLLR_UT1, DMA_CLLR_UT2, DMA_CLLR_UB1, DMA_CLLR_USA,
                                              DMA_CLLR_UDA, DMA_CLLR_UT3, DMA_CLLR_UB2, DMA_CLLR_ULL
                                             };
 
   /* Update ULL position according to register number */
-  update_link[RegisterNumber - 1U] = update_link[NODE_CLLR_IDX_POS - 1U];
+  update_link[RegisterNumber - 1U] = update_link[NODE_MAXIMUM_SIZE - 1U];
 
   /* Get context node CLLR information */
   cllr_idx  = (context_node->NodeInfo & NODE_CLLR_IDX) >> NODE_CLLR_IDX_POS;
@@ -4525,7 +4535,7 @@ static void DMA_List_ClearUnusedFields(DMA_NodeTypeDef *const pNode,
                                        uint32_t FirstUnusedField)
 {
   /* Repeat for all unused fields */
-  for (uint32_t reg_idx = FirstUnusedField; reg_idx < NODE_CLLR_IDX_POS; reg_idx++)
+  for (uint32_t reg_idx = FirstUnusedField; reg_idx < NODE_MAXIMUM_SIZE; reg_idx++)
   {
     pNode->LinkRegisters[reg_idx] = 0U;
   }
