@@ -282,7 +282,7 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
     txMsgHeader.IdType = FDCAN_EXTENDED_ID;
   }
   txMsgHeader.TxFrameType = FDCAN_DATA_FRAME;
-  txMsgHeader.DataLength = len << 16U;
+  txMsgHeader.DataLength = len;
   txMsgHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
   txMsgHeader.BitRateSwitch = FDCAN_BRS_OFF;
   txMsgHeader.FDFormat = FDCAN_CLASSIC_CAN;
@@ -368,7 +368,7 @@ blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
     /* store the data length. */
     if (result == BLT_TRUE)
     {
-      *len = (blt_int8u)(rxMsgHeader.DataLength >> 16U);
+      *len = (blt_int8u)(rxMsgHeader.DataLength);
     }
   }
 

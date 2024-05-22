@@ -3,6 +3,18 @@
   * @file    stm32l5xx_ll_system.h
   * @author  MCD Application Team
   * @brief   Header file of SYSTEM LL module.
+  *
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
   @verbatim
   ==============================================================================
                      ##### How to use this driver #####
@@ -16,17 +28,6 @@
       (+) Access to VREFBUF registers
 
   @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
   ******************************************************************************
   */
 
@@ -59,16 +60,16 @@ extern "C" {
   * @{
   */
 /**
- * @brief VREFBUF VREF_SC0 & VREF_SC1 calibration values
- */
+  * @brief VREFBUF VREF_SC0 & VREF_SC1 calibration values
+  */
 #define VREFBUF_SC0_CAL_ADDR   ((uint8_t*) (0x0BFA0579UL)) /*!<  Address of VREFBUF trimming value for VRS=0,
                                                                  VREF_SC0 in STM32L5 datasheet */
 #define VREFBUF_SC1_CAL_ADDR   ((uint8_t*) (0x0BFA0530UL)) /*!<  Address of VREFBUF trimming value for VRS=1,
                                                                  VREF_SC1 in STM32L5 datasheet */
 
 /**
- * @brief Power-down in Run mode Flash key
- */
+  * @brief Power-down in Run mode Flash key
+  */
 #define FLASH_PDKEY1                  0x04152637U /*!< Flash power down key1 */
 #define FLASH_PDKEY2                  0xFAFBFCFDU /*!< Flash power down key2: used with FLASH_PDKEY1
                                                        to unlock the RUN_PD bit in FLASH_ACR */
@@ -1341,4 +1342,4 @@ __STATIC_INLINE void LL_FLASH_DisableSleepPowerDown(void)
 
 #endif /* STM32L5xx_LL_SYSTEM_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+

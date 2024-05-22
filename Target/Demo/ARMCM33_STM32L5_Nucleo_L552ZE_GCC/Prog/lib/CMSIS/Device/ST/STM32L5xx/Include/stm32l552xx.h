@@ -7,18 +7,17 @@
   *          This file contains:
   *           - Data structures and the address mapping for all peripherals
   *           - Peripheral's registers declarations and bits definition
-  *           - Macros to access peripheral’s registers hardware
+  *           - Macros to access peripheral's registers hardware
   *
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under Apache License, Version 2.0,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/Apache-2.0
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -44,7 +43,10 @@ extern "C" {
   * @{
   */
 
-
+/**
+  * @brief stm32l552xx Interrupt Number Definition, according to the selected device
+  *        in @ref Library_configuration_section
+  */
 
 /* =========================================================================================================================== */
 /* ================                                Interrupt Number Definition                                ================ */
@@ -164,8 +166,8 @@ typedef enum
   HASH_IRQn                 = 96,     /*!< HASH global interrupt                                             */
   LPTIM3_IRQn               = 98,     /*!< LPTIM3 global interrupt                                           */
   SPI3_IRQn                 = 99,     /*!< SPI3 global interrupt                                             */
-  I2C4_EV_IRQn              = 100,    /*!< I2C4 Event interrupt                                              */
-  I2C4_ER_IRQn              = 101,    /*!< I2C4 Error interrupt                                              */
+  I2C4_ER_IRQn              = 100,    /*!< I2C4 Error interrupt                                              */
+  I2C4_EV_IRQn              = 101,    /*!< I2C4 Event interrupt                                              */
   DFSDM1_FLT0_IRQn          = 102,    /*!< DFSDM1 Filter 0 global interrupt                                  */
   DFSDM1_FLT1_IRQn          = 103,    /*!< DFSDM1 Filter 1 global interrupt                                  */
   DFSDM1_FLT2_IRQn          = 104,    /*!< DFSDM1 Filter 2 global interrupt                                  */
@@ -212,11 +214,11 @@ typedef enum
 #define __FPU_PRESENT             1U        /* FPU present */
 #define __DSP_PRESENT             1U        /* DSP extension present */
 
+#include <core_cm33.h>                      /*!< ARM Cortex-M33 processor and core peripherals */
+#include "system_stm32l5xx.h"               /*!< STM32L5xx System */
+
+
 /** @} */ /* End of group Configuration_of_CMSIS */
-
-
-#include <core_cm33.h>                       /*!< ARM Cortex-M33 processor and core peripherals */
-#include "system_stm32l5xx.h"                /*!< STM32L5xx System */
 
 
 /* =========================================================================================================================== */
@@ -1022,7 +1024,9 @@ typedef struct
   __IO uint32_t SMISR;       /*!< TAMP secure masked interrupt status register, Address offset: 0x38 */
   __IO uint32_t SCR;         /*!< TAMP status clear register,               Address offset: 0x3C */
   __IO uint32_t COUNTR;      /*!< TAMP monotonic counter register,          Address offset: 0x40 */
-       uint32_t RESERVED1[47];/*!< Reserved,                                Address offset: 0x54 -- 0xFC */
+       uint32_t RESERVED1[3];/*!< Reserved,                                 Address offset: 0x44 -- 0x4C */
+  __IO uint32_t CFGR;        /*!< TAMP configuration register,              Address offset: 0x50 */
+       uint32_t RESERVED2[43];/*!< Reserved,                                Address offset: 0x54 -- 0xFC */
   __IO uint32_t BKP0R;       /*!< TAMP backup register 0,                   Address offset: 0x100 */
   __IO uint32_t BKP1R;       /*!< TAMP backup register 1,                   Address offset: 0x104 */
   __IO uint32_t BKP2R;       /*!< TAMP backup register 2,                   Address offset: 0x108 */
@@ -1298,7 +1302,7 @@ typedef struct
   #pragma pop
 #elif defined (__ICCARM__)
   /* leave anonymous unions enabled */
-#elif (__ARMCC_VERSION >= 6010050)
+#elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
   #pragma clang diagnostic pop
 #elif defined (__GNUC__)
   /* anonymous unions are enabled by default */
@@ -1712,12 +1716,12 @@ typedef struct
 
 /**
   * @brief  Prototype of RSSLIB Close and exit HDP Function
-  * @detail This function close the requested hdp area passed in input
+  * @details This function close the requested hdp area passed in input
   *         parameter and jump to the reset handler present within the
   *         Vector table. The function does not return on successful execution.
   * @param  HdpArea notifies which hdp area to close, can be a combination of
   *         hdpa area 1 and hdp area 2
-  * @param  pointer on the vector table containing the reset handler the function
+  * @param  VectorTableAddr pointer on the vector table containing the reset handler the function
   *         jumps to.
   * @retval RSSLIB_RSS_ERROR on error on input parameter, otherwise does not return.
   */
@@ -11022,6 +11026,9 @@ typedef struct
 /*                         Reset and Clock Control                            */
 /*                                                                            */
 /******************************************************************************/
+#define RCC_MAX_FREQUENCY           110000000U         /*!< Max frequency of family in Hz*/
+#define RCC_MAX_FREQUENCY_MHZ       110U               /*!< Max frequency of family in MHz*/
+
 /********************  Bit definition for RCC_CR register  ********************/
 #define RCC_CR_MSION_Pos                     (0U)
 #define RCC_CR_MSION_Msk                     (0x1UL << RCC_CR_MSION_Pos)       /*!< 0x00000001 */
@@ -13974,9 +13981,20 @@ typedef struct
 #define TAMP_SCR_CITAMP8F            TAMP_SCR_CITAMP8F_Msk
 
 /********************  Bits definition for TAMP_COUNTR register  ***************/
-#define TAMP_COUNTR_Pos               (16U)
-#define TAMP_COUNTR_Msk               (0xFFFFUL << TAMP_COUNTR_Pos)            /*!< 0xFFFF0000 */
-#define TAMP_COUNTR                   TAMP_COUNTR_Msk
+#define TAMP_COUNTR_Pos              (16U)
+#define TAMP_COUNTR_Msk              (0xFFFFUL << TAMP_COUNTR_Pos)            /*!< 0xFFFF0000 */
+#define TAMP_COUNTR                  TAMP_COUNTR_Msk
+
+/********************  Bits definition for TAMP_CFGR register  *****************/
+#define TAMP_CFGR_TMONEN_Pos         (1U)
+#define TAMP_CFGR_TMONEN_Msk         (0x1UL << TAMP_CFGR_TMONEN_Pos)           /*!< 0x00000002 */
+#define TAMP_CFGR_TMONEN             TAMP_CFGR_TMONEN_Msk
+#define TAMP_CFGR_VMONEN_Pos         (2U)
+#define TAMP_CFGR_VMONEN_Msk         (0x1UL << TAMP_CFGR_VMONEN_Pos)           /*!< 0x00000004 */
+#define TAMP_CFGR_VMONEN             TAMP_CFGR_VMONEN_Msk
+#define TAMP_CFGR_WUTMONEN_Pos       (3U)
+#define TAMP_CFGR_WUTMONEN_Msk       (0x1UL << TAMP_CFGR_WUTMONEN_Pos)         /*!< 0x00000008 */
+#define TAMP_CFGR_WUTMONEN           TAMP_CFGR_WUTMONEN_Msk
 
 /********************  Bits definition for TAMP_BKP0R register  ***************/
 #define TAMP_BKP0R_Pos               (0U)
@@ -16048,7 +16066,7 @@ typedef struct
 /******************  Bit definition for SYSCFG_CSLCKR register  ***************/
 #define SYSCFG_CSLCKR_LOCKSVTAIRCR_Pos  (0U)
 #define SYSCFG_CSLCKR_LOCKSVTAIRCR_Msk  (0x1UL << SYSCFG_CSLCKR_LOCKSVTAIRCR_Pos)/*!< 0x00000001 */
-#define SYSCFG_CSLCKR_LOCKSVTAIRCR      SYSCFG_CSLCKR_LOCKSVTAIRCR_Msk         /*!< Disable changes to the secure vectror table address, handling of system faults */
+#define SYSCFG_CSLCKR_LOCKSVTAIRCR      SYSCFG_CSLCKR_LOCKSVTAIRCR_Msk         /*!< Disable changes to the secure vector table address, handling of system faults */
 #define SYSCFG_CSLCKR_LOCKSMPU_Pos      (1U)
 #define SYSCFG_CSLCKR_LOCKSMPU_Msk      (0x1UL << SYSCFG_CSLCKR_LOCKSMPU_Pos)  /*!< 0x00000002 */
 #define SYSCFG_CSLCKR_LOCKSMPU          SYSCFG_CSLCKR_LOCKSMPU_Msk             /*!< Disable changes to the secure MPU registers writes by SW or debug agent */
@@ -20381,5 +20399,3 @@ typedef struct
 #endif
 
 #endif  /* STM32L552xx_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

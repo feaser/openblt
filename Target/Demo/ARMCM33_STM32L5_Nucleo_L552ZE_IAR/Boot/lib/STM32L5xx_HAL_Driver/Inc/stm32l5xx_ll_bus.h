@@ -23,14 +23,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -219,7 +217,7 @@ extern "C" {
   *         @arg @ref LL_AHB1_GRP1_PERIPH_TSC
   *         @arg @ref LL_AHB1_GRP1_PERIPH_GTZC
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB1_GRP1_EnableClock(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -247,7 +245,7 @@ __STATIC_INLINE void LL_AHB1_GRP1_EnableClock(uint32_t Periphs)
   *         @arg @ref LL_AHB1_GRP1_PERIPH_TSC
   *         @arg @ref LL_AHB1_GRP1_PERIPH_GTZC
   * @retval State of Periphs (1 or 0).
-*/
+  */
 __STATIC_INLINE uint32_t LL_AHB1_GRP1_IsEnabledClock(uint32_t Periphs)
 {
   return ((READ_BIT(RCC->AHB1ENR, Periphs) == Periphs) ? 1UL : 0UL);
@@ -272,7 +270,7 @@ __STATIC_INLINE uint32_t LL_AHB1_GRP1_IsEnabledClock(uint32_t Periphs)
   *         @arg @ref LL_AHB1_GRP1_PERIPH_TSC
   *         @arg @ref LL_AHB1_GRP1_PERIPH_GTZC
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB1_GRP1_DisableClock(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->AHB1ENR, Periphs);
@@ -295,7 +293,7 @@ __STATIC_INLINE void LL_AHB1_GRP1_DisableClock(uint32_t Periphs)
   *         @arg @ref LL_AHB1_GRP1_PERIPH_CRC
   *         @arg @ref LL_AHB1_GRP1_PERIPH_TSC
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB1_GRP1_ForceReset(uint32_t Periphs)
 {
   SET_BIT(RCC->AHB1RSTR, Periphs);
@@ -318,7 +316,7 @@ __STATIC_INLINE void LL_AHB1_GRP1_ForceReset(uint32_t Periphs)
   *         @arg @ref LL_AHB1_GRP1_PERIPH_CRC
   *         @arg @ref LL_AHB1_GRP1_PERIPH_TSC
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB1_GRP1_ReleaseReset(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->AHB1RSTR, Periphs);
@@ -347,7 +345,7 @@ __STATIC_INLINE void LL_AHB1_GRP1_ReleaseReset(uint32_t Periphs)
   *         @arg @ref LL_AHB1_GRP1_PERIPH_GTZC
   *         @arg @ref LL_AHB1_GRP1_PERIPH_ICACHE
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB1_GRP1_EnableClockStopSleep(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -380,7 +378,7 @@ __STATIC_INLINE void LL_AHB1_GRP1_EnableClockStopSleep(uint32_t Periphs)
   *         @arg @ref LL_AHB1_GRP1_PERIPH_GTZC
   *         @arg @ref LL_AHB1_GRP1_PERIPH_ICACHE
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB1_GRP1_DisableClockStopSleep(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->AHB1SMENR, Periphs);
@@ -431,7 +429,7 @@ __STATIC_INLINE void LL_AHB1_GRP1_DisableClockStopSleep(uint32_t Periphs)
   *
   *         (*) value not defined in all devices.
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB2_GRP1_EnableClock(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -477,7 +475,7 @@ __STATIC_INLINE void LL_AHB2_GRP1_EnableClock(uint32_t Periphs)
   *
   *         (*) value not defined in all devices.
   * @retval State of Periphs (1 or 0).
-*/
+  */
 __STATIC_INLINE uint32_t LL_AHB2_GRP1_IsEnabledClock(uint32_t Periphs)
 {
   return ((READ_BIT(RCC->AHB2ENR, Periphs) == Periphs) ? 1UL : 0UL);
@@ -520,7 +518,7 @@ __STATIC_INLINE uint32_t LL_AHB2_GRP1_IsEnabledClock(uint32_t Periphs)
   *
   *         (*) value not defined in all devices.
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB2_GRP1_DisableClock(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->AHB2ENR, Periphs);
@@ -563,7 +561,7 @@ __STATIC_INLINE void LL_AHB2_GRP1_DisableClock(uint32_t Periphs)
   *
   *         (*) value not defined in all devices.
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB2_GRP1_ForceReset(uint32_t Periphs)
 {
   SET_BIT(RCC->AHB2RSTR, Periphs);
@@ -606,7 +604,7 @@ __STATIC_INLINE void LL_AHB2_GRP1_ForceReset(uint32_t Periphs)
   *
   *         (*) value not defined in all devices.
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB2_GRP1_ReleaseReset(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->AHB2RSTR, Periphs);
@@ -651,7 +649,7 @@ __STATIC_INLINE void LL_AHB2_GRP1_ReleaseReset(uint32_t Periphs)
   *
   *         (*) value not defined in all devices.
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB2_GRP1_EnableClockStopSleep(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -700,7 +698,7 @@ __STATIC_INLINE void LL_AHB2_GRP1_EnableClockStopSleep(uint32_t Periphs)
   *
   *         (*) value not defined in all devices.
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB2_GRP1_DisableClockStopSleep(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->AHB2SMENR, Periphs);
@@ -723,7 +721,7 @@ __STATIC_INLINE void LL_AHB2_GRP1_DisableClockStopSleep(uint32_t Periphs)
   *         @arg @ref LL_AHB3_GRP1_PERIPH_FMC
   *         @arg @ref LL_AHB3_GRP1_PERIPH_OSPI1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB3_GRP1_EnableClock(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -741,7 +739,7 @@ __STATIC_INLINE void LL_AHB3_GRP1_EnableClock(uint32_t Periphs)
   *         @arg @ref LL_AHB3_GRP1_PERIPH_FMC
   *         @arg @ref LL_AHB3_GRP1_PERIPH_OSPI1
   * @retval State of Periphs (1 or 0).
-*/
+  */
 __STATIC_INLINE uint32_t LL_AHB3_GRP1_IsEnabledClock(uint32_t Periphs)
 {
   return ((READ_BIT(RCC->AHB3ENR, Periphs) == Periphs) ? 1UL : 0UL);
@@ -756,7 +754,7 @@ __STATIC_INLINE uint32_t LL_AHB3_GRP1_IsEnabledClock(uint32_t Periphs)
   *         @arg @ref LL_AHB3_GRP1_PERIPH_FMC
   *         @arg @ref LL_AHB3_GRP1_PERIPH_OSPI1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB3_GRP1_DisableClock(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->AHB3ENR, Periphs);
@@ -771,7 +769,7 @@ __STATIC_INLINE void LL_AHB3_GRP1_DisableClock(uint32_t Periphs)
   *         @arg @ref LL_AHB3_GRP1_PERIPH_FMC
   *         @arg @ref LL_AHB3_GRP1_PERIPH_OSPI1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB3_GRP1_ForceReset(uint32_t Periphs)
 {
   SET_BIT(RCC->AHB3RSTR, Periphs);
@@ -786,7 +784,7 @@ __STATIC_INLINE void LL_AHB3_GRP1_ForceReset(uint32_t Periphs)
   *         @arg @ref LL_AHB3_GRP1_PERIPH_FMC
   *         @arg @ref LL_AHB3_GRP1_PERIPH_OSPI1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB3_GRP1_ReleaseReset(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->AHB3RSTR, Periphs);
@@ -801,7 +799,7 @@ __STATIC_INLINE void LL_AHB3_GRP1_ReleaseReset(uint32_t Periphs)
   *         @arg @ref LL_AHB3_GRP1_PERIPH_FMC
   *         @arg @ref LL_AHB3_GRP1_PERIPH_OSPI1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB3_GRP1_EnableClockStopSleep(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -820,7 +818,7 @@ __STATIC_INLINE void LL_AHB3_GRP1_EnableClockStopSleep(uint32_t Periphs)
   *         @arg @ref LL_AHB3_GRP1_PERIPH_FMC
   *         @arg @ref LL_AHB3_GRP1_PERIPH_OSPI1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_AHB3_GRP1_DisableClockStopSleep(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->AHB3SMENR, Periphs);
@@ -883,7 +881,7 @@ __STATIC_INLINE void LL_AHB3_GRP1_DisableClockStopSleep(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP1_PERIPH_OPAMP
   *         @arg @ref LL_APB1_GRP1_PERIPH_LPTIM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP1_EnableClock(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -912,7 +910,7 @@ __STATIC_INLINE void LL_APB1_GRP1_EnableClock(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP2_PERIPH_USB
   *         @arg @ref LL_APB1_GRP2_PERIPH_UCPD1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP2_EnableClock(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -970,7 +968,7 @@ __STATIC_INLINE void LL_APB1_GRP2_EnableClock(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP1_PERIPH_OPAMP
   *         @arg @ref LL_APB1_GRP1_PERIPH_LPTIM1
   * @retval State of Periphs (1 or 0).
-*/
+  */
 __STATIC_INLINE uint32_t LL_APB1_GRP1_IsEnabledClock(uint32_t Periphs)
 {
   return ((READ_BIT(RCC->APB1ENR1, Periphs) == Periphs) ? 1UL : 0UL);
@@ -994,7 +992,7 @@ __STATIC_INLINE uint32_t LL_APB1_GRP1_IsEnabledClock(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP2_PERIPH_USB
   *         @arg @ref LL_APB1_GRP2_PERIPH_UCPD1
   * @retval State of Periphs (1 or 0).
-*/
+  */
 __STATIC_INLINE uint32_t LL_APB1_GRP2_IsEnabledClock(uint32_t Periphs)
 {
   return ((READ_BIT(RCC->APB1ENR2, Periphs) == Periphs) ? 1UL : 0UL);
@@ -1049,7 +1047,7 @@ __STATIC_INLINE uint32_t LL_APB1_GRP2_IsEnabledClock(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP1_PERIPH_OPAMP
   *         @arg @ref LL_APB1_GRP1_PERIPH_LPTIM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP1_DisableClock(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->APB1ENR1, Periphs);
@@ -1074,7 +1072,7 @@ __STATIC_INLINE void LL_APB1_GRP1_DisableClock(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP2_PERIPH_USB
   *         @arg @ref LL_APB1_GRP2_PERIPH_UCPD1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP2_DisableClock(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->APB1ENR2, Periphs);
@@ -1127,7 +1125,7 @@ __STATIC_INLINE void LL_APB1_GRP2_DisableClock(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP1_PERIPH_OPAMP
   *         @arg @ref LL_APB1_GRP1_PERIPH_LPTIM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP1_ForceReset(uint32_t Periphs)
 {
   SET_BIT(RCC->APB1RSTR1, Periphs);
@@ -1152,7 +1150,7 @@ __STATIC_INLINE void LL_APB1_GRP1_ForceReset(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP2_PERIPH_USB
   *         @arg @ref LL_APB1_GRP2_PERIPH_UCPD1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP2_ForceReset(uint32_t Periphs)
 {
   SET_BIT(RCC->APB1RSTR2, Periphs);
@@ -1205,7 +1203,7 @@ __STATIC_INLINE void LL_APB1_GRP2_ForceReset(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP1_PERIPH_OPAMP
   *         @arg @ref LL_APB1_GRP1_PERIPH_LPTIM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP1_ReleaseReset(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->APB1RSTR1, Periphs);
@@ -1230,7 +1228,7 @@ __STATIC_INLINE void LL_APB1_GRP1_ReleaseReset(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP2_PERIPH_USB
   *         @arg @ref LL_APB1_GRP2_PERIPH_UCPD1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP2_ReleaseReset(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->APB1RSTR2, Periphs);
@@ -1285,7 +1283,7 @@ __STATIC_INLINE void LL_APB1_GRP2_ReleaseReset(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP1_PERIPH_OPAMP
   *         @arg @ref LL_APB1_GRP1_PERIPH_LPTIM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP1_EnableClockStopSleep(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -1314,7 +1312,7 @@ __STATIC_INLINE void LL_APB1_GRP1_EnableClockStopSleep(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP2_PERIPH_USB
   *         @arg @ref LL_APB1_GRP2_PERIPH_UCPD1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP2_EnableClockStopSleep(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -1373,7 +1371,7 @@ __STATIC_INLINE void LL_APB1_GRP2_EnableClockStopSleep(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP1_PERIPH_OPAMP
   *         @arg @ref LL_APB1_GRP1_PERIPH_LPTIM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP1_DisableClockStopSleep(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->APB1SMENR1, Periphs);
@@ -1398,7 +1396,7 @@ __STATIC_INLINE void LL_APB1_GRP1_DisableClockStopSleep(uint32_t Periphs)
   *         @arg @ref LL_APB1_GRP2_PERIPH_USB
   *         @arg @ref LL_APB1_GRP2_PERIPH_UCPD1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB1_GRP2_DisableClockStopSleep(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->APB1SMENR2, Periphs);
@@ -1439,7 +1437,7 @@ __STATIC_INLINE void LL_APB1_GRP2_DisableClockStopSleep(uint32_t Periphs)
   *         @arg @ref LL_APB2_GRP1_PERIPH_SAI2
   *         @arg @ref LL_APB2_GRP1_PERIPH_DFSDM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB2_GRP1_EnableClock(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -1475,7 +1473,7 @@ __STATIC_INLINE void LL_APB2_GRP1_EnableClock(uint32_t Periphs)
   *         @arg @ref LL_APB2_GRP1_PERIPH_SAI2
   *         @arg @ref LL_APB2_GRP1_PERIPH_DFSDM1
   * @retval State of Periphs (1 or 0).
-*/
+  */
 __STATIC_INLINE uint32_t LL_APB2_GRP1_IsEnabledClock(uint32_t Periphs)
 {
   return ((READ_BIT(RCC->APB2ENR, Periphs) == Periphs) ? 1UL : 0UL);
@@ -1508,7 +1506,7 @@ __STATIC_INLINE uint32_t LL_APB2_GRP1_IsEnabledClock(uint32_t Periphs)
   *         @arg @ref LL_APB2_GRP1_PERIPH_SAI2
   *         @arg @ref LL_APB2_GRP1_PERIPH_DFSDM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB2_GRP1_DisableClock(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->APB2ENR, Periphs);
@@ -1541,7 +1539,7 @@ __STATIC_INLINE void LL_APB2_GRP1_DisableClock(uint32_t Periphs)
   *         @arg @ref LL_APB2_GRP1_PERIPH_SAI2
   *         @arg @ref LL_APB2_GRP1_PERIPH_DFSDM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB2_GRP1_ForceReset(uint32_t Periphs)
 {
   SET_BIT(RCC->APB2RSTR, Periphs);
@@ -1574,7 +1572,7 @@ __STATIC_INLINE void LL_APB2_GRP1_ForceReset(uint32_t Periphs)
   *         @arg @ref LL_APB2_GRP1_PERIPH_SAI2
   *         @arg @ref LL_APB2_GRP1_PERIPH_DFSDM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB2_GRP1_ReleaseReset(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->APB2RSTR, Periphs);
@@ -1607,7 +1605,7 @@ __STATIC_INLINE void LL_APB2_GRP1_ReleaseReset(uint32_t Periphs)
   *         @arg @ref LL_APB2_GRP1_PERIPH_SAI2
   *         @arg @ref LL_APB2_GRP1_PERIPH_DFSDM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB2_GRP1_EnableClockStopSleep(uint32_t Periphs)
 {
   __IO uint32_t tmpreg;
@@ -1644,7 +1642,7 @@ __STATIC_INLINE void LL_APB2_GRP1_EnableClockStopSleep(uint32_t Periphs)
   *         @arg @ref LL_APB2_GRP1_PERIPH_SAI2
   *         @arg @ref LL_APB2_GRP1_PERIPH_DFSDM1
   * @retval None
-*/
+  */
 __STATIC_INLINE void LL_APB2_GRP1_DisableClockStopSleep(uint32_t Periphs)
 {
   CLEAR_BIT(RCC->APB2SMENR, Periphs);
@@ -1675,4 +1673,3 @@ __STATIC_INLINE void LL_APB2_GRP1_DisableClockStopSleep(uint32_t Periphs)
 
 #endif /* STM32L5xx_LL_BUS_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -12,14 +12,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -40,8 +38,8 @@
 /* Private typedef -----------------------------------------------------------*/
 /* Private defines -----------------------------------------------------------*/
 /** @defgroup RCCEx_Private_Constants RCCEx Private Constants
- * @{
- */
+  * @{
+  */
 #define PLLSAI1_TIMEOUT_VALUE    ((uint32_t)2U)    /* 2 ms (minimum Tick + 1) */
 #define PLLSAI2_TIMEOUT_VALUE    ((uint32_t)2U)    /* 2 ms (minimum Tick + 1) */
 #define PLL_TIMEOUT_VALUE        ((uint32_t)2U)    /* 2 ms (minimum Tick + 1) */
@@ -71,8 +69,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /** @defgroup RCCEx_Private_Functions RCCEx Private Functions
- * @{
- */
+  * @{
+  */
 static HAL_StatusTypeDef RCCEx_PLLSource_Enable(uint32_t PllSource);
 static HAL_StatusTypeDef RCCEx_PLLSAI1_Config(RCC_PLLSAI1InitTypeDef *pPllSai1, uint32_t Divider);
 static uint32_t          RCCEx_PLLSAI1_GetVCOFreq(void);
@@ -91,8 +89,8 @@ static uint32_t          RCCEx_GetSAIxPeriphCLKFreq(uint32_t PeriphClk, uint32_t
   */
 
 /** @defgroup RCCEx_Exported_Functions_Group1 Extended Peripheral Control functions
- *  @brief  Extended Peripheral Control functions
- *
+  *  @brief  Extended Peripheral Control functions
+  *
 @verbatim
  ===============================================================================
                 ##### Extended Peripheral Control functions  #####
@@ -276,7 +274,11 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClk
     {
       if ((HAL_GetTick() - tickstart) > RCC_DBP_TIMEOUT_VALUE)
       {
-        ret = HAL_TIMEOUT;
+        /* New check to avoid false timeout detection in case of preemption */
+        if ((PWR->CR1 & PWR_CR1_DBP) == 0U)
+        {
+          ret = HAL_TIMEOUT;
+        }
         break;
       }
     }
@@ -308,7 +310,11 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClk
         {
           if ((HAL_GetTick() - tickstart) > RCC_LSE_TIMEOUT_VALUE)
           {
-            ret = HAL_TIMEOUT;
+            /* New check to avoid false timeout detection in case of preemption */
+            if (READ_BIT(RCC->BDCR, RCC_BDCR_LSERDY) == 0U)
+            {
+              ret = HAL_TIMEOUT;
+            }
             break;
           }
         }
@@ -661,7 +667,7 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClk
 
     /* Configure the OctoSPI clock source */
     __HAL_RCC_OSPI_CONFIG(PeriphClkInit->OspiClockSelection);
-    
+
     if (PeriphClkInit->OspiClockSelection == RCC_OSPICLKSOURCE_PLL)
     {
       /* Enable PLL48M1CLK output clock */
@@ -1597,8 +1603,8 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
   */
 
 /** @defgroup RCCEx_Exported_Functions_Group2 Extended Clock management functions
- *  @brief  Extended Clock management functions
- *
+  *  @brief  Extended Clock management functions
+  *
 @verbatim
  ===============================================================================
                 ##### Extended clock management functions  #####
@@ -1642,7 +1648,11 @@ HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI1(RCC_PLLSAI1InitTypeDef  *PLLSAI1Init)
   {
     if ((HAL_GetTick() - tickstart) > PLLSAI1_TIMEOUT_VALUE)
     {
-      status = HAL_TIMEOUT;
+      /* New check to avoid false timeout detection in case of preemption */
+      if (READ_BIT(RCC->CR, RCC_CR_PLLSAI1RDY) != 0U)
+      {
+        status = HAL_TIMEOUT;
+      }
       break;
     }
   }
@@ -1672,7 +1682,11 @@ HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI1(RCC_PLLSAI1InitTypeDef  *PLLSAI1Init)
       {
         if ((HAL_GetTick() - tickstart) > PLLSAI1_TIMEOUT_VALUE)
         {
-          status = HAL_TIMEOUT;
+          /* New check to avoid false timeout detection in case of preemption */
+          if (READ_BIT(RCC->CR, RCC_CR_PLLSAI1RDY) == 0U)
+          {
+            status = HAL_TIMEOUT;
+          }
           break;
         }
       }
@@ -1702,7 +1716,11 @@ HAL_StatusTypeDef HAL_RCCEx_DisablePLLSAI1(void)
   {
     if ((HAL_GetTick() - tickstart) > PLLSAI1_TIMEOUT_VALUE)
     {
-      status = HAL_TIMEOUT;
+      /* New check to avoid false timeout detection in case of preemption */
+      if (READ_BIT(RCC->CR, RCC_CR_PLLSAI1RDY) != 0U)
+      {
+        status = HAL_TIMEOUT;
+      }
       break;
     }
   }
@@ -1743,7 +1761,11 @@ HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI2(RCC_PLLSAI2InitTypeDef  *PLLSAI2Init)
   {
     if ((HAL_GetTick() - tickstart) > PLLSAI2_TIMEOUT_VALUE)
     {
-      status = HAL_TIMEOUT;
+      /* New check to avoid false timeout detection in case of preemption */
+      if (READ_BIT(RCC->CR, RCC_CR_PLLSAI2RDY) != 0U)
+      {
+        status = HAL_TIMEOUT;
+      }
       break;
     }
   }
@@ -1773,7 +1795,11 @@ HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI2(RCC_PLLSAI2InitTypeDef  *PLLSAI2Init)
       {
         if ((HAL_GetTick() - tickstart) > PLLSAI2_TIMEOUT_VALUE)
         {
-          status = HAL_TIMEOUT;
+          /* New check to avoid false timeout detection in case of preemption */
+          if (READ_BIT(RCC->CR, RCC_CR_PLLSAI2RDY) == 0U)
+          {
+            status = HAL_TIMEOUT;
+          }
           break;
         }
       }
@@ -1803,7 +1829,11 @@ HAL_StatusTypeDef HAL_RCCEx_DisablePLLSAI2(void)
   {
     if ((HAL_GetTick() - tickstart) > PLLSAI2_TIMEOUT_VALUE)
     {
-      status = HAL_TIMEOUT;
+      /* New check to avoid false timeout detection in case of preemption */
+      if (READ_BIT(RCC->CR, RCC_CR_PLLSAI2RDY) != 0U)
+      {
+        status = HAL_TIMEOUT;
+      }
       break;
     }
   }
@@ -2013,8 +2043,8 @@ void HAL_RCCEx_DisableMSIPLLMode(void)
 #if defined(CRS)
 
 /** @defgroup RCCEx_Exported_Functions_Group3 Extended Clock Recovery System Control functions
- *  @brief  Extended Clock Recovery System Control functions
- *
+  *  @brief  Extended Clock Recovery System Control functions
+  *
 @verbatim
  ===============================================================================
                 ##### Extended Clock Recovery System Control functions  #####
@@ -2031,7 +2061,7 @@ void HAL_RCCEx_DisableMSIPLLMode(void)
               (+++) Default values can be set for frequency Error Measurement (reload and error limit)
                         and also HSI48 oscillator smooth trimming.
               (+++) Macro __HAL_RCC_CRS_RELOADVALUE_CALCULATE can be also used to calculate
-                        directly reload value with target and sychronization frequencies values
+                        directly reload value with target and synchronization frequencies values
           (##) Call function HAL_RCCEx_CRSConfig which
               (+++) Resets CRS registers to their default values.
               (+++) Configures CRS registers with synchronization configuration
@@ -2073,8 +2103,8 @@ void HAL_RCCEx_DisableMSIPLLMode(void)
           This function can be called before calling HAL_RCCEx_CRSConfig (for instance in Systick handler)
 
 @endverbatim
- * @{
- */
+  * @{
+  */
 
 /**
   * @brief  Start automatic synchronization for polling mode.
@@ -2152,24 +2182,25 @@ void HAL_RCCEx_CRSGetSynchronizationInfo(RCC_CRSSynchroInfoTypeDef *pSynchroInfo
 }
 
 /**
-* @brief Wait for CRS Synchronization status.
-* @param Timeout  Duration of the timeout
-* @note  Timeout is based on the maximum time to receive a SYNC event based on synchronization
-*        frequency.
-* @note    If Timeout set to HAL_MAX_DELAY, HAL_TIMEOUT will be never returned.
-* @retval Combination of Synchronization status
-*          This parameter can be a combination of the following values:
-*            @arg @ref RCC_CRS_TIMEOUT
-*            @arg @ref RCC_CRS_SYNCOK
-*            @arg @ref RCC_CRS_SYNCWARN
-*            @arg @ref RCC_CRS_SYNCERR
-*            @arg @ref RCC_CRS_SYNCMISS
-*            @arg @ref RCC_CRS_TRIMOVF
-*/
+  * @brief Wait for CRS Synchronization status.
+  * @param Timeout  Duration of the timeout
+  * @note  Timeout is based on the maximum time to receive a SYNC event based on synchronization
+  *        frequency.
+  * @note    If Timeout set to HAL_MAX_DELAY, HAL_TIMEOUT will be never returned.
+  * @retval Combination of Synchronization status
+  *          This parameter can be a combination of the following values:
+  *            @arg @ref RCC_CRS_TIMEOUT
+  *            @arg @ref RCC_CRS_SYNCOK
+  *            @arg @ref RCC_CRS_SYNCWARN
+  *            @arg @ref RCC_CRS_SYNCERR
+  *            @arg @ref RCC_CRS_SYNCMISS
+  *            @arg @ref RCC_CRS_TRIMOVF
+  */
 uint32_t HAL_RCCEx_CRSWaitSynchronization(uint32_t Timeout)
 {
   uint32_t crsstatus = RCC_CRS_NONE;
   uint32_t tickstart;
+  HAL_StatusTypeDef status = HAL_OK;
 
   /* Get timeout */
   tickstart = HAL_GetTick();
@@ -2181,7 +2212,7 @@ uint32_t HAL_RCCEx_CRSWaitSynchronization(uint32_t Timeout)
     {
       if (((HAL_GetTick() - tickstart) > Timeout) || (Timeout == 0U))
       {
-        crsstatus = RCC_CRS_TIMEOUT;
+        status = HAL_TIMEOUT;
       }
     }
     /* Check CRS SYNCOK flag  */
@@ -2240,9 +2271,13 @@ uint32_t HAL_RCCEx_CRSWaitSynchronization(uint32_t Timeout)
       /* frequency error counter reached a zero value */
       __HAL_RCC_CRS_CLEAR_FLAG(RCC_CRS_FLAG_ESYNC);
     }
-  }
-  while (RCC_CRS_NONE == crsstatus);
+  } while ((crsstatus == RCC_CRS_NONE) && (status == HAL_OK));
 
+  if (crsstatus == RCC_CRS_NONE)
+  {
+    crsstatus = RCC_CRS_TIMEOUT;
+  }
+  
   return crsstatus;
 }
 
@@ -2374,8 +2409,8 @@ __weak void HAL_RCCEx_CRS_ErrorCallback(uint32_t Error)
   */
 
 /** @addtogroup RCCEx_Private_Functions
- * @{
- */
+  * @{
+  */
 
 static HAL_StatusTypeDef RCCEx_PLLSource_Enable(uint32_t PllSource)
 {
@@ -2399,7 +2434,11 @@ static HAL_StatusTypeDef RCCEx_PLLSource_Enable(uint32_t PllSource)
         {
           if ((HAL_GetTick() - tickstart) > MSI_TIMEOUT_VALUE)
           {
-            status = HAL_TIMEOUT;
+            /* New check to avoid false timeout detection in case of preemption */
+            if (READ_BIT(RCC->CR, RCC_CR_MSIRDY) == 0U)
+            {
+              status = HAL_TIMEOUT;
+            }
             break;
           }
         }
@@ -2421,7 +2460,11 @@ static HAL_StatusTypeDef RCCEx_PLLSource_Enable(uint32_t PllSource)
         {
           if ((HAL_GetTick() - tickstart) > HSI_TIMEOUT_VALUE)
           {
-            status = HAL_TIMEOUT;
+            /* New check to avoid false timeout detection in case of preemption */
+            if (READ_BIT(RCC->CR, RCC_CR_HSIRDY) == 0U)
+            {
+              status = HAL_TIMEOUT;
+            }
             break;
           }
         }
@@ -2443,7 +2486,11 @@ static HAL_StatusTypeDef RCCEx_PLLSource_Enable(uint32_t PllSource)
         {
           if ((HAL_GetTick() - tickstart) > HSE_TIMEOUT_VALUE)
           {
-            status = HAL_TIMEOUT;
+            /* New check to avoid false timeout detection in case of preemption */
+            if (READ_BIT(RCC->CR, RCC_CR_HSERDY) == 0U)
+            {
+              status = HAL_TIMEOUT;
+            }
             break;
           }
         }
@@ -2523,7 +2570,11 @@ static HAL_StatusTypeDef RCCEx_PLLSAI1_Config(RCC_PLLSAI1InitTypeDef *pPllSai1, 
     {
       if ((HAL_GetTick() - tickstart) > PLLSAI1_TIMEOUT_VALUE)
       {
-        status = HAL_TIMEOUT;
+        /* New check to avoid false timeout detection in case of preemption */
+        if (READ_BIT(RCC->CR, RCC_CR_PLLSAI1RDY) != 0U)
+        {
+          status = HAL_TIMEOUT;
+        }
         break;
       }
     }
@@ -2578,7 +2629,11 @@ static HAL_StatusTypeDef RCCEx_PLLSAI1_Config(RCC_PLLSAI1InitTypeDef *pPllSai1, 
       {
         if ((HAL_GetTick() - tickstart) > PLLSAI1_TIMEOUT_VALUE)
         {
-          status = HAL_TIMEOUT;
+          /* New check to avoid false timeout detection in case of preemption */
+          if (READ_BIT(RCC->CR, RCC_CR_PLLSAI1RDY) == 0U)
+          {
+            status = HAL_TIMEOUT;
+          }
           break;
         }
       }
@@ -2655,7 +2710,11 @@ static HAL_StatusTypeDef RCCEx_PLLSAI2_Config(RCC_PLLSAI2InitTypeDef *pPllSai2, 
     {
       if ((HAL_GetTick() - tickstart) > PLLSAI2_TIMEOUT_VALUE)
       {
-        status = HAL_TIMEOUT;
+        /* New check to avoid false timeout detection in case of preemption */
+        if (READ_BIT(RCC->CR, RCC_CR_PLLSAI2RDY) != 0U)
+        {
+          status = HAL_TIMEOUT;
+        }
         break;
       }
     }
@@ -2687,7 +2746,11 @@ static HAL_StatusTypeDef RCCEx_PLLSAI2_Config(RCC_PLLSAI2InitTypeDef *pPllSai2, 
       {
         if ((HAL_GetTick() - tickstart) > PLLSAI2_TIMEOUT_VALUE)
         {
-          status = HAL_TIMEOUT;
+          /* New check to avoid false timeout detection in case of preemption */
+          if (READ_BIT(RCC->CR, RCC_CR_PLLSAI2RDY) == 0U)
+          {
+            status = HAL_TIMEOUT;
+          }
           break;
         }
       }
@@ -2946,5 +3009,4 @@ static uint32_t RCCEx_GetSAIxPeriphCLKFreq(uint32_t PeriphClk, uint32_t InputFre
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 

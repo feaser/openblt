@@ -5,6 +5,17 @@
   * @brief   HAL module driver.
   *          This is the common part of the HAL initialization
   *
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
   @verbatim
   ==============================================================================
                      ##### How to use this driver #####
@@ -18,17 +29,6 @@
          (+) Services HAL APIs
 
   @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
   ******************************************************************************
   */
 
@@ -49,11 +49,11 @@
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /**
- * @brief STM32L5xx HAL Driver version number
-   */
+  * @brief STM32L5xx HAL Driver version number
+  */
 #define STM32L5XX_HAL_VERSION_MAIN   (0x01U) /*!< [31:24] main version */
 #define STM32L5XX_HAL_VERSION_SUB1   (0x00U) /*!< [23:16] sub1 version */
-#define STM32L5XX_HAL_VERSION_SUB2   (0x03U) /*!< [15:8]  sub2 version */
+#define STM32L5XX_HAL_VERSION_SUB2   (0x06U) /*!< [15:8]  sub2 version */
 #define STM32L5XX_HAL_VERSION_RC     (0x00U) /*!< [7:0]  release candidate */
 #define STM32L5XX_HAL_VERSION        ((STM32L5XX_HAL_VERSION_MAIN  << 24U)\
                                       |(STM32L5XX_HAL_VERSION_SUB1 << 16U)\
@@ -89,8 +89,8 @@ HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT;  /* 1KHz */
   */
 
 /** @defgroup HAL_Exported_Functions_Group1 Initialization and de-initialization Functions
- *  @brief    Initialization and de-initialization functions
- *
+  *  @brief    Initialization and de-initialization functions
+  *
 @verbatim
  ===============================================================================
               ##### Initialization and de-initialization functions #####
@@ -269,8 +269,8 @@ __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   */
 
 /** @defgroup HAL_Exported_Functions_Group2 HAL Control functions
- *  @brief    HAL Control functions
- *
+  *  @brief    HAL Control functions
+  *
 @verbatim
  ===============================================================================
                       ##### HAL Control functions #####
@@ -293,7 +293,7 @@ __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   *        used as application time base.
   * @note In the default implementation, this variable is incremented each 1ms
   *       in SysTick ISR.
- * @note This function is declared as __weak to be overwritten in case of other
+  * @note This function is declared as __weak to be overwritten in case of other
   *      implementations in user file.
   * @retval None
   */
@@ -354,7 +354,8 @@ HAL_StatusTypeDef HAL_SetTickFreq(HAL_TickFreqTypeDef Freq)
 
 /**
   * @brief Return tick frequency.
-  * @retval tick period in Hz
+  * @retval Tick frequency.
+  *         Value of @ref HAL_TickFreqTypeDef.
   */
 HAL_TickFreqTypeDef HAL_GetTickFreq(void)
 {
@@ -435,7 +436,7 @@ uint32_t HAL_GetHalVersion(void)
   */
 uint32_t HAL_GetREVID(void)
 {
-  return((DBGMCU->IDCODE & DBGMCU_IDCODE_REV_ID) >> DBGMCU_IDCODE_REV_ID_Pos);
+  return ((DBGMCU->IDCODE & DBGMCU_IDCODE_REV_ID) >> DBGMCU_IDCODE_REV_ID_Pos);
 }
 
 /**
@@ -444,7 +445,7 @@ uint32_t HAL_GetREVID(void)
   */
 uint32_t HAL_GetDEVID(void)
 {
-  return(DBGMCU->IDCODE & DBGMCU_IDCODE_DEV_ID);
+  return (DBGMCU->IDCODE & DBGMCU_IDCODE_DEV_ID);
 }
 
 /**
@@ -453,7 +454,7 @@ uint32_t HAL_GetDEVID(void)
   */
 uint32_t HAL_GetUIDw0(void)
 {
-  return(READ_REG(*((uint32_t *)UID_BASE)));
+  return (READ_REG(*((uint32_t *)UID_BASE)));
 }
 
 /**
@@ -462,7 +463,7 @@ uint32_t HAL_GetUIDw0(void)
   */
 uint32_t HAL_GetUIDw1(void)
 {
-  return(READ_REG(*((uint32_t *)(UID_BASE + 4U))));
+  return (READ_REG(*((uint32_t *)(UID_BASE + 4U))));
 }
 
 /**
@@ -471,7 +472,7 @@ uint32_t HAL_GetUIDw1(void)
   */
 uint32_t HAL_GetUIDw2(void)
 {
-   return(READ_REG(*((uint32_t *)(UID_BASE + 8U))));
+  return (READ_REG(*((uint32_t *)(UID_BASE + 8U))));
 }
 
 /**
@@ -479,8 +480,8 @@ uint32_t HAL_GetUIDw2(void)
   */
 
 /** @defgroup HAL_Exported_Functions_Group3 HAL Debug functions
- *  @brief    HAL Debug functions
- *
+  *  @brief    HAL Debug functions
+  *
 @verbatim
  ===============================================================================
                       ##### HAL Debug functions #####
@@ -534,8 +535,8 @@ void HAL_DBGMCU_DisableDBGStandbyMode(void)
   */
 
 /** @defgroup HAL_Exported_Functions_Group4 HAL SYSCFG configuration functions
- *  @brief    HAL SYSCFG configuration functions
- *
+  *  @brief    HAL SYSCFG configuration functions
+  *
 @verbatim
  ===============================================================================
                       ##### HAL SYSCFG configuration functions #####
@@ -644,9 +645,9 @@ HAL_StatusTypeDef HAL_SYSCFG_EnableVREFBUF(void)
   tickstart = HAL_GetTick();
 
   /* Wait for VRR bit  */
-  while(READ_BIT(VREFBUF->CSR, VREFBUF_CSR_VRR) == 0U)
+  while (READ_BIT(VREFBUF->CSR, VREFBUF_CSR_VRR) == 0U)
   {
-    if((HAL_GetTick() - tickstart) > VREFBUF_TIMEOUT_VALUE)
+    if ((HAL_GetTick() - tickstart) > VREFBUF_TIMEOUT_VALUE)
     {
       return HAL_TIMEOUT;
     }
@@ -710,8 +711,8 @@ void HAL_SYSCFG_DisableIOAnalogSwitchVdd(void)
   */
 
 /** @defgroup HAL_Exported_Functions_Group5 HAL SYSCFG lock management functions
- *  @brief SYSCFG lock management functions.
- *
+  *  @brief SYSCFG lock management functions.
+  *
 @verbatim
  ===============================================================================
                        ##### SYSCFG lock functions #####
@@ -755,7 +756,7 @@ HAL_StatusTypeDef HAL_SYSCFG_GetLock(uint32_t *pItem)
   uint32_t tmp_lock;
 
   /* Check null pointer */
-  if(pItem == NULL)
+  if (pItem == NULL)
   {
     return HAL_ERROR;
   }
@@ -782,8 +783,8 @@ HAL_StatusTypeDef HAL_SYSCFG_GetLock(uint32_t *pItem)
 
 
 /** @defgroup HAL_Exported_Functions_Group6 HAL SYSCFG attributes management functions
- *  @brief SYSCFG attributes management functions.
- *
+  *  @brief SYSCFG attributes management functions.
+  *
 @verbatim
  ===============================================================================
                        ##### SYSCFG attributes functions #####
@@ -813,7 +814,7 @@ void HAL_SYSCFG_ConfigAttributes(uint32_t Item, uint32_t Attributes)
   tmp = SYSCFG_S->SECCFGR;
 
   /* Set or reset Item */
-  if((Attributes & SYSCFG_SEC) != 0x00U)
+  if ((Attributes & SYSCFG_SEC) != 0x00U)
   {
     tmp |= Item;
   }
@@ -837,7 +838,7 @@ void HAL_SYSCFG_ConfigAttributes(uint32_t Item, uint32_t Attributes)
 HAL_StatusTypeDef HAL_SYSCFG_GetConfigAttributes(uint32_t Item, uint32_t *pAttributes)
 {
   /* Check null pointer */
-  if(pAttributes == NULL)
+  if (pAttributes == NULL)
   {
     return HAL_ERROR;
   }
@@ -846,7 +847,7 @@ HAL_StatusTypeDef HAL_SYSCFG_GetConfigAttributes(uint32_t Item, uint32_t *pAttri
   assert_param(IS_SYSCFG_ITEMS_ATTRIBUTES(Item));
 
   /* Get the secure attribute state */
-  if((SYSCFG_S->SECCFGR & Item) != 0U)
+  if ((SYSCFG_S->SECCFGR & Item) != 0U)
   {
     *pAttributes = SYSCFG_SEC;
   }
@@ -877,4 +878,4 @@ HAL_StatusTypeDef HAL_SYSCFG_GetConfigAttributes(uint32_t Item, uint32_t *pAttri
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+

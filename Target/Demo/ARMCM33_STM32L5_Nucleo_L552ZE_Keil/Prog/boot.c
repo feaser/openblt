@@ -484,7 +484,7 @@ static void BootComCanCheckActivationRequest(void)
     if (packetIdMatches == 1)
     {
       /* obtain the CAN message length. */
-      rxMsgLen = (unsigned char)(rxMsgHeader.DataLength >> 16U);
+      rxMsgLen = (unsigned char)(rxMsgHeader.DataLength);
       /* check if this was an XCP CONNECT command */
       if ((rxMsgData[0] == 0xff) && (rxMsgLen == 2))
       {
