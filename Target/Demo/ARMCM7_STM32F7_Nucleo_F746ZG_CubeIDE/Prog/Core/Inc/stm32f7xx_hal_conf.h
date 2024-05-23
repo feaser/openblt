@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    stm32f7xx_hal_conf_template.h
@@ -8,16 +9,16 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F7xx_HAL_CONF_H
@@ -36,47 +37,47 @@
   */
 #define HAL_MODULE_ENABLED
 
-  /* #define HAL_ADC_MODULE_ENABLED   */
-/* #define HAL_CRYP_MODULE_ENABLED   */
+  /* #define HAL_CRYP_MODULE_ENABLED */
+/* #define HAL_ADC_MODULE_ENABLED */
 #define HAL_CAN_MODULE_ENABLED
-/* #define HAL_CEC_MODULE_ENABLED   */
-/* #define HAL_CRC_MODULE_ENABLED   */
-/* #define HAL_CRYP_MODULE_ENABLED   */
-/* #define HAL_DAC_MODULE_ENABLED   */
-/* #define HAL_DCMI_MODULE_ENABLED   */
-/* #define HAL_DMA2D_MODULE_ENABLED   */
-/* #define HAL_ETH_MODULE_ENABLED   */
-/* #define HAL_NAND_MODULE_ENABLED   */
-/* #define HAL_NOR_MODULE_ENABLED   */
-/* #define HAL_SRAM_MODULE_ENABLED   */
-/* #define HAL_SDRAM_MODULE_ENABLED   */
-/* #define HAL_HASH_MODULE_ENABLED   */
-/* #define HAL_I2S_MODULE_ENABLED   */
-/* #define HAL_IWDG_MODULE_ENABLED   */
-/* #define HAL_LPTIM_MODULE_ENABLED   */
-/* #define HAL_LTDC_MODULE_ENABLED   */
-/* #define HAL_QSPI_MODULE_ENABLED   */
-/* #define HAL_RNG_MODULE_ENABLED   */
-/* #define HAL_RTC_MODULE_ENABLED   */
-/* #define HAL_SAI_MODULE_ENABLED   */
-/* #define HAL_SD_MODULE_ENABLED   */
-/* #define HAL_MMC_MODULE_ENABLED   */
-/* #define HAL_SPDIFRX_MODULE_ENABLED   */
-/* #define HAL_SPI_MODULE_ENABLED   */
-/* #define HAL_TIM_MODULE_ENABLED   */
+/* #define HAL_CEC_MODULE_ENABLED */
+/* #define HAL_CRC_MODULE_ENABLED */
+/* #define HAL_DAC_MODULE_ENABLED */
+/* #define HAL_DCMI_MODULE_ENABLED */
+/* #define HAL_DMA2D_MODULE_ENABLED */
+/* #define HAL_ETH_MODULE_ENABLED */
+/* #define HAL_ETH_LEGACY_MODULE_ENABLED */
+/* #define HAL_NAND_MODULE_ENABLED */
+/* #define HAL_NOR_MODULE_ENABLED */
+/* #define HAL_SRAM_MODULE_ENABLED */
+/* #define HAL_SDRAM_MODULE_ENABLED */
+/* #define HAL_HASH_MODULE_ENABLED */
+/* #define HAL_I2S_MODULE_ENABLED */
+/* #define HAL_IWDG_MODULE_ENABLED */
+/* #define HAL_LPTIM_MODULE_ENABLED */
+/* #define HAL_LTDC_MODULE_ENABLED */
+/* #define HAL_QSPI_MODULE_ENABLED */
+/* #define HAL_RNG_MODULE_ENABLED */
+/* #define HAL_RTC_MODULE_ENABLED */
+/* #define HAL_SAI_MODULE_ENABLED */
+/* #define HAL_SD_MODULE_ENABLED */
+/* #define HAL_MMC_MODULE_ENABLED */
+/* #define HAL_SPDIFRX_MODULE_ENABLED */
+/* #define HAL_SPI_MODULE_ENABLED */
+/* #define HAL_TIM_MODULE_ENABLED */
 #define HAL_UART_MODULE_ENABLED
-/* #define HAL_USART_MODULE_ENABLED   */
-/* #define HAL_IRDA_MODULE_ENABLED   */
-/* #define HAL_SMARTCARD_MODULE_ENABLED   */
-/* #define HAL_WWDG_MODULE_ENABLED   */
-/* #define HAL_PCD_MODULE_ENABLED   */
-/* #define HAL_HCD_MODULE_ENABLED   */
-/* #define HAL_DFSDM_MODULE_ENABLED   */
-/* #define HAL_DSI_MODULE_ENABLED   */
-/* #define HAL_JPEG_MODULE_ENABLED   */
-/* #define HAL_MDIOS_MODULE_ENABLED   */
-/* #define HAL_SMBUS_MODULE_ENABLED   */
-/* #define HAL_EXTI_MODULE_ENABLED   */
+/* #define HAL_USART_MODULE_ENABLED */
+/* #define HAL_IRDA_MODULE_ENABLED */
+/* #define HAL_SMARTCARD_MODULE_ENABLED */
+/* #define HAL_WWDG_MODULE_ENABLED */
+/* #define HAL_PCD_MODULE_ENABLED */
+/* #define HAL_HCD_MODULE_ENABLED */
+/* #define HAL_DFSDM_MODULE_ENABLED */
+/* #define HAL_DSI_MODULE_ENABLED */
+/* #define HAL_JPEG_MODULE_ENABLED */
+/* #define HAL_MDIOS_MODULE_ENABLED */
+/* #define HAL_SMBUS_MODULE_ENABLED */
+/* #define HAL_EXTI_MODULE_ENABLED */
 #define HAL_GPIO_MODULE_ENABLED
 #define HAL_EXTI_MODULE_ENABLED
 #define HAL_DMA_MODULE_ENABLED
@@ -144,11 +145,11 @@
 /**
   * @brief This is the HAL system configuration section
   */
-#define  VDD_VALUE                    ((uint32_t)3300U) /*!< Value of VDD in mv */
+#define  VDD_VALUE                    3300U /*!< Value of VDD in mv */
 #define  TICK_INT_PRIORITY            ((uint32_t)0U) /*!< tick interrupt priority */
 #define  USE_RTOS                     0U
 #define  PREFETCH_ENABLE              0U
-#define  ART_ACCLERATOR_ENABLE        0U /* To enable instruction cache and prefetch */
+#define  ART_ACCELERATOR_ENABLE        0U /* To enable instruction cache and prefetch */
 
 #define  USE_HAL_ADC_REGISTER_CALLBACKS         0U /* ADC register callback disabled       */
 #define  USE_HAL_CAN_REGISTER_CALLBACKS         0U /* CAN register callback disabled       */
@@ -217,7 +218,7 @@
 /* Section 2: PHY configuration section */
 
 /* DP83848_PHY_ADDRESS Address*/
-#define DP83848_PHY_ADDRESS           0x01U
+#define DP83848_PHY_ADDRESS
 /* PHY Reset delay these values are based on a 1 ms Systick interrupt*/
 #define PHY_RESET_DELAY                 ((uint32_t)0x000000FFU)
 /* PHY Configuration delay */
@@ -247,10 +248,10 @@
 #define PHY_JABBER_DETECTION            ((uint16_t)0x0002U)  /*!< Jabber condition detected            */
 
 /* Section 4: Extended PHY Registers */
-#define PHY_SR                          ((uint16_t)0x10U)    /*!< PHY status register Offset                      */
+#define PHY_SR                          ((uint16_t))    /*!< PHY status register Offset                      */
 
-#define PHY_SPEED_STATUS                ((uint16_t)0x0002U)  /*!< PHY Speed mask                                  */
-#define PHY_DUPLEX_STATUS               ((uint16_t)0x0004U)  /*!< PHY Duplex mask                                 */
+#define PHY_SPEED_STATUS                ((uint16_t))  /*!< PHY Speed mask                                  */
+#define PHY_DUPLEX_STATUS               ((uint16_t))  /*!< PHY Duplex mask                                 */
 
 /* ################## SPI peripheral configuration ########################## */
 
@@ -321,6 +322,10 @@
 #ifdef HAL_ETH_MODULE_ENABLED
   #include "stm32f7xx_hal_eth.h"
 #endif /* HAL_ETH_MODULE_ENABLED */
+
+#ifdef HAL_ETH_LEGACY_MODULE_ENABLED
+  #include "stm32f7xx_hal_eth_legacy.h"
+#endif /* HAL_ETH_LEGACY_MODULE_ENABLED */
 
 #ifdef HAL_FLASH_MODULE_ENABLED
   #include "stm32f7xx_hal_flash.h"
@@ -477,4 +482,3 @@
 
 #endif /* __STM32F7xx_HAL_CONF_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
