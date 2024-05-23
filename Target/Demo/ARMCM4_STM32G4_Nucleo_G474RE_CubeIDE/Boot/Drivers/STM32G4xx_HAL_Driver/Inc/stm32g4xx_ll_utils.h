@@ -3,6 +3,17 @@
   * @file    stm32g4xx_ll_utils.h
   * @author  MCD Application Team
   * @brief   Header file of UTILS LL module.
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
   @verbatim
   ==============================================================================
                      ##### How to use this driver #####
@@ -15,18 +26,6 @@
       (+) PLL configuration functions
 
   @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -159,18 +158,31 @@ typedef struct
 /** @defgroup UTILS_EC_PACKAGETYPE PACKAGE TYPE
   * @{
   */
-#define LL_UTILS_PACKAGETYPE_LQFP64         0x00000000U /*!< LQFP64 package type                      */
-#define LL_UTILS_PACKAGETYPE_LQFP100        0x00000002U /*!< LQFP100 package type                     */
-#define LL_UTILS_PACKAGETYPE_WLCSP81        0x00000005U /*!< WLCSP81 package type                     */
-#define LL_UTILS_PACKAGETYPE_LQFP128        0x00000007U /*!< LQFP128 package type                     */
-#define LL_UTILS_PACKAGETYPE_UFQFPN32       0x00000008U /*!< UFQFPN32 package type                    */
-#define LL_UTILS_PACKAGETYPE_LQFP32         0x00000009U /*!< LQFP32 package type                      */
-#define LL_UTILS_PACKAGETYPE_UFQFPN48       0x0000000AU /*!< UFQFPN48 package type                    */
-#define LL_UTILS_PACKAGETYPE_LQFP48         0x0000000BU /*!< LQFP48 package type                      */
-#define LL_UTILS_PACKAGETYPE_WLCSP49        0x0000000CU /*!< WLCSP49 package type                     */
-#define LL_UTILS_PACKAGETYPE_UFBGA64        0x0000000DU /*!< UFBGA64 package type                     */
-#define LL_UTILS_PACKAGETYPE_UFBGA100       0x0000000EU /*!< UFBGA100 package type                    */
-#define LL_UTILS_PACKAGETYPE_LQFP48_EBIKE   0x00000010U /*!< LQFP48 EBIKE package type                */
+#define LL_UTILS_PACKAGETYPE_LQFP64             0x00000000U /*!< LQFP64 package type                      */
+#define LL_UTILS_PACKAGETYPE_WLCSP64            0x00000001U /*!< WLCSP64 package type                     */
+#if defined (STM32G431xx) || defined (STM32G441xx) || defined (STM32G471xx) || \
+    defined (STM32G473xx) || defined (STM32G483xx) || defined (STM32G474xx) || \
+    defined (STM32G484xx)
+#define LL_UTILS_PACKAGETYPE_LQFP100_LQFP80     0x00000002U /*!< LQFP100 \ LQFP80 package type             */
+#define LL_UTILS_PACKAGETYPE_LQFP100 LL_UTILS_PACKAGETYPE_LQFP100_LQFP80  /*!< For backward compatibility  */
+#else
+#define LL_UTILS_PACKAGETYPE_LQFP100            0x00000002U /*!< LQFP100 package type                      */
+#endif /* STM32G431xx || STM32G441xx || STM32G471xx || STM32G473xx || STM32G483xx ||STM32G474xx || STM32G484xx */
+#define LL_UTILS_PACKAGETYPE_WLCSP81            0x00000005U /*!< WLCSP81 package type                      */
+#define LL_UTILS_PACKAGETYPE_LQFP128_UFBGA121   0x00000007U /*!< LQFP128 \ UFBGA121 package type           */
+#define LL_UTILS_PACKAGETYPE_LQFP128 LL_UTILS_PACKAGETYPE_LQFP128_UFBGA121 /*!< For backward compatibility */
+#define LL_UTILS_PACKAGETYPE_UFQFPN32           0x00000008U /*!< UFQFPN32 package type                     */
+#define LL_UTILS_PACKAGETYPE_LQFP32             0x00000009U /*!< LQFP32 package type                       */
+#define LL_UTILS_PACKAGETYPE_UFQFPN48           0x0000000AU /*!< UFQFPN48 package type                     */
+#define LL_UTILS_PACKAGETYPE_LQFP48             0x0000000BU /*!< LQFP48 package type                       */
+#define LL_UTILS_PACKAGETYPE_WLCSP49            0x0000000CU /*!< WLCSP49 package type                      */
+#define LL_UTILS_PACKAGETYPE_UFBGA64            0x0000000DU /*!< UFBGA64 package type                      */
+#define LL_UTILS_PACKAGETYPE_TFBGA100           0x0000000EU /*!< TFBGA100 package type                     */
+#define LL_UTILS_PACKAGETYPE_UFBGA100 LL_UTILS_PACKAGETYPE_TFBGA100  /*!< For backward compatibility       */
+#define LL_UTILS_PACKAGETYPE_LQFP48_EBIKE       0x00000010U /*!< LQFP48 EBIKE package type                 */
+#if defined (STM32G491xx) || defined (STM32G4A1xx)
+#define LL_UTILS_PACKAGETYPE_LQFP80             0x00000011U /*!< LQFP80 package type                       */
+#endif /* STM32G491xx || STM32G4A1xx */
 
 /**
   * @}
@@ -264,7 +276,7 @@ __STATIC_INLINE uint32_t LL_GetPackageType(void)
   * @param  HCLKFrequency HCLK frequency in Hz (can be calculated thanks to RCC helper macro)
   * @note   When a RTOS is used, it is recommended to avoid changing the SysTick
   *         configuration by calling this function, for a delay use rather osDelay RTOS service.
-  * @param  Ticks Number of ticks
+  * @param  Ticks Frequency of Ticks (Hz)
   * @retval None
   */
 __STATIC_INLINE void LL_InitTick(uint32_t HCLKFrequency, uint32_t Ticks)
@@ -316,4 +328,3 @@ ErrorStatus LL_PLL_ConfigSystemClock_HSE(uint32_t HSEFrequency, uint32_t HSEBypa
 
 #endif /* STM32G4xx_LL_UTILS_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

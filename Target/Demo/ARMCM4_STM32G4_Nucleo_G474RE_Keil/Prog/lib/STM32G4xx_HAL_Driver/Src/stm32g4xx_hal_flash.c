@@ -75,13 +75,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2019 STMicroelectronics</center></h2>
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                       opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -189,6 +188,17 @@ HAL_StatusTypeDef HAL_FLASH_Program(uint32_t TypeProgram, uint32_t Address, uint
   {
     pFlash.ErrorCode = HAL_FLASH_ERROR_NONE;
 
+    /* Deactivate the data cache if they are activated to avoid data misbehavior */
+    if(READ_BIT(FLASH->ACR, FLASH_ACR_DCEN) != 0U)
+    {
+      /* Disable data cache  */
+      __HAL_FLASH_DATA_CACHE_DISABLE();
+      pFlash.CacheToReactivate = FLASH_CACHE_DCACHE_ENABLED;
+    }
+    else
+    {
+      pFlash.CacheToReactivate = FLASH_CACHE_DISABLED;
+    }
     if (TypeProgram == FLASH_TYPEPROGRAM_DOUBLEWORD)
     {
       /* Program double-word (64-bit) at a specified address */
@@ -219,6 +229,9 @@ HAL_StatusTypeDef HAL_FLASH_Program(uint32_t TypeProgram, uint32_t Address, uint
     {
       CLEAR_BIT(FLASH->CR, prog_bit);
     }
+
+    /* Flush the caches to be sure of the data consistency */
+    FLASH_FlushCaches();
   }
 
   /* Process Unlocked */
@@ -251,6 +264,18 @@ HAL_StatusTypeDef HAL_FLASH_Program_IT(uint32_t TypeProgram, uint32_t Address, u
 
   /* Reset error code */
   pFlash.ErrorCode = HAL_FLASH_ERROR_NONE;
+
+  /* Deactivate the data cache if they are activated to avoid data misbehavior */
+  if(READ_BIT(FLASH->ACR, FLASH_ACR_DCEN) != 0U)
+  {
+    /* Disable data cache  */
+    __HAL_FLASH_DATA_CACHE_DISABLE();
+    pFlash.CacheToReactivate = FLASH_CACHE_DCACHE_ENABLED;
+  }
+  else
+  {
+    pFlash.CacheToReactivate = FLASH_CACHE_DISABLED;
+  }
 
   /* Wait for last operation to be completed */
   status = FLASH_WaitForLastOperation(FLASH_TIMEOUT_VALUE);
@@ -329,7 +354,7 @@ void HAL_FLASH_IRQHandler(void)
     __HAL_FLASH_CLEAR_FLAG(error);
 
     /* Flush the caches to be sure of the data consistency */
-    FLASH_FlushCaches() ;
+    FLASH_FlushCaches();
 
     /* FLASH error interrupt user callback */
     procedure = pFlash.ProcedureOnGoing;
@@ -385,7 +410,7 @@ void HAL_FLASH_IRQHandler(void)
         pFlash.ProcedureOnGoing = FLASH_PROC_NONE;
 
         /* Flush the caches to be sure of the data consistency */
-        FLASH_FlushCaches() ;
+        FLASH_FlushCaches();
 
         /* FLASH EOP interrupt user callback */
         HAL_FLASH_EndOfOperationCallback(pFlash.Page);
@@ -394,7 +419,7 @@ void HAL_FLASH_IRQHandler(void)
     else
     {
       /* Flush the caches to be sure of the data consistency */
-      FLASH_FlushCaches() ;
+      FLASH_FlushCaches();
 
       procedure = pFlash.ProcedureOnGoing;
       if (procedure == FLASH_PROC_MASS_ERASE)
@@ -767,4 +792,3 @@ static void FLASH_Program_Fast(uint32_t Address, uint32_t DataAddress)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
