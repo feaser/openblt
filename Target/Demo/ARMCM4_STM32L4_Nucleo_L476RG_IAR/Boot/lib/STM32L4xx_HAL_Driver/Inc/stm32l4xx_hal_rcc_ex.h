@@ -6,36 +6,18 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32L4xx_HAL_RCC_EX_H
-#define __STM32L4xx_HAL_RCC_EX_H
+#ifndef STM32L4xx_HAL_RCC_EX_H
+#define STM32L4xx_HAL_RCC_EX_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -58,6 +40,7 @@
   * @{
   */
 
+#if defined(RCC_PLLSAI1_SUPPORT)
 /**
   * @brief  PLLSAI1 Clock structure definition
   */
@@ -90,9 +73,9 @@ typedef struct
   uint32_t PLLSAI1ClockOut;  /*!< PLLSAIClockOut: specifies PLLSAI1 output clock to be enabled.
                                   This parameter must be a value of @ref RCC_PLLSAI1_Clock_Output */
 }RCC_PLLSAI1InitTypeDef;
+#endif /* RCC_PLLSAI1_SUPPORT */
 
 #if defined(RCC_PLLSAI2_SUPPORT)
-
 /**
   * @brief  PLLSAI2 Clock structure definition
   */
@@ -137,10 +120,11 @@ typedef struct
 {
   uint32_t PeriphClockSelection;   /*!< The Extended Clock to be configured.
                                         This parameter can be a value of @ref RCCEx_Periph_Clock_Selection */
+#if defined(RCC_PLLSAI1_SUPPORT)
 
   RCC_PLLSAI1InitTypeDef PLLSAI1;  /*!< PLLSAI1 structure parameters.
                                         This parameter will be used only when PLLSAI1 is selected as Clock Source for SAI1, USB/RNG/SDMMC1 or ADC */
-
+#endif /* RCC_PLLSAI1_SUPPORT */
 #if defined(RCC_PLLSAI2_SUPPORT)
 
   RCC_PLLSAI2InitTypeDef PLLSAI2;  /*!< PLLSAI2 structure parameters.
@@ -203,9 +187,11 @@ typedef struct
 
   uint32_t Lptim2ClockSelection;   /*!< Specifies LPTIM2 clock source.
                                         This parameter can be a value of @ref RCCEx_LPTIM2_Clock_Source */
+#if defined(SAI1)
 
   uint32_t Sai1ClockSelection;     /*!< Specifies SAI1 clock source.
                                         This parameter can be a value of @ref RCCEx_SAI1_Clock_Source */
+#endif /* SAI1 */
 
 #if defined(SAI2)
 
@@ -231,8 +217,10 @@ typedef struct
   uint32_t RngClockSelection;      /*!< Specifies RNG clock source (warning: same source for USB and SDMMC1).
                                         This parameter can be a value of @ref RCCEx_RNG_Clock_Source */
 
+#if !defined(STM32L412xx) && !defined(STM32L422xx)
   uint32_t AdcClockSelection;      /*!< Specifies ADC interface clock source.
                                         This parameter can be a value of @ref RCCEx_ADC_Clock_Source */
+#endif /* !STM32L412xx && !STM32L422xx */
 
 #if defined(SWPMI1)
 
@@ -246,11 +234,11 @@ typedef struct
   uint32_t Dfsdm1ClockSelection;   /*!< Specifies DFSDM1 clock source.
                                         This parameter can be a value of @ref RCCEx_DFSDM1_Clock_Source */
 
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
   uint32_t Dfsdm1AudioClockSelection; /*!< Specifies DFSDM1 audio clock source.
                                         This parameter can be a value of @ref RCCEx_DFSDM1_Audio_Clock_Source */
 
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
 #endif /* DFSDM1_Filter0 */
 
@@ -303,7 +291,8 @@ typedef struct
                                      This parameter must be a number between 0 and 0xFF or a value of @ref RCCEx_CRS_ErrorLimitDefault */
 
   uint32_t HSI48CalibrationValue; /*!< Specifies a user-programmable trimming value to the HSI48 oscillator.
-                                     This parameter must be a number between 0 and 0x3F or a value of @ref RCCEx_CRS_HSI48CalibrationDefault */
+                                     This parameter must be a number between 0 and 0x7F for STM32L412xx/L422xx, between 0 and 0x3F otherwise,
+                                     or a value of @ref RCCEx_CRS_HSI48CalibrationDefault */
 
 }RCC_CRSInitTypeDef;
 
@@ -316,7 +305,7 @@ typedef struct
                                      This parameter must be a number between 0 and 0xFFFF */
 
   uint32_t HSI48CalibrationValue; /*!< Specifies value loaded in HSI48 oscillator smooth trimming.
-                                     This parameter must be a number between 0 and 0x3F */
+                                     This parameter must be a number between 0 and 0x7F for STM32L412xx/L422xx, between 0 and 0x3F otherwise */
 
   uint32_t FreqErrorCapture;      /*!< Specifies the value loaded in the .FECAP, the frequency error counter
                                                                     value latched in the time of the last SYNC event.
@@ -370,7 +359,9 @@ typedef struct
 #define RCC_PERIPHCLK_I2C3             0x00000100U
 #define RCC_PERIPHCLK_LPTIM1           0x00000200U
 #define RCC_PERIPHCLK_LPTIM2           0x00000400U
+#if defined(SAI1)
 #define RCC_PERIPHCLK_SAI1             0x00000800U
+#endif
 #if defined(SAI2)
 #define RCC_PERIPHCLK_SAI2             0x00001000U
 #endif
@@ -383,9 +374,9 @@ typedef struct
 #endif
 #if defined(DFSDM1_Filter0)
 #define RCC_PERIPHCLK_DFSDM1           0x00010000U
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define RCC_PERIPHCLK_DFSDM1AUDIO      0x00200000U
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 #endif
 #define RCC_PERIPHCLK_RTC              0x00020000U
 #define RCC_PERIPHCLK_RNG              0x00040000U
@@ -525,35 +516,37 @@ typedef struct
   */
 #endif /* I2C4 */
 
+#if defined(SAI1)
 /** @defgroup RCCEx_SAI1_Clock_Source SAI1 Clock Source
   * @{
   */
 #define RCC_SAI1CLKSOURCE_PLLSAI1      0x00000000U
 #if defined(RCC_PLLSAI2_SUPPORT)
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define RCC_SAI1CLKSOURCE_PLLSAI2      RCC_CCIPR2_SAI1SEL_0
 #else
 #define RCC_SAI1CLKSOURCE_PLLSAI2      RCC_CCIPR_SAI1SEL_0
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 #endif /* RCC_PLLSAI2_SUPPORT */
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define RCC_SAI1CLKSOURCE_PLL          RCC_CCIPR2_SAI1SEL_1
 #define RCC_SAI1CLKSOURCE_PIN          (RCC_CCIPR2_SAI1SEL_1 | RCC_CCIPR2_SAI1SEL_0)
 #define RCC_SAI1CLKSOURCE_HSI          RCC_CCIPR2_SAI1SEL_2
 #else
 #define RCC_SAI1CLKSOURCE_PLL          RCC_CCIPR_SAI1SEL_1
 #define RCC_SAI1CLKSOURCE_PIN          RCC_CCIPR_SAI1SEL
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 /**
   * @}
   */
+#endif /* SAI1 */
 
 #if defined(SAI2)
 /** @defgroup RCCEx_SAI2_Clock_Source SAI2 Clock Source
   * @{
   */
 #define RCC_SAI2CLKSOURCE_PLLSAI1      0x00000000U
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define RCC_SAI2CLKSOURCE_PLLSAI2      RCC_CCIPR2_SAI2SEL_0
 #define RCC_SAI2CLKSOURCE_PLL          RCC_CCIPR2_SAI2SEL_1
 #define RCC_SAI2CLKSOURCE_PIN          (RCC_CCIPR2_SAI2SEL_1 | RCC_CCIPR2_SAI2SEL_0)
@@ -562,7 +555,7 @@ typedef struct
 #define RCC_SAI2CLKSOURCE_PLLSAI2      RCC_CCIPR_SAI2SEL_0
 #define RCC_SAI2CLKSOURCE_PLL          RCC_CCIPR_SAI2SEL_1
 #define RCC_SAI2CLKSOURCE_PIN          RCC_CCIPR_SAI2SEL
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 /**
   * @}
   */
@@ -618,7 +611,9 @@ typedef struct
 #else
 #define RCC_RNGCLKSOURCE_NONE          0x00000000U
 #endif /* RCC_HSI48_SUPPORT */
+#if defined(RCC_PLLSAI1_SUPPORT)
 #define RCC_RNGCLKSOURCE_PLLSAI1       RCC_CCIPR_CLK48SEL_0
+#endif /* RCC_PLLSAI1_SUPPORT */
 #define RCC_RNGCLKSOURCE_PLL           RCC_CCIPR_CLK48SEL_1
 #define RCC_RNGCLKSOURCE_MSI           RCC_CCIPR_CLK48SEL
 /**
@@ -634,7 +629,9 @@ typedef struct
 #else
 #define RCC_USBCLKSOURCE_NONE          0x00000000U
 #endif /* RCC_HSI48_SUPPORT */
+#if defined(RCC_PLLSAI1_SUPPORT)
 #define RCC_USBCLKSOURCE_PLLSAI1       RCC_CCIPR_CLK48SEL_0
+#endif /* RCC_PLLSAI1_SUPPORT */
 #define RCC_USBCLKSOURCE_PLL           RCC_CCIPR_CLK48SEL_1
 #define RCC_USBCLKSOURCE_MSI           RCC_CCIPR_CLK48SEL
 /**
@@ -645,12 +642,18 @@ typedef struct
 /** @defgroup RCCEx_ADC_Clock_Source ADC Clock Source
   * @{
   */
-#define RCC_ADCCLKSOURCE_NONE        0x00000000U
+#define RCC_ADCCLKSOURCE_NONE         0x00000000U
+#if defined(RCC_PLLSAI1_SUPPORT)
 #define RCC_ADCCLKSOURCE_PLLSAI1      RCC_CCIPR_ADCSEL_0
+#endif /* RCC_PLLSAI1_SUPPORT */
 #if defined(STM32L471xx) || defined(STM32L475xx) || defined(STM32L476xx) || defined(STM32L485xx) || defined(STM32L486xx) || defined(STM32L496xx) || defined(STM32L4A6xx)
 #define RCC_ADCCLKSOURCE_PLLSAI2      RCC_CCIPR_ADCSEL_1
 #endif /* STM32L471xx || STM32L475xx || STM32L476xx || STM32L485xx || STM32L486xx || STM32L496xx || STM32L4A6xx */
+#if defined(RCC_CCIPR_ADCSEL)
 #define RCC_ADCCLKSOURCE_SYSCLK       RCC_CCIPR_ADCSEL
+#else
+#define RCC_ADCCLKSOURCE_SYSCLK       0x30000000U
+#endif /* RCC_CCIPR_ADCSEL */
 /**
   * @}
   */
@@ -671,16 +674,16 @@ typedef struct
   * @{
   */
 #define RCC_DFSDM1CLKSOURCE_PCLK2      0x00000000U
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define RCC_DFSDM1CLKSOURCE_SYSCLK     RCC_CCIPR2_DFSDM1SEL
 #else
 #define RCC_DFSDM1CLKSOURCE_SYSCLK     RCC_CCIPR_DFSDM1SEL
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 /**
   * @}
   */
 
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 /** @defgroup RCCEx_DFSDM1_Audio_Clock_Source DFSDM1 Audio Clock Source
   * @{
   */
@@ -690,7 +693,7 @@ typedef struct
 /**
   * @}
   */
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 #endif /* DFSDM1_Filter0 */
 
 #if defined(LTDC)
@@ -807,9 +810,15 @@ typedef struct
 /** @defgroup RCCEx_CRS_HSI48CalibrationDefault RCCEx CRS HSI48CalibrationDefault
   * @{
   */
-#define RCC_CRS_HSI48CALIBRATION_DEFAULT 0x00000020U  /*!< The default value is 32, which corresponds to the middle of the trimming interval.
-                                                                      The trimming step is around 67 kHz between two consecutive TRIM steps. A higher TRIM value
-                                                                      corresponds to a higher output frequency */
+#if defined(STM32L412xx) || defined(STM32L422xx)
+#define RCC_CRS_HSI48CALIBRATION_DEFAULT 0x00000040U /*!< The default value is 64, which corresponds to the middle of the trimming interval.
+                                                          The trimming step is specified in the product datasheet. A higher TRIM value
+                                                          corresponds to a higher output frequency */
+#else
+#define RCC_CRS_HSI48CALIBRATION_DEFAULT 0x00000020U /*!< The default value is 32, which corresponds to the middle of the trimming interval.
+                                                          The trimming step is specified in the product datasheet. A higher TRIM value
+                                                          corresponds to a higher output frequency */
+#endif
 /**
   * @}
   */
@@ -864,6 +873,7 @@ typedef struct
  * @{
  */
 
+#if defined(RCC_PLLSAI1_SUPPORT)
 
 /**
   * @brief  Macro to configure the PLLSAI1 clock multiplication and division factors.
@@ -878,7 +888,7 @@ typedef struct
   *
   @endif
   * @param  __PLLSAI1N__ specifies the multiplication factor for PLLSAI1 VCO output clock.
-  *         This parameter must be a number between 8 and 86.
+  *         This parameter must be a number between 8 and 86 or 127 depending on devices.
   * @note   You have to set the PLLSAI1N parameter correctly to ensure that the VCO
   *         output frequency is between 64 and 344 MHz.
   *         PLLSAI1 clock frequency = f(PLLSAI1) multiplied by PLLSAI1N
@@ -903,20 +913,26 @@ typedef struct
 #if defined(RCC_PLLSAI1P_DIV_2_31_SUPPORT)
 
 #define __HAL_RCC_PLLSAI1_CONFIG(__PLLSAI1M__, __PLLSAI1N__, __PLLSAI1P__, __PLLSAI1Q__, __PLLSAI1R__) \
-                  WRITE_REG(RCC->PLLSAI1CFGR, ((__PLLSAI1N__) << RCC_PLLSAI1CFGR_PLLSAI1N_Pos) | \
-                   ((((__PLLSAI1Q__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1Q_Pos) | \
-                   ((((__PLLSAI1R__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1R_Pos) | \
-                   ((__PLLSAI1P__) << RCC_PLLSAI1CFGR_PLLSAI1PDIV_Pos) | \
-                   (((__PLLSAI1M__) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1M_Pos))
+                  MODIFY_REG(RCC->PLLSAI1CFGR, \
+                             (RCC_PLLSAI1CFGR_PLLSAI1M | RCC_PLLSAI1CFGR_PLLSAI1N | RCC_PLLSAI1CFGR_PLLSAI1P | \
+                              RCC_PLLSAI1CFGR_PLLSAI1Q | RCC_PLLSAI1CFGR_PLLSAI1R | RCC_PLLSAI1CFGR_PLLSAI1PDIV), \
+                             ((((__PLLSAI1M__) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1M_Pos) | \
+                              ((__PLLSAI1N__) << RCC_PLLSAI1CFGR_PLLSAI1N_Pos) | \
+                              ((((__PLLSAI1Q__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1Q_Pos) | \
+                              ((((__PLLSAI1R__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1R_Pos) | \
+                              ((uint32_t)(__PLLSAI1P__) << RCC_PLLSAI1CFGR_PLLSAI1PDIV_Pos)))
 
 #else
 
 #define __HAL_RCC_PLLSAI1_CONFIG(__PLLSAI1M__, __PLLSAI1N__, __PLLSAI1P__, __PLLSAI1Q__, __PLLSAI1R__) \
-                  WRITE_REG(RCC->PLLSAI1CFGR, ((__PLLSAI1N__) << RCC_PLLSAI1CFGR_PLLSAI1N_Pos) | \
-                   (((__PLLSAI1P__) >> 4U) << RCC_PLLSAI1CFGR_PLLSAI1P_Pos) | \
-                   ((((__PLLSAI1Q__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1Q_Pos) | \
-                   ((((__PLLSAI1R__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1R_Pos) | \
-                   (((__PLLSAI1M__) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1M_Pos))
+                  MODIFY_REG(RCC->PLLSAI1CFGR, \
+                             (RCC_PLLSAI1CFGR_PLLSAI1M | RCC_PLLSAI1CFGR_PLLSAI1N | RCC_PLLSAI1CFGR_PLLSAI1P | \
+                              RCC_PLLSAI1CFGR_PLLSAI1Q | RCC_PLLSAI1CFGR_PLLSAI1R), \
+                             ((((__PLLSAI1M__) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1M_Pos) | \
+                              ((__PLLSAI1N__) << RCC_PLLSAI1CFGR_PLLSAI1N_Pos) | \
+                              ((((__PLLSAI1Q__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1Q_Pos) | \
+                              ((((__PLLSAI1R__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1R_Pos) | \
+                              (((__PLLSAI1P__) >> 4U) << RCC_PLLSAI1CFGR_PLLSAI1P_Pos)))
 
 #endif /* RCC_PLLSAI1P_DIV_2_31_SUPPORT */
 
@@ -925,18 +941,24 @@ typedef struct
 #if defined(RCC_PLLSAI1P_DIV_2_31_SUPPORT)
 
 #define __HAL_RCC_PLLSAI1_CONFIG(__PLLSAI1N__, __PLLSAI1P__, __PLLSAI1Q__, __PLLSAI1R__) \
-                  WRITE_REG(RCC->PLLSAI1CFGR, ((__PLLSAI1N__) << RCC_PLLSAI1CFGR_PLLSAI1N_Pos) | \
-                   ((((__PLLSAI1Q__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1Q_Pos) | \
-                   ((((__PLLSAI1R__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1R_Pos) | \
-                   ((__PLLSAI1P__) << RCC_PLLSAI1CFGR_PLLSAI1PDIV_Pos))
+                  MODIFY_REG(RCC->PLLSAI1CFGR, \
+                             (RCC_PLLSAI1CFGR_PLLSAI1N | RCC_PLLSAI1CFGR_PLLSAI1P | \
+                              RCC_PLLSAI1CFGR_PLLSAI1Q | RCC_PLLSAI1CFGR_PLLSAI1R | RCC_PLLSAI1CFGR_PLLSAI1PDIV), \
+                             (((__PLLSAI1N__) << RCC_PLLSAI1CFGR_PLLSAI1N_Pos) | \
+                              ((((__PLLSAI1Q__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1Q_Pos) | \
+                              ((((__PLLSAI1R__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1R_Pos) | \
+                              ((uint32_t)(__PLLSAI1P__) << RCC_PLLSAI1CFGR_PLLSAI1PDIV_Pos)))
 
 #else
 
 #define __HAL_RCC_PLLSAI1_CONFIG(__PLLSAI1N__, __PLLSAI1P__, __PLLSAI1Q__, __PLLSAI1R__) \
-                  WRITE_REG(RCC->PLLSAI1CFGR, ((__PLLSAI1N__) << RCC_PLLSAI1CFGR_PLLSAI1N_Pos) | \
-                   (((__PLLSAI1P__) >> 4U) << RCC_PLLSAI1CFGR_PLLSAI1P_Pos) | \
-                   ((((__PLLSAI1Q__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1Q_Pos) | \
-                   ((((__PLLSAI1R__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1R_Pos))
+                  MODIFY_REG(RCC->PLLSAI1CFGR, \
+                             (RCC_PLLSAI1CFGR_PLLSAI1N | RCC_PLLSAI1CFGR_PLLSAI1P | \
+                              RCC_PLLSAI1CFGR_PLLSAI1Q | RCC_PLLSAI1CFGR_PLLSAI1R), \
+                             (((__PLLSAI1N__) << RCC_PLLSAI1CFGR_PLLSAI1N_Pos) | \
+                              ((((__PLLSAI1Q__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1Q_Pos) | \
+                              ((((__PLLSAI1R__) >> 1U) - 1U) << RCC_PLLSAI1CFGR_PLLSAI1R_Pos) | \
+                              (((__PLLSAI1P__) >> 4U) << RCC_PLLSAI1CFGR_PLLSAI1P_Pos)))
 
 #endif /* RCC_PLLSAI1P_DIV_2_31_SUPPORT */
 
@@ -950,7 +972,7 @@ typedef struct
   *         __HAL_RCC_PLL_CONFIG() macro)
   *
   * @param  __PLLSAI1N__ specifies the multiplication factor for PLLSAI1 VCO output clock.
-  *          This parameter must be a number between 8 and 86.
+  *          This parameter must be a number between 8 and 86 or 127 depending on devices.
   * @note   You have to set the PLLSAI1N parameter correctly to ensure that the VCO
   *         output frequency is between 64 and 344 MHz.
   *         Use to set PLLSAI1 clock frequency = f(PLLSAI1) multiplied by PLLSAI1N
@@ -1075,6 +1097,8 @@ typedef struct
   */
 #define __HAL_RCC_GET_PLLSAI1CLKOUT_CONFIG(__PLLSAI1_CLOCKOUT__)  READ_BIT(RCC->PLLSAI1CFGR, (__PLLSAI1_CLOCKOUT__))
 
+#endif /* RCC_PLLSAI1_SUPPORT */
+
 #if defined(RCC_PLLSAI2_SUPPORT)
 
 /**
@@ -1116,27 +1140,36 @@ typedef struct
 # if defined(RCC_PLLSAI2P_DIV_2_31_SUPPORT) && defined(RCC_PLLSAI2Q_DIV_SUPPORT)
 
 #define __HAL_RCC_PLLSAI2_CONFIG(__PLLSAI2M__, __PLLSAI2N__, __PLLSAI2P__, __PLLSAI2Q__, __PLLSAI2R__) \
-                  WRITE_REG(RCC->PLLSAI2CFGR, ((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
-                   ((((__PLLSAI2Q__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2Q_Pos) | \
-                   ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
-                   ((__PLLSAI2P__) << RCC_PLLSAI2CFGR_PLLSAI2PDIV_Pos) | \
-                   (((__PLLSAI2M__) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2M_Pos))
+                  MODIFY_REG(RCC->PLLSAI2CFGR, \
+                             (RCC_PLLSAI2CFGR_PLLSAI2M | RCC_PLLSAI2CFGR_PLLSAI2N | RCC_PLLSAI2CFGR_PLLSAI2P | \
+                              RCC_PLLSAI2CFGR_PLLSAI2Q | RCC_PLLSAI2CFGR_PLLSAI2R | RCC_PLLSAI2CFGR_PLLSAI2PDIV), \
+                             ((((__PLLSAI2M__) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2M_Pos) | \
+                              ((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
+                              ((((__PLLSAI2Q__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2Q_Pos) | \
+                              ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
+                              ((uint32_t)(__PLLSAI2P__) << RCC_PLLSAI2CFGR_PLLSAI2PDIV_Pos)))
 
 # elif defined(RCC_PLLSAI2P_DIV_2_31_SUPPORT)
 
 #define __HAL_RCC_PLLSAI2_CONFIG(__PLLSAI2M__, __PLLSAI2N__, __PLLSAI2P__, __PLLSAI2R__) \
-                  WRITE_REG(RCC->PLLSAI2CFGR, ((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
-                   ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
-                   ((__PLLSAI2P__) << RCC_PLLSAI2CFGR_PLLSAI2PDIV_Pos) | \
-                   (((__PLLSAI2M__) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2M_Pos))
+                  MODIFY_REG(RCC->PLLSAI2CFGR, \
+                             (RCC_PLLSAI2CFGR_PLLSAI2M | RCC_PLLSAI2CFGR_PLLSAI2N | RCC_PLLSAI2CFGR_PLLSAI2P | \
+                              RCC_PLLSAI2CFGR_PLLSAI2R | RCC_PLLSAI2CFGR_PLLSAI2PDIV), \
+                             ((((__PLLSAI2M__) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2M_Pos) | \
+                              ((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
+                              ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
+                              ((uint32_t)(__PLLSAI2P__) << RCC_PLLSAI2CFGR_PLLSAI2PDIV_Pos)))
 
 # else
 
 #define __HAL_RCC_PLLSAI2_CONFIG(__PLLSAI2M__, __PLLSAI2N__, __PLLSAI2P__, __PLLSAI2R__) \
-                  WRITE_REG(RCC->PLLSAI2CFGR, ((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
-                   (((__PLLSAI2P__) >> 4U) << RCC_PLLSAI2CFGR_PLLSAI2P_Pos) | \
-                   ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
-                   (((__PLLSAI2M__) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2M_Pos))
+                  MODIFY_REG(RCC->PLLSAI2CFGR, \
+                             (RCC_PLLSAI2CFGR_PLLSAI2M | RCC_PLLSAI2CFGR_PLLSAI2N | RCC_PLLSAI2CFGR_PLLSAI2P | \
+                              RCC_PLLSAI2CFGR_PLLSAI2R), \
+                             ((((__PLLSAI2M__) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2M_Pos) | \
+                              ((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
+                              ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
+                              (((__PLLSAI2P__) >> 4U) << RCC_PLLSAI2CFGR_PLLSAI2P_Pos)))
 
 # endif /* RCC_PLLSAI2P_DIV_2_31_SUPPORT && RCC_PLLSAI2Q_DIV_SUPPORT */
 
@@ -1145,24 +1178,33 @@ typedef struct
 #  if defined(RCC_PLLSAI2P_DIV_2_31_SUPPORT) && defined(RCC_PLLSAI2Q_DIV_SUPPORT)
 
 #define __HAL_RCC_PLLSAI2_CONFIG(__PLLSAI2N__, __PLLSAI2P__, __PLLSAI2Q__, __PLLSAI2R__) \
-                  WRITE_REG(RCC->PLLSAI2CFGR, ((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
-                   ((((__PLLSAI2Q__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2Q_Pos) | \
-                   ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
-                   ((__PLLSAI2P__) << RCC_PLLSAI2CFGR_PLLSAI2PDIV_Pos))
+                  MODIFY_REG(RCC->PLLSAI2CFGR, \
+                             (RCC_PLLSAI2CFGR_PLLSAI2N | RCC_PLLSAI2CFGR_PLLSAI2P | \
+                              RCC_PLLSAI2CFGR_PLLSAI2Q | RCC_PLLSAI2CFGR_PLLSAI2R | RCC_PLLSAI2CFGR_PLLSAI2PDIV), \
+                             (((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
+                              ((((__PLLSAI2Q__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2Q_Pos) | \
+                              ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
+                              ((uint32_t)(__PLLSAI2P__) << RCC_PLLSAI2CFGR_PLLSAI2PDIV_Pos)))
 
 # elif defined(RCC_PLLSAI2P_DIV_2_31_SUPPORT)
 
 #define __HAL_RCC_PLLSAI2_CONFIG(__PLLSAI2N__, __PLLSAI2P__, __PLLSAI2R__) \
-                  WRITE_REG(RCC->PLLSAI2CFGR, ((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
-                   ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
-                   ((__PLLSAI2P__) << RCC_PLLSAI2CFGR_PLLSAI2PDIV_Pos))
+                  MODIFY_REG(RCC->PLLSAI2CFGR, \
+                             (RCC_PLLSAI2CFGR_PLLSAI2N | RCC_PLLSAI2CFGR_PLLSAI2P | \
+                              RCC_PLLSAI2CFGR_PLLSAI2R | RCC_PLLSAI2CFGR_PLLSAI2PDIV), \
+                             (((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
+                              ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
+                              ((uint32_t)(__PLLSAI2P__) << RCC_PLLSAI2CFGR_PLLSAI2PDIV_Pos)))
 
 # else
 
 #define __HAL_RCC_PLLSAI2_CONFIG(__PLLSAI2N__, __PLLSAI2P__, __PLLSAI2R__) \
-                  WRITE_REG(RCC->PLLSAI2CFGR, ((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
-                    (((__PLLSAI2P__) >> 4U) << RCC_PLLSAI2CFGR_PLLSAI2P_Pos) | \
-                    ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos))
+                  MODIFY_REG(RCC->PLLSAI2CFGR, \
+                             (RCC_PLLSAI2CFGR_PLLSAI2N | RCC_PLLSAI2CFGR_PLLSAI2P | \
+                              RCC_PLLSAI2CFGR_PLLSAI2R), \
+                             (((__PLLSAI2N__) << RCC_PLLSAI2CFGR_PLLSAI2N_Pos) | \
+                              ((((__PLLSAI2R__) >> 1U) - 1U) << RCC_PLLSAI2CFGR_PLLSAI2R_Pos) | \
+                              (((__PLLSAI2P__) >> 4U) << RCC_PLLSAI2CFGR_PLLSAI2P_Pos)))
 
 # endif /* RCC_PLLSAI2P_DIV_2_31_SUPPORT && RCC_PLLSAI2Q_DIV_SUPPORT */
 
@@ -1318,6 +1360,8 @@ typedef struct
 
 #endif /* RCC_PLLSAI2_SUPPORT */
 
+#if defined(SAI1)
+
 /**
   * @brief  Macro to configure the SAI1 clock source.
   * @param  __SAI1_CLKSOURCE__ defines the SAI1 clock source. This clock is derived
@@ -1339,13 +1383,13 @@ typedef struct
   *
   * @retval None
   */
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define __HAL_RCC_SAI1_CONFIG(__SAI1_CLKSOURCE__)\
                   MODIFY_REG(RCC->CCIPR2, RCC_CCIPR2_SAI1SEL, (__SAI1_CLKSOURCE__))
 #else
 #define __HAL_RCC_SAI1_CONFIG(__SAI1_CLKSOURCE__)\
                   MODIFY_REG(RCC->CCIPR, RCC_CCIPR_SAI1SEL, (__SAI1_CLKSOURCE__))
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
 /** @brief  Macro to get the SAI1 clock source.
   * @retval The clock source can be one of the following values:
@@ -1360,11 +1404,13 @@ typedef struct
   *        clock source when PLLs are disabled for devices without PLLSAI2.
   *
   */
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define __HAL_RCC_GET_SAI1_SOURCE() (READ_BIT(RCC->CCIPR2, RCC_CCIPR2_SAI1SEL))
 #else
 #define __HAL_RCC_GET_SAI1_SOURCE() (READ_BIT(RCC->CCIPR, RCC_CCIPR_SAI1SEL))
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+
+#endif /* SAI1 */
 
 #if defined(SAI2)
 
@@ -1383,13 +1429,13 @@ typedef struct
   *
   * @retval None
   */
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define __HAL_RCC_SAI2_CONFIG(__SAI2_CLKSOURCE__ )\
                   MODIFY_REG(RCC->CCIPR2, RCC_CCIPR2_SAI2SEL, (__SAI2_CLKSOURCE__))
 #else
 #define __HAL_RCC_SAI2_CONFIG(__SAI2_CLKSOURCE__ )\
                   MODIFY_REG(RCC->CCIPR, RCC_CCIPR_SAI2SEL, (__SAI2_CLKSOURCE__))
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
 /** @brief  Macro to get the SAI2 clock source.
   * @retval The clock source can be one of the following values:
@@ -1398,11 +1444,11 @@ typedef struct
   *             @arg @ref RCC_SAI2CLKSOURCE_PLL  SAI2 clock  = PLL "P" clock (PLLSAI3CLK)
   *             @arg @ref RCC_SAI2CLKSOURCE_PIN  SAI2 clock = External Clock (SAI2_EXTCLK)
   */
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define __HAL_RCC_GET_SAI2_SOURCE() (READ_BIT(RCC->CCIPR2, RCC_CCIPR2_SAI2SEL))
 #else
 #define __HAL_RCC_GET_SAI2_SOURCE() (READ_BIT(RCC->CCIPR, RCC_CCIPR_SAI2SEL))
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
 #endif /* SAI2 */
 
@@ -1757,7 +1803,7 @@ typedef struct
   */
 #if defined(RCC_CCIPR2_SDMMCSEL)
 #define __HAL_RCC_GET_SDMMC1_SOURCE() \
-                  ((READ_BIT(RCC->CCIPR2, RCC_CCIPR2_SDMMCSEL) != RESET) ? RCC_SDMMC1CLKSOURCE_PLLP : (READ_BIT(RCC->CCIPR, RCC_CCIPR_CLK48SEL)))
+                  ((READ_BIT(RCC->CCIPR2, RCC_CCIPR2_SDMMCSEL) != 0U) ? RCC_SDMMC1CLKSOURCE_PLLP : (READ_BIT(RCC->CCIPR, RCC_CCIPR_CLK48SEL)))
 #else
 #define __HAL_RCC_GET_SDMMC1_SOURCE() \
                   (READ_BIT(RCC->CCIPR, RCC_CCIPR_CLK48SEL))
@@ -1837,6 +1883,8 @@ typedef struct
 
 #endif /* USB_OTG_FS || USB */
 
+#if defined(RCC_CCIPR_ADCSEL)
+
 /** @brief  Macro to configure the ADC interface clock.
   * @param  __ADC_CLKSOURCE__ specifies the ADC digital interface clock source.
   *         This parameter can be one of the following values:
@@ -1861,6 +1909,16 @@ typedef struct
   *            @arg @ref RCC_ADCCLKSOURCE_SYSCLK  System Clock selected as ADC clock
   */
 #define __HAL_RCC_GET_ADC_SOURCE() (READ_BIT(RCC->CCIPR, RCC_CCIPR_ADCSEL))
+#else
+
+/** @brief  Macro to get the ADC clock source.
+  * @retval The clock source can be one of the following values:
+  *            @arg @ref RCC_ADCCLKSOURCE_NONE  No clock selected as ADC clock
+  *            @arg @ref RCC_ADCCLKSOURCE_SYSCLK  System Clock selected as ADC clock
+  */
+#define __HAL_RCC_GET_ADC_SOURCE() ((__HAL_RCC_ADC_IS_CLK_ENABLED() != 0U) ? RCC_ADCCLKSOURCE_SYSCLK : RCC_ADCCLKSOURCE_NONE)
+
+#endif /* RCC_CCIPR_ADCSEL */
 
 #if defined(SWPMI1)
 
@@ -1891,26 +1949,26 @@ typedef struct
   *            @arg @ref RCC_DFSDM1CLKSOURCE_SYSCLK  System Clock selected as DFSDM1 clock
   * @retval None
   */
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define __HAL_RCC_DFSDM1_CONFIG(__DFSDM1_CLKSOURCE__) \
                   MODIFY_REG(RCC->CCIPR2, RCC_CCIPR2_DFSDM1SEL, (__DFSDM1_CLKSOURCE__))
 #else
 #define __HAL_RCC_DFSDM1_CONFIG(__DFSDM1_CLKSOURCE__) \
                   MODIFY_REG(RCC->CCIPR, RCC_CCIPR_DFSDM1SEL, (__DFSDM1_CLKSOURCE__))
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
 /** @brief  Macro to get the DFSDM1 clock source.
   * @retval The clock source can be one of the following values:
   *            @arg @ref RCC_DFSDM1CLKSOURCE_PCLK2  PCLK2 Clock selected as DFSDM1 clock
   *            @arg @ref RCC_DFSDM1CLKSOURCE_SYSCLK  System Clock selected as DFSDM1 clock
   */
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define __HAL_RCC_GET_DFSDM1_SOURCE() (READ_BIT(RCC->CCIPR2, RCC_CCIPR2_DFSDM1SEL))
 #else
 #define __HAL_RCC_GET_DFSDM1_SOURCE() (READ_BIT(RCC->CCIPR, RCC_CCIPR_DFSDM1SEL))
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 
 /** @brief  Macro to configure the DFSDM1 audio clock.
   * @param  __DFSDM1AUDIO_CLKSOURCE__ specifies the DFSDM1 audio clock source.
@@ -1931,14 +1989,14 @@ typedef struct
   */
 #define __HAL_RCC_GET_DFSDM1AUDIO_SOURCE() (READ_BIT(RCC->CCIPR2, RCC_CCIPR2_ADFSDM1SEL))
 
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
 #endif /* DFSDM1_Filter0 */
 
 #if defined(LTDC)
 
 /** @brief  Macro to configure the LTDC clock.
-  * @param  __LTDC_CLKSOURCE__ specifies the DSI clock source.
+  * @param  __LTDC_CLKSOURCE__ specifies the LTDC clock source.
   *         This parameter can be one of the following values:
   *            @arg @ref RCC_LTDCCLKSOURCE_PLLSAI2_DIV2   PLLSAI2 divider R divided by 2 clock selected as LTDC clock
   *            @arg @ref RCC_LTDCCLKSOURCE_PLLSAI2_DIV4   PLLSAI2 divider R divided by 4 clock selected as LTDC clock
@@ -1960,7 +2018,7 @@ typedef struct
 
 #endif /* LTDC */
 
-#if defined(DSI)
+#if defined(DSI )
 
 /** @brief  Macro to configure the DSI clock.
   * @param  __DSI_CLKSOURCE__ specifies the DSI clock source.
@@ -2008,6 +2066,7 @@ typedef struct
   * @brief macros to manage the specified RCC Flags and interrupts.
   * @{
   */
+#if defined(RCC_PLLSAI1_SUPPORT)
 
 /** @brief Enable PLLSAI1RDY interrupt.
   * @retval None
@@ -2033,6 +2092,8 @@ typedef struct
   * @retval TRUE or FALSE.
   */
 #define __HAL_RCC_PLLSAI1_GET_FLAG()   (READ_BIT(RCC->CR, RCC_CR_PLLSAI1RDY) == (RCC_CR_PLLSAI1RDY))
+
+#endif /* RCC_PLLSAI1_SUPPORT */
 
 #if defined(RCC_PLLSAI2_SUPPORT)
 
@@ -2189,7 +2250,7 @@ typedef struct
   *              @arg @ref RCC_CRS_IT_ESYNC  Expected SYNC interrupt
   * @retval The new state of __INTERRUPT__ (SET or RESET).
   */
-#define __HAL_RCC_CRS_GET_IT_SOURCE(__INTERRUPT__)  ((READ_BIT(CRS->CR, (__INTERRUPT__)) != RESET) ? SET : RESET)
+#define __HAL_RCC_CRS_GET_IT_SOURCE(__INTERRUPT__)  ((READ_BIT(CRS->CR, (__INTERRUPT__)) != 0U) ? SET : RESET)
 
 /** @brief  Clear the CRS interrupt pending bits
   * @param  __INTERRUPT__ specifies the interrupt pending bit to clear.
@@ -2206,7 +2267,7 @@ typedef struct
 #define  RCC_CRS_IT_ERROR_MASK                 (RCC_CRS_IT_TRIMOVF | RCC_CRS_IT_SYNCERR | RCC_CRS_IT_SYNCMISS)
 
 #define __HAL_RCC_CRS_CLEAR_IT(__INTERRUPT__)  do { \
-                                                 if(((__INTERRUPT__) & RCC_CRS_IT_ERROR_MASK) != RESET) \
+                                                 if(((__INTERRUPT__) & RCC_CRS_IT_ERROR_MASK) != 0U) \
                                                  { \
                                                    WRITE_REG(CRS->ICR, CRS_ICR_ERRC | ((__INTERRUPT__) & ~RCC_CRS_IT_ERROR_MASK)); \
                                                  } \
@@ -2250,7 +2311,7 @@ typedef struct
 #define RCC_CRS_FLAG_ERROR_MASK                (RCC_CRS_FLAG_TRIMOVF | RCC_CRS_FLAG_SYNCERR | RCC_CRS_FLAG_SYNCMISS)
 
 #define __HAL_RCC_CRS_CLEAR_FLAG(__FLAG__)     do { \
-                                                 if(((__FLAG__) & RCC_CRS_FLAG_ERROR_MASK) != RESET) \
+                                                 if(((__FLAG__) & RCC_CRS_FLAG_ERROR_MASK) != 0U) \
                                                  { \
                                                    WRITE_REG(CRS->ICR, CRS_ICR_ERRC | ((__FLAG__) & ~RCC_CRS_FLAG_ERROR_MASK)); \
                                                  } \
@@ -2285,14 +2346,14 @@ typedef struct
 #define __HAL_RCC_CRS_FREQ_ERROR_COUNTER_DISABLE() CLEAR_BIT(CRS->CR, CRS_CR_CEN)
 
 /**
-  * @brief  Enable the automatic hardware adjustement of TRIM bits.
+  * @brief  Enable the automatic hardware adjustment of TRIM bits.
   * @note   When the AUTOTRIMEN bit is set the CRS_CFGR register becomes write-protected.
   * @retval None
   */
 #define __HAL_RCC_CRS_AUTOMATIC_CALIB_ENABLE()     SET_BIT(CRS->CR, CRS_CR_AUTOTRIMEN)
 
 /**
-  * @brief  Enable or disable the automatic hardware adjustement of TRIM bits.
+  * @brief  Enable or disable the automatic hardware adjustment of TRIM bits.
   * @retval None
   */
 #define __HAL_RCC_CRS_AUTOMATIC_CALIB_DISABLE()    CLEAR_BIT(CRS->CR, CRS_CR_AUTOTRIMEN)
@@ -2314,6 +2375,38 @@ typedef struct
   */
 
 #endif /* CRS */
+
+#if defined(PSSI)
+
+/** @defgroup RCCEx_PSSI_Macros_Aliases RCCEx PSSI Macros Aliases
+  * @{
+  */
+
+#define __HAL_RCC_PSSI_CLK_ENABLE()             __HAL_RCC_DCMI_CLK_ENABLE()
+
+#define __HAL_RCC_PSSI_CLK_DISABLE()            __HAL_RCC_DCMI_CLK_DISABLE()
+
+#define __HAL_RCC_PSSI_IS_CLK_ENABLED()         __HAL_RCC_DCMI_IS_CLK_ENABLED()
+
+#define __HAL_RCC_PSSI_IS_CLK_DISABLED()        __HAL_RCC_DCMI_IS_CLK_DISABLED()
+
+#define __HAL_RCC_PSSI_FORCE_RESET()            __HAL_RCC_DCMI_FORCE_RESET()
+
+#define __HAL_RCC_PSSI_RELEASE_RESET()          __HAL_RCC_DCMI_RELEASE_RESET()
+
+#define __HAL_RCC_PSSI_CLK_SLEEP_ENABLE()       __HAL_RCC_DCMI_CLK_SLEEP_ENABLE()
+
+#define __HAL_RCC_PSSI_CLK_SLEEP_DISABLE()      __HAL_RCC_DCMI_CLK_SLEEP_DISABLE()
+
+#define __HAL_RCC_PSSI_IS_CLK_SLEEP_ENABLED()    __HAL_RCC_DCMI_IS_CLK_SLEEP_ENABLED()
+
+#define __HAL_RCC_PSSI_IS_CLK_SLEEP_DISABLED()  __HAL_RCC_DCMI_IS_CLK_SLEEP_DISABLED()
+
+/**
+  * @}
+  */
+
+#endif /* PSSI */
 
 /**
   * @}
@@ -2339,9 +2432,12 @@ uint32_t          HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk);
 /** @addtogroup RCCEx_Exported_Functions_Group2
   * @{
   */
+#if defined(RCC_PLLSAI1_SUPPORT)
 
 HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI1(RCC_PLLSAI1InitTypeDef  *PLLSAI1Init);
 HAL_StatusTypeDef HAL_RCCEx_DisablePLLSAI1(void);
+
+#endif /* RCC_PLLSAI1_SUPPORT */
 
 #if defined(RCC_PLLSAI2_SUPPORT)
 
@@ -2361,6 +2457,9 @@ void              HAL_RCCEx_EnableLSCO(uint32_t LSCOSource);
 void              HAL_RCCEx_DisableLSCO(void);
 void              HAL_RCCEx_EnableMSIPLLMode(void);
 void              HAL_RCCEx_DisableMSIPLLMode(void);
+#if defined (OCTOSPI1) && defined (OCTOSPI2)
+void              HAL_RCCEx_OCTOSPIDelayConfig(uint32_t Delay1, uint32_t Delay2);
+#endif /* OCTOSPI1 && OCTOSPI2 */
 
 /**
   * @}
@@ -2392,6 +2491,146 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
   * @}
   */
 
+/* Private constants ---------------------------------------------------------*/
+/** @addtogroup RCCEx_Private_Constants
+  * @{
+  */
+/* Define used for IS_RCC_* macros below */
+#if defined(STM32L412xx) || defined(STM32L422xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_USB | RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_RTC | \
+                                         RCC_PERIPHCLK_RNG)
+#elif defined(STM32L431xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | \
+                                         RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_SWPMI1 | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1)
+#elif defined(STM32L432xx) || defined(STM32L442xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | \
+                                         RCC_PERIPHCLK_USB | RCC_PERIPHCLK_ADC | \
+                                         RCC_PERIPHCLK_SWPMI1 | RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG)
+#elif defined(STM32L433xx) || defined(STM32L443xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 |\
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | \
+                                         RCC_PERIPHCLK_USB | RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_SWPMI1 | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1)
+#elif defined(STM32L451xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 |\
+                                         RCC_PERIPHCLK_UART4 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_I2C4 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | \
+                                         RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_DFSDM1 | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1)
+#elif defined(STM32L452xx) || defined(STM32L462xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 |\
+                                         RCC_PERIPHCLK_UART4 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_I2C4 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | \
+                                         RCC_PERIPHCLK_USB | RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_DFSDM1 | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1)
+#elif defined(STM32L471xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 | \
+                                         RCC_PERIPHCLK_UART4 | RCC_PERIPHCLK_UART5 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | RCC_PERIPHCLK_SAI2 | \
+                                         RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_SWPMI1 | RCC_PERIPHCLK_DFSDM1 | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1)
+#elif defined(STM32L496xx) || defined(STM32L4A6xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 | \
+                                         RCC_PERIPHCLK_UART4 | RCC_PERIPHCLK_UART5 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_I2C4 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | RCC_PERIPHCLK_SAI2 | \
+                                         RCC_PERIPHCLK_USB | \
+                                         RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_SWPMI1 | RCC_PERIPHCLK_DFSDM1 | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1)
+#elif defined(STM32L4P5xx) || defined(STM32L4Q5xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 | \
+                                         RCC_PERIPHCLK_UART4 | RCC_PERIPHCLK_UART5 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_I2C4 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | RCC_PERIPHCLK_SAI2 | \
+                                         RCC_PERIPHCLK_USB | \
+                                         RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_DFSDM1 | RCC_PERIPHCLK_DFSDM1AUDIO | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1 | \
+                                         RCC_PERIPHCLK_OSPI | RCC_PERIPHCLK_LTDC)
+#elif defined(STM32L4R5xx) || defined(STM32L4S5xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 | \
+                                         RCC_PERIPHCLK_UART4 | RCC_PERIPHCLK_UART5 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_I2C4 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | RCC_PERIPHCLK_SAI2 | \
+                                         RCC_PERIPHCLK_USB | \
+                                         RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_DFSDM1 | RCC_PERIPHCLK_DFSDM1AUDIO | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1 | \
+                                         RCC_PERIPHCLK_OSPI)
+#elif defined(STM32L4R7xx) || defined(STM32L4S7xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 | \
+                                         RCC_PERIPHCLK_UART4 | RCC_PERIPHCLK_UART5 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_I2C4 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | RCC_PERIPHCLK_SAI2 | \
+                                         RCC_PERIPHCLK_USB | \
+                                         RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_DFSDM1 | RCC_PERIPHCLK_DFSDM1AUDIO | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1 | \
+                                         RCC_PERIPHCLK_OSPI | RCC_PERIPHCLK_LTDC)
+#elif defined(STM32L4R9xx) || defined(STM32L4S9xx)
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 | \
+                                         RCC_PERIPHCLK_UART4 | RCC_PERIPHCLK_UART5 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_I2C4 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | RCC_PERIPHCLK_SAI2 | \
+                                         RCC_PERIPHCLK_USB | \
+                                         RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_DFSDM1 | RCC_PERIPHCLK_DFSDM1AUDIO | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1 | \
+                                         RCC_PERIPHCLK_OSPI | RCC_PERIPHCLK_LTDC | RCC_PERIPHCLK_DSI)
+#else
+#define RCC_PERIPHCLOCK_ALL             (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_USART3 | \
+                                         RCC_PERIPHCLK_UART4 | RCC_PERIPHCLK_UART5 | \
+                                         RCC_PERIPHCLK_LPUART1 | \
+                                         RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C3 | \
+                                         RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | \
+                                         RCC_PERIPHCLK_SAI1 | RCC_PERIPHCLK_SAI2 | \
+                                         RCC_PERIPHCLK_USB | \
+                                         RCC_PERIPHCLK_ADC | RCC_PERIPHCLK_SWPMI1 | RCC_PERIPHCLK_DFSDM1 | \
+                                         RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_SDMMC1)
+#endif /* STM32L412xx || STM32L422xx */
+
+/**
+  * @}
+  */
+
 /* Private macros ------------------------------------------------------------*/
 /** @addtogroup RCCEx_Private_Macros
   * @{
@@ -2400,259 +2639,8 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 #define IS_RCC_LSCOSOURCE(__SOURCE__) (((__SOURCE__) == RCC_LSCOSOURCE_LSI) || \
                                        ((__SOURCE__) == RCC_LSCOSOURCE_LSE))
 
-#if defined(STM32L431xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)  == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)  == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)  == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1) == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)    == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)    == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)    == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)  == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)  == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)    == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)     == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SWPMI1)  == RCC_PERIPHCLK_SWPMI1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)     == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)     == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)  == RCC_PERIPHCLK_SDMMC1))
-
-#elif defined(STM32L432xx) || defined(STM32L442xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)  == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)  == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1) == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)    == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)    == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)  == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)  == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)    == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USB)     == RCC_PERIPHCLK_USB)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)     == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SWPMI1)  == RCC_PERIPHCLK_SWPMI1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)     == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)     == RCC_PERIPHCLK_RNG))
-
-#elif defined(STM32L433xx) || defined(STM32L443xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)  == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)  == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)  == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1) == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)    == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)    == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)    == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)  == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)  == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)    == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USB)     == RCC_PERIPHCLK_USB)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)     == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SWPMI1)  == RCC_PERIPHCLK_SWPMI1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)     == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)     == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)  == RCC_PERIPHCLK_SDMMC1))
-
-#elif defined(STM32L451xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)  == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)  == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)  == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART4)   == RCC_PERIPHCLK_UART4)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1) == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)    == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)    == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)    == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C4)    == RCC_PERIPHCLK_I2C4)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)  == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)  == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)    == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)     == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1)  == RCC_PERIPHCLK_DFSDM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)     == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)     == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)  == RCC_PERIPHCLK_SDMMC1))
-
-#elif defined(STM32L452xx) || defined(STM32L462xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)  == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)  == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)  == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART4)   == RCC_PERIPHCLK_UART4)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1) == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)    == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)    == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)    == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C4)    == RCC_PERIPHCLK_I2C4)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)  == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)  == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)    == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USB)     == RCC_PERIPHCLK_USB)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)     == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1)  == RCC_PERIPHCLK_DFSDM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)     == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)     == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)  == RCC_PERIPHCLK_SDMMC1))
-
-#elif defined(STM32L471xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)  == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)  == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)  == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART4)   == RCC_PERIPHCLK_UART4)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART5)   == RCC_PERIPHCLK_UART5)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1) == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)    == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)    == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)    == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)  == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)  == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)    == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI2)    == RCC_PERIPHCLK_SAI2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)     == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SWPMI1)  == RCC_PERIPHCLK_SWPMI1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1)  == RCC_PERIPHCLK_DFSDM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)     == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)     == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)  == RCC_PERIPHCLK_SDMMC1))
-
-#elif defined(STM32L496xx) || defined(STM32L4A6xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)  == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)  == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)  == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART4)   == RCC_PERIPHCLK_UART4)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART5)   == RCC_PERIPHCLK_UART5)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1) == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)    == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)    == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)    == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C4)    == RCC_PERIPHCLK_I2C4)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)  == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)  == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)    == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI2)    == RCC_PERIPHCLK_SAI2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USB)     == RCC_PERIPHCLK_USB)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)     == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SWPMI1)  == RCC_PERIPHCLK_SWPMI1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1)  == RCC_PERIPHCLK_DFSDM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)     == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)     == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)  == RCC_PERIPHCLK_SDMMC1))
-
-#elif defined(STM32L4R5xx) || defined(STM32L4S5xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)      == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)      == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)      == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART4)       == RCC_PERIPHCLK_UART4)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART5)       == RCC_PERIPHCLK_UART5)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1)     == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)        == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)        == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)        == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C4)        == RCC_PERIPHCLK_I2C4)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)      == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)      == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)        == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI2)        == RCC_PERIPHCLK_SAI2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USB)         == RCC_PERIPHCLK_USB)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)         == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1)      == RCC_PERIPHCLK_DFSDM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1AUDIO) == RCC_PERIPHCLK_DFSDM1AUDIO) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)         == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)         == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)      == RCC_PERIPHCLK_SDMMC1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_OSPI)        == RCC_PERIPHCLK_OSPI))
-
-#elif defined(STM32L4R7xx) || defined(STM32L4S7xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)      == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)      == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)      == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART4)       == RCC_PERIPHCLK_UART4)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART5)       == RCC_PERIPHCLK_UART5)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1)     == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)        == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)        == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)        == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C4)        == RCC_PERIPHCLK_I2C4)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)      == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)      == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)        == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI2)        == RCC_PERIPHCLK_SAI2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USB)         == RCC_PERIPHCLK_USB)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)         == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1)      == RCC_PERIPHCLK_DFSDM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1AUDIO) == RCC_PERIPHCLK_DFSDM1AUDIO) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)         == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)         == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)      == RCC_PERIPHCLK_SDMMC1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_OSPI)        == RCC_PERIPHCLK_OSPI) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LTDC)        == RCC_PERIPHCLK_LTDC))
-
-#elif defined(STM32L4R9xx) || defined(STM32L4S9xx)
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)      == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)      == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)      == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART4)       == RCC_PERIPHCLK_UART4)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART5)       == RCC_PERIPHCLK_UART5)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1)     == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)        == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)        == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)        == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C4)        == RCC_PERIPHCLK_I2C4)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)      == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)      == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)        == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI2)        == RCC_PERIPHCLK_SAI2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USB)         == RCC_PERIPHCLK_USB)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)         == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1)      == RCC_PERIPHCLK_DFSDM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1AUDIO) == RCC_PERIPHCLK_DFSDM1AUDIO) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)         == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)         == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)      == RCC_PERIPHCLK_SDMMC1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_OSPI)        == RCC_PERIPHCLK_OSPI)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LTDC)        == RCC_PERIPHCLK_LTDC)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DSI)         == RCC_PERIPHCLK_DSI))
-
-#else
-
-#define IS_RCC_PERIPHCLOCK(__SELECTION__)  \
-               ((((__SELECTION__) & RCC_PERIPHCLK_USART1)  == RCC_PERIPHCLK_USART1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART2)  == RCC_PERIPHCLK_USART2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USART3)  == RCC_PERIPHCLK_USART3)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART4)   == RCC_PERIPHCLK_UART4)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_UART5)   == RCC_PERIPHCLK_UART5)   || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPUART1) == RCC_PERIPHCLK_LPUART1) || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C1)    == RCC_PERIPHCLK_I2C1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C2)    == RCC_PERIPHCLK_I2C2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_I2C3)    == RCC_PERIPHCLK_I2C3)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM1)  == RCC_PERIPHCLK_LPTIM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_LPTIM2)  == RCC_PERIPHCLK_LPTIM2)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI1)    == RCC_PERIPHCLK_SAI1)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SAI2)    == RCC_PERIPHCLK_SAI2)    || \
-                (((__SELECTION__) & RCC_PERIPHCLK_USB)     == RCC_PERIPHCLK_USB)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_ADC)     == RCC_PERIPHCLK_ADC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SWPMI1)  == RCC_PERIPHCLK_SWPMI1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_DFSDM1)  == RCC_PERIPHCLK_DFSDM1)  || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RTC)     == RCC_PERIPHCLK_RTC)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_RNG)     == RCC_PERIPHCLK_RNG)     || \
-                (((__SELECTION__) & RCC_PERIPHCLK_SDMMC1)  == RCC_PERIPHCLK_SDMMC1))
-
-#endif /* STM32L431xx */
+#define IS_RCC_PERIPHCLOCK(__SELECTION__)   ((((__SELECTION__) & RCC_PERIPHCLOCK_ALL) != 0x00u) && \
+                                             (((__SELECTION__) & ~RCC_PERIPHCLOCK_ALL) == 0x00u))
 
 #define IS_RCC_USART1CLKSOURCE(__SOURCE__)  \
                (((__SOURCE__) == RCC_USART1CLKSOURCE_PCLK2)  || \
@@ -2732,7 +2720,7 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 
 #if defined(RCC_PLLSAI2_SUPPORT)
 
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define IS_RCC_SAI1CLK(__SOURCE__)   \
                (((__SOURCE__) == RCC_SAI1CLKSOURCE_PLLSAI1) || \
                 ((__SOURCE__) == RCC_SAI1CLKSOURCE_PLLSAI2) || \
@@ -2745,9 +2733,9 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
                 ((__SOURCE__) == RCC_SAI1CLKSOURCE_PLLSAI2) || \
                 ((__SOURCE__) == RCC_SAI1CLKSOURCE_PLL)     || \
                 ((__SOURCE__) == RCC_SAI1CLKSOURCE_PIN))
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
-#else
+#elif defined(RCC_PLLSAI1_SUPPORT)
 
 #define IS_RCC_SAI1CLK(__SOURCE__)   \
                (((__SOURCE__) == RCC_SAI1CLKSOURCE_PLLSAI1) || \
@@ -2758,7 +2746,7 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 
 #if defined(RCC_PLLSAI2_SUPPORT)
 
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 #define IS_RCC_SAI2CLK(__SOURCE__)   \
                (((__SOURCE__) == RCC_SAI2CLKSOURCE_PLLSAI1) || \
                 ((__SOURCE__) == RCC_SAI2CLKSOURCE_PLLSAI2) || \
@@ -2771,7 +2759,7 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
                 ((__SOURCE__) == RCC_SAI2CLKSOURCE_PLLSAI2) || \
                 ((__SOURCE__) == RCC_SAI2CLKSOURCE_PLL)     || \
                 ((__SOURCE__) == RCC_SAI2CLKSOURCE_PIN))
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
 #endif /* RCC_PLLSAI2_SUPPORT */
 
@@ -2817,11 +2805,18 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 
 #if defined(RCC_HSI48_SUPPORT)
 
+#if defined(RCC_PLLSAI1_SUPPORT)
 #define IS_RCC_RNGCLKSOURCE(__SOURCE__)  \
                (((__SOURCE__) == RCC_RNGCLKSOURCE_HSI48)   || \
                 ((__SOURCE__) == RCC_RNGCLKSOURCE_PLLSAI1) || \
                 ((__SOURCE__) == RCC_RNGCLKSOURCE_PLL)     || \
                 ((__SOURCE__) == RCC_RNGCLKSOURCE_MSI))
+#else
+#define IS_RCC_RNGCLKSOURCE(__SOURCE__)  \
+               (((__SOURCE__) == RCC_RNGCLKSOURCE_HSI48)   || \
+                ((__SOURCE__) == RCC_RNGCLKSOURCE_PLL)     || \
+                ((__SOURCE__) == RCC_RNGCLKSOURCE_MSI))
+#endif /* RCC_PLLSAI1_SUPPORT */
 
 #else
 
@@ -2836,11 +2831,18 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 #if defined(USB_OTG_FS) || defined(USB)
 #if defined(RCC_HSI48_SUPPORT)
 
+#if defined(RCC_PLLSAI1_SUPPORT)
 #define IS_RCC_USBCLKSOURCE(__SOURCE__)  \
                (((__SOURCE__) == RCC_USBCLKSOURCE_HSI48)   || \
                 ((__SOURCE__) == RCC_USBCLKSOURCE_PLLSAI1) || \
                 ((__SOURCE__) == RCC_USBCLKSOURCE_PLL)     || \
                 ((__SOURCE__) == RCC_USBCLKSOURCE_MSI))
+#else
+#define IS_RCC_USBCLKSOURCE(__SOURCE__)  \
+               (((__SOURCE__) == RCC_USBCLKSOURCE_HSI48)   || \
+                ((__SOURCE__) == RCC_USBCLKSOURCE_PLL)     || \
+                ((__SOURCE__) == RCC_USBCLKSOURCE_MSI))
+#endif /* RCC_PLLSAI1_SUPPORT */
 
 #else
 
@@ -2863,10 +2865,16 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 
 #else
 
+#if defined(RCC_PLLSAI1_SUPPORT)
 #define IS_RCC_ADCCLKSOURCE(__SOURCE__)  \
                (((__SOURCE__) == RCC_ADCCLKSOURCE_NONE)    || \
                 ((__SOURCE__) == RCC_ADCCLKSOURCE_PLLSAI1) || \
                 ((__SOURCE__) == RCC_ADCCLKSOURCE_SYSCLK))
+#else
+#define IS_RCC_ADCCLKSOURCE(__SOURCE__)  \
+               (((__SOURCE__) == RCC_ADCCLKSOURCE_NONE)    || \
+                ((__SOURCE__) == RCC_ADCCLKSOURCE_SYSCLK))
+#endif /* RCC_PLLSAI1_SUPPORT */
 
 #endif /* STM32L471xx || STM32L475xx || STM32L476xx || STM32L485xx || STM32L486xx || STM32L496xx || STM32L4A6xx */
 
@@ -2884,14 +2892,14 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
                (((__SOURCE__) == RCC_DFSDM1CLKSOURCE_PCLK2) || \
                 ((__SOURCE__) == RCC_DFSDM1CLKSOURCE_SYSCLK))
 
-#if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 
 #define IS_RCC_DFSDM1AUDIOCLKSOURCE(__SOURCE__)  \
                (((__SOURCE__) == RCC_DFSDM1AUDIOCLKSOURCE_SAI1) || \
                 ((__SOURCE__) == RCC_DFSDM1AUDIOCLKSOURCE_HSI) || \
                 ((__SOURCE__) == RCC_DFSDM1AUDIOCLKSOURCE_MSI))
 
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
+#endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
 #endif /* DFSDM1_Filter0 */
 
@@ -2922,6 +2930,8 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 
 #endif /* OCTOSPI1 || OCTOSPI2 */
 
+#if defined(RCC_PLLSAI1_SUPPORT)
+
 #define IS_RCC_PLLSAI1SOURCE(__VALUE__)    IS_RCC_PLLSOURCE(__VALUE__)
 
 #if defined(RCC_PLLSAI1M_DIV_1_16_SUPPORT)
@@ -2930,7 +2940,11 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 #define IS_RCC_PLLSAI1M_VALUE(__VALUE__)   ((1U <= (__VALUE__)) && ((__VALUE__) <= 8U))
 #endif /* RCC_PLLSAI1M_DIV_1_16_SUPPORT */
 
+#if defined(RCC_PLLSAI1N_MUL_8_127_SUPPORT)
+#define IS_RCC_PLLSAI1N_VALUE(__VALUE__)   ((8U <= (__VALUE__)) && ((__VALUE__) <= 127U))
+#else
 #define IS_RCC_PLLSAI1N_VALUE(__VALUE__)   ((8U <= (__VALUE__)) && ((__VALUE__) <= 86U))
+#endif /* RCC_PLLSAI1N_MUL_8_127_SUPPORT */
 
 #if defined(RCC_PLLSAI1P_DIV_2_31_SUPPORT)
 #define IS_RCC_PLLSAI1P_VALUE(__VALUE__)   (((__VALUE__) >= 2U) && ((__VALUE__) <= 31U))
@@ -2944,6 +2958,8 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 #define IS_RCC_PLLSAI1R_VALUE(__VALUE__)   (((__VALUE__) == 2U) || ((__VALUE__) == 4U) || \
                                             ((__VALUE__) == 6U) || ((__VALUE__) == 8U))
 
+#endif /* RCC_PLLSAI1_SUPPORT */
+
 #if defined(RCC_PLLSAI2_SUPPORT)
 
 #define IS_RCC_PLLSAI2SOURCE(__VALUE__)    IS_RCC_PLLSOURCE(__VALUE__)
@@ -2954,7 +2970,11 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 #define IS_RCC_PLLSAI2M_VALUE(__VALUE__)   ((1U <= (__VALUE__)) && ((__VALUE__) <= 8U))
 #endif /* RCC_PLLSAI2M_DIV_1_16_SUPPORT */
 
+#if defined(RCC_PLLSAI2N_MUL_8_127_SUPPORT)
+#define IS_RCC_PLLSAI2N_VALUE(__VALUE__)   ((8U <= (__VALUE__)) && ((__VALUE__) <= 127U))
+#else
 #define IS_RCC_PLLSAI2N_VALUE(__VALUE__)   ((8U <= (__VALUE__)) && ((__VALUE__) <= 86U))
+#endif /* RCC_PLLSAI2N_MUL_8_127_SUPPORT */
 
 #if defined(RCC_PLLSAI2P_DIV_2_31_SUPPORT)
 #define IS_RCC_PLLSAI2P_VALUE(__VALUE__)   (((__VALUE__) >= 2U) && ((__VALUE__) <= 31U))
@@ -2971,6 +2991,10 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
                                             ((__VALUE__) == 6U) || ((__VALUE__) == 8U))
 
 #endif /* RCC_PLLSAI2_SUPPORT */
+
+#if defined (OCTOSPI1) && defined (OCTOSPI2)
+#define IS_RCC_OCTOSPIDELAY(__DELAY__)     (((__DELAY__) <= 0xFU))
+#endif /* OCTOSPI1 && OCTOSPI2 */
 
 #if defined(CRS)
 
@@ -2990,7 +3014,11 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 
 #define IS_RCC_CRS_ERRORLIMIT(__VALUE__)   (((__VALUE__) <= 0xFFU))
 
+#if defined(STM32L412xx) || defined(STM32L422xx)
+#define IS_RCC_CRS_HSI48CALIBRATION(__VALUE__) (((__VALUE__) <= 0x7FU))
+#else
 #define IS_RCC_CRS_HSI48CALIBRATION(__VALUE__) (((__VALUE__) <= 0x3FU))
+#endif /* STM32L412xx || STM32L422xx */
 
 #define IS_RCC_CRS_FREQERRORDIR(__DIR__)   (((__DIR__) == RCC_CRS_FREQERRORDIR_UP) || \
                                             ((__DIR__) == RCC_CRS_FREQERRORDIR_DOWN))
@@ -3013,6 +3041,5 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 }
 #endif
 
-#endif /* __STM32L4xx_HAL_RCC_EX_H */
+#endif /* STM32L4xx_HAL_RCC_EX_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

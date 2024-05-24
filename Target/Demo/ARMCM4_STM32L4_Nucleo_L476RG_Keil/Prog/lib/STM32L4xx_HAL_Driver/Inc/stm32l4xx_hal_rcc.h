@@ -6,14 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -92,8 +90,10 @@ typedef struct
                                       This parameter can be a value of @ref RCC_HSI_Config                        */
 
   uint32_t HSICalibrationValue;  /*!< The calibration trimming value (default is RCC_HSICALIBRATION_DEFAULT).
-                                      This parameter must be a number between Min_Data = 0 and Max_Data = 31 on STM32L47x/STM32L48x devices.
-                                      This parameter must be a number between Min_Data = 0 and Max_Data = 127 on the other devices */
+                                      This parameter must be a number between Min_Data = 0 and Max_Data = 31 on
+                                      STM32L43x/STM32L44x/STM32L47x/STM32L48x devices.
+                                      This parameter must be a number between Min_Data = 0 and Max_Data = 127 on
+                                      the other devices */
 
   uint32_t LSIState;             /*!< The new state of the LSI.
                                       This parameter can be a value of @ref RCC_LSI_Config                        */
@@ -206,9 +206,9 @@ typedef struct
 #define RCC_HSI_ON                     RCC_CR_HSION  /*!< HSI clock activation */
 
 #if defined(RCC_ICSCR_HSITRIM_6)
-#define RCC_HSICALIBRATION_DEFAULT     0x40U         /*!< Default HSI calibration trimming value 64 on devices other than STM32L47x/STM32L48x */
+#define RCC_HSICALIBRATION_DEFAULT     0x40U         /*!< Default HSI calibration trimming value 64 on devices other than STM32L43x/STM32L44x/STM32L47x/STM32L48x */
 #else
-#define RCC_HSICALIBRATION_DEFAULT     0x10U         /*!< Default HSI calibration trimming value 16 on STM32L47x/STM32L48x devices */
+#define RCC_HSICALIBRATION_DEFAULT     0x10U         /*!< Default HSI calibration trimming value 16 on STM32L43x/STM32L44x/STM32L47x/STM32L48x devices */
 #endif /* RCC_ICSCR_HSITRIM_6 */
 /**
   * @}
@@ -3945,8 +3945,8 @@ typedef struct
   *         and temperature that influence the frequency of the internal HSI RC.
   * @param  __HSICALIBRATIONVALUE__ specifies the calibration trimming value
   *         (default is RCC_HSICALIBRATION_DEFAULT).
-  *         This parameter must be a number between 0 and 31 on STM32L47x/STM32L48x or
-  *         between 0 and 127 on other devices.
+  *         This parameter must be a number between 0 and 31 on STM32L43x/STM32L44x/STM32L47x/STM32L48x
+  *         or between 0 and 127 on other devices.
   * @retval None
   */
 #define __HAL_RCC_HSI_CALIBRATIONVALUE_ADJUST(__HSICALIBRATIONVALUE__) \
@@ -4441,7 +4441,7 @@ typedef struct
   *            @arg @ref RCC_MCO1SOURCE_SYSCLK  System  clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_MSI  MSI clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_HSI  HSI clock selected as MCO source
-  *            @arg @ref RCC_MCO1SOURCE_HSE  HSE clock selected as MCO sourcee
+  *            @arg @ref RCC_MCO1SOURCE_HSE  HSE clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_PLLCLK  Main PLL clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_LSI  LSI clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_LSE  LSE clock selected as MCO source
@@ -4626,6 +4626,31 @@ typedef struct
 #endif /* RCC_HSI48_SUPPORT */
 
 #define RCC_FLAG_MASK             0x1FU
+
+/* Defines Oscillator Masks */
+#if defined(RCC_HSI48_SUPPORT)
+#define RCC_OSCILLATORTYPE_ALL          (RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSI48 | RCC_OSCILLATORTYPE_MSI | RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_LSE)  /*!< All Oscillator to configure */
+#else
+#define RCC_OSCILLATORTYPE_ALL          (RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_MSI | RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_LSE)  /*!< All Oscillator to configure */
+#endif /* RCC_HSI48_SUPPORT */
+
+/** @defgroup RCC_Reset_Flag Reset Flag
+  * @{
+  */
+#define RCC_RESET_FLAG_OBL             RCC_CSR_OBLRSTF    /*!< Option Byte Loader reset flag */
+#define RCC_RESET_FLAG_PIN             RCC_CSR_PINRSTF    /*!< PIN reset flag */
+#define RCC_RESET_FLAG_PWR             RCC_CSR_BORRSTF    /*!< BOR or POR/PDR reset flag */
+#define RCC_RESET_FLAG_SW              RCC_CSR_SFTRSTF    /*!< Software Reset flag */
+#define RCC_RESET_FLAG_IWDG            RCC_CSR_IWDGRSTF   /*!< Independent Watchdog reset flag */
+#define RCC_RESET_FLAG_WWDG            RCC_CSR_WWDGRSTF   /*!< Window watchdog reset flag */
+#define RCC_RESET_FLAG_LPWR            RCC_CSR_LPWRRSTF   /*!< Low power reset flag */
+#define RCC_RESET_FLAG_ALL             (RCC_RESET_FLAG_OBL | RCC_RESET_FLAG_PIN | RCC_RESET_FLAG_PWR | \
+                                        RCC_RESET_FLAG_SW | RCC_RESET_FLAG_IWDG | RCC_RESET_FLAG_WWDG | \
+                                        RCC_RESET_FLAG_LPWR)
+/**
+  * @}
+  */
+
 /**
   * @}
   */
@@ -4635,22 +4660,8 @@ typedef struct
   * @{
   */
 
-#if defined(RCC_HSI48_SUPPORT)
-#define IS_RCC_OSCILLATORTYPE(__OSCILLATOR__) (((__OSCILLATOR__) == RCC_OSCILLATORTYPE_NONE)                               || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_HSE)   == RCC_OSCILLATORTYPE_HSE)   || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_HSI)   == RCC_OSCILLATORTYPE_HSI)   || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_HSI48) == RCC_OSCILLATORTYPE_HSI48) || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_MSI)   == RCC_OSCILLATORTYPE_MSI)   || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_LSI)   == RCC_OSCILLATORTYPE_LSI)   || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_LSE)   == RCC_OSCILLATORTYPE_LSE))
-#else
-#define IS_RCC_OSCILLATORTYPE(__OSCILLATOR__) (((__OSCILLATOR__) == RCC_OSCILLATORTYPE_NONE)                           || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_HSE) == RCC_OSCILLATORTYPE_HSE) || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_HSI) == RCC_OSCILLATORTYPE_HSI) || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_MSI) == RCC_OSCILLATORTYPE_MSI) || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_LSI) == RCC_OSCILLATORTYPE_LSI) || \
-                                               (((__OSCILLATOR__) & RCC_OSCILLATORTYPE_LSE) == RCC_OSCILLATORTYPE_LSE))
-#endif /* RCC_HSI48_SUPPORT */
+#define IS_RCC_OSCILLATORTYPE(__OSCILLATOR__)  (((__OSCILLATOR__) == RCC_OSCILLATORTYPE_NONE) || \
+                                                (((__OSCILLATOR__) & ~RCC_OSCILLATORTYPE_ALL) == 0x00U))
 
 #define IS_RCC_HSE(__HSE__)  (((__HSE__) == RCC_HSE_OFF) || ((__HSE__) == RCC_HSE_ON) || \
                               ((__HSE__) == RCC_HSE_BYPASS))
@@ -4847,6 +4858,7 @@ void              HAL_RCC_NMI_IRQHandler(void);
 /* User Callbacks in non blocking mode (IT mode) */
 void              HAL_RCC_CSSCallback(void);
 
+uint32_t          HAL_RCC_GetResetSource(void);
 /**
   * @}
   */
@@ -4869,4 +4881,3 @@ void              HAL_RCC_CSSCallback(void);
 
 #endif /* STM32L4xx_HAL_RCC_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

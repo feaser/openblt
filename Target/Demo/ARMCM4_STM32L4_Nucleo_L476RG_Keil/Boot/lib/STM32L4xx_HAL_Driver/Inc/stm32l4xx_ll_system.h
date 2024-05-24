@@ -3,6 +3,18 @@
   * @file    stm32l4xx_ll_system.h
   * @author  MCD Application Team
   * @brief   Header file of SYSTEM LL module.
+  *
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
   @verbatim
   ==============================================================================
                      ##### How to use this driver #####
@@ -16,17 +28,6 @@
       (+) Access to VREFBUF registers
 
   @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
   ******************************************************************************
   */
 
@@ -63,7 +64,7 @@ extern "C" {
  * @brief Power-down in Run mode Flash key
  */
 #define FLASH_PDKEY1                  0x04152637U /*!< Flash power down key1 */
-#define FLASH_PDKEY2                  0xFAFBFCFDU /*!< Flash power down key2: used with FLASH_PDKEY1 
+#define FLASH_PDKEY2                  0xFAFBFCFDU /*!< Flash power down key2: used with FLASH_PDKEY1
                                                        to unlock the RUN_PD bit in FLASH_ACR */
 
 /**
@@ -96,9 +97,9 @@ extern "C" {
 /** @defgroup SYSTEM_LL_EC_BANKMODE SYSCFG BANK MODE
   * @{
   */
-#define LL_SYSCFG_BANKMODE_BANK1           0x00000000U               /*!< Flash Bank1 mapped at 0x08000000 (and aliased @0x00000000) 
+#define LL_SYSCFG_BANKMODE_BANK1           0x00000000U               /*!< Flash Bank1 mapped at 0x08000000 (and aliased @0x00000000)
                                                                       and Flash Bank2 mapped at 0x08080000 (and aliased at 0x00080000) */
-#define LL_SYSCFG_BANKMODE_BANK2           SYSCFG_MEMRMP_FB_MODE     /*!< Flash Bank2 mapped at 0x08000000 (and aliased @0x00000000) 
+#define LL_SYSCFG_BANKMODE_BANK2           SYSCFG_MEMRMP_FB_MODE     /*!< Flash Bank2 mapped at 0x08000000 (and aliased @0x00000000)
                                                                       and Flash Bank1 mapped at 0x08080000 (and aliased at 0x00080000) */
 /**
   * @}
@@ -176,14 +177,14 @@ extern "C" {
 /** @defgroup SYSTEM_LL_EC_TIMBREAK SYSCFG TIMER BREAK
   * @{
   */
-#define LL_SYSCFG_TIMBREAK_ECC             SYSCFG_CFGR2_ECCL  /*!< Enables and locks the ECC error signal 
+#define LL_SYSCFG_TIMBREAK_ECC             SYSCFG_CFGR2_ECCL  /*!< Enables and locks the ECC error signal
                                                                    with Break Input of TIM1/8/15/16/17                           */
-#define LL_SYSCFG_TIMBREAK_PVD             SYSCFG_CFGR2_PVDL  /*!< Enables and locks the PVD connection 
-                                                                   with TIM1/8/15/16/17 Break Input 
+#define LL_SYSCFG_TIMBREAK_PVD             SYSCFG_CFGR2_PVDL  /*!< Enables and locks the PVD connection
+                                                                   with TIM1/8/15/16/17 Break Input
                                                                    and also the PVDE and PLS bits of the Power Control Interface */
-#define LL_SYSCFG_TIMBREAK_SRAM2_PARITY    SYSCFG_CFGR2_SPL   /*!< Enables and locks the SRAM2_PARITY error signal 
+#define LL_SYSCFG_TIMBREAK_SRAM2_PARITY    SYSCFG_CFGR2_SPL   /*!< Enables and locks the SRAM2_PARITY error signal
                                                                    with Break Input of TIM1/8/15/16/17                           */
-#define LL_SYSCFG_TIMBREAK_LOCKUP          SYSCFG_CFGR2_CLL   /*!< Enables and locks the LOCKUP output of CortexM4 
+#define LL_SYSCFG_TIMBREAK_LOCKUP          SYSCFG_CFGR2_CLL   /*!< Enables and locks the LOCKUP output of CortexM4
                                                                    with Break Input of TIM1/15/16/17                             */
 /**
   * @}
@@ -819,7 +820,7 @@ __STATIC_INLINE uint32_t LL_SYSCFG_GetEXTISource(uint32_t Line)
   * @brief  Enable SRAM2 Erase (starts a hardware SRAM2 erase operation. This bit is
   * automatically cleared at the end of the SRAM2 erase operation.)
   * @note This bit is write-protected: setting this bit is possible only after the
-  *       correct key sequence is written in the SYSCFG_SKR register as described in 
+  *       correct key sequence is written in the SYSCFG_SKR register as described in
   *       the Reference Manual.
   * @rmtoll SYSCFG_SCSR  SRAM2ER       LL_SYSCFG_EnableSRAM2Erase
   * @retval None
@@ -1624,5 +1625,3 @@ __STATIC_INLINE void LL_FLASH_DisableSleepPowerDown(void)
 #endif
 
 #endif /* STM32L4xx_LL_SYSTEM_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

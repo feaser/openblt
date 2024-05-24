@@ -6,36 +6,19 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32L4xx_LL_EXTI_H
-#define __STM32L4xx_LL_EXTI_H
+#ifndef STM32L4xx_LL_EXTI_H
+#define STM32L4xx_LL_EXTI_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -200,6 +183,8 @@ typedef struct
 /**
   * @}
   */
+
+
 #if defined(USE_FULL_LL_DRIVER)
 
 /** @defgroup EXTI_LL_EC_MODE Mode
@@ -464,7 +449,7 @@ __STATIC_INLINE void LL_EXTI_DisableIT_32_63(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsEnabledIT_0_31(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->IMR1, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->IMR1, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 }
 
 /**
@@ -489,7 +474,7 @@ __STATIC_INLINE uint32_t LL_EXTI_IsEnabledIT_0_31(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsEnabledIT_32_63(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->IMR2, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->IMR2, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 }
 
 /**
@@ -677,7 +662,7 @@ __STATIC_INLINE void LL_EXTI_DisableEvent_32_63(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsEnabledEvent_0_31(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->EMR1, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->EMR1, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 
 }
 
@@ -700,7 +685,7 @@ __STATIC_INLINE uint32_t LL_EXTI_IsEnabledEvent_0_31(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsEnabledEvent_32_63(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->EMR2, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->EMR2, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 }
 
 /**
@@ -878,7 +863,7 @@ __STATIC_INLINE void LL_EXTI_DisableRisingTrig_32_63(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsEnabledRisingTrig_0_31(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->RTSR1, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->RTSR1, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 }
 
 /**
@@ -893,7 +878,7 @@ __STATIC_INLINE uint32_t LL_EXTI_IsEnabledRisingTrig_0_31(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsEnabledRisingTrig_32_63(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->RTSR2, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->RTSR2, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 }
 
 /**
@@ -1068,7 +1053,7 @@ __STATIC_INLINE void LL_EXTI_DisableFallingTrig_32_63(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsEnabledFallingTrig_0_31(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->FTSR1, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->FTSR1, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 }
 
 /**
@@ -1083,7 +1068,7 @@ __STATIC_INLINE uint32_t LL_EXTI_IsEnabledFallingTrig_0_31(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsEnabledFallingTrig_32_63(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->FTSR2, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->FTSR2, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 }
 
 /**
@@ -1138,7 +1123,7 @@ __STATIC_INLINE void LL_EXTI_GenerateSWI_0_31(uint32_t ExtiLine)
 
 /**
   * @brief  Generate a software Interrupt Event for Lines in range 32 to 63
-  * @note If the interrupt is enabled on this line inthe EXTI_IMR2, writing a 1 to
+  * @note If the interrupt is enabled on this line in the EXTI_IMR2, writing a 1 to
   *       this bit when it is at '0' sets the corresponding pending bit in EXTI_PR2
   *       resulting in an interrupt request generation.
   *       This bit is cleared by clearing the corresponding bit in the EXTI_PR2
@@ -1200,7 +1185,7 @@ __STATIC_INLINE void LL_EXTI_GenerateSWI_32_63(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsActiveFlag_0_31(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->PR1, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->PR1, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 }
 
 /**
@@ -1217,7 +1202,7 @@ __STATIC_INLINE uint32_t LL_EXTI_IsActiveFlag_0_31(uint32_t ExtiLine)
   */
 __STATIC_INLINE uint32_t LL_EXTI_IsActiveFlag_32_63(uint32_t ExtiLine)
 {
-  return (READ_BIT(EXTI->PR2, ExtiLine) == (ExtiLine));
+  return ((READ_BIT(EXTI->PR2, ExtiLine) == (ExtiLine)) ? 1UL : 0UL);
 }
 
 /**
@@ -1258,7 +1243,6 @@ __STATIC_INLINE uint32_t LL_EXTI_ReadFlag_0_31(uint32_t ExtiLine)
 {
   return (uint32_t)(READ_BIT(EXTI->PR1, ExtiLine));
 }
-
 
 /**
   * @brief  Read ExtLine Combination Flag for  Lines in range 32 to 63
@@ -1333,6 +1317,7 @@ __STATIC_INLINE void LL_EXTI_ClearFlag_32_63(uint32_t ExtiLine)
   WRITE_REG(EXTI->PR2, ExtiLine);
 }
 
+
 /**
   * @}
   */
@@ -1370,6 +1355,5 @@ void LL_EXTI_StructInit(LL_EXTI_InitTypeDef *EXTI_InitStruct);
 }
 #endif
 
-#endif /* __STM32L4xx_LL_EXTI_H */
+#endif /* STM32L4xx_LL_EXTI_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

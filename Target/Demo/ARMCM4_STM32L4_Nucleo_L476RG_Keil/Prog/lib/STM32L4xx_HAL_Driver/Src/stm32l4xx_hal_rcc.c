@@ -38,14 +38,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -134,7 +132,7 @@ static uint32_t          RCC_GetSysClockFreqFromPLLSource(void);
          (+) HSI (high-speed internal): 16 MHz factory-trimmed RC used directly or through
              the PLL as System clock source.
 
-         (+) MSI (Mutiple Speed Internal): Its frequency is software trimmable from 100KHZ to 48MHZ.
+         (+) MSI (Multiple Speed Internal): Its frequency is software trimmable from 100KHZ to 48MHZ.
              It can be used to generate the clock for the USB OTG FS (48 MHz).
              The number of flash wait states is automatically adjusted when MSI range is updated with
              HAL_RCC_OscConfig() and the MSI is used as System clock source.
@@ -400,6 +398,8 @@ HAL_StatusTypeDef HAL_RCC_DeInit(void)
   * @note   Transition HSE Bypass to HSE On and HSE On to HSE Bypass are not
   *         supported by this macro. User should request a transition to HSE Off
   *         first and then HSE On or HSE Bypass.
+  * @note   If HSE failed to start, HSE should be disabled before recalling
+            HAL_RCC_OscConfig().
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
@@ -940,14 +940,20 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
             }
 
             /* Configure the main PLL clock source, multiplication and division factors. */
+#if defined(RCC_PLLP_SUPPORT)
             __HAL_RCC_PLL_CONFIG(RCC_OscInitStruct->PLL.PLLSource,
                                  RCC_OscInitStruct->PLL.PLLM,
                                  RCC_OscInitStruct->PLL.PLLN,
-#if defined(RCC_PLLP_SUPPORT)
                                  RCC_OscInitStruct->PLL.PLLP,
-#endif
                                  RCC_OscInitStruct->PLL.PLLQ,
                                  RCC_OscInitStruct->PLL.PLLR);
+#else
+            __HAL_RCC_PLL_CONFIG(RCC_OscInitStruct->PLL.PLLSource,
+                                 RCC_OscInitStruct->PLL.PLLM,
+                                 RCC_OscInitStruct->PLL.PLLN,
+                                 RCC_OscInitStruct->PLL.PLLQ,
+                                 RCC_OscInitStruct->PLL.PLLR);
+#endif
 
             /* Enable the main PLL. */
             __HAL_RCC_PLL_ENABLE();
@@ -1008,29 +1014,6 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
         /* Disable the main PLL. */
         __HAL_RCC_PLL_DISABLE();
 
-        /* Disable all PLL outputs to save power if no PLLs on */
-#if defined(RCC_PLLSAI1_SUPPORT) && defined(RCC_CR_PLLSAI2RDY)
-        if(READ_BIT(RCC->CR, (RCC_CR_PLLSAI1RDY | RCC_CR_PLLSAI2RDY)) == 0U)
-        {
-          MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC, RCC_PLLSOURCE_NONE);
-        }
-#elif defined(RCC_PLLSAI1_SUPPORT)
-        if(READ_BIT(RCC->CR, RCC_CR_PLLSAI1RDY) == 0U)
-        {
-          MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC, RCC_PLLSOURCE_NONE);
-        }
-#else
-        MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC, RCC_PLLSOURCE_NONE);
-#endif /* RCC_PLLSAI1_SUPPORT && RCC_CR_PLLSAI2RDY */
-
-#if defined(RCC_PLLSAI2_SUPPORT)
-        __HAL_RCC_PLLCLKOUT_DISABLE(RCC_PLL_SYSCLK | RCC_PLL_48M1CLK | RCC_PLL_SAI3CLK);
-#elif defined(RCC_PLLSAI1_SUPPORT)
-        __HAL_RCC_PLLCLKOUT_DISABLE(RCC_PLL_SYSCLK | RCC_PLL_48M1CLK | RCC_PLL_SAI2CLK);
-#else
-        __HAL_RCC_PLLCLKOUT_DISABLE(RCC_PLL_SYSCLK | RCC_PLL_48M1CLK);
-#endif /* RCC_PLLSAI2_SUPPORT */
-
         /* Get Start Tick*/
         tickstart = HAL_GetTick();
 
@@ -1042,6 +1025,14 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
             return HAL_TIMEOUT;
           }
         }
+        /* Unselect main PLL clock source and disable main PLL outputs to save power */
+#if defined(RCC_PLLSAI2_SUPPORT)
+        RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLSRC | RCC_PLL_SYSCLK | RCC_PLL_48M1CLK | RCC_PLL_SAI3CLK);
+#elif defined(RCC_PLLSAI1_SUPPORT)
+        RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLSRC | RCC_PLL_SYSCLK | RCC_PLL_48M1CLK | RCC_PLL_SAI2CLK);
+#else
+        RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLSRC | RCC_PLL_SYSCLK | RCC_PLL_48M1CLK);
+#endif /* RCC_PLLSAI2_SUPPORT */
       }
       else
       {
@@ -1140,6 +1131,18 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
     }
   }
 
+  /*----------------- HCLK Configuration prior to SYSCLK----------------------*/
+  /* Apply higher HCLK prescaler request here to ensure CPU clock is not of of spec when SYSCLK is increased */
+  if(((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_HCLK) == RCC_CLOCKTYPE_HCLK)
+  {
+    assert_param(IS_RCC_HCLK(RCC_ClkInitStruct->AHBCLKDivider));
+
+    if(RCC_ClkInitStruct->AHBCLKDivider > READ_BIT(RCC->CFGR, RCC_CFGR_HPRE))
+    {
+      MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_ClkInitStruct->AHBCLKDivider);
+    }
+  }
+
   /*------------------------- SYSCLK Configuration ---------------------------*/
   if(((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_SYSCLK) == RCC_CLOCKTYPE_SYSCLK)
   {
@@ -1159,21 +1162,11 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
       /* Compute target PLL output frequency */
       if(RCC_GetSysClockFreqFromPLLSource() > 80000000U)
       {
+        /* If lowest HCLK prescaler, apply intermediate step with HCLK prescaler 2 necessary before to go over 80Mhz */
         if(READ_BIT(RCC->CFGR, RCC_CFGR_HPRE) == RCC_SYSCLK_DIV1)
         {
-          /* Intermediate step with HCLK prescaler 2 necessary before to go over 80Mhz */
           MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_SYSCLK_DIV2);
           hpre = RCC_SYSCLK_DIV2;
-        }
-        else if((((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_HCLK) == RCC_CLOCKTYPE_HCLK) && (RCC_ClkInitStruct->AHBCLKDivider == RCC_SYSCLK_DIV1))
-        {
-          /* Intermediate step with HCLK prescaler 2 necessary before to go over 80Mhz */
-          MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_SYSCLK_DIV2);
-          hpre = RCC_SYSCLK_DIV2;
-        }
-        else
-        {
-          /* nothing to do */
         }
       }
 #endif
@@ -1212,9 +1205,12 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
       /* Overshoot management when going down from PLL as SYSCLK source and frequency above 80Mhz */
       if(HAL_RCC_GetSysClockFreq() > 80000000U)
       {
-        /* Intermediate step with HCLK prescaler 2 necessary before to go under 80Mhz */
-        MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_SYSCLK_DIV2);
-        hpre = RCC_SYSCLK_DIV2;
+        /* If lowest HCLK prescaler, apply intermediate step with HCLK prescaler 2 necessary before to go under 80Mhz */
+        if(READ_BIT(RCC->CFGR, RCC_CFGR_HPRE) == RCC_SYSCLK_DIV1)
+        {
+          MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_SYSCLK_DIV2);
+          hpre = RCC_SYSCLK_DIV2;
+        }
       }
 #endif
 
@@ -1234,25 +1230,26 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
     }
   }
 
-  /*-------------------------- HCLK Configuration --------------------------*/
-  if(((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_HCLK) == RCC_CLOCKTYPE_HCLK)
-  {
-    assert_param(IS_RCC_HCLK(RCC_ClkInitStruct->AHBCLKDivider));
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_ClkInitStruct->AHBCLKDivider);
-  }
 #if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || \
     defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
-  else
+  /* Is intermediate HCLK prescaler 2 applied internally, resume with HCLK prescaler 1 */
+  if(hpre == RCC_SYSCLK_DIV2)
   {
-    /* Is intermediate HCLK prescaler 2 applied internally, complete with HCLK prescaler 1 */
-    if(hpre == RCC_SYSCLK_DIV2)
-    {
-      MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_SYSCLK_DIV1);
-    }
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_SYSCLK_DIV1);
   }
 #endif
 
-  /* Decreasing the number of wait states because of lower CPU frequency */
+  /*----------------- HCLK Configuration after SYSCLK-------------------------*/
+  /* Apply lower HCLK prescaler request here to ensure CPU clock is not of of spec when SYSCLK is set */
+  if(((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_HCLK) == RCC_CLOCKTYPE_HCLK)
+  {
+    if(RCC_ClkInitStruct->AHBCLKDivider < READ_BIT(RCC->CFGR, RCC_CFGR_HPRE))
+    {
+      MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_ClkInitStruct->AHBCLKDivider);
+    }
+  }
+
+  /* Allow decreasing of the number of wait states (because of lower CPU frequency expected) */
   if(FLatency < __HAL_FLASH_GET_LATENCY())
   {
     /* Program the new number of wait states to the LATENCY bits in the FLASH_ACR register */
@@ -1303,7 +1300,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
     [..]
     This subsection provides a set of functions allowing to:
 
-    (+) Ouput clock to MCO pin.
+    (+) Output clock to MCO pin.
     (+) Retrieve current clock frequencies.
     (+) Enable the Clock Security System.
 
@@ -1323,7 +1320,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
   *            @arg @ref RCC_MCO1SOURCE_SYSCLK  system  clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_MSI  MSI clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_HSI  HSI clock selected as MCO source
-  *            @arg @ref RCC_MCO1SOURCE_HSE  HSE clock selected as MCO sourcee
+  *            @arg @ref RCC_MCO1SOURCE_HSE  HSE clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_PLLCLK  main PLL clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_LSI  LSI clock selected as MCO source
   *            @arg @ref RCC_MCO1SOURCE_LSE  LSE clock selected as MCO source
@@ -1354,7 +1351,7 @@ void HAL_RCC_MCOConfig( uint32_t RCC_MCOx, uint32_t RCC_MCOSource, uint32_t RCC_
   /* MCO Clock Enable */
   __MCO1_CLK_ENABLE();
 
-  /* Configue the MCO1 pin in alternate function mode */
+  /* Configure the MCO1 pin in alternate function mode */
   GPIO_InitStruct.Pin = MCO1_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -1751,7 +1748,26 @@ __weak void HAL_RCC_CSSCallback(void)
 }
 
 /**
-  * @}
+  * @brief  Get and clear reset flags
+  * @param  None
+  * @note   Once reset flags are retrieved, this API is clearing them in order
+  *         to isolate next reset reason.
+  * @retval can be a combination of @ref RCC_Reset_Flag
+  */
+uint32_t HAL_RCC_GetResetSource(void)
+{
+  uint32_t reset;
+
+  /* Get all reset flags */
+  reset = RCC->CSR & RCC_RESET_FLAG_ALL;
+
+  /* Clear Reset flags */
+  RCC->CSR |= RCC_CSR_RMVF;
+
+  return reset;
+}
+
+/**  * @}
   */
 
 /**
@@ -1863,23 +1879,7 @@ static HAL_StatusTypeDef RCC_SetFlashLatencyFromMSIRange(uint32_t msirange)
   */
 static uint32_t RCC_GetSysClockFreqFromPLLSource(void)
 {
-  uint32_t msirange = 0U;
-  uint32_t pllvco, pllsource, pllr, pllm, sysclockfreq;  /* no init needed */
-
-  if(__HAL_RCC_GET_PLL_OSCSOURCE() == RCC_PLLSOURCE_MSI)
-  {
-    /* Get MSI range source */
-    if(READ_BIT(RCC->CR, RCC_CR_MSIRGSEL) == 0U)
-    { /* MSISRANGE from RCC_CSR applies */
-      msirange = READ_BIT(RCC->CSR, RCC_CSR_MSISRANGE) >> RCC_CSR_MSISRANGE_Pos;
-    }
-    else
-    { /* MSIRANGE from RCC_CR applies */
-      msirange = READ_BIT(RCC->CR, RCC_CR_MSIRANGE) >> RCC_CR_MSIRANGE_Pos;
-    }
-    /*MSI frequency range in HZ*/
-    msirange = MSIRangeTable[msirange];
-  }
+  uint32_t msirange, pllvco, pllsource, pllr, pllm, sysclockfreq;  /* no init needed */
 
   /* PLL_VCO = (HSE_VALUE or HSI_VALUE or MSI_VALUE) * PLLN / PLLM
      SYSCLK = PLL_VCO / PLLR
@@ -1897,8 +1897,21 @@ static uint32_t RCC_GetSysClockFreqFromPLLSource(void)
     break;
 
   case RCC_PLLSOURCE_MSI:  /* MSI used as PLL clock source */
+    /* Get MSI range source */
+    if(READ_BIT(RCC->CR, RCC_CR_MSIRGSEL) == 0U)
+    { /* MSISRANGE from RCC_CSR applies */
+      msirange = READ_BIT(RCC->CSR, RCC_CSR_MSISRANGE) >> RCC_CSR_MSISRANGE_Pos;
+    }
+    else
+    { /* MSIRANGE from RCC_CR applies */
+      msirange = READ_BIT(RCC->CR, RCC_CR_MSIRANGE) >> RCC_CR_MSIRANGE_Pos;
+    }
+    /*MSI frequency range in HZ*/
+    pllvco = MSIRangeTable[msirange];
+    break;
   default:
-    pllvco = msirange;
+    /* unexpected */
+    pllvco = 0;
     break;
   }
   pllm = (READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLM) >> RCC_PLLCFGR_PLLM_Pos) + 1U ;
@@ -1923,4 +1936,3 @@ static uint32_t RCC_GetSysClockFreqFromPLLSource(void)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

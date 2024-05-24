@@ -6,13 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -22,7 +21,7 @@
 #define STM32L4xx_HAL_DMA_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -83,7 +82,7 @@ typedef enum
   HAL_DMA_STATE_READY             = 0x01U,  /*!< DMA initialized and ready for use      */
   HAL_DMA_STATE_BUSY              = 0x02U,  /*!< DMA process is ongoing                 */
   HAL_DMA_STATE_TIMEOUT           = 0x03U,  /*!< DMA timeout state                      */
-}HAL_DMA_StateTypeDef;
+} HAL_DMA_StateTypeDef;
 
 /**
   * @brief  HAL DMA Error Code structure definition
@@ -92,7 +91,7 @@ typedef enum
 {
   HAL_DMA_FULL_TRANSFER      = 0x00U,    /*!< Full transfer     */
   HAL_DMA_HALF_TRANSFER      = 0x01U     /*!< Half Transfer     */
-}HAL_DMA_LevelCompleteTypeDef;
+} HAL_DMA_LevelCompleteTypeDef;
 
 
 /**
@@ -105,7 +104,7 @@ typedef enum
   HAL_DMA_XFER_ERROR_CB_ID         = 0x02U,    /*!< Error             */
   HAL_DMA_XFER_ABORT_CB_ID         = 0x03U,    /*!< Abort             */
   HAL_DMA_XFER_ALL_CB_ID           = 0x04U     /*!< All               */
-}HAL_DMA_CallbackIDTypeDef;
+} HAL_DMA_CallbackIDTypeDef;
 
 /**
   * @brief  DMA handle Structure definition
@@ -122,13 +121,13 @@ typedef struct __DMA_HandleTypeDef
 
   void                  *Parent;                                                        /*!< Parent object state                  */
 
-  void                  (* XferCpltCallback)(struct __DMA_HandleTypeDef * hdma);        /*!< DMA transfer complete callback       */
+  void (* XferCpltCallback)(struct __DMA_HandleTypeDef *hdma);                          /*!< DMA transfer complete callback       */
 
-  void                  (* XferHalfCpltCallback)(struct __DMA_HandleTypeDef * hdma);    /*!< DMA Half transfer complete callback  */
+  void (* XferHalfCpltCallback)(struct __DMA_HandleTypeDef *hdma);                      /*!< DMA Half transfer complete callback  */
 
-  void                  (* XferErrorCallback)(struct __DMA_HandleTypeDef * hdma);       /*!< DMA transfer error callback          */
+  void (* XferErrorCallback)(struct __DMA_HandleTypeDef *hdma);                         /*!< DMA transfer error callback          */
 
-  void                  (* XferAbortCallback)(struct __DMA_HandleTypeDef * hdma);       /*!< DMA transfer abort callback          */
+  void (* XferAbortCallback)(struct __DMA_HandleTypeDef *hdma);                         /*!< DMA transfer abort callback          */
 
   __IO uint32_t         ErrorCode;                                                      /*!< DMA Error code                       */
 
@@ -151,7 +150,7 @@ typedef struct __DMA_HandleTypeDef
 
 #endif /* DMAMUX1 */
 
-}DMA_HandleTypeDef;
+} DMA_HandleTypeDef;
 /**
   * @}
   */
@@ -754,7 +753,7 @@ typedef struct __DMA_HandleTypeDef
   */
 /* Initialization and de-initialization functions *****************************/
 HAL_StatusTypeDef HAL_DMA_Init(DMA_HandleTypeDef *hdma);
-HAL_StatusTypeDef HAL_DMA_DeInit (DMA_HandleTypeDef *hdma);
+HAL_StatusTypeDef HAL_DMA_DeInit(DMA_HandleTypeDef *hdma);
 /**
   * @}
   */
@@ -763,13 +762,13 @@ HAL_StatusTypeDef HAL_DMA_DeInit (DMA_HandleTypeDef *hdma);
   * @{
   */
 /* IO operation functions *****************************************************/
-HAL_StatusTypeDef HAL_DMA_Start (DMA_HandleTypeDef *hdma, uint32_t SrcAddress, uint32_t DstAddress, uint32_t DataLength);
+HAL_StatusTypeDef HAL_DMA_Start(DMA_HandleTypeDef *hdma, uint32_t SrcAddress, uint32_t DstAddress, uint32_t DataLength);
 HAL_StatusTypeDef HAL_DMA_Start_IT(DMA_HandleTypeDef *hdma, uint32_t SrcAddress, uint32_t DstAddress, uint32_t DataLength);
 HAL_StatusTypeDef HAL_DMA_Abort(DMA_HandleTypeDef *hdma);
 HAL_StatusTypeDef HAL_DMA_Abort_IT(DMA_HandleTypeDef *hdma);
 HAL_StatusTypeDef HAL_DMA_PollForTransfer(DMA_HandleTypeDef *hdma, HAL_DMA_LevelCompleteTypeDef CompleteLevel, uint32_t Timeout);
 void HAL_DMA_IRQHandler(DMA_HandleTypeDef *hdma);
-HAL_StatusTypeDef HAL_DMA_RegisterCallback(DMA_HandleTypeDef *hdma, HAL_DMA_CallbackIDTypeDef CallbackID, void (* pCallback)( DMA_HandleTypeDef * _hdma));
+HAL_StatusTypeDef HAL_DMA_RegisterCallback(DMA_HandleTypeDef *hdma, HAL_DMA_CallbackIDTypeDef CallbackID, void (* pCallback)(DMA_HandleTypeDef *_hdma));
 HAL_StatusTypeDef HAL_DMA_UnRegisterCallback(DMA_HandleTypeDef *hdma, HAL_DMA_CallbackIDTypeDef CallbackID);
 
 /**
@@ -860,5 +859,3 @@ uint32_t             HAL_DMA_GetError(DMA_HandleTypeDef *hdma);
 #endif
 
 #endif /* STM32L4xx_HAL_DMA_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

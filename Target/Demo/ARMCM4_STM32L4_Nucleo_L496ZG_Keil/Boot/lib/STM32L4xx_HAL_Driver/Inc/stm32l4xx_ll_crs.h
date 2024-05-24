@@ -6,13 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -94,7 +93,7 @@ extern "C" {
 /** @defgroup CRS_LL_EC_SYNC_SOURCE Synchronization Signal Source
   * @{
   */
-#define LL_CRS_SYNC_SOURCE_GPIO            ((uint32_t)0x00U)       /*!< Synchro Signal soucre GPIO */
+#define LL_CRS_SYNC_SOURCE_GPIO            ((uint32_t)0x00U)       /*!< Synchro Signal source GPIO */
 #define LL_CRS_SYNC_SOURCE_LSE             CRS_CFGR_SYNCSRC_0      /*!< Synchro Signal source LSE */
 #define LL_CRS_SYNC_SOURCE_USB             CRS_CFGR_SYNCSRC_1      /*!< Synchro Signal source USB SOF (default)*/
 /**
@@ -455,7 +454,7 @@ __STATIC_INLINE uint32_t LL_CRS_GetSyncPolarity(void)
   */
 __STATIC_INLINE void LL_CRS_ConfigSynchronization(uint32_t HSI48CalibrationValue, uint32_t ErrorLimitValue, uint32_t ReloadValue, uint32_t Settings)
 {
-  MODIFY_REG(CRS->CR, CRS_CR_TRIM, HSI48CalibrationValue);
+  MODIFY_REG(CRS->CR, CRS_CR_TRIM, HSI48CalibrationValue << CRS_CR_TRIM_Pos);
   MODIFY_REG(CRS->CFGR,
              CRS_CFGR_RELOAD | CRS_CFGR_FELIM | CRS_CFGR_SYNCDIV | CRS_CFGR_SYNCSRC | CRS_CFGR_SYNCPOL,
              ReloadValue | (ErrorLimitValue << CRS_CFGR_FELIM_Pos) | Settings);
@@ -784,5 +783,3 @@ ErrorStatus LL_CRS_DeInit(void);
 #endif
 
 #endif /* STM32L4xx_LL_CRS_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

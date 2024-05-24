@@ -6,14 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                       opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -84,7 +82,8 @@ typedef struct
                                 @ref FLASH_OB_USER_IWDG_STOP, @ref FLASH_OB_USER_IWDG_STANDBY,
                                 @ref FLASH_OB_USER_WWDG_SW, @ref FLASH_OB_USER_BFB2,
                                 @ref FLASH_OB_USER_DUALBANK, @ref FLASH_OB_USER_nBOOT1,
-                                @ref FLASH_OB_USER_SRAM2_PE and @ref FLASH_OB_USER_SRAM2_RST */
+                                @ref FLASH_OB_USER_SRAM2_PE, @ref FLASH_OB_USER_SRAM2_RST,
+                                @ref FLASH_OB_USER_nSWBOOT0 and @ref FLASH_OB_USER_nBOOT0 */
   uint32_t PCROPConfig;    /*!< Configuration of the PCROP (used for OPTIONBYTE_PCROP).
                                 This parameter must be a combination of @ref FLASH_Banks (except FLASH_BANK_BOTH)
                                 and @ref FLASH_OB_PCROP_RDP */
@@ -429,7 +428,7 @@ typedef struct
     defined (STM32L442xx) || defined (STM32L443xx) || defined (STM32L451xx) || defined (STM32L452xx) || defined (STM32L462xx) || \
     defined (STM32L496xx) || defined (STM32L4A6xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx) || defined (STM32L4R5xx) || \
     defined (STM32L4R7xx) || defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined (STM32L4S9xx)
-/** @defgroup OB_USER_nSWBOOT0 FLASH Option Bytes User Software BOOT0
+/** @defgroup FLASH_OB_USER_nSWBOOT0 FLASH Option Bytes User Software BOOT0
   * @{
   */
 #define OB_BOOT0_FROM_OB          ((uint32_t)0x0000000)                /*!< BOOT0 taken from the option bit nBOOT0 */
@@ -438,7 +437,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup OB_USER_nBOOT0 FLASH Option Bytes User nBOOT0 option bit
+/** @defgroup FLASH_OB_USER_nBOOT0 FLASH Option Bytes User nBOOT0 option bit
   * @{
   */
 #define OB_BOOT0_RESET            ((uint32_t)0x0000000)                /*!< nBOOT0 = 0 */
@@ -1027,4 +1026,3 @@ HAL_StatusTypeDef FLASH_WaitForLastOperation(uint32_t Timeout);
 
 #endif /* STM32L4xx_HAL_FLASH_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -6,13 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -70,7 +69,7 @@ typedef struct
                                This parameter must be a number between Min_Data = 1 and Max_Data = 32 */
 
 
-}HAL_DMA_MuxSyncConfigTypeDef;
+} HAL_DMA_MuxSyncConfigTypeDef;
 
 
 /**
@@ -78,7 +77,7 @@ typedef struct
   */
 typedef struct
 {
- uint32_t SignalID;      /*!< Specifies the ID of the signal used for DMAMUX request generator
+  uint32_t SignalID;      /*!< Specifies the ID of the signal used for DMAMUX request generator
                               This parameter can be a value of @ref DMAEx_DMAMUX_SignalGeneratorID_selection */
 
   uint32_t Polarity;       /*!< Specifies the polarity of the signal on which the request is generated.
@@ -87,7 +86,7 @@ typedef struct
   uint32_t RequestNumber;  /*!< Specifies the number of DMA request that will be generated after a signal event
                                 This parameter must be a number between Min_Data = 1 and Max_Data = 32 */
 
-}HAL_DMA_MuxRequestGeneratorConfigTypeDef;
+} HAL_DMA_MuxRequestGeneratorConfigTypeDef;
 
 /**
   * @}
@@ -212,10 +211,10 @@ typedef struct
   */
 
 /* ------------------------- REQUEST -----------------------------------------*/
-HAL_StatusTypeDef HAL_DMAEx_ConfigMuxRequestGenerator (DMA_HandleTypeDef *hdma,
-             HAL_DMA_MuxRequestGeneratorConfigTypeDef *pRequestGeneratorConfig);
-HAL_StatusTypeDef HAL_DMAEx_EnableMuxRequestGenerator (DMA_HandleTypeDef *hdma);
-HAL_StatusTypeDef HAL_DMAEx_DisableMuxRequestGenerator (DMA_HandleTypeDef *hdma);
+HAL_StatusTypeDef HAL_DMAEx_ConfigMuxRequestGenerator(DMA_HandleTypeDef *hdma,
+                                                      HAL_DMA_MuxRequestGeneratorConfigTypeDef *pRequestGeneratorConfig);
+HAL_StatusTypeDef HAL_DMAEx_EnableMuxRequestGenerator(DMA_HandleTypeDef *hdma);
+HAL_StatusTypeDef HAL_DMAEx_DisableMuxRequestGenerator(DMA_HandleTypeDef *hdma);
 /* -------------------------------------------------------------------------- */
 
 /* ------------------------- SYNCHRO -----------------------------------------*/
@@ -283,5 +282,3 @@ void HAL_DMAEx_MUX_IRQHandler(DMA_HandleTypeDef *hdma);
 #endif
 
 #endif /* STM32L4xx_HAL_DMA_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

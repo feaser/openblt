@@ -63,6 +63,7 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+void MX_USB_OTG_FS_PCD_Init(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -73,7 +74,7 @@ void Error_Handler(void);
 #define USB_DM_GPIO_Port GPIOA
 #define USB_DP_Pin LL_GPIO_PIN_12
 #define USB_DP_GPIO_Port GPIOA
-void   MX_USB_OTG_FS_PCD_Init(void);
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
@@ -83,5 +84,3 @@ void   MX_USB_OTG_FS_PCD_Init(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
