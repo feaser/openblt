@@ -58,14 +58,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2018 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -608,6 +606,9 @@ void FLASH_PageErase(uint32_t Banks, uint32_t Page)
   {
     tmp &= ~FLASH_CR_BKER;
   }
+#else
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(Banks);
 #endif /* FLASH_DBANK_SUPPORT */
 
   /* Set page number, Page Erase bit & Start bit */
@@ -631,7 +632,6 @@ void FLASH_FlushCaches(void)
     __HAL_FLASH_INSTRUCTION_CACHE_ENABLE();
   }
 }
-
 
 /**
   * @brief  Configure the write protection of the desired pages.
@@ -1307,4 +1307,3 @@ static void FLASH_OB_GetSecMem(uint32_t *BootEntry, uint32_t *SecSize)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -6,14 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2018 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -376,10 +374,12 @@ typedef struct
 #define LL_RCC_USART1_CLKSOURCE_SYSCLK     ((RCC_CCIPR_USART1SEL << 16U) | RCC_CCIPR_USART1SEL_0)  /*!< SYSCLK clock used as USART1 clock source */
 #define LL_RCC_USART1_CLKSOURCE_HSI        ((RCC_CCIPR_USART1SEL << 16U) | RCC_CCIPR_USART1SEL_1)  /*!< HSI clock used as USART1 clock source */
 #define LL_RCC_USART1_CLKSOURCE_LSE        ((RCC_CCIPR_USART1SEL << 16U) | RCC_CCIPR_USART1SEL)    /*!< LSE clock used as USART1 clock source */
+#if defined(RCC_CCIPR_USART2SEL)
 #define LL_RCC_USART2_CLKSOURCE_PCLK1      ((RCC_CCIPR_USART2SEL << 16U) | 0x00000000U)            /*!< PCLK1 clock used as USART2 clock source */
 #define LL_RCC_USART2_CLKSOURCE_SYSCLK     ((RCC_CCIPR_USART2SEL << 16U) | RCC_CCIPR_USART2SEL_0)  /*!< SYSCLK clock used as USART2 clock source */
 #define LL_RCC_USART2_CLKSOURCE_HSI        ((RCC_CCIPR_USART2SEL << 16U) | RCC_CCIPR_USART2SEL_1)  /*!< HSI clock used as USART2 clock source */
 #define LL_RCC_USART2_CLKSOURCE_LSE        ((RCC_CCIPR_USART2SEL << 16U) | RCC_CCIPR_USART2SEL)    /*!< LSE clock used as USART2 clock source */
+#endif /* RCC_CCIPR_USART2SEL */
 #if defined(RCC_CCIPR_USART3SEL)
 #define LL_RCC_USART3_CLKSOURCE_PCLK1      ((RCC_CCIPR_USART3SEL << 16U) | 0x00000000U)           /*!< PCLK1 clock used as USART3 clock source */
 #define LL_RCC_USART3_CLKSOURCE_SYSCLK     ((RCC_CCIPR_USART3SEL << 16U) | RCC_CCIPR_USART3SEL_0) /*!< SYSCLK clock used as USART3 clock source */
@@ -565,7 +565,9 @@ typedef struct
   * @{
   */
 #define LL_RCC_USART1_CLKSOURCE            RCC_CCIPR_USART1SEL /*!< USART1 Clock source selection */
+#if defined(RCC_CCIPR_USART2SEL)
 #define LL_RCC_USART2_CLKSOURCE            RCC_CCIPR_USART2SEL /*!< USART2 Clock source selection */
+#endif /* RCC_CCIPR_USART2SEL */
 #if defined(RCC_CCIPR_USART3SEL)
 #define LL_RCC_USART3_CLKSOURCE            RCC_CCIPR_USART3SEL /*!< USART3 Clock source selection */
 #endif /* RCC_CCIPR_USART3SEL */
@@ -1918,10 +1920,10 @@ __STATIC_INLINE void LL_RCC_ConfigMCO2(uint32_t MCOxSource, uint32_t MCOxPrescal
   *         @arg @ref LL_RCC_USART1_CLKSOURCE_SYSCLK
   *         @arg @ref LL_RCC_USART1_CLKSOURCE_HSI
   *         @arg @ref LL_RCC_USART1_CLKSOURCE_LSE
-  *         @arg @ref LL_RCC_USART2_CLKSOURCE_PCLK1
-  *         @arg @ref LL_RCC_USART2_CLKSOURCE_SYSCLK
-  *         @arg @ref LL_RCC_USART2_CLKSOURCE_HSI
-  *         @arg @ref LL_RCC_USART2_CLKSOURCE_LSE
+  *         @arg @ref LL_RCC_USART2_CLKSOURCE_PCLK1 (*)
+  *         @arg @ref LL_RCC_USART2_CLKSOURCE_SYSCLK (*)
+  *         @arg @ref LL_RCC_USART2_CLKSOURCE_HSI (*)
+  *         @arg @ref LL_RCC_USART2_CLKSOURCE_LSE (*)
   *         @arg @ref LL_RCC_USART3_CLKSOURCE_PCLK1 (*)
   *         @arg @ref LL_RCC_USART3_CLKSOURCE_SYSCLK (*)
   *         @arg @ref LL_RCC_USART3_CLKSOURCE_HSI (*)
@@ -2162,10 +2164,10 @@ __STATIC_INLINE void LL_RCC_SetI2SClockSource(uint32_t I2SxSource)
   *         @arg @ref LL_RCC_USART1_CLKSOURCE_SYSCLK
   *         @arg @ref LL_RCC_USART1_CLKSOURCE_HSI
   *         @arg @ref LL_RCC_USART1_CLKSOURCE_LSE
-  *         @arg @ref LL_RCC_USART2_CLKSOURCE_PCLK1
-  *         @arg @ref LL_RCC_USART2_CLKSOURCE_SYSCLK
-  *         @arg @ref LL_RCC_USART2_CLKSOURCE_HSI
-  *         @arg @ref LL_RCC_USART2_CLKSOURCE_LSE
+  *         @arg @ref LL_RCC_USART2_CLKSOURCE_PCLK1 (*)
+  *         @arg @ref LL_RCC_USART2_CLKSOURCE_SYSCLK (*)
+  *         @arg @ref LL_RCC_USART2_CLKSOURCE_HSI (*)
+  *         @arg @ref LL_RCC_USART2_CLKSOURCE_LSE (*)
   *         @arg @ref LL_RCC_USART3_CLKSOURCE_PCLK1 (*)
   *         @arg @ref LL_RCC_USART3_CLKSOURCE_SYSCLK (*)
   *         @arg @ref LL_RCC_USART3_CLKSOURCE_HSI (*)
@@ -3145,6 +3147,16 @@ __STATIC_INLINE void LL_RCC_PLL_DisableDomain_ADC(void)
 }
 
 /**
+  * @brief  Check if PLL output mapped on ADC domain clock is enabled
+  * @rmtoll PLLCFGR      PLLPEN        LL_RCC_PLL_IsEnabledDomain_ADC
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_PLL_IsEnabledDomain_ADC(void)
+{
+  return ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLPEN) == (RCC_PLLCFGR_PLLPEN)) ? 1UL : 0UL);
+}
+
+/**
   * @brief  Enable PLL output mapped on I2S domain clock
   * @rmtoll PLLCFGR      PLLPEN        LL_RCC_PLL_EnableDomain_I2S1
   * @note   User shall check that PLL enable is not done through
@@ -3185,6 +3197,16 @@ __STATIC_INLINE void LL_RCC_PLL_DisableDomain_I2S1(void)
   CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLPEN);
 }
 
+/**
+  * @brief  Check if PLL output mapped on I2S1 domain clock is enabled
+  * @rmtoll PLLCFGR      PLLPEN        LL_RCC_PLL_IsEnabledDomain_I2S1
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_PLL_IsEnabledDomain_I2S1(void)
+{
+  return ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLPEN) == (RCC_PLLCFGR_PLLPEN)) ? 1UL : 0UL);
+}
+
 #if defined(RCC_CCIPR2_I2S2SEL)
 /**
   * @brief  Disable PLL output mapped on I2S2 domain clock
@@ -3199,6 +3221,16 @@ __STATIC_INLINE void LL_RCC_PLL_DisableDomain_I2S1(void)
 __STATIC_INLINE void LL_RCC_PLL_DisableDomain_I2S2(void)
 {
   CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLPEN);
+}
+
+/**
+  * @brief  Check if PLL output mapped on I2S2 domain clock is enabled
+  * @rmtoll PLLCFGR      PLLPEN        LL_RCC_PLL_IsEnabledDomain_I2S2
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_PLL_IsEnabledDomain_I2S2(void)
+{
+  return ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLPEN) == (RCC_PLLCFGR_PLLPEN)) ? 1UL : 0UL);
 }
 #endif /* RCC_CCIPR2_I2S2SEL */
 
@@ -3229,6 +3261,16 @@ __STATIC_INLINE void LL_RCC_PLL_DisableDomain_RNG(void)
 {
   CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN);
 }
+
+/**
+  * @brief  Check if PLL output mapped on RNG domain clock is enabled
+  * @rmtoll PLLCFGR      PLLQEN        LL_RCC_PLL_IsEnabledDomain_RNG
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_PLL_IsEnabledDomain_RNG(void)
+{
+  return ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN) == (RCC_PLLCFGR_PLLQEN)) ? 1UL : 0UL);
+}
 #endif /* RNG */
 
 #if defined(FDCAN1) || defined(FDCAN2)
@@ -3257,6 +3299,16 @@ __STATIC_INLINE void LL_RCC_PLL_EnableDomain_FDCAN(void)
 __STATIC_INLINE void LL_RCC_PLL_DisableDomain_FDCAN(void)
 {
   CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN);
+}
+
+/**
+  * @brief  Check if PLL output mapped on FDCAN domain clock is enabled
+  * @rmtoll PLLCFGR      PLLQEN        LL_RCC_PLL_IsEnabledDomain_FDCAN
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_PLL_IsEnabledDomain_FDCAN(void)
+{
+  return ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN) == (RCC_PLLCFGR_PLLQEN)) ? 1UL : 0UL);
 }
 #endif /* FDCAN1 || FDCAN2 */
 
@@ -3287,6 +3339,16 @@ __STATIC_INLINE void LL_RCC_PLL_DisableDomain_USB(void)
 {
   CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN);
 }
+
+/**
+  * @brief  Check if PLL output mapped on USB domain clock is enabled
+  * @rmtoll PLLCFGR      PLLQEN        LL_RCC_PLL_IsEnabledDomain_USB
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_PLL_IsEnabledDomain_USB(void)
+{
+  return ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN) == (RCC_PLLCFGR_PLLQEN)) ? 1UL : 0UL);
+}
 #endif /* STM32G0C1xx || STM32G0B1xx || STM32G0B0xx */
 
 #if defined(RCC_PLLQ_SUPPORT)
@@ -3315,6 +3377,16 @@ __STATIC_INLINE void LL_RCC_PLL_EnableDomain_TIM1(void)
 __STATIC_INLINE void LL_RCC_PLL_DisableDomain_TIM1(void)
 {
   CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN);
+}
+
+/**
+  * @brief  Check if PLL output mapped on TIM1 domain clock is enabled
+  * @rmtoll PLLCFGR      PLLQEN        LL_RCC_PLL_IsEnabledDomain_TIM1
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_PLL_IsEnabledDomain_TIM1(void)
+{
+  return ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN) == (RCC_PLLCFGR_PLLQEN)) ? 1UL : 0UL);
 }
 #endif /* RCC_PLLQ_SUPPORT */
 
@@ -3345,6 +3417,16 @@ __STATIC_INLINE void LL_RCC_PLL_DisableDomain_TIM15(void)
 {
   CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN);
 }
+
+/**
+  * @brief  Check if PLL output mapped on TIM15 domain clock is enabled
+  * @rmtoll PLLCFGR      PLLQEN        LL_RCC_PLL_IsEnabledDomain_TIM15
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_PLL_IsEnabledDomain_TIM15(void)
+{
+  return ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQEN) == (RCC_PLLCFGR_PLLQEN)) ? 1UL : 0UL);
+}
 #endif /* RCC_PLLQ_SUPPORT && TIM15 */
 
 /**
@@ -3368,6 +3450,16 @@ __STATIC_INLINE void LL_RCC_PLL_EnableDomain_SYS(void)
 __STATIC_INLINE void LL_RCC_PLL_DisableDomain_SYS(void)
 {
   CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLREN);
+}
+
+/**
+  * @brief  Check if PLL output mapped on SYSCLK domain clock is enabled
+  * @rmtoll PLLCFGR      PLLREN        LL_RCC_PLL_IsEnabledDomain_SYS
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_PLL_IsEnabledDomain_SYS(void)
+{
+  return ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLREN) == (RCC_PLLCFGR_PLLREN)) ? 1UL : 0UL);
 }
 
 /**
@@ -3883,4 +3975,3 @@ uint32_t    LL_RCC_GetUSBClockFreq(uint32_t USBxSource);
 
 #endif /* STM32G0xx_LL_RCC_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

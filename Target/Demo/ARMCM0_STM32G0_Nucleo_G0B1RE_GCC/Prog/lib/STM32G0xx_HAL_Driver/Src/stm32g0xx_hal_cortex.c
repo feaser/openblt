@@ -65,13 +65,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics. 
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2018 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the 
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -131,9 +130,12 @@
   */
 void HAL_NVIC_SetPriority(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(SubPriority);
+
   /* Check the parameters */
   assert_param(IS_NVIC_PREEMPTION_PRIORITY(PreemptPriority));
-  NVIC_SetPriority(IRQn,PreemptPriority);
+  NVIC_SetPriority(IRQn, PreemptPriority);
 }
 
 /**
@@ -350,6 +352,37 @@ void HAL_MPU_Disable(void)
   MPU->CTRL  = 0;
 }
 
+/**
+  * @brief  Enable the MPU Region.
+  * @retval None
+  */
+void HAL_MPU_EnableRegion(uint32_t RegionNumber)
+{
+  /* Check the parameters */
+  assert_param(IS_MPU_REGION_NUMBER(RegionNumber));
+
+  /* Set the Region number */
+  MPU->RNR = RegionNumber;
+
+  /* Enable the Region */
+  SET_BIT(MPU->RASR, MPU_RASR_ENABLE_Msk);
+}
+
+/**
+  * @brief  Disable the MPU Region.
+  * @retval None
+  */
+void HAL_MPU_DisableRegion(uint32_t RegionNumber)
+{
+  /* Check the parameters */
+  assert_param(IS_MPU_REGION_NUMBER(RegionNumber));
+
+  /* Set the Region number */
+  MPU->RNR = RegionNumber;
+
+  /* Disable the Region */
+  CLEAR_BIT(MPU->RASR, MPU_RASR_ENABLE_Msk);
+}
 
 /**
   * @brief  Initialize and configure the Region and the memory to be protected.
@@ -362,38 +395,32 @@ void HAL_MPU_ConfigRegion(MPU_Region_InitTypeDef *MPU_Init)
   /* Check the parameters */
   assert_param(IS_MPU_REGION_NUMBER(MPU_Init->Number));
   assert_param(IS_MPU_REGION_ENABLE(MPU_Init->Enable));
-
+  assert_param(IS_MPU_INSTRUCTION_ACCESS(MPU_Init->DisableExec));
+  assert_param(IS_MPU_REGION_PERMISSION_ATTRIBUTE(MPU_Init->AccessPermission));
+  assert_param(IS_MPU_TEX_LEVEL(MPU_Init->TypeExtField));
+  assert_param(IS_MPU_ACCESS_SHAREABLE(MPU_Init->IsShareable));
+  assert_param(IS_MPU_ACCESS_CACHEABLE(MPU_Init->IsCacheable));
+  assert_param(IS_MPU_ACCESS_BUFFERABLE(MPU_Init->IsBufferable));
+  assert_param(IS_MPU_SUB_REGION_DISABLE(MPU_Init->SubRegionDisable));
+  assert_param(IS_MPU_REGION_SIZE(MPU_Init->Size));
   /* Set the Region number */
   MPU->RNR = MPU_Init->Number;
 
-  if ((MPU_Init->Enable) != 0U)
-  {
-    /* Check the parameters */
-    assert_param(IS_MPU_INSTRUCTION_ACCESS(MPU_Init->DisableExec));
-    assert_param(IS_MPU_REGION_PERMISSION_ATTRIBUTE(MPU_Init->AccessPermission));
-    assert_param(IS_MPU_TEX_LEVEL(MPU_Init->TypeExtField));
-    assert_param(IS_MPU_ACCESS_SHAREABLE(MPU_Init->IsShareable));
-    assert_param(IS_MPU_ACCESS_CACHEABLE(MPU_Init->IsCacheable));
-    assert_param(IS_MPU_ACCESS_BUFFERABLE(MPU_Init->IsBufferable));
-    assert_param(IS_MPU_SUB_REGION_DISABLE(MPU_Init->SubRegionDisable));
-    assert_param(IS_MPU_REGION_SIZE(MPU_Init->Size));
+    /* Disable the Region */
+  CLEAR_BIT(MPU->RASR, MPU_RASR_ENABLE_Msk);
 
-    MPU->RBAR = MPU_Init->BaseAddress;
-    MPU->RASR = ((uint32_t)MPU_Init->DisableExec             << MPU_RASR_XN_Pos)   |
-                ((uint32_t)MPU_Init->AccessPermission        << MPU_RASR_AP_Pos)   |
-                ((uint32_t)MPU_Init->TypeExtField            << MPU_RASR_TEX_Pos)  |
-                ((uint32_t)MPU_Init->IsShareable             << MPU_RASR_S_Pos)    |
-                ((uint32_t)MPU_Init->IsCacheable             << MPU_RASR_C_Pos)    |
-                ((uint32_t)MPU_Init->IsBufferable            << MPU_RASR_B_Pos)    |
-                ((uint32_t)MPU_Init->SubRegionDisable        << MPU_RASR_SRD_Pos)  |
-                ((uint32_t)MPU_Init->Size                    << MPU_RASR_SIZE_Pos) |
-                ((uint32_t)MPU_Init->Enable                  << MPU_RASR_ENABLE_Pos);
-  }
-  else
-  {
-    MPU->RBAR = 0x00U;
-    MPU->RASR = 0x00U;
-  }
+  /* Apply configuration */
+  MPU->RBAR = MPU_Init->BaseAddress;
+  MPU->RASR = ((uint32_t)MPU_Init->DisableExec             << MPU_RASR_XN_Pos)   |
+              ((uint32_t)MPU_Init->AccessPermission        << MPU_RASR_AP_Pos)   |
+              ((uint32_t)MPU_Init->TypeExtField            << MPU_RASR_TEX_Pos)  |
+              ((uint32_t)MPU_Init->IsShareable             << MPU_RASR_S_Pos)    |
+              ((uint32_t)MPU_Init->IsCacheable             << MPU_RASR_C_Pos)    |
+              ((uint32_t)MPU_Init->IsBufferable            << MPU_RASR_B_Pos)    |
+              ((uint32_t)MPU_Init->SubRegionDisable        << MPU_RASR_SRD_Pos)  |
+              ((uint32_t)MPU_Init->Size                    << MPU_RASR_SIZE_Pos) |
+              ((uint32_t)MPU_Init->Enable                  << MPU_RASR_ENABLE_Pos);
+
 }
 #endif /* __MPU_PRESENT */
 
@@ -414,4 +441,3 @@ void HAL_MPU_ConfigRegion(MPU_Region_InitTypeDef *MPU_Init)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

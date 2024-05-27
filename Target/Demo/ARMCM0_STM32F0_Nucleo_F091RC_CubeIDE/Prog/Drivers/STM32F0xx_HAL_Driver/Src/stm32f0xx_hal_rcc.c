@@ -14,7 +14,7 @@
   ==============================================================================
     [..]  
       After reset the device is running from Internal High Speed oscillator
-      (HSI 8MHz) with Flash 0 wait state, Flash prefetch buffer is enabled, 
+      (HSI 8MHz) with Flash 0 wait state, Flash prefetch buffer is disabled, 
       and all peripherals are off except internal SRAM, Flash and JTAG.
       (+) There is no prescaler on High speed (AHB) and Low speed (APB) buses;
           all peripherals mapped on these buses are running at HSI speed.
@@ -48,14 +48,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -160,7 +158,7 @@
           on AHB bus (DMA, GPIO...). APB1 (PCLK1) clock is derived
           from AHB clock through configurable prescalers and used to clock
           the peripherals mapped on these buses. You can use
-          "@ref HAL_RCC_GetSysClockFreq()" function to retrieve the frequencies of these clocks.
+          "HAL_RCC_GetSysClockFreq()" function to retrieve the frequencies of these clocks.
 
       (#) All the peripheral clocks are derived from the System clock (SYSCLK) except:
         (++) The FLASH program/erase clock  which is always HSI 8MHz clock.
@@ -1023,7 +1021,10 @@ void HAL_RCC_MCOConfig(uint32_t RCC_MCOx, uint32_t RCC_MCOSource, uint32_t RCC_M
   assert_param(IS_RCC_MCO(RCC_MCOx));
   assert_param(IS_RCC_MCODIV(RCC_MCODiv));
   assert_param(IS_RCC_MCO1SOURCE(RCC_MCOSource));
-  
+
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(RCC_MCOx);
+
   /* Configure the MCO1 pin in alternate function mode */
   gpio.Mode      = GPIO_MODE_AF_PP;
   gpio.Speed     = GPIO_SPEED_FREQ_HIGH;
@@ -1096,10 +1097,10 @@ void HAL_RCC_DisableCSS(void)
   */
 uint32_t HAL_RCC_GetSysClockFreq(void)
 {
-  const uint8_t aPLLMULFactorTable[16] = { 2U,  3U,  4U,  5U,  6U,  7U,  8U,  9U,
-                                         10U, 11U, 12U, 13U, 14U, 15U, 16U, 16U};
-  const uint8_t aPredivFactorTable[16] = { 1U, 2U,  3U,  4U,  5U,  6U,  7U,  8U,
-                                           9U,10U, 11U, 12U, 13U, 14U, 15U, 16U};
+  static const uint8_t aPLLMULFactorTable[16U] = { 2U,  3U,  4U,  5U,  6U,  7U,  8U,  9U,
+                                                   10U, 11U, 12U, 13U, 14U, 15U, 16U, 16U};
+  static const uint8_t aPredivFactorTable[16U] = { 1U, 2U,  3U,  4U,  5U,  6U,  7U,  8U,
+                                                   9U,10U, 11U, 12U, 13U, 14U, 15U, 16U};
 
   uint32_t tmpreg = 0U, prediv = 0U, pllclk = 0U, pllmul = 0U;
   uint32_t sysclockfreq = 0U;
@@ -1362,4 +1363,3 @@ __weak void HAL_RCC_CSSCallback(void)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

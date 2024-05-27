@@ -6,32 +6,16 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
   *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
+
 #if defined(USE_FULL_LL_DRIVER)
 
 /* Includes ------------------------------------------------------------------*/
@@ -208,72 +192,72 @@ uint32_t LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
   /* Check the DMA Instance DMAx and Channel parameters*/
   assert_param(IS_LL_DMA_ALL_CHANNEL_INSTANCE(DMAx, Channel));
 
-    tmp = (DMA_Channel_TypeDef *)(__LL_DMA_GET_CHANNEL_INSTANCE(DMAx, Channel));
+  tmp = (DMA_Channel_TypeDef *)(__LL_DMA_GET_CHANNEL_INSTANCE(DMAx, Channel));
 
-    /* Disable the selected DMAx_Channely */
-    CLEAR_BIT(tmp->CCR, DMA_CCR_EN);
+  /* Disable the selected DMAx_Channely */
+  CLEAR_BIT(tmp->CCR, DMA_CCR_EN);
 
-    /* Reset DMAx_Channely control register */
-    LL_DMA_WriteReg(tmp, CCR, 0U);
+  /* Reset DMAx_Channely control register */
+  LL_DMA_WriteReg(tmp, CCR, 0U);
 
-    /* Reset DMAx_Channely remaining bytes register */
-    LL_DMA_WriteReg(tmp, CNDTR, 0U);
+  /* Reset DMAx_Channely remaining bytes register */
+  LL_DMA_WriteReg(tmp, CNDTR, 0U);
 
-    /* Reset DMAx_Channely peripheral address register */
-    LL_DMA_WriteReg(tmp, CPAR, 0U);
+  /* Reset DMAx_Channely peripheral address register */
+  LL_DMA_WriteReg(tmp, CPAR, 0U);
 
-    /* Reset DMAx_Channely memory address register */
-    LL_DMA_WriteReg(tmp, CMAR, 0U);
+  /* Reset DMAx_Channely memory address register */
+  LL_DMA_WriteReg(tmp, CMAR, 0U);
 
 #if (defined(DMA1_CSELR_DEFAULT)||defined(DMA2_CSELR_DEFAULT))
-    /* Reset Request register field for DMAx Channel */
-    LL_DMA_SetPeriphRequest(DMAx, Channel, LL_DMA_REQUEST_0);
+  /* Reset Request register field for DMAx Channel */
+  LL_DMA_SetPeriphRequest(DMAx, Channel, LL_DMA_REQUEST_0);
 #endif
 
-    if (Channel == LL_DMA_CHANNEL_1)
-    {
-      /* Reset interrupt pending bits for DMAx Channel1 */
-      LL_DMA_ClearFlag_GI1(DMAx);
-    }
-    else if (Channel == LL_DMA_CHANNEL_2)
-    {
-      /* Reset interrupt pending bits for DMAx Channel2 */
-      LL_DMA_ClearFlag_GI2(DMAx);
-    }
-    else if (Channel == LL_DMA_CHANNEL_3)
-    {
-      /* Reset interrupt pending bits for DMAx Channel3 */
-      LL_DMA_ClearFlag_GI3(DMAx);
-    }
-    else if (Channel == LL_DMA_CHANNEL_4)
-    {
-      /* Reset interrupt pending bits for DMAx Channel4 */
-      LL_DMA_ClearFlag_GI4(DMAx);
-    }
-    else if (Channel == LL_DMA_CHANNEL_5)
-    {
-      /* Reset interrupt pending bits for DMAx Channel5 */
-      LL_DMA_ClearFlag_GI5(DMAx);
-    }
+  if (Channel == LL_DMA_CHANNEL_1)
+  {
+    /* Reset interrupt pending bits for DMAx Channel1 */
+    LL_DMA_ClearFlag_GI1(DMAx);
+  }
+  else if (Channel == LL_DMA_CHANNEL_2)
+  {
+    /* Reset interrupt pending bits for DMAx Channel2 */
+    LL_DMA_ClearFlag_GI2(DMAx);
+  }
+  else if (Channel == LL_DMA_CHANNEL_3)
+  {
+    /* Reset interrupt pending bits for DMAx Channel3 */
+    LL_DMA_ClearFlag_GI3(DMAx);
+  }
+  else if (Channel == LL_DMA_CHANNEL_4)
+  {
+    /* Reset interrupt pending bits for DMAx Channel4 */
+    LL_DMA_ClearFlag_GI4(DMAx);
+  }
+  else if (Channel == LL_DMA_CHANNEL_5)
+  {
+    /* Reset interrupt pending bits for DMAx Channel5 */
+    LL_DMA_ClearFlag_GI5(DMAx);
+  }
 
 #if defined(DMA1_Channel6)
-    else if (Channel == LL_DMA_CHANNEL_6)
-    {
-      /* Reset interrupt pending bits for DMAx Channel6 */
-      LL_DMA_ClearFlag_GI6(DMAx);
-    }
+  else if (Channel == LL_DMA_CHANNEL_6)
+  {
+    /* Reset interrupt pending bits for DMAx Channel6 */
+    LL_DMA_ClearFlag_GI6(DMAx);
+  }
 #endif
 #if defined(DMA1_Channel7)
-    else if (Channel == LL_DMA_CHANNEL_7)
-    {
-      /* Reset interrupt pending bits for DMAx Channel7 */
-      LL_DMA_ClearFlag_GI7(DMAx);
-    }
+  else if (Channel == LL_DMA_CHANNEL_7)
+  {
+    /* Reset interrupt pending bits for DMAx Channel7 */
+    LL_DMA_ClearFlag_GI7(DMAx);
+  }
 #endif
-    else
-    {
-      status = ERROR;
-    }
+  else
+  {
+    status = ERROR;
+  }
 
   return status;
 }
@@ -409,4 +393,3 @@ void LL_DMA_StructInit(LL_DMA_InitTypeDef *DMA_InitStruct)
 
 #endif /* USE_FULL_LL_DRIVER */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
