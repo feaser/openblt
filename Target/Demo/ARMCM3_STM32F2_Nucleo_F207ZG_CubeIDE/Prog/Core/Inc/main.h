@@ -52,6 +52,8 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+void MX_ETH_Init(void);
+void MX_USART3_UART_Init(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -78,8 +80,7 @@ void Error_Handler(void);
 #define RMII_TX_EN_GPIO_Port GPIOG
 #define RMII_TXD0_Pin GPIO_PIN_13
 #define RMII_TXD0_GPIO_Port GPIOG
-void   MX_ETH_Init(void);
-void   MX_USART3_UART_Init(void);
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
@@ -89,5 +90,3 @@ void   MX_USART3_UART_Init(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -38,7 +38,6 @@ extern "C" {
 #include "stm32f1xx_ll_pwr.h"
 #include "stm32f1xx_ll_dma.h"
 #include "stm32f1xx_ll_usart.h"
-#include "stm32f1xx.h"
 #include "stm32f1xx_ll_gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -63,12 +62,14 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+void MX_CAN_Init(void);
 
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
@@ -78,5 +79,3 @@ void Error_Handler(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
