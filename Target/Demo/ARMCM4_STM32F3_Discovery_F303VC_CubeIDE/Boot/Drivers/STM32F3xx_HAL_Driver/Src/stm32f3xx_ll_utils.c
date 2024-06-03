@@ -6,13 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -267,28 +266,21 @@ ErrorStatus LL_SetFlashLatency(uint32_t Frequency)
       }
     }
 
-    if (status != ERROR)
-    {
-      LL_FLASH_SetLatency(latency);
+    LL_FLASH_SetLatency(latency);
 
-      /* Check that the new number of wait states is taken into account to access the Flash
-           memory by reading the FLASH_ACR register */
-      timeout = 2;
-      do
-      {
+    /* Check that the new number of wait states is taken into account to access the Flash
+         memory by reading the FLASH_ACR register */
+    timeout = 2;
+    do
+    {
       /* Wait for Flash latency to be updated */
       getlatency = LL_FLASH_GetLatency();
       timeout--;
-      } while ((getlatency != latency) && (timeout > 0));
+    } while ((getlatency != latency) && (timeout > 0));
 
-      if(getlatency != latency)
-      {
-        status = ERROR;
-      }
-      else
-      {
-        status = SUCCESS;
-      }
+    if(getlatency != latency)
+    {
+      status = ERROR;
     }
   }
 
@@ -581,5 +573,3 @@ static ErrorStatus UTILS_EnablePLLAndSwitchSystem(uint32_t SYSCLK_Frequency, LL_
 /**
   * @}
   */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
