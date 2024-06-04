@@ -63,6 +63,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -106,5 +107,3 @@ void HAL_MspDeInit(void)
   LL_APB1_GRP2_DisableClock(LL_APB1_GRP2_PERIPH_SYSCFG);
 }
 /* USER CODE END 1 */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

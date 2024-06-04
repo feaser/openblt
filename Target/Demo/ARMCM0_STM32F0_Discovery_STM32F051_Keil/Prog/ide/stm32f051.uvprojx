@@ -10,13 +10,13 @@
       <TargetName>Target</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
+      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F051R8Tx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F0xx_DFP.2.0.0</PackID>
+          <PackID>Keil.STM32F0xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00002000) IROM(0x08000000,0x00010000) CPUTYPE("Cortex-M0") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -185,6 +185,7 @@
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
             <RvdsMve>0</RvdsMve>
+            <RvdsCdeCp>0</RvdsCdeCp>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -351,7 +352,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
+            <ClangAsOpt>4</ClangAsOpt>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -408,34 +409,44 @@
               <FilePath>..\lib\CMSIS\Device\ST\STM32F0xx\Include\system_stm32f0xx.h</FilePath>
             </File>
             <File>
-              <FileName>arm_common_tables.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\arm_common_tables.h</FilePath>
-            </File>
-            <File>
-              <FileName>arm_const_structs.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\arm_const_structs.h</FilePath>
-            </File>
-            <File>
-              <FileName>arm_math.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\arm_math.h</FilePath>
-            </File>
-            <File>
               <FileName>cmsis_armcc.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\CMSIS\Include\cmsis_armcc.h</FilePath>
             </File>
             <File>
-              <FileName>cmsis_armcc_V6.h</FileName>
+              <FileName>cmsis_armclang.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\cmsis_armcc_V6.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\cmsis_armclang.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmsis_compiler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\cmsis_compiler.h</FilePath>
             </File>
             <File>
               <FileName>cmsis_gcc.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\CMSIS\Include\cmsis_gcc.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmsis_iccarm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\cmsis_iccarm.h</FilePath>
+            </File>
+            <File>
+              <FileName>cmsis_version.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\cmsis_version.h</FilePath>
+            </File>
+            <File>
+              <FileName>core_armv8mbl.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\core_armv8mbl.h</FilePath>
+            </File>
+            <File>
+              <FileName>core_armv8mml.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\core_armv8mml.h</FilePath>
             </File>
             <File>
               <FileName>core_cm0.h</FileName>
@@ -446,6 +457,11 @@
               <FileName>core_cm0plus.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\CMSIS\Include\core_cm0plus.h</FilePath>
+            </File>
+            <File>
+              <FileName>core_cm1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\core_cm1.h</FilePath>
             </File>
             <File>
               <FileName>core_cm3.h</FileName>
@@ -463,19 +479,14 @@
               <FilePath>..\lib\CMSIS\Include\core_cm7.h</FilePath>
             </File>
             <File>
-              <FileName>core_cmFunc.h</FileName>
+              <FileName>core_cm23.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\core_cmFunc.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\core_cm23.h</FilePath>
             </File>
             <File>
-              <FileName>core_cmInstr.h</FileName>
+              <FileName>core_cm33.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\core_cmInstr.h</FilePath>
-            </File>
-            <File>
-              <FileName>core_cmSimd.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\CMSIS\Include\core_cmSimd.h</FilePath>
+              <FilePath>..\lib\CMSIS\Include\core_cm33.h</FilePath>
             </File>
             <File>
               <FileName>core_sc000.h</FileName>
@@ -486,6 +497,21 @@
               <FileName>core_sc300.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\CMSIS\Include\core_sc300.h</FilePath>
+            </File>
+            <File>
+              <FileName>mpu_armv7.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\mpu_armv7.h</FilePath>
+            </File>
+            <File>
+              <FileName>mpu_armv8.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\mpu_armv8.h</FilePath>
+            </File>
+            <File>
+              <FileName>tz_context.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\CMSIS\Include\tz_context.h</FilePath>
             </File>
             <File>
               <FileName>stm32f0xx_hal.h</FileName>
@@ -511,6 +537,11 @@
               <FileName>stm32f0xx_hal_dma_ex.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_dma_ex.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_exti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_exti.h</FilePath>
             </File>
             <File>
               <FileName>stm32f0xx_hal_flash.h</FileName>
@@ -583,9 +614,59 @@
               <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_uart_ex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32_hal_legacy.h</FileName>
+              <FileName>stm32f0xx_ll_bus.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h</FilePath>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_bus.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_cortex.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_cortex.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_crs.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_crs.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_dma.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_dma.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_exti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_exti.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_gpio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_gpio.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_pwr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_pwr.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_rcc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_rcc.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_system.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_system.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_usart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_usart.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ll_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_utils.h</FilePath>
             </File>
             <File>
               <FileName>stm32f0xx_hal.c</FileName>
@@ -601,6 +682,11 @@
               <FileName>stm32f0xx_hal_dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_exti.c</FilePath>
             </File>
             <File>
               <FileName>stm32f0xx_hal_flash.c</FileName>
@@ -741,5 +827,14 @@
       </file>
     </files>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>stm32f051</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>
