@@ -10,13 +10,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -49,7 +48,7 @@
 
 /** @defgroup PCDEx_Exported_Functions_Group1 Peripheral Control functions
   * @brief    PCDEx control functions
- *
+  *
 @verbatim
  ===============================================================================
                  ##### Extended features functions #####
@@ -135,10 +134,8 @@ HAL_StatusTypeDef HAL_PCDEx_SetRxFiFo(PCD_HandleTypeDef *hpcd, uint16_t size)
   * @retval HAL status
   */
 
-HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd,
-                                       uint16_t ep_addr,
-                                       uint16_t ep_kind,
-                                       uint32_t pmaadress)
+HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd, uint16_t ep_addr,
+                                       uint16_t ep_kind, uint32_t pmaadress)
 {
   PCD_EPTypeDef *ep;
 
@@ -160,6 +157,7 @@ HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd,
     /* Configure the PMA */
     ep->pmaadress = (uint16_t)pmaadress;
   }
+#if (USE_USB_DOUBLE_BUFFER == 1U)
   else /* USB_DBL_BUF */
   {
     /* Double Buffer Endpoint */
@@ -168,6 +166,7 @@ HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd,
     ep->pmaaddr0 = (uint16_t)(pmaadress & 0xFFFFU);
     ep->pmaaddr1 = (uint16_t)((pmaadress & 0xFFFF0000U) >> 16);
   }
+#endif /* (USE_USB_DOUBLE_BUFFER == 1U) */
 
   return HAL_OK;
 }
@@ -176,8 +175,8 @@ HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd,
   * @brief  Software Device Connection,
   *         this function is not required by USB OTG FS peripheral, it is used
   *         only by USB Device FS peripheral.
-  * @param  hpcd: PCD handle
-  * @param  state: connection state (0 : disconnected / 1: connected)
+  * @param  hpcd PCD handle
+  * @param  state connection state (0 : disconnected / 1: connected)
   * @retval None
   */
 __weak void HAL_PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state)
@@ -242,5 +241,3 @@ __weak void HAL_PCDEx_BCD_Callback(PCD_HandleTypeDef *hpcd, PCD_BCD_MsgTypeDef m
 /**
   * @}
   */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

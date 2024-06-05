@@ -6,14 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -330,11 +328,11 @@ typedef struct
   */
 #define RCC_PERIPHCLK_RTC           0x00000001U
 #define RCC_PERIPHCLK_ADC           0x00000002U
-#if defined(STM32F103xE) || defined(STM32F103xG) || defined(STM32F105xC)\
- || defined(STM32F107xC)
+#if defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE)\
+ || defined(STM32F103xG) || defined(STM32F105xC) || defined(STM32F107xC)
 #define RCC_PERIPHCLK_I2S2          0x00000004U
 #define RCC_PERIPHCLK_I2S3          0x00000008U
-#endif /* STM32F103xE || STM32F103xG || STM32F105xC || STM32F107xC */
+#endif /* STM32F101xE || STM32F101xG || STM32F103xE || STM32F103xG || STM32F105xC || STM32F107xC */
 #if defined(STM32F102x6) || defined(STM32F102xB) || defined(STM32F103x6)\
  || defined(STM32F103xB) || defined(STM32F103xE) || defined(STM32F103xG)\
  || defined(STM32F105xC) || defined(STM32F107xC)
@@ -1904,5 +1902,4 @@ HAL_StatusTypeDef HAL_RCCEx_DisablePLL2(void);
 
 #endif /* __STM32F1xx_HAL_RCC_EX_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 

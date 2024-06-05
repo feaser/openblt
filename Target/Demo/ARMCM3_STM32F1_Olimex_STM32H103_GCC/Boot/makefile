@@ -41,7 +41,8 @@ PROJ_NAME=openblt_olimex_stm32h103
 # format, open the directory in the Windows command prompt and run the following command:
 #  cmd /c for %A in ("%cd%") do @echo %~sA 
 #TOOL_PATH=/opt/gcc-arm-none-eabi-8-2018-q4-major/bin/
-TOOL_PATH=C:/PROGRA~2/GNUTOO~1/82018-~1/bin/
+#TOOL_PATH=C:/PROGRA~2/GNUTOO~1/82018-~1/bin/
+TOOL_PATH=
 
 
 #|--------------------------------------------------------------------------------------|
@@ -102,7 +103,7 @@ LIB_PATH  =
 #|--------------------------------------------------------------------------------------|
 STDFLAGS    = -mcpu=cortex-m3 -mthumb -std=gnu11 -fstack-usage -Wall -specs=nano.specs
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g -Wno-strict-aliasing
-OPTFLAGS    = -O2
+OPTFLAGS    = -Os
 DEPFLAGS  = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32F103xB

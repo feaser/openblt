@@ -6,29 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
   *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -119,21 +102,25 @@ typedef struct
 {
   uint32_t FilterIdHigh;          /*!< Specifies the filter identification number (MSBs for a 32-bit
                                        configuration, first one for a 16-bit configuration).
-                                       This parameter must be a number between Min_Data = 0x0000 and Max_Data = 0xFFFF. */
+                                       This parameter must be a number between
+                                       Min_Data = 0x0000 and Max_Data = 0xFFFF. */
 
   uint32_t FilterIdLow;           /*!< Specifies the filter identification number (LSBs for a 32-bit
                                        configuration, second one for a 16-bit configuration).
-                                       This parameter must be a number between Min_Data = 0x0000 and Max_Data = 0xFFFF. */
+                                       This parameter must be a number between
+                                       Min_Data = 0x0000 and Max_Data = 0xFFFF. */
 
   uint32_t FilterMaskIdHigh;      /*!< Specifies the filter mask number or identification number,
                                        according to the mode (MSBs for a 32-bit configuration,
                                        first one for a 16-bit configuration).
-                                       This parameter must be a number between Min_Data = 0x0000 and Max_Data = 0xFFFF. */
+                                       This parameter must be a number between
+                                       Min_Data = 0x0000 and Max_Data = 0xFFFF. */
 
   uint32_t FilterMaskIdLow;       /*!< Specifies the filter mask number or identification number,
                                        according to the mode (LSBs for a 32-bit configuration,
                                        second one for a 16-bit configuration).
-                                       This parameter must be a number between Min_Data = 0x0000 and Max_Data = 0xFFFF. */
+                                       This parameter must be a number between
+                                       Min_Data = 0x0000 and Max_Data = 0xFFFF. */
 
   uint32_t FilterFIFOAssignment;  /*!< Specifies the FIFO (0 or 1U) which will be assigned to the filter.
                                        This parameter can be a value of @ref CAN_filter_FIFO */
@@ -151,7 +138,7 @@ typedef struct
                                        This parameter can be a value of @ref CAN_filter_scale */
 
   uint32_t FilterActivation;      /*!< Enable or disable the filter.
-                                       This parameter can be set to ENABLE or DISABLE. */
+                                       This parameter can be a value of @ref CAN_filter_activation */
 
   uint32_t SlaveStartFilterBank;  /*!< Select the start filter bank for the slave CAN instance.
                                        For single CAN instances, this parameter is meaningless.
@@ -222,7 +209,11 @@ typedef struct
 /**
   * @brief  CAN handle Structure definition
   */
+#if USE_HAL_CAN_REGISTER_CALLBACKS == 1
 typedef struct __CAN_HandleTypeDef
+#else
+typedef struct
+#endif /* USE_HAL_CAN_REGISTER_CALLBACKS */
 {
   CAN_TypeDef                 *Instance;                 /*!< Register base address */
 
@@ -233,8 +224,58 @@ typedef struct __CAN_HandleTypeDef
   __IO uint32_t               ErrorCode;                 /*!< CAN Error code.
                                                               This parameter can be a value of @ref CAN_Error_Code */
 
+#if USE_HAL_CAN_REGISTER_CALLBACKS == 1
+  void (* TxMailbox0CompleteCallback)(struct __CAN_HandleTypeDef *hcan);/*!< CAN Tx Mailbox 0 complete callback    */
+  void (* TxMailbox1CompleteCallback)(struct __CAN_HandleTypeDef *hcan);/*!< CAN Tx Mailbox 1 complete callback    */
+  void (* TxMailbox2CompleteCallback)(struct __CAN_HandleTypeDef *hcan);/*!< CAN Tx Mailbox 2 complete callback    */
+  void (* TxMailbox0AbortCallback)(struct __CAN_HandleTypeDef *hcan);   /*!< CAN Tx Mailbox 0 abort callback       */
+  void (* TxMailbox1AbortCallback)(struct __CAN_HandleTypeDef *hcan);   /*!< CAN Tx Mailbox 1 abort callback       */
+  void (* TxMailbox2AbortCallback)(struct __CAN_HandleTypeDef *hcan);   /*!< CAN Tx Mailbox 2 abort callback       */
+  void (* RxFifo0MsgPendingCallback)(struct __CAN_HandleTypeDef *hcan); /*!< CAN Rx FIFO 0 msg pending callback    */
+  void (* RxFifo0FullCallback)(struct __CAN_HandleTypeDef *hcan);       /*!< CAN Rx FIFO 0 full callback           */
+  void (* RxFifo1MsgPendingCallback)(struct __CAN_HandleTypeDef *hcan); /*!< CAN Rx FIFO 1 msg pending callback    */
+  void (* RxFifo1FullCallback)(struct __CAN_HandleTypeDef *hcan);       /*!< CAN Rx FIFO 1 full callback           */
+  void (* SleepCallback)(struct __CAN_HandleTypeDef *hcan);             /*!< CAN Sleep callback                    */
+  void (* WakeUpFromRxMsgCallback)(struct __CAN_HandleTypeDef *hcan);   /*!< CAN Wake Up from Rx msg callback      */
+  void (* ErrorCallback)(struct __CAN_HandleTypeDef *hcan);             /*!< CAN Error callback                    */
+
+  void (* MspInitCallback)(struct __CAN_HandleTypeDef *hcan);           /*!< CAN Msp Init callback                 */
+  void (* MspDeInitCallback)(struct __CAN_HandleTypeDef *hcan);         /*!< CAN Msp DeInit callback               */
+
+#endif /* (USE_HAL_CAN_REGISTER_CALLBACKS) */
 } CAN_HandleTypeDef;
 
+#if USE_HAL_CAN_REGISTER_CALLBACKS == 1
+/**
+  * @brief  HAL CAN common Callback ID enumeration definition
+  */
+typedef enum
+{
+  HAL_CAN_TX_MAILBOX0_COMPLETE_CB_ID       = 0x00U,    /*!< CAN Tx Mailbox 0 complete callback ID         */
+  HAL_CAN_TX_MAILBOX1_COMPLETE_CB_ID       = 0x01U,    /*!< CAN Tx Mailbox 1 complete callback ID         */
+  HAL_CAN_TX_MAILBOX2_COMPLETE_CB_ID       = 0x02U,    /*!< CAN Tx Mailbox 2 complete callback ID         */
+  HAL_CAN_TX_MAILBOX0_ABORT_CB_ID          = 0x03U,    /*!< CAN Tx Mailbox 0 abort callback ID            */
+  HAL_CAN_TX_MAILBOX1_ABORT_CB_ID          = 0x04U,    /*!< CAN Tx Mailbox 1 abort callback ID            */
+  HAL_CAN_TX_MAILBOX2_ABORT_CB_ID          = 0x05U,    /*!< CAN Tx Mailbox 2 abort callback ID            */
+  HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID       = 0x06U,    /*!< CAN Rx FIFO 0 message pending callback ID     */
+  HAL_CAN_RX_FIFO0_FULL_CB_ID              = 0x07U,    /*!< CAN Rx FIFO 0 full callback ID                */
+  HAL_CAN_RX_FIFO1_MSG_PENDING_CB_ID       = 0x08U,    /*!< CAN Rx FIFO 1 message pending callback ID     */
+  HAL_CAN_RX_FIFO1_FULL_CB_ID              = 0x09U,    /*!< CAN Rx FIFO 1 full callback ID                */
+  HAL_CAN_SLEEP_CB_ID                      = 0x0AU,    /*!< CAN Sleep callback ID                         */
+  HAL_CAN_WAKEUP_FROM_RX_MSG_CB_ID         = 0x0BU,    /*!< CAN Wake Up from Rx msg callback ID          */
+  HAL_CAN_ERROR_CB_ID                      = 0x0CU,    /*!< CAN Error callback ID                         */
+
+  HAL_CAN_MSPINIT_CB_ID                    = 0x0DU,    /*!< CAN MspInit callback ID                       */
+  HAL_CAN_MSPDEINIT_CB_ID                  = 0x0EU,    /*!< CAN MspDeInit callback ID                     */
+
+} HAL_CAN_CallbackIDTypeDef;
+
+/**
+  * @brief  HAL CAN Callback pointer definition
+  */
+typedef  void (*pCAN_CallbackTypeDef)(CAN_HandleTypeDef *hcan); /*!< pointer to a CAN callback function   */
+
+#endif /* USE_HAL_CAN_REGISTER_CALLBACKS */
 /**
   * @}
   */
@@ -261,16 +302,21 @@ typedef struct __CAN_HandleTypeDef
 #define HAL_CAN_ERROR_RX_FOV0         (0x00000200U)  /*!< Rx FIFO0 overrun error                               */
 #define HAL_CAN_ERROR_RX_FOV1         (0x00000400U)  /*!< Rx FIFO1 overrun error                               */
 #define HAL_CAN_ERROR_TX_ALST0        (0x00000800U)  /*!< TxMailbox 0 transmit failure due to arbitration lost */
-#define HAL_CAN_ERROR_TX_TERR0        (0x00001000U)  /*!< TxMailbox 1 transmit failure due to tranmit error    */
-#define HAL_CAN_ERROR_TX_ALST1        (0x00002000U)  /*!< TxMailbox 0 transmit failure due to arbitration lost */
-#define HAL_CAN_ERROR_TX_TERR1        (0x00004000U)  /*!< TxMailbox 1 transmit failure due to tranmit error    */
-#define HAL_CAN_ERROR_TX_ALST2        (0x00008000U)  /*!< TxMailbox 0 transmit failure due to arbitration lost */
-#define HAL_CAN_ERROR_TX_TERR2        (0x00010000U)  /*!< TxMailbox 1 transmit failure due to tranmit error    */
+#define HAL_CAN_ERROR_TX_TERR0        (0x00001000U)  /*!< TxMailbox 0 transmit failure due to transmit error   */
+#define HAL_CAN_ERROR_TX_ALST1        (0x00002000U)  /*!< TxMailbox 1 transmit failure due to arbitration lost */
+#define HAL_CAN_ERROR_TX_TERR1        (0x00004000U)  /*!< TxMailbox 1 transmit failure due to transmit error   */
+#define HAL_CAN_ERROR_TX_ALST2        (0x00008000U)  /*!< TxMailbox 2 transmit failure due to arbitration lost */
+#define HAL_CAN_ERROR_TX_TERR2        (0x00010000U)  /*!< TxMailbox 2 transmit failure due to transmit error   */
 #define HAL_CAN_ERROR_TIMEOUT         (0x00020000U)  /*!< Timeout error                                        */
 #define HAL_CAN_ERROR_NOT_INITIALIZED (0x00040000U)  /*!< Peripheral not initialized                           */
 #define HAL_CAN_ERROR_NOT_READY       (0x00080000U)  /*!< Peripheral not ready                                 */
 #define HAL_CAN_ERROR_NOT_STARTED     (0x00100000U)  /*!< Peripheral not started                               */
 #define HAL_CAN_ERROR_PARAM           (0x00200000U)  /*!< Parameter error                                      */
+
+#if USE_HAL_CAN_REGISTER_CALLBACKS == 1
+#define HAL_CAN_ERROR_INVALID_CALLBACK (0x00400000U) /*!< Invalid Callback error                               */
+#endif /* USE_HAL_CAN_REGISTER_CALLBACKS */
+#define HAL_CAN_ERROR_INTERNAL        (0x00800000U)  /*!< Internal error                                       */
 
 /**
   * @}
@@ -291,7 +337,8 @@ typedef struct __CAN_HandleTypeDef
 #define CAN_MODE_NORMAL             (0x00000000U)                              /*!< Normal mode   */
 #define CAN_MODE_LOOPBACK           ((uint32_t)CAN_BTR_LBKM)                   /*!< Loopback mode */
 #define CAN_MODE_SILENT             ((uint32_t)CAN_BTR_SILM)                   /*!< Silent mode   */
-#define CAN_MODE_SILENT_LOOPBACK    ((uint32_t)(CAN_BTR_LBKM | CAN_BTR_SILM))  /*!< Loopback combined with silent mode */
+#define CAN_MODE_SILENT_LOOPBACK    ((uint32_t)(CAN_BTR_LBKM | CAN_BTR_SILM))  /*!< Loopback combined with
+                                                                                    silent mode   */
 /**
   * @}
   */
@@ -360,6 +407,15 @@ typedef struct __CAN_HandleTypeDef
   */
 #define CAN_FILTERSCALE_16BIT       (0x00000000U)  /*!< Two 16-bit filters */
 #define CAN_FILTERSCALE_32BIT       (0x00000001U)  /*!< One 32-bit filter  */
+/**
+  * @}
+  */
+
+/** @defgroup CAN_filter_activation CAN Filter Activation
+  * @{
+  */
+#define CAN_FILTER_DISABLE          (0x00000000U)  /*!< Disable filter */
+#define CAN_FILTER_ENABLE           (0x00000001U)  /*!< Enable filter  */
 /**
   * @}
   */
@@ -496,7 +552,15 @@ typedef struct __CAN_HandleTypeDef
   * @param  __HANDLE__ CAN handle.
   * @retval None
   */
+#if USE_HAL_CAN_REGISTER_CALLBACKS == 1
+#define __HAL_CAN_RESET_HANDLE_STATE(__HANDLE__) do{                                              \
+                                                     (__HANDLE__)->State = HAL_CAN_STATE_RESET;   \
+                                                     (__HANDLE__)->MspInitCallback = NULL;        \
+                                                     (__HANDLE__)->MspDeInitCallback = NULL;      \
+                                                   } while(0)
+#else
 #define __HAL_CAN_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = HAL_CAN_STATE_RESET)
+#endif /*USE_HAL_CAN_REGISTER_CALLBACKS */
 
 /**
   * @brief  Enable the specified CAN interrupts.
@@ -587,6 +651,13 @@ HAL_StatusTypeDef HAL_CAN_DeInit(CAN_HandleTypeDef *hcan);
 void HAL_CAN_MspInit(CAN_HandleTypeDef *hcan);
 void HAL_CAN_MspDeInit(CAN_HandleTypeDef *hcan);
 
+#if USE_HAL_CAN_REGISTER_CALLBACKS == 1
+/* Callbacks Register/UnRegister functions  ***********************************/
+HAL_StatusTypeDef HAL_CAN_RegisterCallback(CAN_HandleTypeDef *hcan, HAL_CAN_CallbackIDTypeDef CallbackID,
+                                           void (* pCallback)(CAN_HandleTypeDef *_hcan));
+HAL_StatusTypeDef HAL_CAN_UnRegisterCallback(CAN_HandleTypeDef *hcan, HAL_CAN_CallbackIDTypeDef CallbackID);
+
+#endif /* (USE_HAL_CAN_REGISTER_CALLBACKS) */
 /**
  * @}
  */
@@ -597,7 +668,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef *hcan);
  */
 
 /* Configuration functions ****************************************************/
-HAL_StatusTypeDef HAL_CAN_ConfigFilter(CAN_HandleTypeDef *hcan, CAN_FilterTypeDef *sFilterConfig);
+HAL_StatusTypeDef HAL_CAN_ConfigFilter(CAN_HandleTypeDef *hcan, const CAN_FilterTypeDef *sFilterConfig);
 
 /**
  * @}
@@ -613,14 +684,16 @@ HAL_StatusTypeDef HAL_CAN_Start(CAN_HandleTypeDef *hcan);
 HAL_StatusTypeDef HAL_CAN_Stop(CAN_HandleTypeDef *hcan);
 HAL_StatusTypeDef HAL_CAN_RequestSleep(CAN_HandleTypeDef *hcan);
 HAL_StatusTypeDef HAL_CAN_WakeUp(CAN_HandleTypeDef *hcan);
-uint32_t HAL_CAN_IsSleepActive(CAN_HandleTypeDef *hcan);
-HAL_StatusTypeDef HAL_CAN_AddTxMessage(CAN_HandleTypeDef *hcan, CAN_TxHeaderTypeDef *pHeader, uint8_t aData[], uint32_t *pTxMailbox);
+uint32_t HAL_CAN_IsSleepActive(const CAN_HandleTypeDef *hcan);
+HAL_StatusTypeDef HAL_CAN_AddTxMessage(CAN_HandleTypeDef *hcan, const CAN_TxHeaderTypeDef *pHeader,
+                                       const uint8_t aData[], uint32_t *pTxMailbox);
 HAL_StatusTypeDef HAL_CAN_AbortTxRequest(CAN_HandleTypeDef *hcan, uint32_t TxMailboxes);
-uint32_t HAL_CAN_GetTxMailboxesFreeLevel(CAN_HandleTypeDef *hcan);
-uint32_t HAL_CAN_IsTxMessagePending(CAN_HandleTypeDef *hcan, uint32_t TxMailboxes);
-uint32_t HAL_CAN_GetTxTimestamp(CAN_HandleTypeDef *hcan, uint32_t TxMailbox);
-HAL_StatusTypeDef HAL_CAN_GetRxMessage(CAN_HandleTypeDef *hcan, uint32_t RxFifo, CAN_RxHeaderTypeDef *pHeader, uint8_t aData[]);
-uint32_t HAL_CAN_GetRxFifoFillLevel(CAN_HandleTypeDef *hcan, uint32_t RxFifo);
+uint32_t HAL_CAN_GetTxMailboxesFreeLevel(const CAN_HandleTypeDef *hcan);
+uint32_t HAL_CAN_IsTxMessagePending(const CAN_HandleTypeDef *hcan, uint32_t TxMailboxes);
+uint32_t HAL_CAN_GetTxTimestamp(const CAN_HandleTypeDef *hcan, uint32_t TxMailbox);
+HAL_StatusTypeDef HAL_CAN_GetRxMessage(CAN_HandleTypeDef *hcan, uint32_t RxFifo,
+                                       CAN_RxHeaderTypeDef *pHeader, uint8_t aData[]);
+uint32_t HAL_CAN_GetRxFifoFillLevel(const CAN_HandleTypeDef *hcan, uint32_t RxFifo);
 
 /**
  * @}
@@ -668,8 +741,8 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan);
  * @{
  */
 /* Peripheral State and Error functions ***************************************/
-HAL_CAN_StateTypeDef HAL_CAN_GetState(CAN_HandleTypeDef *hcan);
-uint32_t HAL_CAN_GetError(CAN_HandleTypeDef *hcan);
+HAL_CAN_StateTypeDef HAL_CAN_GetState(const CAN_HandleTypeDef *hcan);
+uint32_t HAL_CAN_GetError(const CAN_HandleTypeDef *hcan);
 HAL_StatusTypeDef HAL_CAN_ResetError(CAN_HandleTypeDef *hcan);
 
 /**
@@ -738,12 +811,15 @@ HAL_StatusTypeDef HAL_CAN_ResetError(CAN_HandleTypeDef *hcan);
                                   ((MODE) == CAN_FILTERMODE_IDLIST))
 #define IS_CAN_FILTER_SCALE(SCALE) (((SCALE) == CAN_FILTERSCALE_16BIT) || \
                                     ((SCALE) == CAN_FILTERSCALE_32BIT))
+#define IS_CAN_FILTER_ACTIVATION(ACTIVATION) (((ACTIVATION) == CAN_FILTER_DISABLE) || \
+                                              ((ACTIVATION) == CAN_FILTER_ENABLE))
 #define IS_CAN_FILTER_FIFO(FIFO) (((FIFO) == CAN_FILTER_FIFO0) || \
                                   ((FIFO) == CAN_FILTER_FIFO1))
 #define IS_CAN_TX_MAILBOX(TRANSMITMAILBOX) (((TRANSMITMAILBOX) == CAN_TX_MAILBOX0 ) || \
                                             ((TRANSMITMAILBOX) == CAN_TX_MAILBOX1 ) || \
                                             ((TRANSMITMAILBOX) == CAN_TX_MAILBOX2 ))
-#define IS_CAN_TX_MAILBOX_LIST(TRANSMITMAILBOX) ((TRANSMITMAILBOX) <= (CAN_TX_MAILBOX0 | CAN_TX_MAILBOX1 | CAN_TX_MAILBOX2))
+#define IS_CAN_TX_MAILBOX_LIST(TRANSMITMAILBOX) ((TRANSMITMAILBOX) <= (CAN_TX_MAILBOX0 | CAN_TX_MAILBOX1 | \
+                                                                       CAN_TX_MAILBOX2))
 #define IS_CAN_STDID(STDID)   ((STDID) <= 0x7FFU)
 #define IS_CAN_EXTID(EXTID)   ((EXTID) <= 0x1FFFFFFFU)
 #define IS_CAN_DLC(DLC)       ((DLC) <= 8U)
@@ -779,6 +855,3 @@ HAL_StatusTypeDef HAL_CAN_ResetError(CAN_HandleTypeDef *hcan);
 #endif
 
 #endif /* STM32F4xx_HAL_CAN_H */
-
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

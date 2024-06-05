@@ -1010,7 +1010,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>###Unitialized###</state>
+                    <state>stm32f405_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -2188,13 +2188,31 @@
             <group>
                 <name>CMSIS</name>
                 <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cachel1_armv7.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_armcc.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_armclang.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_armclang_ltm.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_compiler.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_gcc.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_iccarm.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\cmsis_version.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_armv81mml.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_armv8mbl.h</name>
@@ -2203,7 +2221,58 @@
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_armv8mml.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm0.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm0plus.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm1.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm23.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm3.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm33.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm35p.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm4.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm55.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm7.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_cm85.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_sc000.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_sc300.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\core_starmc1.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\mpu_armv7.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\mpu_armv8.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\pac_armv81.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\CMSIS\Include\pmu_armv8.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F4xx\Include\stm32f405xx.h</name>
@@ -2229,9 +2298,6 @@
             </group>
             <group>
                 <name>HAL_Driver</name>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h</name>
-                </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c</name>
                 </file>

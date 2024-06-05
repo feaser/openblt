@@ -6,14 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */
 
@@ -267,8 +265,10 @@ typedef struct
 /** @defgroup RCC_RTC_Clock_Source RTC Clock Source
   * @{
   */
+#define RCC_RTCCLKSOURCE_NO_CLK          0x00000000U
 #define RCC_RTCCLKSOURCE_LSE             0x00000100U
 #define RCC_RTCCLKSOURCE_LSI             0x00000200U
+#define RCC_RTCCLKSOURCE_HSE_DIVX        0x00000300U
 #define RCC_RTCCLKSOURCE_HSE_DIV2        0x00020300U
 #define RCC_RTCCLKSOURCE_HSE_DIV3        0x00030300U
 #define RCC_RTCCLKSOURCE_HSE_DIV4        0x00040300U
@@ -1516,10 +1516,11 @@ typedef struct
   *         a Power On Reset (POR).
   * @param  __RTCCLKSource__ specifies the RTC clock source.
   *         This parameter can be one of the following values:
-  *            @arg RCC_RTCCLKSOURCE_LSE: LSE selected as RTC clock.
-  *            @arg RCC_RTCCLKSOURCE_LSI: LSI selected as RTC clock.
-  *            @arg RCC_RTCCLKSOURCE_HSE_DIVx: HSE clock divided by x selected
-  *                                            as RTC clock, where x:[2,31]
+               @arg @ref RCC_RTCCLKSOURCE_NO_CLK: No clock selected as RTC clock.
+  *            @arg @ref RCC_RTCCLKSOURCE_LSE: LSE selected as RTC clock.
+  *            @arg @ref RCC_RTCCLKSOURCE_LSI: LSI selected as RTC clock.
+  *            @arg @ref RCC_RTCCLKSOURCE_HSE_DIVX: HSE clock divided by x selected
+  *                                           as RTC clock, where x:[2,31]
   * @note   If the LSE or LSI is used as RTC clock source, the RTC continues to
   *         work in STOP and STANDBY modes, and can be used as wake-up source.
   *         However, when the HSE clock is used as RTC clock source, the RTC
@@ -1532,7 +1533,24 @@ typedef struct
 
 #define __HAL_RCC_RTC_CONFIG(__RTCCLKSource__) do { __HAL_RCC_RTC_CLKPRESCALER(__RTCCLKSource__);    \
                                                     RCC->BDCR |= ((__RTCCLKSource__) & 0x00000FFFU);  \
-                                                   } while (0)
+                                                   } while (0U)
+
+/** @brief Macro to get the RTC clock source.
+  * @retval The clock source can be one of the following values:
+  *            @arg @ref RCC_RTCCLKSOURCE_NO_CLK No clock selected as RTC clock
+  *            @arg @ref RCC_RTCCLKSOURCE_LSE LSE selected as RTC clock
+  *            @arg @ref RCC_RTCCLKSOURCE_LSI LSI selected as RTC clock
+  *            @arg @ref RCC_RTCCLKSOURCE_HSE_DIVX HSE divided by X selected as RTC clock (X can be retrieved thanks to @ref __HAL_RCC_GET_RTC_HSE_PRESCALER()
+  */
+#define __HAL_RCC_GET_RTC_SOURCE() (READ_BIT(RCC->BDCR, RCC_BDCR_RTCSEL))
+
+/**
+  * @brief   Get the RTC and HSE clock divider (RTCPRE).
+  * @retval Returned value can be one of the following values:
+  *            @arg @ref RCC_RTCCLKSOURCE_HSE_DIVX: HSE clock divided by x selected
+  *                                                 as RTC clock, where x:[2,31]
+  */
+#define  __HAL_RCC_GET_RTC_HSE_PRESCALER() (READ_BIT(RCC->CFGR, RCC_CFGR_RTCPRE) | RCC_BDCR_RTCSEL)
 
 /** @brief  Macros to force or release the Backup domain reset.
   * @note   This function resets the RTC peripheral (including the backup registers)
@@ -1589,10 +1607,10 @@ typedef struct
   *
   */
 #define __HAL_RCC_PLL_CONFIG(__RCC_PLLSource__, __PLLM__, __PLLN__, __PLLP__, __PLLQ__)      \
-                            (RCC->PLLCFGR = (0x20000000U | (__RCC_PLLSource__) | (__PLLM__)| \
-                            ((__PLLN__) << POSITION_VAL(RCC_PLLCFGR_PLLN))                 | \
-                            ((((__PLLP__) >> 1U) -1U) << POSITION_VAL(RCC_PLLCFGR_PLLP))   | \
-                            ((__PLLQ__) << POSITION_VAL(RCC_PLLCFGR_PLLQ))))
+                   MODIFY_REG(RCC->PLLCFGR, \
+                              (RCC_PLLCFGR_PLLSRC | RCC_PLLCFGR_PLLM | RCC_PLLCFGR_PLLN | RCC_PLLCFGR_PLLP | RCC_PLLCFGR_PLLQ), \
+                              ((__RCC_PLLSource__) | (__PLLM__)| ((__PLLN__) << RCC_PLLCFGR_PLLN_Pos) | ((__PLLQ__) << RCC_PLLCFGR_PLLQ_Pos) | \
+                               ((((__PLLP__) >> 1U) - 1U) << RCC_PLLCFGR_PLLP_Pos)))
 /**
   * @}
   */
@@ -2065,4 +2083,3 @@ void HAL_RCC_CSSCallback(void);
 
 #endif /* __STM32F2xx_HAL_RCC_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

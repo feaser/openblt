@@ -6,30 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   ******************************************************************************
   */ 
 
@@ -119,7 +101,7 @@ typedef struct
   */
 typedef struct
 {
-  uint32_t PLLSAIM;    /*!< Spcifies division factor for PLL VCO input clock.
+  uint32_t PLLSAIM;    /*!< Specifies division factor for PLL VCO input clock.
                             This parameter must be a number between Min_Data = 2 and Max_Data = 63       */
 
   uint32_t PLLSAIN;    /*!< Specifies the multiplication factor for PLLI2S VCO output clock.
@@ -544,7 +526,7 @@ typedef struct
   * @{
   */
 #define RCC_I2SCLKSOURCE_PLLI2S         0x00000000U
-#define RCC_I2SCLKSOURCE_EXT            0x00000001U
+#define RCC_I2SCLKSOURCE_EXT            RCC_CFGR_I2SSRC
 /**
   * @}
   */
@@ -1683,6 +1665,7 @@ typedef struct
   * @brief  Force or release AHB1 peripheral reset.
   * @{
   */
+#define __HAL_RCC_AHB1_FORCE_RESET()     (RCC->AHB1RSTR = 0x22E017FFU)
 #define __HAL_RCC_GPIOD_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIODRST))
 #define __HAL_RCC_GPIOE_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOERST))
 #define __HAL_RCC_GPIOF_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOFRST))
@@ -1714,7 +1697,12 @@ typedef struct
   * @brief  Force or release AHB2 peripheral reset.
   * @{
   */
-#define __HAL_RCC_AHB2_FORCE_RESET()    (RCC->AHB2RSTR = 0xFFFFFFFFU) 
+#if defined(STM32F427xx) || defined(STM32F429xx) || defined(STM32F469xx)
+#define __HAL_RCC_AHB2_FORCE_RESET()   (RCC->AHB2RSTR = 0x000000C1U)
+#endif /* STM32F427xx || STM32F429xx || STM32F469xx */
+#if defined(STM32F437xx) || defined(STM32F439xx) || defined(STM32F479xx)
+#define __HAL_RCC_AHB2_FORCE_RESET()   (RCC->AHB2RSTR = 0x000000F1U)
+#endif /* STM32F437xx || STM32F439xx || STM32F479xx */
 #define __HAL_RCC_USB_OTG_FS_FORCE_RESET()   (RCC->AHB2RSTR |= (RCC_AHB2RSTR_OTGFSRST))
 #define __HAL_RCC_RNG_FORCE_RESET()    (RCC->AHB2RSTR |= (RCC_AHB2RSTR_RNGRST))
 #define __HAL_RCC_DCMI_FORCE_RESET()   (RCC->AHB2RSTR |= (RCC_AHB2RSTR_DCMIRST))
@@ -1738,8 +1726,13 @@ typedef struct
 /** @defgroup RCCEx_AHB3_Force_Release_Reset AHB3 Force Release Reset 
   * @brief  Force or release AHB3 peripheral reset.
   * @{
-  */ 
-#define __HAL_RCC_AHB3_FORCE_RESET() (RCC->AHB3RSTR = 0xFFFFFFFFU)
+  */
+#if defined(STM32F427xx) || defined(STM32F429xx) || defined(STM32F437xx) || defined(STM32F439xx)
+#define __HAL_RCC_AHB3_FORCE_RESET()   (RCC->AHB3RSTR = 0x00000001U)
+#endif /* STM32F427xx || STM32F429xx || STM32F437xx || STM32F439xx */
+#if defined(STM32F469xx) || defined(STM32F479xx)
+#define __HAL_RCC_AHB3_FORCE_RESET()   (RCC->AHB3RSTR = 0x00000003U)
+#endif /* STM32F469xx || STM32F479xx */
 #define __HAL_RCC_AHB3_RELEASE_RESET() (RCC->AHB3RSTR = 0x00U) 
 #define __HAL_RCC_FMC_FORCE_RESET()    (RCC->AHB3RSTR |= (RCC_AHB3RSTR_FMCRST))
 #define __HAL_RCC_FMC_RELEASE_RESET()  (RCC->AHB3RSTR &= ~(RCC_AHB3RSTR_FMCRST))
@@ -1755,7 +1748,8 @@ typedef struct
 /** @defgroup RCCEx_APB1_Force_Release_Reset APB1 Force Release Reset 
   * @brief  Force or release APB1 peripheral reset.
   * @{
-  */ 
+  */
+#define __HAL_RCC_APB1_FORCE_RESET()     (RCC->APB1RSTR = 0xF6FEC9FFU)
 #define __HAL_RCC_TIM6_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM6RST))
 #define __HAL_RCC_TIM7_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM7RST))
 #define __HAL_RCC_TIM12_FORCE_RESET()    (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM12RST))
@@ -1801,6 +1795,15 @@ typedef struct
   * @brief  Force or release APB2 peripheral reset.
   * @{
   */
+#if defined(STM32F469xx) || defined(STM32F479xx)
+#define __HAL_RCC_APB2_FORCE_RESET()   (RCC->APB2RSTR = 0x0C777933U)
+#endif /* STM32F469xx || STM32F479xx */
+#if defined(STM32F429xx) || defined(STM32F439xx)
+#define __HAL_RCC_APB2_FORCE_RESET()   (RCC->APB2RSTR = 0x04777933U)
+#endif /* STM32F429xx || STM32F439xx */
+#if defined(STM32F427xx) || defined(STM32F437xx)
+#define __HAL_RCC_APB2_FORCE_RESET()   (RCC->APB2RSTR = 0x00777933U)
+#endif /* STM32F427xx || STM32F437xx */
 #define __HAL_RCC_TIM8_FORCE_RESET()   (RCC->APB2RSTR |= (RCC_APB2RSTR_TIM8RST))
 #define __HAL_RCC_SPI5_FORCE_RESET()   (RCC->APB2RSTR |= (RCC_APB2RSTR_SPI5RST))
 #define __HAL_RCC_SPI6_FORCE_RESET()   (RCC->APB2RSTR |= (RCC_APB2RSTR_SPI6RST))
@@ -2608,6 +2611,12 @@ typedef struct
   * @brief  Force or release AHB1 peripheral reset.
   * @{
   */
+#if defined (STM32F405xx) || defined (STM32F415xx)
+#define __HAL_RCC_AHB1_FORCE_RESET()     (RCC->AHB1RSTR = 0x206011FFU)
+#endif /* STM32F405xx || STM32F415xx */
+#if defined (STM32F407xx) || defined (STM32F417xx)
+#define __HAL_RCC_AHB1_FORCE_RESET()     (RCC->AHB1RSTR = 0x226011FFU)
+#endif /* STM32F407xx || STM32F417xx */
 #define __HAL_RCC_GPIOD_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIODRST))
 #define __HAL_RCC_GPIOE_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOERST))
 #define __HAL_RCC_GPIOF_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOFRST))
@@ -2633,7 +2642,12 @@ typedef struct
   * @brief  Force or release AHB2 peripheral reset.
   * @{
   */
-#define __HAL_RCC_AHB2_FORCE_RESET()         (RCC->AHB2RSTR = 0xFFFFFFFFU) 
+#if defined (STM32F415xx) || defined (STM32F417xx)
+#define __HAL_RCC_AHB2_FORCE_RESET()         (RCC->AHB2RSTR = 0x000000F1U)
+#endif /* STM32F415xx || STM32F417xx */
+#if defined (STM32F405xx) || defined (STM32F407xx)
+#define __HAL_RCC_AHB2_FORCE_RESET()         (RCC->AHB2RSTR = 0x000000C1U)
+#endif /* STM32F405xx || STM32F407xx */
 #define __HAL_RCC_AHB2_RELEASE_RESET()       (RCC->AHB2RSTR = 0x00U)
 
 #if defined(STM32F407xx)|| defined(STM32F417xx)  
@@ -2662,7 +2676,7 @@ typedef struct
   * @brief  Force or release AHB3 peripheral reset.
   * @{
   */ 
-#define __HAL_RCC_AHB3_FORCE_RESET() (RCC->AHB3RSTR = 0xFFFFFFFFU)
+#define __HAL_RCC_AHB3_FORCE_RESET()   (RCC->AHB3RSTR = 0x00000001U)
 #define __HAL_RCC_AHB3_RELEASE_RESET() (RCC->AHB3RSTR = 0x00U) 
 
 #define __HAL_RCC_FSMC_FORCE_RESET()   (RCC->AHB3RSTR |= (RCC_AHB3RSTR_FSMCRST))
@@ -2675,6 +2689,7 @@ typedef struct
   * @brief  Force or release APB1 peripheral reset.
   * @{
   */
+#define __HAL_RCC_APB1_FORCE_RESET()     (RCC->APB1RSTR = 0xF6FEC9FFU)
 #define __HAL_RCC_TIM6_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM6RST))
 #define __HAL_RCC_TIM7_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM7RST))
 #define __HAL_RCC_TIM12_FORCE_RESET()    (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM12RST))
@@ -2716,6 +2731,7 @@ typedef struct
   * @brief  Force or release APB2 peripheral reset.
   * @{
   */
+#define __HAL_RCC_APB2_FORCE_RESET()   (RCC->APB2RSTR = 0x04777933U)
 #define __HAL_RCC_TIM8_FORCE_RESET()   (RCC->APB2RSTR |= (RCC_APB2RSTR_TIM8RST))
 #define __HAL_RCC_SDIO_FORCE_RESET()   (RCC->APB2RSTR |= (RCC_APB2RSTR_SDIORST))
 #define __HAL_RCC_SPI4_FORCE_RESET()   (RCC->APB2RSTR |= (RCC_APB2RSTR_SPI4RST))
@@ -3115,7 +3131,7 @@ typedef struct
   * @brief  Force or release AHB1 peripheral reset.
   * @{
   */  
-#define __HAL_RCC_AHB1_FORCE_RESET()    (RCC->AHB1RSTR = 0xFFFFFFFFU)
+#define __HAL_RCC_AHB1_FORCE_RESET()    (RCC->AHB1RSTR = 0x0060109FU)
 #define __HAL_RCC_GPIOD_FORCE_RESET()   (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIODRST))
 #define __HAL_RCC_GPIOE_FORCE_RESET()   (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOERST))
 #define __HAL_RCC_CRC_FORCE_RESET()     (RCC->AHB1RSTR |= (RCC_AHB1RSTR_CRCRST))
@@ -3132,7 +3148,7 @@ typedef struct
   * @brief  Force or release AHB2 peripheral reset.
   * @{
   */
-#define __HAL_RCC_AHB2_FORCE_RESET()    (RCC->AHB2RSTR = 0xFFFFFFFFU) 
+#define __HAL_RCC_AHB2_FORCE_RESET()         (RCC->AHB2RSTR = 0x00000080U)
 #define __HAL_RCC_USB_OTG_FS_FORCE_RESET()   (RCC->AHB2RSTR |= (RCC_AHB2RSTR_OTGFSRST))
 
 #define __HAL_RCC_AHB2_RELEASE_RESET()  (RCC->AHB2RSTR = 0x00U)
@@ -3145,7 +3161,7 @@ typedef struct
   * @brief  Force or release APB1 peripheral reset.
   * @{
   */
-#define __HAL_RCC_APB1_FORCE_RESET()     (RCC->APB1RSTR = 0xFFFFFFFFU)  
+#define __HAL_RCC_APB1_FORCE_RESET()     (RCC->APB1RSTR = 0x10E2C80FU)
 #define __HAL_RCC_TIM2_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM2RST))
 #define __HAL_RCC_TIM3_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM3RST))
 #define __HAL_RCC_TIM4_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM4RST))
@@ -3166,7 +3182,7 @@ typedef struct
   * @brief  Force or release APB2 peripheral reset.
   * @{
   */
-#define __HAL_RCC_APB2_FORCE_RESET()     (RCC->APB2RSTR = 0xFFFFFFFFU)  
+#define __HAL_RCC_APB2_FORCE_RESET()     (RCC->APB2RSTR = 0x00077931U)
 #define __HAL_RCC_SDIO_FORCE_RESET()     (RCC->APB2RSTR |= (RCC_APB2RSTR_SDIORST))
 #define __HAL_RCC_SPI4_FORCE_RESET()     (RCC->APB2RSTR |= (RCC_APB2RSTR_SPI4RST))
 #define __HAL_RCC_TIM10_FORCE_RESET()    (RCC->APB2RSTR |= (RCC_APB2RSTR_TIM10RST))
@@ -3431,6 +3447,7 @@ typedef struct
   * @brief  Force or release AHB1 peripheral reset.
   * @{
   */
+#define __HAL_RCC_AHB1_FORCE_RESET()    (RCC->AHB1RSTR = 0x80601087U)
 #define __HAL_RCC_CRC_FORCE_RESET()     (RCC->AHB1RSTR |= (RCC_AHB1RSTR_CRCRST))
 #define __HAL_RCC_RNG_FORCE_RESET()     (RCC->AHB1RSTR |= (RCC_AHB1RSTR_RNGRST))
 #define __HAL_RCC_CRC_RELEASE_RESET()   (RCC->AHB1RSTR &= ~(RCC_AHB1RSTR_CRCRST))
@@ -3463,6 +3480,12 @@ typedef struct
   * @brief  Force or release APB1 peripheral reset.
   * @{
   */
+#if defined (STM32F410Rx) || defined (STM32F410Cx)
+#define __HAL_RCC_APB1_FORCE_RESET()      (RCC->APB1RSTR = 0x31624A18U)
+#endif /* STM32F410Rx || STM32F410Cx */
+#if defined (STM32F410Tx)
+#define __HAL_RCC_APB1_FORCE_RESET()      (RCC->APB1RSTR = 0x31620A18U)
+#endif /* STM32F410Tx */
 #define __HAL_RCC_TIM6_FORCE_RESET()      (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM6RST))
 #define __HAL_RCC_LPTIM1_FORCE_RESET()    (RCC->APB1RSTR |= (RCC_APB1RSTR_LPTIM1RST))
 #define __HAL_RCC_FMPI2C1_FORCE_RESET()   (RCC->APB1RSTR |= (RCC_APB1RSTR_FMPI2C1RST))
@@ -3480,6 +3503,12 @@ typedef struct
   * @brief  Force or release APB2 peripheral reset.
   * @{
   */
+#if defined (STM32F410Rx) || defined (STM32F410Cx)
+#define __HAL_RCC_APB2_FORCE_RESET()      (RCC->APB2RSTR = 0x00155131U)
+#endif /* STM32F410Rx || STM32F410Cx */
+#if defined (STM32F410Tx)
+#define __HAL_RCC_APB2_FORCE_RESET()      (RCC->APB2RSTR = 0x00055111U)
+#endif /* STM32F410Tx */
 #define __HAL_RCC_SPI5_FORCE_RESET()      (RCC->APB2RSTR |= (RCC_APB2RSTR_SPI5RST))
 #define __HAL_RCC_SPI5_RELEASE_RESET()    (RCC->APB2RSTR &= ~(RCC_APB2RSTR_SPI5RST))                                        
 /**
@@ -3771,7 +3800,8 @@ typedef struct
 /** @defgroup RCCEx_AHB1_Force_Release_Reset AHB1 Force Release Reset 
   * @brief  Force or release AHB1 peripheral reset.
   * @{
-  */ 
+  */
+#define __HAL_RCC_AHB1_FORCE_RESET()    (RCC->AHB1RSTR = 0x0060109FU)
 #define __HAL_RCC_GPIOD_FORCE_RESET()   (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIODRST))
 #define __HAL_RCC_GPIOE_FORCE_RESET()   (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOERST))
 #define __HAL_RCC_CRC_FORCE_RESET()     (RCC->AHB1RSTR |= (RCC_AHB1RSTR_CRCRST))
@@ -3787,7 +3817,7 @@ typedef struct
   * @brief  Force or release AHB2 peripheral reset.
   * @{
   */
-#define __HAL_RCC_AHB2_FORCE_RESET()    (RCC->AHB2RSTR = 0xFFFFFFFFU) 
+#define __HAL_RCC_AHB2_FORCE_RESET()    (RCC->AHB2RSTR = 0x00000080U)
 #define __HAL_RCC_USB_OTG_FS_FORCE_RESET()   (RCC->AHB2RSTR |= (RCC_AHB2RSTR_OTGFSRST))
 
 #define __HAL_RCC_AHB2_RELEASE_RESET()  (RCC->AHB2RSTR = 0x00U)
@@ -3810,6 +3840,7 @@ typedef struct
   * @brief  Force or release APB1 peripheral reset.
   * @{
   */
+#define __HAL_RCC_APB1_FORCE_RESET()     (RCC->APB1RSTR = 0x10E2C80FU)
 #define __HAL_RCC_TIM2_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM2RST))
 #define __HAL_RCC_TIM3_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM3RST))
 #define __HAL_RCC_TIM4_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM4RST))
@@ -3829,6 +3860,7 @@ typedef struct
   * @brief  Force or release APB2 peripheral reset.
   * @{
   */
+#define __HAL_RCC_APB2_FORCE_RESET()     (RCC->APB2RSTR = 0x00177931U)
 #define __HAL_RCC_SPI5_FORCE_RESET()     (RCC->APB2RSTR |= (RCC_APB2RSTR_SPI5RST))
 #define __HAL_RCC_SDIO_FORCE_RESET()     (RCC->APB2RSTR |= (RCC_APB2RSTR_SDIORST))
 #define __HAL_RCC_SPI4_FORCE_RESET()     (RCC->APB2RSTR |= (RCC_APB2RSTR_SPI4RST))
@@ -4448,6 +4480,7 @@ typedef struct
   * @brief  Force or release AHB1 peripheral reset.
   * @{
   */
+#define __HAL_RCC_AHB1_FORCE_RESET()     (RCC->AHB1RSTR = 0x206010FFU)
 #define __HAL_RCC_GPIOD_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIODRST))
 #define __HAL_RCC_GPIOE_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOERST))
 #define __HAL_RCC_GPIOF_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOFRST))
@@ -4469,7 +4502,7 @@ typedef struct
   * @brief  Force or release AHB2 peripheral reset.
   * @{
   */
-#define __HAL_RCC_AHB2_FORCE_RESET()    (RCC->AHB2RSTR = 0xFFFFFFFFU) 
+#define __HAL_RCC_AHB2_FORCE_RESET()   (RCC->AHB2RSTR = 0x00000081U)
 #define __HAL_RCC_USB_OTG_FS_FORCE_RESET()   (RCC->AHB2RSTR |= (RCC_AHB2RSTR_OTGFSRST))
 #define __HAL_RCC_RNG_FORCE_RESET()    (RCC->AHB2RSTR |= (RCC_AHB2RSTR_RNGRST))
 #define __HAL_RCC_DCMI_FORCE_RESET()   (RCC->AHB2RSTR |= (RCC_AHB2RSTR_DCMIRST))
@@ -4486,7 +4519,7 @@ typedef struct
   * @brief  Force or release AHB3 peripheral reset.
   * @{
   */ 
-#define __HAL_RCC_AHB3_FORCE_RESET() (RCC->AHB3RSTR = 0xFFFFFFFFU)
+#define __HAL_RCC_AHB3_FORCE_RESET()   (RCC->AHB3RSTR = 0x00000003U)
 #define __HAL_RCC_AHB3_RELEASE_RESET() (RCC->AHB3RSTR = 0x00U) 
 
 #define __HAL_RCC_FMC_FORCE_RESET()    (RCC->AHB3RSTR |= (RCC_AHB3RSTR_FMCRST))
@@ -4502,6 +4535,7 @@ typedef struct
   * @brief  Force or release APB1 peripheral reset.
   * @{
   */
+#define __HAL_RCC_APB1_FORCE_RESET()     (RCC->APB1RSTR = 0x3FFFC9FFU)
 #define __HAL_RCC_TIM6_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM6RST))
 #define __HAL_RCC_TIM7_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM7RST))
 #define __HAL_RCC_TIM12_FORCE_RESET()    (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM12RST))
@@ -4549,6 +4583,7 @@ typedef struct
   * @brief  Force or release APB2 peripheral reset.
   * @{
   */
+#define __HAL_RCC_APB2_FORCE_RESET()     (RCC->APB2RSTR = 0x00C77933U)
 #define __HAL_RCC_TIM8_FORCE_RESET()     (RCC->APB2RSTR |= (RCC_APB2RSTR_TIM8RST))
 #define __HAL_RCC_SAI1_FORCE_RESET()     (RCC->APB2RSTR |= (RCC_APB2RSTR_SAI1RST)) 
 #define __HAL_RCC_SAI2_FORCE_RESET()     (RCC->APB2RSTR |= (RCC_APB2RSTR_SAI2RST))
@@ -4730,6 +4765,7 @@ typedef struct
   *         using it.
   * @{
   */
+#if defined(STM32F412Rx) || defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx) 
 #define __HAL_RCC_GPIOD_CLK_ENABLE()   do { \
                                         __IO uint32_t tmpreg = 0x00U; \
                                         SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIODEN);\
@@ -4737,6 +4773,8 @@ typedef struct
                                         tmpreg = READ_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIODEN);\
                                         UNUSED(tmpreg); \
                                       } while(0U)
+#endif /* STM32F412Rx || STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx) 
 #define __HAL_RCC_GPIOE_CLK_ENABLE()    do { \
                                         __IO uint32_t tmpreg = 0x00U; \
                                         SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOEEN);\
@@ -4744,6 +4782,8 @@ typedef struct
                                         tmpreg = READ_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOEEN);\
                                         UNUSED(tmpreg); \
                                       } while(0U)
+#endif /* STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)                                        
 #define __HAL_RCC_GPIOF_CLK_ENABLE()  do { \
                                       __IO uint32_t tmpreg = 0x00U; \
                                       SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOFEN);\
@@ -4758,6 +4798,7 @@ typedef struct
                                       tmpreg = READ_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOGEN);\
                                       UNUSED(tmpreg); \
                                       } while(0U)
+#endif /*  STM32F412Zx || STM32F413xx || STM32F423xx */                                       
 #define __HAL_RCC_CRC_CLK_ENABLE()  do { \
                                       __IO uint32_t tmpreg = 0x00U; \
                                       SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_CRCEN);\
@@ -4765,11 +4806,16 @@ typedef struct
                                       tmpreg = READ_BIT(RCC->AHB1ENR, RCC_AHB1ENR_CRCEN);\
                                       UNUSED(tmpreg); \
                                       } while(0U)                                        
-
+#if defined(STM32F412Rx) || defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx) 
 #define __HAL_RCC_GPIOD_CLK_DISABLE()        (RCC->AHB1ENR &= ~(RCC_AHB1ENR_GPIODEN))
+#endif /* STM32F412Rx || STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx) 
 #define __HAL_RCC_GPIOE_CLK_DISABLE()        (RCC->AHB1ENR &= ~(RCC_AHB1ENR_GPIOEEN))
+#endif /* STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOF_CLK_DISABLE()        (RCC->AHB1ENR &= ~(RCC_AHB1ENR_GPIOFEN))
 #define __HAL_RCC_GPIOG_CLK_DISABLE()        (RCC->AHB1ENR &= ~(RCC_AHB1ENR_GPIOGEN))
+#endif /*  STM32F412Zx || STM32F413xx || STM32F423xx */
 #define __HAL_RCC_CRC_CLK_DISABLE()          (RCC->AHB1ENR &= ~(RCC_AHB1ENR_CRCEN))
 /**
   * @}
@@ -4782,16 +4828,28 @@ typedef struct
   *         using it.
   * @{
   */
+#if defined(STM32F412Rx) || defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOD_IS_CLK_ENABLED()     ((RCC->AHB1ENR & (RCC_AHB1ENR_GPIODEN)) != RESET)
+#endif /* STM32F412Rx || STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOE_IS_CLK_ENABLED()     ((RCC->AHB1ENR & (RCC_AHB1ENR_GPIOEEN)) != RESET)
+#endif /* STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOF_IS_CLK_ENABLED()     ((RCC->AHB1ENR & (RCC_AHB1ENR_GPIOFEN)) != RESET)
 #define __HAL_RCC_GPIOG_IS_CLK_ENABLED()     ((RCC->AHB1ENR & (RCC_AHB1ENR_GPIOGEN)) != RESET)
+#endif /*  STM32F412Zx || STM32F413xx || STM32F423xx */
 #define __HAL_RCC_CRC_IS_CLK_ENABLED()       ((RCC->AHB1ENR & (RCC_AHB1ENR_CRCEN)) != RESET)
 
+#if defined(STM32F412Rx) || defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOD_IS_CLK_DISABLED()     ((RCC->AHB1ENR & (RCC_AHB1ENR_GPIODEN)) == RESET)
+#endif /* STM32F412Rx || STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOE_IS_CLK_DISABLED()     ((RCC->AHB1ENR & (RCC_AHB1ENR_GPIOEEN)) == RESET)
+#endif /* STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOF_IS_CLK_DISABLED()     ((RCC->AHB1ENR & (RCC_AHB1ENR_GPIOFEN)) == RESET)
 #define __HAL_RCC_GPIOG_IS_CLK_DISABLED()     ((RCC->AHB1ENR & (RCC_AHB1ENR_GPIOGEN)) == RESET)
+#endif /*  STM32F412Zx || STM32F413xx || STM32F423xx */
 #define __HAL_RCC_CRC_IS_CLK_DISABLED()       ((RCC->AHB1ENR & (RCC_AHB1ENR_CRCEN)) == RESET)
 /**
   * @}
@@ -4962,7 +5020,6 @@ typedef struct
                                       tmpreg = READ_BIT(RCC->APB1ENR, RCC_APB1ENR_RTCAPBEN);\
                                       UNUSED(tmpreg); \
                                       } while(0U)
-#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_USART3_CLK_ENABLE() do { \
                                       __IO uint32_t tmpreg = 0x00U; \
                                       SET_BIT(RCC->APB1ENR, RCC_APB1ENR_USART3EN);\
@@ -4970,7 +5027,6 @@ typedef struct
                                       tmpreg = READ_BIT(RCC->APB1ENR, RCC_APB1ENR_USART3EN);\
                                       UNUSED(tmpreg); \
                                       } while(0U)
-#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F413xx || STM32F423xx */
 
 #if defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_UART4_CLK_ENABLE()  do { \
@@ -5091,9 +5147,7 @@ typedef struct
 #endif /* STM32F413xx || STM32F423xx */
 #define __HAL_RCC_RTCAPB_CLK_DISABLE()  (RCC->APB1ENR &= ~(RCC_APB1ENR_RTCAPBEN))                                       
 #define __HAL_RCC_SPI3_CLK_DISABLE()    (RCC->APB1ENR &= ~(RCC_APB1ENR_SPI3EN))
-#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_USART3_CLK_DISABLE()  (RCC->APB1ENR &= ~(RCC_APB1ENR_USART3EN))
-#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F413xx || STM32F423xx */
 #if defined(STM32F413xx) || defined(STM32F423xx)   
 #define __HAL_RCC_UART4_CLK_DISABLE()   (RCC->APB1ENR &= ~(RCC_APB1ENR_UART4EN))
 #define __HAL_RCC_UART5_CLK_DISABLE()   (RCC->APB1ENR &= ~(RCC_APB1ENR_UART5EN))
@@ -5133,9 +5187,7 @@ typedef struct
 #endif /* STM32F413xx || STM32F423xx */                                            
 #define __HAL_RCC_RTCAPB_IS_CLK_ENABLED()  ((RCC->APB1ENR & (RCC_APB1ENR_RTCAPBEN)) != RESET)                                    
 #define __HAL_RCC_SPI3_IS_CLK_ENABLED()    ((RCC->APB1ENR & (RCC_APB1ENR_SPI3EN)) != RESET)
-#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_USART3_IS_CLK_ENABLED()  ((RCC->APB1ENR & (RCC_APB1ENR_USART3EN)) != RESET)
-#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F413xx | STM32F423xx */
 #if defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_UART4_IS_CLK_ENABLED()  ((RCC->APB1ENR & (RCC_APB1ENR_UART4EN)) != RESET) 
 #define __HAL_RCC_UART5_IS_CLK_ENABLED()  ((RCC->APB1ENR & (RCC_APB1ENR_UART5EN)) != RESET) 
@@ -5164,9 +5216,7 @@ typedef struct
 #endif /* STM32F413xx || STM32F423xx */                                         
 #define __HAL_RCC_RTCAPB_IS_CLK_DISABLED()  ((RCC->APB1ENR & (RCC_APB1ENR_RTCAPBEN)) == RESET)                                        
 #define __HAL_RCC_SPI3_IS_CLK_DISABLED()    ((RCC->APB1ENR & (RCC_APB1ENR_SPI3EN)) == RESET)
-#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_USART3_IS_CLK_DISABLED()  ((RCC->APB1ENR & (RCC_APB1ENR_USART3EN)) == RESET)
-#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F413xx | STM32F423xx */
 #if defined(STM32F413xx) || defined(STM32F423xx)                                           
 #define __HAL_RCC_UART4_IS_CLK_DISABLED()  ((RCC->APB1ENR & (RCC_APB1ENR_UART4EN)) == RESET) 
 #define __HAL_RCC_UART5_IS_CLK_DISABLED()  ((RCC->APB1ENR & (RCC_APB1ENR_UART5EN)) == RESET) 
@@ -5346,16 +5396,40 @@ typedef struct
   * @brief  Force or release AHB1 peripheral reset.
   * @{
   */
+#if defined (STM32F412Zx) || defined(STM32F413xx) || defined (STM32F423xx)
+#define __HAL_RCC_AHB1_FORCE_RESET()    (RCC->AHB1RSTR = 0x006010FFU)
+#endif /* STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined (STM32F412Cx)
+#define __HAL_RCC_AHB1_FORCE_RESET()    (RCC->AHB1RSTR = 0x00601087U)
+#endif /* STM32F412Cx */
+#if defined (STM32F412Vx)
+#define __HAL_RCC_AHB1_FORCE_RESET()    (RCC->AHB1RSTR = 0x0060109FU)
+#endif /* STM32F412Vx */
+#if defined (STM32F412Rx)
+#define __HAL_RCC_AHB1_FORCE_RESET()    (RCC->AHB1RSTR = 0x0060108FU)
+#endif /* STM32F412Rx */
+#if defined(STM32F412Rx) || defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOD_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIODRST))
+#endif /* STM32F412Rx || STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOE_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOERST))
+#endif /* STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOF_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOFRST))
 #define __HAL_RCC_GPIOG_FORCE_RESET()    (RCC->AHB1RSTR |= (RCC_AHB1RSTR_GPIOGRST))
+#endif /*  STM32F412Zx || STM32F413xx || STM32F423xx */
 #define __HAL_RCC_CRC_FORCE_RESET()      (RCC->AHB1RSTR |= (RCC_AHB1RSTR_CRCRST))
 
+#if defined(STM32F412Rx) || defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOD_RELEASE_RESET()  (RCC->AHB1RSTR &= ~(RCC_AHB1RSTR_GPIODRST))
+#endif /* STM32F412Rx || STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOE_RELEASE_RESET()  (RCC->AHB1RSTR &= ~(RCC_AHB1RSTR_GPIOERST))
+#endif /* STM32F412Vx || STM32F412Zx ||  STM32F413xx || STM32F423xx */
+#if defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_GPIOF_RELEASE_RESET()  (RCC->AHB1RSTR &= ~(RCC_AHB1RSTR_GPIOFRST))
 #define __HAL_RCC_GPIOG_RELEASE_RESET()  (RCC->AHB1RSTR &= ~(RCC_AHB1RSTR_GPIOGRST))
+#endif /*  STM32F412Zx || STM32F413xx || STM32F423xx */
 #define __HAL_RCC_CRC_RELEASE_RESET()    (RCC->AHB1RSTR &= ~(RCC_AHB1RSTR_CRCRST))
 /**
   * @}
@@ -5365,10 +5439,11 @@ typedef struct
   * @brief  Force or release AHB2 peripheral reset.
   * @{
   */
-#define __HAL_RCC_AHB2_FORCE_RESET()    (RCC->AHB2RSTR = 0xFFFFFFFFU)
+#define __HAL_RCC_AHB2_FORCE_RESET()    (RCC->AHB2RSTR = 0x000000C0U)
 #define __HAL_RCC_AHB2_RELEASE_RESET()  (RCC->AHB2RSTR = 0x00U)
 
 #if defined(STM32F423xx)
+#define __HAL_RCC_AHB2_FORCE_RESET()   (RCC->AHB2RSTR = 0x000000D0U)
 #define __HAL_RCC_AES_FORCE_RESET()    (RCC->AHB2RSTR |= (RCC_AHB2RSTR_AESRST))
 #define __HAL_RCC_AES_RELEASE_RESET()  (RCC->AHB2RSTR &= ~(RCC_AHB2RSTR_AESRST))                                        
 #endif /* STM32F423xx */ 
@@ -5387,7 +5462,7 @@ typedef struct
   * @{
   */ 
 #if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
-#define __HAL_RCC_AHB3_FORCE_RESET() (RCC->AHB3RSTR = 0xFFFFFFFFU)
+#define __HAL_RCC_AHB3_FORCE_RESET()   (RCC->AHB3RSTR = 0x00000003U)
 #define __HAL_RCC_AHB3_RELEASE_RESET() (RCC->AHB3RSTR = 0x00U) 
 
 #define __HAL_RCC_FSMC_FORCE_RESET()    (RCC->AHB3RSTR |= (RCC_AHB3RSTR_FSMCRST))
@@ -5414,6 +5489,12 @@ typedef struct
   * @brief  Force or release APB1 peripheral reset.
   * @{
   */
+#if defined(STM32F413xx) || defined(STM32F423xx)
+#define __HAL_RCC_APB1_FORCE_RESET()     (RCC->APB1RSTR = 0xFFFECBFFU)
+#endif /* STM32F413xx || STM32F423xx */
+#if defined (STM32F412Zx) || defined (STM32F412Vx) || defined (STM32F412Rx) || defined (STM32F412Cx)
+#define __HAL_RCC_APB1_FORCE_RESET()     (RCC->APB1RSTR = 0x17E6C9FFU)
+#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F412Cx */
 #define __HAL_RCC_TIM2_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM2RST))
 #define __HAL_RCC_TIM3_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM3RST)) 
 #define __HAL_RCC_TIM4_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_TIM4RST))                                        
@@ -5426,9 +5507,7 @@ typedef struct
 #define __HAL_RCC_LPTIM1_FORCE_RESET()   (RCC->APB1RSTR |= (RCC_APB1RSTR_LPTIM1RST)) 
 #endif /* STM32F413xx || STM32F423xx */                                        
 #define __HAL_RCC_SPI3_FORCE_RESET()     (RCC->APB1RSTR |= (RCC_APB1RSTR_SPI3RST))                                        
-#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_USART3_FORCE_RESET()   (RCC->APB1RSTR |= (RCC_APB1RSTR_USART3RST))
-#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F413xx || STM32F423xx */
 #if defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_UART4_FORCE_RESET()    (RCC->APB1RSTR |= (RCC_APB1RSTR_UART4RST))
 #define __HAL_RCC_UART5_FORCE_RESET()    (RCC->APB1RSTR |= (RCC_APB1RSTR_UART5RST))                                        
@@ -5456,9 +5535,7 @@ typedef struct
 #define __HAL_RCC_LPTIM1_RELEASE_RESET()  (RCC->APB1RSTR &= ~(RCC_APB1RSTR_LPTIM1RST))
 #endif /* STM32F413xx || STM32F423xx */                                        
 #define __HAL_RCC_SPI3_RELEASE_RESET()    (RCC->APB1RSTR &= ~(RCC_APB1RSTR_SPI3RST))
-#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_USART3_RELEASE_RESET()  (RCC->APB1RSTR &= ~(RCC_APB1RSTR_USART3RST))
-#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F413xx || STM32F423xx */
 #if defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_UART4_RELEASE_RESET()   (RCC->APB1RSTR &= ~(RCC_APB1RSTR_UART4RST))
 #define __HAL_RCC_UART5_RELEASE_RESET()   (RCC->APB1RSTR &= ~(RCC_APB1RSTR_UART5RST))
@@ -5481,6 +5558,12 @@ typedef struct
   * @brief  Force or release APB2 peripheral reset.
   * @{
   */
+#if defined(STM32F413xx)|| defined(STM32F423xx)
+#define __HAL_RCC_APB2_FORCE_RESET()     (RCC->APB2RSTR = 0x035779F3U)
+#endif /* STM32F413xx || STM32F423xx */
+#if defined (STM32F412Zx) || defined (STM32F412Vx) || defined (STM32F412Rx) || defined (STM32F412Cx) 
+#define __HAL_RCC_APB2_FORCE_RESET()     (RCC->APB2RSTR = 0x01177933U)
+#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F412Cx */
 #define __HAL_RCC_TIM8_FORCE_RESET()     (RCC->APB2RSTR |= (RCC_APB2RSTR_TIM8RST))
 #if defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_UART9_FORCE_RESET()    (RCC->APB2RSTR |= (RCC_APB2RSTR_UART9RST))
@@ -5614,9 +5697,7 @@ typedef struct
 #endif /* STM32F413xx || STM32F423xx */                                        
 #define __HAL_RCC_RTCAPB_CLK_SLEEP_ENABLE()  (RCC->APB1LPENR |= (RCC_APB1LPENR_RTCAPBLPEN))
 #define __HAL_RCC_SPI3_CLK_SLEEP_ENABLE()    (RCC->APB1LPENR |= (RCC_APB1LPENR_SPI3LPEN))                                       
-#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_USART3_CLK_SLEEP_ENABLE()  (RCC->APB1LPENR |= (RCC_APB1LPENR_USART3LPEN))
-#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F413xx || STM32F423xx */
 #if defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_UART4_CLK_SLEEP_ENABLE()   (RCC->APB1LPENR |= (RCC_APB1LPENR_UART4LPEN))
 #define __HAL_RCC_UART5_CLK_SLEEP_ENABLE()   (RCC->APB1LPENR |= (RCC_APB1LPENR_UART5LPEN))
@@ -5645,9 +5726,7 @@ typedef struct
 #endif /* STM32F413xx || STM32F423xx */                                        
 #define __HAL_RCC_RTCAPB_CLK_SLEEP_DISABLE() (RCC->APB1LPENR &= ~(RCC_APB1LPENR_RTCAPBLPEN))
 #define __HAL_RCC_SPI3_CLK_SLEEP_DISABLE()   (RCC->APB1LPENR &= ~(RCC_APB1LPENR_SPI3LPEN))                                        
-#if defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_USART3_CLK_SLEEP_DISABLE() (RCC->APB1LPENR &= ~(RCC_APB1LPENR_USART3LPEN))
-#endif /* STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F413xx || STM32F423xx */
 #if defined(STM32F413xx) || defined(STM32F423xx)
 #define __HAL_RCC_UART4_CLK_SLEEP_DISABLE()  (RCC->APB1LPENR &= ~(RCC_APB1LPENR_UART4LPEN))
 #define __HAL_RCC_UART5_CLK_SLEEP_DISABLE()  (RCC->APB1LPENR &= ~(RCC_APB1LPENR_UART5LPEN))
@@ -6100,7 +6179,7 @@ typedef struct
   *            @arg RCC_I2SCLKSOURCE_EXT: External clock mapped on the I2S_CKIN pin
   *                                       used as I2S clock source.
   */
-#define __HAL_RCC_I2S_CONFIG(__SOURCE__) (*(__IO uint32_t *) RCC_CFGR_I2SSRC_BB = (__SOURCE__))
+#define __HAL_RCC_I2S_CONFIG(__SOURCE__) (MODIFY_REG(RCC->CFGR, RCC_CFGR_I2SSRC, (__SOURCE__)))
 
 
 /** @brief  Macro to get the I2S clock source (I2SCLK).
@@ -6365,7 +6444,7 @@ typedef struct
   * @param  __DFSDM1_CLKSOURCE__ specifies the DFSDM1 clock source.
   *         This parameter can be one of the following values:
   *            @arg RCC_DFSDM1CLKSOURCE_PCLK2: PCLK2 clock used as kernel clock. 
-  *            @arg RCC_DFSDM1CLKSOURCE_SYSCLK: System clock used as kernal clock.
+  *            @arg RCC_DFSDM1CLKSOURCE_SYSCLK: System clock used as kernel clock.
   * @retval None
   */
 #define __HAL_RCC_DFSDM1_CONFIG(__DFSDM1_CLKSOURCE__)  MODIFY_REG(RCC->DCKCFGR, RCC_DCKCFGR_CKDFSDM1SEL, (__DFSDM1_CLKSOURCE__))
@@ -6373,7 +6452,7 @@ typedef struct
 /** @brief  Macro to get the DFSDM1 clock source.
   * @retval The clock source can be one of the following values:
   *            @arg RCC_DFSDM1CLKSOURCE_PCLK2: PCLK2 clock used as kernel clock. 
-  *            @arg RCC_DFSDM1CLKSOURCE_SYSCLK: System clock used as kernal clock.
+  *            @arg RCC_DFSDM1CLKSOURCE_SYSCLK: System clock used as kernel clock.
   */
 #define __HAL_RCC_GET_DFSDM1_SOURCE() ((uint32_t)(READ_BIT(RCC->DCKCFGR, RCC_DCKCFGR_CKDFSDM1SEL)))
 
@@ -6401,7 +6480,7 @@ typedef struct
   * @param  __DFSDM2_CLKSOURCE__ specifies the DFSDM1 clock source.
   *         This parameter can be one of the following values:
   *            @arg RCC_DFSDM2CLKSOURCE_PCLK2: PCLK2 clock used as kernel clock. 
-  *            @arg RCC_DFSDM2CLKSOURCE_SYSCLK: System clock used as kernal clock.
+  *            @arg RCC_DFSDM2CLKSOURCE_SYSCLK: System clock used as kernel clock.
   * @retval None
   */
 #define __HAL_RCC_DFSDM2_CONFIG(__DFSDM2_CLKSOURCE__)  MODIFY_REG(RCC->DCKCFGR, RCC_DCKCFGR_CKDFSDM1SEL, (__DFSDM2_CLKSOURCE__))
@@ -6409,7 +6488,7 @@ typedef struct
 /** @brief  Macro to get the DFSDM2 clock source.
   * @retval The clock source can be one of the following values:
   *            @arg RCC_DFSDM2CLKSOURCE_PCLK2: PCLK2 clock used as kernel clock. 
-  *            @arg RCC_DFSDM2CLKSOURCE_SYSCLK: System clock used as kernal clock.
+  *            @arg RCC_DFSDM2CLKSOURCE_SYSCLK: System clock used as kernel clock.
   */
 #define __HAL_RCC_GET_DFSDM2_SOURCE() ((uint32_t)(READ_BIT(RCC->DCKCFGR, RCC_DCKCFGR_CKDFSDM1SEL)))
 
@@ -6848,16 +6927,8 @@ HAL_StatusTypeDef HAL_RCCEx_DisablePLLSAI(void);
 /** @defgroup RCCEx_IS_RCC_Definitions RCC Private macros to check input parameters
   * @{
   */
-#if defined(STM32F411xE)
-#define IS_RCC_PLLN_VALUE(VALUE) ((192U <= (VALUE)) && ((VALUE) <= 432U))
-#define IS_RCC_PLLI2SN_VALUE(VALUE) ((192U <= (VALUE)) && ((VALUE) <= 432U))      
-#else /* STM32F405xx || STM32F415xx || STM32F407xx || STM32F417xx || STM32F427xx || STM32F437xx ||
-         STM32F429xx || STM32F439xx || STM32F401xC || STM32F401xE || STM32F410Tx || STM32F410Cx || 
-         STM32F410Rx || STM32F446xx || STM32F469xx || STM32F479xx || STM32F412Cx || STM32F412Rx || 
-         STM32F412Vx || STM32F412Zx || STM32F413xx || STM32F423xx */
 #define IS_RCC_PLLN_VALUE(VALUE) ((50U <= (VALUE)) && ((VALUE) <= 432U))
 #define IS_RCC_PLLI2SN_VALUE(VALUE) ((50U <= (VALUE)) && ((VALUE) <= 432U))
-#endif  /* STM32F411xE */    
       
 #if defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx)|| defined(STM32F439xx)
 #define IS_RCC_PERIPHCLOCK(SELECTION) ((1U <= (SELECTION)) && ((SELECTION) <= 0x0000007FU))
@@ -7116,4 +7187,3 @@ HAL_StatusTypeDef HAL_RCCEx_DisablePLLSAI(void);
 
 #endif /* __STM32F4xx_HAL_RCC_EX_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
