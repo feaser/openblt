@@ -106,7 +106,7 @@ LIB_PATH  =
 #|--------------------------------------------------------------------------------------|
 STDFLAGS    = -mcpu=cortex-m3 -mthumb -std=gnu11 -fstack-usage -Wall -specs=nano.specs
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g -Wno-strict-aliasing
-OPTFLAGS    = -O2
+OPTFLAGS    = -Os
 DEPFLAGS  = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32F103xB
