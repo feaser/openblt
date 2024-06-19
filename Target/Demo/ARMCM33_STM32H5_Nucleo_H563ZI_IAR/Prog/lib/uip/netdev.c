@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM33_STM32H5_Nucleo_H563ZI_CubeIDE/Boot/Library/uip/netdev.c
+* \file         Demo/ARMCM33_STM32H5_Nucleo_H563ZI_IAR/Prog/lib/uip/netdev.c
 * \brief        uIP network device port source file.
-* \ingroup      Boot_ARMCM33_STM32H5_Nucleo_H563ZI_CubeIDE
+* \ingroup      Prog_ARMCM33_STM32H5_Nucleo_H563ZI_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -51,7 +51,6 @@
 #include <string.h>                              /* String utils (memcpy)              */
 #include "uip.h"                                 /* uIP TCP/IP stack                   */
 #include "uip_arp.h"                             /* uIP address resolution protocol    */
-#include "boot.h"                                /* Bootloader generic header          */
 #include "lan8742.h"                             /* LAN8742 PHY driver                 */
 #include "stm32h5xx.h"                           /* STM32 CPU and HAL header           */
 
@@ -101,16 +100,16 @@ typedef struct t_tx_buf
 
 
 /****************************************************************************************
-* External data declarations
+* Global data declarations
 ****************************************************************************************/
 /* Ethernet handle used by the HAL drivers. */
-extern ETH_HandleTypeDef  heth;
+ETH_HandleTypeDef  heth;
 
 /* Ethernet Rx DMA Descriptors. */
-extern ETH_DMADescTypeDef DMARxDscrTab[ETH_RX_DESC_CNT];
+ETH_DMADescTypeDef DMARxDscrTab[ETH_RX_DESC_CNT];
 
 /* Ethernet Tx DMA Descriptors. */
-extern ETH_DMADescTypeDef DMATxDscrTab[ETH_TX_DESC_CNT];
+ETH_DMADescTypeDef DMATxDscrTab[ETH_TX_DESC_CNT];
 
 
 /****************************************************************************************
@@ -554,6 +553,94 @@ void HAL_ETH_RxLinkCallback(void     ** pStart,
 
 
 /****************************************************************************************
+*            H A L   M S P   R O U T I N E S
+****************************************************************************************/
+/************************************************************************************//**
+** \brief     ETH MSP Initialization.
+** \details   This function configures the hardware resources used in this example.
+** \param     heth ETH handle pointer.
+**
+****************************************************************************************/
+void HAL_ETH_MspInit(ETH_HandleTypeDef* heth)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  if(heth->Instance==ETH)
+  {
+    /* Peripheral clock enable */
+    __HAL_RCC_ETH_CLK_ENABLE();
+    __HAL_RCC_ETHTX_CLK_ENABLE();
+    __HAL_RCC_ETHRX_CLK_ENABLE();
+
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOG_CLK_ENABLE();
+    /**ETH GPIO Configuration
+    PC1     ------> ETH_MDC
+    PA1     ------> ETH_REF_CLK
+    PA2     ------> ETH_MDIO
+    PA7     ------> ETH_CRS_DV
+    PC4     ------> ETH_RXD0
+    PC5     ------> ETH_RXD1
+    PB15     ------> ETH_TXD1
+    PG11     ------> ETH_TX_EN
+    PG13     ------> ETH_TXD0
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_7;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_15;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_13;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+    HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+  }
+} /*** end of HAL_ETH_MspInit ***/
+
+
+/************************************************************************************//**
+** \brief     ETH MSP De-Initialization.
+** \details   This function freeze the hardware resources used in this example.
+** \param     heth ETH handle pointer.
+**
+****************************************************************************************/
+void HAL_ETH_MspDeInit(ETH_HandleTypeDef* heth)
+{
+  if(heth->Instance==ETH)
+  {
+    /* Peripheral clock disable */
+    __HAL_RCC_ETH_CLK_DISABLE();
+    __HAL_RCC_ETHTX_CLK_DISABLE();
+    __HAL_RCC_ETHRX_CLK_DISABLE();
+    /* Reset Ethernet GPIO pin configuration. */
+    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_7);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_15);
+    HAL_GPIO_DeInit(GPIOG, GPIO_PIN_11|GPIO_PIN_13);
+  }
+} /*** end of HAL_ETH_MspDeInit ***/
+
+
+/****************************************************************************************
 *            E T H E R N E T   P H Y   I / O   R O U T I N E S
 ****************************************************************************************/
 /************************************************************************************//**
@@ -635,7 +722,7 @@ static int32_t ETH_PHY_IO_WriteReg(uint32_t devAddr,
 ****************************************************************************************/
 static int32_t ETH_PHY_IO_GetTick(void)
 {
-  return TimerGet();
+  return HAL_GetTick();
 } /*** end of ETH_PHY_IO_GetTick ***/
 
 

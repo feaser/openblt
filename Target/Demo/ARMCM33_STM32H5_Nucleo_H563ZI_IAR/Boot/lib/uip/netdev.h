@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM33_STM32H5_Nucleo_H563ZI_CubeIDE/Boot/Library/uip/netdev.h
+* \file         Demo/ARMCM33_STM32H5_Nucleo_H563ZI_IAR/Boot/lib/uip/netdev.h
 * \brief        uIP network device port header file.
-* \ingroup      Boot_ARMCM33_STM32H5_Nucleo_H563ZI_CubeIDE
+* \ingroup      Boot_ARMCM33_STM32H5_Nucleo_H563ZI_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
