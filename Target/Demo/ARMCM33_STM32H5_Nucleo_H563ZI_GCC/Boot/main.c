@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM33_STM32H5_Nucleo_H563ZI_IAR/Boot/main.c
+* \file         Demo/ARMCM33_STM32H5_Nucleo_H563ZI_GCC/Boot/main.c
 * \brief        Bootloader application source file.
-* \ingroup      Boot_ARMCM33_STM32H5_Nucleo_H563ZI_IAR
+* \ingroup      Boot_ARMCM33_STM32H5_Nucleo_H563ZI_GCC
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -52,10 +52,10 @@ static void SystemClock_Config(void);
 /************************************************************************************//**
 ** \brief     This is the entry point for the bootloader application and is called
 **            by the reset interrupt vector after the C-startup routines executed.
-** \return    none.
+** \return    Program return code.
 **
 ****************************************************************************************/
-void main(void)
+int main(void)
 {
   blt_int8u deferredInitRequestFlag = 0;
 
@@ -101,6 +101,9 @@ void main(void)
     /* Run the bootloader task */
     BootTask();
   }
+
+  /* program should never get here */
+  return 0;
 } /*** end of main ***/
 
 
