@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2005, Swedish Institute of Computer Science.
+ * Copyright (c) 2006, Swedish Institute of Computer Science.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,49 +28,13 @@
  *
  * This file is part of the uIP TCP/IP stack
  *
- * Author: Adam Dunkels <adam@sics.se>
- *
- * $Id: lc-switch.h,v 1.2 2006/06/12 08:00:30 adam Exp $
+ * $Id: clock-arch.h,v 1.2 2006/06/12 08:00:31 adam Exp $
  */
 
-/**
- * \addtogroup lc
- * @{
- */
+#ifndef __CLOCK_ARCH_H__
+#define __CLOCK_ARCH_H__
 
-/**
- * \file
- * Implementation of local continuations based on switch() statment
- * \author Adam Dunkels <adam@sics.se>
- *
- * This implementation of local continuations uses the C switch()
- * statement to resume execution of a function somewhere inside the
- * function's body. The implementation is based on the fact that
- * switch() statements are able to jump directly into the bodies of
- * control structures such as if() or while() statmenets.
- *
- * This implementation borrows heavily from Simon Tatham's coroutines
- * implementation in C:
- * http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
- */
+typedef int clock_time_t;
+#define CLOCK_CONF_SECOND 1000
 
-#ifndef __LC_SWITCH_H__
-#define __LC_SWITCH_H__
-
-/* WARNING! lc implementation using switch() does not work if an
-   LC_SET() is done within another switch() statement! */
-
-/** \hideinitializer */
-typedef unsigned short lc_t;
-
-#define LC_INIT(s) s = 0;
-
-#define LC_RESUME(s) switch(s) { case 0:
-
-#define LC_SET(s) s = __LINE__; case __LINE__:
-
-#define LC_END(s) }
-
-#endif /* __LC_SWITCH_H__ */
-
-/** @} */
+#endif /* __CLOCK_ARCH_H__ */
