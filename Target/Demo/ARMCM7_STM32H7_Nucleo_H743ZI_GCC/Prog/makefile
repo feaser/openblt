@@ -57,6 +57,27 @@ rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filte
 
 # Collect all application files in the current directory and its subdirectories
 PROJ_FILES = $(call rwildcard, , *.c *.h *.s)
+# Collect UIP third party library files
+PROJ_FILES += ../../../Source/third_party/uip/uip/clock.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/lc-addrlabels.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/lc-switch.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/lc.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/pt.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip-fw.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip-neighbor.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip-split.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip.c
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip_arch.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip_arp.c
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip_arp.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip_timer.c
+PROJ_FILES += ../../../Source/third_party/uip/uip/uip_timer.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/uiplib.c
+PROJ_FILES += ../../../Source/third_party/uip/uip/uiplib.h
+PROJ_FILES += ../../../Source/third_party/uip/uip/uipopt.h
+PROJ_FILES += ../../../Source/third_party/uip/apps/dhcpc/dhcpc.c
+PROJ_FILES += ../../../Source/third_party/uip/apps/dhcpc/dhcpc.h
 
 
 #|--------------------------------------------------------------------------------------|
@@ -100,7 +121,7 @@ CFLAGS     += -DUSE_HAL_DRIVER -DSTM32H743xx
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
 LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-LFLAGS     += -T"STM32H743ZI_FLASH.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -T"STM32H743ZITX_FLASH.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS     += -specs=nano.specs -Wl,--gc-sections $(LIB_PATH)
 OFLAGS      = -O srec
 ODFLAGS     = -x

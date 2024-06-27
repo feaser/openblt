@@ -63,6 +63,17 @@ void CpuInit(void)
    * peripherals.
    */
   CpuIrqDisable();
+  /* run the bootloader without I-cache and D-cache to keep things simple. it doesn't
+   * need the performance improvements that these caches offer.
+   */
+  if ((SCB->CCR & SCB_CCR_IC_Msk) != 0U)
+  {
+    SCB_DisableICache();
+  }
+  if ((SCB->CCR & SCB_CCR_DC_Msk) != 0U)
+  {
+    SCB_DisableDCache();
+  }
 } /*** end of CpuInit ***/
 
 

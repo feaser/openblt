@@ -37,6 +37,8 @@
 #include "boot.h"                                      /* bootloader interface driver  */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
+#include "net.h"                                       /* TCP/IP server application    */
+#include "shared_params.h"                             /* Shared parameters header.    */
 
 
 #endif /* HEADER_H */

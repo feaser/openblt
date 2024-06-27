@@ -45,7 +45,8 @@ MEMORY
 {
   FLASH (rx)     : ORIGIN = 0x08000000, LENGTH = 128K
   DTCMRAM (xrw)  : ORIGIN = 0x20000000, LENGTH = 128K
-  RAM_D1 (xrw)   : ORIGIN = 0x24000000, LENGTH = 512K
+  SHARED (xrw)   : ORIGIN = 0x24000000, LENGTH = 64
+  RAM_D1 (xrw)   : ORIGIN = 0x24000040, LENGTH = 512K - 64
   RAM_D2 (xrw)   : ORIGIN = 0x30000000, LENGTH = 288K
   RAM_D3 (xrw)   : ORIGIN = 0x38000000, LENGTH = 64K
   ITCMRAM (xrw)  : ORIGIN = 0x00000000, LENGTH = 64K
@@ -54,6 +55,31 @@ MEMORY
 /* Define output sections */
 SECTIONS
 {
+  .shared (NOLOAD) :
+  {
+    . = ALIGN(4);
+    _sshared = .;
+    __shared_start__ = _sshared;
+    *(.shared)
+    *(.shared.*)
+    KEEP(*(.shared)) 
+    . = ALIGN(4);
+    _eshared = .;
+    __shared_end__ = _eshared;
+  } >SHARED
+
+  /* Ethernet Rx and Tx descriptors go to RAM_D2. */
+  .uip_sec (NOLOAD) : {
+    . = ABSOLUTE(0x30040000);
+    *(.RxDecripSection)
+    . = ABSOLUTE(0x30040100);
+    *(.TxDecripSection)
+    . = ABSOLUTE(0x30040200);
+    *(.RxBufSection)
+    . = ABSOLUTE(0x30044200);
+    *(.TxBufSection)
+  } >RAM_D2 AT> FLASH
+
   /* The startup code goes first into FLASH */
   .isr_vector :
   {

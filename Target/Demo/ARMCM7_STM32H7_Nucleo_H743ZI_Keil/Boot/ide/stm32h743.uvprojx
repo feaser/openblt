@@ -339,7 +339,7 @@
               <MiscControls>--diag_suppress=111</MiscControls>
               <Define>USE_FULL_LL_DRIVER,USE_HAL_DRIVER,STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Boot;..\lib;..\lib\CMSIS\Device\ST\STM32H7xx\Include;..\lib\CMSIS\Include;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\STM32H7xx_HAL_Driver\Inc\Legacy;..\lib\STM32_USB_Device_Library\Core\Inc;..\..\..\..\Source;..\..\..\..\Source\ARMCM7_STM32H7</IncludePath>
+              <IncludePath>..\..\Boot;..\lib;..\lib\CMSIS\Device\ST\STM32H7xx\Include;..\lib\CMSIS\Include;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\STM32H7xx_HAL_Driver\Inc\Legacy;..\lib\STM32_USB_Device_Library\Core\Inc;..\lib\uip;..\..\..\..\Source;..\..\..\..\Source\ARMCM7_STM32H7;..\..\..\..\Source\third_party\uip\uip;..\..\..\..\Source\third_party\uip\apps\dhcpc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -873,6 +873,61 @@
               <FileType>1</FileType>
               <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_utils.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32h7xx_hal_eth.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_eth.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_eth_ex.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_eth_ex.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_eth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_eth.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_eth_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_eth_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>clock-arch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\uip\clock-arch.c</FilePath>
+            </File>
+            <File>
+              <FileName>clock-arch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\uip\clock-arch.h</FilePath>
+            </File>
+            <File>
+              <FileName>lan8742.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\uip\lan8742.c</FilePath>
+            </File>
+            <File>
+              <FileName>lan8742.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\uip\lan8742.h</FilePath>
+            </File>
+            <File>
+              <FileName>netdev.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\uip\netdev.c</FilePath>
+            </File>
+            <File>
+              <FileName>netdev.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\uip\netdev.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip-conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\uip\uip-conf.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -937,6 +992,16 @@
               <FileName>usbd_desc.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\usbd_desc.h</FilePath>
+            </File>
+            <File>
+              <FileName>shared_params.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\shared_params.c</FilePath>
+            </File>
+            <File>
+              <FileName>shared_params.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\shared_params.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1123,6 +1188,101 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\ARMCM7_STM32H7\mbrtu.c</FilePath>
             </File>
+            <File>
+              <FileName>dhcpc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.c</FilePath>
+            </File>
+            <File>
+              <FileName>dhcpc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.h</FilePath>
+            </File>
+            <File>
+              <FileName>clock.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\clock.h</FilePath>
+            </File>
+            <File>
+              <FileName>lc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\lc.h</FilePath>
+            </File>
+            <File>
+              <FileName>lc-addrlabels.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\lc-addrlabels.h</FilePath>
+            </File>
+            <File>
+              <FileName>lc-switch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\lc-switch.h</FilePath>
+            </File>
+            <File>
+              <FileName>pt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\pt.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip.c</FilePath>
+            </File>
+            <File>
+              <FileName>uip.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip_arch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_arch.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip_arp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_arp.c</FilePath>
+            </File>
+            <File>
+              <FileName>uip_arp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_arp.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>uip_timer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip_timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>uip-fw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip-fw.c</FilePath>
+            </File>
+            <File>
+              <FileName>uip-fw.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uip-fw.h</FilePath>
+            </File>
+            <File>
+              <FileName>uiplib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uiplib.c</FilePath>
+            </File>
+            <File>
+              <FileName>uiplib.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uiplib.h</FilePath>
+            </File>
+            <File>
+              <FileName>uipopt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\uip\uip\uipopt.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
@@ -1141,5 +1301,14 @@
     </components>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>stm32h743</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>

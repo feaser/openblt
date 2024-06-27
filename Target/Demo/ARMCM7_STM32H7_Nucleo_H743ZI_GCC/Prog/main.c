@@ -37,6 +37,7 @@
 ****************************************************************************************/
 static void Init(void);
 static void SystemClock_Config(void);
+static void MPU_Config(void);
 static void VectorBase_Config(void);
 
 
@@ -50,15 +51,26 @@ int main(void)
 {
   /* Initialize the microcontroller */
   Init();
-  /* Initialize the bootloader interface */
+  /* Initialize the shared parameters module */
+  SharedParamsInit();
+  /* initialize the network application */
+  NetInit();
+  /* initialize the bootloader interface */
   BootComInit();
+  /* the shared parameter at index 0 is used as a boolean flag to indicate if the
+   * bootloader should initialize the TCP/IP network stack. by default this flag
+   * should be reset.
+   */
+  SharedParamsWriteByIndex(0, 0);
 
   /* start the infinite program loop */
   while (1)
   {
     /* Toggle LED with a fixed frequency. */
     LedToggle();
-    /* Check for bootloader activation request. */
+    /* run the network task */ 
+    NetTask();
+    /* check for bootloader activation request */
     BootComCheckActivationRequest();
   }
   /* Set program exit code. note that the program should never get here. */
@@ -75,6 +87,8 @@ static void Init(void)
 {
   /* Configure the vector table base address. */
   VectorBase_Config();
+  /* Configure MPU. */
+  MPU_Config();
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
   /* Configure the system clock. */
@@ -167,6 +181,66 @@ static void SystemClock_Config(void)
     while (1);
   }
 } /*** end of SystemClock_Config ***/
+
+
+/************************************************************************************//**
+** \brief     Memory Protection Unit Configuration. This code was created by CubeMX and 
+**            configures the MPU. Note that the Lower Layer drivers were selected in
+**            CubeMX for the MPU subsystem.
+** \return    none.
+**
+****************************************************************************************/
+static void MPU_Config(void)
+{
+  MPU_Region_InitTypeDef MPU_InitStruct = {0};
+
+  /* Disables the MPU. */
+  HAL_MPU_Disable();
+
+  /* Disable speculative access to unused memory. Overall a good idea and start for the
+   * MPU configuration.
+   */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.BaseAddress = 0x0;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
+  MPU_InitStruct.SubRegionDisable = 0x87;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /* Initializes and configures the region with the Ethernet Tx and Rx descriptors and
+   * buffers as "device" memory type that can be shared. This is needed because the DMA
+   * needs to access it.
+   */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
+  MPU_InitStruct.BaseAddress = 0x30040000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_32KB;
+  MPU_InitStruct.SubRegionDisable = 0x0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /* Initializes and configures the region with the shared parameters RAM buffer as
+   * "normal" memory type that is "non-cacheable" and "shareable". Otherwise the shared
+   * parameters contents at not always committed to RAM when D-cache is enabled. Not
+   * absolutely necessary for the bootloader as it disabled the D-cache, yet kept here
+   * for future references.
+   */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+  MPU_InitStruct.BaseAddress = 0x24000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_64B;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /* Enables the MPU. */
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+} /*** end of MPU_Config ***/
 
 
 /************************************************************************************//**
@@ -274,6 +348,11 @@ void HAL_MspDeInit(void)
   __HAL_RCC_GPIOB_CLK_DISABLE();
   /* SYSCFG clock disable. */
   __HAL_RCC_SYSCFG_CLK_DISABLE();
+  /* Disable the MPU and reset the region configuration. */
+  HAL_MPU_Disable();
+  HAL_MPU_DisableRegion(MPU_REGION_NUMBER0);
+  HAL_MPU_DisableRegion(MPU_REGION_NUMBER1);
+  HAL_MPU_DisableRegion(MPU_REGION_NUMBER2);
 } /*** end of HAL_MspDeInit ***/
 
 

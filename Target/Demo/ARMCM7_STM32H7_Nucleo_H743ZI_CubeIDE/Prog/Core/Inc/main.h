@@ -54,6 +54,7 @@ extern "C" {
 void Error_Handler(void);
 void MX_FDCAN1_Init(void);
 void MX_USART3_UART_Init(void);
+void MX_ETH_Init(void);
 
 /* USER CODE BEGIN EFP */
 

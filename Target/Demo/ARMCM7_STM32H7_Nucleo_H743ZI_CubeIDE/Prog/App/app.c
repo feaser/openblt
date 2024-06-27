@@ -44,8 +44,17 @@ void AppInit(void)
   TimerInit();
   /* Initialize the led driver. */
   LedInit();
+  /* Initialize the shared parameters module */
+  SharedParamsInit();
+  /* initialize the network application */
+  NetInit();
   /* initialize the bootloader interface */
   BootComInit();
+  /* the shared parameter at index 0 is used as a boolean flag to indicate if the
+   * bootloader should initialize the TCP/IP network stack. by default this flag
+   * should be reset.
+   */
+  SharedParamsWriteByIndex(0, 0);
 } /*** end of AppInit ***/
 
 
@@ -59,6 +68,8 @@ void AppTask(void)
 {
   /* Toggle LED with a fixed frequency. */
   LedToggle();
+  /* run the network task */
+  NetTask();
   /* check for bootloader activation request */
   BootComCheckActivationRequest();
 } /*** end of AppTask ***/

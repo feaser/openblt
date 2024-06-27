@@ -62,7 +62,7 @@
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
+                    <state>A complete configuration of the C/C++14 runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -359,6 +359,9 @@
                     <state>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32H7xx\Include</state>
                     <state>$PROJ_DIR$\..\lib\STM32H7xx_HAL_Driver\Inc</state>
                     <state>$PROJ_DIR$\..\lib\STM32H7xx_HAL_Driver\Inc\Legacy</state>
+                    <state>$PROJ_DIR$\..\lib\uip</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1203,6 +1206,18 @@
                     <name>$PROJ_DIR$\..\lib\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_dma_ex.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_eth.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_eth.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_eth_ex.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_eth_ex.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_exti.c</name>
                 </file>
                 <file>
@@ -1308,12 +1323,99 @@
                     <name>$PROJ_DIR$\..\lib\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h</name>
                 </file>
             </group>
+            <group>
+                <name>uip</name>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\uip\clock-arch.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\uip\clock-arch.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\uip\lan8742.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\uip\lan8742.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\uip\netdev.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\uip\netdev.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\uip\uip-conf.h</name>
+                </file>
+            </group>
             <file>
                 <name>$PROJ_DIR$\..\lib\stm32h7xx_hal_conf.h</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\lib\system_stm32h7xx.c</name>
             </file>
+        </group>
+        <group>
+            <name>third_party</name>
+            <group>
+                <name>uip</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\clock.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc\dhcpc.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-addrlabels.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc-switch.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\lc.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\pt.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-fw.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip-fw.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arch.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_arp.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uip_timer.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uiplib.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip\uipopt.h</name>
+                </file>
+            </group>
         </group>
         <file>
             <name>$PROJ_DIR$\..\boot.c</name>
@@ -1332,6 +1434,18 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\net.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\net.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\shared_params.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\shared_params.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\startup_stm32h743xx.s</name>

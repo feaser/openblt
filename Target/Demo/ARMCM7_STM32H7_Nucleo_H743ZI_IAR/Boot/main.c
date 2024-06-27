@@ -32,9 +32,11 @@
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32h7xx.h"                           /* STM32 CPU and HAL header           */
 #include "stm32h7xx_ll_pwr.h"                    /* STM32 LL PWR header                */
+#include "stm32h7xx_ll_cortex.h"                 /* STM32 LL Cortex header             */
 #include "stm32h7xx_ll_rcc.h"                    /* STM32 LL RCC header                */
 #include "stm32h7xx_ll_utils.h"                  /* STM32 LL UTILS header              */
 #include "stm32h7xx_ll_gpio.h"                   /* STM32 LL GPIO header               */
+#include "shared_params.h"                       /* Shared parameters header           */
 
 
 /****************************************************************************************
@@ -42,6 +44,7 @@
 ****************************************************************************************/
 static void Init(void);
 static void SystemClock_Config(void);
+static void MPU_Config(void);
 
 
 /************************************************************************************//**
@@ -52,11 +55,44 @@ static void SystemClock_Config(void);
 ****************************************************************************************/
 void main(void)
 {
+  blt_int8u deferredInitRequestFlag = 0;
+
   /* initialize the microcontroller */
   Init();
+  /* initialize the shared parameters module */
+  SharedParamsInit();
   /* initialize the bootloader */
   BootInit();
-
+#if (BOOT_COM_DEFERRED_INIT_ENABLE == 1)
+  /* the bootloader is configured to NOT initialize the TCP/IP network stack by default
+   * to bypass unnecessary delay times before starting the user program. the TCP/IP net-
+   * work tack is now only initialized when: (a) no valid user program is detected, or
+   * (b) a forced backdoor entry occurred (CpuUserProgramStartHook() returned BLT_FALSE).
+   *
+   * these demo bootloader and user programs have one extra feature implemented for
+   * demonstration purposes. the demo user program can detect firmware update requests
+   * from the TCP/IP network in which case it activates the bootloader. But...the
+   * TCP/IP network stack will not be initialized in this situation. for this reason
+   * the shared parameter module was integrated in both the bootloader and user program.
+   * more information about the shared parameter module can be found here:
+   *   https://www.feaser.com/en/blog/?p=216
+   *
+   * the shared parameter at the first index (0) contains a flag. this flag is set to
+   * 1, right before the user program activates this bootloader, to explicitly request
+   * the bootloader to initialize the TCP/IP network stack. this makes it possible for
+   * a firmware update to proceed. the code here reads out this flag and performs the
+   * TCP/IP network stack initialization when requested.
+   */
+  SharedParamsReadByIndex(0, &deferredInitRequestFlag);
+  if (deferredInitRequestFlag == 1)
+  {
+    /* explicitly initialize all communication interface for which the deferred
+     * initialization feature was enabled.
+     */
+    ComDeferredInit();
+  }
+#endif
+  
   /* start the infinite program loop */
   while (1)
   {
@@ -73,6 +109,8 @@ void main(void)
 ****************************************************************************************/
 static void Init(void)
 {
+  /* configure MPU */
+  MPU_Config();
   /* HAL library initialization */
   HAL_Init();
   /* configure system clock */
@@ -151,6 +189,45 @@ static void SystemClock_Config(void)
   /* Update the system clock speed setting. */
   LL_SetSystemCoreClock(BOOT_CPU_SYSTEM_SPEED_KHZ * 1000u);
 } /*** end of SystemClock_Config ***/
+
+
+/************************************************************************************//**
+** \brief     Memory Protection Unit Configuration. This code was created by CubeMX and 
+**            configures the MPU. Note that the Lower Layer drivers were selected in
+**            CubeMX for the MPU subsystem.
+** \return    none.
+**
+****************************************************************************************/
+static void MPU_Config(void)
+{
+  /* Disables the MPU. */
+  LL_MPU_Disable();
+  
+  /* Disable speculative access to unused memory. Overall a good idea and start for the
+   * MPU configuration.
+   */
+  LL_MPU_ConfigRegion(LL_MPU_REGION_NUMBER0, 0x87, 0x0, LL_MPU_REGION_SIZE_4GB|LL_MPU_TEX_LEVEL0|LL_MPU_REGION_NO_ACCESS|LL_MPU_INSTRUCTION_ACCESS_DISABLE|LL_MPU_ACCESS_SHAREABLE|LL_MPU_ACCESS_NOT_CACHEABLE|LL_MPU_ACCESS_NOT_BUFFERABLE);
+  LL_MPU_EnableRegion(LL_MPU_REGION_NUMBER0);
+
+  /* Initializes and configures the region with the Ethernet Tx and Rx descriptors and
+   * buffers as "device" memory type that can be shared. This is needed because the DMA
+   * needs to access it.
+   */
+  LL_MPU_ConfigRegion(LL_MPU_REGION_NUMBER1, 0x0, 0x30040000, LL_MPU_REGION_SIZE_32KB|LL_MPU_TEX_LEVEL0|LL_MPU_REGION_FULL_ACCESS|LL_MPU_INSTRUCTION_ACCESS_DISABLE|LL_MPU_ACCESS_SHAREABLE|LL_MPU_ACCESS_NOT_CACHEABLE|LL_MPU_ACCESS_BUFFERABLE);
+  LL_MPU_EnableRegion(LL_MPU_REGION_NUMBER1);
+
+  /* Initializes and configures the region with the shared parameters RAM buffer as
+   * "normal" memory type that is "non-cacheable" and "shareable". Otherwise the shared
+   * parameters contents at not always committed to RAM when D-cache is enabled. Not
+   * absolutely necessary for the bootloader as it disabled the D-cache, yet kept here
+   * for future references.
+   */
+  LL_MPU_ConfigRegion(LL_MPU_REGION_NUMBER2, 0x0, 0x24000000, LL_MPU_REGION_SIZE_64B|LL_MPU_TEX_LEVEL1|LL_MPU_REGION_FULL_ACCESS|LL_MPU_INSTRUCTION_ACCESS_DISABLE|LL_MPU_ACCESS_SHAREABLE|LL_MPU_ACCESS_NOT_CACHEABLE|LL_MPU_ACCESS_NOT_BUFFERABLE);
+  LL_MPU_EnableRegion(LL_MPU_REGION_NUMBER2);
+
+  /* Enables the MPU. */
+  LL_MPU_Enable(LL_MPU_CTRL_PRIVILEGED_DEFAULT);
+} /*** end of MPU_Config ***/
 
 
 /************************************************************************************//**
@@ -281,6 +358,11 @@ void HAL_MspDeInit(void)
 
   /* SYSCFG clock disable. */
   LL_APB4_GRP1_DisableClock(LL_APB4_GRP1_PERIPH_SYSCFG);
+  /* Disable the MPU and reset the region configuration. */
+  LL_MPU_Disable();
+  LL_MPU_DisableRegion(LL_MPU_REGION_NUMBER0);
+  LL_MPU_DisableRegion(LL_MPU_REGION_NUMBER1);
+  LL_MPU_DisableRegion(LL_MPU_REGION_NUMBER2);
 } /*** end of HAL_MspDeInit ***/
 
 

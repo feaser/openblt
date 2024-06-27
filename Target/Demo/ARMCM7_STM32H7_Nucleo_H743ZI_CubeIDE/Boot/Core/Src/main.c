@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "string.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -40,6 +41,26 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+#if defined ( __ICCARM__ ) /*!< IAR Compiler */
+#pragma location=0x30040000
+ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT]; /* Ethernet Rx DMA Descriptors */
+#pragma location=0x30040100
+ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT]; /* Ethernet Tx DMA Descriptors */
+
+#elif defined ( __CC_ARM )  /* MDK ARM Compiler */
+
+__attribute__((at(0x30040000))) ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT]; /* Ethernet Rx DMA Descriptors */
+__attribute__((at(0x30040100))) ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT]; /* Ethernet Tx DMA Descriptors */
+
+#elif defined ( __GNUC__ ) /* GNU Compiler */
+
+ETH_DMADescTypeDef DMARxDscrTab[ETH_RX_DESC_CNT] __attribute__((section(".RxDecripSection"))); /* Ethernet Rx DMA Descriptors */
+ETH_DMADescTypeDef DMATxDscrTab[ETH_TX_DESC_CNT] __attribute__((section(".TxDecripSection")));   /* Ethernet Tx DMA Descriptors */
+#endif
+
+ETH_TxPacketConfig TxConfig;
+
+ETH_HandleTypeDef heth;
 
 FDCAN_HandleTypeDef hfdcan1;
 
@@ -51,6 +72,7 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MPU_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
@@ -72,6 +94,9 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
+
+  /* MPU Configuration--------------------------------------------------------*/
+  MPU_Config();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -173,6 +198,57 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief ETH Initialization Function
+  * @param None
+  * @retval None
+  */
+void MX_ETH_Init(void)
+{
+
+  /* USER CODE BEGIN ETH_Init 0 */
+  /* Note that this function is generated but not actually used. The bootloader handles
+   * the Ethernet initialization.
+   */
+  /* USER CODE END ETH_Init 0 */
+
+   static uint8_t MACAddr[6];
+
+  /* USER CODE BEGIN ETH_Init 1 */
+
+  /* USER CODE END ETH_Init 1 */
+  heth.Instance = ETH;
+  MACAddr[0] = 0x00;
+  MACAddr[1] = 0x80;
+  MACAddr[2] = 0xE1;
+  MACAddr[3] = 0x00;
+  MACAddr[4] = 0x00;
+  MACAddr[5] = 0x00;
+  heth.Init.MACAddr = &MACAddr[0];
+  heth.Init.MediaInterface = HAL_ETH_RMII_MODE;
+  heth.Init.TxDesc = DMATxDscrTab;
+  heth.Init.RxDesc = DMARxDscrTab;
+  heth.Init.RxBuffLen = 1524;
+
+  /* USER CODE BEGIN MACADDRESS */
+
+  /* USER CODE END MACADDRESS */
+
+  if (HAL_ETH_Init(&heth) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  memset(&TxConfig, 0 , sizeof(ETH_TxPacketConfig));
+  TxConfig.Attributes = ETH_TX_PACKETS_FEATURES_CSUM | ETH_TX_PACKETS_FEATURES_CRCPAD;
+  TxConfig.ChecksumCtrl = ETH_CHECKSUM_IPHDR_PAYLOAD_INSERT_PHDR_CALC;
+  TxConfig.CRCPadCtrl = ETH_CRC_PAD_INSERT;
+  /* USER CODE BEGIN ETH_Init 2 */
+
+  /* USER CODE END ETH_Init 2 */
+
 }
 
 /**
@@ -351,9 +427,10 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
-  LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
   LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
+  LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
+  LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
 
   /**/
   LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_7);
@@ -379,6 +456,33 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+ /* MPU Configuration */
+
+void MPU_Config(void)
+{
+
+  /* Disables the MPU */
+  LL_MPU_Disable();
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  LL_MPU_ConfigRegion(LL_MPU_REGION_NUMBER0, 0x87, 0x0, LL_MPU_REGION_SIZE_4GB|LL_MPU_TEX_LEVEL0|LL_MPU_REGION_NO_ACCESS|LL_MPU_INSTRUCTION_ACCESS_DISABLE|LL_MPU_ACCESS_SHAREABLE|LL_MPU_ACCESS_NOT_CACHEABLE|LL_MPU_ACCESS_NOT_BUFFERABLE);
+  LL_MPU_EnableRegion(LL_MPU_REGION_NUMBER0);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  LL_MPU_ConfigRegion(LL_MPU_REGION_NUMBER1, 0x0, 0x30040000, LL_MPU_REGION_SIZE_32KB|LL_MPU_TEX_LEVEL0|LL_MPU_REGION_FULL_ACCESS|LL_MPU_INSTRUCTION_ACCESS_DISABLE|LL_MPU_ACCESS_SHAREABLE|LL_MPU_ACCESS_NOT_CACHEABLE|LL_MPU_ACCESS_BUFFERABLE);
+  LL_MPU_EnableRegion(LL_MPU_REGION_NUMBER1);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  LL_MPU_ConfigRegion(LL_MPU_REGION_NUMBER2, 0x0, 0x24000000, LL_MPU_REGION_SIZE_64B|LL_MPU_TEX_LEVEL1|LL_MPU_REGION_FULL_ACCESS|LL_MPU_INSTRUCTION_ACCESS_DISABLE|LL_MPU_ACCESS_SHAREABLE|LL_MPU_ACCESS_NOT_CACHEABLE|LL_MPU_ACCESS_NOT_BUFFERABLE);
+  LL_MPU_EnableRegion(LL_MPU_REGION_NUMBER2);
+  /* Enables the MPU */
+  LL_MPU_Enable(LL_MPU_CTRL_PRIVILEGED_DEFAULT);
+
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
