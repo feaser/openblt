@@ -144,6 +144,7 @@ typedef struct t_blt_transport_settings_xcp_v10_rs232
 {
   char const * portName;         /**< Communication port name such as /dev/tty0.       */
   uint32_t baudrate;             /**< Communication speed in bits/sec.                 */
+  uint8_t csType;                /**< Checksum type, 0=none, 1=byte.                   */
 } tBltTransportSettingsXcpV10Rs232;
 
 /** \brief Structure layout of the XCP version 1.0 CAN transport layer settings. The

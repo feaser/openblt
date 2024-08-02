@@ -211,6 +211,14 @@
 #error "BOOT_COM_RS232_CHANNEL_INDEX must be >= 0"
 #endif
 
+#ifndef BOOT_COM_RS232_CS_TYPE
+#define BOOT_COM_RS232_CS_TYPE   (0)
+#endif
+
+#if (BOOT_COM_RS232_CS_TYPE < 0) || (BOOT_COM_RS232_CS_TYPE > 1)
+#error "BOOT_COM_RS232_CS_TYPE must be 0 (none) or 1 (byte)"
+#endif
+
 #endif /* BOOT_COM_RS232_ENABLE > 0 */
 
 #ifndef BOOT_COM_MBRTU_ENABLE

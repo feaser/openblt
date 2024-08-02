@@ -99,6 +99,7 @@ static void XcpTpUartInit(void const * settings)
   /* Reset transport layer settings. */
   tpUartSettings.portname = NULL;
   tpUartSettings.baudrate = 0;
+  tpUartSettings.cstype = 0;
   
   /* Check parameters. */
   assert(settings != NULL);
@@ -144,6 +145,7 @@ static void XcpTpUartTerminate(void)
   /* Reset transport layer settings. */
   tpUartSettings.portname = NULL;
   tpUartSettings.baudrate = 0;
+  tpUartSettings.cstype = 0;
 } /*** end of XcpTpUartTerminate ***/
 
 
@@ -227,10 +229,16 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
 {
   bool result = false;
   uint16_t byteIdx;
-  /* uartBuffer is static to lower the stack load. +1 because the first byte for an XCP 
-   * packet on the UART transport layer contains the packet length.
+  uint8_t csByte = 0;
+  uint8_t csLen = 0;
+  uint8_t csBuffer[2] = {0};
+  uint8_t csIdx;
+  bool csReceptionComplete;
+  /* uartBuffer is static to lower the stack load. +3 because the first byte for an XCP
+   * packet on the UART transport layer contains the packet length and the tail might
+   * need a checksum which could theoretically be one or two bytes.
    */
-  static uint8_t uartBuffer[XCPLOADER_PACKET_SIZE_MAX + 1]; 
+  static uint8_t uartBuffer[XCPLOADER_PACKET_SIZE_MAX + 3]; 
   uint32_t responseTimeoutTime = 0;
   bool packetReceptionComplete;
 
@@ -248,12 +256,24 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
      * byte.
      */
     uartBuffer[0] = txPacket->len;
+    /* Add to possibly needed checksum. */
+    csByte += uartBuffer[0];
     for (byteIdx=0; byteIdx<txPacket->len; byteIdx++)
     {
       uartBuffer[byteIdx + 1] = txPacket->data[byteIdx];
+      /* Add to possibly needed checksum. */
+      csByte += uartBuffer[byteIdx + 1];
+    }
+    /* Add byte checksum if needed. */
+    if (tpUartSettings.cstype == 1)
+    {
+      /* Set checksum length to 1 byte. */
+      csLen = 1;
+      /* Add the checksum at the end of the packet. */
+      uartBuffer[txPacket->len + 1] = csByte;
     }
     /* Transmit the packet. */
-    if (!SerialPortWrite(uartBuffer, txPacket->len + 1))
+    if (!SerialPortWrite(uartBuffer, txPacket->len + 1 + csLen))
     {
       result = false;
     }
@@ -292,18 +312,21 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
       }
     }
       
-    /* Only continue with reception if a valid pacekt lenght was received. */
+    /* Only continue with reception if a valid packet length was received. */
     if (result)
     {
       /* Continue with reception of the packet. */
       packetReceptionComplete = false;
       byteIdx = 0;
+      csByte = rxPacket->len;
       /* Poll with timeout detection to receive the full packet. */
       while (UtilTimeGetSystemTimeMs() < responseTimeoutTime)
       {
         /* Check if the next byte was received. */
         if (SerialPortRead(&rxPacket->data[byteIdx], 1))
         {
+          /* Add to possibly needed checksum. */
+          csByte += rxPacket->data[byteIdx];
           /* Check if the packet reception is now complete. */
           if ((byteIdx + 1) == rxPacket->len)
           {
@@ -319,6 +342,50 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
       if (!packetReceptionComplete)
       {
         result = false;
+      }
+    }
+
+    /* Only continue with checksum reception if a data packet was received and a checksum
+     * is configured to be used.
+     */
+    if ( (result) && (tpUartSettings.cstype > 0) )
+    {
+      /* Continue with reception of the checksum. */
+      csReceptionComplete = false;
+      csIdx = 0;
+      /* Poll with timeout detection to receive the full packet. */
+      while (UtilTimeGetSystemTimeMs() < responseTimeoutTime)
+      {
+        /* Check if the next byte was received. */
+        if (SerialPortRead(&csBuffer[csIdx], 1))
+        {
+          /* Check if the checksum reception is now complete. */
+          if ((csIdx + 1) == csLen)
+          {
+            /* Set flag and stop the loop. */
+            csReceptionComplete = true;
+            break;
+          }
+          /* Increment indexer to the next byte. */
+          csIdx++;
+        }
+      }
+      /* Check if a timeout occurred. */
+      if (!csReceptionComplete)
+      {
+        result = false;
+      }
+      /* No timeout occured, so the checksum was received. */
+      else
+      {
+        if (tpUartSettings.cstype == 1)
+        {
+          /* Validate the packet checksum. */
+          if (csByte != csBuffer[0])
+          {
+            result = false;
+          }
+        }
       }
     }
   }

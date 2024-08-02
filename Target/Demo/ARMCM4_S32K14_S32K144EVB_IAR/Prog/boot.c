@@ -229,10 +229,18 @@ static void BootComRs232Init(void)
 ****************************************************************************************/
 static void BootComRs232CheckActivationRequest(void)
 {
-  static unsigned char xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1];
+  static unsigned char xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+3];
   static unsigned char xcpCtoRxLength;
   static unsigned char xcpCtoRxInProgress = 0;
   static unsigned long xcpCtoRxStartTime = 0;
+  #if (BOOT_COM_RS232_CS_TYPE == 1)
+  unsigned char  csLen = 1;
+  unsigned char  csByte;
+  unsigned short csIdx;
+  #else
+  unsigned char  csLen = 0;
+  #endif
+  unsigned char  csCorrect = 1;
 
   /* start of cto packet received? */
   if (xcpCtoRxInProgress == 0)
@@ -262,16 +270,38 @@ static void BootComRs232CheckActivationRequest(void)
       xcpCtoRxLength++;
 
       /* check to see if the entire packet was received */
-      if (xcpCtoRxLength == xcpCtoReqPacket[0])
+      if (xcpCtoRxLength == (xcpCtoReqPacket[0] + csLen))
       {
-        /* done with cto packet reception */
-        xcpCtoRxInProgress = 0;
-
-        /* check if this was an XCP CONNECT command */
-        if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoReqPacket[2] == 0x00))
+        #if (BOOT_COM_RS232_CS_TYPE == 1)
+        /* calculate the byte checksum. */
+        csByte = 0;
+        for (csIdx = 0; csIdx < xcpCtoRxLength; csIdx++)
         {
-          /* connection request received so start the bootloader */
-          BootActivate();
+          csByte += xcpCtoReqPacket[csIdx];
+        }
+        /* verify the checksum. */
+        if (csByte != xcpCtoReqPacket[xcpCtoRxLength])
+        {
+          /* flag incorrect checksum. */
+          csCorrect = 0;
+          /* cancel the packet reception due to invalid checksum. */
+          xcpCtoRxInProgress = 0;
+        }
+        #endif
+
+        /* only continue with a valid checksum. */
+        if (csCorrect != 0)
+        {
+          /* subtract the checksum from the packet length. */
+          xcpCtoRxLength -= csLen;
+          /* done with cto packet reception */
+          xcpCtoRxInProgress = 0;
+          /* check if this was an XCP CONNECT command */
+          if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoRxLength == 2))
+          {
+            /* connection request received so start the bootloader */
+            BootActivate();
+          }
         }
       }
     }

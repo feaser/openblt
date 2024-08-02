@@ -99,6 +99,7 @@ type
   tBltTransportSettingsXcpV10Rs232 = record
     portName: PAnsiChar;          // Communication port name such as /dev/tty0.
     baudrate: LongWord;           // Communication speed in bits/sec.
+    csType: Byte;                 // Checksum type, 0=none, 1=byte.
   end;
 
   // Structure layout of the XCP version 1.0 CAN transport layer settings.

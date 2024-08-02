@@ -169,6 +169,7 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
           static tXcpTpUartSettings xcpTpUartSettings;
           xcpTpUartSettings.baudrate = bltTransportSettingsXcpV10Rs232Ptr->baudrate;
           xcpTpUartSettings.portname = bltTransportSettingsXcpV10Rs232Ptr->portName;
+          xcpTpUartSettings.cstype = bltTransportSettingsXcpV10Rs232Ptr->csType;
           /* Store transport layer settings in the XCP loader settings. */
           xcpLoaderSettings.transportSettings = &xcpTpUartSettings;
           /* Link the transport layer to the XCP loader settings. */

@@ -47,10 +47,15 @@ uses
 //***************************************************************************************
 type
   //------------------------------ TTransportXcpRs232Form -------------------------------
+
+  { TTransportXcpRs232Form }
+
   TTransportXcpRs232Form = class(TForm)
+    CmbCsType: TComboBox;
     CmbDevice: TComboBox;
     CmbBaudrate: TComboBox;
     LblBaudrate: TLabel;
+    LblCsType: TLabel;
     LblDevice: TLabel;
     LlbCommunication: TLabel;
     procedure FormCreate(Sender: TObject);
@@ -137,6 +142,7 @@ begin
   // Load configuration.
   FTransportXcpRs232Config.Device := Config.Device;
   FTransportXcpRs232Config.Baudrate := Config.Baudrate;
+  FTransportXcpRs232Config.CsType := Config.CsType;
   // Initialize user interface.
   if FTransportXcpRs232Config.Device = '' then
     CmbDevice.Text := CmbDevice.Items[0]
@@ -154,6 +160,7 @@ begin
       Break;
     end;
   end;
+  CmbCsType.ItemIndex := FTransportXcpRs232Config.CsType;
 end; //*** end of LoadConfig ***
 
 
@@ -172,9 +179,11 @@ begin
   // Read configuration from the user interface.
   FTransportXcpRs232Config.Device := CmbDevice.Text;
   FTransportXcpRs232Config.Baudrate := StrToInt(CmbBaudrate.Text);
+  FTransportXcpRs232Config.CsType := CmbCsType.ItemIndex;
   // Store configuration.
   Config.Device := FTransportXcpRs232Config.Device;
   Config.Baudrate := FTransportXcpRs232Config.Baudrate;
+  Config.CsType := FTransportXcpRs232Config.CsType;
 end; //*** end of SaveConfig ***
 
 

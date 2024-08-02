@@ -193,6 +193,9 @@ void Rs232Init(void)
 void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 {
   blt_int16u data_index;
+  #if (BOOT_COM_RS232_CS_TYPE == 1)
+  blt_int8u csByte = len;
+  #endif
 
   /* Verify validity of the len-paramenter. */
   ASSERT_RT(len <= BOOT_COM_RS232_TX_MAX_DATA);
@@ -207,7 +210,14 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
     CopService();
     /* Write byte. */
     Rs232TransmitByte(data[data_index]);
+    #if (BOOT_COM_RS232_CS_TYPE == 1)
+    csByte += data[data_index];
+    #endif
   }
+  #if (BOOT_COM_RS232_CS_TYPE == 1)
+  /* Write checksum byte. */
+  Rs232TransmitByte(csByte);
+  #endif
 } /*** end of Rs232TransmitPacket ***/
 
 
@@ -220,10 +230,18 @@ void Rs232TransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
 {
-  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+1U];  /* One extra for length. */
+  /* One extra for length and two extra for possibly configured checksum byte(s). */
+  static blt_int8u xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+3U];
   static blt_int8u xcpCtoRxLength;
   static blt_bool  xcpCtoRxInProgress = BLT_FALSE;
   static blt_int32u xcpCtoRxStartTime = 0U;
+  #if (BOOT_COM_RS232_CS_TYPE == 1)
+  blt_int8u  csLen = 1U;
+  blt_int8u  csByte;
+  blt_int16u csIdx;
+  #else
+  blt_int8u  csLen = 0U;
+  #endif
 
   /* Start of cto packet received? */
   if (xcpCtoRxInProgress == BLT_FALSE)
@@ -252,8 +270,25 @@ blt_bool Rs232ReceivePacket(blt_int8u *data, blt_int8u *len)
       xcpCtoRxLength++;
 
       /* Check to see if the entire packet was received. */
-      if (xcpCtoRxLength == xcpCtoReqPacket[0])
+      if (xcpCtoRxLength == (xcpCtoReqPacket[0] + csLen))
       {
+        #if (BOOT_COM_RS232_CS_TYPE == 1)
+        /* Calculate the byte checksum. */
+        csByte = 0U;
+        for (csIdx = 0U; csIdx < xcpCtoRxLength; csIdx++)
+        {
+          csByte += xcpCtoReqPacket[csIdx];
+        }
+        /* Verify the checksum. */
+        if (csByte != xcpCtoReqPacket[xcpCtoRxLength])
+        {
+          /* Cancel the packet reception due to invalid checksum. */
+          xcpCtoRxInProgress = BLT_FALSE;
+          return BLT_FALSE;
+        }
+        #endif
+        /* Subtract the checksum from the packet length. */
+        xcpCtoRxLength -= csLen;
         /* Copy the packet data. */
         CpuMemCopy((blt_int32u)data, (blt_int32u)&xcpCtoReqPacket[1], xcpCtoRxLength);
         /* Done with cto packet reception. */

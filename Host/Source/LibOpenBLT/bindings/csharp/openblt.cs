@@ -250,6 +250,11 @@ namespace OpenBLT
                 /// Communication speed in bits/sec.
                 /// </summary>
                 public UInt32 baudrate;
+                
+                /// <summary>
+                /// Checksum type (0 for none, 1 for sum of bytes).
+                /// </summary>
+                public Byte csType;
             }
 
             /// <summary>
@@ -263,6 +268,7 @@ namespace OpenBLT
             {
                 public IntPtr portName;
                 public UInt32 baudrate;
+                public Byte csType;
             }
 
             /// <summary>
@@ -444,6 +450,7 @@ namespace OpenBLT
             ///  OpenBLT.Lib.Session.TransportSettingsXcpV10Rs232 transportSettings;
             ///  transportSettings.portName = "COM8";
             ///  transportSettings.baudrate = 57600;
+            ///  transportSettings.csType = 0;
             ///  
             ///  OpenBLT.Lib.Session.Init(sessionSettings, transportSettings);
             /// </code>
@@ -467,6 +474,7 @@ namespace OpenBLT
                 // Convert string to unmanaged string.
                 transportSettingsUnmanaged.portName = (IntPtr)Marshal.StringToHGlobalAnsi(transportSettings.portName);
                 transportSettingsUnmanaged.baudrate = transportSettings.baudrate;
+                transportSettingsUnmanaged.csType = transportSettings.csType;
 
                 // The structures are now formatted to be converted to unmanaged memory. Start by allocating
                 // memory on the heap for this.

@@ -525,7 +525,10 @@ static void DisplayProgramUsage(void)
   printf("  -b=[value]       The communication speed, a.k.a baudrate in bits per\n");
   printf("                   second, as a 32-bit value (Default = 57600).\n");
   printf("                   Supported values: 9600, 19200, 38400, 57600, 115200.\n");
-  printf("\n");  
+  printf("  -ct=[value]      The XCP packet checksum type as a 8-bit value.\n");
+  printf("                   (Default = 0).\n");
+  printf("                   Supported values: 0 (none), 1 (sum of bytes).\n");
+  printf("\n");
   printf("XCP on Modbus RTU settings (xcp_mbrtu):\n");
   printf("  -d=[name]        Name of the communication device. For example COM1 or\n");
   printf("                   /dev/ttyUSB0 (Mandatory).\n");
@@ -714,6 +717,18 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
           printf("Unknown\n");
         }
         printf("  -> Baudrate: %u bit/sec\n", xcpRs232Settings->baudrate);
+        /* Build checksum type string. */
+        char csTypeStr[13] = "";
+        switch (xcpRs232Settings->csType)
+        {
+        case 1:
+          strcat(csTypeStr, "Sum of Bytes");
+          break;
+        default:
+          strcat(csTypeStr, "None");
+          break;
+        }
+        printf("  -> Checksum type: %s\n", csTypeStr);
       }
       break;
     }
@@ -1207,6 +1222,7 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
         /* The following transport layer specific command line parameters are supported:
          *   -d=[name]      -> Device name: /dev/ttyUSB0, COM1, etc.
          *   -b=[value]     -> Baudrate in bits per second.
+         *   -ct=[value]    -> XCP packet checksum type (0 for none, 1 for sum of bytes).
          */
         /* Allocate memory for storing the settings and check the result. */
         result = malloc(sizeof(tBltTransportSettingsXcpV10Rs232));
@@ -1219,7 +1235,8 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
           /* Set default values. */
           rs232Settings->portName = NULL;
           rs232Settings->baudrate = 57600;
-          /* Loop through all the command line parameters, just skip the 1st one because 
+          rs232Settings->csType = 0;
+          /* Loop through all the command line parameters, just skip the 1st one because
            * this  is the name of the program, which we are not interested in.
            */
           for (paramIdx = 1; paramIdx < argc; paramIdx++)
@@ -1239,6 +1256,17 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
             {
               /* Extract the baudrate value. */
               sscanf(&argv[paramIdx][3], "%u", &(rs232Settings->baudrate));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -ct=[value] parameter? */
+            if ((strstr(argv[paramIdx], "-ct=") != NULL) &&
+              (strlen(argv[paramIdx]) > 4))
+            {
+              /* Extract the checksum type value. */
+              static uint8_t tempCsType;
+              sscanf(&argv[paramIdx][4], "%hhu", &tempCsType);
+              rs232Settings->csType = tempCsType;
               /* Continue with next loop iteration. */
               continue;
             }

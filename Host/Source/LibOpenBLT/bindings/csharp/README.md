@@ -66,6 +66,7 @@ namespace ConsoleApp
             OpenBLT.Lib.Session.TransportSettingsXcpV10Rs232 transportSettingsRs232;
             transportSettingsRs232.portName = "COM14";
             transportSettingsRs232.baudrate = 57600;
+            transportSettingsRs232.csType = 0;
 
             OpenBLT.Lib.Session.Init(sessionSettings, transportSettingsRs232);
             OpenBLT.Lib.Firmware.Init(OpenBLT.Lib.Firmware.FIRMWARE_PARSER_SRECORD);

@@ -855,6 +855,7 @@ class BltTransportSettingsXcpV10Rs232:
         # Set default values for instance variables.
         self.portName = ''            # Communication port name such as /dev/tty0.
         self.baudrate = 57600         # Communication speed in bits/sec.
+        self.csType = 0               # Checksum type, 0=none, 1=byte.
 
 
 class BltTransportSettingsXcpV10Can:
@@ -958,6 +959,7 @@ def session_init(session_type, session_settings, transport_type, transport_setti
         transport_settings = openblt.BltTransportSettingsXcpV10Rs232()
         transport_settings.portName = '/dev/ttyACM0'
         transport_settings.baudrate = 57600
+        transport_settings.csType = 0
         openblt.session_init(session_type, session_settings,
                              transport_type, transport_settings)
     """
@@ -979,7 +981,8 @@ def session_init(session_type, session_settings, transport_type, transport_setti
         C-types structure for mapping to BltTransportSettingsXcpV10Rs232
         """
         _fields_ = [('portName', ctypes.c_char_p),
-                    ('baudrate', ctypes.c_uint32)]
+                    ('baudrate', ctypes.c_uint32),
+                    ('csType',   ctypes.c_uint8)]
 
     class struct_t_blt_transport_settings_xcp_v10_can(ctypes.Structure):
         """
@@ -1031,6 +1034,7 @@ def session_init(session_type, session_settings, transport_type, transport_setti
         transport_settings_struct.portName = \
             ctypes.c_char_p(transport_settings.portName.encode('utf-8'))
         transport_settings_struct.baudrate = ctypes.c_uint32(transport_settings.baudrate)
+        transport_settings_struct.csType = ctypes.c_uint8(transport_settings.csType)
     elif transport_type == BLT_TRANSPORT_XCP_V10_CAN:
         transport_settings_struct = struct_t_blt_transport_settings_xcp_v10_can()
         transport_settings_struct.deviceName = \

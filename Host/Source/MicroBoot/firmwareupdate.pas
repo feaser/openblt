@@ -810,6 +810,7 @@ begin
       // Copy over the settings.
       transportSettingsXcpRs232.portName := PAnsiChar(AnsiString(transportXcpRs232Config.Device));
       transportSettingsXcpRs232.baudrate := transportXcpRs232Config.Baudrate;
+      transportSettingsXcpRs232.csType := transportXcpRs232Config.CsType;
       // Point the transport settings pointer to this one.
       transportSettingsPtr := @transportSettingsXcpRs232;
     end
@@ -1022,6 +1023,7 @@ var
   transportXcpMbRtuConfig: TTransportXcpMbRtuConfig;
   transportXcpCanConfig: TTransportXcpCanConfig;
   transportXcpTcpIpConfig: TTransportXcpTcpIpConfig;
+  csTypeStr: string;
   parityStr: string;
 begin
   // Obtain access to the related configuration group.
@@ -1037,6 +1039,14 @@ begin
     FLogString := '  -> Device: ' + transportXcpRs232Config.Device;
     Synchronize(@SynchronizeLogEvent);
     FLogString := '  -> Baudrate: ' + IntToStr(transportXcpRs232Config.Baudrate) + ' bit/sec';
+    Synchronize(@SynchronizeLogEvent);
+    case transportXcpRs232Config.CsType of
+      0: csTypeStr := 'None';
+      1: csTypeStr := 'Sum of Bytes';
+    else
+      csTypeStr := 'Invalid';
+    end;
+    FLogString := '  -> Checksum type: ' + csTypeStr;
     Synchronize(@SynchronizeLogEvent);
   end
   // ------------------------------------ XCP on Modbus RTU -----------------------------

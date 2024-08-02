@@ -8,7 +8,7 @@ object TransportXcpRs232Form: TTransportXcpRs232Form
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.2.6.0'
   object LlbCommunication: TLabel
     Left = 8
     Height = 20
@@ -21,7 +21,7 @@ object TransportXcpRs232Form: TTransportXcpRs232Form
     ParentFont = False
   end
   object CmbDevice: TComboBox
-    Left = 96
+    Left = 104
     Height = 23
     Hint = 'Name of the communication device'
     Top = 35
@@ -36,13 +36,13 @@ object TransportXcpRs232Form: TTransportXcpRs232Form
     Left = 24
     Height = 20
     Top = 38
-    Width = 64
+    Width = 72
     AutoSize = False
     Caption = 'Device:'
     ParentColor = False
   end
   object CmbBaudrate: TComboBox
-    Left = 96
+    Left = 104
     Height = 23
     Hint = 'The communication speed in bits per second, as a 32-bit value (Default = 57600)'
     Top = 75
@@ -66,9 +66,36 @@ object TransportXcpRs232Form: TTransportXcpRs232Form
     Left = 24
     Height = 20
     Top = 78
-    Width = 66
+    Width = 74
     AutoSize = False
     Caption = 'Baudrate:'
     ParentColor = False
+  end
+  object LblCsType: TLabel
+    Left = 24
+    Height = 20
+    Top = 118
+    Width = 74
+    AutoSize = False
+    Caption = 'Checksum:'
+    ParentColor = False
+  end
+  object CmbCsType: TComboBox
+    Left = 104
+    Height = 23
+    Hint = 'The XCP packet checksum type (Default = None)'
+    Top = 115
+    Width = 192
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'None'
+      'Sum of Bytes'
+    )
+    ParentShowHint = False
+    ShowHint = True
+    Style = csDropDownList
+    TabOrder = 2
+    Text = 'None'
   end
 end

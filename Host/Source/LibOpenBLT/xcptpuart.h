@@ -47,6 +47,7 @@ typedef struct t_xcp_tp_uart_settings
 {
   char const * portname;               /**< Interface port name, i.e. /dev/ttyUSB0.    */
   uint32_t baudrate;                   /**< Communication speed in bits/sec.           */
+  uint8_t cstype;                      /**< Checksum type, 0=none, 1=byte.             */
 } tXcpTpUartSettings;
 
 

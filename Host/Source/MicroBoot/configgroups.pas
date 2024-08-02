@@ -135,6 +135,7 @@ type
   private
     FDevice: String;
     FBaudrate: Integer;
+    FCsType: Byte;
   public
     const GROUP_NAME='Transport/Xcp/Rs232';
     constructor Create;
@@ -143,6 +144,7 @@ type
     procedure SaveToFile(XmlConfig: TXMLConfig); override;
     property Device: String read FDevice write FDevice;
     property Baudrate: Integer read FBaudrate write FBaudrate;
+    property CsType: Byte read FCsType write FCsType;
   end;
 
   //------------------------------ TTransportXcpMbRtuConfig -----------------------------
@@ -633,6 +635,7 @@ procedure TTransportXcpRs232Config.Defaults;
 begin
   FDevice := '';
   FBaudrate := 57600;
+  FCsType := 0;
 end; //*** end of Defaults ***
 
 
@@ -651,6 +654,7 @@ begin
   // Load all settings.
   FDevice := String(XmlConfig.GetValue('device', UnicodeString(FDevice)));
   FBaudrate := XmlConfig.GetValue('baudrate', FBaudrate);
+  FCsType := XmlConfig.GetValue('cstype', FCsType);
   // Close this group's key.
   XmlConfig.CloseKey;
 end; //*** end of LoadFromFile ***/
@@ -671,6 +675,7 @@ begin
   // Store all settings.
   XmlConfig.SetValue('device', UnicodeString(FDevice));
   XmlConfig.SetValue('baudrate', FBaudrate);
+  XmlConfig.SetValue('cstype', FCsType);
   // Close this group's key.
   XmlConfig.CloseKey;
 end; //*** end of SaveToFile ***
