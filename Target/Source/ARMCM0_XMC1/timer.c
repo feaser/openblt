@@ -91,6 +91,7 @@ void TimerReset(void)
   SysTick->CTRL = 0UL;
   SysTick->LOAD = 0UL;
   SysTick->VAL = 0UL;
+  SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk;
 } /*** end of TimerReset ***/
 
 
