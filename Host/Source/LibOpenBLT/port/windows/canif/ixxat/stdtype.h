@@ -797,9 +797,6 @@ typedef PVOID            HANDLE;
 
 typedef HANDLE*          PHANDLE;
 
-typedef UINT32           HANDLE32;
-typedef UINT64           HANDLE64;
-
 //
 // Status values are 32 bit values layed out as follows:
 //
