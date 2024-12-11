@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/TRICORE_TC3_TC375_Lite_Kit_ADS/Prog/App/app.c
-* \brief        User program application source file.
-* \ingroup      Prog_TRICORE_TC3_TC375_Lite_Kit_ADS
+* \file         Demo/TRICORE_TC3_TC375_Lite_Kit_Master_ADS/Prog/App/net.h
+* \brief        Network application for the uIP TCP/IP stack.
+* \ingroup      Prog_TRICORE_TC3_TC375_Lite_Kit_Master_ADS
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2022  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2021  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -25,57 +25,37 @@
 *
 * \endinternal
 ****************************************************************************************/
+#ifndef NET_H
+#define NET_H
 
 /****************************************************************************************
-* Include files
+* Macro definitions
 ****************************************************************************************/
-#include "header.h"                                    /* generic header               */
+#ifndef UIP_APPCALL
+#define UIP_APPCALL NetApp
+#endif /* UIP_APPCALL */
 
 
 /****************************************************************************************
-* Global constant declarations
+* Type definitions
 ****************************************************************************************/
-#pragma section farrom "cssig"
-/** \brief   Signature checksum placeholder. Should be linked to the address as
- *           configured with macro BOOT_FLASH_VECTOR_TABLE_CS_OFFSET.
+/** \brief Define the uip_tcp_appstate_t datatype. This is the state of our tcp/ip
+ *         application, and the memory required for this state is allocated together
+ *         with each TCP connection. One application state for each TCP connection.
  */
-const unsigned long bltChecksumSignature = 0x55AA11EE;
-
-
-/************************************************************************************//**
-** \brief     Initializes the user program application. Should be called once during
-**            software program initialization.
-** \return    none.
-**
-****************************************************************************************/
-void AppInit(void)
+typedef struct net_state 
 {
-  /* Initialize the timer driver. */
-  TimerInit();
-  /* Initialize the led driver. */
-  LedInit();
-  /* initialize the network application */
-  NetInit();
-  /* initialize the bootloader interface */
-  BootComInit();
-} /*** end of AppInit ***/
+  unsigned char unused;
+} uip_tcp_appstate_t;
 
 
-/************************************************************************************//**
-** \brief     Task function of the user program application. Should be called
-**            continuously in the program loop.
-** \return    none.
-**
+/****************************************************************************************
+* Function prototypes
 ****************************************************************************************/
-void AppTask(void)
-{
-  /* Toggle LED with a fixed frequency. */
-  LedToggle();
-  /* run the network task */
-  NetTask();
-  /* check for bootloader activation request */
-  BootComCheckActivationRequest();
-} /*** end of AppTask ***/
+void     NetInit(void);
+void     NetApp(void);
+void     NetTask(void);
 
 
-/*********************************** end of app.c **************************************/
+#endif /* NET_H */
+/*********************************** end of net.h **************************************/

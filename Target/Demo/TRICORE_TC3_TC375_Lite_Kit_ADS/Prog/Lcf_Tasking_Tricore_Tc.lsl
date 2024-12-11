@@ -34,7 +34,7 @@
  *           Note that you can temporarily change this value to zero if you want to debug
  *           this firmware standalone.
  */
-#define OPENBLT_RESERVED_SIZE 0x8000
+#define OPENBLT_RESERVED_SIZE 0xC000
  
  
 #define LCF_CSA0_SIZE 8k

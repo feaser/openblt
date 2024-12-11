@@ -63,6 +63,9 @@
 
 #include <string.h>
 
+#if defined(__TASKING__)
+#pragma pack 2
+#endif
 struct arp_hdr
 {
   struct uip_eth_hdr ethhdr;
@@ -76,7 +79,13 @@ struct arp_hdr
   struct uip_eth_addr dhwaddr;
   u16_t dipaddr[2];
 };
+#if defined(__TASKING__)
+#pragma pack default
+#endif
 
+#if defined(__TASKING__)
+#pragma pack 2
+#endif
 struct ethip_hdr
 {
   struct uip_eth_hdr ethhdr;
@@ -92,6 +101,9 @@ struct ethip_hdr
   u16_t srcipaddr[2],
         destipaddr[2];
 };
+#if defined(__TASKING__)
+#pragma pack default
+#endif
 
 #define ARP_REQUEST 1
 #define ARP_REPLY   2

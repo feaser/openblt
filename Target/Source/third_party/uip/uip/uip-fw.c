@@ -69,6 +69,9 @@ static struct uip_fw_netif *netifs = NULL;
  */
 static struct uip_fw_netif *defaultnetif = NULL;
 
+#if defined(__TASKING__)
+#pragma pack 2
+#endif
 struct tcpip_hdr
 {
   /* IP header. */
@@ -95,7 +98,13 @@ struct tcpip_hdr
   u8_t urgp[2];
   u8_t optdata[4];
 };
+#if defined(__TASKING__)
+#pragma pack default
+#endif
 
+#if defined(__TASKING__)
+#pragma pack 2
+#endif
 struct icmpip_hdr
 {
   /* IP header. */
@@ -115,6 +124,9 @@ struct icmpip_hdr
   u16_t id, seqno;
   u8_t payload[1];
 };
+#if defined(__TASKING__)
+#pragma pack default
+#endif
 
 /* ICMP ECHO. */
 #define ICMP_ECHO 8

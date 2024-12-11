@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/TRICORE_TC3_TC375_Lite_Kit_ADS/Prog/App/app.c
-* \brief        User program application source file.
-* \ingroup      Prog_TRICORE_TC3_TC375_Lite_Kit_ADS
+* \file         Demo/TRICORE_TC3_TC375_Lite_Kit_Master_ADS/Prog/App/reset_params.h
+* \brief        Microcontroller reset parameters header file.
+* \ingroup      Prog_TRICORE_TC3_TC375_Lite_Kit_Master_ADS
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2022  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2024  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -25,57 +25,31 @@
 *
 * \endinternal
 ****************************************************************************************/
+#ifndef RESET_PARAMS_H
+#define RESET_PARAMS_H
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "header.h"                                    /* generic header               */
 
 
 /****************************************************************************************
-* Global constant declarations
+* Type definitions
 ****************************************************************************************/
-#pragma section farrom "cssig"
-/** \brief   Signature checksum placeholder. Should be linked to the address as
- *           configured with macro BOOT_FLASH_VECTOR_TABLE_CS_OFFSET.
- */
-const unsigned long bltChecksumSignature = 0x55AA11EE;
-
-
-/************************************************************************************//**
-** \brief     Initializes the user program application. Should be called once during
-**            software program initialization.
-** \return    none.
-**
-****************************************************************************************/
-void AppInit(void)
+/** \brief Enumerated type that defines the available parameter bit flags. */
+typedef enum
 {
-  /* Initialize the timer driver. */
-  TimerInit();
-  /* Initialize the led driver. */
-  LedInit();
-  /* initialize the network application */
-  NetInit();
-  /* initialize the bootloader interface */
-  BootComInit();
-} /*** end of AppInit ***/
+  ResetParamsNoFlags    = 0x00,               /**< \brief No flags utility value.      */
+  ResetParamsReqTcpInit = 0x01                /**< \brief Request TCP/IP stack init.   */
+} tResetParamsFlagType;
 
 
-/************************************************************************************//**
-** \brief     Task function of the user program application. Should be called
-**            continuously in the program loop.
-** \return    none.
-**
+/****************************************************************************************
+* Function prototypes
 ****************************************************************************************/
-void AppTask(void)
-{
-  /* Toggle LED with a fixed frequency. */
-  LedToggle();
-  /* run the network task */
-  NetTask();
-  /* check for bootloader activation request */
-  BootComCheckActivationRequest();
-} /*** end of AppTask ***/
+void                 ResetParamsSetFlag(tResetParamsFlagType flagType);
+tResetParamsFlagType ResetParamsGetFlag(tResetParamsFlagType flagType);
 
 
-/*********************************** end of app.c **************************************/
+#endif /* RESET_PARAMS_H */
+/*********************************** end of reset_params.h *****************************/

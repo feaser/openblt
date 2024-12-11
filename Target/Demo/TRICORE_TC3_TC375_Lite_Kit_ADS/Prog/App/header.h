@@ -36,6 +36,8 @@
 #include "boot.h"                                      /* bootloader interface driver  */
 #include "led.h"                                       /* LED driver                   */
 #include "timer.h"                                     /* Timer driver                 */
+#include "net.h"                                       /* TCP/IP server application    */
+#include "reset_params.h"                              /* Reset parameters header      */
 #include "IfxPort.h"                                   /* GPIO driver                  */
 #include "IfxScuRcu.h"                                 /* SCU driver                   */
 #include "IfxAsclin.h"                                 /* ASCLIN basic driver          */

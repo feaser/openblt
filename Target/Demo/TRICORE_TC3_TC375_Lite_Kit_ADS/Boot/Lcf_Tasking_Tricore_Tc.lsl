@@ -208,10 +208,10 @@ derivative tc37
     memory pfls0
     {
         mau = 8;
-        size = 32k; /* Size reserved for the bootloader. Matches flashLayout[]. */
+        size = 48k; /* Size reserved for the bootloader. Matches flashLayout[]. */
         type = rom;
-        map     cached (dest=bus:sri, dest_offset=0x80000000,           size=32k);
-        map not_cached (dest=bus:sri, dest_offset=0xa0000000, reserved, size=32k);
+        map     cached (dest=bus:sri, dest_offset=0x80000000,           size=48k);
+        map not_cached (dest=bus:sri, dest_offset=0xa0000000, reserved, size=48k);
     }
 
     memory dfls0

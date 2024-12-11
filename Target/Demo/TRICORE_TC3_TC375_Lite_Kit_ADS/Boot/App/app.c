@@ -30,6 +30,7 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
+#include "reset_params.h"                        /* Reset parameters header            */
 #include "IfxPort.h"                             /* GPIO driver                        */
 #include "IfxAsclin.h"                           /* ASCLIN basic driver                */
 #include "IfxCan.h"                              /* MSMCAN basic driver                */
@@ -66,6 +67,34 @@ void AppInit(void)
   Init();
   /* Initialize the bootloader */
   BootInit();
+#if (BOOT_COM_DEFERRED_INIT_ENABLE == 1)
+  /* The bootloader is configured to NOT initialize the TCP/IP network stack by default
+   * to bypass unnecessary delay times before starting the user program. The TCP/IP net-
+   * work tack is now only initialized when: (a) no valid user program is detected, or
+   * (b) a forced backdoor entry occurred (CpuUserProgramStartHook() returned BLT_FALSE).
+   *
+   * These demo bootloader and user programs have one extra feature implemented for
+   * demonstration purposes. The demo user program can detect firmware update requests
+   * from the TCP/IP network in which case it activates the bootloader. But...the
+   * TCP/IP network stack will not be initialized in this situation. For this reason
+   * a reset parameters module was integrated in both the bootloader and user program.
+   *
+   * The ResetParamsReqTcpInit flag is set to 1, right before the user program activates
+   * this bootloader, to explicitly request the bootloader to initialize the TCP/IP
+   * network stack. This makes it possible for a firmware update to proceed. The code
+   * here reads out this flag and performs the TCP/IP network stack initialization when
+   * requested.
+   */
+  if (ResetParamsGetFlag(ResetParamsReqTcpInit) == ResetParamsReqTcpInit)
+  {
+    /* Reset the flags now that we processed those that we are interested in. */
+    ResetParamsSetFlag(ResetParamsNoFlags);
+    /* Explicitly initialize all communication interface for which the deferred
+     * initialization feature was enabled.
+     */
+    ComDeferredInit();
+  }
+#endif
 } /*** end of AppInit ***/
 
 

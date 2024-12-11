@@ -60,12 +60,18 @@ extern struct uip_eth_addr uip_ethaddr;
 /**
  * The Ethernet header.
  */
+#if defined(__TASKING__)
+#pragma pack 2
+#endif
 struct uip_eth_hdr
 {
   struct uip_eth_addr dest;
   struct uip_eth_addr src;
   u16_t type;
 };
+#if defined(__TASKING__)
+#pragma pack default
+#endif
 
 #define UIP_ETHTYPE_ARP 0x0806
 #define UIP_ETHTYPE_IP  0x0800

@@ -1559,10 +1559,16 @@ extern uip_ipaddr_t uip_hostaddr, uip_netmask, uip_draddr;
 /**
  * Representation of a 48-bit Ethernet address.
  */
+#if defined(__TASKING__)
+#pragma pack 2
+#endif
 struct uip_eth_addr
 {
   u8_t addr[6];
 };
+#if defined(__TASKING__)
+#pragma pack default
+#endif
 
 /**
  * Calculate the Internet checksum over a buffer.
