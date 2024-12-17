@@ -312,10 +312,17 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
       tpCanResponseMessageReceived = false;
       /* Exit critical section. */
       UtilCriticalSectionExit();
-      /* Submit the packet for transmission on the CAN bus. */
-      if (!CanTransmit(&canMsg))
+      /* Note that a packet length of zero indicates a request to receive a response,
+       * without actually sending another request. Can be used to flush reception
+       * data.
+       */
+      if (txPacket->len > 0)
       {
-        result = false;
+        /* Submit the packet for transmission on the CAN bus. */
+        if (!CanTransmit(&canMsg))
+        {
+          result = false;
+        }
       }
       /* Only continue if the transmission was successful. */
       if (result)

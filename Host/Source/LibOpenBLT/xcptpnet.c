@@ -235,10 +235,17 @@ static bool XcpTpNetSendPacket(tXcpTransportPacket const * txPacket,
     {
       netBuffer[byteIdx + 4] = txPacket->data[byteIdx];
     }
-    /* Send the packet. */
-    if (!NetAccessSend(netBuffer, txPacket->len + 4))
+    /* Note that a packet length of zero indicates a request to receive a response,
+     * without actually sending another request. Can be used to flush reception
+     * data.
+     */
+    if (txPacket->len > 0)
     {
-      result = false;
+      /* Send the packet. */
+      if (!NetAccessSend(netBuffer, txPacket->len + 4))
+      {
+        result = false;
+      }
     }
 
     /* Only continue if the packet was successfully sent. */

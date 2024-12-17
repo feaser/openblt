@@ -424,10 +424,17 @@ static bool XcpTpMbRtuSendPacket(tXcpTransportPacket const * txPacket,
     mbRtuBuffer[txPacket->len + 3] = (uint8_t)(checksumCalculated & 0xff);
     mbRtuBuffer[txPacket->len + 4] = (uint8_t)(checksumCalculated >> 8);
 
-    /* Transmit the packet. */
-    if (!SerialPortWrite(&mbRtuBuffer[0], txPacket->len + 5))
+    /* Note that a packet length of zero indicates a request to receive a response,
+     * without actually sending another request. Can be used to flush reception
+     * data.
+     */
+    if (txPacket->len > 0)
     {
-      result = false;
+      /* Transmit the packet. */
+      if (!SerialPortWrite(&mbRtuBuffer[0], txPacket->len + 5))
+      {
+        result = false;
+      }
     }
 
     /* ------------ Packet reception ------------------------------------------------- */

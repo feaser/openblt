@@ -172,10 +172,17 @@ static bool XcpTpUsbSendPacket(tXcpTransportPacket const * txPacket,
     {
       usbBuffer[byteIdx + 1] = txPacket->data[byteIdx];
     }
-    /*  Transmit the packet via the USB bulk driver. */
-    if (!UsbBulkWrite(usbBuffer, txPacket->len + 1))
+    /* Note that a packet length of zero indicates a request to receive a response,
+     * without actually sending another request. Can be used to flush reception
+     * data.
+     */
+    if (txPacket->len > 0)
     {
-      result = false;
+      /*  Transmit the packet via the USB bulk driver. */
+      if (!UsbBulkWrite(usbBuffer, txPacket->len + 1))
+      {
+        result = false;
+      }
     }
     
     /* Only continue if the transmission was successful. */

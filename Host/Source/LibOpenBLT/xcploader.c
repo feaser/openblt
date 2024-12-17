@@ -837,11 +837,36 @@ static bool XcpLoaderSendCmdGetStatus(uint8_t * session, uint8_t * protectedReso
     /* Only continue if a response was received. */
     if (result)
     {
-      /* Check if the response was valid. */
-      if ( (resPacket.len != 6) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES) )
+      bool okayToCheckResp = true;
+      /* There could be an extra XCP connect response on the transport line, before the
+       * expected GetStatus response. Is this the case? 
+       */
+      if ((resPacket.len == 8) && (resPacket.data[0] == XCPLOADER_CMD_PID_RES))
       {
-        /* Not a valid or positive response. */
-        result = false;
+        /* Attempt to receive another response. It should be right after the XCP connect
+         * repsonse we just got, so use the short T6 timout. Note that setting the
+         * command packet length to zero skips the actual packet sending and just does the
+         * response reception.
+         */
+        cmdPacket.len = 0;
+        if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket,
+          xcpSettings.timeoutT6))
+        {
+          /* Could not send packet or receive response within the specified timeout. */
+          okayToCheckResp = false;
+          result = false;
+        }
+      }
+ 
+      /* Okay to continue with checking the response reception? */
+      if (okayToCheckResp)
+      {
+        /* Check if the response was valid. */
+        if ((resPacket.len != 6) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES))
+        {
+          /* Not a valid or positive response. */
+          result = false;
+        }
       }
     }
     /* Extract and store the received status information. */

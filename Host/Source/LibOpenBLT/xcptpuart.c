@@ -272,10 +272,17 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
       /* Add the checksum at the end of the packet. */
       uartBuffer[txPacket->len + 1] = csByte;
     }
-    /* Transmit the packet. */
-    if (!SerialPortWrite(uartBuffer, txPacket->len + 1 + csLen))
+    /* Note that a packet length of zero indicates a request to receive a response,
+     * without actually sending another request. Can be used to flush reception
+     * data.
+     */
+    if (txPacket->len > 0)
     {
-      result = false;
+      /* Transmit the packet. */
+      if (!SerialPortWrite(uartBuffer, txPacket->len + 1))
+      {
+        result = false;
+      }
     }
     
     /* Only continue if the transmission was successful. */
