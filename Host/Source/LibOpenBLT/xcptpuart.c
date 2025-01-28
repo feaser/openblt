@@ -279,7 +279,7 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
     if (txPacket->len > 0)
     {
       /* Transmit the packet. */
-      if (!SerialPortWrite(uartBuffer, txPacket->len + 1))
+      if (!SerialPortWrite(uartBuffer, txPacket->len + 1 + csLen))
       {
         result = false;
       }
