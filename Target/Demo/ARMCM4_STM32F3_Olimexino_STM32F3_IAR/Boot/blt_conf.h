@@ -212,6 +212,48 @@
 
 
 /****************************************************************************************
+*   I N F O   T A B L E   C O N F I G U R A T I O N
+****************************************************************************************/
+/* An info table is a constant struct that you add to your own firmware at a fixed
+ * location in non-volatile memory. You can decide yourself where and what contents you
+ * add to this table. For example: product type, firmware version, hardware revision,
+ * serial number, etc.
+ * With the configuration macros BOOT_INFO_TABLE_ADDR and BOOT_INFO_TABLE_LEN you
+ * inform the bootloader where in your firmware it can expect the info table and how
+ * long the table is in bytes.
+ * You enable the info table feature by setting BOOT_INFO_TABLE_ENABLE to 1. When
+ * enabled, the info table is extracted from the selected firmware file at the start of
+ * the firmware update, and copied to an internal RAM buffer in the bootloader.
+ * Once present in this internal RAM buffer, the bootloader calls the hook-function
+ * InfoTableCheckHook(). Inside this hook-function, you can compare the contents of the
+ * info table currently programmed in non-volatile memory (if any) to the contents of
+ * the info table that was extracted from the firmware file of the to-be-programmed
+ * firmware. Based on the results of this comparison, you can give a return value
+ * from the hook-function of BLT_TRUE if the firmware update is allowed to proceed or
+ * BLT_FALSE if the firmware update should be aborted.
+ * With the help of this info table feature you can therefore better control which
+ * firmware is allowed to be programmed. This can for example be used to bypass problems
+ * where the firmware file for a different product or incompatible hardware revision
+ * was accidentally selected.
+ * Note that this is a convenience feature and not a security feature. The seed/key
+ * mechanism is better suited as a security feature to control firmware update access
+ * priveleges.
+ */
+/** \brief Enable (1) or disable (0) the info table feature. */
+#define BOOT_INFO_TABLE_ENABLE         (1)
+
+/** \brief Configure the length of your firmware's info table in bytes. */
+#define BOOT_INFO_TABLE_LEN            (12)
+
+/** \brief Configure the fixed location of your firmware's info table. This example
+ *         assumes the info table is located at the start of the firmware, right after
+ *         the "boot block". The "boot block" is defined by the flash driver as the
+ *         first FLASH_WRITE_BLOCK_SIZE bytes at the start of the user program.
+ */
+#define BOOT_INFO_TABLE_ADDR           (0x0800A200)
+
+
+/****************************************************************************************
 *   S E E D / K E Y   S E C U R I T Y   C O N F I G U R A T I O N
 ****************************************************************************************/
 /* A security mechanism can be enabled in the bootloader's XCP module by setting configu-

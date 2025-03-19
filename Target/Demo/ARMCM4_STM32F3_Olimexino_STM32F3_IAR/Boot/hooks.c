@@ -452,6 +452,66 @@ void FileFirmwareUpdateLogHook(blt_char *info_string)
 
 
 /****************************************************************************************
+*   I N F O   T A B L E   C O N F I G U R A T I O N    H O O K   F U N C T I O N S
+****************************************************************************************/
+#if (BOOT_INFO_TABLE_ENABLE > 0)
+/************************************************************************************//**
+** \brief     Callback that gets called at the start of the firmware update, before
+**            performing erase and program operations on non-volatile flash. It enables
+**            you to implement info table comparison logic to determine if the firmware
+**            update is allowed to proceed. Could for example be used to make sure a
+**            firmware update only goes through if the selected firmware file contains
+**            firmware for the correct product type.
+** \param     newInfoTable Address of the opaque pointer to the info table that was
+**            extracted from the firmware file that was selected for the firmware update.
+** \param     oldInfoTable Address of the opaque pointer to the info table of the
+**            currently programmed firmware. Make sure to do an empty memory check on
+**            this table because it could be that no firmware is currently present and
+**            the flash is in the default erased state.
+** \return    BLT_TRUE if the info table check passed and the firmware update is allowed
+**            to proceed. BLT_FALSE if the firmware update is not allowed to proceed.
+**
+****************************************************************************************/
+blt_bool InfoTableCheckHook(blt_addr newInfoTable,  blt_addr currentInfoTable)
+{
+  blt_bool result = BLT_FALSE;
+  /* Important: This structure must have the same layout as the actual info table in the
+   * firmware itself.
+   */
+  struct firmwareInfoTable
+  {
+    blt_int32u tableId;          /**< fixed value for identification as an info table. */
+    blt_int32u productId;        /**< product identification. E.g. 1234 = Airpump.     */
+    blt_int32u firmwareVersion;  /**< firmware version. E.g. 10429 = v1.4.29           */
+  };
+
+  /* Cast addresses of opaque pointers to info table pointers. */
+  struct firmwareInfoTable const * newInfoTablePtr     = (void const *)newInfoTable;
+  struct firmwareInfoTable const * currentInfoTablePtr = (void const *)currentInfoTable;
+
+  /* Sanity check on the configured length of the info table at compile time. */
+  ASSERT_CT(BOOT_INFO_TABLE_LEN == sizeof(struct firmwareInfoTable));
+
+  /* Do table IDs match? The table ID identifies the tables as firmware info tables. */
+  if (currentInfoTablePtr->tableId == newInfoTablePtr->tableId)
+  {
+    /* Only allow the firmware update to proceed if it's firmware for the same
+     * product type.
+     */
+    if (currentInfoTablePtr->productId == newInfoTablePtr->productId)
+    {
+      /* Allow the firmware update to proceed. */
+      result = BLT_TRUE;
+    }
+  }
+
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of InfoTableCheckHook ***/
+#endif /* BOOT_INFO_TABLE_ENABLE > 0 */
+
+
+/****************************************************************************************
 *   S E E D / K E Y   S E C U R I T Y   H O O K   F U N C T I O N S
 ****************************************************************************************/
 
