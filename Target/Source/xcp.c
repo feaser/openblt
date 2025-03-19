@@ -100,6 +100,16 @@ static void XcpCmdProgramClear(blt_int8u *data);
 static void XcpCmdProgramReset(blt_int8u *data);
 static void XcpCmdProgramPrepare(blt_int8u *data);
 #endif
+static void XcpCmdUser(blt_int8u *data);
+
+#if (BOOT_INFO_TABLE_ENABLE > 0)
+/* XCP USER sub command processors. */
+static void XcpCmdUserSubCmdInfoTable(blt_int8u *data);
+/* XCP USER info table sub command related command ID processors. */
+static void XcpCmdUserSubCmdInfoTableCidGetInfo(blt_int8u *data);
+static void XcpCmdUserSubCmdInfoTableCidDownload(blt_int8u *data);
+static void XcpCmdUserSubCmdInfoTableCidCheck(blt_int8u *data);
+#endif
 
 
 /****************************************************************************************
@@ -295,6 +305,9 @@ void XcpPacketReceived(blt_int8u *data, blt_int8u len)
         XcpCmdGetCalPage(data);
         break;
 #endif
+      case XCP_CMD_USER:
+        XcpCmdUser(data);
+        break;
       default:
         XcpSetCtoError(XCP_ERR_CMD_UNKNOWN);
         break;
@@ -1494,6 +1507,186 @@ static void XcpCmdProgramPrepare(blt_int8u *data)
   return;
 } /*** end of XcpCmdProgramPrepare ***/
 #endif /* XCP_RES_PROGRAMMING_EN == 1 */
+
+
+/************************************************************************************//**
+** \brief     XCP command processor function which handles the USER command as
+**            defined by the protocol. Note that this is a command that allows user
+**            specific extensions to the XCP protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
+**
+****************************************************************************************/
+static void XcpCmdUser(blt_int8u *data)
+{
+  blt_int8u subCommand;
+
+  /* Read out the sub command code. */
+  subCommand = data[1];
+
+  /* Dispatch sub command handling. */
+  switch (subCommand)
+  {
+#if (BOOT_INFO_TABLE_ENABLE > 0)
+  case XCP_CMD_USER_SUB_INFOTABLE:
+    XcpCmdUserSubCmdInfoTable(data);
+    break;
+#endif
+
+  default:
+    XcpSetCtoError(XCP_ERR_CMD_UNKNOWN);
+    break;
+  }
+} /*** end of XcpCmdUser ***/
+
+
+#if (BOOT_INFO_TABLE_ENABLE > 0)
+/************************************************************************************//**
+** \brief     XCP sub command processor function which handles the info table related
+**            sub command of the USER command. Note that this subcommand is a user
+**            specific extensions to the XCP protocol.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
+**
+****************************************************************************************/
+static void XcpCmdUserSubCmdInfoTable(blt_int8u *data)
+{
+  blt_int8u commandId;
+
+  /* Read out the command ID. */
+  commandId = data[2];
+
+  /* Dispatch info table command ID handling. */
+  switch (commandId)
+  {
+  case XCP_CMD_IT_CID_GETINFO:
+    XcpCmdUserSubCmdInfoTableCidGetInfo(data);
+    break;
+
+  case XCP_CMD_IT_CID_DOWNLOAD:
+    XcpCmdUserSubCmdInfoTableCidDownload(data);
+    break;
+
+  case XCP_CMD_IT_CID_CHECK:
+    XcpCmdUserSubCmdInfoTableCidCheck(data);
+    break;
+
+  default:
+    XcpSetCtoError(XCP_ERR_CMD_UNKNOWN);
+    break;
+  }
+} /*** end of XcpCmdUserSubCmdInfoTable ***/
+
+
+/************************************************************************************//**
+** \brief     XCP user sub command processor function which handles the info table
+**            GET_INFO command ID.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
+**
+****************************************************************************************/
+static void XcpCmdUserSubCmdInfoTableCidGetInfo(blt_int8u *data)
+{
+  blt_int16u tableLen;
+  blt_addr   tableAddr;
+
+  /* Suppress compiler warning for unused parameter. */
+  data = data;
+
+  /* Set table length and base address information. */
+  tableLen = InfoTableCurrentSize(INFO_TABLE_ID_FIRMWARE_NVM);
+  tableAddr = InfoTableGetPtr(INFO_TABLE_ID_FIRMWARE_NVM);
+  /* Clear the info table in the internal RAM buffer and reset its write pointer. */
+  InfoTableClear(INFO_TABLE_ID_INTERNAL_RAM);
+
+  /* Set packet id to command response packet. */
+  xcpInfo.ctoData[0] = XCP_PID_RES;
+  /* Set the command ID that this is a response for. */
+  xcpInfo.ctoData[1] = XCP_CMD_IT_CID_GETINFO;
+  /* Store the table length. */
+  CpuMemCopy((blt_addr)(&xcpInfo.ctoData[2]), (blt_addr)&tableLen, sizeof(tableLen));
+  /* Store the table base address. */
+  CpuMemCopy((blt_addr)(&xcpInfo.ctoData[4]), (blt_addr)&tableAddr, sizeof(tableAddr));
+  /* Set packet length. */
+  xcpInfo.ctoLen = 8;
+} /*** end of XcpCmdUserSubCmdInfoTableCidGetInfo ***/
+
+
+/************************************************************************************//**
+** \brief     XCP user sub command processor function which handles the info table
+**            DOWNLOAD command ID.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
+**
+****************************************************************************************/
+static void XcpCmdUserSubCmdInfoTableCidDownload(blt_int8u *data)
+{
+  /* Validate length of download request */
+  if (data[3] > (XCP_CTO_PACKET_LEN-4))
+  {
+    /* Specified data length is too long. */
+    XcpSetCtoError(XCP_ERR_OUT_OF_RANGE);
+    return;
+  }
+
+  /* Attempt to store the newly received data in the info table. */
+  if (InfoTableAddData(INFO_TABLE_ID_INTERNAL_RAM, &data[4], data[3]) == BLT_FALSE)
+  {
+    /* Data does not fit in the info table RAM buffer. */
+    XcpSetCtoError(XCP_ERR_OUT_OF_RANGE);
+    return;
+  }
+
+  /* Set packet id to command response packet. */
+  xcpInfo.ctoData[0] = XCP_PID_RES;
+  /* Set the command ID that this is a response for. */
+  xcpInfo.ctoData[1] = XCP_CMD_IT_CID_DOWNLOAD;
+  /* Set packet length. */
+  xcpInfo.ctoLen = 2;
+} /*** end of XcpCmdUserSubCmdInfoTableCidDownload ***/
+
+
+/************************************************************************************//**
+** \brief     XCP user sub command processor function which handles the info table
+**            CHECK command ID.
+** \param     data Pointer to a byte buffer with the packet data.
+** \return    none
+**
+****************************************************************************************/
+static void XcpCmdUserSubCmdInfoTableCidCheck(blt_int8u *data)
+{
+  /* Set packet id to command response packet. */
+  xcpInfo.ctoData[0] = XCP_PID_RES;
+  /* Set the command ID that this is a response for. */
+  xcpInfo.ctoData[1] = XCP_CMD_IT_CID_CHECK;
+  /* Set packet length. */
+  xcpInfo.ctoLen = 3;
+
+  /* Verify that the contents of the internal RAM info table has the same size as the
+   * one in non-volatile memory.
+   */
+  if (InfoTableCurrentSize(INFO_TABLE_ID_INTERNAL_RAM) !=
+      InfoTableCurrentSize(INFO_TABLE_ID_FIRMWARE_NVM))
+  {
+    /* Content of the internal RAM buffer were not yet fully downloaded. */
+    XcpSetCtoError(XCP_ERR_SEQUENCE);
+    return;
+  }
+
+  /* Request bootloader application to perform the info table check. */
+  if (InfoTableCheck() == BLT_TRUE)
+  {
+    /* Info table check passed. Firmware update is allow to proceed. */
+    xcpInfo.ctoData[2] = 1;
+  }
+  else
+  {
+    /* Info table check failed. Firmware update should be aborted. */
+    xcpInfo.ctoData[2] = 0;
+  }
+} /*** end of XcpCmdUserSubCmdInfoTableCidCheck ***/
+#endif /* BOOT_INFO_TABLE_ENABLE > 0 */
+
 
 #endif /* BOOT_COM_ENABLE > 0 */
 

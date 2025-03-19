@@ -55,6 +55,10 @@ void BootInit(void)
   /* initialize the communication module */
   ComInit();
 #endif
+#if (BOOT_INFO_TABLE_ENABLE > 0)
+  /* initialize the info table check module */
+  InfoTableInit();
+#endif
 #if (ADDON_GATEWAY_MOD_ENABLE > 0)
   /* initialize the gateway module */
   GatewayInit();

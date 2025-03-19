@@ -52,7 +52,12 @@
 #define FILE_ERROR_CANNOT_PROGRAM_MEMORY           (6)
 /** \brief Error code because the program's checksum could not be written to memory. */
 #define FILE_ERROR_CANNOT_WRITE_CHECKSUM           (7)
-
+#if (BOOT_INFO_TABLE_ENABLE > 0)
+/** \brief Error code because no info table or only a partial one was detected. */
+#define FILE_ERROR_INFO_TABLE_MISSING              (8)
+/** \brief Error code because the info table check did not pass. */
+#define FILE_ERROR_INFO_TABLE_CHECK_NOT_PASSED     (9)
+#endif /* (BOOT_INFO_TABLE_ENABLE > 0) */
 /** \brief Maximum number of characters that can be on a line in the firmware file. */
 #define MAX_CHARS_PER_LINE                  (256)
 /** \brief Maximum number of data bytes that can be on a line in the firmware file

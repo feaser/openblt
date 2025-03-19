@@ -41,35 +41,44 @@
 * Macro definitions
 ****************************************************************************************/
 /** \brief Program return code indicating that the program executed successfully. */
-#define RESULT_OK                           (0)
+#define RESULT_OK                                (0)
 /** \brief Program return code indicating that an error was detected when processing the
  *         command line parameters/
  */
-#define RESULT_ERROR_COMMANDLINE            (1)
+#define RESULT_ERROR_COMMANDLINE                 (1)
 /** \brief Program return code indicating that an error was detected while loading 
  *         firmware data from the firmware file.
  */
-#define RESULT_ERROR_FIRMWARE_LOAD          (2)
+#define RESULT_ERROR_FIRMWARE_LOAD               (2)
 /** \brief Program return code indicating that an error was detected during a memory
  *         erase operation on the target.
  */
-#define RESULT_ERROR_MEMORY_ERASE           (3)
+#define RESULT_ERROR_MEMORY_ERASE                (3)
 /** \brief Program return code indicating that an error was detected during a memory
- *         progrma operation on the target.
+ *         program operation on the target.
  */
-#define RESULT_ERROR_MEMORY_PROGRAM         (4)
+#define RESULT_ERROR_MEMORY_PROGRAM              (4)
+/** \brief Program return code indicating that the target reported that the info
+ *         table check failed, meaning that the firmware update is not allowed to
+ *         proceed.
+ */
+#define RESULT_ERROR_INFO_TABLE_CHECK_FAILED     (5)
+/** \brief Program return code indicating that an error occured while performing 
+ *         the info table check.
+ */
+#define RESULT_ERROR_INFO_TABLE_CHECK_ERROR      (6)
 
 /* Macros for colored text on the output, if supported. */
 #if defined (PLATFORM_LINUX)
-#define OUTPUT_RESET                        "\033[0m"
-#define OUTPUT_RED                          "\033[31m"
-#define OUTPUT_GREEN                        "\033[32m"
-#define OUTPUT_YELLOW                       "\033[33m"
+#define OUTPUT_RESET                             "\033[0m"
+#define OUTPUT_RED                               "\033[31m"
+#define OUTPUT_GREEN                             "\033[32m"
+#define OUTPUT_YELLOW                            "\033[33m"
 #else
-#define OUTPUT_RESET                        ""
-#define OUTPUT_RED                          ""
-#define OUTPUT_GREEN                        ""
-#define OUTPUT_YELLOW                       ""
+#define OUTPUT_RESET                             ""
+#define OUTPUT_RED                               ""
+#define OUTPUT_GREEN                             ""
+#define OUTPUT_YELLOW                            ""
 #endif
 
 
@@ -85,6 +94,15 @@ typedef struct t_program_settings
    */
   bool silentMode;
 } tProgramSettings;
+
+/** \brief Enumerated type for the trailer results. */
+typedef enum t_trailer_result
+{
+  TRAILER_RESULT_OK,        /**< Shows [OK] in the trailer.    */
+  TRAILER_RESULT_ERROR,     /**< Shows [ERROR] in the trailer. */
+  TRAILER_RESULT_ABORT,     /**< Shows [ABORT] in the trailer. */
+  TRAILER_RESULT_SKIP       /**< Shows [SKIP] in the trailer.  */
+} tTrailerResult;
 
 
 /****************************************************************************************
@@ -106,7 +124,7 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
                                                       uint32_t transportType);
 static char const * const ExtractFirmwareFileFromCommandLine(int argc, 
                                                              char const * const argv[]);
-static char const * GetLineTrailerByResult(bool errorDetected);
+static char const * GetLineTrailerByResult(tTrailerResult trailerResult);
 static char const * GetLineTrailerByPercentage(uint8_t percentage);
 static void ErasePercentageTrailer(void);
 
@@ -178,7 +196,9 @@ int main(int argc, char const * const argv[])
       DisplayProgramInfo();
     }
     printf("Processing command line parameters..."); 
-    printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));
+    tTrailerResult trailerResult = (result != RESULT_OK) ? \
+      TRAILER_RESULT_ERROR : TRAILER_RESULT_OK;
+    printf("%s\n", GetLineTrailerByResult(trailerResult));
   }
   
   /* -------------------- Display detected parameters -------------------------------- */
@@ -217,7 +237,9 @@ int main(int argc, char const * const argv[])
         result = RESULT_ERROR_FIRMWARE_LOAD;
       }
     }
-    printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK)));
+    tTrailerResult trailerResult = (result != RESULT_OK) ? \
+      TRAILER_RESULT_ERROR : TRAILER_RESULT_OK;
+    printf("%s\n", GetLineTrailerByResult(trailerResult));
     /* Determine and output firmware data statistics. */
     if (result == RESULT_OK)
     {
@@ -279,9 +301,45 @@ int main(int argc, char const * const argv[])
         BltUtilTimeDelayMs(20);
       }
     }
-    printf("%s\n", GetLineTrailerByResult((bool)false));
+    tTrailerResult trailerResult = (result != RESULT_OK) ? \
+      TRAILER_RESULT_ERROR : TRAILER_RESULT_OK;
+    printf("%s\n", GetLineTrailerByResult(trailerResult));
   }
 
+  /* -------------------- Info table check ------------------------------------------- */
+  if (result == RESULT_OK)
+  {
+    uint32_t infoTableCheckResult;
+    tTrailerResult trailerResult;
+
+    /* Initialize the session. */
+    printf("Performing info table check..."); (void)fflush(stdout);
+    infoTableCheckResult = BltSessionCheckInfoTable();
+    /* Filter on the result. */
+    switch (infoTableCheckResult)
+    {
+    case BLT_RESULT_OK:
+      trailerResult = TRAILER_RESULT_OK;
+      break;
+
+    case BLT_RESULT_ERROR_SESSION_INFO_TABLE:
+      trailerResult = TRAILER_RESULT_ABORT;
+      /* Set error code. */
+      result = RESULT_ERROR_INFO_TABLE_CHECK_FAILED;
+      break;
+
+    case BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED:
+      trailerResult = TRAILER_RESULT_SKIP;
+      break;
+
+    default: /* Error detected. */
+      trailerResult = TRAILER_RESULT_ERROR;
+      /* Set error code. */
+      result = RESULT_ERROR_INFO_TABLE_CHECK_ERROR;
+      break;
+    }
+    printf("%s\n", GetLineTrailerByResult(trailerResult));
+  }
   /* -------------------- Erase operation -------------------------------------------- */
   if (result == RESULT_OK)
   {
@@ -354,7 +412,9 @@ int main(int argc, char const * const argv[])
         result = RESULT_ERROR_MEMORY_ERASE;
       }
       ErasePercentageTrailer();
-      printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK))); 
+      tTrailerResult trailerResult = (result != RESULT_OK) ? \
+        TRAILER_RESULT_ERROR : TRAILER_RESULT_OK;
+      printf("%s\n", GetLineTrailerByResult(trailerResult)); 
       /* Do not continue loop if an error was detected. */
       if (result != RESULT_OK)
       {
@@ -436,7 +496,9 @@ int main(int argc, char const * const argv[])
         result = RESULT_ERROR_MEMORY_PROGRAM;
       }
       ErasePercentageTrailer();
-      printf("%s\n", GetLineTrailerByResult((bool)(result != RESULT_OK))); 
+      tTrailerResult trailerResult = (result != RESULT_OK) ? \
+        TRAILER_RESULT_ERROR : TRAILER_RESULT_OK;
+      printf("%s\n", GetLineTrailerByResult(trailerResult));
       /* Do not continue loop if an error was detected. */
       if (result != RESULT_OK)
       {
@@ -451,7 +513,9 @@ int main(int argc, char const * const argv[])
     /* Stop the session. */
     printf("Finishing programming session..."); (void)fflush(stdout);
     BltSessionStop();
-    printf("%s\n", GetLineTrailerByResult((bool)false));
+    tTrailerResult trailerResult = (result != RESULT_OK) ? \
+      TRAILER_RESULT_ERROR : TRAILER_RESULT_OK;
+    printf("%s\n", GetLineTrailerByResult(trailerResult));
   }
 
   /* -------------------- Cleanup ---------------------------------------------------- */
@@ -1549,27 +1613,39 @@ static char const * const ExtractFirmwareFileFromCommandLine(int argc,
 ** \brief     Information outputted to the user sometimes has [OK] or [ERROR] appended
 **            at the end. This function obtains this trailer based on the value of the
 **            parameter.
-** \param     errorDetected True to obtain an error trailer, false for a success trailer.
+** \param     trailerResult The type of result controlling what to output in the trailer.
 ** \return    Pointer to the character array (string) with the trailer.
 **
 ****************************************************************************************/
-static char const * GetLineTrailerByResult(bool errorDetected)
+static char const * GetLineTrailerByResult(tTrailerResult trailerResult)
 {
   char const * result;
   /* Note that the following strings were declared static to guarantee that the pointers
    * stay valid and can be used by the caller of this function.
    */
-  static char const * trailerStrOk = "[" OUTPUT_GREEN "OK" OUTPUT_RESET "]";
+  static char const * trailerStrOk    = "[" OUTPUT_GREEN "OK" OUTPUT_RESET "]";
   static char const * trailerStrError = "[" OUTPUT_RED "ERROR" OUTPUT_RESET "]";
-
-  /* Set trailer based on the error status. */  
-  if (!errorDetected)
+  static char const * trailerStrAbort = "[" OUTPUT_RED "ABORT" OUTPUT_RESET "]";
+  static char const * trailerStrSkip  = "[" OUTPUT_YELLOW "SKIP" OUTPUT_RESET "]";
+  
+  switch (trailerResult)
   {
+  case TRAILER_RESULT_OK:
     result = trailerStrOk;
-  }
-  else
-  {
+    break;
+
+  case TRAILER_RESULT_ABORT:
+    result = trailerStrAbort;
+    break;
+
+  case TRAILER_RESULT_SKIP:
+    result = trailerStrSkip;
+    break;
+
+  case TRAILER_RESULT_ERROR:
+  default:
     result = trailerStrError;
+    break;
   }
   /* Give the result back to the caller. */
   return result;

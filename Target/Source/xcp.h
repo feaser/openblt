@@ -187,6 +187,8 @@
 #define XCP_CMD_SHORT_UPLOAD        (0xf4)
 /** \brief BUILD_CHECKSUM command code. */
 #define XCP_CMD_BUILD_CHECKSUM      (0xf3)
+/** \brief USER command code. */
+#define XCP_CMD_USER                (0xf1)
 /** \brief DOWNLOAD command code. */
 #define XCP_CMD_DOWNLOAD            (0xf0)
 /** \brief DOWNLOAD_MAX command code. */
@@ -207,6 +209,18 @@
 #define XCP_CMD_PROGRAM_PREPARE     (0xcc)
 /** \brief PROGRAM_MAX command code. */
 #define XCP_CMD_PROGRAM_MAX         (0xc9)
+
+/* XCP USER sub command codes */
+/** \brief XCP CMD USER sub command code of the info table feature. */
+#define XCP_CMD_USER_SUB_INFOTABLE  (0x17)
+
+/* XCP USER info table sub command related command id's  */
+/** \brief XCP USER info table GET_INFO command ID. */
+#define XCP_CMD_IT_CID_GETINFO      (0x04)
+/** \brief XCP USER info table DOWNLOAD sub command ID. */
+#define XCP_CMD_IT_CID_DOWNLOAD     (0x06)
+/** \brief XCP USER info table CHECK sub command ID. */
+#define XCP_CMD_IT_CID_CHECK        (0x08)
 
 /* xcp supported resources */
 /** \brief ProGraMming resource. */

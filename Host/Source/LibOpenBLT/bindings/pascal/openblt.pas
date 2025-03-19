@@ -63,7 +63,17 @@ function BltVersionGetString: PAnsiChar; cdecl; external LIBOPENBLT_LIBNAME;
 //             S E S S I O N   /   T R A N S P O R T   L A Y E R S
 //***************************************************************************************
 const
-  // XCP protocol version 1.0. XCP is a universal measurement and calibration communica-
+  // Function return value for when everything went okay.
+  
+  // Function return value for \ref BltSessionCheckInfoTable to signal that the target
+  // replied that the info table feature is either not yet supported or was not enabled.
+  // The firmware update can proceed as usual though.
+  BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED = 33;
+  // Function return value for \ref BltSessionCheckInfoTable to signal that the target
+  // does not allow the firmware update to proceed, due to the check it performed on the
+  // info tables.
+  BLT_RESULT_ERROR_SESSION_INFO_TABLE = 34;
+ // XCP protocol version 1.0. XCP is a universal measurement and calibration communica-
   // tion protocol. It contains functionality for reading, programming, and erasing
   // (non-volatile) memory making it a good fit for bootloader purposes.
   BLT_SESSION_XCP_V10: LongWord = 0;
@@ -147,6 +157,7 @@ function  BltSessionReadData(address: LongWord;
                              len: LongWord;
                              data: PByte): LongWord;
                              cdecl; external LIBOPENBLT_LIBNAME;
+function  BltSessionCheckInfoTable: LongWord; cdecl; external LIBOPENBLT_LIBNAME;
 
 
 //***************************************************************************************

@@ -47,6 +47,8 @@ from openblt.lib import version_get_string
 # ***************************************************************************************
 #              S E S S I O N   /   T R A N S P O R T   L A Y E R S
 # ***************************************************************************************
+from openblt.lib import BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED
+from openblt.lib import BLT_RESULT_ERROR_SESSION_INFO_TABLE
 from openblt.lib import BLT_SESSION_XCP_V10
 from openblt.lib import BLT_TRANSPORT_XCP_V10_RS232
 from openblt.lib import BLT_TRANSPORT_XCP_V10_CAN
@@ -65,6 +67,7 @@ from openblt.lib import session_stop
 from openblt.lib import session_clear_memory
 from openblt.lib import session_write_data
 from openblt.lib import session_read_data
+from openblt.lib import session_check_info_table
 
 
 # ***************************************************************************************

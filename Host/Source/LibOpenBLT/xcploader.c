@@ -38,6 +38,7 @@
 #include "session.h"                        /* Communication session module            */
 #include "xcploader.h"                      /* XCP loader module                       */
 #include "xcpprotect.h"                     /* XCP protection module                   */
+#include "firmware.h"                       /* Firmware data module                    */
 
 
 /****************************************************************************************
@@ -50,6 +51,7 @@
 #define XCPLOADER_CMD_UNLOCK          (0xF7u)    /**< XCP unlock command code.         */
 #define XCPLOADER_CMD_SET_MTA         (0xF6u)    /**< XCP set mta command code.        */
 #define XCPLOADER_CMD_UPLOAD          (0xF5u)    /**< XCP upload command code.         */
+#define XCPLOADER_CMD_USER            (0xF1u)    /**< XCP user cmd command code.       */
 #define XCPLOADER_CMD_PROGRAM_START   (0xD2u)    /**< XCP program start command code.  */
 #define XCPLOADER_CMD_PROGRAM_CLEAR   (0xD1u)    /**< XCP program clear command code.  */
 #define XCPLOADER_CMD_PROGRAM         (0xD0u)    /**< XCP program command code.        */
@@ -58,9 +60,21 @@
 
 /* XCP response packet IDs as defined by the protocol. */
 #define XCPLOADER_CMD_PID_RES         (0xFFu)    /**< positive response                */
+#define XCPLOADER_CMD_PID_ERR         (0xFEu)    /**< error packet response            */
+
+/* XCP error codes as definded by the protocol. */
+#define XCPLOADER_ERR_CMD_UNKNOWN     (0x20u)    /**< unknown or not implemented cmd.  */
 
 /** \brief Number of retries to connect to the XCP slave. */
 #define XCPLOADER_CONNECT_RETRIES     (5u)
+
+/* XCP sub command codes for the custom XCP USER_CMD commands. */
+#define XCPLOADER_USER_CMD_INFOTABLE  (0x17u)    /**< Info table sub command code.     */
+
+/* Info table command IDs for XCPLOADER_USER_CMD_INFOTABLE */
+#define XCPLOADER_IT_CID_GETINFO      (0x04u)    /**< Info table GET_INFO command ID.  */
+#define XCPLOADER_IT_CID_DOWNLOAD     (0x06u)    /**< Info table DOWNLOAD command ID.  */
+#define XCPLOADER_IT_CID_CHECK        (0x08u)    /**< Info table CHECK command ID.     */
 
 
 /****************************************************************************************
@@ -74,8 +88,10 @@ static void XcpLoaderStop(void);
 static bool XcpLoaderClearMemory(uint32_t address, uint32_t len);
 static bool XcpLoaderWriteData(uint32_t address, uint32_t len, uint8_t const * data);  
 static bool XcpLoaderReadData(uint32_t address, uint32_t len, uint8_t * data);
+static bool XcpLoaderCheckInfoTable(bool * supported, bool * okay);
 /* General module specific utility functions. */
 static void XcpLoaderSetOrderedLong(uint32_t value, uint8_t *data);
+static uint32_t XcpLoaderGetOrderedLong(uint8_t const * data);
 static uint16_t XcpLoaderGetOrderedWord(uint8_t const * data);
 /* XCP command functions. */
 static bool XcpLoaderSendCmdConnect(void);
@@ -91,6 +107,10 @@ static bool XcpLoaderSendCmdProgramReset(void);
 static bool XcpLoaderSendCmdProgram(uint8_t length, uint8_t const * data);
 static bool XcpLoaderSendCmdProgramMax(uint8_t const * data);
 static bool XcpLoaderSendCmdProgramClear(uint32_t length);
+/* XCP USER command functions related to the info table check customization. */
+static bool XcpLoaderSendCmdItCidGetInfo(uint32_t * tableAddress, uint16_t * tableLen);
+static bool XcpLoaderSendCmdItCidDownload(uint8_t const * data, uint8_t len);
+static bool XcpLoaderSendCmdItCidCheck(bool * checkOkay);
 
 
 /****************************************************************************************
@@ -105,7 +125,8 @@ static const tSessionProtocol xcpLoader =
   .Stop = XcpLoaderStop,
   .ClearMemory = XcpLoaderClearMemory,
   .WriteData = XcpLoaderWriteData,
-  .ReadData = XcpLoaderReadData
+  .ReadData = XcpLoaderReadData,
+  .CheckInfoTable = XcpLoaderCheckInfoTable
 };
 
 
@@ -651,6 +672,214 @@ static bool XcpLoaderReadData(uint32_t address, uint32_t len, uint8_t * data)
 
 
 /************************************************************************************//**
+** \brief     Request information from the bootloader about the info table start address
+**            and length. Using this information, the info table is extracted from the
+**            firmware file selected for the firmware update. The extracted info table
+**            is then downloaded to a RAM buffer in the bootloader. Afterwards, the 
+**            bootloader is requested to compare this info table contents with the one
+**            available in the currently programmed firmware (if any) and to check if
+**            it is okay for the session to proceed with the firmware update.
+** \param     supported If set to true by this function, the target indicated that the
+**            info table feature is supported and enabled. If set to false, the info
+**            table feature is either not supported by the target or not enabled.
+** \param     okay If set to true by this function, the target indicated that the check
+**            of the info table passed and it is okay to proceed with the firmware
+**            update. If set to false by this function, the firmware updates should be
+**            aborted.
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+static bool XcpLoaderCheckInfoTable(bool * supported, bool * okay)
+{
+  bool       result = false;
+  uint16_t   infoTableLen = 0U;
+  uint32_t   infoTableAddr = 0U;
+  uint8_t  * infoTable = NULL;
+
+  /* Check parameters. */
+  assert((supported != NULL) && (okay != NULL));
+  /* Make sure a valid transport layer is linked. */
+  assert(xcpSettings.transport != NULL);
+
+  /* Only continue if the parameters are valid and the session is connected. */
+  if ((supported != NULL) && (okay != NULL) && (xcpSettings.transport != NULL) && /*lint !e774 */
+    (xcpConnected))
+  {
+    /* Initialize the supported flag to info table feature not supported. */
+    *supported = false;
+    /* Initialize the okay flag to not okay to proceed with the firmware update. */
+    *okay = false;
+    /* Init the result value to okay and only set it to error when a problem occurred. */
+    result = true;
+
+    /* ----------------------- GET_INFO XCP USER command ------------------------------*/
+    /* Start by sending the info table GET_INFO XCP USER command. */
+    if (!XcpLoaderSendCmdItCidGetInfo(&infoTableAddr, &infoTableLen))
+    {
+      /* Problem occurred during the command exchange with the target. */
+      result = false;
+    }
+    /* Command exchange with the target successful. Check for info table support. */
+    else
+    {
+      /* Info table feature support available and enabled? */
+      if (infoTableLen != 0U)
+      {
+        *supported = true;
+      }
+      else
+      {
+        /* Info table feature not available or disabled, yet communication with the 
+         * target was successful. This means the firmware update is allowed to 
+         * proceed, without having to do any futher info table checking.
+         */
+        *okay = true;
+      }
+    }
+
+    /* ----------------------- Extract info table from firmware data ------------------*/
+    /* Only continue if no error was detected sofar and the info table feature is
+     * supported. 
+     */
+    if ((result) && (*supported))
+    {
+      /* Allocate memory for storing the info table. */
+      infoTable = malloc(infoTableLen);
+
+      /* Verify allocation results.  */
+      if (infoTable == NULL)
+      {
+        result = false;
+      }
+    }
+
+    /* Only continue if no error was detected sofar and the info table feature is
+     * supported.
+     */
+    if ((result) && (*supported))
+    {
+      uint32_t                 segmentIdx;
+      tFirmwareSegment const * segment;
+      bool                     infoTableCopied = false;
+
+      /* Extract the info table from the firmware. Start by going through each segment
+       * to determine if it's the segment that includes the info table. Note that the
+       * info table doesn't have any data gaps and therefore you can know for sure
+       * that the info table is in one segment only and doees not span multiple
+       * segments.
+       */
+      for (segmentIdx = 0; segmentIdx < FirmwareGetSegmentCount(); segmentIdx++)
+      {
+        /* Extract segment info. */
+        segment = FirmwareGetSegment(segmentIdx);
+        /* Is the info table located in this segment? */
+        if ((infoTableAddr >= segment->base) &&
+            ((infoTableAddr + infoTableLen) <= (segment->base + segment->length)))
+        {
+          uint32_t infoTableStartIdx;
+
+          /* Calculate the index where the info table starts in this segment. Include 
+           * sanity check just to be sure the index is positive.
+           */
+          assert(infoTableAddr >= segment->base);
+          infoTableStartIdx = infoTableAddr - segment->base;
+          /* Sanity check on the index. */
+          assert((infoTableStartIdx + infoTableLen) <= segment->length);
+          /* Copy the info table from the segment data. */
+          memcpy(infoTable, &(segment->data[infoTableStartIdx]), infoTableLen); /*lint !e668 */
+          /* Set flag that the info table was found and copied. */
+          infoTableCopied = true;
+          /* Info table copied. No need to continue looping through the segments. */
+          break;
+        }
+      }
+      /* Verify that the info table was found and copied. */
+      if (!infoTableCopied)
+      {
+        /* No info table was present in the firmware data. Flag the error. */
+        result = false;
+      }
+    }
+
+    /* ----------------------- DOWNLOAD XCP USER command ------------------------------*/
+    /* Only continue if no error was detected sofar and the info table feature is
+     * supported.
+     */
+    if ((result) && (*supported))
+    {
+      uint16_t infoTableRemainingLen;
+      uint8_t  infoTableCurrentLen;
+      uint16_t infoTableCurrentIdx = 0;
+
+      /* Initialize the remaining number of info table bytes to send. */
+      infoTableRemainingLen = infoTableLen;
+
+      /* Send the info table to the target. */
+      while (infoTableRemainingLen > 0)
+      {
+        /* Determine how many info table bytes we can send. */
+        if (infoTableRemainingLen > (xcpMaxCto - 4))
+        {
+          infoTableCurrentLen = (xcpMaxCto - 4);
+        }
+        else
+        {
+          /* Note that the downcast is okay here, because we know that it
+           * fits in uint8_t due to the check above (xcpMaxCto is also uint8_t).
+           */
+          infoTableCurrentLen = (uint8_t)infoTableRemainingLen;
+        }
+        /* Send the (possible partial) info table bytes using the DOWNLOAD command.
+         * Note that the PC-lint warning about infoTable possible being NULL can
+         * be ignored. If it's NULL, the code would never get here.
+         */
+        if (!XcpLoaderSendCmdItCidDownload(&infoTable[infoTableCurrentIdx],
+                                           infoTableCurrentLen)) /*lint !e613 */
+        {
+          /* Error detected during the command exchange. Flag the error and stop the 
+           * loop. 
+           */
+          result = false;
+          break;
+        }
+        /* Update the info table indexer and the remaining length. */
+        infoTableCurrentIdx += infoTableCurrentLen;
+        infoTableRemainingLen -= infoTableCurrentLen;
+      }
+
+      /* ----------------------- CHECK XCP USER command -------------------------------*/
+      /* Only continue if no error was detected sofar and the info table feature is
+       * supported.
+       */
+      if ((result) && (*supported))
+      {
+        /* As a final step request the target to compare the info table that we just
+         * sent, with the one of the currently programmed firmware. This is done by
+         * sending the info table CHECK XCP USER command. In the response, the target
+         * let's us know if the check passed and the firmware update is allowed to
+         * proceed.
+         */
+        if (!XcpLoaderSendCmdItCidCheck(okay))
+        {
+          /* Problem occurred during the command exchange with the target. */
+          result = false;
+        }
+      }
+    }
+  }
+
+  /* Release possibly allocated memory for the info table storage. */
+  if (infoTable != NULL)
+  {
+    free(infoTable);
+  }
+
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of XcpLoaderCheckInfoTable ***/
+
+
+/************************************************************************************//**
 ** \brief     Stores a 32-bit value into a byte buffer taking into account Intel
 **            or Motorola byte ordering.
 ** \param     value The 32-bit value to store in the buffer.
@@ -667,20 +896,57 @@ static void XcpLoaderSetOrderedLong(uint32_t value, uint8_t *data)
   {
     if (xcpSlaveIsIntel)
     {
-      data[3] = (uint8_t)(value >> 24);
-      data[2] = (uint8_t)(value >> 16);
-      data[1] = (uint8_t)(value >>  8);
+      data[3] = (uint8_t)(value >> 24u);
+      data[2] = (uint8_t)(value >> 16u);
+      data[1] = (uint8_t)(value >>  8u);
       data[0] = (uint8_t)value;
     }
     else
     {
-      data[0] = (uint8_t)(value >> 24);
-      data[1] = (uint8_t)(value >> 16);
-      data[2] = (uint8_t)(value >>  8);
+      data[0] = (uint8_t)(value >> 24u);
+      data[1] = (uint8_t)(value >> 16u);
+      data[2] = (uint8_t)(value >>  8u);
       data[3] = (uint8_t)value;
     }
   }
 } /*** end of XcpLoaderSetOrderedLong ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains a 32-bit value from a byte buffer taking into account Intel
+**            or Motorola byte ordering.
+** \param     data Array to the buffer with the long value stored as bytes.
+** \return    The 32-bit value.
+**
+****************************************************************************************/
+static uint32_t XcpLoaderGetOrderedLong(uint8_t const * data)
+{
+  uint32_t result = 0;
+
+  /* Check parameters. */
+  assert(data != NULL);
+
+  /* Only continue with valid parameters. */
+  if (data != NULL) /*lint !e774 */
+  {
+    if (xcpSlaveIsIntel)
+    {
+      result |= (uint32_t)data[0];
+      result |= (uint32_t)((uint32_t)data[1] << 8u);
+      result |= (uint32_t)((uint32_t)data[2] << 16u);
+      result |= (uint32_t)((uint32_t)data[3] << 24u);
+    }
+    else
+    {
+      result |= (uint32_t)data[3];
+      result |= (uint32_t)((uint32_t)data[2] << 8u);
+      result |= (uint32_t)((uint32_t)data[1] << 16u);
+      result |= (uint32_t)((uint32_t)data[0] << 24u);
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of XcpLoaderGetOrderedLong ***/
 
 
 /************************************************************************************//**
@@ -703,12 +969,12 @@ static uint16_t XcpLoaderGetOrderedWord(uint8_t const * data)
     if (xcpSlaveIsIntel)
     {
       result |= (uint16_t)data[0];
-      result |= (uint16_t)(data[1] << 8);
+      result |= (uint16_t)((uint16_t)data[1] << 8u);
     }
     else
     {
       result |= (uint16_t)data[1];
-      result |= (uint16_t)(data[0] << 8);
+      result |= (uint16_t)((uint16_t)data[0] << 8u);
     }
   }
   /* Give the result back to the caller. */
@@ -1393,7 +1659,7 @@ static bool XcpLoaderSendCmdProgramClear(uint32_t length)
   {
     /* Init the result value to okay and only set it to error when a problem occurred. */
     result = true;
-    /*Pprepare the command packet. */
+    /* Prepare the command packet. */
     cmdPacket.data[0] = XCPLOADER_CMD_PROGRAM_CLEAR;
     cmdPacket.data[1] = 0; /* Use absolute mode. */
     cmdPacket.data[2] = 0; /* Reserved. */
@@ -1422,6 +1688,238 @@ static bool XcpLoaderSendCmdProgramClear(uint32_t length)
   /* Give the result back to the caller. */
   return result;
 } /*** end of XcpLoaderSendCmdProgramClear ***/
+
+
+/************************************************************************************//**
+** \brief     Sends the info table GET_INFO XCP USER command. 
+** \details   If this function returns true, but the tableLen value was set to zero, this
+**            means that the target indicated that the info table feature is either not 
+**            supported or not enabled.
+** \param     tableAddress The base address of the info table in the firmware.
+** \param     tableLen The length of the info table in bytes. 
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+static bool XcpLoaderSendCmdItCidGetInfo(uint32_t * tableAddress, uint16_t * tableLen)
+{
+  bool result = false;
+  bool infoTableSupported = true;
+  tXcpTransportPacket cmdPacket;
+  tXcpTransportPacket resPacket;
+
+  /* Make sure a valid transport layer is linked and that the parameters are valid. */
+  assert(xcpSettings.transport != NULL);
+  assert(tableAddress != NULL);
+  assert(tableLen != NULL);
+
+  /* Only continue with a valid transport layer and parameters. */
+  if ((xcpSettings.transport != NULL) && (tableAddress != NULL) && (tableLen != NULL)) 
+  {
+    /* Init the result value to okay and only set it to error when a problem
+     * occurred.
+     */
+    result = true;
+    /* Initialize the outgoing parameter values. */
+    *tableAddress = 0x00000000UL;
+    *tableLen = 0U;
+    /* Prepare the command packet. */
+    cmdPacket.data[0] = XCPLOADER_CMD_USER;                /* XCP USER CMD.            */
+    cmdPacket.data[1] = XCPLOADER_USER_CMD_INFOTABLE;      /* Sub command code.        */
+    cmdPacket.data[2] = XCPLOADER_IT_CID_GETINFO;          /* GET_INFO command ID.     */
+    cmdPacket.len = 3U;
+    /* Send the packet. */
+    if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket, 
+                                           xcpSettings.timeoutT1))
+    {
+      /* Could either not send the command packet or no response was received without
+       * the specified timeout perioud. This indicates a communication error. Update the
+       * result accordingly.
+       */
+      result = false;
+    }
+    /* Only continue if a response was received. */
+    if (result)
+    {
+      /* Was it a negative response with the error code set to unknown command? */
+      if ((resPacket.len == 2U) && (resPacket.data[0] == XCPLOADER_CMD_PID_ERR) &&
+          (resPacket.data[1] == XCPLOADER_ERR_CMD_UNKNOWN))
+      {
+        /* The communication with the target was successful and the target indicated that
+         * the info table check feature is either not available or not enabled. Update
+         * the flag accordingly.
+         */
+        infoTableSupported = false;
+      }
+    }
+    /* Only continue if a response was received and the info table is supported. */
+    if ((result) && (infoTableSupported))
+    {
+      /* Check if the response was valid. */
+      if ((resPacket.len != 8U) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES))
+      {
+        /* Not a valid or positive response. */
+        result = false;
+      }
+    }
+    /* Only continue if a valid response was received and the info table is supported. */
+    if ((result) && (infoTableSupported))
+    {
+      /* Read out the info table lenght and base address from the response. */
+      *tableLen = XcpLoaderGetOrderedWord(&resPacket.data[2]);
+      *tableAddress = XcpLoaderGetOrderedLong(&resPacket.data[4]);
+      /* Evaluate the table length. */
+      if (*tableLen == 0U)
+      {
+        /* Invalid table. Flag the error. */
+        result = false;
+      }
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of XcpLoaderSendCmdItCidGetInfo ***/
+
+
+/************************************************************************************//**
+** \brief     Sends the info table DOWNLOAD XCP USER command.
+** \param     data Pointer to the table data array that points to the next bytes of
+**            the info table to send.
+** \param     len The number of bytes in data[] to send.
+** \return    True if successful, false otherwise.
+**
+****************************************************************************************/
+static bool XcpLoaderSendCmdItCidDownload(uint8_t const * data, uint8_t len)
+{
+  bool result = false;
+  tXcpTransportPacket cmdPacket;
+  tXcpTransportPacket resPacket;
+
+  /* Initialize response packet to suppress PC-lint warning about it possible
+   * being used ubinitialized.
+   */
+  resPacket.len = 0;
+
+  /* Make sure a valid transport layer is linked and that the parameters are valid. */
+  assert(xcpSettings.transport != NULL);
+  assert(data != NULL);
+  assert(len > 0);
+
+  /* Only continue with a valid transport layer and parameters. */
+  if ((xcpSettings.transport != NULL) && (data != NULL) && (len > 0))
+  {
+    /* Init the result value to okay and only set it to error when a problem
+     * occurred.
+     */
+    result = true;
+    
+    /* Prepare the command packet. */
+    cmdPacket.data[0] = XCPLOADER_CMD_USER;                /* XCP USER CMD.            */
+    cmdPacket.data[1] = XCPLOADER_USER_CMD_INFOTABLE;      /* Sub command code.        */
+    cmdPacket.data[2] = XCPLOADER_IT_CID_DOWNLOAD;         /* DOWNLOAD command ID.     */
+    cmdPacket.data[3] = len;
+
+    /* Check that this info table data actually fits in the command. */
+    if (len > (xcpMaxCto - 4))
+    {
+      /* Cannot fit the data. */
+      result = false;
+    }
+
+    /* Only continue if the info table data fits. */
+    if (result)
+    {
+      /* Copy info table bytes. */
+      for (uint8_t idx = 0; idx < len; idx++)
+      {
+        cmdPacket.data[idx + 4] = data[idx];
+      }
+      cmdPacket.len = len + 4;
+      /* Send the packet. */
+      if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket,
+          xcpSettings.timeoutT1))
+      {
+        /* Could not send packet or receive response within the specified timeout. */
+        result = false;
+      }
+    }
+
+    /* Only continue if a response was received. */
+    if (result)
+    {
+      /* Check if the response was valid. */
+      if ((resPacket.len != 2) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES))
+      {
+        /* Not a valid or positive response. */
+        result = false;
+      }
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of XcpLoaderSendCmdItCidDownload ***/
+
+
+/************************************************************************************//**
+** \brief     Sends the info table CHECK XCP USER command.
+** \param     checkOkay Pointer to where this function stores the result of the check.
+** \param     True if the command exchange was successful, false otherwise.
+**
+****************************************************************************************/
+static bool XcpLoaderSendCmdItCidCheck(bool * checkOkay)
+{
+  bool result = false;
+  tXcpTransportPacket cmdPacket;
+  tXcpTransportPacket resPacket;
+
+  /* Make sure a valid transport layer is linked and that the parameters are valid. */
+  assert(xcpSettings.transport != NULL);
+  assert(checkOkay != NULL);
+
+  /* Only continue with a valid transport layer and parameters. */
+  if ((xcpSettings.transport != NULL) && (checkOkay != NULL))
+  {
+    /* Init the result value to okay and only set it to error when a problem
+     * occurred.
+     */
+    result = true;
+    /* Initialize the outgoing parameter values. */
+    *checkOkay = false;
+    /* Prepare the command packet. */
+    cmdPacket.data[0] = XCPLOADER_CMD_USER;                /* XCP USER CMD.            */
+    cmdPacket.data[1] = XCPLOADER_USER_CMD_INFOTABLE;      /* Sub command code.        */
+    cmdPacket.data[2] = XCPLOADER_IT_CID_CHECK;            /* GET_INFO command ID.     */
+    cmdPacket.len = 3U;
+    /* Send the packet. */
+    if (!xcpSettings.transport->SendPacket(&cmdPacket, &resPacket,
+                                           xcpSettings.timeoutT1))
+    {
+      /* Could not send packet or receive response within the specified timeout. */
+      result = false;
+    }
+    /* Only continue if a response was received. */
+    if (result)
+    {
+      /* Check if the response was valid. */
+      if ((resPacket.len != 3) || (resPacket.data[0] != XCPLOADER_CMD_PID_RES))
+      {
+        /* Not a valid or positive response. */
+        result = false;
+      }
+    }
+    /* Only continue if a valid response was received. */
+    if (result)
+    {
+      /* Process the received okay parameter from the target. */
+      if (resPacket.data[2] == 1)
+      {
+        *checkOkay = true;
+      }
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+
+} /*** end of XcpLoaderSendCmdItCidCheck **/
 
 
 /*********************************** end of xcploader.c ********************************/

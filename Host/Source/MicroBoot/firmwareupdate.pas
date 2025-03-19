@@ -78,6 +78,7 @@ type
                            FUS_INITIALIZING,
                            FUS_CONNECTING,
                            FUS_LOADING_FIRMWARE,
+                           FUS_CHECKING_INFO_TABLE,
                            FUS_ERASING_MEMORY,
                            FUS_PROGRAMMING_MEMORY,
                            FUS_FINISHING_UP );
@@ -326,6 +327,7 @@ var
   programStillLeft: LongWord;
   programProgressPct: Integer;
   programProgressLen: LongWord;
+  infoTableCheckResult: LongWord;
 begin
   // Initialize locals.
   initialized := False;
@@ -515,6 +517,63 @@ begin
           // Delay a bit to not starve the CPU.
           Sleep(20);
         end;
+      end;
+      // Transition to the next state if all is okay.
+      if not errorDetected then
+      begin
+        FState := FUS_CHECKING_INFO_TABLE;
+      end;
+    end
+    // --------------------------- Checking info table ----------------------------------
+    else if FState = FUS_CHECKING_INFO_TABLE then
+    begin
+      // Initialize error flag.
+      errorDetected := False;
+      // Update the info.
+      FInfoString := 'Performing info table check';
+      Synchronize(@SynchronizeInfoEvent);
+      // Update the log.
+      FLogString := FInfoString;
+      Synchronize(@SynchronizeLogEvent);
+      // Perform info table check.
+      infoTableCheckResult := BltSessionCheckInfoTable;
+      if infoTableCheckResult = BLT_RESULT_OK then
+      begin
+        // Update the log.
+        FLogString := '  -> Info table check okay. Proceeding';
+        Synchronize(@SynchronizeLogEvent);
+      end
+      else if infoTableCheckResult = BLT_RESULT_ERROR_SESSION_INFO_TABLE then
+      begin
+        // Set error flag.
+        errorDetected := True;
+        // Cancel firmware update procedure by transitioning to the idle state.
+        FState := FUS_IDLE;
+        // Update the log.
+        FLogString := '  -> Info table check not passed. Firmware update rejected';
+        Synchronize(@SynchronizeLogEvent);
+        // Trigger error.
+        FErrorString := 'Info table check not passed. Firmware update rejected.';
+        Synchronize(@SynchronizeErrorEvent);
+      end
+      else if infoTableCheckResult = BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED then
+      begin
+        // Update the log.
+        FLogString := '  -> Info table check not supported. Skipping';
+        Synchronize(@SynchronizeLogEvent);
+      end
+      else // Generic error
+      begin
+        // Set error flag.
+        errorDetected := True;
+        // Cancel firmware update procedure by transitioning to the idle state.
+        FState := FUS_IDLE;
+        // Update the log.
+        FLogString := '  -> Error detected during info table check';
+        Synchronize(@SynchronizeLogEvent);
+        // Trigger error.
+        FErrorString := 'Error detected during info table check.';
+        Synchronize(@SynchronizeErrorEvent);
       end;
       // Transition to the next state if all is okay.
       if not errorDetected then

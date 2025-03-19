@@ -86,6 +86,18 @@ LIBOPENBLT_EXPORT char const * BltVersionGetString(void);
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
+/** \brief Function return value for \ref BltSessionCheckInfoTable to signal that the
+ *         target replied that the info table feature is either not yet supported or
+ *         was not enabled. The firmware update can proceed as usual though.
+ */
+#define BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED (33u)
+
+/** \brief Function return value for \ref BltSessionCheckInfoTable to signal that the
+ *         target does not allow the firmware update to proceed, due to the check it
+ *         performed on the info tables.
+ */
+#define BLT_RESULT_ERROR_SESSION_INFO_TABLE (34u)
+
 /** \brief XCP protocol version 1.0. XCP is a universal measurement and calibration
  *         communication protocol. It contains functionality for reading, programming,
  *         and erasing (non-volatile) memory making it a good fit for bootloader
@@ -213,6 +225,7 @@ LIBOPENBLT_EXPORT uint32_t BltSessionWriteData(uint32_t address, uint32_t len,
                                                uint8_t const * data);
 LIBOPENBLT_EXPORT uint32_t BltSessionReadData(uint32_t address, uint32_t len, 
                                               uint8_t * data);
+LIBOPENBLT_EXPORT uint32_t BltSessionCheckInfoTable(void);
 
 
 /****************************************************************************************

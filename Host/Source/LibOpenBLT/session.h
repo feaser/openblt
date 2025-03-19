@@ -75,6 +75,17 @@ typedef struct t_session_protocol
    *         stored in the data byte array to which the pointer was specified.
    */
   bool (* ReadData) (uint32_t address, uint32_t len, uint8_t * data);
+  /** \brief Request information from the bootloader about the info table start address
+   *         and length. Using this information, the info table is extracted from the
+   *         firmware file selected for the firmware update. The extracted info table
+   *         is then downloaded to a RAM buffer in the bootloader. Afterwards, the 
+   *         bootloader is requested to compare this info table contents with the one
+   *         available in the currently programmed firmware (if any) and to check if
+   *         it is okay for the session to proceed with the firmware update. If the 
+   *         supported parameter is set to false by this function, the target indicated
+   *         that the info table feature is either not supported or not enabled.
+   */
+  bool (* CheckInfoTable) (bool * supported, bool * okay);
 } tSessionProtocol;
 
 
@@ -88,6 +99,7 @@ void SessionStop(void);
 bool SessionClearMemory(uint32_t address, uint32_t len);
 bool SessionWriteData(uint32_t address, uint32_t len, uint8_t const * data);  
 bool SessionReadData(uint32_t address, uint32_t len, uint8_t * data);
+bool SessionCheckInfoTable(bool * supported, bool * okay);
 
 
 #ifdef __cplusplus

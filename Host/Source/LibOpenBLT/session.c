@@ -203,4 +203,45 @@ bool SessionReadData(uint32_t address, uint32_t len, uint8_t * data)
   return result;
 } /*** end of SessionReadData ***/
 
+
+/************************************************************************************//**
+** \brief     Extracts the info table from the firmware file that was selected for the
+**            firmware update, downloads this info table to the target, and requests
+**            the target to check the info table to decide if it's okay to proceed with
+**            the firmware update.
+** \param     supported If set to true by this function, the target indicated that the
+**            info table feature is supported and enabled. If set to false, the info
+**            table feature is either not supported by the target or not enabled. 
+** \param     okay If set to true by this function, the target indicated that the check
+**            of the info table passed and it is okay to proceed with the firmware
+**            update. If set to false by this function, the firmware updates should be
+**            aborted.
+** \return    True if communication with the target regarding the info table was
+**            successful, false otherwise.
+**
+****************************************************************************************/
+bool SessionCheckInfoTable(bool * supported, bool * okay)
+{
+  bool result = false;
+
+  /* Check parameters. */
+  assert((supported != NULL) && (okay != NULL));
+
+  /* Only continue if the parameters are valid. */
+  if ((supported != NULL) && (okay != NULL)) /*lint !e774 */
+  {
+    /* Pass the request on to the linked protocol module. */
+    result = protocolPtr->CheckInfoTable(supported, okay);
+
+    /* Make sure to set okay to false in case this result is false. */
+    if (!result)
+    {
+      *okay = false;
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of SessionCheckInfoTable ***/
+
+
 /*********************************** end of session.c **********************************/

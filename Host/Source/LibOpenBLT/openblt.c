@@ -418,6 +418,62 @@ LIBOPENBLT_EXPORT uint32_t BltSessionReadData(uint32_t address, uint32_t len,
 } /*** end of BltSessionReadData ***/
 
 
+/************************************************************************************//**
+** \brief     Extracts the info table from the firmware file that was selected for the
+**            firmware update, downloads this info table to the target, and requests
+**            the target to check the info table to decide if it's okay to proceed with
+**            the firmware update.
+** \attention This function should only be called after the session was started  
+**            (\ref BltSessionStart) and after loading the firmware file
+**            (\ref BltFirmwareLoadFromFile).
+** \return    BLT_RESULT_OK if successful and it is okay to proceed with the firmware
+**            update. 
+**            BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED if the target indicated
+**            that the info table feature is either not supported or not enabled. The
+**            firmware update can proceed as usual.
+**            BLT_RESULT_ERROR_SESSION_INFO_TABLE if successful but the target indicated
+**            that the firmware update is not allowed to proceed, because of the info
+**            table check. The exact reason depends on how the bootloader implemented
+**            the user specific info table check.
+**            BLT_RESULT_ERROR_xxx otherwise.
+**
+****************************************************************************************/
+LIBOPENBLT_EXPORT uint32_t BltSessionCheckInfoTable(void)
+{
+  uint32_t result = BLT_RESULT_ERROR_GENERIC;
+  bool infoTableFeatureSupported = false;
+  bool okayToProceed = false;
+
+  /* Pass the request on to the session module. */
+  if (SessionCheckInfoTable(&infoTableFeatureSupported, &okayToProceed))
+  {
+    /* Check if the info table feature is actually supported. */
+    if (!infoTableFeatureSupported)
+    {
+      result = BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED;
+    }
+    /* Info table feature is supported so process the check outcome. */
+    else
+    {
+      /* Check if it's okay to proceed with the firmware update. */
+      if (okayToProceed)
+      {
+        result = BLT_RESULT_OK;
+      }
+      /* Target indicated that the info table check result is such that the firmware
+       * update should be aborted.
+       */
+      else
+      {
+        result = BLT_RESULT_ERROR_SESSION_INFO_TABLE;
+      }
+    }
+  }
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of BltSessionCheckInfoTable ***/
+
+
 /****************************************************************************************
 *             F I R M W A R E   D A T A
 ****************************************************************************************/

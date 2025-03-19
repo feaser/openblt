@@ -44,7 +44,8 @@ typedef enum
   FIRMWARE_UPDATE_STATE_IDLE,                    /**< idle state                       */
   FIRMWARE_UPDATE_STATE_STARTING,                /**< starting state                   */
   FIRMWARE_UPDATE_STATE_ERASING,                 /**< erasing state                    */
-  FIRMWARE_UPDATE_STATE_PROGRAMMING              /**< programming state                */
+  FIRMWARE_UPDATE_STATE_PROGRAMMING,             /**< programming state                */
+  FIRMWARE_UPDATE_STATE_EXTRACTING               /**< extracting state                 */
 } tFirmwareUpdateState;
 
 /** \brief Structure type with information for the memory erase opeartion. */
@@ -181,6 +182,14 @@ void FileTask(void)
 {
   blt_int16s  parse_result = 0;
   blt_char   *read_line_ptr;
+#if (BOOT_INFO_TABLE_ENABLE > 0)
+  static blt_int8u  infoTableBuffer[BOOT_INFO_TABLE_LEN];
+  static blt_int16u infoTableByteCnt;
+  static blt_bool   infoTableExtracted;
+  blt_int16u        infoTableByteIdx;
+  blt_int16u        byteIdx;
+  blt_addr          byteAddr;
+#endif
 
   /* ------------------------------- idle -------------------------------------------- */
   if (firmwareUpdateState == FIRMWARE_UPDATE_STATE_IDLE)
@@ -218,14 +227,172 @@ void FileTask(void)
 #if (BOOT_FILE_LOGGING_ENABLE > 0)
     FileFirmwareUpdateLogHook("OK\n\r");
     FileFirmwareUpdateLogHook("Starting the programming sequence\n\r");
-    FileFirmwareUpdateLogHook("Parsing firmware file to detect erase blocks...");
 #endif
     /* prepare data objects for the erasing state */
     eraseInfo.start_address = 0;
     eraseInfo.total_size = 0;
+#if (BOOT_INFO_TABLE_ENABLE > 0)
+    /* prepare data object for the extraction state */
+    infoTableByteCnt = 0;
+    infoTableExtracted = BLT_FALSE;
+    /* clear the info table in the internal RAM buffer and reset its write pointer. */
+    InfoTableClear(INFO_TABLE_ID_INTERNAL_RAM);
+    /* transition from idle to extracting state */
+    firmwareUpdateState = FIRMWARE_UPDATE_STATE_EXTRACTING;
+    #if (BOOT_FILE_LOGGING_ENABLE > 0)
+    FileFirmwareUpdateLogHook("Parsing firmware file to extract info table...");
+    #endif
+#else
     /* transition from idle to erasing state */
     firmwareUpdateState = FIRMWARE_UPDATE_STATE_ERASING;
+    #if (BOOT_FILE_LOGGING_ENABLE > 0)
+    FileFirmwareUpdateLogHook("Parsing firmware file to detect erase blocks...");
+    #endif
+#endif
   }
+  #if (BOOT_INFO_TABLE_ENABLE > 0)
+  /* ------------------------------- extracting -------------------------------------- */
+  else if (firmwareUpdateState == FIRMWARE_UPDATE_STATE_EXTRACTING)
+  {
+    /* read a line from the file */
+    read_line_ptr = f_gets(lineParseObject.line, sizeof(lineParseObject.line), &fatFsObjects.file);
+    /* check if an error occurred */
+    if (f_error(&fatFsObjects.file) > 0)
+    {
+      /* cannot continue with firmware update so go back to idle state */
+      firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+      FileFirmwareUpdateLogHook("ERROR\n\r");
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+      FileFirmwareUpdateErrorHook(FILE_ERROR_CANNOT_READ_FROM_FILE);
+#endif
+      /* close the file */
+      f_close(&fatFsObjects.file);
+      return;
+    }
+    /* parse the S-Record line if the line is not empty */
+    if (read_line_ptr != BLT_NULL)
+    {
+      parse_result = FileSrecParseLine(lineParseObject.line, &lineParseObject.address,
+                                       lineParseObject.data);
+      /* check parsing result */
+      if (parse_result == ERROR_SREC_INVALID_CHECKSUM)
+      {
+        /* cannot continue with firmware update so go back to idle state */
+        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+        FileFirmwareUpdateLogHook("ERROR\n\r");
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+        FileFirmwareUpdateErrorHook(FILE_ERROR_INVALID_CHECKSUM_IN_FILE);
+#endif
+        /* close the file */
+        f_close(&fatFsObjects.file);
+        return;
+      }
+    }
+    /* only process parsing results if the line contained address/data info */
+    if (parse_result > 0)
+    {
+      /* does the parsed data include info table data? Note that parse_result holds
+       * the number of data bytes encountered on the parsed line.
+       */
+      if (! (((BOOT_INFO_TABLE_ADDR + BOOT_INFO_TABLE_LEN) <= lineParseObject.address) ||
+             ((lineParseObject.address + parse_result) <= BOOT_INFO_TABLE_ADDR)) )
+      {
+        /* loop through all parsed data bytes. */
+        for (byteIdx = 0; byteIdx < parse_result; byteIdx++)
+        {
+          /* does this byte belong to the info table? */
+          byteAddr = lineParseObject.address + byteIdx;
+          if ( (byteAddr >= BOOT_INFO_TABLE_ADDR) &&
+               (byteAddr < (BOOT_INFO_TABLE_ADDR + BOOT_INFO_TABLE_LEN)) )
+          {
+            /* calculate index into the info table buffer. */
+            infoTableByteIdx = byteAddr - BOOT_INFO_TABLE_ADDR;
+            /* store the byte in the info table buffer. */
+            infoTableBuffer[infoTableByteIdx] = lineParseObject.data[byteIdx];
+            infoTableByteCnt++;
+            /* done extracting the info table? */
+            if (infoTableByteCnt >= BOOT_INFO_TABLE_LEN)
+            {
+              /* hand the info table over to the info table module's RAM buffer. No need
+               * to check the return value because we know the parameters are valid and
+               * that the internal RAM buffer is writable.
+               */
+              (void)InfoTableAddData(INFO_TABLE_ID_INTERNAL_RAM, &infoTableBuffer[0],
+                                     BOOT_INFO_TABLE_LEN);
+              /* update flag to indicate that info table extraction is complete. */
+              infoTableExtracted = BLT_TRUE;
+              /* no need to continue the loop. */
+              break;
+            }
+          }
+        }
+      }
+    }
+    /* check if the end of the file was reached or the info table extraction completed.*/
+    if ( (f_eof(&fatFsObjects.file) > 0) || (infoTableExtracted == BLT_TRUE) )
+    {
+      /* rewind the file in preparation for the programming state */
+      if (f_lseek(&fatFsObjects.file, 0) != FR_OK)
+      {
+        /* cannot continue with firmware update so go back to idle state */
+        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+        FileFirmwareUpdateLogHook("ERROR\n\r");
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+        FileFirmwareUpdateErrorHook(FILE_ERROR_REWINDING_FILE_READ_POINTER);
+#endif
+        /* close the file */
+        f_close(&fatFsObjects.file);
+        return;
+      }
+      /* make sure the info table was extracted successfully. */
+      if (infoTableExtracted == BLT_FALSE)
+      {
+        /* cannot continue with firmware update so go back to idle state */
+        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+        FileFirmwareUpdateLogHook("ERROR\n\r");
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+        FileFirmwareUpdateErrorHook(FILE_ERROR_INFO_TABLE_MISSING);
+#endif
+        return;
+      }
+      /* still here so the info table was successfully extracted. continue with checking
+       * the info table contents.
+       */
+      #if (BOOT_FILE_LOGGING_ENABLE > 0)
+      FileFirmwareUpdateLogHook("OK\n\r");
+      FileFirmwareUpdateLogHook("Performing info table check...");
+      #endif
+      /* Request bootloader application to perform the info table check. */
+      if (InfoTableCheck() == BLT_FALSE)
+      {
+        /* cannot continue with firmware update so go back to idle state */
+        firmwareUpdateState = FIRMWARE_UPDATE_STATE_IDLE;
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+        FileFirmwareUpdateLogHook("ERROR\n\r");
+#endif
+#if (BOOT_FILE_ERROR_HOOK_ENABLE > 0)
+        FileFirmwareUpdateErrorHook(FILE_ERROR_INFO_TABLE_CHECK_NOT_PASSED);
+#endif
+        return;
+      }
+      /* info table check passed. okay to continue with the firmware update. */
+#if (BOOT_FILE_LOGGING_ENABLE > 0)
+      FileFirmwareUpdateLogHook("OK\n\r");
+      FileFirmwareUpdateLogHook("Parsing firmware file to detect erase blocks...");
+#endif
+      /* transition from extracting to erasing state */
+      firmwareUpdateState = FIRMWARE_UPDATE_STATE_ERASING;
+    }
+  }
+  #endif /* BOOT_INFO_TABLE_ENABLE > 0 */
   /* ------------------------------- erasing ----------------------------------------- */
   else if (firmwareUpdateState == FIRMWARE_UPDATE_STATE_ERASING)
   {

@@ -565,6 +565,44 @@
 
 
 /****************************************************************************************
+*   I N F O   T A B L E   C O N F I G U R A T I O N   C H E C K
+****************************************************************************************/
+#ifndef BOOT_INFO_TABLE_ENABLE
+#define BOOT_INFO_TABLE_ENABLE          (0)
+#endif
+
+#ifndef BOOT_INFO_TABLE_LEN
+#define BOOT_INFO_TABLE_LEN             (0)
+#endif
+
+#ifndef BOOT_INFO_TABLE_ADDR
+#define BOOT_INFO_TABLE_ADDR            (0)
+#endif
+
+#if (BOOT_INFO_TABLE_ENABLE < 0) || (BOOT_INFO_TABLE_ENABLE > 1)
+#error "BOOT_INFO_TABLE_ENABLE must be 0 or 1"
+#endif
+
+#if (BOOT_INFO_TABLE_ENABLE > 0)
+#if (BOOT_INFO_TABLE_LEN <= 0)
+#error "BOOT_INFO_TABLE_LEN must be > 0"
+#endif
+
+#if (BOOT_INFO_TABLE_LEN > 0xFFFF)
+#error "BOOT_INFO_TABLE_LEN must be <= 0xFFFF"
+#endif
+
+#if (BOOT_INFO_TABLE_ADDR < 0)
+#error "BOOT_INFO_TABLE_ADDR must be >= 0"
+#endif
+
+#if (BOOT_INFO_TABLE_ADDR > (0xFFFFFFFF - BOOT_INFO_TABLE_LEN))
+#error "BOOT_INFO_TABLE_ADDR must be <= (0xFFFFFFFF - BOOT_INFO_TABLE_LEN)"
+#endif
+#endif /* BOOT_INFO_TABLE_ENABLE > 0 */
+
+
+/****************************************************************************************
 *   X C P   M O D U L E   C O N F I G U R A T I O N   C H E C K
 ****************************************************************************************/
 #ifndef BOOT_XCP_SEED_KEY_ENABLE

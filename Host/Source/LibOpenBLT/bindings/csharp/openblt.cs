@@ -79,6 +79,20 @@ namespace OpenBLT
         /// Function return value for when a generic error occured.
         /// </summary>
         public const UInt32 RESULT_ERROR_GENERIC = 1;
+        
+        /// <summary> 
+        /// Function return value for Session.CheckInfoTable to signal that the
+        /// target replied that the info table feature is either not yet supported or
+        /// was not enabled. The firmware update can proceed as usual though.
+        /// </summary>
+        public const UInt32 RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED = 33;
+
+        /// <summary>
+        /// Function return value for Session.CheckInfoTable to signal that the
+        /// target does not allow the firmware update to proceed, due to the check it
+        /// performed on the info tables.
+        /// </summary>
+        public const UInt32 RESULT_ERROR_SESSION_INFO_TABLE = 34;
 
         /// <summary>
         /// Wrapper for the version module of LibOpenBLT.
@@ -119,7 +133,7 @@ namespace OpenBLT
             /// </example>
             public static String GetString()
             {
-                return Marshal.PtrToStringAnsi(BltVersionGetString());
+                return Marshal.PtrToStringAnsi(BltVersionGetString()) ?? "";
             }
         }
 
@@ -1012,6 +1026,52 @@ namespace OpenBLT
 
                 // Give the result back to the caller.
                 return result;
+            }
+            
+            [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            private static extern UInt32 BltSessionCheckInfoTable();
+
+            /// <summary>
+            /// Extracts the info table from the firmware file that was selected for the
+            /// firmware update, downloads this info table to the target, and requests
+            /// the target to check the info table to decide if it's okay to proceed with
+            /// the firmware update.
+            ///
+            /// This function should only be called after the session was started  
+            /// (Session.Start) and after loading the firmware file
+            /// (Firmware.LoadFromFile).
+            /// <returns>RESULT_OK if successful and it is okay to proceed with the 
+            /// firmware update. RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED if the
+            /// target indicated that the info table feature is either not supported or
+            /// not enabled. The firmware update can proceed as usual. 
+            /// RESULT_ERROR_SESSION_INFO_TABLE if successful but the target indicated
+            /// that the firmware update is not allowed to proceed, because of the info
+            /// table check. The exact reason depends on how the bootloader implemented
+            /// the user specific info table check. RESULT_ERROR_xxx otherwise.</returns>
+            /// <example>
+            /// <code>
+            /// uint result = OpenBLT.Lib.Session.CheckInfoTable();
+            /// if (result == OpenBLT.Lib.RESULT_OK)
+            /// {
+            ///     Console.WriteLine("[OK] Info table check succeeded. Okay to proceed.");
+            /// }
+            /// else if (result == OpenBLT.Lib.RESULT_ERROR_SESSION_INFO_TABLE)
+            /// {
+            ///     Console.WriteLine("[ABORT] Info table check failed. Abort.");
+            /// }
+            /// else if (result == OpenBLT.Lib.RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED)
+            /// {
+            ///     Console.WriteLine("[SKIPPED] Info table check not enabled. Okay to proceed.");
+            /// }
+            /// else
+            /// {
+            ///     Console.WriteLine("[ERROR] Could not perform info table check.");
+            /// }
+            /// </code>
+            /// </example>
+            public static UInt32 CheckInfoTable()
+            {
+                return BltSessionCheckInfoTable();
             }
         }
 

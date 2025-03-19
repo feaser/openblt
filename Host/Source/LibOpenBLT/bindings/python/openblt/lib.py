@@ -244,6 +244,13 @@ if hasattr(sharedLibraryHandle, 'BltSessionReadData'):
                                    ctypes.POINTER(ctypes.c_uint8)]
 
 
+BltSessionCheckInfoTable = None
+if hasattr(sharedLibraryHandle, 'BltSessionCheckInfoTable'):
+    BltSessionCheckInfoTable = sharedLibraryHandle.BltSessionCheckInfoTable
+    BltSessionCheckInfoTable.argtypes = []
+    BltSessionCheckInfoTable.restype = ctypes.c_uint32
+
+
 # ***************************************************************************************
 #  Constant declarations
 # ***************************************************************************************
@@ -811,6 +818,8 @@ def util_crypto_aes256_decrypt(data, len, key):
 # ***************************************************************************************
 #  Constant declarations
 # ***************************************************************************************
+BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED = 33
+BLT_RESULT_ERROR_SESSION_INFO_TABLE = 34
 BLT_SESSION_XCP_V10 = 0
 BLT_TRANSPORT_XCP_V10_RS232 = 0
 BLT_TRANSPORT_XCP_V10_CAN = 1
@@ -1250,6 +1259,52 @@ def session_read_data(address, len, data):
         # Copy the uploaded data byte values to the data list provided by the caller.
         for i in range(len):
             data.append(upload_data[i])
+    # Give the result back to the caller.
+    return result
+
+
+def session_check_info_table():
+    """
+    Extracts the info table from the firmware file that was selected for the firmware
+    update, downloads this info table to the target, and requests the target to check the
+    info table to decide if it's okay to proceed with the firmware update. 
+
+    This function should only be called after the session was started (session_start) and
+    after loading the firmware file (firmware_load_from_file).
+
+
+    :returns: BLT_RESULT_OK if successful and it is okay to proceed with the firmware
+              update. BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED if the target
+              indicated that the info table feature is either not supported or not
+              enabled. The firmware update can proceed as usual.
+              BLT_RESULT_ERROR_SESSION_INFO_TABLE if successful but the target indicated
+              that the firmware update is not allowed to proceed, because of the info
+              table check. The exact reason depends on how the bootloader implemented the
+              user specific info table check. BLT_RESULT_ERROR_xxx otherwise.
+    :rtype: int
+
+    :Example:
+    ::
+
+        import openblt
+
+        result = openblt.session_check_info_table()
+        if result == openblt.BLT_RESULT_OK:
+            print('[OK] Info table check succeeded. Okay to proceed.')
+        elif result == openblt.BLT_RESULT_ERROR_SESSION_INFO_TABLE:
+            print('[ABORT] Info table check failed. Abort.')
+        elif result == openblt.BLT_RESULT_ERROR_SESSION_INFO_TABLE_NOT_SUPPORTED:
+            print('[SKIPPED] Info table check not enabled. Okay to proceed.')
+        else:
+        if openblt.session_check_info_table() != openblt.BLT_RESULT_OK:
+            print('[ERROR] Could not perform info table check.')
+    """
+    # Initialize the result.
+    result = BLT_RESULT_ERROR_GENERIC
+    # Check if the shared library function could be imported.
+    if BltSessionCheckInfoTable is not None:
+        # Call the function in the shared library
+        result = BltSessionCheckInfoTable()
     # Give the result back to the caller.
     return result
 
