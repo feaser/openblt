@@ -135,7 +135,7 @@ void MbRtuDelay(blt_int16u delay_us)
   /* calculate the number of ticks of the free running counter to delay. Note that one
    * tick equals 10 us. The result is rounded up to the next 10 us.
    */
-  delayTimeTicks = (blt_int16u)(delay_us + (9U) / 10U);
+  delayTimeTicks = (blt_int16u)((delay_us + 9U) / 10U);
 
   /* wait for the delay time to expire. */
   startTimeTicks = MbRtuFreeRunningCounterGet();
