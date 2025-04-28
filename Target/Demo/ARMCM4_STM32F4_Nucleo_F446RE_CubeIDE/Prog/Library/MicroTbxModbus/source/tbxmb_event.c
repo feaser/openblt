@@ -128,6 +128,24 @@ void TbxMbEventTask(void)
           /* Only continue if the current poller list size is not yet maxed out. */
           if (TbxListGetSize(pollerList) <= TBX_MB_EVENT_QUEUE_SIZE)
           {
+            /* From a design perspective, it is allowed and possible that a poller list
+             * entry is requested to be added, which actually is already present in the
+             * poller list. There is no need to add a duplicate entry to the poller list.
+             * It causes unnecessary run-time overhead by running the pollFcn multiple
+             * times and, more importantly, would cause a problem further down in this
+             * function, when iterating over the poller list. TbxListGetNextItem() takes
+             * the list item as a reference and not the internal list node. So if you
+             * have two identical list entries (let's call it item_a) and then a third
+             * different list entry (item_b), the call to TbxListGetNextItem(item_a) will
+             * always return return the second item_a. Consequently, iterating over the
+             * list with either an if- or while-loop, will never give access to item_b. 
+             * Long story short: Make sure to not add a duplcate entry into the list. 
+             * The quick and easy way to do this is by first removing the item. If the
+             * item is not yet in the list, attempting to remove it simply does nothing. 
+             * If it was in the list, it gets removed first and then newly added to 
+             * preven the duplicate entry. Exactly what you want here:
+             */
+            TbxListRemoveItem(pollerList, newEvent.context);
             /* Add the context at the end of the event poller list. */
             uint8_t insertResult = TbxListInsertItemBack(pollerList, newEvent.context);
             /* Check that the item could be added to the queue. If not, then the heaps size
@@ -162,18 +180,23 @@ void TbxMbEventTask(void)
   }
 
   /* Iterate over the event poller list. */
+  size_t listSize = TbxListGetSize(pollerList);
   void * listItem = TbxListGetFirstItem(pollerList);
-  while (listItem != NULL)
+  for (size_t listItemIdx = 0U; listItemIdx < listSize; listItemIdx++)
   {
-    /* Convert the opaque pointer to the event context structure. */
-    tTbxMbEventCtx * eventPollCtx = (tTbxMbEventCtx *)listItem;
-    /* Call its poll function if configured. */
-    if (eventPollCtx->pollFcn != NULL)
+    /* Only continue with a valid list item. */
+    if (listItem != NULL)
     {
-      eventPollCtx->pollFcn(listItem);
+      /* Convert the opaque pointer to the event context structure. */
+      tTbxMbEventCtx * eventPollCtx = (tTbxMbEventCtx *)listItem;
+      /* Call its poll function if configured. */
+      if (eventPollCtx->pollFcn != NULL)
+      {
+        eventPollCtx->pollFcn(listItem);
+      }
+      /* Move on to the next item in the list. */
+      listItem = TbxListGetNextItem(pollerList, listItem);
     }
-    /* Move on to the next item in the list. */
-    listItem = TbxListGetNextItem(pollerList, listItem);
   }
 
   /* Set the event wait timeout for the next call to this task function. If the event
@@ -181,7 +204,7 @@ void TbxMbEventTask(void)
    * get continuously called. Otherwise go back to the default wait time to not hog up
    * CPU time unnecessarily.
    */
-  waitTimeoutMS = (TbxListGetSize(pollerList) > 0U) ? 1U : defaultWaitTimeoutMs;
+  waitTimeoutMS = (listSize > 0U) ? 1U : defaultWaitTimeoutMs;
 } /*** end of TbxMbEventTask ***/
 
 

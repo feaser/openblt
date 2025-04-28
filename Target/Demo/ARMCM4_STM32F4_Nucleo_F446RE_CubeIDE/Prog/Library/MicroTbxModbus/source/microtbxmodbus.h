@@ -58,7 +58,7 @@ extern "C" {
 #define TBX_MB_VERSION_MINOR                 (9U)
 
 /** \brief Patch number of MicroTBX-Modbus. */
-#define TBX_MB_VERSION_PATCH                 (3U)
+#define TBX_MB_VERSION_PATCH                 (4U)
 
 
 #ifdef __cplusplus
