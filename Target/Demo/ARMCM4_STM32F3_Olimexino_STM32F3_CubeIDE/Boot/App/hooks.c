@@ -465,9 +465,7 @@ void FileFirmwareUpdateLogHook(blt_char *info_string)
 ** \param     newInfoTable Address of the opaque pointer to the info table that was
 **            extracted from the firmware file that was selected for the firmware update.
 ** \param     oldInfoTable Address of the opaque pointer to the info table of the
-**            currently programmed firmware. Make sure to do an empty memory check on
-**            this table because it could be that no firmware is currently present and
-**            the flash is in the default erased state.
+**            currently programmed firmware.
 ** \return    BLT_TRUE if the info table check passed and the firmware update is allowed
 **            to proceed. BLT_FALSE if the firmware update is not allowed to proceed.
 **
