@@ -1,57 +1,30 @@
 # Linked lists
 
-This software component consists of an easy-to-use set of functions for managing and
-sorting items in a linked list. It builds upon the [memory pool](mempools.md)
-functionality, which makes is possible to dynamically create, delete and automatically
-grow linked lists in a convenient way. Think of a linked list as an array on steroids.
-You do not yet have to know its size upon creation and you can insert, remove and
-sort its items with ease.
+This software component consists of an easy-to-use set of functions for managing and sorting items in a linked list. It builds upon the [memory pool](mempools.md)
+functionality, which makes is possible to dynamically create, delete and automatically grow linked lists in a convenient way. Think of a linked list as an array on steroids. You do not yet have to know its size upon creation and you can insert, remove and sort its items with ease.
 
-A linked list is a sequence of data items, where each data item contains a connection
-to the adjacent items. In this software component the definition of a data item is
-a pointer to the data. The only thing you as the programmer need to take care of,
-is that the data pointer actually points to valid data before inserting it into
-the linked list.
-
-Linked lists are commonly used data structures in software programs and they are
-perfect for scenarios where you need to store a sequence of data, but you do not
-yet know the maximum number of items to store ahead of time. An example would be a
-first-in-first-out (FIFO) buffer.
+A linked list is a sequence of data items, where each data item contains a connection to the adjacent items. In this software component the definition of a data item is a pointer to the data. The only thing you as the programmer need to take care of, is that the data pointer actually points to valid data before inserting it into
+the linked list. Linked lists are commonly used data structures in software programs and they are perfect for scenarios where you need to store a sequence of data, but you do not yet know the maximum number of items to store ahead of time. An example would be a first-in-first-out (FIFO) buffer.
 
 ## Usage
 
-Linked list can be created and deleted at any time in the software program with
-functions [`TbxListCreate()`](apiref.md#tbxlistcreate) and [`TbxListDelete()`](apiref.md#tbxlistdelete). The [`TbxListCreate()`](apiref.md#tbxlistcreate) function
-returns a pointer to the new list. This list pointer serves as a handle to the list.
-You can pass this handle as a parameter to all the other functions in the software
-component to identify the list that should be operated on.
+Linked list can be created and deleted at any time in the software program with functions [`TbxListCreate()`](apiref.md#tbxlistcreate) and [`TbxListDelete()`](apiref.md#tbxlistdelete). The [`TbxListCreate()`](apiref.md#tbxlistcreate) function returns a pointer to the new list. This list pointer serves as a handle to the list. You can pass this handle as a parameter to all the other functions in the software component to identify the list that should be operated on.
 
-Once the list is created, you can start adding items to the list with functions
-[`TbxListInsertItemFront()`](apiref.md#tbxlistinsertitemfront), [`TbxListInsertItemBack()`](apiref.md#tbxlistinsertitemback), [`TbxListInsertItemBefore()`](apiref.md#tbxlistinsertitembefore),
-and [`TbxListInsertItemAfter()`](apiref.md#tbxlistinsertitemafter). The function to call depends on where in the list
-you would like to add the item.
+Once the list is created, you can start adding items to the list with functions [`TbxListInsertItemFront()`](apiref.md#tbxlistinsertitemfront), [`TbxListInsertItemBack()`](apiref.md#tbxlistinsertitemback), [`TbxListInsertItemBefore()`](apiref.md#tbxlistinsertitembefore), and [`TbxListInsertItemAfter()`](apiref.md#tbxlistinsertitemafter). The function to call depends on where in the list you would like to add the item.
 
-For reading items and for iterating over items, the functions [`TbxListGetFirstItem()`](apiref.md#tbxlistgetfirstitem),
-[`TbxListGetLastItem()`](apiref.md#tbxlistgetlastitem), [`TbxListGetPreviousItem()`](apiref.md#tbxlistgetpreviousitem), and [`TbxListGetNextItem()`](apiref.md#tbxlistgetnextitem) are
-available.
+For reading items and for iterating over items, the functions [`TbxListGetFirstItem()`](apiref.md#tbxlistgetfirstitem), [`TbxListGetLastItem()`](apiref.md#tbxlistgetlastitem), [`TbxListGetPreviousItem()`](apiref.md#tbxlistgetpreviousitem), and [`TbxListGetNextItem()`](apiref.md#tbxlistgetnextitem) are available.
 
-At any given time, you can obtain the number of items that are stored in the list
-with function [`TbxListGetSize()`](apiref.md#tbxlistgetsize). Call function [`TbxListRemoveItem()`](apiref.md#tbxlistremoveitem) to remove
+At any given time, you can obtain the number of items that are stored in the list with function [`TbxListGetSize()`](apiref.md#tbxlistgetsize). Call function [`TbxListRemoveItem()`](apiref.md#tbxlistremoveitem) to remove
 a single item from the list, or call [`TbxListClear()`](apiref.md#tbxlistclear) to remove all items at once.
 
-For editing the order of the items in the list, functions [`TbxListSwapItems()`](apiref.md#tbxlistswapitems) and
-[`TbxListSortItems()`](apiref.md#tbxlistsortitems) are available. When calling [`TbxListSortItems()`](apiref.md#tbxlistsortitems) you can
-specify your own function that will be called during the sort operation. In this
-callback function you can implement your own application specific logic for
-comparing two data items, therefore giving you full control and flexibility
-over how the sorting works.
+For editing the order of the items in the list, functions [`TbxListSwapItems()`](apiref.md#tbxlistswapitems) and [`TbxListSortItems()`](apiref.md#tbxlistsortitems) are available. When calling [`TbxListSortItems()`](apiref.md#tbxlistsortitems) you can
+specify your own function that will be called during the sort operation. In this callback function you can implement your own application specific logic for
+comparing two data items, therefore giving you full control and flexibility over how the sorting works.
 
 ## Examples
 
-This section contains a few examples to demonstrate how the linked list software
-component works. To keep the examples simple, some error checking of function
-return values was omitted. The examples assume that the following type for an
-arbitrary message is defined:
+This section contains a few examples to demonstrate how the linked list software component works. To keep the examples simple, some error checking of function
+return values was omitted. The examples assume that the following type for an arbitrary message is defined:
 
 ```c
 typedef struct
@@ -64,10 +37,8 @@ typedef struct
 
 ### Example 1 - FIFO buffer
 
-The first example demonstrates how quickly a first-in-first-out (FIFO) buffer
-can be created. Keep in mind that a linked list holds pointers to data items. It
-is up to the developer to allocate and release the memory for the data item.
-Luckily, this is easy with the help of a [memory pool](mempools.md).
+The first example demonstrates how quickly a first-in-first-out (FIFO) buffer can be created. Keep in mind that a linked list holds pointers to data items. It
+is up to the developer to allocate and release the memory for the data item. Luckily, this is easy with the help of a [memory pool](mempools.md).
 
 ```c
 tTbxList * msgBuffer;
@@ -76,23 +47,15 @@ void MsgBufferInit(void)
 {
   /* Create the linked list. */
   msgBuffer = TbxListCreate();
-  /* Create message memory pool with an initial size of 1. */
-  TbxMemPoolCreate(1, sizeof(tMsg));
 }
 
 void MsgBufferAdd(tMsg const * msg)
 {
   tMsg * newMsg;
 
-  /* Attempt to allocate memory to store the message. */
-  newMsg = TbxMemPoolAllocate(sizeof(tMsg));
-  /* Automatically increase the memory pool if it was too small. */
-  if (newMsg == NULL)
-  {
-    TbxMemPoolCreate(1, sizeof(tMsg));
-    newMsg = TbxMemPoolAllocate(sizeof(tMsg));
-  }
-  /* Copy the message. */
+  /* Allocate block from an automatically created and expanded memory pool. */
+  newMsg = TbxMemPoolAllocateAuto(sizeof(tMsg));
+  /* Copy the message to the newly allocated memory. */
   *newMsg = *msg;
   /* Add the message at the end of the list. */
   TbxListInsertItemBack(msgBuffer, newMsg);
@@ -121,12 +84,8 @@ uint8_t MsgBufferGet(tMsg * msg)
 }
 ```
 
-You now not only have a FIFO buffer for storing messages, but its implementation
-is such that it can automatically grow in size. Memory pools form the foundation
-for this, meaning that you do not have to worry about memory fragmentation.
-
-The following code demonstrates how messages can be stored and retrieved from this
-FIFO buffer:
+You now not only have a FIFO buffer for storing messages, but its implementation is such that it can automatically grow in size. Memory pools form the foundation
+for this, meaning that you do not have to worry about memory fragmentation. The following code demonstrates how messages can be stored and retrieved from this FIFO buffer:
 
 ```c
 /* Initialize the message FIFO buffer. */
@@ -158,8 +117,7 @@ Item ID: 0x100
 
 ### Example 2 - Iterate list
 
-The second example demonstrates how to iterate through contents of a linked list.
-The following function prints information about the list contents:
+The second example demonstrates how to iterate through contents of a linked list. The following function prints information about the list contents:
 
 ```c
 void MsgBufferPrint(void)
@@ -206,10 +164,8 @@ Number of items: 3
 
 ### Example 3 - Sort list
 
-The third example builds upon example 2, where there are three messages in the
-list. Let's assume you want to sort the list contents based on the message
-identifier. For this you could implement the following function for comparing
-two messages:
+The third example builds upon example 2, where there are three messages in the list. Let's assume you want to sort the list contents based on the message
+identifier. For this you could implement the following function for comparing two messages:
 
 ```c
 uint8_t CompareMessage(void const * item1, void const * item2)
@@ -256,16 +212,22 @@ Number of items: 3
   Item 3 ID: 0x300
 ```
 
-Note that the items in the list are now sorted based on the message identifier
-in ascending order.
+Note that the items in the list are now sorted based on the message identifier in ascending order.
+
+## Limitations
+
+This convenient and easy-to-use set of functions, for managing and sorting items in a linked list, does come with one limitation: Not all API functions can be used, if you plan on storing items in the list that could potentially point to the same memory address. In case you plan on potentially storing such duplicate entries in the list, the following API functions should NOT be used:
+
+* `TbxListInsertItemBefore()`
+* `TbxListInsertItemAfter()`
+* `TbxListGetPreviousItem()`
+* `TbxListGetNextItem()`
+* `TbxListRemoveItem()`
+* `TbxListSwapItems()`
 
 ## Configuration
 
-The linked list software component itself does not have to be configured. However, when
-creating a linked list and inserting items into it, the memory needed is dynamically
-allocated with the help of a memory pool. Because a memory pool takes memory from the
-heap, make sure the heap size is configured large enough with the help of macro
-[`TBX_CONF_HEAP_SIZE`](apiref.md#configuration):
+The linked list software component itself does not have to be configured. However, when creating a linked list and inserting items into it, the memory needed is dynamically allocated with the help of a memory pool. Because a memory pool takes memory from the heap, make sure the heap size is configured large enough with the help of macro [`TBX_CONF_HEAP_SIZE`](apiref.md#configuration):
 
 ```c
 /** \brief Configure the size of the heap in bytes. */

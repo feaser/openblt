@@ -24,10 +24,11 @@ The trick is to tune the memory pools to your specific software program needs. W
 
 Once the memory pools are created, memory allocation with the memory pool software component is actually quite similar to calling the C standard library functions. To allocate memory, call [`TbxMemPoolAllocate()`](apiref.md#tbxmempoolallocate) instead of `malloc()`. The best fitting memory pool for the data size requested, is automatically selected. Once the allocated data is no longer needed, call [`TbxMemPoolRelease()`](apiref.md#tbxmempoolrelease), instead of `free()`.
 
+As an alternative to [`TbxMemPoolAllocate()`](apiref.md#tbxmempoolallocate), you could use [`TbxMemPoolAllocateAuto()`](apiref.md#tbxmempoolallocateauto). This convenient function automatically creates a memory pool with the block size of the size you attempt to allocate, if not yet created. Additionally, it automatically expands the memory pool with one more block, in case no more free blocks are available.
+
 ## Examples
 
-The following example program demonstrates how memory pools are created and proves that data from the memory pools can be dynamically allocated and released over and over again. It it also an example of how you can expand and
-existing memory pool at a later point in time.
+The following example program demonstrates how memory pools are created and proves that data from the memory pools can be dynamically allocated and released over and over again. It is also an example of how you can expand an existing memory pool at a later point in time.
 
 ```c
 void main(void)
@@ -106,6 +107,39 @@ void main(void)
     TBX_ASSERT(TbxMemPoolAllocate(16U) == NULL);
 
     /* Now release all the allocated data blocks again. */
+    for (idx = 0U; idx < 16U; idx++)
+    {
+      TbxMemPoolRelease(dataPtr[idx]);
+    }
+  }
+}
+```
+
+The following example does the same thing, however this time using the more convenient [`TbxMemPoolAllocateAuto()`](apiref.md#tbxmempoolallocateauto). It continuously allocates 16 blocks that are each 12 bytes in size, during each superloop iteration:
+
+```c
+void main(void)
+{
+  size_t    idx;
+  uint8_t * dataPtr[16];
+
+  /* Enter the infinite program loop. */
+  for (;;)
+  {
+    /* Allocate 16 blocks with a size of 12 bytes. Note that this auto-
+     * matically creates the memory pool and expands it with new blocks
+     * as needed.
+     */
+    for (idx = 0U; idx < 16U; idx++)
+    {
+      dataPtr[idx] = TbxMemPoolAllocateAuto(12U);
+      TBX_ASSERT(dataPtr[idx] != NULL);
+    }
+
+    /* Now release all the allocated data blocks again. Note that during
+     * the next superloop iteration, the automatically created memory
+     * pool already holds 16 blocks of 12 bytes, which will be reused.
+     */
     for (idx = 0U; idx < 16U; idx++)
     {
       TbxMemPoolRelease(dataPtr[idx]);

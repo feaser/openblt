@@ -74,7 +74,7 @@ extern "C" {
 #define TBX_VERSION_MAIN                         (1U)
 
 /** \brief Minor version number of MicroTBX. */
-#define TBX_VERSION_MINOR                        (3U)
+#define TBX_VERSION_MINOR                        (4U)
 
 /** \brief Patch number of MicroTBX. */
 #define TBX_VERSION_PATCH                        (0U)

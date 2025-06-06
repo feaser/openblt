@@ -190,6 +190,34 @@ Then the memory will be allocated from the memory pool with block size 16, so th
 | ------------------------------------------------------------ |
 | Pointer to the start of the newly allocated memory if successful, `NULL` otherwise. |
 
+#### TbxMemPoolAllocateAuto
+
+```c
+void * TbxMemPoolAllocateAuto(size_t size)
+```
+An alternative version of  [`TbxMemPoolAllocate()`](#tbxmempoolallocate), which automatically creates  a new memory pool with one block, if one with the exact same blockSize was not yet created. If one with the exact same blockSize was already created, but it's full, then the memory pool is automatically expanded to have one more block.
+
+This offers a convenient way of working with memory pools compared to  [`TbxMemPoolAllocate()`](#tbxmempoolallocate). In addition, it guarantees that it always works on a memory pool where the `blockSize == "size"`. It bypasses the best fitting algorithm used by [`TbxMemPoolAllocate()`](#tbxmempoolallocate), which looks for an existing memory pool with a `blockSize >= "size"`.
+
+For example, to allocate two blocks of 32 bytes using memory pools, all you need to do is:
+
+```c
+uint8_t * myMem[2];
+
+myMem[0] = TbxMemPoolAllocateAuto(32);
+myMem[1] = TbxMemPoolAllocateAuto(32);
+```
+
+Note that there was no need to first create this memory pool with a call to [`TbxMemPoolCreate()`](#tbxmempoolcreate). During the first call to `TbxMemPoolAllocateAuto()`, the memory pool with a block size of 32 bytes was automatically created, including adding one block of 32 bytes to it, which was immediately allocated. During the second call to `TbxMemPoolAllocateAuto()`, another block of 32 bytes was automatically added to the existing memory pool and the newly added block was immediately allocated.
+
+| Parameter | Description                                          |
+| --------- | ---------------------------------------------------- |
+| `size`    | The number of bytes to allocate using a memory pool. |
+
+| Return value                                                 |
+| ------------------------------------------------------------ |
+| Pointer to the start of the newly allocated memory if successful, `NULL` otherwise. |
+
 #### TbxMemPoolRelease
 
 ```c
@@ -305,6 +333,8 @@ uint8_t TbxListInsertItemBefore(tTbxList       * list,
 
 Inserts an item into the list. The item will be added before the reference item.
 
+Only use this API function if the list does NOT contain items with a duplicate value, meaning items that point to the exact same memory address.
+
 | Parameter | Description                                                  |
 | --------- | ------------------------------------------------------------ |
 | `list`    | Pointer to a previously created linked list to operate on.   |
@@ -325,6 +355,8 @@ uint8_t TbxListInsertItemAfter(tTbxList       * list,
 
 Inserts an item into the list. The item will be added after the reference item.
 
+Only use this API function if the list does NOT contain items with a duplicate value, meaning items that point to the exact same memory address.
+
 | Parameter | Description                                                 |
 | --------- | ----------------------------------------------------------- |
 | `list`    | Pointer to a previously created linked list to operate on.  |
@@ -343,6 +375,8 @@ void TbxListRemoveItem(tTbxList       * list,
 ```
 
 Removes an item from the list, if present. Keep in mind that it is the caller's responsibility to release the memory of the item that is being removed from the list, before calling this function.
+
+Only use this API function if the list does NOT contain items with a duplicate value, meaning items that point to the exact same memory address.
 
 | Parameter | Description                                                |
 | --------- | ---------------------------------------------------------- |
@@ -390,6 +424,8 @@ void * TbxListGetPreviousItem(tTbxList const * list,
 
 Obtains the item that is located one position before in the list, relative to the item given in the parameter. Note that the item is just read, not removed.
 
+Only use this API function if the list does NOT contain items with a duplicate value, meaning items that point to the exact same memory address.
+
 | Parameter | Description                                                  |
 | --------- | ------------------------------------------------------------ |
 | `list`    | Pointer to a previously created linked list to operate on.   |
@@ -407,6 +443,8 @@ void * TbxListGetNextItem(tTbxList const * list,
 ```
 
 Obtains the item that is located one position further down in the list, relative to the item given in the parameter. Note that the item is just read, not removed.
+
+Only use this API function if the list does NOT contain items with a duplicate value, meaning items that point to the exact same memory address.
 
 | Parameter | Description                                                  |
 | --------- | ------------------------------------------------------------ |
@@ -426,6 +464,8 @@ void TbxListSwapItems(tTbxList const * list,
 ```
 
 Swaps the specified list items around.
+
+Only use this API function if the list does NOT contain items with a duplicate value, meaning items that point to the exact same memory address.
 
 | Parameter | Description                                                |
 | --------- | ---------------------------------------------------------- |

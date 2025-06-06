@@ -388,6 +388,8 @@ uint8_t TbxListInsertItemBack(tTbxList * list,
 /************************************************************************************//**
 ** \brief     Inserts an item into the list. The item will be added before the reference
 **            item.
+** \attention Only use this API function if the list does NOT contain items with a 
+**            duplicate value, meaning items that point to the exact same memory address.
 ** \param     list Pointer to a previously created linked list to operate on.
 ** \param     item Pointer to the item to insert.
 ** \param     itemRef Reference item before which the new item should be inserted.
@@ -477,6 +479,8 @@ uint8_t TbxListInsertItemBefore(tTbxList       * list,
 /************************************************************************************//**
 ** \brief     Inserts an item into the list. The item will be added after the reference
 **            item.
+** \attention Only use this API function if the list does NOT contain items with a 
+**            duplicate value, meaning items that point to the exact same memory address.
 ** \param     list Pointer to a previously created linked list to operate on.
 ** \param     item Pointer to the item to insert.
 ** \param     itemRef Reference item after which the new item should be inserted.
@@ -573,6 +577,8 @@ uint8_t TbxListInsertItemAfter(tTbxList       * list,
 ** \brief     Removes an item from the list, if present. Keep in mind that it is the
 **            caller's responsibility to release the memory of the item that is being
 **            removed from the list, before calling this function.
+** \attention Only use this API function if the list does NOT contain items with a 
+**            duplicate value, meaning items that point to the exact same memory address.
 ** \param     list Pointer to a previously created linked list to operate on.
 ** \param     item Pointer to the item to remove.
 **
@@ -734,6 +740,8 @@ void * TbxListGetLastItem(tTbxList const * list)
 ** \brief     Obtains the item that is located one position before in the list,
 **            relative to the item given in the parameter. Note that the item is just
 **            read, not removed.
+** \attention Only use this API function if the list does NOT contain items with a 
+**            duplicate value, meaning items that point to the exact same memory address.
 ** \param     list Pointer to a previously created linked list to operate on.
 ** \param     itemRef The item that is the next one in the list relative to the one
 **            this function should return.
@@ -783,6 +791,8 @@ void * TbxListGetPreviousItem(tTbxList const * list,
 ** \brief     Obtains the item that is located one position further down in the list,
 **            relative to the item given in the parameter. Note that the item is just
 **            read, not removed.
+** \attention Only use this API function if the list does NOT contain items with a 
+**            duplicate value, meaning items that point to the exact same memory address.
 ** \param     list Pointer to a previously created linked list to operate on.
 ** \param     itemRef The item that is the previous one in the list relative to the one
 **            this function should return.
@@ -830,6 +840,8 @@ void * TbxListGetNextItem(tTbxList const * list,
 
 /************************************************************************************//**
 ** \brief     Swaps the specified list items around.
+** \attention Only use this API function if the list does NOT contain items with a 
+**            duplicate value, meaning items that point to the exact same memory address.
 ** \param     list Pointer to a previously created linked list to operate on.
 ** \param     item1 The first item for the swap operation.
 ** \param     item2 The second item for the swap operation.
@@ -932,6 +944,9 @@ void TbxListSortItems(tTbxList             const * list,
 /************************************************************************************//**
 ** \brief     Helper function to get the node that a specific item in the list belongs
 **            to.
+** \attention Note that this function does not work as intended, if the list contains
+**            items with a duplicate value, meaning items that point to the exact same
+**            memory address.
 ** \param     list Pointer to a previously created linked list to operate on.
 ** \param     item Pointer to the item of whoms owning node should be found.
 ** \return    Pointer to the node if successful, NULL otherwise.

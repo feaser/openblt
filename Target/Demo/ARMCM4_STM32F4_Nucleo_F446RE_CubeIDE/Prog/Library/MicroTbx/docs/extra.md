@@ -22,7 +22,7 @@ To use this heap management solution, you just need to remove the `heap_x.c` sou
 
 ### Assertions
 
-In the FreeRTOS configuration header file `FreeRTOSConfig.h`, you can add and configure the `configASSERT` macro to enable assertions in the FreeRTOS code base. MicroTBX includes an assertion module that you can use for this. The easiest way to link the MicroTBX assertion `TBX_ASSERT` macro to the FreeRTOS `configASSERT` macro, is by including the `tbxfreertos.h` header file all the way at the end. Just before the last `#endif`:
+In the FreeRTOS configuration header file `FreeRTOSConfig.h`, you can add and configure the `configASSERT` macro to enable assertions in the FreeRTOS code base. MicroTBX includes an assertion module that you can use for this. The easiest way to link the MicroTBX assertion `TBX_ASSERT` macro to the FreeRTOS `configASSERT` macro, is by including the `tbx_freertos.h` header file all the way at the end. Just before the last `#endif`:
 
 ```c
 #define INCLUDE_vTaskCleanUpResources                 1
@@ -37,7 +37,7 @@ In the FreeRTOS configuration header file `FreeRTOSConfig.h`, you can add and co
 #endif /* FREERTOS_CONFIG_H */
 ```
 
-Just make sure to add the directory, where the `tbxfreertos.h` resides, to your compiler's search path for included header files.
+Just make sure to add the directory, where the `tbx_freertos.h` resides, to your compiler's search path for included header files.
 
 Alternatively, you can directly add and configure the `configASSERT` macro as follows in `FreeRTOSConfig.h`:
 

@@ -357,6 +357,111 @@ void * TbxMemPoolAllocate(size_t size)
 
 
 /************************************************************************************//**
+** \brief     An alternative version of TbxMemPoolAllocate(), which automatically creates
+**            a new memory pool with one block, if one with the exact same blockSize was
+**            not yet created. If one with the exact same blockSize was already created,
+**            but it's full, then the memory pool is automatically expanded to have one
+**            more block.
+** \details   This offers a convenient way of working with memory pools compared to
+**            TbxMemPoolAllocate(). In addition, it guarantees that it always works on
+**            a memory pool where the blockSize  == "size". It bypasses the best fitting
+**            algorithm used by TbxMemPoolAllocate(), which looks for an existing memory
+**            pool with a blockSize >= "size".
+**
+**            For example, to allocate two blocks of 32 bytes using memory pools, all you
+**            need to do is:
+**              uint8_t * myMem[2];
+**
+**              myMem[0] = TbxMemPoolAllocateAuto(32);
+**              myMem[1] = TbxMemPoolAllocateAuto(32);
+**            
+**            Note that there was no need to first create this memory pool with a call
+**            to TbxMemPoolCreate(). During the first call to TbxMemPoolAllocateAuto(),
+**            the memory pool with a block size of 32 bytes was automatically created,
+**            including adding 1 block of 32 bytes to it, which was immediately
+**            allocated. During the second call to TbxMemPoolAllocateAuto(), another
+**            block of 32 bytes was automatically added to the existing memory pool and
+**            the newly added block was immediately allocated.
+** \param     size The number of bytes to allocate using a memory pool.
+** \return    Pointer to the start of the newly allocated memory if successful, NULL
+**            otherwise.
+**
+****************************************************************************************/
+void * TbxMemPoolAllocateAuto(size_t size)
+{
+  void            * result      = NULL;
+  tPoolNode const * poolNodePtr = NULL;
+  tPoolNode const * currentPoolNodePtr;
+
+  /* Verify parameter. */
+  TBX_ASSERT(size > 0U);
+
+  /* Only continue if the parameter is valid. */
+  if (size > 0U)
+  {
+    /* Obtain mutual exclusive access to the memory pool list. */
+    TbxCriticalSectionEnter();
+    /* Get pointer to the pool node at the head of the linked list. */
+    currentPoolNodePtr = tbxPoolList;
+    /* Loop through all nodes until one of the exact same size is found. */
+    while (currentPoolNodePtr != NULL)
+    {
+      /* Does this memory pool hold blocks of the exact same size? */
+      if (currentPoolNodePtr->poolPtr->blockSize == size)
+      {
+        /* Existing memory pool of the exact same size was found. Set the poolNodePtr to
+         * point to this memory pool.
+         */
+        poolNodePtr = currentPoolNodePtr;
+        /* Memory pool found, so no need to continue searching. */
+        break;
+      }
+      /* Continue with the next pool node in the list. */
+      currentPoolNodePtr = currentPoolNodePtr->nextNodePtr;
+    }
+    /* Release mutual exclusive access to the memory pool list. */
+    TbxCriticalSectionExit();
+
+    /* No memory pool with the exact same size found? */
+    if (poolNodePtr == NULL)
+    {
+      /* Automatically create a memory pool with the blockSize set to the size to
+       * allocate. 
+       */
+      if (TbxMemPoolCreate(1U, size) == TBX_OK)
+      {
+        /* Allocate a block from the newly created memory pool. Should always work, since
+         * we just created a memory pool with one block.
+         */
+        result = TbxMemPoolAllocate(size);      
+      }
+    }
+    /* Memory pool with the exact same size found. */
+    else
+    {
+      /* Allocate a block from the memory pool. */
+      result = TbxMemPoolAllocate(size);
+      /* No more blocks available in the memory pool? */
+      if (result == NULL)
+      {
+        /* Automatically increase the memory pool by adding one more block to it. */
+        if (TbxMemPoolCreate(1U, size) == TBX_OK)
+        {
+          /* Allocate a block from the memory pool. Should always work, since we just
+           * expanded it with one block.
+           */
+          result = TbxMemPoolAllocate(size);      
+       }
+      }
+    }
+  }
+
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of TbxMemPoolAllocateAuto ***/
+
+
+/************************************************************************************//**
 ** \brief     Releases the previously allocated block of memory. Once the memory is
 **            released, it can be allocated again afterwards with function
 **            TbxMemPoolAllocate(). Note that this function automatically finds the
