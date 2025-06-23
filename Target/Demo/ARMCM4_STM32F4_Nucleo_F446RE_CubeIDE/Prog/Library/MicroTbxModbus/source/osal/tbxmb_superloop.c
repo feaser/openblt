@@ -58,6 +58,16 @@ typedef struct
 
 
 /****************************************************************************************
+* Function prototypes
+****************************************************************************************/
+static void    TbxMbOsalEventQueueClear(void);
+
+static uint8_t TbxMbOsalEventQueueWrite(tTbxMbEvent const * event);
+
+static uint8_t TbxMbOsalEventQueueRead (tTbxMbEvent       * event);
+
+
+/****************************************************************************************
 * Local data declarations
 ****************************************************************************************/
 /** \brief Ring buffer based First-In-First-Out (FIFO) queue for storing events. */
@@ -83,10 +93,8 @@ void TbxMbOsalEventInit(void)
   if (osalInitialized == TBX_FALSE)
   {
     osalInitialized = TBX_TRUE;
-    /* Initialize the queue. */
-    eventQueue.count = 0U;
-    eventQueue.readIdx = 0U;
-    eventQueue.writeIdx = 0U;
+    /* Clear the queue. */
+    TbxMbOsalEventQueueClear();
   }
 } /*** end of TbxMbOsalEventInit ***/
 
@@ -109,29 +117,13 @@ void TbxMbOsalEventPost(tTbxMbEvent const * event,
   /* Only continue with valid parameters. */
   if (event != NULL)
   {
-    TbxCriticalSectionEnter();
-    /* Make sure there is still space in the queue. If not, then the event queue size is
+    /* Attempt to write the event to the queue. */
+    uint8_t queueWriteResult = TbxMbOsalEventQueueWrite(event);
+    /* Make sure the write operation was successful. If not, then the event queue size is
      * set too small. In this case increase the event queue size using configuration
      * macro TBX_MB_EVENT_QUEUE_SIZE.
      */
-    TBX_ASSERT(eventQueue.count < TBX_MB_EVENT_QUEUE_SIZE);
-
-    /* Only continue with enough space. */
-    if (eventQueue.count < TBX_MB_EVENT_QUEUE_SIZE)
-    {
-      /* Store the new event in the queue at the current write index. */
-      eventQueue.entries[eventQueue.writeIdx] = *event;
-      /* Update the total count. */
-      eventQueue.count++;
-      /* Increment the write index to point to the next entry. */
-      eventQueue.writeIdx++;
-      /* Time to wrap around to the start? */
-      if (eventQueue.writeIdx == TBX_MB_EVENT_QUEUE_SIZE)
-      {
-        eventQueue.writeIdx = 0U;
-      }
-    }
-    TbxCriticalSectionExit();
+    TBX_ASSERT(queueWriteResult == TBX_TRUE);
   }
 } /*** end of TbxMbOsalEventPost ***/
 
@@ -157,29 +149,57 @@ uint8_t TbxMbOsalEventWait(tTbxMbEvent * event,
   /* Only continue with valid parameters. */
   if (event != NULL)
   {
-    TbxCriticalSectionEnter();
-    /* Is there an event available in the queue? */
-    if (eventQueue.count > 0U)
-    {
-      /* Retrieve the event from the queue at the read index (oldest).  */
-      *event = eventQueue.entries[eventQueue.readIdx];
-      /* Update the total count. */
-      eventQueue.count--;
-      /* Increment the read index to point to the next entry. */
-      eventQueue.readIdx++;
-      /* Time to wrap around to the start? */
-      if (eventQueue.readIdx == TBX_MB_EVENT_QUEUE_SIZE)
-      {
-        eventQueue.readIdx = 0U;
-      }
-      /* Update the result. */
-      result = TBX_TRUE;
-    }
-    TbxCriticalSectionExit();
+    /* Attempt to read the next event from the queue. */
+    result = TbxMbOsalEventQueueRead(event);
   }
   /* Give the result back to the caller. */
   return result;
 } /*** end of TbxMbOsalEventWait ***/
+
+
+/************************************************************************************//**
+** \brief     Removes all the events for the specified context from the event queue.
+** \param     context The context of the channel or transport layer, whose entries need
+**            to be removed from the event queue.
+**
+****************************************************************************************/
+void TbxMbOsalEventPurge(void const * context)
+{
+  /* Verify parameters. */
+  TBX_ASSERT(context != NULL);
+
+  /* Only continue with valid parameters. */
+  if (context != NULL)
+  {
+    TbxCriticalSectionEnter();
+    /* Obtain number of entries in the queue.*/
+    size_t numEntries = eventQueue.count;
+    /* Read each entry currently stored in the queue. */
+    for (size_t idx = 0U; idx < numEntries; idx++)
+    {
+      uint8_t     queueResult;
+      tTbxMbEvent currentEvent;
+
+      queueResult = TbxMbOsalEventQueueRead(&currentEvent);
+      /* Sanity check, the read must succeed since there are entries in the queue. */
+      TBX_ASSERT(queueResult == TBX_TRUE);
+      if (queueResult == TBX_TRUE)
+      {
+        /* Is this event NOT from a context to purge? */
+        if (currentEvent.context != context)
+        {
+          /* Store this one back into the queue. */
+          queueResult = TbxMbOsalEventQueueWrite(&currentEvent);
+          /* Sanity check, the write must succeed since we just read an entry, meaning
+           * that there must be an empty spot in the queue.
+           */
+          TBX_ASSERT(queueResult == TBX_TRUE);
+        }
+      }
+    }
+    TbxCriticalSectionExit();
+  }
+} /*** end of TbxMbOsalEventPurge ***/
 
 
 /************************************************************************************//**
@@ -194,16 +214,7 @@ tTbxMbOsalSem TbxMbOsalSemCreate(void)
   tTbxMbOsalSem result = NULL;
 
   /* Allocate memory for the new semaphore context. */
-  tTbxMbOsalSemCtx * newSemCtx = TbxMemPoolAllocate(sizeof(tTbxMbOsalSemCtx));
-  /* Automatically increase the memory pool, if it was too small. */
-  if (newSemCtx == NULL)
-  {
-    /* No need to check the return value, because if it failed, the following
-     * allocation fails too, which is verified later on.
-     */
-    (void)TbxMemPoolCreate(1U, sizeof(tTbxMbOsalSemCtx));
-    newSemCtx = TbxMemPoolAllocate(sizeof(tTbxMbOsalSemCtx));      
-  }
+  tTbxMbOsalSemCtx * newSemCtx = TbxMemPoolAllocateAuto(sizeof(tTbxMbOsalSemCtx));
   /* Verify memory allocation of the semaphore context. */
   TBX_ASSERT(newSemCtx != NULL);
   /* Only continue if the memory allocation succeeded. */
@@ -238,8 +249,12 @@ void TbxMbOsalSemFree(tTbxMbOsalSem sem)
     tTbxMbOsalSemCtx * semCtx = (tTbxMbOsalSemCtx *)sem;
     /* Sanity check on the context type. */
     TBX_ASSERT(semCtx->type == TBX_MB_OSAL_SEM_CONTEXT_TYPE);
-    /* Give the semaphore context back to the memory pool. */
-    TbxMemPoolRelease(semCtx);
+    /* Only continue with a valid context type. */
+    if (semCtx->type == TBX_MB_OSAL_SEM_CONTEXT_TYPE)
+    {
+      /* Give the semaphore context back to the memory pool. */
+      TbxMemPoolRelease(semCtx);
+    }
   }
 } /*** end of TbxMbOsalSemFree ***/
 
@@ -266,10 +281,14 @@ void TbxMbOsalSemGive(tTbxMbOsalSem sem,
     tTbxMbOsalSemCtx * semCtx = (tTbxMbOsalSemCtx *)sem;
     /* Sanity check on the context type. */
     TBX_ASSERT(semCtx->type == TBX_MB_OSAL_SEM_CONTEXT_TYPE);
-    /* Give the semaphore by setting its count to 1. */
-    TbxCriticalSectionEnter();
-    semCtx->count = 1U;
-    TbxCriticalSectionExit();
+    /* Only continue with a valid context type. */
+    if (semCtx->type == TBX_MB_OSAL_SEM_CONTEXT_TYPE)
+    {
+      /* Give the semaphore by setting its count to 1. */
+      TbxCriticalSectionEnter();
+      semCtx->count = 1U;
+      TbxCriticalSectionExit();
+    }
   }
 } /*** end of TbxMbOsalSemGive ***/
 
@@ -299,77 +318,181 @@ uint8_t TbxMbOsalSemTake(tTbxMbOsalSem sem,
     tTbxMbOsalSemCtx * semCtx = (tTbxMbOsalSemCtx *)sem;
     /* Sanity check on the context type. */
     TBX_ASSERT(semCtx->type == TBX_MB_OSAL_SEM_CONTEXT_TYPE);
-    /* Is the semaphore currently available? */
-    TbxCriticalSectionEnter();
-    if (semCtx->count > 0U)
+    /* Only continue with a valid context type. */
+    if (semCtx->type == TBX_MB_OSAL_SEM_CONTEXT_TYPE)
     {
-      /* Take the semaphore and update the result for success. */
-      semCtx->count = 0U;
-      result = TBX_TRUE;
-    }
-    /* Semaphore not yet available. Wait for it with the hope that it becomes available
-     * before the specified timeout. 
-     */
-    else
-    {
-      /* Keep track of when the last millisecond was detected. */
-      uint16_t volatile lastMsTickTime = TbxMbPortTimerCount();
-      /* Initialize variable with the actual number of milliseconds to wait. */
-      uint16_t volatile waitTimeMs = timeoutMs;
-      /* Enter wait loop. */
-      while (waitTimeMs > 0U)
+      /* Is the semaphore currently available? */
+      TbxCriticalSectionEnter();
+      if (semCtx->count > 0U)
       {
-        /* Temporarily leave the critical section. */
-        TbxCriticalSectionExit();
-        /* Run the event task to make sure that whatever is supposed to give the
-         * semaphore can actually do so.
-         */
-        TbxMbEventTask();
-        /* Get the number of ticks that elapsed since the last millisecond detection. 
-         * Note that this calculation works, even if the 20 kHz timer counter
-         * overflowed.
-         */
-        uint16_t deltaTicks = TbxMbPortTimerCount() - lastMsTickTime;
-        /* Determine how many milliseconds passed since the last one was detected. */
-        uint16_t deltaMs = deltaTicks / 20U;
-        /* Did one or more milliseconds pass? */
-        if (deltaMs > 0U)
+        /* Take the semaphore and update the result for success. */
+        semCtx->count = 0U;
+        result = TBX_TRUE;
+      }
+      /* Semaphore not yet available. Wait for it with the hope that it becomes available
+       * before the specified timeout. 
+       */
+      else
+      {
+        /* Keep track of when the last millisecond was detected. */
+        uint16_t volatile lastMsTickTime = TbxMbPortTimerCount();
+        /* Initialize variable with the actual number of milliseconds to wait. */
+        uint16_t volatile waitTimeMs = timeoutMs;
+        /* Enter wait loop. */
+        while (waitTimeMs > 0U)
         {
-          /* Update the last millisecond detection tick time. Needed for the detection
-           * of the next millisecond. Note that this calculation works, even if the
-           * lastMsTickTime variable overflows.
+          /* Temporarily leave the critical section. */
+          TbxCriticalSectionExit();
+          /* Run the event task to make sure that whatever is supposed to give the
+           * semaphore can actually do so.
            */
-          lastMsTickTime += (deltaMs * 20U);
-          /* Subtract the elapsed milliseconds from the remaining wait time, with
-           * underflow protection. Note that the wait loop automatically stops when
-           * waitTimeMs becomes zero.
+          TbxMbEventTask();
+          /* Get the number of ticks that elapsed since the last millisecond detection. 
+           * Note that this calculation works, even if the 20 kHz timer counter
+           * overflowed.
            */
-          if (waitTimeMs >= deltaMs)
+          uint16_t deltaTicks = TbxMbPortTimerCount() - lastMsTickTime;
+          /* Determine how many milliseconds passed since the last one was detected. */
+          uint16_t deltaMs = deltaTicks / 20U;
+          /* Did one or more milliseconds pass? */
+          if (deltaMs > 0U)
           {
-            waitTimeMs -= deltaMs;
+            /* Update the last millisecond detection tick time. Needed for the detection
+             * of the next millisecond. Note that this calculation works, even if the
+             * lastMsTickTime variable overflows.
+             */
+            lastMsTickTime += (deltaMs * 20U);
+            /* Subtract the elapsed milliseconds from the remaining wait time, with
+             * underflow protection. Note that the wait loop automatically stops when
+             * waitTimeMs becomes zero.
+             */
+            if (waitTimeMs >= deltaMs)
+            {
+              waitTimeMs -= deltaMs;
+            }
+            else
+            {
+              waitTimeMs = 0U;
+            }
           }
-          else
+          /* Re-enter the critical section. */
+          TbxCriticalSectionEnter();
+          /* Did the semaphore become available? */
+          if (semCtx->count > 0U)
           {
-            waitTimeMs = 0U;
+            /* Take the semaphore, update the result for success, and leave the loop. */
+            semCtx->count = 0U;
+            result = TBX_TRUE;
+            break;
           }
-        }
-        /* Re-enter the critical section. */
-        TbxCriticalSectionEnter();
-        /* Did the semaphore become available? */
-        if (semCtx->count > 0U)
-        {
-          /* Take the semaphore, update the result for success, and leave the loop. */
-          semCtx->count = 0U;
-          result = TBX_TRUE;
-          break;
         }
       }
+      TbxCriticalSectionExit();
     }
-    TbxCriticalSectionExit();
   }
   /* Give the result back to the caller. */
   return result;
 } /*** end of TbxMbOsalSemTake ****/
+
+
+/************************************************************************************//**
+** \brief     Clears the queue.
+**
+****************************************************************************************/
+static void TbxMbOsalEventQueueClear(void)
+{
+  /* Clear the queue. */
+  TbxCriticalSectionEnter();
+  eventQueue.count = 0U;
+  eventQueue.readIdx = 0U;
+  eventQueue.writeIdx = 0U;
+  TbxCriticalSectionExit();
+} /*** end of TbxMbOsalEventQueueClear ***/
+
+
+/************************************************************************************//**
+** \brief     Write the event to the queue.
+** \param     event Pointer to the event to add.
+** \return    TBX_TRUE is successful, TBX_FALSE otherwise.
+**
+****************************************************************************************/
+static uint8_t TbxMbOsalEventQueueWrite(tTbxMbEvent const * event)
+{
+  uint8_t result = TBX_FALSE;
+
+  /* Verify parameters. */
+  TBX_ASSERT(event != NULL);
+
+  /* Only continue with valid parameters. */
+  if (event != NULL)
+  {
+    TbxCriticalSectionEnter();
+    /* Only continue with enough space. */
+    if (eventQueue.count < TBX_MB_EVENT_QUEUE_SIZE)
+    {
+      /* Copy the event to the queue at the current write index. */
+      eventQueue.entries[eventQueue.writeIdx] = *event;
+      /* Update the total count. */
+      eventQueue.count++;
+      /* Increment the write index to point to the next entry. */
+      eventQueue.writeIdx++;
+      /* Time to wrap around to the start? */
+      if (eventQueue.writeIdx == TBX_MB_EVENT_QUEUE_SIZE)
+      {
+        eventQueue.writeIdx = 0U;
+      }
+      /* Update the result. */
+      result = TBX_TRUE;
+    }
+    TbxCriticalSectionExit();
+  }
+
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of TbxMbOsalEventQueueWrite ***/
+
+
+/************************************************************************************//**
+** \brief     Reads an event from the queue.
+** \param     event Pointer to store the event..
+** \return    TBX_TRUE is successful, TBX_FALSE otherwise in case or error or if no event
+**            is currently present in the queue.
+**
+****************************************************************************************/
+static uint8_t TbxMbOsalEventQueueRead(tTbxMbEvent * event)
+{
+  uint8_t result = TBX_FALSE;
+
+  /* Verify parameters. */
+  TBX_ASSERT(event != NULL);
+
+  /* Only continue with valid parameters. */
+  if (event != NULL)
+  {
+    TbxCriticalSectionEnter();
+    /* Is there an event available in the queue? */
+    if (eventQueue.count > 0U)
+    {
+      /* Retrieve the event from the queue at the read index (oldest).  */
+      *event = eventQueue.entries[eventQueue.readIdx];
+      /* Update the total count. */
+      eventQueue.count--;
+      /* Increment the read index to point to the next entry. */
+      eventQueue.readIdx++;
+      /* Time to wrap around to the start? */
+      if (eventQueue.readIdx == TBX_MB_EVENT_QUEUE_SIZE)
+      {
+        eventQueue.readIdx = 0U;
+      }
+      /* Update the result. */
+      result = TBX_TRUE;
+    }
+    TbxCriticalSectionExit();
+  }
+
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of TbxMbOsalEventQueueRead ***/
 
 
 /*********************************** end of tbxmb_superloop.c **************************/

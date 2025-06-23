@@ -1,4 +1,14 @@
 -----------------------------------------------------------------------------------------
+2025-06-23 Frank Voorburg <voorburg@feaser.com>
+
+* Implemented unit tests and run them automatically with GitHub actions.
+* Overall refactoring and improvements as a result of unit testing.
+* Use the new TbxMemPoolAllocateAuto().
+* Improved the pollerList in TbxMbEventTask().
+* Added new TbxMbOsalEventPurge() to remove events from a context when free-ing it.
+* Public release of version 1.0.0.
+
+-----------------------------------------------------------------------------------------
 2025-04-28 Frank Voorburg <voorburg@feaser.com>
 
 * Corrected pollerList usage to prevent TbxMbEventTask() from hanging (issue #5).

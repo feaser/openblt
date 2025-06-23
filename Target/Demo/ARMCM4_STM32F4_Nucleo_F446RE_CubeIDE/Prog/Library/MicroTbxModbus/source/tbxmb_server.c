@@ -108,16 +108,7 @@ tTbxMbServer TbxMbServerCreate(tTbxMbTp transport)
   if (transport != NULL)
   {
     /* Allocate memory for the new channel context. */
-    tTbxMbServerCtx * newServerCtx = TbxMemPoolAllocate(sizeof(tTbxMbServerCtx));
-    /* Automatically increase the memory pool, if it was too small. */
-    if (newServerCtx == NULL)
-    {
-      /* No need to check the return value, because if it failed, the following
-       * allocation fails too, which is verified later on.
-       */
-      (void)TbxMemPoolCreate(1U, sizeof(tTbxMbServerCtx));
-      newServerCtx = TbxMemPoolAllocate(sizeof(tTbxMbServerCtx));      
-    }
+    tTbxMbServerCtx * newServerCtx = TbxMemPoolAllocateAuto(sizeof(tTbxMbServerCtx));
     /* Verify memory allocation of the channel context. */
     TBX_ASSERT(newServerCtx != NULL);
     /* Only continue if the memory allocation succeeded. */
@@ -127,28 +118,40 @@ tTbxMbServer TbxMbServerCreate(tTbxMbTp transport)
       tTbxMbTpCtx * tpCtx = (tTbxMbTpCtx *)transport;
       /* Sanity check on the transport layer's interface function. That way there is 
        * no need to do it later on, making it more run-time efficient. Also check that
-       * it's not already linked to another channel.
+       * it's not already linked to another channel and do a bit of checking on the
+       * context type. Note that the exact context type value is not available here, 
+       * because by design, the context type macros are located in only the associated
+       * module's source-file. That way it cannot accidentally be used elsewhere.
        */
       TBX_ASSERT((tpCtx->transmitFcn != NULL) && (tpCtx->receptionDoneFcn != NULL) &&
                  (tpCtx->getRxPacketFcn != NULL) && (tpCtx->getTxPacketFcn != NULL) &&
-                 (tpCtx->channelCtx == NULL));              
-      /* Initialize the channel context. Start by crosslinking the transport layer. */
-      newServerCtx->type = TBX_MB_SERVER_CONTEXT_TYPE;
-      newServerCtx->instancePtr = NULL;
-      newServerCtx->pollFcn = NULL;
-      newServerCtx->processFcn = TbxMbServerProcessEvent;
-      newServerCtx->readInputFcn = NULL;
-      newServerCtx->readCoilFcn = NULL;
-      newServerCtx->writeCoilFcn = NULL;
-      newServerCtx->readInputRegFcn = NULL;
-      newServerCtx->readHoldingRegFcn = NULL;
-      newServerCtx->writeHoldingRegFcn = NULL;
-      newServerCtx->customFunctionFcn = NULL;
-      newServerCtx->tpCtx = tpCtx;
-      newServerCtx->tpCtx->channelCtx = newServerCtx;
-      newServerCtx->tpCtx->isClient = TBX_FALSE;
-      /* Update the result. */
-      result = newServerCtx;
+                 (tpCtx->channelCtx == NULL) && (tpCtx->type != 0U) &&
+                 (tpCtx->type !=TBX_MB_SERVER_CONTEXT_TYPE ));  
+      /* Only continue if the sanity check passed. */
+      if ((tpCtx->transmitFcn != NULL) && (tpCtx->receptionDoneFcn != NULL) &&
+          (tpCtx->getRxPacketFcn != NULL) && (tpCtx->getTxPacketFcn != NULL) &&
+          (tpCtx->channelCtx == NULL) && (tpCtx->type != 0U) &&
+          (tpCtx->type !=TBX_MB_SERVER_CONTEXT_TYPE ))
+      {
+        /* Initialize the channel context. */
+        newServerCtx->type = TBX_MB_SERVER_CONTEXT_TYPE;
+        newServerCtx->instancePtr = NULL;
+        newServerCtx->pollFcn = NULL;
+        newServerCtx->processFcn = TbxMbServerProcessEvent;
+        newServerCtx->readInputFcn = NULL;
+        newServerCtx->readCoilFcn = NULL;
+        newServerCtx->writeCoilFcn = NULL;
+        newServerCtx->readInputRegFcn = NULL;
+        newServerCtx->readHoldingRegFcn = NULL;
+        newServerCtx->writeHoldingRegFcn = NULL;
+        newServerCtx->customFunctionFcn = NULL;
+        /* Crosslink the transport layer. */
+        newServerCtx->tpCtx = tpCtx;
+        newServerCtx->tpCtx->channelCtx = newServerCtx;
+        newServerCtx->tpCtx->isClient = TBX_FALSE;
+        /* Update the result. */
+        result = newServerCtx;
+      }
     }
   }
   /* Give the result back to the caller. */
@@ -174,17 +177,23 @@ void TbxMbServerFree(tTbxMbServer channel)
     tTbxMbServerCtx * serverCtx = (tTbxMbServerCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE);
-    /* Remove crosslink between the channel and the transport layer. */
-    TbxCriticalSectionEnter();
-    serverCtx->tpCtx->channelCtx = NULL;
-    serverCtx->tpCtx = NULL;
-    /* Invalidate the context to protect it from accidentally being used afterwards. */
-    serverCtx->type = 0U;
-    serverCtx->pollFcn = NULL;
-    serverCtx->processFcn = NULL;
-    TbxCriticalSectionExit();
-    /* Give the channel context back to the memory pool. */
-    TbxMemPoolRelease(serverCtx);
+    /* Only continue with a valid context type. */
+    if (serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE)
+    {
+      /* Remove crosslink between the channel and the transport layer. */
+      TbxCriticalSectionEnter();
+      serverCtx->tpCtx->channelCtx = NULL;
+      serverCtx->tpCtx = NULL;
+      /* Invalidate the context to protect it from accidentally being used afterwards. */
+      serverCtx->type = 0U;
+      serverCtx->pollFcn = NULL;
+      serverCtx->processFcn = NULL;
+      TbxCriticalSectionExit();
+      /* Purge possibly pending events from this channel's context. */
+      TbxMbEventPurge(channel);
+      /* Give the channel context back to the memory pool. */
+      TbxMemPoolRelease(serverCtx);
+    }
   }
 } /*** end of TbxMbServerFree ***/
 
@@ -209,10 +218,14 @@ void TbxMbServerSetCallbackReadInput(tTbxMbServer          channel,
     tTbxMbServerCtx * serverCtx = (tTbxMbServerCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE);
-    /* Store the callback function pointer. */
-    TbxCriticalSectionEnter();
-    serverCtx->readInputFcn = callback;
-    TbxCriticalSectionExit();
+    /* Only continue with a valid context type. */
+    if (serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE)
+    {
+      /* Store the callback function pointer. */
+      TbxCriticalSectionEnter();
+      serverCtx->readInputFcn = callback;
+      TbxCriticalSectionExit();
+    }       
   }
 } /*** end of TbxMbServerSetCallbackReadInput ***/
 
@@ -237,10 +250,14 @@ void TbxMbServerSetCallbackReadCoil(tTbxMbServer         channel,
     tTbxMbServerCtx * serverCtx = (tTbxMbServerCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE);
-    /* Store the callback function pointer. */
-    TbxCriticalSectionEnter();
-    serverCtx->readCoilFcn = callback;
-    TbxCriticalSectionExit();
+    /* Only continue with a valid context type. */
+    if (serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE)
+    {
+      /* Store the callback function pointer. */
+      TbxCriticalSectionEnter();
+      serverCtx->readCoilFcn = callback;
+      TbxCriticalSectionExit();
+    }
   }
 } /*** end of TbxMbServerSetCallbackReadCoil ***/
 
@@ -265,10 +282,14 @@ void TbxMbServerSetCallbackWriteCoil(tTbxMbServer          channel,
     tTbxMbServerCtx * serverCtx = (tTbxMbServerCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE);
-    /* Store the callback function pointer. */
-    TbxCriticalSectionEnter();
-    serverCtx->writeCoilFcn = callback;
-    TbxCriticalSectionExit();
+    /* Only continue with a valid context type. */
+    if (serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE)
+    {
+      /* Store the callback function pointer. */
+      TbxCriticalSectionEnter();
+      serverCtx->writeCoilFcn = callback;
+      TbxCriticalSectionExit();
+    }
   }
 } /*** end of TbxMbServerSetCallbackWriteCoil ***/
 
@@ -293,10 +314,14 @@ void TbxMbServerSetCallbackReadInputReg(tTbxMbServer             channel,
     tTbxMbServerCtx * serverCtx = (tTbxMbServerCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE);
-    /* Store the callback function pointer. */
-    TbxCriticalSectionEnter();
-    serverCtx->readInputRegFcn = callback;
-    TbxCriticalSectionExit();
+    /* Only continue with a valid context type. */
+    if (serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE)
+    {
+      /* Store the callback function pointer. */
+      TbxCriticalSectionEnter();
+      serverCtx->readInputRegFcn = callback;
+      TbxCriticalSectionExit();
+    }
   }
 } /*** end of TbxMbServerSetCallbackReadInputReg ***/
 
@@ -321,10 +346,14 @@ void TbxMbServerSetCallbackReadHoldingReg(tTbxMbServer               channel,
     tTbxMbServerCtx * serverCtx = (tTbxMbServerCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE);
-    /* Store the callback function pointer. */
-    TbxCriticalSectionEnter();
-    serverCtx->readHoldingRegFcn = callback;
-    TbxCriticalSectionExit();
+    /* Only continue with a valid context type. */
+    if (serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE)
+    {
+      /* Store the callback function pointer. */
+      TbxCriticalSectionEnter();
+      serverCtx->readHoldingRegFcn = callback;
+      TbxCriticalSectionExit();
+    }
   }
 } /*** end of TbxMbServerSetCallbackReadHoldingReg ***/
 
@@ -349,10 +378,14 @@ void TbxMbServerSetCallbackWriteHoldingReg(tTbxMbServer                channel,
     tTbxMbServerCtx * serverCtx = (tTbxMbServerCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE);
-    /* Store the callback function pointer. */
-    TbxCriticalSectionEnter();
-    serverCtx->writeHoldingRegFcn = callback;
-    TbxCriticalSectionExit();
+    /* Only continue with a valid context type. */
+    if (serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE)
+    {
+      /* Store the callback function pointer. */
+      TbxCriticalSectionEnter();
+      serverCtx->writeHoldingRegFcn = callback;
+      TbxCriticalSectionExit();
+    }
   }
 } /*** end of TbxMbServerSetCallbackWriteHoldingReg ***/
 
@@ -379,10 +412,14 @@ void TbxMbServerSetCallbackCustomFunction(tTbxMbServer               channel,
     tTbxMbServerCtx * serverCtx = (tTbxMbServerCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE);
-    /* Store the callback function pointer. */
-    TbxCriticalSectionEnter();
-    serverCtx->customFunctionFcn = callback;
-    TbxCriticalSectionExit();
+    /* Only continue with a valid context type. */
+    if (serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE)
+    {
+      /* Store the callback function pointer. */
+      TbxCriticalSectionEnter();
+      serverCtx->customFunctionFcn = callback;
+      TbxCriticalSectionExit();
+    }
   }
 } /*** end of TbxMbServerSetCallbackCustomFunction ***/
 
@@ -413,158 +450,162 @@ static void TbxMbServerProcessEvent(tTbxMbEvent * event)
     {
       /* Sanity check on the context type. */
       TBX_ASSERT(serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE);
-      /* Filter on the event identifier. */
-      switch (event->id)
+      /* Only continue with a valid context type. */
+      if (serverCtx->type == TBX_MB_SERVER_CONTEXT_TYPE)
       {
-        case TBX_MB_EVENT_ID_PDU_RECEIVED:
+        /* Filter on the event identifier. */
+        switch (event->id)
         {
-          uint8_t okayToSendResponse = TBX_FALSE;
-          /* Obtain read access to the newly received packet and write access to the
-           * response packet. 
-           */
-          tTbxMbTpPacket * rxPacket = serverCtx->tpCtx->getRxPacketFcn(serverCtx->tpCtx);
-          tTbxMbTpPacket * txPacket = serverCtx->tpCtx->getTxPacketFcn(serverCtx->tpCtx);
-          /* Since we're requested to process a newly received PDU, these packet accesses
-           * should always succeed. Sanity check anyways, just in case.
-           */
-          TBX_ASSERT((rxPacket != NULL) && (txPacket != NULL));
-          /* Only continue with packet access. */
-          if ((rxPacket != NULL) && (txPacket != NULL))
+          case TBX_MB_EVENT_ID_PDU_RECEIVED:
           {
-            /* Update flag that we can actually send a response, now that we know we 
-             * have access to txPacket.
+            uint8_t okayToSendResponse = TBX_FALSE;
+            /* Obtain read access to the newly received packet and write access to the
+             * response packet. 
              */
-            okayToSendResponse = TBX_TRUE;
-            /* Prepare the response packet function code. */
-            txPacket->pdu.code = rxPacket->pdu.code;
-            /* Filter on the function code. */
-            switch (rxPacket->pdu.code)
+            tTbxMbTpPacket * rxPacket = serverCtx->tpCtx->getRxPacketFcn(serverCtx->tpCtx);
+            tTbxMbTpPacket * txPacket = serverCtx->tpCtx->getTxPacketFcn(serverCtx->tpCtx);
+            /* Since we're requested to process a newly received PDU, these packet accesses
+             * should always succeed. Sanity check anyways, just in case.
+             */
+            TBX_ASSERT((rxPacket != NULL) && (txPacket != NULL));
+            /* Only continue with packet access. */
+            if ((rxPacket != NULL) && (txPacket != NULL))
             {
-              /* ---------------- FC01 - Read Coils ---------------------------------- */
-              case TBX_MB_FC01_READ_COILS:
+              /* Update flag that we can actually send a response, now that we know we 
+               * have access to txPacket.
+               */
+              okayToSendResponse = TBX_TRUE;
+              /* Prepare the response packet function code. */
+              txPacket->pdu.code = rxPacket->pdu.code;
+              /* Filter on the function code. */
+              switch (rxPacket->pdu.code)
               {
-                TbxMbServerFC01ReadCoils(serverCtx, rxPacket, txPacket);
-              }
-              break;
-
-              /* ---------------- FC02 - Read Discrete Inputs ------------------------ */
-              case TBX_MB_FC02_READ_DISCRETE_INPUTS:
-              {
-                TbxMbServerFC02ReadInputs(serverCtx, rxPacket, txPacket);
-              }
-              break;
-
-              /* ---------------- FC03 - Read Holding Registers ---------------------- */
-              case TBX_MB_FC03_READ_HOLDING_REGISTERS:
-              {
-                TbxMbServerFC03ReadHoldingRegs(serverCtx, rxPacket, txPacket);
-              }
-              break;
-
-              /* ---------------- FC04 - Read Input Registers ------------------------ */
-              case TBX_MB_FC04_READ_INPUT_REGISTERS:
-              {
-                TbxMbServerFC04ReadInputRegs(serverCtx, rxPacket, txPacket);
-              }
-              break;
-
-              /* ---------------- FC05 - Write Single Coil --------------------------- */
-              case TBX_MB_FC05_WRITE_SINGLE_COIL:
-              {
-                TbxMbServerFC05WriteSingleCoil(serverCtx, rxPacket, txPacket);
-              }
-              break;
-
-              /* ---------------- FC06 - Write Single Register ----------------------- */
-              case TBX_MB_FC06_WRITE_SINGLE_REGISTER:
-              {
-                TbxMbServerFC06WriteSingleReg(serverCtx, rxPacket, txPacket);
-              }
-              break;
-
-              /* ---------------- FC08 - Diagnostics --------------------------------- */
-              case TBX_MB_FC08_DIAGNOSTICS:
-              {
-                TbxMbServerFC08Diagnostics(serverCtx, rxPacket, txPacket);
-              }
-              break;
-
-              /* ---------------- FC15 - Write Multiple Coils ------------------------ */
-              case TBX_MB_FC15_WRITE_MULTIPLE_COILS:
-              {
-                TbxMbServerFC15WriteMultipleCoils(serverCtx, rxPacket, txPacket);
-              }
-              break;
-
-              /* ---------------- FC16 - Write Multiple Registers -------------------- */
-              case TBX_MB_FC16_WRITE_MULTIPLE_REGISTERS:
-              {
-                TbxMbServerFC16WriteMultipleRegs(serverCtx, rxPacket, txPacket);
-              }
-              break;
-
-              /* ---------------- Unsupported function code -------------------------- */
-              default:
-              {
-                uint8_t handled = TBX_FALSE;
-
-                /* Is a custom function code callback configured? */
-                if (serverCtx->customFunctionFcn != NULL)
+                /* ---------------- FC01 - Read Coils -------------------------------- */
+                case TBX_MB_FC01_READ_COILS:
                 {
-                  /* Prepare callback parameters. */
-                  uint8_t const * rxPdu  = &rxPacket->pdu.code;
-                  uint8_t       * txPdu  = &txPacket->pdu.code;
-                  uint8_t         pduLen = rxPacket->dataLen + 1U;
-                  /* Call the custom function code callback. */
-                  handled = serverCtx->customFunctionFcn(serverCtx, rxPdu, txPdu, 
-                                                         &pduLen);
-                  /* Did the callback process the PDU and prepare a response? */
-                  if (handled == TBX_TRUE)
+                  TbxMbServerFC01ReadCoils(serverCtx, rxPacket, txPacket);
+                }
+                break;
+
+                /* ---------------- FC02 - Read Discrete Inputs ---------------------- */
+                case TBX_MB_FC02_READ_DISCRETE_INPUTS:
+                {
+                  TbxMbServerFC02ReadInputs(serverCtx, rxPacket, txPacket);
+                }
+                break;
+
+                /* ---------------- FC03 - Read Holding Registers -------------------- */
+                case TBX_MB_FC03_READ_HOLDING_REGISTERS:
+                {
+                  TbxMbServerFC03ReadHoldingRegs(serverCtx, rxPacket, txPacket);
+                }
+                break;
+
+                /* ---------------- FC04 - Read Input Registers ---------------------- */
+                case TBX_MB_FC04_READ_INPUT_REGISTERS:
+                {
+                  TbxMbServerFC04ReadInputRegs(serverCtx, rxPacket, txPacket);
+                }
+                break;
+
+                /* ---------------- FC05 - Write Single Coil ------------------------- */
+                case TBX_MB_FC05_WRITE_SINGLE_COIL:
+                {
+                  TbxMbServerFC05WriteSingleCoil(serverCtx, rxPacket, txPacket);
+                }
+                break;
+
+                /* ---------------- FC06 - Write Single Register --------------------- */
+                case TBX_MB_FC06_WRITE_SINGLE_REGISTER:
+                {
+                  TbxMbServerFC06WriteSingleReg(serverCtx, rxPacket, txPacket);
+                }
+                break;
+
+                /* ---------------- FC08 - Diagnostics ------------------------------- */
+                case TBX_MB_FC08_DIAGNOSTICS:
+                {
+                  TbxMbServerFC08Diagnostics(serverCtx, rxPacket, txPacket);
+                }
+                break;
+
+                /* ---------------- FC15 - Write Multiple Coils ---------------------- */
+                case TBX_MB_FC15_WRITE_MULTIPLE_COILS:
+                {
+                  TbxMbServerFC15WriteMultipleCoils(serverCtx, rxPacket, txPacket);
+                }
+                break;
+
+                /* ---------------- FC16 - Write Multiple Registers ------------------ */
+                case TBX_MB_FC16_WRITE_MULTIPLE_REGISTERS:
+                {
+                  TbxMbServerFC16WriteMultipleRegs(serverCtx, rxPacket, txPacket);
+                }
+                break;
+
+                /* ---------------- Unsupported function code ------------------------ */
+                default:
+                {
+                  uint8_t handled = TBX_FALSE;
+
+                  /* Is a custom function code callback configured? */
+                  if (serverCtx->customFunctionFcn != NULL)
                   {
-                    /* Set the response data length. */
-                    txPacket->dataLen = pduLen - 1U;
+                    /* Prepare callback parameters. */
+                    uint8_t const * rxPdu  = &rxPacket->pdu.code;
+                    uint8_t       * txPdu  = &txPacket->pdu.code;
+                    uint8_t         pduLen = rxPacket->dataLen + 1U;
+                    /* Call the custom function code callback. */
+                    handled = serverCtx->customFunctionFcn(serverCtx, rxPdu, txPdu, 
+                                                          &pduLen);
+                    /* Did the callback process the PDU and prepare a response? */
+                    if (handled == TBX_TRUE)
+                    {
+                      /* Set the response data length. */
+                      txPacket->dataLen = pduLen - 1U;
+                    }
+                  }
+                  /* Did the custom function code callback not handle the PDU? */
+                  if (handled == TBX_FALSE)
+                  {
+                    /* This function code is currently not supported. */
+                    txPacket->pdu.code |= TBX_MB_FC_EXCEPTION_MASK;
+                    txPacket->pdu.data[0] = TBX_MB_EC01_ILLEGAL_FUNCTION;
+                    txPacket->dataLen = 1U;
                   }
                 }
-                /* Did the custom function code callback not handle the PDU? */
-                if (handled == TBX_FALSE)
-                {
-                  /* This function code is currently not supported. */
-                  txPacket->pdu.code |= TBX_MB_FC_EXCEPTION_MASK;
-                  txPacket->pdu.data[0] = TBX_MB_EC01_ILLEGAL_FUNCTION;
-                  txPacket->dataLen = 1U;
-                }
+                break;
               }
-              break;
+            }
+            /* Inform the transport layer that were done with the rx packet and no longer
+             * need access to it.
+             */
+            serverCtx->tpCtx->receptionDoneFcn(serverCtx->tpCtx);
+            /* Request the transport layer to transmit the response. Note that
+             * transmitFcn() should only be called after calling receptionDoneFcn().
+             */
+            if (okayToSendResponse == TBX_TRUE)
+            {
+              (void)serverCtx->tpCtx->transmitFcn(serverCtx->tpCtx);
             }
           }
-          /* Inform the transport layer that were done with the rx packet and no longer
-           * need access to it.
-           */
-          serverCtx->tpCtx->receptionDoneFcn(serverCtx->tpCtx);
-          /* Request the transport layer to transmit the response. Note that
-           * transmitFcn() should only be called after calling receptionDoneFcn().
-           */
-          if (okayToSendResponse == TBX_TRUE)
+          break;
+        
+          case TBX_MB_EVENT_ID_PDU_TRANSMITTED:
           {
-            (void)serverCtx->tpCtx->transmitFcn(serverCtx->tpCtx);
+            /* At this point no additional event handling is needed on this channel upon
+             * PDU transmission completion.
+             */
           }
-        }
-        break;
-      
-        case TBX_MB_EVENT_ID_PDU_TRANSMITTED:
-        {
-          /* At this point no additional event handling is needed on this channel upon
-           * PDU transmission completion.
-           */
-        }
-        break;
+          break;
 
-        default:
-        {
-          /* An unsupported event was dispatched to us. Should not happen. */
-          TBX_ASSERT(TBX_FALSE);
+          default:
+          {
+            /* An unsupported event was dispatched to us. Should not happen. */
+            TBX_ASSERT(TBX_FALSE);
+          }
+          break;
         }
-        break;
       }
     }
   }
@@ -891,8 +932,8 @@ static void TbxMbServerFC03ReadHoldingRegs(tTbxMbServerCtx       * context,
 **
 ****************************************************************************************/
 static void TbxMbServerFC04ReadInputRegs(tTbxMbServerCtx       * context,
-                                        tTbxMbTpPacket  const * rxPacket,
-                                        tTbxMbTpPacket        * txPacket)
+                                         tTbxMbTpPacket  const * rxPacket,
+                                         tTbxMbTpPacket        * txPacket)
 {
   /* Verify parameters. */
   TBX_ASSERT((context != NULL) && (rxPacket != NULL) && (txPacket != NULL));

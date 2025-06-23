@@ -93,14 +93,6 @@ typedef struct
 } tTbxMbTpDiagInfo;
 
 
-/** \brief Transport layer interface function to detect events in a polling manner. */
-typedef void (* tTbxMbTpPoll)                   (void        * context);
-
-
-/** \brief Transport layer interface function for processing events. */
-typedef void (* tTbxMbTpProcess)                (tTbxMbEvent * event);
-
-
 /** \brief Transport layer interface function to start the transmission of the data 
  *         packet, stored in the transport layer context. Use getTxPacketFcn() to
  *         obtain access to the transmit packet.
@@ -133,18 +125,9 @@ typedef tTbxMbTpPacket * (* tTbxMbTpGetTxPacket)(tTbxMbTp      transport);
 
 
 /** \brief   Modbus transport layer context that groups all transport layer specific
- *           data. It's what the tTbxMbTransport opaque pointer points to.
- *  \details For both simplicity and run-time efficiency, this type packs information for
- *           all different transport layers, even though some elements are not needed
- *           for a specific transport layer. For example, a TCP/IP transport layer does
- *           not really need the serial port field that the RTU/ASCII transport layers
- *           need.
- *           These context are allocated using a memory pool. By having one generic 
- *           transport layer type, only one size memory pool size is needed. If a type
- *           would be created for each specific transport layer, these types might have
- *           different sizes and would require multiple memory pools of different sizes.
- *           So at the end it is actually more RAM efficient to group the elements of
- *           all transport layers in one generic one.
+ *           data. It's what the tTbxMbTp opaque pointer points to. Each transport
+ *           layer such as RTU, TCP and ASCII define there own context that derives from
+ *           this one.
  */
 typedef struct
 {
@@ -153,26 +136,18 @@ typedef struct
    * derives from. 
    */
   void                  * instancePtr;           /**< Reserved for C++ wrapper.        */
-  tTbxMbTpPoll            pollFcn;               /**< Event poll function.             */
-  tTbxMbTpProcess         processFcn;            /**< Event process function.          */
-  /* Private members. */
+  tTbxMbEventPoll         pollFcn;               /**< Event poll function.             */
+  tTbxMbEventProcess      processFcn;            /**< Event process function.          */
+  /* The type member must always be the first one after the three entries that match
+   * those in tTbxMbEventCtx.
+   */
   uint8_t                 type;                  /**< Context type.                    */
-  uint8_t                 nodeAddr;              /**< Node address (RTU/ASCII only).   */
-  tTbxMbUartPort          port;                  /**< UART port (RTU/ASCII only)     . */
-  tTbxMbTpPacket          txPacket;              /**< Transmit packet buffer.          */
-  uint16_t                txDoneTime;            /**< Tx packet done timestamp.        */
-  tTbxMbTpPacket          rxPacket;              /**< Reception packet buffer.         */
-  uint16_t                rxTime;                /**< Last Rx byte timestamp.          */
-  uint16_t                rxAduWrIdx;            /**< ADU Rx packet write index.       */
-  uint8_t                 rxAduOkay;             /**< ADU Rx packet OK/NOK flag.       */
-  uint16_t                t1_5Ticks;             /**< 1.5 character time in 50us ticks.*/
-  uint16_t                t3_5Ticks;             /**< 3.5 character time in 50us ticks.*/
-  uint8_t                 state;                 /**< Communication state.             */
-  uint8_t                 isClient;              /**< Info about the channel context.  */
-  tTbxMbOsalSem           initStateExitSem;      /**< Exit INIT state semaphore.       */
-  /* Public methods and members. */
+  /* Public methods and members shared between all transport layers. These must always
+   * follow the type member and be in exactly the same order for all transport layers.
+   */
   void                  * channelCtx;            /**< Assigned channel context.        */
-  tTbxMbTpDiagInfo        diagInfo;              /**< Diagnostics information.         */ 
+  uint8_t                 isClient;              /**< Info about the channel context.  */
+  tTbxMbTpDiagInfo        diagInfo;              /**< Diagnostics information.         */
   tTbxMbTpTransmit        transmitFcn;           /**< Packet transmit function.        */
   tTbxMbTpReceptionDone   receptionDoneFcn;      /**< Rx packet processing done fcn.   */
   tTbxMbTpGetRxPacket     getRxPacketFcn;        /**< Obtain Rx packet access function.*/

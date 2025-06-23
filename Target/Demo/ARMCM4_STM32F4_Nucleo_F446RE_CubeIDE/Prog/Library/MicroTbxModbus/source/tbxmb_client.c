@@ -78,16 +78,7 @@ tTbxMbClient TbxMbClientCreate(tTbxMbTp transport,
   if (transport != NULL)
   {
     /* Allocate memory for the new channel context. */
-    tTbxMbClientCtx * newClientCtx = TbxMemPoolAllocate(sizeof(tTbxMbClientCtx));
-    /* Automatically increase the memory pool, if it was too small. */
-    if (newClientCtx == NULL)
-    {
-      /* No need to check the return value, because if it failed, the following
-       * allocation fails too, which is verified later on.
-       */
-      (void)TbxMemPoolCreate(1U, sizeof(tTbxMbClientCtx));
-      newClientCtx = TbxMemPoolAllocate(sizeof(tTbxMbClientCtx));      
-    }
+    tTbxMbClientCtx * newClientCtx = TbxMemPoolAllocateAuto(sizeof(tTbxMbClientCtx));
     /* Verify memory allocation of the channel context. */
     TBX_ASSERT(newClientCtx != NULL);
     /* Only continue if the memory allocation succeeded. */
@@ -97,24 +88,36 @@ tTbxMbClient TbxMbClientCreate(tTbxMbTp transport,
       tTbxMbTpCtx * tpCtx = (tTbxMbTpCtx *)transport;
       /* Sanity check on the transport layer's interface function. That way there is 
        * no need to do it later on, making it more run-time efficient. Also check that
-       * it's not already linked to another channel.
+       * it's not already linked to another channel and do a bit of checking on the
+       * context type. Note that the exact context type value is not available here, 
+       * because by design, the context type macros are located in only the associated
+       * module's source-file. That way it cannot accidentally be used elsewhere.
        */
       TBX_ASSERT((tpCtx->transmitFcn != NULL) && (tpCtx->receptionDoneFcn != NULL) &&
                  (tpCtx->getRxPacketFcn != NULL) && (tpCtx->getTxPacketFcn != NULL) &&
-                 (tpCtx->channelCtx == NULL));
-      /* Initialize the channel context. Start by crosslinking the transport layer. */
-      newClientCtx->type = TBX_MB_CLIENT_CONTEXT_TYPE;
-      newClientCtx->instancePtr = NULL;
-      newClientCtx->pollFcn = NULL;
-      newClientCtx->processFcn = TbxMbClientProcessEvent;
-      newClientCtx->responseTimeout = responseTimeout;
-      newClientCtx->turnaroundDelay = turnaroundDelay;
-      newClientCtx->transceiveSem = TbxMbOsalSemCreate();
-      newClientCtx->tpCtx = tpCtx;
-      newClientCtx->tpCtx->channelCtx = newClientCtx;
-      newClientCtx->tpCtx->isClient = TBX_TRUE;
-      /* Update the result. */
-      result = newClientCtx;
+                 (tpCtx->channelCtx == NULL) && (tpCtx->type != 0U) && 
+                 (tpCtx->type != TBX_MB_CLIENT_CONTEXT_TYPE));
+      /* Only continue if the sanity check passed. */
+      if ((tpCtx->transmitFcn != NULL) && (tpCtx->receptionDoneFcn != NULL) &&
+          (tpCtx->getRxPacketFcn != NULL) && (tpCtx->getTxPacketFcn != NULL) &&
+          (tpCtx->channelCtx == NULL) && (tpCtx->type != 0U) && 
+          (tpCtx->type != TBX_MB_CLIENT_CONTEXT_TYPE))
+      {
+        /* Initialize the channel context. */
+        newClientCtx->type = TBX_MB_CLIENT_CONTEXT_TYPE;
+        newClientCtx->instancePtr = NULL;
+        newClientCtx->pollFcn = NULL;
+        newClientCtx->processFcn = TbxMbClientProcessEvent;
+        newClientCtx->responseTimeout = responseTimeout;
+        newClientCtx->turnaroundDelay = turnaroundDelay;
+        newClientCtx->transceiveSem = TbxMbOsalSemCreate();
+        /* Crosslink the transport layer. */
+        newClientCtx->tpCtx = tpCtx;
+        newClientCtx->tpCtx->channelCtx = newClientCtx;
+        newClientCtx->tpCtx->isClient = TBX_TRUE;
+        /* Update the result. */
+        result = newClientCtx;
+      }
     }
   }
   /* Give the result back to the caller. */
@@ -140,20 +143,26 @@ void TbxMbClientFree(tTbxMbClient channel)
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-    /* Release the semaphore used for syncing to PDU transmit and reception events. */
-    TbxMbOsalSemFree(clientCtx->transceiveSem);
-    /* Remove crosslink between the channel and the transport layer. */
-    TbxCriticalSectionEnter();
-    clientCtx->tpCtx->channelCtx = NULL;
-    clientCtx->tpCtx = NULL;
-    /* Invalidate the context to protect it from accidentally being used afterwards. */
-    clientCtx->type = 0U;
-    clientCtx->pollFcn = NULL;
-    clientCtx->processFcn = NULL;
-    clientCtx->transceiveSem = NULL;
-    TbxCriticalSectionExit();
-    /* Give the channel context back to the memory pool. */
-    TbxMemPoolRelease(clientCtx);
+    /* Only continue with a valid context type. */
+    if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
+    {
+      /* Release the semaphore used for syncing to PDU transmit and reception events. */
+      TbxMbOsalSemFree(clientCtx->transceiveSem);
+      /* Remove crosslink between the channel and the transport layer. */
+      TbxCriticalSectionEnter();
+      clientCtx->tpCtx->channelCtx = NULL;
+      clientCtx->tpCtx = NULL;
+      /* Invalidate the context to protect it from accidentally being used afterwards. */
+      clientCtx->type = 0U;
+      clientCtx->pollFcn = NULL;
+      clientCtx->processFcn = NULL;
+      clientCtx->transceiveSem = NULL;
+      TbxCriticalSectionExit();
+      /* Purge possibly pending events from this channel's context. */
+      TbxMbEventPurge(channel);
+      /* Give the channel context back to the memory pool. */
+      TbxMemPoolRelease(clientCtx);
+    }
   }
 } /*** end of TbxMbClientFree ***/
 
@@ -175,7 +184,7 @@ static void TbxMbClientProcessEvent(tTbxMbEvent * event)
   {
     /* Sanity check the context. */
     TBX_ASSERT(event->context != NULL);
-    /* Convert the event context  to the client channel context structure. */
+    /* Convert the event context to the client channel context structure. */
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)event->context;
     /* Make sure the context is valid. */
     TBX_ASSERT(clientCtx != NULL);
@@ -184,33 +193,37 @@ static void TbxMbClientProcessEvent(tTbxMbEvent * event)
     {
       /* Sanity check on the context type. */
       TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-      /* Filter on the event identifier. */
-      switch (event->id)
+      /* Only continue with a valid context type. */
+      if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
       {
-        case TBX_MB_EVENT_ID_PDU_RECEIVED:
+        /* Filter on the event identifier. */
+        switch (event->id)
         {
-          /* Give the PDU received semaphore to synchronize whatever task is waiting
-           * for this event.
-           */
-          TbxMbOsalSemGive(clientCtx->transceiveSem, TBX_FALSE);
-        }
-        break;
+          case TBX_MB_EVENT_ID_PDU_RECEIVED:
+          {
+            /* Give the PDU received semaphore to synchronize whatever task is waiting
+             * for this event.
+             */
+            TbxMbOsalSemGive(clientCtx->transceiveSem, TBX_FALSE);
+          }
+          break;
 
-        case TBX_MB_EVENT_ID_PDU_TRANSMITTED:
-        {
-          /* Give the PDU transmitted semaphore to synchronize whatever task is waiting
-           * for this event.
-           */
-          TbxMbOsalSemGive(clientCtx->transceiveSem, TBX_FALSE);
-        }
-        break;
+          case TBX_MB_EVENT_ID_PDU_TRANSMITTED:
+          {
+            /* Give the PDU transmitted semaphore to synchronize whatever task is waiting
+             * for this event.
+             */
+            TbxMbOsalSemGive(clientCtx->transceiveSem, TBX_FALSE);
+          }
+          break;
 
-        default:
-        {
-          /* An unsupported event was dispatched to us. Should not happen. */
-          TBX_ASSERT(TBX_FALSE);
+          default:
+          {
+            /* An unsupported event was dispatched to us. Should not happen. */
+            TBX_ASSERT(TBX_FALSE);
+          }
+          break;
         }
-        break;
       }
     }
   }
@@ -288,7 +301,7 @@ static uint8_t TbxMbClientTransceive(tTbxMbClientCtx * clientCtx,
 ** \param     channel Handle to the Modbus client channel for the requested operation.
 ** \param     node The address of the server. This parameter is transport layer
 **            dependent. It is needed on RTU/ASCII, yet don't care for TCP unless it is
-**            a gateway to an RTU network. If it's don't care, set it to a value of 1.
+**            a gateway to an RTU network. If it's don't care, set it to a value of 255.
 ** \param     addr Starting element address (0..65535) in the Modbus data table for the
 **            coil read operation.
 ** \param     num Number of elements to read from the coils data table. Range can be
@@ -307,120 +320,123 @@ uint8_t TbxMbClientReadCoils(tTbxMbClient   channel,
   uint8_t result = TBX_ERROR;
 
   /* Verify the parameters. */
-  TBX_ASSERT((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-             (num <= 2000U) && (coils != NULL));
+  TBX_ASSERT((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) &&
+             (num >= 1U) && (num <= 2000U) && (coils != NULL));
 
   /* Only continue with valid parameters. */
-  if ((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-      (num <= 2000U) && (coils != NULL))
+  if ((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) &&
+      (num >= 1U) && (num <= 2000U) && (coils != NULL))
   {
     /* Convert the client channel pointer to the context structure. */
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-
-    /* Obtain write access to the request packet. */
-    tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
-    /* Should always work, unless this function is being called recursively. Only
-     * continue with access for preparing the request packet.
-     */
-    if (txPacket != NULL)
+    /* Only continue with a valid context type. */
+    if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
     {
-      /* Prepare the request packet. */
-      txPacket->node = node;
-      txPacket->pdu.code = TBX_MB_FC01_READ_COILS;
-      txPacket->dataLen = 4U;
-      /* Starting address. */
-      TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
-      /* Number of coils. */
-      TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
-
-      /* Determine the request type (broadcast / unicast). */
-      uint8_t isBroadcast = TBX_FALSE;
-      if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
-      {
-        isBroadcast = TBX_TRUE;
-      }
-      /* Transmit the request and wait for the response to a unicast request to come in
-       * or the turnaround time to pass for a broadcast request.
+      /* Obtain write access to the request packet. */
+      tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
+      /* Should always work, unless this function is being called recursively. Only
+       * continue with access for preparing the request packet.
        */
-      result = TbxMbClientTransceive(clientCtx, isBroadcast);
-
-      /* Only continue with processing the response if all is okay so far and the request
-       * was unicast.
-       */
-      if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+      if (txPacket != NULL)
       {
-        /* Obtain read access to the response packet. */
-        tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
-        /* Since we just received a response packet, the packet access should always 
-         * succeed. Sanity check anyways, just in case.
-         */
-        TBX_ASSERT(rxPacket != NULL);
-        /* Only continue with packet access. */
-        if (rxPacket != NULL)
+        /* Prepare the request packet. */
+        txPacket->node = node;
+        txPacket->pdu.code = TBX_MB_FC01_READ_COILS;
+        txPacket->dataLen = 4U;
+        /* Starting address. */
+        TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
+        /* Number of coils. */
+        TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
+
+        /* Determine the request type (broadcast / unicast). */
+        uint8_t isBroadcast = TBX_FALSE;
+        if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
         {
-          /* Determine the number of bytes needed to hold all the coil bits. The cast to
-           * U8 is okay, because we know that num is <= 2000.
+          isBroadcast = TBX_TRUE;
+        }
+        /* Transmit the request and wait for the response to a unicast request to come in
+         * or the turnaround time to pass for a broadcast request.
+         */
+        result = TbxMbClientTransceive(clientCtx, isBroadcast);
+
+        /* Only continue with processing the response if all is okay so far and the 
+         * request was unicast.
+         */
+        if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+        {
+          /* Obtain read access to the response packet. */
+          tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
+          /* Since we just received a response packet, the packet access should always 
+           * succeed. Sanity check anyways, just in case.
            */
-          uint8_t numBytes = (uint8_t)(num / 8U);
-          if ((num % 8U) != 0U)
+          TBX_ASSERT(rxPacket != NULL);
+          /* Only continue with packet access. */
+          if (rxPacket != NULL)
           {
-            numBytes++;
-          }
-          /* Check that the response came from the expected node, that it's a response
-           * with the same function code (not an exception response) and that the data
-           * length and the byte count are as expected.
-           */
-          uint8_t byteCount = rxPacket->pdu.data[0];
-          if ((rxPacket->node != node) ||
-              (rxPacket->pdu.code != TBX_MB_FC01_READ_COILS) ||
-              (byteCount != numBytes) ||
-              (rxPacket->dataLen != (byteCount + 1U)) )
-          {
-            result = TBX_ERROR;
-          }
-          /* Response content valid. Process its data. */
-          else
-          {
-            /* Prepare loop indices that aid with reading the coils. */
-            uint8_t   bitIdx  = 0U;
-            uint8_t   byteIdx = 0U;
-            /* Initialize byte array pointer for reading the coils. */
-            uint8_t const * coilData = &rxPacket->pdu.data[1];
-            /* Loop through all the coils. */
-            for (uint16_t idx = 0U; idx < num; idx++)
+            /* Determine the number of bytes needed to hold all the coil bits. The cast
+             * to U8 is okay, because we know that num is <= 2000.
+             */
+            uint8_t numBytes = (uint8_t)(num / 8U);
+            if ((num % 8U) != 0U)
             {
-              /* Extract and store the state of the coil. */
-              if ((coilData[byteIdx] & (1U << bitIdx)) != 0U)
+              numBytes++;
+            }
+            /* Check that the response came from the expected node, that it's a response
+             * with the same function code (not an exception response) and that the data
+             * length and the byte count are as expected.
+             */
+            uint8_t byteCount = rxPacket->pdu.data[0];
+            if ((rxPacket->node != node) ||
+                (rxPacket->pdu.code != TBX_MB_FC01_READ_COILS) ||
+                (byteCount != numBytes) ||
+                (rxPacket->dataLen != (byteCount + 1U)) )
+            {
+              result = TBX_ERROR;
+            }
+            /* Response content valid. Process its data. */
+            else
+            {
+              /* Prepare loop indices that aid with reading the coils. */
+              uint8_t   bitIdx  = 0U;
+              uint8_t   byteIdx = 0U;
+              /* Initialize byte array pointer for reading the coils. */
+              uint8_t const * coilData = &rxPacket->pdu.data[1];
+              /* Loop through all the coils. */
+              for (uint16_t idx = 0U; idx < num; idx++)
               {
-                coils[idx] = TBX_ON;
-              }
-              else
-              {
-                coils[idx] = TBX_OFF;
-              }
-              /* Update the bit index. */
-              bitIdx++;
-              /* Time to move to the next byte? */
-              if (bitIdx == 8U)
-              {
-                /* Reset the bit index and increment the byte index. */
-                bitIdx = 0U;
-                byteIdx++;
+                /* Extract and store the state of the coil. */
+                if ((coilData[byteIdx] & (1U << bitIdx)) != 0U)
+                {
+                  coils[idx] = TBX_ON;
+                }
+                else
+                {
+                  coils[idx] = TBX_OFF;
+                }
+                /* Update the bit index. */
+                bitIdx++;
+                /* Time to move to the next byte? */
+                if (bitIdx == 8U)
+                {
+                  /* Reset the bit index and increment the byte index. */
+                  bitIdx = 0U;
+                  byteIdx++;
+                }
               }
             }
           }
+          /* Could not access the response packet. */
+          else
+          {
+            result = TBX_ERROR;
+          }
+          /* Inform the transport layer that were done with the rx packet and no longer
+           * need access to it.
+           */
+          clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
         }
-        /* Could not access the response packet. */
-        else
-        {
-          result = TBX_ERROR;
-        }
-        /* Inform the transport layer that were done with the rx packet and no longer
-         * need access to it.
-         */
-        clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
       }
     }
   }      
@@ -435,7 +451,7 @@ uint8_t TbxMbClientReadCoils(tTbxMbClient   channel,
 ** \param     channel Handle to the Modbus client channel for the requested operation.
 ** \param     node The address of the server. This parameter is transport layer
 **            dependent. It is needed on RTU/ASCII, yet don't care for TCP unless it is
-**            a gateway to an RTU network. If it's don't care, set it to a value of 1.
+**            a gateway to an RTU network. If it's don't care, set it to a value of 255.
 ** \param     addr Starting element address (0..65535) in the Modbus data table for the
 **            discrete input read operation.
 ** \param     num Number of elements to read from the discrete inputs data table. Range
@@ -454,120 +470,123 @@ uint8_t TbxMbClientReadInputs(tTbxMbClient   channel,
   uint8_t result = TBX_ERROR;
 
   /* Verify the parameters. */
-  TBX_ASSERT((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-             (num <= 2000U) && (inputs != NULL));
+  TBX_ASSERT((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) &&
+             (num >= 1U) && (num <= 2000U) && (inputs != NULL));
 
   /* Only continue with valid parameters. */
-  if ((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-      (num <= 2000U) && (inputs != NULL))
+  if ((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) && 
+      (num >= 1U) && (num <= 2000U) && (inputs != NULL))
   {
     /* Convert the client channel pointer to the context structure. */
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-
-    /* Obtain write access to the request packet. */
-    tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
-    /* Should always work, unless this function is being called recursively. Only
-     * continue with access for preparing the request packet.
-     */
-    if (txPacket != NULL)
+    /* Only continue with a valid context type. */
+    if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
     {
-      /* Prepare the request packet. */
-      txPacket->node = node;
-      txPacket->pdu.code = TBX_MB_FC02_READ_DISCRETE_INPUTS;
-      txPacket->dataLen = 4U;
-      /* Starting address. */
-      TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
-      /* Number of discrete inputs. */
-      TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
-
-      /* Determine the request type (broadcast / unicast). */
-      uint8_t isBroadcast = TBX_FALSE;
-      if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
-      {
-        isBroadcast = TBX_TRUE;
-      }
-      /* Transmit the request and wait for the response to a unicast request to come in
-       * or the turnaround time to pass for a broadcast request.
+      /* Obtain write access to the request packet. */
+      tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
+      /* Should always work, unless this function is being called recursively. Only
+       * continue with access for preparing the request packet.
        */
-      result = TbxMbClientTransceive(clientCtx, isBroadcast);
-
-      /* Only continue with processing the response if all is okay so far and the request
-       * was unicast.
-       */
-      if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+      if (txPacket != NULL)
       {
-        /* Obtain read access to the response packet. */
-        tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
-        /* Since we just received a response packet, the packet access should always 
-         * succeed. Sanity check anyways, just in case.
-         */
-        TBX_ASSERT(rxPacket != NULL);
-        /* Only continue with packet access. */
-        if (rxPacket != NULL)
+        /* Prepare the request packet. */
+        txPacket->node = node;
+        txPacket->pdu.code = TBX_MB_FC02_READ_DISCRETE_INPUTS;
+        txPacket->dataLen = 4U;
+        /* Starting address. */
+        TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
+        /* Number of discrete inputs. */
+        TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
+
+        /* Determine the request type (broadcast / unicast). */
+        uint8_t isBroadcast = TBX_FALSE;
+        if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
         {
-          /* Determine the number of bytes needed to hold all the input bits. The cast to
-           * U8 is okay, because we know that num is <= 2000.
+          isBroadcast = TBX_TRUE;
+        }
+        /* Transmit the request and wait for the response to a unicast request to come in
+         * or the turnaround time to pass for a broadcast request.
+         */
+        result = TbxMbClientTransceive(clientCtx, isBroadcast);
+
+        /* Only continue with processing the response if all is okay so far and the
+         * request was unicast.
+         */
+        if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+        {
+          /* Obtain read access to the response packet. */
+          tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
+          /* Since we just received a response packet, the packet access should always 
+           * succeed. Sanity check anyways, just in case.
            */
-          uint8_t numBytes = (uint8_t)(num / 8U);
-          if ((num % 8U) != 0U)
+          TBX_ASSERT(rxPacket != NULL);
+          /* Only continue with packet access. */
+          if (rxPacket != NULL)
           {
-            numBytes++;
-          }
-          /* Check that the response came from the expected node, that it's a response
-           * with the same function code (not an exception response) and that the data
-           * length and the byte count are as expected.
-           */
-          uint8_t byteCount = rxPacket->pdu.data[0];
-          if ((rxPacket->node != node) ||
-              (rxPacket->pdu.code != TBX_MB_FC02_READ_DISCRETE_INPUTS) ||
-              (byteCount != numBytes) ||
-              (rxPacket->dataLen != (byteCount + 1U)) )
-          {
-            result = TBX_ERROR;
-          }
-          /* Response content valid. Process its data. */
-          else
-          {
-            /* Prepare loop indices that aid with reading the input bits. */
-            uint8_t   bitIdx  = 0U;
-            uint8_t   byteIdx = 0U;
-            /* Initialize byte array pointer for reading the input bits. */
-            uint8_t const * inputData = &rxPacket->pdu.data[1];
-            /* Loop through all the inputs. */
-            for (uint16_t idx = 0U; idx < num; idx++)
+            /* Determine the number of bytes needed to hold all the input bits. The cast
+             * to U8 is okay, because we know that num is <= 2000.
+             */
+            uint8_t numBytes = (uint8_t)(num / 8U);
+            if ((num % 8U) != 0U)
             {
-              /* Extract and store the state of the discrete input. */
-              if ((inputData[byteIdx] & (1U << bitIdx)) != 0U)
+              numBytes++;
+            }
+            /* Check that the response came from the expected node, that it's a response
+             * with the same function code (not an exception response) and that the data
+             * length and the byte count are as expected.
+             */
+            uint8_t byteCount = rxPacket->pdu.data[0];
+            if ((rxPacket->node != node) ||
+                (rxPacket->pdu.code != TBX_MB_FC02_READ_DISCRETE_INPUTS) ||
+                (byteCount != numBytes) ||
+                (rxPacket->dataLen != (byteCount + 1U)) )
+            {
+              result = TBX_ERROR;
+            }
+            /* Response content valid. Process its data. */
+            else
+            {
+              /* Prepare loop indices that aid with reading the input bits. */
+              uint8_t   bitIdx  = 0U;
+              uint8_t   byteIdx = 0U;
+              /* Initialize byte array pointer for reading the input bits. */
+              uint8_t const * inputData = &rxPacket->pdu.data[1];
+              /* Loop through all the inputs. */
+              for (uint16_t idx = 0U; idx < num; idx++)
               {
-                inputs[idx] = TBX_ON;
-              }
-              else
-              {
-                inputs[idx] = TBX_OFF;
-              }
-              /* Update the bit index. */
-              bitIdx++;
-              /* Time to move to the next byte? */
-              if (bitIdx == 8U)
-              {
-                /* Reset the bit index and increment the byte index. */
-                bitIdx = 0U;
-                byteIdx++;
+                /* Extract and store the state of the discrete input. */
+                if ((inputData[byteIdx] & (1U << bitIdx)) != 0U)
+                {
+                  inputs[idx] = TBX_ON;
+                }
+                else
+                {
+                  inputs[idx] = TBX_OFF;
+                }
+                /* Update the bit index. */
+                bitIdx++;
+                /* Time to move to the next byte? */
+                if (bitIdx == 8U)
+                {
+                  /* Reset the bit index and increment the byte index. */
+                  bitIdx = 0U;
+                  byteIdx++;
+                }
               }
             }
           }
+          /* Could not access the response packet. */
+          else
+          {
+            result = TBX_ERROR;
+          }
+          /* Inform the transport layer that were done with the rx packet and no longer
+           * need access to it.
+          */
+          clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
         }
-        /* Could not access the response packet. */
-        else
-        {
-          result = TBX_ERROR;
-        }
-        /* Inform the transport layer that were done with the rx packet and no longer
-         * need access to it.
-         */
-        clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
       }
     }
   }      
@@ -582,7 +601,7 @@ uint8_t TbxMbClientReadInputs(tTbxMbClient   channel,
 ** \param     channel Handle to the Modbus client channel for the requested operation.
 ** \param     node The address of the server. This parameter is transport layer
 **            dependent. It is needed on RTU/ASCII, yet don't care for TCP unless it is
-**            a gateway to an RTU network. If it's don't care, set it to a value of 1.
+**            a gateway to an RTU network. If it's don't care, set it to a value of 255.
 ** \param     addr Starting element address (0..65535) in the Modbus data table for the
 **            input register read operation.
 ** \param     num Number of elements to read from the input registers data table. Range
@@ -601,92 +620,95 @@ uint8_t TbxMbClientReadInputRegs(tTbxMbClient   channel,
   uint8_t result = TBX_ERROR;
 
   /* Verify the parameters. */
-  TBX_ASSERT((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-             (num <= 125U) && (inputRegs != NULL));
+  TBX_ASSERT((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) && 
+             (num >= 1U) && (num <= 125U) && (inputRegs != NULL));
 
   /* Only continue with valid parameters. */
-  if ((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-      (num <= 125U) && (inputRegs != NULL))
+  if ((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) && 
+      (num >= 1U) && (num <= 125U) && (inputRegs != NULL))
   {
     /* Convert the client channel pointer to the context structure. */
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-
-    /* Obtain write access to the request packet. */
-    tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
-    /* Should always work, unless this function is being called recursively. Only
-     * continue with access for preparing the request packet.
-     */
-    if (txPacket != NULL)
+    /* Only continue with a valid context type. */
+    if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
     {
-      /* Prepare the request packet. */
-      txPacket->node = node;
-      txPacket->pdu.code = TBX_MB_FC04_READ_INPUT_REGISTERS;
-      txPacket->dataLen = 4U;
-      /* Starting address. */
-      TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
-      /* Number of registers. */
-      TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
-
-      /* Determine the request type (broadcast / unicast). */
-      uint8_t isBroadcast = TBX_FALSE;
-      if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
-      {
-        isBroadcast = TBX_TRUE;
-      }
-      /* Transmit the request and wait for the response to a unicast request to come in
-       * or the turnaround time to pass for a broadcast request.
+      /* Obtain write access to the request packet. */
+      tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
+      /* Should always work, unless this function is being called recursively. Only
+       * continue with access for preparing the request packet.
        */
-      result = TbxMbClientTransceive(clientCtx, isBroadcast);
-
-      /* Only continue with processing the response if all is okay so far and the request
-       * was unicast.
-       */
-      if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+      if (txPacket != NULL)
       {
-        /* Obtain read access to the response packet. */
-        tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
-        /* Since we just received a response packet, the packet access should always 
-         * succeed. Sanity check anyways, just in case.
-         */
-        TBX_ASSERT(rxPacket != NULL);
-        /* Only continue with packet access. */
-        if (rxPacket != NULL)
+        /* Prepare the request packet. */
+        txPacket->node = node;
+        txPacket->pdu.code = TBX_MB_FC04_READ_INPUT_REGISTERS;
+        txPacket->dataLen = 4U;
+        /* Starting address. */
+        TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
+        /* Number of registers. */
+        TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
+
+        /* Determine the request type (broadcast / unicast). */
+        uint8_t isBroadcast = TBX_FALSE;
+        if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
         {
-          /* Check that the response came from the expected node, that it's a response
-           * with the same function code (not an exception response) and that the data
-           * length and the byte count are as expected.
+          isBroadcast = TBX_TRUE;
+        }
+        /* Transmit the request and wait for the response to a unicast request to come in
+         * or the turnaround time to pass for a broadcast request.
+         */
+        result = TbxMbClientTransceive(clientCtx, isBroadcast);
+
+        /* Only continue with processing the response if all is okay so far and the
+         * request was unicast.
+         */
+        if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+        {
+          /* Obtain read access to the response packet. */
+          tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
+          /* Since we just received a response packet, the packet access should always 
+           * succeed. Sanity check anyways, just in case.
            */
-          uint8_t byteCount = rxPacket->pdu.data[0];
-          if ((rxPacket->node != node) ||
-              (rxPacket->pdu.code != TBX_MB_FC04_READ_INPUT_REGISTERS) ||
-              (byteCount != (num * 2U)) ||
-              (rxPacket->dataLen != (byteCount + 1U)) )
+          TBX_ASSERT(rxPacket != NULL);
+          /* Only continue with packet access. */
+          if (rxPacket != NULL)
+          {
+            /* Check that the response came from the expected node, that it's a response
+             * with the same function code (not an exception response) and that the data
+             * length and the byte count are as expected.
+             */
+            uint8_t byteCount = rxPacket->pdu.data[0];
+            if ((rxPacket->node != node) ||
+                (rxPacket->pdu.code != TBX_MB_FC04_READ_INPUT_REGISTERS) ||
+                (byteCount != (num * 2U)) ||
+                (rxPacket->dataLen != (byteCount + 1U)) )
+            {
+              result = TBX_ERROR;
+            }
+            /* Response content valid. Process its data. */
+            else
+            {
+              /* Set pointer to where the input registers start in the response. */
+              uint8_t const * regValPtr = &rxPacket->pdu.data[1];
+              /* Read out and store the input register values. */
+              for (uint8_t idx = 0U; idx < num; idx++)
+              {
+                inputRegs[idx] = TbxMbCommonExtractUInt16BE(&regValPtr[idx * 2U]);
+              }
+            }
+          }
+          /* Could not access the response packet. */
+          else
           {
             result = TBX_ERROR;
           }
-          /* Response content valid. Process its data. */
-          else
-          {
-            /* Set pointer to where the input registers start in the response. */
-            uint8_t const * regValPtr = &rxPacket->pdu.data[1];
-            /* Read out and store the input register values. */
-            for (uint8_t idx = 0U; idx < num; idx++)
-            {
-              inputRegs[idx] = TbxMbCommonExtractUInt16BE(&regValPtr[idx * 2U]);
-            }
-          }
+          /* Inform the transport layer that were done with the rx packet and no longer
+           * need access to it.
+          */
+          clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
         }
-        /* Could not access the response packet. */
-        else
-        {
-          result = TBX_ERROR;
-        }
-        /* Inform the transport layer that were done with the rx packet and no longer
-         * need access to it.
-         */
-        clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
       }
     }
   }
@@ -701,7 +723,7 @@ uint8_t TbxMbClientReadInputRegs(tTbxMbClient   channel,
 ** \param     channel Handle to the Modbus client channel for the requested operation.
 ** \param     node The address of the server. This parameter is transport layer
 **            dependent. It is needed on RTU/ASCII, yet don't care for TCP unless it is
-**            a gateway to an RTU network. If it's don't care, set it to a value of 1.
+**            a gateway to an RTU network. If it's don't care, set it to a value of 255.
 ** \param     addr Starting element address (0..65535) in the Modbus data table for the
 **            holding register read operation.
 ** \param     num Number of elements to read from the holding registers data table. Range
@@ -720,92 +742,95 @@ uint8_t TbxMbClientReadHoldingRegs(tTbxMbClient   channel,
   uint8_t result = TBX_ERROR;
 
   /* Verify the parameters. */
-  TBX_ASSERT((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-             (num <= 125U) && (holdingRegs != NULL));
+  TBX_ASSERT((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) &&
+             (num >= 1U) && (num <= 125U) && (holdingRegs != NULL));
 
   /* Only continue with valid parameters. */
-  if ((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-      (num <= 125U) && (holdingRegs != NULL))
+  if ((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) &&
+      (num >= 1U) && (num <= 125U) && (holdingRegs != NULL))
   {
     /* Convert the client channel pointer to the context structure. */
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-
-    /* Obtain write access to the request packet. */
-    tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
-    /* Should always work, unless this function is being called recursively. Only
-     * continue with access for preparing the request packet.
-     */
-    if (txPacket != NULL)
+    /* Only continue with a valid context type. */
+    if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
     {
-      /* Prepare the request packet. */
-      txPacket->node = node;
-      txPacket->pdu.code = TBX_MB_FC03_READ_HOLDING_REGISTERS;
-      txPacket->dataLen = 4U;
-      /* Starting address. */
-      TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
-      /* Number of registers. */
-      TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
-
-      /* Determine the request type (broadcast / unicast). */
-      uint8_t isBroadcast = TBX_FALSE;
-      if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
-      {
-        isBroadcast = TBX_TRUE;
-      }
-      /* Transmit the request and wait for the response to a unicast request to come in
-       * or the turnaround time to pass for a broadcast request.
+      /* Obtain write access to the request packet. */
+      tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
+      /* Should always work, unless this function is being called recursively. Only
+       * continue with access for preparing the request packet.
        */
-      result = TbxMbClientTransceive(clientCtx, isBroadcast);
-
-      /* Only continue with processing the response if all is okay so far and the request
-       * was unicast.
-       */
-      if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+      if (txPacket != NULL)
       {
-        /* Obtain read access to the response packet. */
-        tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
-        /* Since we just received a response packet, the packet access should always 
-         * succeed. Sanity check anyways, just in case.
-         */
-        TBX_ASSERT(rxPacket != NULL);
-        /* Only continue with packet access. */
-        if (rxPacket != NULL)
+        /* Prepare the request packet. */
+        txPacket->node = node;
+        txPacket->pdu.code = TBX_MB_FC03_READ_HOLDING_REGISTERS;
+        txPacket->dataLen = 4U;
+        /* Starting address. */
+        TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
+        /* Number of registers. */
+        TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
+
+        /* Determine the request type (broadcast / unicast). */
+        uint8_t isBroadcast = TBX_FALSE;
+        if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
         {
-          /* Check that the response came from the expected node, that it's a response
-           * with the same function code (not an exception response) and that the data
-           * length and the byte count are as expected.
+          isBroadcast = TBX_TRUE;
+        }
+        /* Transmit the request and wait for the response to a unicast request to come in
+         * or the turnaround time to pass for a broadcast request.
+         */
+        result = TbxMbClientTransceive(clientCtx, isBroadcast);
+
+        /* Only continue with processing the response if all is okay so far and the
+         * request was unicast.
+         */
+        if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+        {
+          /* Obtain read access to the response packet. */
+          tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
+          /* Since we just received a response packet, the packet access should always 
+           * succeed. Sanity check anyways, just in case.
            */
-          uint8_t byteCount = rxPacket->pdu.data[0];
-          if ((rxPacket->node != node) ||
-              (rxPacket->pdu.code != TBX_MB_FC03_READ_HOLDING_REGISTERS) ||
-              (byteCount != (num * 2U)) ||
-              (rxPacket->dataLen != (byteCount + 1U)) )
+          TBX_ASSERT(rxPacket != NULL);
+          /* Only continue with packet access. */
+          if (rxPacket != NULL)
+          {
+            /* Check that the response came from the expected node, that it's a response
+             * with the same function code (not an exception response) and that the data
+             * length and the byte count are as expected.
+             */
+            uint8_t byteCount = rxPacket->pdu.data[0];
+            if ((rxPacket->node != node) ||
+                (rxPacket->pdu.code != TBX_MB_FC03_READ_HOLDING_REGISTERS) ||
+                (byteCount != (num * 2U)) ||
+                (rxPacket->dataLen != (byteCount + 1U)) )
+            {
+              result = TBX_ERROR;
+            }
+            /* Response content valid. Process its data. */
+            else
+            {
+              /* Set pointer to where the holding registers start in the response. */
+              uint8_t const * regValPtr = &rxPacket->pdu.data[1];
+              /* Read out and store the holding register values. */
+              for (uint8_t idx = 0U; idx < num; idx++)
+              {
+                holdingRegs[idx] = TbxMbCommonExtractUInt16BE(&regValPtr[idx * 2U]);
+              }
+            }
+          }
+          /* Could not access the response packet. */
+          else
           {
             result = TBX_ERROR;
           }
-          /* Response content valid. Process its data. */
-          else
-          {
-            /* Set pointer to where the holding registers start in the response. */
-            uint8_t const * regValPtr = &rxPacket->pdu.data[1];
-            /* Read out and store the holding register values. */
-            for (uint8_t idx = 0U; idx < num; idx++)
-            {
-              holdingRegs[idx] = TbxMbCommonExtractUInt16BE(&regValPtr[idx * 2U]);
-            }
-          }
+          /* Inform the transport layer that were done with the rx packet and no longer
+           * need access to it.
+           */
+          clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
         }
-        /* Could not access the response packet. */
-        else
-        {
-          result = TBX_ERROR;
-        }
-        /* Inform the transport layer that were done with the rx packet and no longer
-         * need access to it.
-         */
-        clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
       }
     }
   }
@@ -819,7 +844,7 @@ uint8_t TbxMbClientReadHoldingRegs(tTbxMbClient   channel,
 ** \param     channel Handle to the Modbus client channel for the requested operation.
 ** \param     node The address of the server. This parameter is transport layer
 **            dependent. It is needed on RTU/ASCII, yet don't care for TCP unless it is
-**            a gateway to an RTU network. If it's don't care, set it to a value of 1.
+**            a gateway to an RTU network. If it's don't care, set it to a value of 255.
 ** \param     addr Starting element address (0..65535) in the Modbus data table for the
 **            coil write operation.
 ** \param     num Number of elements to write to the coils data table. Range can be
@@ -837,160 +862,163 @@ uint8_t TbxMbClientWriteCoils(tTbxMbClient         channel,
   uint8_t result = TBX_ERROR;
 
   /* Verify the parameters. */
-  TBX_ASSERT((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-             (num <= 1968U) && (coils != NULL));
+  TBX_ASSERT((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) &&
+             (num >= 1U) && (num <= 1968U) && (coils != NULL));
 
   /* Only continue with valid parameters. */
-  if ((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-      (num <= 1968U) && (coils != NULL))
+  if ((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) && 
+      (num >= 1U) && (num <= 1968U) && (coils != NULL))
   {
     /* Convert the client channel pointer to the context structure. */
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-
-    /* Obtain write access to the request packet. */
-    tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
-    /* Should always work, unless this function is being called recursively. Only
-     * continue with access for preparing the request packet.
-     */
-    if (txPacket != NULL)
+    /* Only continue with a valid context type. */
+    if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
     {
-      /* Writing just a single coil? */
-      if (num == 1U)
-      {
-        /* Prepare the request packet. */
-        txPacket->node = node;
-        txPacket->pdu.code = TBX_MB_FC05_WRITE_SINGLE_COIL;
-        txPacket->dataLen = 4U;
-        /* Coil address. */
-        TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
-        /* Coil value. */
-        uint16_t coilValue = (coils[0] == TBX_OFF) ? 0x0000U : 0xFF00U;
-        TbxMbCommonStoreUInt16BE(coilValue, &txPacket->pdu.data[2]);
-      }
-      /* Writing multiple coils. */
-      else
-      {
-        /* Determine the number of bytes needed to hold all the coil bits. The cast to
-         * U8 is okay, because we know that num is <= 1968.
-         */
-        uint8_t numBytes = (uint8_t)(num / 8U);
-        if ((num % 8U) != 0U)
-        {
-          numBytes++;
-        }
-        /* Prepare the request packet. */
-        txPacket->node = node;
-        txPacket->pdu.code = TBX_MB_FC15_WRITE_MULTIPLE_COILS;
-        txPacket->dataLen = numBytes + 5U;
-        /* Start address. */
-        TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
-        /* Number of holding registers. */
-        TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
-        /* Byte count. */
-        txPacket->pdu.data[4] = numBytes;
-        /* Prepare loop indices that aid with reading the input bits. */
-        uint8_t   bitIdx  = 0U;
-        uint8_t   byteIdx = 0U;
-        /* Set pointer to where the coils start in the request and already initialize the
-         * first byte to all zero (coil OFF) bits.
-        */
-        uint8_t * coilData = &txPacket->pdu.data[5];
-        coilData[0] = 0U;
-        /* Store the coil values. */
-        for (uint16_t idx = 0U; idx < num; idx++)
-        {
-          /* Should the coil be ON? */
-          if (coils[idx] != TBX_OFF)
-          {
-            coilData[byteIdx] |= (1U << bitIdx);
-          }
-          /* Update the bit index. */
-          bitIdx++;
-          /* Time to move to the next byte? */
-          if (bitIdx == 8U)
-          {
-            /* Reset the bit index, increment the byte index and initialize the byte to
-             * all zero (coil OFF) bits.
-             */
-            bitIdx = 0U;
-            byteIdx++;
-            coilData[byteIdx] = 0U;
-          }
-        }
-      }
-      /* Determine the request type (broadcast / unicast). */
-      uint8_t isBroadcast = TBX_FALSE;
-      if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
-      {
-        isBroadcast = TBX_TRUE;
-      }
-      /* Transmit the request and wait for the response to a unicast request to come in
-       * or the turnaround time to pass for a broadcast request.
+      /* Obtain write access to the request packet. */
+      tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
+      /* Should always work, unless this function is being called recursively. Only
+       * continue with access for preparing the request packet.
        */
-      result = TbxMbClientTransceive(clientCtx, isBroadcast);
-
-      /* Only continue with processing the response if all is okay so far and the request
-       * was unicast.
-       */
-      if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+      if (txPacket != NULL)
       {
-        /* Obtain read access to the response packet. */
-        tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
-        /* Since we just received a response packet, the packet access should always 
-         * succeed. Sanity check anyways, just in case.
-         */
-        TBX_ASSERT(rxPacket != NULL);
-        /* Only continue with packet access. */
-        if (rxPacket != NULL)
+        /* Writing just a single coil? */
+        if (num == 1U)
         {
-          /* Wrote just a single coil? */
-          if (num == 1U)
-          {
-            /* Coil value. */
-            uint16_t coilValue = (coils[0] == TBX_OFF) ? 0x0000U : 0xFF00U;
-            /* Check that the response came from the expected node, that it's a response
-             * with the same function code (not an exception response), that the coil
-             * address and value are as expected and that the data length is as
-             * expected.
-             */
-            if ((rxPacket->node != node) ||
-                (rxPacket->pdu.code != TBX_MB_FC05_WRITE_SINGLE_COIL) ||
-                (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != addr) ||
-                (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[2]) != coilValue) ||
-                (rxPacket->dataLen != 4U))
-            {
-              result = TBX_ERROR;
-            }
-          }
-          /* Wrote multiple holding registers. */
-          else
-          {
-            /* Check that the response came from the expected node, that it's a response
-             * with the same function code (not an exception response), that the coil
-             * start address and quantity are as expected and that the data length is as
-             * expected.
-             */
-            if ((rxPacket->node != node) ||
-                (rxPacket->pdu.code != TBX_MB_FC15_WRITE_MULTIPLE_COILS) ||
-                (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != addr) ||
-                (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[2]) != num) ||
-                (rxPacket->dataLen != 4U))
-            {
-              result = TBX_ERROR;
-            }
-          }
+          /* Prepare the request packet. */
+          txPacket->node = node;
+          txPacket->pdu.code = TBX_MB_FC05_WRITE_SINGLE_COIL;
+          txPacket->dataLen = 4U;
+          /* Coil address. */
+          TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
+          /* Coil value. */
+          uint16_t coilValue = (coils[0] == TBX_OFF) ? 0x0000U : 0xFF00U;
+          TbxMbCommonStoreUInt16BE(coilValue, &txPacket->pdu.data[2]);
         }
-        /* Could not access the response packet. */
+        /* Writing multiple coils. */
         else
         {
-          result = TBX_ERROR;
+          /* Determine the number of bytes needed to hold all the coil bits. The cast to
+           * U8 is okay, because we know that num is <= 1968.
+           */
+          uint8_t numBytes = (uint8_t)(num / 8U);
+          if ((num % 8U) != 0U)
+          {
+            numBytes++;
+          }
+          /* Prepare the request packet. */
+          txPacket->node = node;
+          txPacket->pdu.code = TBX_MB_FC15_WRITE_MULTIPLE_COILS;
+          txPacket->dataLen = numBytes + 5U;
+          /* Start address. */
+          TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
+          /* Number of holding registers. */
+          TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
+          /* Byte count. */
+          txPacket->pdu.data[4] = numBytes;
+          /* Prepare loop indices that aid with reading the input bits. */
+          uint8_t   bitIdx  = 0U;
+          uint8_t   byteIdx = 0U;
+          /* Set pointer to where the coils start in the request and already initialize
+           * the first byte to all zero (coil OFF) bits.
+           */
+          uint8_t * coilData = &txPacket->pdu.data[5];
+          coilData[0] = 0U;
+          /* Store the coil values. */
+          for (uint16_t idx = 0U; idx < num; idx++)
+          {
+            /* Should the coil be ON? */
+            if (coils[idx] != TBX_OFF)
+            {
+              coilData[byteIdx] |= (1U << bitIdx);
+            }
+            /* Update the bit index. */
+            bitIdx++;
+            /* Time to move to the next byte? */
+            if (bitIdx == 8U)
+            {
+              /* Reset the bit index, increment the byte index and initialize the byte to
+               * all zero (coil OFF) bits.
+               */
+              bitIdx = 0U;
+              byteIdx++;
+              coilData[byteIdx] = 0U;
+            }
+          }
         }
-        /* Inform the transport layer that were done with the rx packet and no longer
-         * need access to it.
+        /* Determine the request type (broadcast / unicast). */
+        uint8_t isBroadcast = TBX_FALSE;
+        if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
+        {
+          isBroadcast = TBX_TRUE;
+        }
+        /* Transmit the request and wait for the response to a unicast request to come in
+         * or the turnaround time to pass for a broadcast request.
          */
-        clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
+        result = TbxMbClientTransceive(clientCtx, isBroadcast);
+
+        /* Only continue with processing the response if all is okay so far and the
+         * request was unicast.
+         */
+        if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+        {
+          /* Obtain read access to the response packet. */
+          tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
+          /* Since we just received a response packet, the packet access should always 
+           * succeed. Sanity check anyways, just in case.
+           */
+          TBX_ASSERT(rxPacket != NULL);
+          /* Only continue with packet access. */
+          if (rxPacket != NULL)
+          {
+            /* Wrote just a single coil? */
+            if (num == 1U)
+            {
+              /* Coil value. */
+              uint16_t coilValue = (coils[0] == TBX_OFF) ? 0x0000U : 0xFF00U;
+              /* Check that the response came from the expected node, that it's a
+               * response with the same function code (not an exception response), that
+               * the coil address and value are as expected and that the data length is
+               * as expected.
+               */
+              if ((rxPacket->node != node) ||
+                  (rxPacket->pdu.code != TBX_MB_FC05_WRITE_SINGLE_COIL) ||
+                  (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != addr) ||
+                  (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[2]) != coilValue) ||
+                  (rxPacket->dataLen != 4U))
+              {
+                result = TBX_ERROR;
+              }
+            }
+            /* Wrote multiple holding registers. */
+            else
+            {
+              /* Check that the response came from the expected node, that it's a
+               * response with the same function code (not an exception response), that
+               * the coil start address and quantity are as expected and that the data
+               * length is as expected.
+               */
+              if ((rxPacket->node != node) ||
+                  (rxPacket->pdu.code != TBX_MB_FC15_WRITE_MULTIPLE_COILS) ||
+                  (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != addr) ||
+                  (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[2]) != num) ||
+                  (rxPacket->dataLen != 4U))
+              {
+                result = TBX_ERROR;
+              }
+            }
+          }
+          /* Could not access the response packet. */
+          else
+          {
+            result = TBX_ERROR;
+          }
+          /* Inform the transport layer that were done with the rx packet and no longer
+           * need access to it.
+           */
+          clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
+        }
       }
     }
   }  
@@ -1005,7 +1033,7 @@ uint8_t TbxMbClientWriteCoils(tTbxMbClient         channel,
 ** \param     channel Handle to the Modbus client channel for the requested operation.
 ** \param     node The address of the server. This parameter is transport layer
 **            dependent. It is needed on RTU/ASCII, yet don't care for TCP unless it is
-**            a gateway to an RTU network. If it's don't care, set it to a value of 1.
+**            a gateway to an RTU network. If it's don't care, set it to a value of 255.
 ** \param     addr Starting element address (0..65535) in the Modbus data table for the
 **            holding register write operation.
 ** \param     num Number of elements to write to the holding registers data table. Range
@@ -1023,132 +1051,134 @@ uint8_t TbxMbClientWriteHoldingRegs(tTbxMbClient         channel,
   uint8_t result = TBX_ERROR;
 
   /* Verify the parameters. */
-  TBX_ASSERT((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-             (num <= 123U) && (holdingRegs != NULL));
+  TBX_ASSERT((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) &&
+             (num >= 1U) && (num <= 123U) && (holdingRegs != NULL));
 
   /* Only continue with valid parameters. */
-  if ((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (num >= 1U) &&
-      (num <= 123U) && (holdingRegs != NULL))
+  if ((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) &&
+      (num >= 1U) && (num <= 123U) && (holdingRegs != NULL))
   {
     /* Convert the client channel pointer to the context structure. */
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-
-    /* Obtain write access to the request packet. */
-    tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
-    /* Should always work, unless this function is being called recursively. Only
-     * continue with access for preparing the request packet.
-     */
-    if (txPacket != NULL)
+    /* Only continue with a valid context type. */
+    if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
     {
-      /* Writing just a single holding register? */
-      if (num == 1U)
-      {
-        /* Prepare the request packet. */
-        txPacket->node = node;
-        txPacket->pdu.code = TBX_MB_FC06_WRITE_SINGLE_REGISTER;
-        txPacket->dataLen = 4U;
-        /* Holding register address. */
-        TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
-        /* Holding register value. */
-        TbxMbCommonStoreUInt16BE(holdingRegs[0], &txPacket->pdu.data[2]);
-      }
-      /* Writing multiple holding registers. */
-      else
-      {
-        /* Determine byte count needed for storing the holding register values. */
-        uint8_t byteCount = num * 2U;
-        /* Prepare the request packet. */
-        txPacket->node = node;
-        txPacket->pdu.code = TBX_MB_FC16_WRITE_MULTIPLE_REGISTERS;
-        txPacket->dataLen = byteCount + 5U;
-        /* Start address. */
-        TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
-        /* Number of holding registers. */
-        TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
-        /* Byte count. */
-        txPacket->pdu.data[4] = byteCount;
-        /* Set pointer to where the holding registers start in the request. */
-        uint8_t * regValPtr = &txPacket->pdu.data[5];
-        /* Store the holding register values. */
-        for (uint8_t idx = 0U; idx < num; idx++)
-        {
-          TbxMbCommonStoreUInt16BE(holdingRegs[idx], &regValPtr[idx * 2U]);
-        }
-      }
-      /* Determine the request type (broadcast / unicast). */
-      uint8_t isBroadcast = TBX_FALSE;
-      if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
-      {
-        isBroadcast = TBX_TRUE;
-      }
-      /* Transmit the request and wait for the response to a unicast request to come in
-       * or the turnaround time to pass for a broadcast request.
+      /* Obtain write access to the request packet. */
+      tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
+      /* Should always work, unless this function is being called recursively. Only
+       * continue with access for preparing the request packet.
        */
-      result = TbxMbClientTransceive(clientCtx, isBroadcast);
-
-      /* Only continue with processing the response if all is okay so far and the request
-       * was unicast.
-       */
-      if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+      if (txPacket != NULL)
       {
-        /* Obtain read access to the response packet. */
-        tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
-        /* Since we just received a response packet, the packet access should always 
-         * succeed. Sanity check anyways, just in case.
-         */
-        TBX_ASSERT(rxPacket != NULL);
-        /* Only continue with packet access. */
-        if (rxPacket != NULL)
+        /* Writing just a single holding register? */
+        if (num == 1U)
         {
-          /* Wrote just a single holding register? */
-          if (num == 1U)
-          {
-            /* Check that the response came from the expected node, that it's a response
-             * with the same function code (not an exception response), that the register
-             * address and values are as expected and that the data length is as
-             * expected.
-             */
-            if ((rxPacket->node != node) ||
-                (rxPacket->pdu.code != TBX_MB_FC06_WRITE_SINGLE_REGISTER) ||
-                (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != addr) ||
-                (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[2]) != holdingRegs[0]) ||
-                (rxPacket->dataLen != 4U))
-            {
-              result = TBX_ERROR;
-            }
-          }
-          /* Wrote multiple holding registers. */
-          else
-          {
-            /* Check that the response came from the expected node, that it's a response
-             * with the same function code (not an exception response), that the register
-             * start address and quantity are as expected and that the data length is as
-             * expected.
-             */
-            if ((rxPacket->node != node) ||
-                (rxPacket->pdu.code != TBX_MB_FC16_WRITE_MULTIPLE_REGISTERS) ||
-                (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != addr) ||
-                (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[2]) != num) ||
-                (rxPacket->dataLen != 4U))
-            {
-              result = TBX_ERROR;
-            }
-          }
+          /* Prepare the request packet. */
+          txPacket->node = node;
+          txPacket->pdu.code = TBX_MB_FC06_WRITE_SINGLE_REGISTER;
+          txPacket->dataLen = 4U;
+          /* Holding register address. */
+          TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
+          /* Holding register value. */
+          TbxMbCommonStoreUInt16BE(holdingRegs[0], &txPacket->pdu.data[2]);
         }
-        /* Could not access the response packet. */
+        /* Writing multiple holding registers. */
         else
         {
-          result = TBX_ERROR;
+          /* Determine byte count needed for storing the holding register values. */
+          uint8_t byteCount = num * 2U;
+          /* Prepare the request packet. */
+          txPacket->node = node;
+          txPacket->pdu.code = TBX_MB_FC16_WRITE_MULTIPLE_REGISTERS;
+          txPacket->dataLen = byteCount + 5U;
+          /* Start address. */
+          TbxMbCommonStoreUInt16BE(addr, &txPacket->pdu.data[0]);
+          /* Number of holding registers. */
+          TbxMbCommonStoreUInt16BE(num, &txPacket->pdu.data[2]);
+          /* Byte count. */
+          txPacket->pdu.data[4] = byteCount;
+          /* Set pointer to where the holding registers start in the request. */
+          uint8_t * regValPtr = &txPacket->pdu.data[5];
+          /* Store the holding register values. */
+          for (uint8_t idx = 0U; idx < num; idx++)
+          {
+            TbxMbCommonStoreUInt16BE(holdingRegs[idx], &regValPtr[idx * 2U]);
+          }
         }
-        /* Inform the transport layer that were done with the rx packet and no longer
-         * need access to it.
+        /* Determine the request type (broadcast / unicast). */
+        uint8_t isBroadcast = TBX_FALSE;
+        if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
+        {
+          isBroadcast = TBX_TRUE;
+        }
+        /* Transmit the request and wait for the response to a unicast request to come in
+         * or the turnaround time to pass for a broadcast request.
          */
-        clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
+        result = TbxMbClientTransceive(clientCtx, isBroadcast);
+
+        /* Only continue with processing the response if all is okay so far and the
+         * request was unicast.
+         */
+        if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+        {
+          /* Obtain read access to the response packet. */
+          tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
+          /* Since we just received a response packet, the packet access should always 
+           * succeed. Sanity check anyways, just in case.
+           */
+          TBX_ASSERT(rxPacket != NULL);
+          /* Only continue with packet access. */
+          if (rxPacket != NULL)
+          {
+            /* Wrote just a single holding register? */
+            if (num == 1U)
+            {
+              /* Check that the response came from the expected node, that it's a
+               * response with the same function code (not an exception response), that
+               * the register address and values are as expected and that the data length
+               * is as expected.
+               */
+              if ((rxPacket->node != node) ||
+                  (rxPacket->pdu.code != TBX_MB_FC06_WRITE_SINGLE_REGISTER) ||
+                  (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != addr) ||
+                  (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[2]) != holdingRegs[0]) ||
+                  (rxPacket->dataLen != 4U))
+              {
+                result = TBX_ERROR;
+              }
+            }
+            /* Wrote multiple holding registers. */
+            else
+            {
+              /* Check that the response came from the expected node, that it's a
+               * response with the same function code (not an exception response), that
+               * the register start address and quantity are as expected and that the
+               * data length is as expected.
+               */
+              if ((rxPacket->node != node) ||
+                  (rxPacket->pdu.code != TBX_MB_FC16_WRITE_MULTIPLE_REGISTERS) ||
+                  (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != addr) ||
+                  (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[2]) != num) ||
+                  (rxPacket->dataLen != 4U))
+              {
+                result = TBX_ERROR;
+              }
+            }
+          }
+          /* Could not access the response packet. */
+          else
+          {
+            result = TBX_ERROR;
+          }
+          /* Inform the transport layer that were done with the rx packet and no longer
+           * need access to it.
+           */
+          clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
+        }
       }
     }
-
   }      
   /* Give the result back to the caller. */
   return result;
@@ -1161,7 +1191,7 @@ uint8_t TbxMbClientWriteHoldingRegs(tTbxMbClient         channel,
 ** \param     channel Handle to the Modbus client channel for the requested operation.
 ** \param     node The address of the server. This parameter is transport layer
 **            dependent. It is needed on RTU/ASCII, yet don't care for TCP unless it is
-**            a gateway to an RTU network. If it's don't care, set it to a value of 1.
+**            a gateway to an RTU network. If it's don't care, set it to a value of 255.
 ** \param     subcode Sub-function code for specifying the diagnostic operation to
 **            perform. Currently supported values:
 **              - TBX_MB_DIAG_SC_QUERY_DATA
@@ -1185,7 +1215,7 @@ uint8_t TbxMbClientDiagnostics(tTbxMbClient   channel,
   uint16_t const queryData[] = { 0xFFFFU, 0x0000U, 0xAA55U, 0x55AAU, 0x3723U };
 
   /* Verify the parameters. */
-  TBX_ASSERT((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && 
+  TBX_ASSERT((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) && 
              ((subcode == TBX_MB_DIAG_SC_QUERY_DATA) || 
               (subcode == TBX_MB_DIAG_SC_CLEAR_COUNTERS) ||
               (subcode == TBX_MB_DIAG_SC_BUS_MESSAGE_COUNT) ||
@@ -1195,7 +1225,7 @@ uint8_t TbxMbClientDiagnostics(tTbxMbClient   channel,
               (subcode == TBX_MB_DIAG_SC_SERVER_NO_RESPONSE_COUNT)));
 
   /* Only continue with valid parameters. */
-  if ((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && 
+  if ((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) && 
       ((subcode == TBX_MB_DIAG_SC_QUERY_DATA) || 
        (subcode == TBX_MB_DIAG_SC_CLEAR_COUNTERS) ||
        (subcode == TBX_MB_DIAG_SC_BUS_MESSAGE_COUNT) ||
@@ -1208,158 +1238,163 @@ uint8_t TbxMbClientDiagnostics(tTbxMbClient   channel,
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-
-    /* Obtain write access to the request packet. */
-    tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
-    /* Should always work, unless this function is being called recursively. Only
-     * continue with access for preparing the request packet.
-     */
-    if (txPacket != NULL)
+    /* Only continue with a valid context type. */
+    if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
     {
-      /* Prepare the request packet. */
-      txPacket->node = node;
-      txPacket->pdu.code = TBX_MB_FC08_DIAGNOSTICS;
-      TbxMbCommonStoreUInt16BE(subcode, &txPacket->pdu.data[0]);
-      /* Requested to perform a query data diagnostic operation? */
-      if (subcode == TBX_MB_DIAG_SC_QUERY_DATA)
-      {
-        /* Write the query data for loopback testing. */
-        for (uint8_t idx = 0U; idx < (sizeof(queryData)/sizeof(queryData[0])); idx++)
-        {
-          TbxMbCommonStoreUInt16BE(queryData[idx], &txPacket->pdu.data[2U + (idx * 2U)]);
-        }
-        txPacket->dataLen = ((sizeof(queryData) / sizeof(queryData[0])) * 2U) + 2U;
-      }
-      /* All other supported subcodes require a 16-bit zero value data field. */
-      else
-      {
-        /* Store the data field as per the protocol. */
-        TbxMbCommonStoreUInt16BE(0x0000U, &txPacket->pdu.data[2U]);
-        txPacket->dataLen = 4U;
-      }
-
-      /* Determine the request type (broadcast / unicast). */
-      uint8_t isBroadcast = TBX_FALSE;
-      if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
-      {
-        isBroadcast = TBX_TRUE;
-      }
-      /* Transmit the request and wait for the response to a unicast request to come in
-       * or the turnaround time to pass for a broadcast request.
+      /* Obtain write access to the request packet. */
+      tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
+      /* Should always work, unless this function is being called recursively. Only
+       * continue with access for preparing the request packet.
        */
-      result = TbxMbClientTransceive(clientCtx, isBroadcast);
-
-      /* Only continue with processing the response if all is okay so far and the request
-       * was unicast.
-       */
-      if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+      if (txPacket != NULL)
       {
-        /* Obtain read access to the response packet. */
-        tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
-        /* Since we just received a response packet, the packet access should always 
-         * succeed. Sanity check anyways, just in case.
-         */
-        TBX_ASSERT(rxPacket != NULL);
-        /* Only continue with packet access. */
-        if (rxPacket != NULL)
+        /* Prepare the request packet. */
+        txPacket->node = node;
+        txPacket->pdu.code = TBX_MB_FC08_DIAGNOSTICS;
+        TbxMbCommonStoreUInt16BE(subcode, &txPacket->pdu.data[0]);
+        /* Requested to perform a query data diagnostic operation? */
+        if (subcode == TBX_MB_DIAG_SC_QUERY_DATA)
         {
-          /* Check that the response came from the expected node, that it's a response
-           * with the same function code (not an exception response) and that it's a
-           * response with the same function sub-code.
-           */
-          if ((rxPacket->node != node) ||
-              (rxPacket->pdu.code != TBX_MB_FC08_DIAGNOSTICS) ||
-              (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != subcode))
+          /* Write the query data for loopback testing. */
+          for (uint8_t idx = 0U; idx < (sizeof(queryData)/sizeof(queryData[0])); idx++)
           {
-            result = TBX_ERROR;
+            TbxMbCommonStoreUInt16BE(queryData[idx], &txPacket->pdu.data[2U + (idx * 2U)]);
           }
-          /* Response looks valid so far. Continue with processing its data.*/
-          else
+          txPacket->dataLen = ((sizeof(queryData) / sizeof(queryData[0])) * 2U) + 2U;
+        }
+        /* All other supported subcodes require a 16-bit zero value data field. */
+        else
+        {
+          /* Store the data field as per the protocol. */
+          TbxMbCommonStoreUInt16BE(0x0000U, &txPacket->pdu.data[2U]);
+          txPacket->dataLen = 4U;
+        }
+
+        /* Determine the request type (broadcast / unicast). */
+        uint8_t isBroadcast = TBX_FALSE;
+        if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
+        {
+          isBroadcast = TBX_TRUE;
+        }
+        /* Transmit the request and wait for the response to a unicast request to come in
+         * or the turnaround time to pass for a broadcast request.
+         */
+        result = TbxMbClientTransceive(clientCtx, isBroadcast);
+
+        /* Only continue with processing the response if all is okay so far and the
+         * request was unicast.
+         */
+        if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+        {
+          /* Obtain read access to the response packet. */
+          tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
+          /* Since we just received a response packet, the packet access should always 
+           * succeed. Sanity check anyways, just in case.
+           */
+          TBX_ASSERT(rxPacket != NULL);
+          /* Only continue with packet access. */
+          if (rxPacket != NULL)
           {
-            if (subcode == TBX_MB_DIAG_SC_QUERY_DATA)
+            /* Check that the response came from the expected node, that it's a response
+             * with the same function code (not an exception response) and that it's a
+             * response with the same function sub-code.
+             */
+            if ((rxPacket->node != node) ||
+                (rxPacket->pdu.code != TBX_MB_FC08_DIAGNOSTICS) ||
+                (TbxMbCommonExtractUInt16BE(&rxPacket->pdu.data[0]) != subcode))
             {
-              const uint8_t queryDataLen = sizeof(queryData) / sizeof(queryData[0]);
-              /* Check the data length. */
-              if (rxPacket->dataLen != ((queryDataLen * 2U) + 2U))
+              result = TBX_ERROR;
+            }
+            /* Response looks valid so far. Continue with processing its data.*/
+            else
+            {
+              if (subcode == TBX_MB_DIAG_SC_QUERY_DATA)
               {
-                result = TBX_ERROR;
+                const uint8_t queryDataLen = sizeof(queryData) / sizeof(queryData[0]);
+                /* Check the data length. */
+                if (rxPacket->dataLen != ((queryDataLen * 2U) + 2U))
+                {
+                  result = TBX_ERROR;
+                }
+                /* Data length okay, continue with checking its content. */
+                else
+                {
+                  /* Loop through the received query data. */
+                  for (uint8_t idx = 0U; idx < queryDataLen; idx++)
+                  {
+                    uint8_t const * entryPtr = &rxPacket->pdu.data[2];
+                    uint16_t entry = TbxMbCommonExtractUInt16BE(&entryPtr[idx * 2U]);
+                    /* Check that its value is the same as what was sent in the 
+                     * request.
+                     */
+                    if (entry != queryData[idx])
+                    {
+                      /* Flag the error and stop the loop. */
+                      result = TBX_ERROR;
+                      break;
+                    }
+                  }
+                }
               }
-              /* Data length okay, continue with checking its content. */
+              else if (subcode == TBX_MB_DIAG_SC_CLEAR_COUNTERS)
+              {
+                /* Check the data length. */
+                if (rxPacket->dataLen != 4U)
+                {
+                  result = TBX_ERROR;
+                }
+                /* Data length okay, continue with checking its content. */
+                else
+                {
+                  uint8_t const * dataValPtr = &rxPacket->pdu.data[2];
+                  uint16_t dataVal = TbxMbCommonExtractUInt16BE(dataValPtr);
+                  /* Check that the value is as expected. */
+                  if (dataVal != 0x0000U)
+                  {
+                    result = TBX_ERROR;
+                  }
+                }
+              }
+              /* Subcode for reading a count. */
               else
               {
-                /* Loop through the received query data. */
-                for (uint8_t idx = 0U; idx < queryDataLen; idx++)
+                /* Check the data length. */
+                if (rxPacket->dataLen != 4U)
                 {
-                  uint8_t const * entryPtr = &rxPacket->pdu.data[2];
-                  uint16_t entry = TbxMbCommonExtractUInt16BE(&entryPtr[idx * 2U]);
-                  /* Check that its value is the same as what was sent in the request. */
-                  if (entry != queryData[idx])
+                  result = TBX_ERROR;
+                }
+                /* Data length okay, continue with extracting the count value. */
+                else
+                {
+                  uint8_t const * countValPtr = &rxPacket->pdu.data[2];
+                  uint16_t countVal = TbxMbCommonExtractUInt16BE(countValPtr);
+                  /* Verify that count parameter. */
+                  TBX_ASSERT(count != NULL);
+                  /* Only continue with a valid count parameter. */
+                  if (count != NULL)
                   {
-                    /* Flag the error and stop the loop. */
+                    /* Store the count value. */
+                    *count = countVal;
+                  }
+                  else
+                  {
+                    /* The an error due to an invalid count parameter. */
                     result = TBX_ERROR;
-                    break;
                   }
                 }
               }
             }
-            else if (subcode == TBX_MB_DIAG_SC_CLEAR_COUNTERS)
-            {
-              /* Check the data length. */
-              if (rxPacket->dataLen != 4U)
-              {
-                result = TBX_ERROR;
-              }
-              /* Data length okay, continue with checking its content. */
-              else
-              {
-                uint8_t const * dataValPtr = &rxPacket->pdu.data[2];
-                uint16_t dataVal = TbxMbCommonExtractUInt16BE(dataValPtr);
-                /* Check that the value is as expected. */
-                if (dataVal != 0x0000U)
-                {
-                  result = TBX_ERROR;
-                }
-              }
-            }
-            /* subcode for reading a count. */
-            else
-            {
-              /* Check the data length. */
-              if (rxPacket->dataLen != 4U)
-              {
-                result = TBX_ERROR;
-              }
-              /* Data length okay, continue with extracting the count value. */
-              else
-              {
-                uint8_t const * countValPtr = &rxPacket->pdu.data[2];
-                uint16_t countVal = TbxMbCommonExtractUInt16BE(countValPtr);
-                /* Verify that count parameter. */
-                TBX_ASSERT(count != NULL);
-                /* Only continue with a valid count parameter. */
-                if (count != NULL)
-                {
-                  /* Store the count value. */
-                  *count = countVal;
-                }
-                else
-                {
-                  /* The an error due to an invalid count parameter. */
-                  result = TBX_ERROR;
-                }
-              }
-            }
           }
+          /* Could not access the response packet. */
+          else
+          {
+            result = TBX_ERROR;
+          }
+          /* Inform the transport layer that were done with the rx packet and no longer
+           * need access to it.
+           */
+          clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
         }
-        /* Could not access the response packet. */
-        else
-        {
-          result = TBX_ERROR;
-        }
-        /* Inform the transport layer that were done with the rx packet and no longer
-         * need access to it.
-         */
-        clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
       }
     }
   }
@@ -1400,7 +1435,7 @@ uint8_t TbxMbClientDiagnostics(tTbxMbClient   channel,
 ** \param     channel Handle to the Modbus client channel for the requested operation.
 ** \param     node The address of the server. This parameter is transport layer
 **            dependent. It is needed on RTU/ASCII, yet don't care for TCP unless it is
-**            a gateway to an RTU network. If it's don't care, set it to a value of 1.
+**            a gateway to an RTU network. If it's don't care, set it to a value of 255.
 ** \param     txPdu Pointer to a byte array with the PDU to transmit.
 ** \param     rxPdu Pointer to a byte array with the received response PDU.
 ** \param     len Pointer to the PDU length, including the function code.
@@ -1416,96 +1451,99 @@ uint8_t TbxMbClientCustomFunction (tTbxMbClient         channel,
   uint8_t result = TBX_ERROR;
 
   /* Verify the parameters. */
-  TBX_ASSERT((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (txPdu != NULL) &&
-             (rxPdu != NULL) && (len != NULL));
+  TBX_ASSERT((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) &&
+             (txPdu != NULL) && (rxPdu != NULL) && (len != NULL));
 
   /* Only continue with valid parameters. */
-  if ((channel != NULL) && (node <= TBX_MB_TP_NODE_ADDR_MAX) && (txPdu != NULL) &&
-      (rxPdu != NULL) && (len != NULL))
+  if ((channel != NULL) && ((node <= TBX_MB_TP_NODE_ADDR_MAX)||(node == 255U)) && 
+      (txPdu != NULL) && (rxPdu != NULL) && (len != NULL))
   {
     /* Convert the client channel pointer to the context structure. */
     tTbxMbClientCtx * clientCtx = (tTbxMbClientCtx *)channel;
     /* Sanity check on the context type. */
     TBX_ASSERT(clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE);
-
-    /* Obtain write access to the request packet. */
-    tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
-    /* Should always work, unless this function is being called recursively. Only
-     * continue with access for preparing the request packet and with a valid packet
-     * length. It should at least have a PDU function code.
-     */
-    if ((txPacket != NULL) && (*len > 0U))
+    /* Only continue with a valid context type. */
+    if (clientCtx->type == TBX_MB_CLIENT_CONTEXT_TYPE)
     {
-      /* Prepare the request packet. */
-      txPacket->node = node;
-      txPacket->pdu.code = txPdu[0];
-      txPacket->dataLen = *len - 1U;
-      for (uint8_t idx = 0U; idx < txPacket->dataLen; idx++)
-      {
-        txPacket->pdu.data[idx] = txPdu[idx + 1U];
-      }
-
-      /* Determine the request type (broadcast / unicast). */
-      uint8_t isBroadcast = TBX_FALSE;
-      if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
-      {
-        isBroadcast = TBX_TRUE;
-      }
-      
-      /* Transmit the request and wait for the response to a unicast request to come in
-       * or the turnaround time to pass for a broadcast request.
+      /* Obtain write access to the request packet. */
+      tTbxMbTpPacket * txPacket = clientCtx->tpCtx->getTxPacketFcn(clientCtx->tpCtx);
+      /* Should always work, unless this function is being called recursively. Only
+       * continue with access for preparing the request packet and with a valid packet
+       * length. It should at least have a PDU function code.
        */
-      result = TbxMbClientTransceive(clientCtx, isBroadcast);
-
-      /* Initialize the length of the response PDU to zero. This default indicates that
-       * no response was received. This is the case in the request was a broadcast one or
-       * it the response was not valid. If will be updated later on, if a valid response
-       * was received.
-       */
-      *len = 0U;
-
-      /* Only continue with processing the response if all is okay so far and the request
-       * was unicast.
-       */
-      if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+      if ((txPacket != NULL) && (*len > 0U))
       {
-        /* Obtain read access to the response packet. */
-        tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
-        /* Since we just received a response packet, the packet access should always 
-         * succeed. Sanity check anyways, just in case.
-         */
-        TBX_ASSERT(rxPacket != NULL);
-        /* Only continue with packet access. */
-        if (rxPacket != NULL)
+        /* Prepare the request packet. */
+        txPacket->node = node;
+        txPacket->pdu.code = txPdu[0];
+        txPacket->dataLen = *len - 1U;
+        for (uint8_t idx = 0U; idx < txPacket->dataLen; idx++)
         {
-          /* Check that the response came from the expected node. */
-          if (rxPacket->node != node)
+          txPacket->pdu.data[idx] = txPdu[idx + 1U];
+        }
+
+        /* Determine the request type (broadcast / unicast). */
+        uint8_t isBroadcast = TBX_FALSE;
+        if (node == TBX_MB_TP_NODE_ADDR_BROADCAST)
+        {
+          isBroadcast = TBX_TRUE;
+        }
+        
+        /* Transmit the request and wait for the response to a unicast request to come in
+         * or the turnaround time to pass for a broadcast request.
+         */
+        result = TbxMbClientTransceive(clientCtx, isBroadcast);
+
+        /* Initialize the length of the response PDU to zero. This default indicates that
+         * no response was received. This is the case in the request was a broadcast one
+         * or it the response was not valid. If will be updated later on, if a valid
+         * response was received.
+         */
+        *len = 0U;
+
+        /* Only continue with processing the response if all is okay so far and the
+         * request was unicast.
+         */
+        if ((result == TBX_OK) && (isBroadcast == TBX_FALSE))
+        {
+          /* Obtain read access to the response packet. */
+          tTbxMbTpPacket * rxPacket = clientCtx->tpCtx->getRxPacketFcn(clientCtx->tpCtx);
+          /* Since we just received a response packet, the packet access should always 
+           * succeed. Sanity check anyways, just in case.
+           */
+          TBX_ASSERT(rxPacket != NULL);
+          /* Only continue with packet access. */
+          if (rxPacket != NULL)
+          {
+            /* Check that the response came from the expected node. */
+            if (rxPacket->node != node)
+            {
+              result = TBX_ERROR;
+            }
+            /* Response content valid. Copy its data. */
+            else
+            {
+              /* Set the length, including the function code. */
+              *len = rxPacket->dataLen + 1U;
+              /* Set the function code. */
+              rxPdu[0] = rxPacket->pdu.code;
+              /* Copy the packet data. */
+              for (uint8_t idx = 0U; idx < rxPacket->dataLen; idx++)
+              {
+                rxPdu[idx + 1U] = rxPacket->pdu.data[idx];
+              }
+            }
+          }
+          /* Could not access the response packet. */
+          else
           {
             result = TBX_ERROR;
           }
-          /* Response content valid. Copy its data. */
-          else
-          {
-            /* Set the length, including the function code. */
-            *len = rxPacket->dataLen + 1U;
-            /* Set the function code. */
-            rxPdu[0] = rxPacket->pdu.code;
-            /* Copy the packet data. */
-            for (uint8_t idx = 0U; idx < rxPacket->dataLen; idx++)
-            {
-              rxPdu[idx + 1U] = rxPacket->pdu.data[idx];
-            }
-          }
+          /* Inform the transport layer that were done with the rx packet and no longer
+           * need access to it.
+           */
+          clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
         }
-        /* Could not access the response packet. */
-        else
-        {
-          result = TBX_ERROR;
-        }
-        /* Inform the transport layer that were done with the rx packet and no longer
-         * need access to it.
-         */
-        clientCtx->tpCtx->receptionDoneFcn(clientCtx->tpCtx);
       }
     }
   }

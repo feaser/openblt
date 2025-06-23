@@ -61,24 +61,26 @@ typedef void * tTbxMbOsalSem;
 * Function prototypes
 ****************************************************************************************/
 /* Modbus OSAL event queue API. */
-void          TbxMbOsalEventInit(void);
+void          TbxMbOsalEventInit (void);
 
-void          TbxMbOsalEventPost(tTbxMbEvent const * event, 
-                                 uint8_t             fromIsr);
+void          TbxMbOsalEventPost (tTbxMbEvent const * event, 
+                                  uint8_t             fromIsr);
 
-uint8_t       TbxMbOsalEventWait(tTbxMbEvent       * event, 
-                                 uint16_t            timeoutMs);
+uint8_t       TbxMbOsalEventWait (tTbxMbEvent       * event, 
+                                  uint16_t            timeoutMs);
+
+void          TbxMbOsalEventPurge(void        const * context);
 
 /* Modbus OSAL semaphore API. */
-tTbxMbOsalSem TbxMbOsalSemCreate(void);
+tTbxMbOsalSem TbxMbOsalSemCreate (void);
 
-void          TbxMbOsalSemFree  (tTbxMbOsalSem       sem);
+void          TbxMbOsalSemFree   (tTbxMbOsalSem       sem);
 
-void          TbxMbOsalSemGive  (tTbxMbOsalSem       sem,
-                                 uint8_t             fromIsr);
+void          TbxMbOsalSemGive   (tTbxMbOsalSem       sem,
+                                  uint8_t             fromIsr);
 
-uint8_t       TbxMbOsalSemTake  (tTbxMbOsalSem       sem,
-                                 uint16_t            timeoutMs);
+uint8_t       TbxMbOsalSemTake   (tTbxMbOsalSem       sem,
+                                  uint16_t            timeoutMs);
 
 
 #ifdef __cplusplus

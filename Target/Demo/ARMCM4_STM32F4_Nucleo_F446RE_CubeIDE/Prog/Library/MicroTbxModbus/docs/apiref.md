@@ -788,7 +788,7 @@ TbxMbClientReadCoils(modbusClient, 10U, 0U, 2U, coils);
 | Parameter | Description                                                  |
 | --------- | ------------------------------------------------------------ |
 | `channel` | Handle to the Modbus client channel for the requested operation. |
-| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `1`. |
+| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `255`. |
 | `addr`    | Starting element address (0..65535) in the Modbus data table for the coil read operation. |
 | `num`     | Number of elements to read from the coils data table. Range can be `1`..`2000`. |
 | `coils`   | Pointer to array with `TBX_ON` / `TBX_OFF` values where the coil state will be written to. |
@@ -820,7 +820,7 @@ TbxMbClientReadInputs(modbusClient, 10U, 10000U, 2U, inputs);
 | Parameter | Description                                                  |
 | --------- | ------------------------------------------------------------ |
 | `channel` | Handle to the Modbus client channel for the requested operation. |
-| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `1`. |
+| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `255`. |
 | `addr`    | Starting element address (0..65535) in the Modbus data table for the discrete input<br>read operation. |
 | `num`     | Number of elements to read from the discrete inputs data table. Range can be `1`..`2000`. |
 | `inputs`  | Pointer to array with `TBX_ON` / `TBX_OFF` values where the discrete input state will be<br>written to. |
@@ -852,7 +852,7 @@ TbxMbClientReadInputRegs(modbusClient, 10U, 30000U, 2U, inputRegs);
 | Parameter   | Description                                                  |
 | ----------- | ------------------------------------------------------------ |
 | `channel`   | Handle to the Modbus client channel for the requested operation. |
-| `node`      | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `1`. |
+| `node`      | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `255`. |
 | `addr`      | Starting element address (0..65535) in the Modbus data table for the input register<br>read operation. |
 | `num`       | Number of elements to read from the input registers data table. Range can be `1`..`125`. |
 | `inputRegs` | Pointer to array where the input register values will be written to. |
@@ -884,7 +884,7 @@ TbxMbClientReadHoldingRegs(modbusClient, 10U, 40000U, 2U, holdingRegs);
 | Parameter     | Description                                                  |
 | ------------- | ------------------------------------------------------------ |
 | `channel`     | Handle to the Modbus client channel for the requested operation. |
-| `node`        | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `1`. |
+| `node`        | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `255`. |
 | `addr`        | Starting element address (0..65535) in the Modbus data table for the holding register<br>read operation. |
 | `num`         | Number of elements to read from the holding registers data table. Range can be<br>`1`..`125`. |
 | `holdingRegs` | Pointer to array where the holding register values will be written to. |
@@ -916,7 +916,7 @@ TbxMbClientWriteCoils(modbusClient, 10U, 0U, 2U, coils);
 | Parameter | Description                                                  |
 | --------- | ------------------------------------------------------------ |
 | `channel` | Handle to the Modbus client channel for the requested operation. |
-| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `1`. |
+| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `255`. |
 | `addr`    | Starting element address (0..65535) in the Modbus data table for the coil write operation. |
 | `num`     | Number of elements to write to the coils data table. Range can be `1`..`1968`. |
 | `coils`   | Pointer to array with the desired `TBX_ON` / `TBX_OFF` coil values. |
@@ -948,7 +948,7 @@ TbxMbClientWriteHoldingRegs(modbusClient, 10U, 40000U, 2U, holdingRegs);
 | Parameter     | Description                                                  |
 | ------------- | ------------------------------------------------------------ |
 | `channel`     | Handle to the Modbus client channel for the requested operation. |
-| `node`        | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `1`. |
+| `node`        | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `255`. |
 | `addr`        | Starting element address (0..65535) in the Modbus data table for the holding register<br>write operation. |
 | `num`         | Number of elements to write to the holding registers data table. Range can be<br>`1`..`123`. |
 | `holdingRegs` | Pointer to array with the desired holding register values.   |
@@ -979,7 +979,7 @@ TbxMbClientDiagnostics(modbusClient, 10U, TBX_MB_DIAG_SC_SERVER_MESSAGE_COUNT, &
 | Parameter | Description                                                  |
 | --------- | ------------------------------------------------------------ |
 | `channel` | Handle to the Modbus client channel for the requested operation. |
-| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `1`. |
+| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `255`. |
 | `subcode` | Sub-function code for specifying the diagnostic operation to perform. Currently<br>supported values:<br>- `TBX_MB_DIAG_SC_QUERY_DATA`<br>\- `TBX_MB_DIAG_SC_CLEAR_COUNTERS`<br>- `TBX_MB_DIAG_SC_BUS_MESSAGE_COUNT`<br>- `TBX_MB_DIAG_SC_BUS_COMM_ERROR_COUNT`<br>- `TBX_MB_DIAG_SC_BUS_EXCEPTION_ERROR_COUNT`<br>- `TBX_MB_DIAG_SC_SERVER_MESSAGE_COUNT`<br>\- `TBX_MB_DIAG_SC_SERVER_NO_RESPONSE_COUNT` |
 | `count`   | Location where the retrieved count value will be written to. Only applicable for the<br>sub-function codes that end with `_COUNT`. |
 
@@ -1040,7 +1040,7 @@ uint16_t serverId = AppReportServerId(modbusClient, 10U);
 | Parameter | Description                                                  |
 | --------- | ------------------------------------------------------------ |
 | `channel` | Handle to the Modbus client channel for the requested operation. |
-| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `1`. |
+| `node`    | The address of the server. This parameter is transport layer dependent. It is needed on<br>RTU/ASCII, yet don't care for TCP unless it is a gateway to an RTU network. If it's don't<br>care, set it to a value of `255`. |
 | `txPdu`   | Pointer to a byte array with the PDU to transmit.            |
 | `rxPdu`   | Pointer to a byte array with the received response PDU.      |
 | `len`     | Pointer to the PDU length, including the function code.      |

@@ -37,16 +37,6 @@ extern "C" {
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Modbus client channel interface function to detect events in a polling
- *         manner.
- */
-typedef void (* tTbxMbClientPoll)   (void        * context);
-
-
-/** \brief Modbus client channel  interface function for processing events. */
-typedef void (* tTbxMbClientProcess)(tTbxMbEvent * event);
-
-
 /** \brief Modbus client channel layer context that groups all channel specific data. 
  *         It's what the tTbxMbClient opaque pointer points to.
  */
@@ -57,10 +47,13 @@ typedef struct
    * derives from. 
    */
   void               * instancePtr;              /**< Reserved for C++ wrapper.        */
-  tTbxMbClientPoll     pollFcn;                  /**< Event poll function.             */
-  tTbxMbClientProcess  processFcn;               /**< Event process function.          */
-  /* Private members. */
+  tTbxMbEventPoll      pollFcn;                  /**< Event poll function.             */
+  tTbxMbEventProcess   processFcn;               /**< Event process function.          */
+  /* The type member must always be the first one after the three entries that match
+   * those in tTbxMbEventCtx.
+   */
   uint8_t              type;                     /**< Context type.                    */
+  /* Private client channel specific methods and members. */
   tTbxMbTpCtx        * tpCtx;                    /**< Assigned transport layer context.*/
   uint16_t             responseTimeout;          /**< Maximum response wait time (ms). */
   uint16_t             turnaroundDelay;          /**< Delay (ms) after broadcast PDU.  */

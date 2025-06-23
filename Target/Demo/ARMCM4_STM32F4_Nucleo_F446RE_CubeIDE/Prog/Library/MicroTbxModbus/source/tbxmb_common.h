@@ -124,7 +124,17 @@ extern "C" {
 ****************************************************************************************/
 static inline uint16_t TbxMbCommonExtractUInt16BE(uint8_t const * data)
 {
-  return ((uint16_t)data[0] << 8U) | data[1];
+  uint16_t result = 0U;
+
+  /* Verify parameter. */
+  TBX_ASSERT(data != NULL);
+  /* Only continue with a valid parameter. */
+  if (data != NULL)
+  {
+    result = ((uint16_t)data[0] << 8U) | data[1];
+  }
+  /* Give the result back to the caller. */
+  return result;
 } /*** end of TbxMbCommonExtractUInt16BE ***/
 
 
@@ -142,11 +152,15 @@ static inline uint16_t TbxMbCommonExtractUInt16BE(uint8_t const * data)
 static inline void TbxMbCommonStoreUInt16BE(uint16_t   value,
                                             uint8_t  * data)
 {
-  data[0] = (uint8_t)(value >> 8U);
-  data[1] = (uint8_t)value;
+  /* Verify parameter. */
+  TBX_ASSERT(data != NULL);
+  /* Only continue with a valid parameter. */
+  if (data != NULL)
+  {
+    data[0] = (uint8_t)(value >> 8U);
+    data[1] = (uint8_t)value;
+  }
 } /*** end of TbxMbCommonExtractUInt16BE ***/
-
-
 
 
 #ifdef __cplusplus

@@ -37,16 +37,6 @@ extern "C" {
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Modbus server channel interface function to detect events in a polling
- *         manner.
- */
-typedef void (* tTbxMbServerPoll)   (void        * context);
-
-
-/** \brief Modbus server channel  interface function for processing events. */
-typedef void (* tTbxMbServerProcess)(tTbxMbEvent * event);
-
-
 /** \brief Modbus server channel layer context that groups all channel specific data. 
  *         It's what the tTbxMbServer opaque pointer points to.
  */
@@ -56,11 +46,14 @@ typedef struct
    * and exactly match those in tTbxMbEventCtx. Think of it as the base that this struct
    * derives from. 
    */
-  void                       * instancePtr;         /**< Reserved for C++ wrapper.     */
-  tTbxMbServerPoll              pollFcn;            /**< Event poll function.          */
-  tTbxMbServerProcess           processFcn;         /**< Event process function.       */
-  /* Private members. */
+  void                        * instancePtr;        /**< Reserved for C++ wrapper.     */
+  tTbxMbEventPoll               pollFcn;            /**< Event poll function.          */
+  tTbxMbEventProcess            processFcn;         /**< Event process function.       */
+  /* The type member must always be the first one after the three entries that match
+   * those in tTbxMbEventCtx.
+   */
   uint8_t                       type;               /**< Context type.                 */
+  /* Private server channel specific methods and members. */
   tTbxMbTpCtx                 * tpCtx;              /**< Assigned transport layer ctx. */
   tTbxMbServerReadInput         readInputFcn;       /**< Read discrete input callback. */
   tTbxMbServerReadCoil          readCoilFcn;        /**< Read coil callback.           */

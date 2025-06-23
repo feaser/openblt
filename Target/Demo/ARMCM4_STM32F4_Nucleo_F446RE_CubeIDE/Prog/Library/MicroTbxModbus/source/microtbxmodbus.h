@@ -52,13 +52,13 @@ extern "C" {
 * Version definitions
 ****************************************************************************************/
 /** \brief Main version number of MicroTBX-Modbus. */
-#define TBX_MB_VERSION_MAIN                  (0U)
+#define TBX_MB_VERSION_MAIN                  (1U)
 
 /** \brief Minor version number of MicroTBX-Modbus. */
-#define TBX_MB_VERSION_MINOR                 (9U)
+#define TBX_MB_VERSION_MINOR                 (0U)
 
 /** \brief Patch number of MicroTBX-Modbus. */
-#define TBX_MB_VERSION_PATCH                 (4U)
+#define TBX_MB_VERSION_PATCH                 (0U)
 
 
 #ifdef __cplusplus

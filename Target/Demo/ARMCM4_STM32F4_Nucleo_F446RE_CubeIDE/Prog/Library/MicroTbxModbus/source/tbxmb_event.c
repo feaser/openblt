@@ -40,14 +40,6 @@
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Event task interface function to detect events in a polling manner. */
-typedef void (* tTbxMbEventPoll)   (void        * context);
-
-
-/** \brief Event processor interface function for processing events. */
-typedef void (* tTbxMbEventProcess)(tTbxMbEvent * event);
-
-
 /** \brief Minimal context for accessing the event poll and process functions. Think of
  *         it as the base type for all the other context (client/server/tp). That's the
  *         reason why these other context start with similar entries at exactly the same
@@ -62,6 +54,18 @@ typedef struct
   tTbxMbEventPoll      pollFcn;                  /**< Event poll function.             */
   tTbxMbEventProcess   processFcn;               /**< Event process function.          */
 } tTbxMbEventCtx;
+
+
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief Array with context for which its poll function should be called during the
+ *         event task.
+ */
+static tTbxMbEventCtx * pollerList[TBX_MB_EVENT_QUEUE_SIZE];
+
+/** \brief Flag to track if the pollerList has been initialized or not. */
+static uint8_t          pollerListInitialized = TBX_FALSE;
 
 
 /************************************************************************************//**
@@ -86,22 +90,25 @@ typedef struct
 ****************************************************************************************/
 void TbxMbEventTask(void)
 {
-  static tTbxList * pollerList = NULL;
-  static uint8_t    pollerListInitialized = TBX_FALSE;
-  const  uint16_t   defaultWaitTimeoutMs = 5000U;
-  static uint16_t   waitTimeoutMS = 5000U;
-  tTbxMbEvent       newEvent = { 0 };
+  const  uint16_t  defaultWaitTimeoutMs = 5000U;
+  static uint16_t  waitTimeoutMS = 5000U;
+  tTbxMbEvent      newEvent = { 0 };
 
-  /* Only initialize the event poller once, */
+  /* Make sure the OSAL event module is initialized, just in case the application already
+   * calls this task function, because it created a transport layer object.
+   */
+  TbxMbOsalEventInit();
+
+  /* Only initialize the poller list once, */
   if (pollerListInitialized == TBX_FALSE)
   {
+    /* Set flag not that the initialization is performed. */
     pollerListInitialized = TBX_TRUE;
-    /* Ceate the queue for storing context of which the pollFcn should be called. */
-    pollerList = TbxListCreate();
-    /* Verify that the queue creation succeeded. If this assertion fails, increase the
-     * heap size using configuration macro TBX_CONF_HEAP_SIZE.
-     */
-    TBX_ASSERT(pollerList != NULL);
+    /* Reset all array entries to a NULL value. */
+    for (size_t listIdx = 0U; listIdx < TBX_MB_EVENT_QUEUE_SIZE; listIdx++)
+    {
+      pollerList[listIdx] = NULL;
+    }
   }
 
   /* Wait for a new event to be posted to the event queue. Note that that wait time only
@@ -120,47 +127,50 @@ void TbxMbEventTask(void)
       {
         case TBX_MB_EVENT_ID_START_POLLING:
         {
-          /* Poller list entries are allocated from a memory pool. This means that there
-           * is no need to worry about heap fragmentation. Just make sure to cap the
-           * maximum number of entries to prevent heap exhaustion.
-           */
-          TBX_ASSERT(TbxListGetSize(pollerList) <= TBX_MB_EVENT_QUEUE_SIZE);
-          /* Only continue if the current poller list size is not yet maxed out. */
-          if (TbxListGetSize(pollerList) <= TBX_MB_EVENT_QUEUE_SIZE)
+          /* Obtain mutual exclusive access to the poller list. */
+          TbxCriticalSectionEnter();
+          /* Loop through the array to find a free spot. */
+          uint8_t freeIdxFound = TBX_FALSE;
+          for (size_t listIdx = 0U; listIdx < TBX_MB_EVENT_QUEUE_SIZE; listIdx++)
           {
-            /* From a design perspective, it is allowed and possible that a poller list
-             * entry is requested to be added, which actually is already present in the
-             * poller list. There is no need to add a duplicate entry to the poller list.
-             * It causes unnecessary run-time overhead by running the pollFcn multiple
-             * times and, more importantly, would cause a problem further down in this
-             * function, when iterating over the poller list. TbxListGetNextItem() takes
-             * the list item as a reference and not the internal list node. So if you
-             * have two identical list entries (let's call it item_a) and then a third
-             * different list entry (item_b), the call to TbxListGetNextItem(item_a) will
-             * always return return the second item_a. Consequently, iterating over the
-             * list with either an if- or while-loop, will never give access to item_b. 
-             * Long story short: Make sure to not add a duplcate entry into the list. 
-             * The quick and easy way to do this is by first removing the item. If the
-             * item is not yet in the list, attempting to remove it simply does nothing. 
-             * If it was in the list, it gets removed first and then newly added to 
-             * preven the duplicate entry. Exactly what you want here:
-             */
-            TbxListRemoveItem(pollerList, newEvent.context);
-            /* Add the context at the end of the event poller list. */
-            uint8_t insertResult = TbxListInsertItemBack(pollerList, newEvent.context);
-            /* Check that the item could be added to the queue. If not, then the heaps size
-             * is configured too small. In this case increase the heap size using
-            * configuration macro TBX_CONF_HEAP_SIZE. 
-            */
-            TBX_ASSERT(insertResult == TBX_OK);
+            /* Is this index free? */
+            if (pollerList[listIdx] == NULL)
+            {
+              /* Store the context at this index. */
+              pollerList[listIdx] = newEvent.context;
+              /* Set flag that we found a free index. */
+              freeIdxFound = TBX_TRUE;
+              /* No need to continue the loop. */
+              break;
+            }
           }
+          /* Release mutual exclusive access to the poller list. */
+          TbxCriticalSectionExit();
+          /* Check that a free spot was found. If not, then TBX_MB_EVENT_QUEUE_SIZE is
+           * configured too small.
+           */
+          TBX_ASSERT(freeIdxFound == TBX_TRUE);
         }
         break;
       
         case TBX_MB_EVENT_ID_STOP_POLLING:
         {
-          /* Remove the context from the event poller list. */
-          TbxListRemoveItem(pollerList, newEvent.context);
+          /* Obtain mutual exclusive access to the poller list. */
+          TbxCriticalSectionEnter();
+          /* Loop through the array to find the spot with the same context. */
+          for (size_t listIdx = 0U; listIdx < TBX_MB_EVENT_QUEUE_SIZE; listIdx++)
+          {
+            /* Is this the one we are looking for? */
+            if (pollerList[listIdx] == newEvent.context)
+            {
+              /* Remove it from the array by setting its value back to NULL. */
+              pollerList[listIdx] = NULL;
+              /* No need to continue the loop. */
+              break;
+            }
+          }
+          /* Release mutual exclusive access to the poller list. */
+          TbxCriticalSectionExit();
         }
         break;
 
@@ -180,22 +190,25 @@ void TbxMbEventTask(void)
   }
 
   /* Iterate over the event poller list. */
-  size_t listSize = TbxListGetSize(pollerList);
-  void * listItem = TbxListGetFirstItem(pollerList);
-  for (size_t listItemIdx = 0U; listItemIdx < listSize; listItemIdx++)
+  size_t numPollerEntries = 0U;
+  for (size_t listIdx = 0U; listIdx < TBX_MB_EVENT_QUEUE_SIZE; listIdx++)
   {
-    /* Only continue with a valid list item. */
-    if (listItem != NULL)
+    /* Obtain mutual exclusive access to the poller list. */
+    TbxCriticalSectionEnter();
+    /* Create local copy of the array entry at this index. */
+    tTbxMbEventCtx * eventPollCtx = pollerList[listIdx];
+    /* Release mutual exclusive access to the poller list. */
+    TbxCriticalSectionExit();
+    /* Valid event context? */
+    if (eventPollCtx != NULL)
     {
-      /* Convert the opaque pointer to the event context structure. */
-      tTbxMbEventCtx * eventPollCtx = (tTbxMbEventCtx *)listItem;
       /* Call its poll function if configured. */
       if (eventPollCtx->pollFcn != NULL)
       {
-        eventPollCtx->pollFcn(listItem);
+        eventPollCtx->pollFcn(eventPollCtx);
       }
-      /* Move on to the next item in the list. */
-      listItem = TbxListGetNextItem(pollerList, listItem);
+      /* Increment number of detected event contexts in the pollier list. */
+      numPollerEntries++;
     }
   }
 
@@ -204,8 +217,51 @@ void TbxMbEventTask(void)
    * get continuously called. Otherwise go back to the default wait time to not hog up
    * CPU time unnecessarily.
    */
-  waitTimeoutMS = (listSize > 0U) ? 1U : defaultWaitTimeoutMs;
+  waitTimeoutMS = (numPollerEntries > 0U) ? 1U : defaultWaitTimeoutMs;
 } /*** end of TbxMbEventTask ***/
+
+
+/************************************************************************************//**
+** \brief     Function that removes all entries from the event queue and the pollerlist,
+**            which are related to the specified context. This function should be called
+**            when free-ing a channel or transport layer.
+** \param     context The context of the channel or transport layer, for which the event
+**            queue and pollerlist should be purged.
+**
+****************************************************************************************/
+void TbxMbEventPurge(void const * context)
+{
+  /* Verify parameters. */
+  TBX_ASSERT(context != NULL);
+
+  /* Only continue with valid parameters. */
+  if (context != NULL)
+  {
+    /* Purge events from this context from the event queue. */
+    TbxMbOsalEventPurge(context);
+
+    /* Only need to purge the entries for this context from the poller list, it the list
+     * was actually initialized.
+     */
+    if (pollerListInitialized == TBX_TRUE)
+    {
+      /* Obtain mutual exclusive access to the poller list. */
+      TbxCriticalSectionEnter();
+      /* Loop through the array to locate entires that need to be purged. */
+      for (size_t listIdx = 0U; listIdx < TBX_MB_EVENT_QUEUE_SIZE; listIdx++)
+      {
+        /* Does this entrie equel the context to purge? */
+        if (pollerList[listIdx] == context)
+        {
+          /* Remove it from the array by setting its value back to NULL. */
+          pollerList[listIdx] = NULL;
+        }
+      }
+      /* Release mutual exclusive access to the poller list. */
+      TbxCriticalSectionExit();
+    }
+  }
+} /*** end of TbxMbEventPurge ***/
 
 
 /*********************************** end of tbxmb_event.c ******************************/
