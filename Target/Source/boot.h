@@ -34,9 +34,9 @@
 /** \brief Main version number of the bootloader core. */
 #define BOOT_VERSION_CORE_MAIN     (1u)
 /** \brief Minor version number of the bootloader core. */
-#define BOOT_VERSION_CORE_MINOR    (19u)
+#define BOOT_VERSION_CORE_MINOR    (20u)
 /** \brief Patch number of the bootloader core. */
-#define BOOT_VERSION_CORE_PATCH    (1u)
+#define BOOT_VERSION_CORE_PATCH    (0u)
 
 
 /****************************************************************************************
