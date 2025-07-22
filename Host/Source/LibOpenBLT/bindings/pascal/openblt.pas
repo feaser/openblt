@@ -97,10 +97,10 @@ type
   tBltSessionSettingsXcpV10 = record
     timeoutT1: Word;          // Command response timeout in milliseconds.
     timeoutT3: Word;          // Start programming timeout in milliseconds.
-    timeoutT4: Word;          // Erase memory timeout in milliseonds.
-    timeoutT5: Word;          // Program memory and reset timeout in milliseonds.
-    timeoutT6: Word;          // Connect response timeout in milliseonds.
-    timeoutT7: Word;          // Busy wait timer timeout in milliseonds.
+    timeoutT4: Word;          // Erase memory timeout in milliseconds.
+    timeoutT5: Word;          // Program memory and reset timeout in milliseconds.
+    timeoutT6: Word;          // Connect response timeout in milliseconds.
+    timeoutT7: Word;          // Busy wait timer timeout in milliseconds.
     seedKeyFile: PAnsiChar;   // Seed/key algorithm library filename.
     connectMode: Byte;        // Connection mode parameter in XCP connect command.
   end;

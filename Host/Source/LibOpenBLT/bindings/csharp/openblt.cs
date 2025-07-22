@@ -211,7 +211,7 @@ namespace OpenBLT
                 public UInt16 timeoutT6;
 
                 /// <summary>
-                /// Busy wait timer timeout in milliseonds.
+                /// Busy wait timer timeout in milliseconds.
                 /// </summary>
                 public UInt16 timeoutT7;
 

@@ -842,7 +842,7 @@ class BltSessionSettingsXcpV10:
         # Set default values for instance variables.
         self.timeoutT1 = 1000         # Command response timeout in milliseconds.
         self.timeoutT3 = 2000         # Start programming timeout in milliseconds.
-        self.timeoutT4 = 10000        # Erase memory timeout in milliseonds.
+        self.timeoutT4 = 10000        # Erase memory timeout in milliseconds.
         self.timeoutT5 = 1000         # Program memory and reset timeout in milliseconds.
         self.timeoutT6 = 50           # Command response timeout in milliseconds.
         self.timeoutT7 = 2000         # Busy wait timer timeout in milliseconds.

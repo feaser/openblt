@@ -142,7 +142,7 @@ typedef struct t_blt_session_settings_xcp_v10
   uint16_t timeoutT4;            /**< Erase memory timeout in milliseconds.            */
   uint16_t timeoutT5;            /**< Program memory and reset timeout in milliseconds.*/
   uint16_t timeoutT6;            /**< Connect response timeout in milliseconds.        */
-  uint16_t timeoutT7;            /**< Busy wait timer timeout in milliseonds.          */
+  uint16_t timeoutT7;            /**< Busy wait timer timeout in milliseconds.         */
   char const * seedKeyFile;      /**< Seed/key algorithm library filename.             */
   uint8_t connectMode;           /**< Connection mode parameter in XCP connect command.*/
 } tBltSessionSettingsXcpV10;
