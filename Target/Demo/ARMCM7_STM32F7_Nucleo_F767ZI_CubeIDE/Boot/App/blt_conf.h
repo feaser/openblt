@@ -57,9 +57,7 @@
 *   C O M M U N I C A T I O N   I N T E R F A C E   C O N F I G U R A T I O N
 ****************************************************************************************/
 /* The NET communication interface for firmware updates via TCP/IP is selected by setting
- * the BOOT_COM_NET_ENABLE configurable to 1. The maximum amount of data bytes in a
- * message for data transmission and reception is set through BOOT_COM_NET_TX_MAX_DATA
- * and BOOT_COM_NET_RX_MAX_DATA, respectively. The default IP address is configured
+ * the BOOT_COM_NET_ENABLE configurable to 1. The default IP address is configured
  * with the macros BOOT_COM_NET_IPADDRx. The default netmask is configured with the
  * macro BOOT_COM_NET_NETMASKx. The default gateway is configured with the macros
  * BOOT_COM_NET_GATEWAYx. The bootloader acts and a TCP/IP server. The port the server
@@ -71,10 +69,6 @@
  */
 /** \brief Enable/disable the NET transport layer. */
 #define BOOT_COM_NET_ENABLE               (1)
-/** \brief Configure number of bytes in the target->host data packet. */
-#define BOOT_COM_NET_TX_MAX_DATA          (129)
-/** \brief Configure number of bytes in the host->target data packet. */
-#define BOOT_COM_NET_RX_MAX_DATA          (129)
 /** \brief Configure the port that the TCP/IP server listens on */
 #define BOOT_COM_NET_PORT                 (1000)
 /** \brief Enable/disable DHCP client for automatically obtaining an IP address. */
@@ -113,21 +107,16 @@
 
 
 /* The RS232 communication interface is selected by setting the BOOT_COM_RS232_ENABLE
- * configurable to 1. Configurable BOOT_COM_RS232_BAUDRATE selects the communication speed
- * in bits/second. The maximum amount of data bytes in a message for data transmission
- * and reception is set through BOOT_COM_RS232_TX_MAX_DATA and BOOT_COM_RS232_RX_MAX_DATA,
- * respectively. It is common for a microcontroller to have more than 1 UART interface
- * on board. The zero-based BOOT_COM_RS232_CHANNEL_INDEX selects the UART interface.
+ * configurable to 1. Configurable BOOT_COM_RS232_BAUDRATE selects the communication
+ * speed in bits/second. It is common for a microcontroller to have more than 1 UART
+ * interface on board. The zero-based BOOT_COM_RS232_CHANNEL_INDEX selects the UART
+ * interface.
  *
  */
 /** \brief Enable/disable UART transport layer. */
 #define BOOT_COM_RS232_ENABLE            (1)
 /** \brief Configure the desired communication speed. */
 #define BOOT_COM_RS232_BAUDRATE          (57600)
-/** \brief Configure number of bytes in the target->host data packet. */
-#define BOOT_COM_RS232_TX_MAX_DATA       (129)
-/** \brief Configure number of bytes in the host->target data packet. */
-#define BOOT_COM_RS232_RX_MAX_DATA       (129)
 /** \brief Select the desired UART peripheral as a zero based index. */
 #define BOOT_COM_RS232_CHANNEL_INDEX     (2)
 

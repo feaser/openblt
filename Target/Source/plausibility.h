@@ -69,43 +69,43 @@
 *   C O M M U N I C A T I O N   I N T E R F A C E   C O N F I G U R A T I O N   C H E C K
 ****************************************************************************************/
 #ifndef BOOT_COM_CAN_TX_MAX_DATA
-#define BOOT_COM_CAN_TX_MAX_DATA       (0)
+#define BOOT_COM_CAN_TX_MAX_DATA       (8)
 #endif
 
 #ifndef BOOT_COM_CAN_RX_MAX_DATA
-#define BOOT_COM_CAN_RX_MAX_DATA       (0)
+#define BOOT_COM_CAN_RX_MAX_DATA       (8)
 #endif
 
 #ifndef BOOT_COM_RS232_TX_MAX_DATA
-#define BOOT_COM_RS232_TX_MAX_DATA     (0)
+#define BOOT_COM_RS232_TX_MAX_DATA     (129)
 #endif
 
 #ifndef BOOT_COM_RS232_RX_MAX_DATA
-#define BOOT_COM_RS232_RX_MAX_DATA     (0)
+#define BOOT_COM_RS232_RX_MAX_DATA     (129)
 #endif
 
 #ifndef BOOT_COM_MBRTU_TX_MAX_DATA
-#define BOOT_COM_MBRTU_TX_MAX_DATA      (0)
+#define BOOT_COM_MBRTU_TX_MAX_DATA     (129)
 #endif
 
 #ifndef BOOT_COM_MBRTU_RX_MAX_DATA
-#define BOOT_COM_MBRTU_RX_MAX_DATA      (0)
+#define BOOT_COM_MBRTU_RX_MAX_DATA     (129)
 #endif
 
 #ifndef BOOT_COM_USB_TX_MAX_DATA
-#define BOOT_COM_USB_TX_MAX_DATA       (0)
+#define BOOT_COM_USB_TX_MAX_DATA       (63)
 #endif
 
 #ifndef BOOT_COM_USB_RX_MAX_DATA
-#define BOOT_COM_USB_RX_MAX_DATA       (0)
+#define BOOT_COM_USB_RX_MAX_DATA       (63)
 #endif
 
 #ifndef BOOT_COM_NET_TX_MAX_DATA
-#define BOOT_COM_NET_TX_MAX_DATA       (0)
+#define BOOT_COM_NET_TX_MAX_DATA       (129)
 #endif
 
 #ifndef BOOT_COM_NET_RX_MAX_DATA
-#define BOOT_COM_NET_RX_MAX_DATA       (0)
+#define BOOT_COM_NET_RX_MAX_DATA       (129)
 #endif
 
 

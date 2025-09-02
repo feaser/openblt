@@ -60,8 +60,6 @@
  * BOOT_COM_MBRTU_ENABLE configurable to 1. Configurable BOOT_COM_MBRTU_BAUDRATE selects
  * the communication speed in bits/second. Configurables BOOT_COM_MBRTU_STOPBITS and
  * BOOT_COM_MBRTU_PARITY configure the number of stopbits and parity type, respectively.
- * The maximum amount of data bytes in a message for data transmission and reception is
- * set through BOOT_COM_MBRTU_TX_MAX_DATA and BOOT_COM_MBRTU_RX_MAX_DATA, respectively.
  * It is common for a microcontroller to have more than 1 UART interface on board. The
  * zero-based BOOT_COM_MBRTU_CHANNEL_INDEX selects the UART interface. Each Modbus RTU
  * communication packet contains the node identifier of the sender (source) and the
@@ -77,10 +75,6 @@
 #define BOOT_COM_MBRTU_STOPBITS          (1)
 /** \brief Configure the desired parity (0 for none, 1 for odd, 2 for even). */
 #define BOOT_COM_MBRTU_PARITY            (2)
-/** \brief Configure number of bytes in the target->host data packet. */
-#define BOOT_COM_MBRTU_TX_MAX_DATA       (129)
-/** \brief Configure number of bytes in the host->target data packet. */
-#define BOOT_COM_MBRTU_RX_MAX_DATA       (129)
 /** \brief Select the desired UART peripheral as a zero based index:
  *         - Set to 0 to use USART1 for RS485 communication in combination with the
  *           Waveshare RS485/CAN shield.

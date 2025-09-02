@@ -103,6 +103,11 @@ void BootActivate(void)
  */
 #define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
 
+/** \brief Maximum bytes in a CTO packet on RS232, excluding the one extra for length and
+ *         two extra for possibly configured checksum byte(s).
+ */
+#define RS232_CTO_RX_MAX_DATA          (129u)
+
 
 /****************************************************************************************
 * Local data declarations
@@ -150,7 +155,7 @@ static void BootComRs232Init(void)
 ****************************************************************************************/
 static void BootComRs232CheckActivationRequest(void)
 {
-  static unsigned char xcpCtoReqPacket[BOOT_COM_RS232_RX_MAX_DATA+3];
+  static unsigned char xcpCtoReqPacket[RS232_CTO_RX_MAX_DATA+3];
   static unsigned char xcpCtoRxLength;
   static unsigned char xcpCtoRxInProgress = 0;
   static unsigned long xcpCtoRxStartTime = 0;
@@ -171,7 +176,7 @@ static void BootComRs232CheckActivationRequest(void)
     {
       /* check that the length has a valid value. it should not be 0 */
       if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= BOOT_COM_RS232_RX_MAX_DATA) )
+           (xcpCtoReqPacket[0] <= RS232_CTO_RX_MAX_DATA) )
       {
         /* store the start time */
         xcpCtoRxStartTime = TimerGet();
