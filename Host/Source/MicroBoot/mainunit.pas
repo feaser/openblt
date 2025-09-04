@@ -60,6 +60,9 @@ type
                             UIS_FIRMWARE_UPDATE );
 
   //------------------------------ TMainForm --------------------------------------------
+
+  { TMainForm }
+
   TMainForm = class(TForm)
     BtnExit: TButton;
     BtnSettings: TButton;
@@ -83,6 +86,7 @@ type
     procedure BtnSettingsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure PnlBodyMainResize(Sender: TObject);
     procedure TmrCloseTimer(Sender: TObject);
   private
@@ -149,7 +153,7 @@ begin
   FHFreeSpaceProgressBar := PnlBodyMain.Width - PgbFirmwareUpdate.Width;
   // Initialize the user interface.
   FUISetting := UIS_DEFAULT;
-  UpdateUserInterface();
+  UpdateUserInterface;
   // Initialize fields.
   FCmdOptionFileFound := False;
   FFirmwareFile := '';
@@ -228,6 +232,36 @@ begin
   // Release the instance that manages the program's configuration.
   FCurrentConfig.Free;
 end; //*** end of FormDestroy ***
+
+
+//***************************************************************************************
+// NAME:           FormDropFiles
+// PARAMETER:      Sender Source of the event.
+//                 FileNames array with filenames that were dropped on the form.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when one or more files were dropped on
+//                 the form.
+//
+//***************************************************************************************
+procedure TMainForm.FormDropFiles(Sender: TObject; const FileNames: array of string);
+var
+  okayToStartUpdate: Boolean = True;
+begin
+  // Current solution supports only dropping one firmware file at a time.
+  if Length(FileNames) <> 1 then
+  begin
+    okayToStartUpdate := False;
+  end;
+
+  // Okay to start the firmware update?
+  if okayToStartUpdate then
+  begin
+    // Read out the dropped file.
+    FFirmwareFile := FileNames[Low(FileNames)];
+    // Start the actual firmware update.
+    StartFirmwareUpdate;
+  end;
+end; //*** end of FormDropFiles ***
 
 
 //***************************************************************************************
@@ -438,6 +472,7 @@ begin
     BtnBrowse.Enabled := True;
     BtnSettings.Enabled := True;
     BtnExit.Caption := 'Exit';
+    AllowDropFiles := True;
   end
   // Update look and layout for the firmware update setting.
   else if FUISetting = UIS_FIRMWARE_UPDATE then
@@ -449,6 +484,7 @@ begin
     BtnBrowse.Enabled := False;
     BtnSettings.Enabled := False;
     BtnExit.Caption := 'Cancel';
+    AllowDropFiles := False;
   end;
 end; //*** end of UpdateUserInterface ***
 
