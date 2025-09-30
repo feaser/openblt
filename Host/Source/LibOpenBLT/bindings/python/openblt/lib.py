@@ -878,10 +878,17 @@ class BltTransportSettingsXcpV10Can:
     baudrate field in this structure is don't care when using the library on a Linux was 
     system. On Windows based systems, the device name is a name that is pre-defined by
     this library for the supported CAN adapters. The device name should be one of the 
-    following: "peak_pcanusb", "kvaser_leaflight", or "lawicel_canusb". Field use 
-    extended is a boolean field. When set to 0, the specified transmitId and receiveId 
-    are assumed to be 11-bit standard CAN identifier. It the field is 1, these 
-    identifiers are assumed to be 29-bit extended CAN identifiers.
+    following: "peak_pcanusb", "kvaser_leaflight", "vector_xldriver", "ixxat_vcidriver",
+    or "lawicel_canusb". Field useExtended is a boolean field. When set to 0, the
+    specified transmitId and receiveId are assumed to be 11-bit standard CAN identifier.
+    It the field is 1, these identifiers are assumed to be 29-bit extended CAN identifiers.
+    The brsBaudrate element serves two purposes. When > 0 it enables CAN FD mode instead
+    of CAN classic, assuming the CAN adapter supports it. Additionally, it can enable the
+    CAN FD bitrate switch feature:
+      - Set brsBaudrate to 0 for CAN classic. 
+      - Set brsBaudrate to baudrate for CAN FD without bitrate switch.
+      - Set brsBaudrate to the desired baudrate for transmitting the data bytes
+        of the CAN message with bitrate switch.
     """
     def __init__(self):
         """
@@ -894,6 +901,7 @@ class BltTransportSettingsXcpV10Can:
         self.transmitId = 0x667       # Transmit CAN identifier.
         self.receiveId = 0x7E1        # Receive CAN identifier.
         self.useExtended = 0          # Boolean to configure 29-bit CAN identifiers.
+        self.brsBaudrate = 0          # CAN FD bitrate switch data baudrate in bits/sec.
 
 
 class BltTransportSettingsXcpV10Net:
@@ -1002,7 +1010,8 @@ def session_init(session_type, session_settings, transport_type, transport_setti
                     ('baudrate',      ctypes.c_uint32),
                     ('transmitId',    ctypes.c_uint32),
                     ('receiveId',     ctypes.c_uint32),
-                    ('useExtended',   ctypes.c_uint32)]
+                    ('useExtended',   ctypes.c_uint32),
+                    ('brsBaudrate',   ctypes.c_uint32)]
 
     class struct_t_blt_transport_settings_xcp_v10_net(ctypes.Structure):
         """
@@ -1058,6 +1067,8 @@ def session_init(session_type, session_settings, transport_type, transport_setti
             ctypes.c_uint32(transport_settings.receiveId)
         transport_settings_struct.useExtended = \
             ctypes.c_uint32(transport_settings.useExtended)
+        transport_settings_struct.brsBaudrate = \
+            ctypes.c_uint32(transport_settings.brsBaudrate)
     elif transport_type == BLT_TRANSPORT_XCP_V10_NET:
         transport_settings_struct = struct_t_blt_transport_settings_xcp_v10_net()
         transport_settings_struct.address = \

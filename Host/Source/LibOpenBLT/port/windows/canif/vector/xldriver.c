@@ -41,11 +41,39 @@
 #include <windows.h>                        /* for Windows API                         */
 #include <vxlapi.h>                         /* for XL CAN driver library               */
 
+
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief Internal driver queue size in CAN events. */
 #define VECTOR_XL_RX_QUEUE_SIZE        (4096u)
+
+
+/****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Structure type for grouping together CAN peripheral parameters needed for
+ *         performing bittiming calculations.
+ */
+typedef struct t_vector_xl_periph_params
+{
+  uint32_t base_freq;                               /**< Source clock frequency [Hz]   */
+  uint32_t prescaler_min;                           /**< Smallest supported prescaler  */
+  uint32_t prescaler_max;                           /**< Largest supported prescaler   */
+  uint16_t tseg1_min;                               /**< Smallest supported Tseg1      */
+  uint16_t tseg1_max;                               /**< Largest supported Tseg1       */
+  uint16_t tseg2_min;                               /**< Smallest supported Tseg2      */
+  uint16_t tseg2_max;                               /**< Largest supported Tseg2       */
+} tVectorXlPeriphParams;
+
+/** \brief Structure type for grouping together CAN bittiming configuration element.   */
+typedef struct t_vector_xl_bittiming_cfg
+{
+  uint32_t prescaler;                               /**< CAN clock prescaler           */
+  uint16_t tseg1;                                   /**< Time segment 1, excl. SYNC    */
+  uint16_t tseg2;                                   /**< Time segment 2                */
+  uint16_t sjw;                                     /**< Synchronization jump width    */
+} tVectorXlBittimingCfg;
 
 
 /***************************************************************************************
@@ -59,10 +87,12 @@ static void VectorXlDisconnect(void);
 static bool VectorXlTransmit(tCanMsg const * msg);
 static bool VectorXlIsBusError(void);
 static void VectorXlRegisterEvents(tCanEvents const * events);
-/* Baudrate conversion utility function. */
-static uint32_t VectorXlConvertToRawBitrate(tCanBaudrate baudrate);
+/* Utility functions. */
+static bool VectorXlCalculateBitTimingConfig(uint32_t baudrate, tVectorXlPeriphParams const* periph_params, tVectorXlBittimingCfg* bittiming_config);
 /* CAN event reception thread. */
 static DWORD WINAPI VectorXlReceptionThread(LPVOID pv);
+static void VectorXlProcessCanClassicEvent(void);
+static void VectorXlProcessCanFdEvent(void);
 
 
 /****************************************************************************************
@@ -86,6 +116,12 @@ static const tCanInterface pVectorXlInterface =
 ****************************************************************************************/
 /** \brief The settings to use in this CAN interface. */
 static tCanSettings vectorXlSettings;
+
+/** \brief Boolean flag to track if CAN classic or CAN FD should be used. */
+static bool vectorXlCanFdModeRequested;
+
+/** \brief Boolean flag to track if the CAN FD bitrate switch feature should be used. */
+static bool vectorXlCanFdBrsRequested;
 
 /** \brief List with callback functions that this driver should use. */
 static tCanEvents * vectorXlEventsList;
@@ -155,6 +191,8 @@ static void VectorXlInit(tCanSettings const * settings)
   vectorXlTerminateEvent = NULL;
   vectorXlCanEvent = NULL;
   vectorXlRxThreadHandle = NULL;
+  vectorXlCanFdModeRequested = false;
+  vectorXlCanFdBrsRequested = false;
   
   /* This module uses critical sections so initialize them. */
   UtilCriticalSectionInit();
@@ -165,6 +203,7 @@ static void VectorXlInit(tCanSettings const * settings)
   vectorXlSettings.baudrate = CAN_BR500K;
   vectorXlSettings.code = 0x00000000u;
   vectorXlSettings.mask = 0x00000000u;
+  vectorXlSettings.brsbaudrate = CANFD_DISABLED;
 
   /* Check parameters. */
   assert(settings != NULL);
@@ -230,6 +269,7 @@ static void VectorXlTerminate(void)
   vectorXlSettings.baudrate = CAN_BR500K;
   vectorXlSettings.code = 0x00000000u;
   vectorXlSettings.mask = 0x00000000u;
+  vectorXlSettings.brsbaudrate = CANFD_DISABLED;
   /* Release memory that was allocated for CAN events and reset the entry count. */
   if ( (vectorXlEventsList != NULL) && (vectorXlEventsEntries != 0) )
   {
@@ -248,12 +288,35 @@ static void VectorXlTerminate(void)
 ****************************************************************************************/
 static bool VectorXlConnect(void)
 {
-  bool           result = true;
-  XLstatus       xlStatus;
-  XLdriverConfig xlDrvConfig;
-  char           xlAppName[XL_MAX_LENGTH + 1] = "";
-  XLaccess       xlPermissionMask = 0;
-  uint32_t       xlBitrate;
+  bool                  result = true;
+  XLstatus              xlStatus;
+  XLdriverConfig        xlDrvConfig;
+  char                  xlAppName[XL_MAX_LENGTH + 1] = "";
+  XLaccess              xlPermissionMask = 0;
+  uint32_t              xlBitrate;
+  uint32_t              xlInterfaceVersion = XL_INTERFACE_VERSION;
+  XLcanFdConf           xlCanFdConf = {0};
+  tVectorXlPeriphParams xlPeriphParams = {0};
+  tVectorXlBittimingCfg xlBittimingCfg = {0};
+
+  /* Reset CAN FD related flags. */
+  vectorXlCanFdModeRequested = false;
+  vectorXlCanFdBrsRequested = false;
+
+  /* Set flags to determine if and which CAN FD features are requested. */
+  if (vectorXlSettings.brsbaudrate != CANFD_DISABLED)
+  {
+    /* CAN FD mode requested. */
+    vectorXlCanFdModeRequested = true;
+    /* When the bitrate switch feature is requested, the bitrate switch baudrate value
+     * should be higher than the nominal baudrate.
+     */
+    if (CanConvertFdBaudrate(vectorXlSettings.brsbaudrate) > CanConvertBaudrate(vectorXlSettings.baudrate))
+    {
+      /* CAN FD bitrate switch requested. */
+      vectorXlCanFdBrsRequested = true;
+    }
+  }
 
   /* Invalidate handles. */
   vectorXlTerminateEvent = NULL;
@@ -288,6 +351,23 @@ static bool VectorXlConnect(void)
     }
   }
 
+  /* Check if the requested CAN FD features are actually supported by the hardware. */
+  if (result)
+  {
+    /* CAN FD mode requested? */
+    if (vectorXlCanFdModeRequested)
+    {
+      /* Use API version 4 for CAN FD. */
+      xlInterfaceVersion = XL_INTERFACE_VERSION_V4;
+      /* Does the requested channel actually support CAN FD? */
+      if ((xlDrvConfig.channel[vectorXlSettings.channel].channelCapabilities &
+        XL_CHANNEL_FLAG_CANFD_ISO_SUPPORT) == 0)
+      {
+        result = false;
+      }
+    }
+  }
+
   /* Open the port. */
   if (result)
   {
@@ -300,7 +380,7 @@ static bool VectorXlConnect(void)
     /* Attempt to open the port. */
     xlStatus = xlOpenPort(&vectorXlPortHandle, xlAppName, vectorXLChannelMask, 
                           &xlPermissionMask, VECTOR_XL_RX_QUEUE_SIZE, 
-                          XL_INTERFACE_VERSION, XL_BUS_TYPE_CAN);
+                          xlInterfaceVersion, XL_BUS_TYPE_CAN);
     /* Evaluate the result. */
     if ((xlStatus != XL_SUCCESS) || (vectorXlPortHandle == XL_INVALID_PORTHANDLE))
     {
@@ -321,15 +401,90 @@ static bool VectorXlConnect(void)
   {
     if (vectorXLChannelMask == xlPermissionMask)
     {
-      /* Determine the requested bitrate in bits/second. */
-      xlBitrate = VectorXlConvertToRawBitrate(vectorXlSettings.baudrate);
-      /* Attempt to configure the communication speed. */
-      xlStatus = xlCanSetChannelBitrate(vectorXlPortHandle, vectorXLChannelMask,
-                                        xlBitrate);
-      /* Evaluate the result. */
-      if (xlStatus != XL_SUCCESS)
+      /* CAN classic mode? */
+      if (!vectorXlCanFdModeRequested)
       {
-        result = false;
+        /* Determine the requested bitrate in bits/second. */
+        xlBitrate = CanConvertBaudrate(vectorXlSettings.baudrate);
+        /* Attempt to configure the communication speed. */
+        xlStatus = xlCanSetChannelBitrate(vectorXlPortHandle, vectorXLChannelMask,
+                                          xlBitrate);
+        /* Evaluate the result. */
+        if (xlStatus != XL_SUCCESS)
+        {
+          result = false;
+        }
+      }
+      /* CAN FD mode. */
+      else
+      {
+        /* Initialize the parameters for the nominal (arbitration) bittiming settings.
+         * Note that xlGetDriverConfig() does not give the CAN clock frequency. The
+         * XL drive documentation states that software shall assume an 80 MHz CAN clock,
+         * although the hardware may internally use a different clock.
+         */
+        xlPeriphParams.base_freq = 80000000U;
+        xlPeriphParams.prescaler_min = 1U;
+        xlPeriphParams.prescaler_max = 254U; // Assumed.
+        xlPeriphParams.tseg1_min = 1U;
+        xlPeriphParams.tseg1_max = 254U;
+        xlPeriphParams.tseg2_min = 1U;
+        xlPeriphParams.tseg2_max = 254U;
+        /* Determine the requested nominal (arbitration) bitrate in bits/second. */
+        xlBitrate = CanConvertBaudrate(vectorXlSettings.baudrate);
+        /* Attempt to calculate the nominal (arbitration) bittiming settings. */
+        if (!VectorXlCalculateBitTimingConfig(xlBitrate, &xlPeriphParams, &xlBittimingCfg))
+        {
+          result = false;
+        }
+        else
+        {
+          /* Store the nominal (arbitration) bittiming settings. */
+          xlCanFdConf.arbitrationBitRate = xlBitrate;
+          xlCanFdConf.tseg1Abr = xlBittimingCfg.tseg1;
+          xlCanFdConf.tseg2Abr = xlBittimingCfg.tseg2;
+          xlCanFdConf.sjwAbr = (xlBittimingCfg.sjw > 128U) ? 128U : xlBittimingCfg.sjw;
+        }
+
+        /* Initialize the parameters for the data bittiming settings.
+         * Note that xlGetDriverConfig() does not give the CAN clock frequency. The
+         * XL drive documentation states that software shall assume an 80 MHz CAN clock,
+         * although the hardware may internally use a different clock.
+         */
+        xlPeriphParams.base_freq = 80000000U;
+        xlPeriphParams.prescaler_min = 1U;
+        xlPeriphParams.prescaler_max = 254U; // Assumed.
+        xlPeriphParams.tseg1_min = 1U;
+        xlPeriphParams.tseg1_max = 126U;
+        xlPeriphParams.tseg2_min = 1U;
+        xlPeriphParams.tseg2_max = 126U;
+        /* Determine the requested data bitrate in bits/second. */
+        xlBitrate = CanConvertFdBaudrate(vectorXlSettings.brsbaudrate);
+        /* Attempt to calculate the data bittiming settings. */
+        if (!VectorXlCalculateBitTimingConfig(xlBitrate, &xlPeriphParams, &xlBittimingCfg))
+        {
+          result = false;
+        }
+        else
+        {
+          /* Store the data bittiming settings. */
+          xlCanFdConf.dataBitRate = xlBitrate;
+          xlCanFdConf.tseg1Dbr = xlBittimingCfg.tseg1;
+          xlCanFdConf.tseg2Dbr = xlBittimingCfg.tseg2;
+          xlCanFdConf.sjwDbr = (xlBittimingCfg.sjw > 64) ? 64U : xlBittimingCfg.sjw;
+        }
+
+        /* Bittiming calculation successful? */
+        if (result)
+        {
+          xlStatus = xlCanFdSetConfiguration(vectorXlPortHandle, vectorXLChannelMask,
+                                             &xlCanFdConf);
+          /* Evaluate the result. */
+          if (xlStatus != XL_SUCCESS)
+          {
+            result = false;
+          }
+        }
       }
     }
   }
@@ -547,7 +702,6 @@ static bool VectorXlTransmit(tCanMsg const * msg)
   bool               result = false;
   tCanEvents const * pEvents;
   XLstatus           xlStatus = XL_ERROR;
-  XLevent            xlEvent[1];
   unsigned int       txMsgCount = 1;
   uint8_t            byteIdx;
 
@@ -557,32 +711,85 @@ static bool VectorXlTransmit(tCanMsg const * msg)
   /* Only continue with valid parameters. */
   if (msg != NULL) /*lint !e774 */
   {
-    /* Convert the CAN message to the XLevent format. */
-    memset(xlEvent, 0, sizeof(xlEvent));
-    xlEvent[0].tag = XL_TRANSMIT_MSG;
-    xlEvent[0].tagData.msg.flags = 0;
-    if ((msg->id & CAN_MSG_EXT_ID_MASK) == 0)
+    /* CAN classic mode? */
+    if (!vectorXlCanFdModeRequested)
     {
-      xlEvent[0].tagData.msg.id = msg->id & 0x7ffu;
+      XLevent xlEvent[1];
+
+      /* Convert the CAN message to the XLevent format. */
+      memset(xlEvent, 0, sizeof(xlEvent));
+      xlEvent[0].tag = XL_TRANSMIT_MSG;
+      xlEvent[0].tagData.msg.flags = 0;
+      if ((msg->id & CAN_MSG_EXT_ID_MASK) == 0)
+      {
+        xlEvent[0].tagData.msg.id = msg->id & 0x7ffu;
+      }
+      else
+      {
+        xlEvent[0].tagData.msg.id = msg->id & 0x1fffffffu;
+        xlEvent[0].tagData.msg.id |= XL_CAN_EXT_MSG_ID;
+      }
+      xlEvent[0].tagData.msg.dlc = msg->len;
+      if (xlEvent[0].tagData.msg.dlc > CAN_MSG_MAX_LEN)
+      {
+        xlEvent[0].tagData.msg.dlc = CAN_MSG_MAX_LEN;
+      }
+      for (byteIdx = 0; byteIdx < msg->len; byteIdx++)
+      {
+        xlEvent[0].tagData.msg.data[byteIdx] = msg->data[byteIdx];
+      }
+
+      /* Attempt to submit the message for transmission. */
+      xlStatus = xlCanTransmit(vectorXlPortHandle, vectorXLChannelMask, &txMsgCount,
+                               xlEvent);
     }
+    /* CAN FD mode */
     else
     {
-      xlEvent[0].tagData.msg.id = msg->id & 0x1fffffffu;
-      xlEvent[0].tagData.msg.id |= XL_CAN_EXT_MSG_ID;
-    }
-    xlEvent[0].tagData.msg.dlc = msg->dlc;
-    if (xlEvent[0].tagData.msg.dlc > CAN_MSG_MAX_LEN)
-    {
-      xlEvent[0].tagData.msg.dlc = CAN_MSG_MAX_LEN;
-    }
-    for (byteIdx = 0; byteIdx < msg->dlc; byteIdx++)
-    {
-      xlEvent[0].tagData.msg.data[byteIdx] = msg->data[byteIdx];
+      XLcanTxEvent         xlcanTxEvent[1];
+      uint8_t              dataLen;
+      static const uint8_t len2dlc[] = { 0,  1,  2,  3,  4,  5,  6,  7,  8, /*  0 -  8 */
+                                         9,  9,  9,  9,                     /*  9 - 12 */
+                                         10, 10, 10, 10,                    /* 13 - 16 */
+                                         11, 11, 11, 11,                    /* 17 - 20 */
+                                         12, 12, 12, 12,                    /* 21 - 24 */
+                                         13, 13, 13, 13, 13, 13, 13, 13,    /* 25 - 32 */
+                                         14, 14, 14, 14, 14, 14, 14, 14,    /* 33 - 40 */
+                                         14, 14, 14, 14, 14, 14, 14, 14,    /* 41 - 48 */
+                                         15, 15, 15, 15, 15, 15, 15, 15,    /* 49 - 56 */
+                                         15, 15, 15, 15, 15, 15, 15, 15 };  /* 57 - 64 */
+
+
+      /* Convert the CAN message to the XLevent format. */
+      memset(xlcanTxEvent, 0, sizeof(xlcanTxEvent));
+      xlcanTxEvent[0].tag = XL_CAN_EV_TAG_TX_MSG;
+      xlcanTxEvent[0].tagData.canMsg.msgFlags = XL_CAN_TXMSG_FLAG_EDL;
+      if (vectorXlCanFdBrsRequested)
+      {
+        xlcanTxEvent[0].tagData.canMsg.msgFlags |= XL_CAN_TXMSG_FLAG_BRS;
+      }
+      /* Set the message identifier. */
+      if ((msg->id & CAN_MSG_EXT_ID_MASK) == 0)
+      {
+        xlcanTxEvent[0].tagData.canMsg.canId = msg->id & 0x7ffu;
+      }
+      else
+      {
+        xlcanTxEvent[0].tagData.canMsg.canId = msg->id & 0x1fffffffu;
+        xlcanTxEvent[0].tagData.canMsg.canId |= XL_CAN_EXT_MSG_ID;
+      }
+      /* Determine data length with out-of-bounds correction. */
+      dataLen = ((msg->len <= XL_CAN_MAX_DATA_LEN) ? msg->len : XL_CAN_MAX_DATA_LEN);
+      xlcanTxEvent[0].tagData.canMsg.dlc = len2dlc[dataLen];
+      for (byteIdx = 0; byteIdx < dataLen; byteIdx++)
+      {
+        xlcanTxEvent[0].tagData.canMsg.data[byteIdx] = msg->data[byteIdx];
+      }
+      /* Attempt to submit the message for transmission. */
+      xlStatus = xlCanTransmitEx(vectorXlPortHandle, vectorXLChannelMask, 1,
+                                 &txMsgCount, xlcanTxEvent);
     }
 
-    /* Attempt to submit the message for transmission. */
-    xlStatus = xlCanTransmit(vectorXlPortHandle, vectorXLChannelMask, &txMsgCount, 
-                             xlEvent);
     /* Check the result. */
     if (xlStatus == XL_SUCCESS)
     {
@@ -684,54 +891,129 @@ static void VectorXlRegisterEvents(tCanEvents const * events)
 
 
 /************************************************************************************//**
-** \brief     Converts the baudrate enumerated type value to a bitrate in bits/second.
-** \param     baudrate Baudrate enumarated type.
-** \return    Bitrate in bits/second.
+** \brief     Search algorithm to match the desired baudrate to a possible bit
+**            timing configuration, taking into account the given CAN peripheral
+**            parameters.
+** \param     baudrate Desired CAN communication speed in bits/sec.
+** \param     periph_params CAN peripheral parameters.
+** \param     bittiming_config Found bit timing configuration.
+** \return    True if a matching CAN bittiming configuration was found, false otherwise.
 **
 ****************************************************************************************/
-static uint32_t VectorXlConvertToRawBitrate(tCanBaudrate baudrate)
+static bool VectorXlCalculateBitTimingConfig(uint32_t baudrate,
+                                             tVectorXlPeriphParams const * periph_params,
+                                             tVectorXlBittimingCfg * bittiming_config)
 {
-  uint32_t result = 500000;
+  bool result = false;
 
-  switch (baudrate)
+  /* Verify parameters. */
+  assert((baudrate > 0) && (periph_params != NULL) && (bittiming_config != NULL));
+
+  /* Only continue with valid parameters. */
+  if ((baudrate > 0) && (periph_params != NULL) && (bittiming_config != NULL))
   {
-    case CAN_BR10K:
-      result = 10000;
-      break;
-    case CAN_BR20K:
-      result = 20000;
-      break;
-    case CAN_BR50K:
-      result = 50000;
-      break;
-    case CAN_BR100K:
-      result = 100000;
-      break;
-    case CAN_BR125K:
-      result = 125000;
-      break;
-    case CAN_BR250K:
-      result = 250000;
-      break;
-    case CAN_BR500K:
-      result = 500000;
-      break;
-    case CAN_BR800K:
-      result = 800000;
-      break;
-    case CAN_BR1M:
-      result = 1000000;
-      break;
-    default:
-      /* Default to a common used baudrate as a fallback. */
-      result = 500000;
-      break;
+    uint16_t bitTq, bitTqMin, bitTqMax;
+    uint16_t tseg1, tseg2;
+    uint32_t prescaler;
+    uint8_t  samplePoint;
+
+    /* Calculate minimum and maximum possible time quanta per bit. Remember that the
+     * bittime in time quanta is 1 (sync) + tseg1 + tseg2.
+     */
+    bitTqMin = 1U + periph_params->tseg1_min + periph_params->tseg2_min;
+    bitTqMax = 1U + periph_params->tseg1_max + periph_params->tseg2_max;
+
+    /* Loop through all the prescaler values from low to high to find one that results
+     * in a time quanta per bit that is in the range bitTqMin.. bitTqMax. Note that
+     * looping through the prescalers low to high is important, because a lower prescaler
+     * would result in a large number of time quanta per bit. This in turns gives you
+     * more flexibility for setting the a bit's sample point.
+     */
+    for (prescaler = periph_params->prescaler_min;
+      prescaler <= periph_params->prescaler_max; prescaler++)
+    {
+      /* No need to continue if the configured peripheral clock, scaled down by this
+       * prescaler value, is no longer high enough to get to the desired baudrate,
+       * taking into account the minimum possible time quanta per bit.
+       */
+      if (periph_params->base_freq < (baudrate * bitTqMin))
+      {
+        break;
+      }
+      /* Does this prescaler give a fixed (integer) number of time quanta? */
+      if (((periph_params->base_freq % prescaler) == 0U) &&
+        (((periph_params->base_freq / prescaler) % baudrate) == 0U))
+      {
+        /* Calculate how many time quanta per bit this prescaler would give. */
+        bitTq = (uint16_t)((periph_params->base_freq / prescaler) / baudrate);
+        /* Is this a configurable amount of time quanta? */
+        if ((bitTq >= bitTqMin) && (bitTq <= bitTqMax))
+        {
+          /* If the sample point is at the very end of the bit time, the maximum
+           * possible network length can be achieved. an earlier sample point reduces
+           * the achievable network length, but increases robustness. As a reference,
+           * a value of higher than 80% is not recommended for automotive applications
+           * due to robustness reasons.
+           *
+           * For this reason try to get a sample point that is in the 65% - 80% range.
+           * An efficient way of doing this is to calculate Tseg2, which should then
+           * be 20% and round up by doing this calculation.
+           *
+           * Example:
+           *   baud      = 500 kbits/sec
+           *   base_freq = 24 MHz
+           *   prescaler = 1
+           *   bitTq     = 48
+           *
+           *   For 80% sample point, Tseg2 should be 20% of 48 = 9.6 time quanta.
+           *   Rounded up to the next integer = 10. Resulting sample point:
+           *   ((48 - 10) / 48) * 100 = 79.17%
+           */
+          tseg2 = (uint16_t)(((bitTq * 2U) + 9U) / 10U);
+          /* Calculate Tseg1 by deducting Tseg2 and 1 time quanta for the sync seq. */
+          tseg1 = (uint16_t)((bitTq - tseg2) - 1U);
+          /* Are these values within configurable range? */
+          if ((tseg1 >= periph_params->tseg1_min) &&
+            (tseg1 <= periph_params->tseg1_max) &&
+            (tseg2 >= periph_params->tseg2_min) &&
+            (tseg2 <= periph_params->tseg2_max))
+          {
+            /* Calculate the actual sample point, given these Tseg values. */
+            samplePoint = (uint8_t)(((1U + tseg1) * 100UL) / bitTq);
+            /* Is this within the targeted 65% - 80% range? */
+            if ((samplePoint >= 65U) && (samplePoint <= 80U))
+            {
+              /* Store these bittiming settings. */
+              bittiming_config->prescaler = prescaler;
+              bittiming_config->tseg1 = tseg1;
+              bittiming_config->tseg2 = tseg2;
+              /* SJW depends highly on the baudrate tolerances of the other nodes on the
+               * network. SJW 1 allows for only a small window of tolerance between node
+               * baudrate. SJW = TSEG2 allows for a large winow, at the risk of a bit
+               * being incorrectly sampled. A safe approach to to use TSEG2/2 but also
+               * make sure SJW is > 0.
+               */
+              bittiming_config->sjw = tseg2 / 2U;
+              if (bittiming_config->sjw == 0U)
+              {
+                bittiming_config->sjw = 1U;
+              }
+              /* Set the result to success. */
+              result = true;
+              /* All done so no need to continue the loop. */
+              break;
+            }
+          }
+        }
+      }
+    }
   }
+
   /* Give the result back to the caller. */
   return result;
-} /*** end of VectorXlConvertToRawBitrate ***/
+} /*** end of VectorXlCalculateBitTimingConfig ***/
 
-
+  
 /************************************************************************************//**
 ** \brief     CAN event reception thread.
 ** \param     pv Pointer to thread parameters.
@@ -747,12 +1029,6 @@ static DWORD WINAPI VectorXlReceptionThread(LPVOID pv)
     vectorXlTerminateEvent 
   };
   bool running = true;
-  XLstatus xlStatus;
-  unsigned int xlEventCount;
-  XLevent xlEvent;
-  tCanMsg rxMsg;
-  uint8_t byteIdx;
-  tCanEvents const * pEvents;
 
   /* Parameter not used. */
   (void)pv;
@@ -766,81 +1042,15 @@ static DWORD WINAPI VectorXlReceptionThread(LPVOID pv)
     {
       /* CAN reception event. */
       case WAIT_OBJECT_0 + 0: /*lint !e835 */
-        /* Empty out the event queue. */
-        xlStatus = XL_SUCCESS;
-        while (xlStatus == XL_SUCCESS)
+        /* CAN classic mode? */
+        if (!vectorXlCanFdModeRequested)
         {
-          /* Set the number of events to request to read. */
-          xlEventCount = 1;
-          xlStatus = xlReceive(vectorXlPortHandle, &xlEventCount, &xlEvent);      
-          if (xlStatus != XL_ERR_QUEUE_IS_EMPTY ) 
-          {
-            /* Was is a message reception event? */
-            if (xlEvent.tag == XL_RECEIVE_MSG)
-            {
-              /* Only process actual newly received messages and ignore things such as
-               * a confirmation of a message transmission.
-               */
-              if (xlEvent.tagData.msg.flags == 0)
-              {
-                /* Read out the message identifier. */
-                if ((xlEvent.tagData.msg.id & XL_CAN_EXT_MSG_ID) == 0)
-                {
-                  rxMsg.id = xlEvent.tagData.msg.id & 0x7ffu;
-                }
-                else
-                {
-                  rxMsg.id = xlEvent.tagData.msg.id & 0x1fffffffu;
-                  rxMsg.id |= CAN_MSG_EXT_ID_MASK;
-                }
-                /* Read out the message length. */
-                if (xlEvent.tagData.msg.dlc > CAN_MSG_MAX_LEN)
-                {
-                  rxMsg.dlc = CAN_MSG_MAX_LEN;
-                }
-                else
-                {
-                  rxMsg.dlc = (uint8_t)xlEvent.tagData.msg.dlc;
-                }
-                /* Read out the message data. */
-                for (byteIdx = 0; byteIdx < rxMsg.dlc; byteIdx++)
-                {
-                  rxMsg.data[byteIdx] = xlEvent.tagData.msg.data[byteIdx];
-                }
-                /* Trigger message reception event(s). */
-                pEvents = vectorXlEventsList;
-                for (uint32_t idx = 0; idx < vectorXlEventsEntries; idx++)
-                {
-                  if (pEvents != NULL)
-                  {
-                    if (pEvents->MsgRxed != NULL)
-                    {
-                      pEvents->MsgRxed(&rxMsg);
-                    }
-                    /* Move on to the next entry in the list. */
-                    pEvents++;
-                  }
-                }
-              }
-            }
-            /* Was is a chip state event? */
-            else if (xlEvent.tag == XL_CHIP_STATE)
-            {
-              /* Is a bus off or bus have state reported? */
-              if ( ((xlEvent.tagData.chipState.busStatus & XL_CHIPSTAT_BUSOFF) != 0) ||
-                   ((xlEvent.tagData.chipState.busStatus & XL_CHIPSTAT_ERROR_PASSIVE) != 0))
-              {
-                /* Enter critical section. */
-                UtilCriticalSectionEnter();
-                /* Set bus error flag. Note that this flag is automatically reset by
-                 * VectorXlIsBusError.
-                 */
-                vectorXlBusErrorDetected = true;
-                /* Exit critical section. */
-                UtilCriticalSectionExit();
-              }
-            }
-          }  
+          VectorXlProcessCanClassicEvent();
+        }
+        /* CAN FD mode */
+        else
+        {
+          VectorXlProcessCanFdEvent();
         }
         break;
 
@@ -856,6 +1066,192 @@ static DWORD WINAPI VectorXlReceptionThread(LPVOID pv)
   return 0;
 
 } /*** end of VectorXlReceptionThread ***/
+
+
+/************************************************************************************//**
+** \brief     CAN classic event handler. Should be called when a CAN classic related
+**            notication event triggered.
+**
+****************************************************************************************/
+static void VectorXlProcessCanClassicEvent(void)
+{
+  XLstatus           xlStatus;
+  unsigned int       xlEventCount;
+  XLevent            xlEvent;
+  tCanMsg            rxMsg;
+  uint8_t            byteIdx;
+  tCanEvents const * pEvents;
+
+  /* Empty out the event queue. */
+  xlStatus = XL_SUCCESS;
+  while (xlStatus == XL_SUCCESS)
+  {
+    /* Set the number of events to request to read. */
+    xlEventCount = 1;
+    xlStatus = xlReceive(vectorXlPortHandle, &xlEventCount, &xlEvent);
+    if (xlStatus != XL_ERR_QUEUE_IS_EMPTY)
+    {
+      /* Was is a message reception event? */
+      if (xlEvent.tag == XL_RECEIVE_MSG)
+      {
+        /* Only process actual newly received messages and ignore things such as
+         * a confirmation of a message transmission.
+         */
+        if (xlEvent.tagData.msg.flags == 0)
+        {
+          /* Read out the message identifier. */
+          if ((xlEvent.tagData.msg.id & XL_CAN_EXT_MSG_ID) == 0)
+          {
+            rxMsg.id = xlEvent.tagData.msg.id & 0x7ffu;
+          }
+          else
+          {
+            rxMsg.id = xlEvent.tagData.msg.id & 0x1fffffffu;
+            rxMsg.id |= CAN_MSG_EXT_ID_MASK;
+          }
+          /* Read out the message length. */
+          if (xlEvent.tagData.msg.dlc > CAN_MSG_MAX_LEN)
+          {
+            rxMsg.len = CAN_MSG_MAX_LEN;
+          }
+          else
+          {
+            rxMsg.len = (uint8_t)xlEvent.tagData.msg.dlc;
+          }
+          /* Read out the message data. */
+          for (byteIdx = 0; byteIdx < rxMsg.len; byteIdx++)
+          {
+            rxMsg.data[byteIdx] = xlEvent.tagData.msg.data[byteIdx];
+          }
+          /* Trigger message reception event(s). */
+          pEvents = vectorXlEventsList;
+          for (uint32_t idx = 0; idx < vectorXlEventsEntries; idx++)
+          {
+            if (pEvents != NULL)
+            {
+              if (pEvents->MsgRxed != NULL)
+              {
+                pEvents->MsgRxed(&rxMsg);
+              }
+              /* Move on to the next entry in the list. */
+              pEvents++;
+            }
+          }
+        }
+      }
+      /* Was is a chip state event? */
+      else if (xlEvent.tag == XL_CHIP_STATE)
+      {
+        /* Is a bus off or bus have state reported? */
+        if (((xlEvent.tagData.chipState.busStatus & XL_CHIPSTAT_BUSOFF) != 0) ||
+          ((xlEvent.tagData.chipState.busStatus & XL_CHIPSTAT_ERROR_PASSIVE) != 0))
+        {
+          /* Enter critical section. */
+          UtilCriticalSectionEnter();
+          /* Set bus error flag. Note that this flag is automatically reset by
+           * VectorXlIsBusError.
+           */
+          vectorXlBusErrorDetected = true;
+          /* Exit critical section. */
+          UtilCriticalSectionExit();
+        }
+      }
+    }
+  }
+} /*** end of VectorXlProcessCanClassicEvent ***/
+
+
+/************************************************************************************//**
+** \brief     CAN FD event handler. Should be called when a CAN FD related notication
+**            event triggered.
+**
+****************************************************************************************/
+static void VectorXlProcessCanFdEvent(void)
+{
+  XLstatus               xlStatus;
+  XLcanRxEvent           xlCanRxEvent;
+  tCanMsg                rxMsg;
+  uint8_t                byteIdx;
+  tCanEvents     const * pEvents;
+  static uint8_t const   dlc2len[] = { 0,  1,  2,  3,  4,  5,  6,  7,
+                                       8, 12, 16, 20, 24, 32, 48, 64 };
+
+  /* Empty out the event queue. */
+  xlStatus = XL_SUCCESS;
+  while (xlStatus == XL_SUCCESS)
+  {
+    /* Set the number of events to request to read. */
+    xlStatus = xlCanReceive(vectorXlPortHandle, &xlCanRxEvent);
+    if (xlStatus != XL_ERR_QUEUE_IS_EMPTY)
+    {
+      /* Was is a message reception event? */
+      if (xlCanRxEvent.tag == XL_CAN_EV_TAG_RX_OK)
+      {
+        /* A newly received CAN FD message should have the extended data length (EDL)
+         * flag set.
+         */
+        if ((xlCanRxEvent.tagData.canRxOkMsg.msgFlags & XL_CAN_RXMSG_FLAG_EDL) != 0)
+        {
+          /* Read out the message identifier. */
+          if ((xlCanRxEvent.tagData.canRxOkMsg.canId & XL_CAN_EXT_MSG_ID) == 0)
+          {
+            rxMsg.id = xlCanRxEvent.tagData.canRxOkMsg.canId & 0x7ffu;
+          }
+          else
+          {
+            rxMsg.id = xlCanRxEvent.tagData.canRxOkMsg.canId & 0x1fffffffu;
+            rxMsg.id |= CAN_MSG_EXT_ID_MASK;
+          }
+          /* Read out the message length. */
+          if (xlCanRxEvent.tagData.canRxOkMsg.dlc >= ( sizeof(dlc2len)/sizeof(dlc2len[0])))
+          {
+            rxMsg.len = CAN_MSG_MAX_LEN;
+          }
+          else
+          {
+            rxMsg.len = dlc2len[xlCanRxEvent.tagData.canRxOkMsg.dlc];
+          }
+          /* Read out the message data. */
+          for (byteIdx = 0; byteIdx < rxMsg.len; byteIdx++)
+          {
+            rxMsg.data[byteIdx] = xlCanRxEvent.tagData.canRxOkMsg.data[byteIdx];
+          }
+          /* Trigger message reception event(s). */
+          pEvents = vectorXlEventsList;
+          for (uint32_t idx = 0; idx < vectorXlEventsEntries; idx++)
+          {
+            if (pEvents != NULL)
+            {
+              if (pEvents->MsgRxed != NULL)
+              {
+                pEvents->MsgRxed(&rxMsg);
+              }
+              /* Move on to the next entry in the list. */
+              pEvents++;
+            }
+          }
+        }
+      }
+      /* Was is a chip state event? */
+      else if (xlCanRxEvent.tag == XL_CAN_EV_TAG_CHIP_STATE)
+      {
+        /* Is a bus off or bus have state reported? */
+        if (((xlCanRxEvent.tagData.canChipState.busStatus & XL_CHIPSTAT_BUSOFF) != 0) ||
+          ((xlCanRxEvent.tagData.canChipState.busStatus & XL_CHIPSTAT_ERROR_PASSIVE) != 0))
+        {
+          /* Enter critical section. */
+          UtilCriticalSectionEnter();
+          /* Set bus error flag. Note that this flag is automatically reset by
+           * VectorXlIsBusError.
+           */
+          vectorXlBusErrorDetected = true;
+          /* Exit critical section. */
+          UtilCriticalSectionExit();
+        }
+      }
+    }
+  }
+} /*** end of VectorXlProcessCanFdEvent ***/
 
 
 /*********************************** end of xldriver.c *********************************/

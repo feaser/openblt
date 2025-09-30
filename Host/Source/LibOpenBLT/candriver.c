@@ -281,4 +281,137 @@ void CanRegisterEvents(tCanEvents const * events)
 } /*** end of CanRegisterEvents ***/
 
 
+/************************************************************************************//**
+** \brief     Converts the baudrate from the tCanBaudrate enumerated type to bits/sec.
+** \param     baudrate Baudrate formatted as a tCanBaudrate enumerated type.
+** \return    Baudrate in bits/sec if successful, 0 otherwise.
+**
+****************************************************************************************/
+uint32_t CanConvertBaudrate(tCanBaudrate baudrate)
+{
+  uint32_t result;
+
+  switch (baudrate)
+  {
+  case CAN_BR10K:
+    result = 10000;
+    break;
+
+  case CAN_BR20K:
+    result = 20000;
+    break;
+
+  case CAN_BR50K:
+    result = 50000;
+    break;
+
+  case CAN_BR100K:
+    result = 100000;
+    break;
+
+  case CAN_BR125K:
+    result = 125000;
+    break;
+
+  case CAN_BR250K:
+    result = 250000;
+    break;
+
+  case CAN_BR500K:
+    result = 500000;
+    break;
+
+  case CAN_BR800K:
+    result = 800000;
+    break;
+
+  case CAN_BR1M:
+    result = 1000000;
+    break;
+
+  default:
+    result = 0;
+    break;
+  }
+
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of CanConvertBaudrate ***/
+
+
+/************************************************************************************//**
+** \brief     Converts the baudrate from the tCanFdBaudrate enumerated type to bits/sec.
+** \param     baudrate Baudrate formatted as a tCanFdBaudrate enumerated type.
+** \return    Baudrate in bits/sec if successful, 0 otherwise.
+**
+****************************************************************************************/
+uint32_t CanConvertFdBaudrate(tCanFdBaudrate baudrate)
+{
+  uint32_t result;
+
+  switch (baudrate)
+  {
+  case CANFD_BR10K:
+    result = 10000;
+    break;
+
+  case CANFD_BR20K:
+    result = 20000;
+    break;
+
+  case CANFD_BR50K:
+    result = 50000;
+    break;
+
+  case CANFD_BR100K:
+    result = 100000;
+    break;
+
+  case CANFD_BR125K:
+    result = 125000;
+    break;
+
+  case CANFD_BR250K:
+    result = 250000;
+    break;
+
+  case CANFD_BR500K:
+    result = 500000;
+    break;
+
+  case CANFD_BR800K:
+    result = 800000;
+    break;
+
+  case CANFD_BR1M:
+    result = 1000000;
+    break;
+
+  case CANFD_BR2M:
+    result = 2000000;
+    break;
+
+  case CANFD_BR4M:
+    result = 4000000;
+    break;
+
+  case CANFD_BR5M:
+    result = 5000000;
+    break;
+
+  case CANFD_BR8M:
+    result = 8000000;
+    break;
+
+  case CANFD_DISABLED:
+  default:
+    result = 0;
+    break;
+  }
+
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of CanConvertFdBaudrate ***/
+
+
 /*********************************** end of candriver.c ********************************/

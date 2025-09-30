@@ -200,6 +200,7 @@ LIBOPENBLT_EXPORT void BltSessionInit(uint32_t sessionType,
           xcpTpCanSettings.transmitId = bltTransportSettingsXcpV10CanPtr->transmitId;
           xcpTpCanSettings.receiveId = bltTransportSettingsXcpV10CanPtr->receiveId;
           xcpTpCanSettings.useExtended = (bltTransportSettingsXcpV10CanPtr->useExtended != 0);
+          xcpTpCanSettings.brsBaudrate = bltTransportSettingsXcpV10CanPtr->brsBaudrate;
           /* Store transport layer settings in the XCP loader settings. */
           xcpLoaderSettings.transportSettings = &xcpTpCanSettings;
           /* Link the transport layer to the XCP loader settings. */

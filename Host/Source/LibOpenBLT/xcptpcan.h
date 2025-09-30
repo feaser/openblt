@@ -51,6 +51,7 @@ typedef struct t_xcp_tp_can_settings
   uint32_t transmitId;           /**< Transmit CAN identifier.                         */
   uint32_t receiveId;            /**< Receive CAN identifier.                          */
   bool useExtended;              /**< Boolean to configure 29-bit CAN identifiers.     */
+  uint32_t brsBaudrate;          /**< CAN FD bitrate switch data baudrate in bits/sec. */
 } tXcpTpCanSettings;
 
 

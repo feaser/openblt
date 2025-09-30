@@ -1713,7 +1713,7 @@ static bool XcpLoaderSendCmdItCidGetInfo(uint32_t * tableAddress, uint16_t * tab
   assert(tableLen != NULL);
 
   /* Only continue with a valid transport layer and parameters. */
-  if ((xcpSettings.transport != NULL) && (tableAddress != NULL) && (tableLen != NULL)) 
+  if ((xcpSettings.transport != NULL) && (tableAddress != NULL) && (tableLen != NULL)) /*lint !e774 */
   {
     /* Init the result value to okay and only set it to error when a problem
      * occurred.
@@ -1805,7 +1805,7 @@ static bool XcpLoaderSendCmdItCidDownload(uint8_t const * data, uint8_t len)
   assert(len > 0);
 
   /* Only continue with a valid transport layer and parameters. */
-  if ((xcpSettings.transport != NULL) && (data != NULL) && (len > 0))
+  if ((xcpSettings.transport != NULL) && (data != NULL) && (len > 0)) /*lint !e774 */
   {
     /* Init the result value to okay and only set it to error when a problem
      * occurred.
@@ -1876,7 +1876,7 @@ static bool XcpLoaderSendCmdItCidCheck(bool * checkOkay)
   assert(checkOkay != NULL);
 
   /* Only continue with a valid transport layer and parameters. */
-  if ((xcpSettings.transport != NULL) && (checkOkay != NULL))
+  if ((xcpSettings.transport != NULL) && (checkOkay != NULL)) /*lint !e774 */
   {
     /* Init the result value to okay and only set it to error when a problem
      * occurred.

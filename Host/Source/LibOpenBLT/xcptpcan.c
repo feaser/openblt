@@ -127,6 +127,7 @@ static void XcpTpCanInit(void const * settings)
   tpCanSettings.transmitId = 0x667;
   tpCanSettings.receiveId = 0x7e1;
   tpCanSettings.useExtended = false;
+  tpCanSettings.brsBaudrate = 0;
 
   /* This module uses critical sections so initialize them. */
   UtilCriticalSectionInit();
@@ -199,6 +200,53 @@ static void XcpTpCanInit(void const * settings)
     canSettings.code |= CAN_MSG_EXT_ID_MASK;
   }
   canSettings.mask = 0x9fffffff;
+  switch (tpCanSettings.brsBaudrate)
+  {
+  case 8000000:
+    canSettings.brsbaudrate = CANFD_BR8M;
+    break;
+  case 5000000:
+    canSettings.brsbaudrate = CANFD_BR5M;
+    break;
+  case 4000000:
+    canSettings.brsbaudrate = CANFD_BR4M;
+    break;
+  case 2000000:
+    canSettings.brsbaudrate = CANFD_BR2M;
+    break;
+  case 1000000:
+    canSettings.brsbaudrate = CANFD_BR1M;
+    break;
+  case 800000:
+    canSettings.brsbaudrate = CANFD_BR800K;
+    break;
+  case 500000:
+    canSettings.brsbaudrate = CANFD_BR500K;
+    break;
+  case 250000:
+    canSettings.brsbaudrate = CANFD_BR250K;
+    break;
+  case 125000:
+    canSettings.brsbaudrate = CANFD_BR125K;
+    break;
+  case 100000:
+    canSettings.brsbaudrate = CANFD_BR100K;
+    break;
+  case 50000:
+    canSettings.brsbaudrate = CANFD_BR50K;
+    break;
+  case 20000:
+    canSettings.brsbaudrate = CANFD_BR20K;
+    break;
+  case 10000:
+    canSettings.brsbaudrate = CANFD_BR10K;
+    break;
+  default:
+    /* Default to CAN FD unused in case an unsupported baudrate was specified. */
+    canSettings.brsbaudrate = CANFD_DISABLED;
+    break;
+  }
+
   /* Initialize the CAN driver. */
   CanInit(&canSettings);
   /* Register CAN event functions. */
@@ -226,6 +274,7 @@ static void XcpTpCanTerminate(void)
   tpCanSettings.transmitId = 0x667;
   tpCanSettings.receiveId = 0x7e1;
   tpCanSettings.useExtended = false;
+  tpCanSettings.brsBaudrate = 0;
   /* This module used critical sections so terminate them. */
   UtilCriticalSectionTerminate();
 } /*** end of XcpTpCanTerminate ***/
@@ -299,8 +348,8 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
       {
         canMsg.id |= CAN_MSG_EXT_ID_MASK;
       }
-      canMsg.dlc = txPacket->len;
-      for (uint8_t idx = 0; idx < canMsg.dlc; idx++)
+      canMsg.len = txPacket->len;
+      for (uint8_t idx = 0; idx < canMsg.len; idx++)
       {
         canMsg.data[idx] = txPacket->data[idx];
       }
@@ -340,7 +389,7 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
           if (tpCanResponseMessageReceived)
           {
             /* Copy the response packet. */
-            rxPacket->len = tpCanResponseMessage.dlc;
+            rxPacket->len = tpCanResponseMessage.len;
             for (uint8_t idx = 0; idx < rxPacket->len; idx++)
             {
               rxPacket->data[idx] = tpCanResponseMessage.data[idx];
@@ -406,8 +455,8 @@ static void XcpTpCanEventMessageReceived(tCanMsg const * msg)
     UtilCriticalSectionEnter();
     /* Copy to the packet response message buffer. */
     tpCanResponseMessage.id = msg->id;
-    tpCanResponseMessage.dlc = msg->dlc;
-    for (uint8_t idx = 0; idx < msg->dlc; idx++)
+    tpCanResponseMessage.len = msg->len;
+    for (uint8_t idx = 0; idx < msg->len; idx++)
     {
       tpCanResponseMessage.data[idx] = msg->data[idx];
     }

@@ -239,6 +239,7 @@ static void LeafLightInit(tCanSettings const * settings)
   leafLightSettings.baudrate = CAN_BR500K;
   leafLightSettings.code = 0x00000000u;
   leafLightSettings.mask = 0x00000000u;
+  leafLightSettings.brsbaudrate = CANFD_DISABLED;
 
   /* Check parameters. */
   assert(settings != NULL);
@@ -289,6 +290,7 @@ static void LeafLightTerminate(void)
   leafLightSettings.baudrate = CAN_BR500K;
   leafLightSettings.code = 0x00000000u;
   leafLightSettings.mask = 0x00000000u;
+  leafLightSettings.brsbaudrate = CANFD_DISABLED;
   /* Release memory that was allocated for CAN events and reset the entry count. */
   if ( (leafLightEventsList != NULL) && (leafLightEventsEntries != 0) )
   {
@@ -312,6 +314,14 @@ static bool LeafLightConnect(void)
   uint32_t tseg2 = 0;
   uint32_t sjw = 0;
   uint32_t noSamp = 0;
+
+  /* This CAN driver does not support CAN FD mode. Cannot connect if CAN FD
+   * mode was requested in the settings.
+   */
+  if (leafLightSettings.brsbaudrate != CANFD_DISABLED)
+  {
+    return false;
+  }
 
   /* Convert the baudrate to a value supported by the PCAN-Basic API. */
   switch (leafLightSettings.baudrate)
@@ -616,12 +626,12 @@ static bool LeafLightTransmit(tCanMsg const * msg)
       txId = msg->id & 0x1fffffffu;
       txFlags = canMSG_EXT;
     }
-    for (uint8_t idx = 0; idx < msg->dlc; idx++)
+    for (uint8_t idx = 0; idx < msg->len; idx++)
     {
       txData[idx] = msg->data[idx];
     }
     /* Submit CAN message for transmission. */
-    if (LeafLightLibFuncWrite(leafLightCanHandle, txId, txData, msg->dlc, txFlags) == canOK)
+    if (LeafLightLibFuncWrite(leafLightCanHandle, txId, txData, msg->len, txFlags) == canOK)
     {
       /* Update result value to success. */
       result = true;
@@ -771,7 +781,7 @@ static DWORD WINAPI LeafLightReceptionThread(LPVOID pv)
                 {
                   rxMsg.id |= CAN_MSG_EXT_ID_MASK;
                 }
-                rxMsg.dlc = (uint8_t)rxDlc;
+                rxMsg.len = (uint8_t)rxDlc;
 
                 /* Trigger message reception event(s). */
                 pEvents = leafLightEventsList;

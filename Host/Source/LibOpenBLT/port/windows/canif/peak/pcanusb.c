@@ -221,6 +221,7 @@ static void PCanUsbInit(tCanSettings const * settings)
   pCanUsbSettings.baudrate = CAN_BR500K;
   pCanUsbSettings.code = 0x00000000u;
   pCanUsbSettings.mask = 0x00000000u;
+  pCanUsbSettings.brsbaudrate = CANFD_DISABLED;
 
   /* Check parameters. */
   assert(settings != NULL);
@@ -269,6 +270,7 @@ static void PCanUsbTerminate(void)
   pCanUsbSettings.baudrate = CAN_BR500K;
   pCanUsbSettings.code = 0x00000000u;
   pCanUsbSettings.mask = 0x00000000u;
+  pCanUsbSettings.brsbaudrate = CANFD_DISABLED;
   /* Release memory that was allocated for CAN events and reset the entry count. */
   if ( (pCanUsbEventsList != NULL) && (pCanUsbEventsEntries != 0) )
   {
@@ -293,6 +295,14 @@ static bool PCanUsbConnect(void)
 #if (PCANUSB_BUSOFF_AUTORECOVERY_ENABLE > 0)
   uint32_t iBuffer;
 #endif
+
+  /* This CAN driver does not support CAN FD mode. Cannot connect if CAN FD
+   * mode was requested in the settings.
+   */
+  if (pCanUsbSettings.brsbaudrate != CANFD_DISABLED)
+  {
+    return false;
+  }
 
   /* Convert the baudrate to a value supported by the PCAN-Basic API. */
   switch (pCanUsbSettings.baudrate)
@@ -555,7 +565,7 @@ static bool PCanUsbTransmit(tCanMsg const * msg)
       msgBuf.ID = msg->id & 0x1fffffffu;
       msgBuf.MSGTYPE = PCAN_MESSAGE_EXTENDED;
     }
-    msgBuf.LEN = ((msg->dlc <= CAN_MSG_MAX_LEN) ? msg->dlc : CAN_MSG_MAX_LEN);
+    msgBuf.LEN = ((msg->len <= CAN_MSG_MAX_LEN) ? msg->len : CAN_MSG_MAX_LEN);
     for (uint8_t idx = 0; idx < msgBuf.LEN; idx++)
     {
       msgBuf.DATA[idx] = msg->data[idx];
@@ -700,8 +710,8 @@ static DWORD WINAPI PCanUsbReceptionThread(LPVOID pv)
             {
               rxMsg.id |= CAN_MSG_EXT_ID_MASK;
             }
-            rxMsg.dlc = rxLibMsg.LEN;
-            for (uint8_t idx = 0; idx < rxMsg.dlc; idx++)
+            rxMsg.len = rxLibMsg.LEN;
+            for (uint8_t idx = 0; idx < rxMsg.len; idx++)
             {
               rxMsg.data[idx] = rxLibMsg.DATA[idx];
             }

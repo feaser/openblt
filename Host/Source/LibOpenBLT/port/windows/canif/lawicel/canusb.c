@@ -168,6 +168,7 @@ static void CanUsbInit(tCanSettings const * settings)
   canUsbSettings.baudrate = CAN_BR500K;
   canUsbSettings.code = 0x00000000u;
   canUsbSettings.mask = 0x00000000u;
+  canUsbSettings.brsbaudrate = CANFD_DISABLED;
 
   /* Check parameters. */
   assert(settings != NULL);
@@ -220,6 +221,7 @@ static void CanUsbTerminate(void)
   canUsbSettings.baudrate = CAN_BR500K;
   canUsbSettings.code = 0x00000000u;
   canUsbSettings.mask = 0x00000000u;
+  canUsbSettings.brsbaudrate = CANFD_DISABLED;
   /* Release memory that was allocated for CAN events and reset the entry count. */
   if ( (canUsbEventsList != NULL) && (canUsbEventsEntries != 0) )
   {
@@ -237,6 +239,14 @@ static void CanUsbTerminate(void)
 static bool CanUsbConnect(void)
 {
   bool result = false;
+
+  /* This CAN driver does not support CAN FD mode. Cannot connect if CAN FD
+   * mode was requested in the settings.
+   */
+  if (canUsbSettings.brsbaudrate != CANFD_DISABLED)
+  {
+    return false;
+  }
 
   /* Only continue with an opened CAN channel. */
   if (canUsbCanHandle != 0)
@@ -304,8 +314,8 @@ static bool CanUsbTransmit(tCanMsg const * msg)
     {
       txMsg.flags |= CANMSG_EXTENDED;
     }
-    txMsg.len = msg->dlc;
-    for (uint8_t idx = 0; idx < msg->dlc; idx++)
+    txMsg.len = msg->len;
+    for (uint8_t idx = 0; idx < msg->len; idx++)
     {
       txMsg.data[idx] = msg->data[idx];
     }
@@ -662,8 +672,8 @@ static void __stdcall CanUsbLibReceiveCallback(CANMsg const * pMsg)
       {
         rxMsg.id |= CAN_MSG_EXT_ID_MASK;
       }
-      rxMsg.dlc = pMsg->len;
-      for (uint8_t idx = 0; idx < rxMsg.dlc; idx++)
+      rxMsg.len = pMsg->len;
+      for (uint8_t idx = 0; idx < rxMsg.len; idx++)
       {
         rxMsg.data[idx] = pMsg->data[idx];
       }

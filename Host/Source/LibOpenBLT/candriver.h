@@ -40,8 +40,8 @@ extern "C" {
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-/** \brief Maximum number of data bytes in a CAN message. */
-#define CAN_MSG_MAX_LEN     (8u)
+/** \brief Maximum number of data bytes in a CAN classic or FD message. */
+#define CAN_MSG_MAX_LEN     (64u)
 
 /** Bit mask that configures a CAN message identifier as 29-bit extended as opposed to
  *  11-bit standard. Whenever this bit is set in the CAN identifier field of tCanMsg, 
@@ -67,13 +67,35 @@ typedef enum
   CAN_BR1M    = 8                   /**< 1 Mbits/sec                                   */
 } tCanBaudrate;
 
+/** \brief     Enumeration of the supported CAN FD baudrates. 
+ *  \attention The entries CANFD_BR10K..CANFD_BR1M must have the same values as in
+ *             tCanBaudrate.
+ */
+typedef enum
+{
+  CANFD_BR10K    = 0,               /**< 10 kbits/sec                                  */
+  CANFD_BR20K    = 1,               /**< 20 kbits/sec                                  */
+  CANFD_BR50K    = 2,               /**< 50 kbits/sec                                  */
+  CANFD_BR100K   = 3,               /**< 100 kbits/sec                                 */
+  CANFD_BR125K   = 4,               /**< 125 kbits/sec                                 */
+  CANFD_BR250K   = 5,               /**< 250 kbits/sec                                 */
+  CANFD_BR500K   = 6,               /**< 500 kbits/sec                                 */
+  CANFD_BR800K   = 7,               /**< 800 kbits/sec                                 */
+  CANFD_BR1M     = 8,               /**< 1 Mbits/sec                                   */
+  CANFD_BR2M     = 9,               /**< 2 Mbits/sec                                   */
+  CANFD_BR4M     = 10,              /**< 4 Mbits/sec                                   */
+  CANFD_BR5M     = 11,              /**< 5 Mbits/sec                                   */
+  CANFD_BR8M     = 12,              /**< 8 Mbits/sec                                   */
+  CANFD_DISABLED = 99               /**< CAN FD disabled.                              */
+} tCanFdBaudrate;
+
 /** \brief Layout of a CAN message. Note that \ref CAN_MSG_EXT_ID_MASK can be used to
  *         configure the CAN message identifier as 29-bit extended.         
  */
 typedef struct t_can_msg
 {
   uint32_t id;                         /**< CAN message identifier.                    */
-  uint8_t dlc;                         /**< CAN message data length code.              */
+  uint8_t len;                         /**< CAN message length as number of bytes.     */
   uint8_t data[CAN_MSG_MAX_LEN];       /**< Array with CAN message data.               */
 } tCanMsg;
 
@@ -105,6 +127,7 @@ typedef struct t_can_settings
   tCanBaudrate baudrate;               /**< Communication speed.                       */
   uint32_t code;                       /**< Code of the reception acceptance filter.   */
   uint32_t mask;                       /**< Mask of the reception acceptance filter.   */
+  tCanFdBaudrate brsbaudrate;          /**< CAN FD bitrate switch data baudrate.       */
 } tCanSettings;
 
 /** \brief Structure with CAN event callback functions. */
@@ -147,6 +170,10 @@ bool CanIsConnected(void);
 bool CanTransmit(tCanMsg const * msg);
 bool CanIsBusError(void);
 void CanRegisterEvents(tCanEvents const * events);
+/* Baudrate conversion utility functions. */
+uint32_t CanConvertBaudrate(tCanBaudrate baudrate);
+uint32_t CanConvertFdBaudrate(tCanFdBaudrate baudrate);
+
 
 #ifdef __cplusplus
 }

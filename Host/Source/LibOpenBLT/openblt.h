@@ -169,10 +169,18 @@ typedef struct t_blt_transport_settings_xcp_v10_rs232
  *         when using the library on a Linux was system.
  *         On Windows based systems, the device name is a name that is pre-defined by
  *         this library for the supported CAN adapters. The device name should be one of
- *         the following: "peak_pcanusb", "kvaser_leaflight", or "lawicel_canusb".
- *         Field use extended is a boolean field. When set to 0, the specified transmitId
- *         and receiveId are assumed to be 11-bit standard CAN identifier. It the field
- *         is 1, these identifiers are assumed to be 29-bit extended CAN identifiers.
+ *         the following: "peak_pcanusb", "kvaser_leaflight", "vector_xldriver",
+ *         "ixxat_vcidriver", or "lawicel_canusb". Field useExtended is a boolean field.
+ *         When set to 0, the specified transmitId and receiveId are assumed to be 11-bit
+ *         standard CAN identifier. It the field is 1, these identifiers are assumed to
+ *         be 29-bit extended CAN identifiers.
+ *         The brsBaudrate element serves two purposes. When > 0 it enables CAN FD mode
+ *         instead of CAN classic, assuming the CAN adapter supports it. Additionally,
+ *         it can enable the CAN FD bitrate switch feature:
+ *           - Set brsBaudrate to 0 for CAN classic. 
+ *           - Set brsBaudrate to baudrate for CAN FD without bitrate switch.
+ *           - Set brsBaudrate to the desired baudrate for transmitting the data bytes
+ *             of the CAN message with bitrate switch.
  */
 typedef struct t_blt_transport_settings_xcp_v10_can
 {
@@ -182,6 +190,7 @@ typedef struct t_blt_transport_settings_xcp_v10_can
   uint32_t transmitId;           /**< Transmit CAN identifier.                         */
   uint32_t receiveId;            /**< Receive CAN identifier.                          */
   uint32_t useExtended;          /**< Boolean to configure 29-bit CAN identifiers.     */
+  uint32_t brsBaudrate;          /**< CAN FD bitrate switch data baudrate in bits/sec. */
 } tBltTransportSettingsXcpV10Can;
 
 /** \brief Structure layout of the XCP version 1.0 NET transport layer settings. The

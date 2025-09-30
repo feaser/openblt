@@ -47,6 +47,9 @@ uses
 //***************************************************************************************
 type
   //------------------------------ TTransportXcpCanForm ---------------------------------
+
+  { TTransportXcpCanForm }
+
   TTransportXcpCanForm = class(TForm)
     CbxExtended: TCheckBox;
     CmbDevice: TComboBox;
@@ -62,12 +65,15 @@ type
     LblDevice: TLabel;
     LblCommunication: TLabel;
     procedure CbxExtendedChange(Sender: TObject);
+    procedure CmbDeviceSelect(Sender: TObject);
     procedure EdtCanIdChange(Sender: TObject);
     procedure EdtCanIdKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
     FTransportXcpCanConfig: TTransportXcpCanConfig;
+    FHwCanFdSupported: Boolean;
+    procedure PopulateBaudrateCombo(CanFdSupported: Boolean);
   public
     procedure LoadConfig(Config: TTransportXcpCanConfig);
     procedure SaveConfig(Config: TTransportXcpCanConfig);
@@ -77,6 +83,67 @@ type
 implementation
 
 {$R *.lfm}
+
+//***************************************************************************************
+// Type Definitions
+//***************************************************************************************
+type
+  TCanBaudrateRec = record
+    DisplayStr: string;
+    Baudrate: Integer;
+    BrsBaudrate: Integer;
+  end;
+
+  {$IFNDEF UNIX}
+  TCanInterfaceRec = record
+    DisplayStr: string;
+    InterfaceStr: string;
+    CanFdSupported: Boolean;
+  end;
+  {$ENDIF}
+
+const
+  CanBaudrateRecArray: array[0..24] of TCanBaudrateRec =
+  (
+    (DisplayStr: '1 MBit/sec';   Baudrate: 1000000; BrsBaudrate: 0),
+    (DisplayStr: '800 kBit/sec'; Baudrate:  800000; BrsBaudrate: 0),
+    (DisplayStr: '500 kBit/sec'; Baudrate:  500000; BrsBaudrate: 0),
+    (DisplayStr: '250 kBit/sec'; Baudrate:  250000; BrsBaudrate: 0),
+    (DisplayStr: '125 kBit/sec'; Baudrate:  125000; BrsBaudrate: 0),
+    (DisplayStr: '100 kBit/sec'; Baudrate:  100000; BrsBaudrate: 0),
+    (DisplayStr: '50 kBit/sec';  Baudrate:   50000; BrsBaudrate: 0),
+    (DisplayStr: '20 kBit/sec';  Baudrate:   20000; BrsBaudrate: 0),
+    (DisplayStr: '10 kBit/sec';  Baudrate:   10000; BrsBaudrate: 0),
+    // CAN FD entries.
+    (DisplayStr: '[CAN FD] 1 MBit/sec - data 8 MBit/sec';      Baudrate: 1000000; BrsBaudrate: 8000000),
+    (DisplayStr: '[CAN FD] 1 MBit/sec - data 5 MBit/sec';      Baudrate: 1000000; BrsBaudrate: 5000000),
+    (DisplayStr: '[CAN FD] 1 MBit/sec - data 4 MBit/sec';      Baudrate: 1000000; BrsBaudrate: 4000000),
+    (DisplayStr: '[CAN FD] 1 MBit/sec - data 2 MBit/sec';      Baudrate: 1000000; BrsBaudrate: 2000000),
+    (DisplayStr: '[CAN FD] 1 MBit/sec'; { no BRS }             Baudrate: 1000000; BrsBaudrate: 1000000),
+    (DisplayStr: '[CAN FD] 500 kBit/sec - data 8 MBit/sec';    Baudrate:  500000; BrsBaudrate: 8000000),
+    (DisplayStr: '[CAN FD] 500 kBit/sec - data 5 MBit/sec';    Baudrate:  500000; BrsBaudrate: 5000000),
+    (DisplayStr: '[CAN FD] 500 kBit/sec - data 4 MBit/sec';    Baudrate:  500000; BrsBaudrate: 4000000),
+    (DisplayStr: '[CAN FD] 500 kBit/sec - data 2 MBit/sec';    Baudrate:  500000; BrsBaudrate: 2000000),
+    (DisplayStr: '[CAN FD] 500 kBit/sec - data 1 MBit/sec';    Baudrate:  500000; BrsBaudrate: 1000000),
+    (DisplayStr: '[CAN FD] 500 kBit/sec'; { no BRS }           Baudrate:  500000; BrsBaudrate:  500000),
+    (DisplayStr: '[CAN FD] 250 kBit/sec - data 4 MBit/sec';    Baudrate:  250000; BrsBaudrate: 4000000),
+    (DisplayStr: '[CAN FD] 250 kBit/sec - data 2 MBit/sec';    Baudrate:  250000; BrsBaudrate: 2000000),
+    (DisplayStr: '[CAN FD] 250 kBit/sec - data 1 MBit/sec';    Baudrate:  250000; BrsBaudrate: 1000000),
+    (DisplayStr: '[CAN FD] 250 kBit/sec - data 500 kBit/sec';  Baudrate:  250000; BrsBaudrate:  500000),
+    (DisplayStr: '[CAN FD] 250 kBit/sec'; { no BRS }           Baudrate:  250000; BrsBaudrate:  250000)
+  );
+
+  {$IFNDEF UNIX}
+  CanInterfaceRecArray: array[0..4] of TCanInterfaceRec =
+  (
+    (DisplayStr: 'Peak System PCAN-USB'; InterfaceStr: 'peak_pcanusb';     CanFdSupported: False),
+    (DisplayStr: 'Kvaser Leaf Light v2'; InterfaceStr: 'kvaser_leaflight'; CanFdSupported: False),
+    (DisplayStr: 'Lawicel CANUSB';       InterfaceStr: 'lawicel_canusb';   CanFdSupported: False),
+    (DisplayStr: 'Vector XL Driver';     InterfaceStr: 'vector_xldriver';  CanFdSupported: True),
+    (DisplayStr: 'Ixxat VCI Driver';     InterfaceStr: 'ixxat_vcidriver';  CanFdSupported: True)
+  );
+  {$ENDIF}
+
 
 //---------------------------------------------------------------------------------------
 //-------------------------------- TTransportXcpCanForm ---------------------------------
@@ -89,13 +156,13 @@ implementation
 //
 //***************************************************************************************
 procedure TTransportXcpCanForm.FormCreate(Sender: TObject);
-{$IFDEF UNIX}
 var
   idx: Integer;
-{$ENDIF}
 begin
   // Create configuration group instance.
   FTransportXcpCanConfig := TTransportXcpCanConfig.Create;
+  // Assume the hardware does not support CAN FD by default.
+  FHwCanFdSupported := False;
   {$IFDEF UNIX}
   // By default the device combobox is a dropdown list with the possible values that are
   // supported under Windows. When using a Unix-based OS it should contain different
@@ -110,6 +177,13 @@ begin
   for idx := 0 to 3 do
   begin
     CmbDevice.Items.Add('slcan' + IntToStr(idx));
+  end;
+  CmbDevice.ItemIndex := 0;
+  {$ELSE}
+  CmbDevice.Items.Clear;
+  for idx := 0 to (Length(CanInterfaceRecArray) - 1) do
+  begin
+    CmbDevice.Items.Add(CanInterfaceRecArray[idx].DisplayStr);
   end;
   CmbDevice.ItemIndex := 0;
   {$ENDIF}
@@ -159,6 +233,65 @@ end; //*** end of CbxExtendedChange ***
 
 
 //***************************************************************************************
+// NAME:           CmbDeviceSelect
+// PARAMETER:      Sender Source of the event.
+// RETURN VALUE:   none
+// DESCRIPTION:    Event handler that gets called when an item was selected from the
+//                 combobox list.
+//
+//***************************************************************************************
+procedure TTransportXcpCanForm.CmbDeviceSelect(Sender: TObject);
+{$IFNDEF UNIX}
+var
+  HwCanFdSupportedPrev: Boolean;
+  BaudrateFound: Boolean;
+  BaudrateItem: Integer;
+{$ENDIF}
+begin
+  {$IFNDEF UNIX}
+  // Backup the current state of the hardware defined CAN FD supported flag.
+  HwCanFdSupportedPrev := FHwCanFdSupported;
+  // Update the flag based on the newly selected item.
+  FHwCanFdSupported := CanInterfaceRecArray[CmbDevice.ItemIndex].CanFdSupported;
+  // Did the CAN FD support change?
+  if FHwCanFdSupported <> HwCanFdSupportedPrev then
+  begin
+    // Re-populare the baudrate list because more or less entires might now be needed.
+    PopulateBaudrateCombo(FHwCanFdSupported);
+    // Make sure the currently configured baudrate is still possible. If not, update it.
+    // First sanitize it in case no CAN FD is supported.
+    if not FHwCanFdSupported then
+    begin
+      FTransportXcpCanConfig.BrsBaudrate := 0;
+    end;
+    // Init flag.
+    BaudrateFound := False;
+    // Loop through the baudrates array to try and find the index that matches the
+    // configuration. This index is the same as the combobox item to select.
+    for BaudrateItem := 0 to (Length(CanBaudrateRecArray) - 1) do
+    begin
+      if (FTransportXcpCanConfig.Baudrate = CanBaudrateRecArray[BaudrateItem].Baudrate) and
+         (FTransportXcpCanConfig.BrsBaudrate = CanBaudrateRecArray[BaudrateItem].BrsBaudrate) then
+      begin
+        // Found the one to select.
+        CmbBaudrate.ItemIndex := BaudrateItem;
+        // All done. set the flag and stop the loop.
+        BaudrateFound := True;
+        Break;
+      end;
+    end;
+    // Could the baudrate selection not be restored?
+    if not BaudrateFound then
+    begin
+      // Set the default 500 kbits/sec baudrate configuration.
+      CmbBaudrate.ItemIndex := 2;
+    end;
+  end;
+  {$ENDIF}
+end; //*** end of CmbDeviceSelect ***
+
+
+//***************************************************************************************
 // NAME:           EdtCanIdKeyPress
 // PARAMETER:      Sender Source of the event.
 //                 Key Key that was pressed.
@@ -198,6 +331,11 @@ end; //*** end of FormDestroy ***
 //
 //***************************************************************************************
 procedure TTransportXcpCanForm.LoadConfig(Config: TTransportXcpCanConfig);
+var
+  baudrateItem: Integer;
+  {$IFNDEF UNIX}
+  deviceItem: Integer;
+  {$ENDIF}
 begin
   // Load configuration.
   FTransportXcpCanConfig.Device := Config.Device;
@@ -206,39 +344,61 @@ begin
   FTransportXcpCanConfig.TransmitId := Config.TransmitId;
   FTransportXcpCanConfig.ReceiveId := Config.ReceiveId;
   FTransportXcpCanConfig.ExtendedId := Config.ExtendedId;
+  FTransportXcpCanConfig.BrsBaudrate := Config.BrsBaudrate;
   // Initialize user interface.
   {$IFDEF UNIX}
+  FHwCanFdSupported := True;
   if FTransportXcpCanConfig.Device = '' then
-    CmbDevice.Text := CmbDevice.Items[0]
+  begin
+    CmbDevice.Text := CmbDevice.Items[0];
+  end
   else
+  begin
     CmbDevice.Text := FTransportXcpCanConfig.Device;
+  end;
   {$ELSE}
+  FHwCanFdSupported := False;
   // Match CAN device to the correct item in the combobox. Default to Peak PCAN-USB.
   CmbDevice.ItemIndex := 0;
-  if FTransportXcpCanConfig.Device = 'kvaser_leaflight' then
-    CmbDevice.ItemIndex := 1
-  else if FTransportXcpCanConfig.Device = 'lawicel_canusb' then
-    CmbDevice.ItemIndex := 2
-  else if FTransportXcpCanConfig.Device = 'vector_xldriver' then
-    CmbDevice.ItemIndex := 3
-  else if FTransportXcpCanConfig.Device = 'ixxat_vcidriver' then
-    CmbDevice.ItemIndex := 4;
+  // Loop through the interfaces array to try and find the index that matches the
+  // configuration. This index is the same as the combobox item to select.
+  for deviceItem := 0 to (Length(CanInterfaceRecArray) - 1) do
+  begin
+    if FTransportXcpCanConfig.Device = CanInterfaceRecArray[deviceItem].InterfaceStr then
+    begin
+      // Found the one to select.
+      CmbDevice.ItemIndex := deviceItem;
+      // Update the CAN FD support flag.
+      FHwCanFdSupported := CanInterfaceRecArray[deviceItem].CanFdSupported;
+      // All done.
+      Break;
+    end;
+  end;
   {$ENDIF}
+  PopulateBaudrateCombo(FHwCanFdSupported);
   CmbChannel.ItemIndex := 0;
   if FTransportXcpCanConfig.Channel <= LongWord(CmbChannel.Items.Count) then
     CmbChannel.ItemIndex := FTransportXcpCanConfig.Channel;
-  case FTransportXcpCanConfig.Baudrate of
-    1000000: CmbBaudrate.ItemIndex := 0;
-     800000: CmbBaudrate.ItemIndex := 1;
-     500000: CmbBaudrate.ItemIndex := 2;
-     250000: CmbBaudrate.ItemIndex := 3;
-     125000: CmbBaudrate.ItemIndex := 4;
-     100000: CmbBaudrate.ItemIndex := 5;
-      50000: CmbBaudrate.ItemIndex := 6;
-      20000: CmbBaudrate.ItemIndex := 7;
-      10000: CmbBaudrate.ItemIndex := 8;
-  else
-    CmbBaudrate.ItemIndex := 2;
+
+  // First sanitize of the configuration to load.
+  if not FHwCanFdSupported then
+  begin
+    FTransportXcpCanConfig.BrsBaudrate := 0;
+  end;
+  // Set the default 500 kbits/sec baudrate configuration.
+  CmbBaudrate.ItemIndex := 2;
+  // Loop through the baudrates array to try and find the index that matches the
+  // configuration. This index is the same as the combobox item to select.
+  for baudrateItem := 0 to (Length(CanBaudrateRecArray) - 1) do
+  begin
+    if (FTransportXcpCanConfig.Baudrate = CanBaudrateRecArray[baudrateItem].Baudrate) and
+       (FTransportXcpCanConfig.BrsBaudrate = CanBaudrateRecArray[baudrateItem].BrsBaudrate) then
+    begin
+      // Found the one to select.
+      CmbBaudrate.ItemIndex := baudrateItem;
+      // All done.
+      Break;
+    end;
   end;
   if FTransportXcpCanConfig.ExtendedId = 0 then
     CbxExtended.Checked := False
@@ -265,30 +425,21 @@ begin
   {$IFDEF UNIX}
   FTransportXcpCanConfig.Device := CmbDevice.Text;
   {$ELSE}
-  // Convert combobox item index to CAN device string. Default to Peak PCAN-USB.
-  FTransportXcpCanConfig.Device := 'peak_pcanusb';
-  if CmbDevice.ItemIndex = 1 then
-    FTransportXcpCanConfig.Device := 'kvaser_leaflight'
-  else if CmbDevice.ItemIndex = 2 then
-    FTransportXcpCanConfig.Device := 'lawicel_canusb'
-  else if CmbDevice.ItemIndex = 3 then
-    FTransportXcpCanConfig.Device := 'vector_xldriver'
-  else if CmbDevice.ItemIndex = 4 then
-    FTransportXcpCanConfig.Device := 'ixxat_vcidriver';
+  // set the CAN device configuration.
+  FTransportXcpCanConfig.Device := CanInterfaceRecArray[0].InterfaceStr;
+  if CmbDevice.ItemIndex < Length(CanInterfaceRecArray) then
+  begin
+    FTransportXcpCanConfig.Device := CanInterfaceRecArray[CmbDevice.ItemIndex].InterfaceStr;
+  end;
   {$ENDIF}
   FTransportXcpCanConfig.Channel := CmbChannel.ItemIndex;
-  case CmbBaudrate.ItemIndex of
-    0: FTransportXcpCanConfig.Baudrate := 1000000;
-    1: FTransportXcpCanConfig.Baudrate :=  800000;
-    2: FTransportXcpCanConfig.Baudrate :=  500000;
-    3: FTransportXcpCanConfig.Baudrate :=  250000;
-    4: FTransportXcpCanConfig.Baudrate :=  125000;
-    5: FTransportXcpCanConfig.Baudrate :=  100000;
-    6: FTransportXcpCanConfig.Baudrate :=   50000;
-    7: FTransportXcpCanConfig.Baudrate :=   20000;
-    8: FTransportXcpCanConfig.Baudrate :=   10000;
-  else
-    FTransportXcpCanConfig.Baudrate :=  500000;
+  // Set the baudrate configuration. Default to 500 kbits/sec.
+  FTransportXcpCanConfig.Baudrate := CanBaudrateRecArray[2].Baudrate;
+  FTransportXcpCanConfig.BrsBaudrate := 0;
+  if CmbBaudrate.ItemIndex < Length(CanBaudrateRecArray) then
+  begin
+    FTransportXcpCanConfig.Baudrate := CanBaudrateRecArray[CmbBaudrate.ItemIndex].Baudrate;
+    FTransportXcpCanConfig.BrsBaudrate := CanBaudrateRecArray[CmbBaudrate.ItemIndex].BrsBaudrate;
   end;
   if EdtTransmitId.Text <> '' then
     FTransportXcpCanConfig.TransmitId := StrToInt('$' + EdtTransmitId.Text);
@@ -305,8 +456,36 @@ begin
   Config.TransmitId := FTransportXcpCanConfig.TransmitId;
   Config.ReceiveId := FTransportXcpCanConfig.ReceiveId;
   Config.ExtendedId := FTransportXcpCanConfig.ExtendedId;
+  Config.BrsBaudrate := FTransportXcpCanConfig.BrsBaudrate;
 end; //*** end of SaveConfig ***
 
+
+//***************************************************************************************
+// NAME:           PopulateBaudrateCombo
+// PARAMETER:      CanFdSupported True if the CAN FD is supported, false for CAN classic.
+// RETURN VALUE:   none
+// DESCRIPTION:    Initializes the contents of the baudrate selection combobox, taking
+//                 into account if the selected hardware supports CAN FD.
+//
+//***************************************************************************************
+procedure TTransportXcpCanForm.PopulateBaudrateCombo(CanFdSupported: Boolean);
+var
+  maxEntries: Integer;
+  itemIdx: Integer;
+begin
+  // Determine the number of entries to add to the combox box. Note that for CAN classic,
+  // only the first 9 entries should be added.
+  if CanFdSupported then
+    maxEntries := Length(CanBaudrateRecArray)
+  else
+    maxEntries := 9;
+  // Clean the baudrates combo box and add the entries one-by-one.
+  CmbBaudrate.Items.Clear;
+  for itemIdx := 0 to (maxEntries - 1) do
+  begin
+    CmbBaudrate.Items.Add(CanBaudrateRecArray[itemIdx].DisplayStr);
+  end;
+end; //*** end of PopulateBaudrateCombo ***
 
 end.
 //******************************** end of transportxcpcandialog.pas *********************

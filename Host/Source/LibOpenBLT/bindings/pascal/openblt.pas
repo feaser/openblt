@@ -120,6 +120,7 @@ type
     transmitId: LongWord;         // Transmit CAN identifier.
     receiveId: LongWord;          // Receive CAN identifier.
     useExtended: LongWord;        // Boolean to configure 29-bit CAN identifiers.
+    brsBaudrate: LongWord;        // CAN FD bitrate switch data baudrate in bits/sec.
   end;
 
   // Structure layout of the XCP version 1.0 NET transport layer settings.

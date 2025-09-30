@@ -153,6 +153,7 @@ static void SocketCanInit(tCanSettings const * settings)
   socketCanSettings.baudrate = CAN_BR500K;
   socketCanSettings.code = 0x00000000u;
   socketCanSettings.mask = 0x00000000u;
+  socketCanSettings.brsbaudrate = CANFD_DISABLED;
 
   /* Initialize the critical section module. */
   UtilCriticalSectionInit();
@@ -200,6 +201,7 @@ static void SocketCanTerminate(void)
   socketCanSettings.baudrate = CAN_BR500K;
   socketCanSettings.code = 0x00000000u;
   socketCanSettings.mask = 0x00000000u;
+  socketCanSettings.brsbaudrate = CANFD_DISABLED;
   /* Release memory that was allocated for CAN events and reset the entry count. */
   if ( (socketCanEventsList != NULL) && (socketCanEventsEntries != 0) )
   {
@@ -226,6 +228,14 @@ static bool SocketCanConnect(void)
   int32_t flags;
   struct can_filter rxFilter;
   can_err_mask_t errMask;
+
+  /* This CAN driver does not support CAN FD mode. Cannot connect if CAN FD
+   * mode was requested in the settings.
+   */
+  if (socketCanSettings.brsbaudrate != CANFD_DISABLED)
+  {
+    return false;
+  }
 
   /* Reset the error flag. */
   socketCanErrorDetected = false;
@@ -381,8 +391,11 @@ static bool SocketCanTransmit(tCanMsg const * msg)
       canTxFrame.can_id &= ~CAN_MSG_EXT_ID_MASK;
       canTxFrame.can_id |= CAN_EFF_FLAG;
     }
-    canTxFrame.can_dlc = ((msg->dlc <= CAN_MSG_MAX_LEN) ? msg->dlc : CAN_MSG_MAX_LEN);
-    for (uint8_t idx = 0; idx < canTxFrame.can_dlc; idx++)
+    /* Determine data length with out-of-bounds correction. */
+    uint8_t dataLen = ((msg->len <= CAN_MSG_MAX_LEN) ? msg->len : CAN_MSG_MAX_LEN);
+    /* Set the data length coe (DLC) of the message. */
+    canTxFrame.can_dlc = dataLen;
+    for (uint8_t idx = 0; idx < dataLen; idx++)
     {
       canTxFrame.data[idx] = msg->data[idx];
     }
@@ -595,8 +608,8 @@ static void *SocketCanEventThread(void *param)
           rxMsg.id &= ~CAN_EFF_FLAG;
           rxMsg.id |= CAN_MSG_EXT_ID_MASK;
         }
-        rxMsg.dlc = canRxFrame.can_dlc;
-        for (uint8_t idx = 0; idx < rxMsg.dlc; idx++)
+        rxMsg.len = canRxFrame.can_dlc;
+        for (uint8_t idx = 0; idx < rxMsg.len; idx++)
         {
           rxMsg.data[idx] = canRxFrame.data[idx];
         }

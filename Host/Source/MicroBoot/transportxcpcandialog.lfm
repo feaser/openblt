@@ -8,7 +8,7 @@ object TransportXcpCanForm: TTransportXcpCanForm
   ClientWidth = 407
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.2.6.0'
   object LblCommunication: TLabel
     Left = 8
     Height = 20
@@ -25,15 +25,9 @@ object TransportXcpCanForm: TTransportXcpCanForm
     Height = 23
     Hint = 'Name of the CAN adapter'
     Top = 35
-    Width = 224
+    Width = 256
     ItemHeight = 15
-    Items.Strings = (
-      'Peak System PCAN-USB'
-      'Kvaser Leaf Light v2'
-      'Lawicel CANUSB'
-      'Vector XL Driver'
-      'Ixxat VCI Driver'
-    )
+    OnSelect = CmbDeviceSelect
     ParentShowHint = False
     ShowHint = True
     Style = csDropDownList
@@ -53,7 +47,7 @@ object TransportXcpCanForm: TTransportXcpCanForm
     Height = 23
     Hint = 'Zero based index of the CAN channel, if multiple CAN channels are supported for the CAN adapter'
     Top = 75
-    Width = 224
+    Width = 256
     ItemHeight = 15
     Items.Strings = (
       '0'
@@ -92,7 +86,8 @@ object TransportXcpCanForm: TTransportXcpCanForm
     Height = 23
     Hint = 'The communication speed in bits per second'
     Top = 115
-    Width = 224
+    Width = 256
+    DropDownCount = 10
     ItemHeight = 15
     Items.Strings = (
       '1 MBit/sec'
@@ -135,7 +130,7 @@ object TransportXcpCanForm: TTransportXcpCanForm
     Height = 23
     Hint = 'CAN identifier for transmitting XCP command messages from the host to the target, as a 32-bit hexadecimal value (Default = 667h)'
     Top = 187
-    Width = 224
+    Width = 256
     OnChange = EdtCanIdChange
     OnKeyPress = EdtCanIdKeyPress
     ParentShowHint = False
@@ -157,7 +152,7 @@ object TransportXcpCanForm: TTransportXcpCanForm
     Height = 23
     Hint = 'CAN identifier for receiving XCP response messages from the target to the host, as a 32-bit hexadecimal value (Default = 7E1h)'
     Top = 227
-    Width = 224
+    Width = 256
     OnChange = EdtCanIdChange
     OnKeyPress = EdtCanIdKeyPress
     ParentShowHint = False
@@ -179,7 +174,7 @@ object TransportXcpCanForm: TTransportXcpCanForm
     Height = 20
     Hint = 'Check if the CAN identifiers are 29-bit extended (Default = 11-bit standard)'
     Top = 267
-    Width = 224
+    Width = 256
     AutoSize = False
     Caption = '29-bit extended CAN identifiers'
     OnChange = CbxExtendedChange

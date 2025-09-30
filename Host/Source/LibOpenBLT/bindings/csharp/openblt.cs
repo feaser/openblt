@@ -298,11 +298,18 @@ namespace OpenBLT
             /// when using the library on a Linux was system. On Windows based systems, the
             /// device name is a name that is pre-defined by this library for the supported
             /// CAN adapters. The device name should be one of the following: "peak_pcanusb",
-            /// "kvaser_leaflight", or "lawicel_canusb". Field use extended is a boolean
-            /// field.When set to 0, the specified transmitId and receiveId are assumed to
-            /// be 11-bit standard CAN identifier. If the field is True, these identifiers 
-            /// are assumed to be 29-bit extended CAN identifiers.
-            /// </remarks>
+            /// "kvaser_leaflight", "vector_xldriver", "ixxat_vcidriver", or "lawicel_canusb".
+            /// Field useExtended is a boolean field. When set to 0, the specified transmitId
+            /// and receiveId are assumed to be 11-bit standard CAN identifier. If the field
+            /// is True, these identifiers are assumed to be 29-bit extended CAN identifiers.
+            /// The brsBaudrate element serves two purposes. When > 0 it enables CAN FD
+            /// mode instead of CAN classic, assuming the CAN adapter supports it.
+            /// Additionally, it can enable the CAN FD bitrate switch feature:
+            ///   - Set brsBaudrate to 0 for CAN classic. 
+            ///   - Set brsBaudrate to baudrate for CAN FD without bitrate switch.
+            ///   - Set brsBaudrate to the desired baudrate for transmitting the data bytes
+            ///     of the CAN message with bitrate switch.
+             /// </remarks>
             public struct TransportSettingsXcpV10Can
             {
                 /// <summary>
@@ -334,6 +341,11 @@ namespace OpenBLT
                 /// Boolean to configure 29-bit CAN identifiers.
                 /// </summary>
                 public Boolean useExtended;
+
+                /// <summary>
+                /// CAN FD bitrate switch data baudrate in bits/sec.
+                /// </summary>
+                public UInt32 brsBaudrate;
             }
 
             /// <summary>
@@ -351,6 +363,7 @@ namespace OpenBLT
                 public UInt32 transmitId;
                 public UInt32 receiveId;
                 public UInt32 useExtended;
+                public UInt32 brsBaudrate;
             }
 
             /// <summary>
@@ -548,6 +561,7 @@ namespace OpenBLT
             ///  transportSettings.transmitId = 0x667;
             ///  transportSettings.receiveId = 0x7E1;
             ///  transportSettings.useExtended = false;
+            ///  transportSettings.brsBaudrate = 0;
             ///  
             ///  OpenBLT.Lib.Session.Init(sessionSettings, transportSettings);
             /// </code>
@@ -579,6 +593,7 @@ namespace OpenBLT
                 {
                     transportSettingsUnmanaged.useExtended = 1;
                 }
+                transportSettingsUnmanaged.brsBaudrate = transportSettings.brsBaudrate;
 
                 // The structures are now formatted to be converted to unmanaged memory. Start by allocating
                 // memory on the heap for this.

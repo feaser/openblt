@@ -177,6 +177,7 @@ type
     FTransmitId: LongWord;
     FReceiveId: LongWord;
     FExtendedId: Integer;
+    FBrsBaudrate: Integer;
   public
     const GROUP_NAME='Transport/Xcp/Can';
     constructor Create;
@@ -189,6 +190,7 @@ type
     property TransmitId: LongWord read FTransmitId write FTransmitId;
     property ReceiveId: LongWord read FReceiveId write FReceiveId;
     property ExtendedId: Integer read FExtendedId write FExtendedId;
+    property BrsBaudrate: Integer read FBrsBaudrate write FBrsBaudrate;
   end;
 
   //------------------------------ TTransportXcpUsbConfig -------------------------------
@@ -799,6 +801,7 @@ begin
   FTransmitId := $667;
   FReceiveId := $7E1;
   FExtendedId := 0;
+  FBrsBaudrate := 0;
 end; //*** end of Defaults ***
 
 
@@ -821,6 +824,7 @@ begin
   FTransmitId := XmlConfig.GetValue('transmit_id', FTransmitId);
   FReceiveId := XmlConfig.GetValue('receive_id', FReceiveId);
   FExtendedId := XmlConfig.GetValue('extended_id', FExtendedId);
+  FBrsBaudrate := XmlConfig.GetValue('brs_baudrate', FBrsBaudrate);
   // Close this group's key.
   XmlConfig.CloseKey;
 end; //*** end of LoadFromFile ***/
@@ -845,6 +849,7 @@ begin
   XmlConfig.SetValue('transmit_id', FTransmitId);
   XmlConfig.SetValue('receive_id', FReceiveId);
   XmlConfig.SetValue('extended_id', FExtendedId);
+  XmlConfig.SetValue('brs_baudrate', FBrsBaudrate);
   // Close this group's key.
   XmlConfig.CloseKey;
 end; //*** end of SaveToFile ***

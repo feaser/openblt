@@ -626,6 +626,10 @@ static void DisplayProgramUsage(void)
   printf("                   second, as a 32-bit value (Default = 500000).\n");
   printf("                   Supported values: 1000000, 800000, 500000, 250000,\n");
   printf("                   125000, 100000, 50000, 20000, 10000.\n");
+  printf("  -bd=[value]      The CAN FD data communication speed in bits per second,\n");
+  printf("                   as a 32-bit value (Default = 0 for CAN FD disabled):\n");
+  printf("                   Supported values: 8000000, 5000000, 4000000, 2000000,\n");
+  printf("                   1000000, 500000, 250000, 0\n");
   printf("  -tid=[value]     CAN identifier for transmitting XCP command messages\n");
   printf("                   from the host to the target, as a 32-bit hexadecimal\n");
   printf("                   value (Default = 667h).\n");
@@ -855,7 +859,7 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
       {
         tBltTransportSettingsXcpV10Can * xcpCanSettings = 
           (tBltTransportSettingsXcpV10Can *)transportSettings;
-        
+
         /* Output the settings to the user. */
         printf("  -> Device: ");
         if (xcpCanSettings->deviceName != NULL)
@@ -878,6 +882,28 @@ static void DisplayTransportInfo(uint32_t transportType, void const * transportS
         else
         {
           printf("No\n");
+        }
+        printf("  -> Use CAN FD message format: ");
+        if (xcpCanSettings->brsBaudrate >= xcpCanSettings->baudrate)
+        {
+          printf("Yes\n");
+        }
+        else
+        {
+          printf("No\n");
+        }
+        printf("  -> Use CAN FD data bit-rate switch: ");
+        if (xcpCanSettings->brsBaudrate > xcpCanSettings->baudrate)
+        {
+          printf("Yes\n");
+        }
+        else
+        {
+          printf("No\n");
+        }
+        if (xcpCanSettings->brsBaudrate > xcpCanSettings->baudrate)
+        {
+          printf("  -> BRS Baudrate: %u bit/sec\n", xcpCanSettings->brsBaudrate);
         }
       }
       break;
@@ -1425,6 +1451,7 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
          *   -d=[name]      -> Device name: peak_pcanusb, can0, etc.
          *   -c=[value]     -> CAN channel index (32-bit).
          *   -b=[value]     -> Baudrate in bits per second (32-bit).
+         *   -bd=[value]    -> CAN FD data baudrate in bits per second (32-bit).
          *   -tid=[value]   -> Transmit CAN identifier (32-bit hexadecimal).
          *   -rid=[value]   -> Receive CAN identifier (32-bit hexadecimal).
          *   -xid=[value]   -> Flag for configuring extended CAN identifiers (8-bit).
@@ -1444,6 +1471,7 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
           canSettings->transmitId = 0x667;
           canSettings->receiveId = 0x7E1;
           canSettings->useExtended = false;
+          canSettings->brsBaudrate = 0;
           /* Loop through all the command line parameters, just skip the 1st one because 
            * this  is the name of the program, which we are not interested in.
            */
@@ -1473,6 +1501,15 @@ static void * ExtractTransportSettingsFromCommandLine(int argc,
             {
               /* Extract the baudrate value. */
               sscanf(&argv[paramIdx][3], "%u", &(canSettings->baudrate));
+              /* Continue with next loop iteration. */
+              continue;
+            }
+            /* Is this the -bd=[value] parameter? */
+            if ((strstr(argv[paramIdx], "-bd=") != NULL) &&
+              (strlen(argv[paramIdx]) > 4))
+            {
+              /* Extract the data baudrate value. */
+              sscanf(&argv[paramIdx][4], "%u", &(canSettings->brsBaudrate));
               /* Continue with next loop iteration. */
               continue;
             }

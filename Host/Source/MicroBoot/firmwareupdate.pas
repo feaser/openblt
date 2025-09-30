@@ -905,6 +905,7 @@ begin
       transportSettingsXcpCan.transmitId := transportXcpCanConfig.TransmitId;
       transportSettingsXcpCan.receiveId := transportXcpCanConfig.ReceiveId;
       transportSettingsXcpCan.useExtended := transportXcpCanConfig.ExtendedId;
+      transportSettingsXcpCan.brsBaudrate := transportXcpCanConfig.BrsBaudrate;
       // Point the transport settings pointer to this one.
       transportSettingsPtr := @transportSettingsXcpCan;
     end
@@ -1153,6 +1154,23 @@ begin
     else
       FLogString := FLogString + 'No';
     Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Use CAN FD message format: ';
+    if transportXcpCanConfig.BrsBaudrate >= transportXcpCanConfig.Baudrate then
+      FLogString := FLogString + 'Yes'
+    else
+      FLogString := FLogString + 'No';
+    Synchronize(@SynchronizeLogEvent);
+    FLogString := '  -> Use CAN FD data bit-rate switch: ';
+    if transportXcpCanConfig.BrsBaudrate > transportXcpCanConfig.Baudrate then
+      FLogString := FLogString + 'Yes'
+    else
+      FLogString := FLogString + 'No';
+    Synchronize(@SynchronizeLogEvent);
+    if transportXcpCanConfig.BrsBaudrate > transportXcpCanConfig.Baudrate then
+    begin
+      FLogString := '  -> BRS Baudrate: ' + IntToStr(transportXcpCanConfig.BrsBaudrate) + ' bit/sec';
+      Synchronize(@SynchronizeLogEvent);
+    end;
   end
   // ------------------------------------ XCP on USB ------------------------------------
   else if transportConfig.Transport = 'xcp_usb' then

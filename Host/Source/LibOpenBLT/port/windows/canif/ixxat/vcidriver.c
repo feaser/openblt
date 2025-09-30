@@ -38,7 +38,25 @@
 #include "candriver.h"                  /* Generic CAN driver module                   */
 #include "vcidriver.h"                  /* Ixxat VCI driver interface                  */
 #include <windows.h>                    /* for Windows API                             */
-#include "vcinpl.h"                     /* VCI native programming library (VCINPL.DLL) */
+#include "vcinpl2.h"                    /* VCI native programming library (VCINPL2.DLL)*/
+
+
+/****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief Structure type for grouping together CAN peripheral parameters needed for
+ *         performing bittiming calculations.
+ */
+typedef struct t_ixxat_vci_periph_params
+{
+  uint32_t base_freq;                               /**< Source clock frequency [Hz]   */
+  uint32_t prescaler_min;                           /**< Smallest supported prescaler  */
+  uint32_t prescaler_max;                           /**< Largest supported prescaler   */
+  uint16_t tseg1_min;                               /**< Smallest supported Tseg1      */
+  uint16_t tseg1_max;                               /**< Largest supported Tseg1       */
+  uint16_t tseg2_min;                               /**< Smallest supported Tseg2      */
+  uint16_t tseg2_max;                               /**< Largest supported Tseg2       */
+} tIxxatVciPeriphParams;
 
 
 /***************************************************************************************
@@ -55,7 +73,7 @@ static void IxxatVciRegisterEvents(tCanEvents const * events);
 /* CAN message reception thread. */
 static DWORD WINAPI IxxatVciReceptionThread(LPVOID pv);
 /* Utility functions. */
-static bool IxxatVciConvertBaudrate(UINT8 * bBtr0, UINT8 * bBtr1);
+static bool IxxatVciCalculateBitTimingConfig(uint32_t baudrate, tIxxatVciPeriphParams const* periph_params, PCANBTP bittiming_config);
 /* Ixxat VCI library handling. */
 static void IxxatVciLibLoadDll(void);
 static void IxxatVciLibUnloadDll(void);
@@ -66,17 +84,17 @@ static HRESULT IxxatVciLibFuncVciDeviceOpen(REFVCIID rVciid, PHANDLE phDevice);
 static HRESULT IxxatVciLibFuncVciDeviceClose(HANDLE hDevice);
 static HRESULT IxxatVciLibFuncCanControlOpen(HANDLE hDevice, UINT32  dwCanNo, PHANDLE phCanCtl);
 static HRESULT IxxatVciLibFuncCanControlReset(HANDLE hCanCtl);
-static HRESULT IxxatVciLibFuncCanControlGetCaps(HANDLE hCanCtl, PCANCAPABILITIES pCanCaps);
-static HRESULT IxxatVciLibFuncCanControlInitialize(HANDLE hCanCtl, UINT8 bMode, UINT8 bBtr0, UINT8 bBtr1);
+static HRESULT IxxatVciLibFuncCanControlGetCaps(HANDLE hCanCtl, PCANCAPABILITIES2 pCanCaps);
+static HRESULT IxxatVciLibFuncCanControlInitialize(HANDLE hCanCtl, UINT8 bOpMode, UINT8 bExMode, UINT8 bSFMode, UINT8 bEFMode, UINT32 dwSFIds, UINT32 dwEFIds, PCANBTP pBtpSDR, PCANBTP pBtpFDR);
 static HRESULT IxxatVciLibFuncCanControlSetAccFilter(HANDLE hCanCtl, BOOL fExtend, UINT32 dwCode, UINT32 dwMask);
 static HRESULT IxxatVciLibFuncCanControlStart(HANDLE hCanCtl, BOOL fStart);
 static HRESULT IxxatVciLibFuncCanControlClose(HANDLE hCanCtl);
 static HRESULT IxxatVciLibFuncCanChannelOpen(HANDLE hDevice, UINT32 dwCanNo, BOOL fExclusive, PHANDLE phCanChn);
-static HRESULT IxxatVciLibFuncCanChannelGetStatus(HANDLE hCanChn, PCANCHANSTATUS pStatus);
-static HRESULT IxxatVciLibFuncCanChannelInitialize(HANDLE hCanChn, UINT16 wRxFifoSize, UINT16 wRxThreshold, UINT16 wTxFifoSize, UINT16 wTxThreshold);
+static HRESULT IxxatVciLibFuncCanChannelGetStatus(HANDLE hCanChn, PCANCHANSTATUS2 pStatus);
+static HRESULT IxxatVciLibFuncCanChannelInitialize(HANDLE hCanChn, UINT16 wRxFifoSize, UINT16 wRxThreshold, UINT16 wTxFifoSize, UINT16 wTxThreshold, UINT32 dwFilterSize, UINT8 bFilterMode);
 static HRESULT IxxatVciLibFuncCanChannelActivate(HANDLE hCanChn,BOOL fEnable);
-static HRESULT IxxatVciLibFuncCanChannelPostMessage(HANDLE hCanChn, PCANMSG pCanMsg);
-static HRESULT IxxatVciLibFuncCanChannelReadMessage(HANDLE hCanChn, UINT32 dwTimeout, PCANMSG pCanMsg);
+static HRESULT IxxatVciLibFuncCanChannelPostMessage(HANDLE hCanChn, PCANMSG2 pCanMsg);
+static HRESULT IxxatVciLibFuncCanChannelReadMessage(HANDLE hCanChn, UINT32 dwTimeout, PCANMSG2 pCanMsg);
 static HRESULT IxxatVciLibFuncCanChannelClose(HANDLE hCanChn);
 
 
@@ -101,6 +119,12 @@ static const tCanInterface ixxatVciInterface =
 ****************************************************************************************/
 /** \brief The settings to use in this CAN interface. */
 static tCanSettings ixxatVciSettings;
+
+/** \brief Boolean flag to track if CAN classic or CAN FD should be used. */
+static bool ixxatCanFdModeRequested;
+
+/** \brief Boolean flag to track if the CAN FD bitrate switch feature should be used. */
+static bool ixxatCanFdBrsRequested;
 
 /** \brief List with callback functions that this driver should use. */
 static tCanEvents * ixxatVciEventsList;
@@ -214,6 +238,8 @@ static void IxxatVciInit(tCanSettings const * settings)
   ixxatVciDeviceHandle = NULL;
   ixxatCanControlHandle = NULL;
   ixxatCanChannelHandle = NULL;
+  ixxatCanFdModeRequested = false;
+  ixxatCanFdBrsRequested = false;
 
   /* Reset library function pointers. */
   ixxatVciLibFuncVciEnumDeviceOpenPtr = NULL;
@@ -242,6 +268,7 @@ static void IxxatVciInit(tCanSettings const * settings)
   ixxatVciSettings.baudrate = CAN_BR500K;
   ixxatVciSettings.code = 0x00000000u;
   ixxatVciSettings.mask = 0x00000000u;
+  ixxatVciSettings.brsbaudrate = CANFD_DISABLED;
 
   /* Check parameters. */
   assert(settings != NULL);
@@ -291,6 +318,7 @@ static void IxxatVciTerminate(void)
   ixxatVciSettings.baudrate = CAN_BR500K;
   ixxatVciSettings.code = 0x00000000u;
   ixxatVciSettings.mask = 0x00000000u;
+  ixxatVciSettings.brsbaudrate = CANFD_DISABLED;
   /* Release memory that was allocated for CAN events and reset the entry count. */
   if ( (ixxatVciEventsList != NULL) && (ixxatVciEventsEntries != 0) )
   {
@@ -309,8 +337,29 @@ static bool IxxatVciConnect(void)
 {
   bool result = true;
   HANDLE hEnum = NULL;
-  CANCAPABILITIES sCanCaps = { 0 };
+  CANCAPABILITIES2 sCanCaps = { 0 };
   VCIDEVICEINFO sInfo = { 0 }; /*lint !e708 Union part is not used. */
+  CANBTP nominalBtp = { 0 };
+  CANBTP dataBtp = { 0 }; // CAN FD bitrate switch feature
+
+  /* Reset CAN FD related flags. */
+  ixxatCanFdModeRequested = false;
+  ixxatCanFdBrsRequested = false;
+
+  /* Set flags to determine if and which CAN FD features are requested. */
+  if (ixxatVciSettings.brsbaudrate != CANFD_DISABLED)
+  {
+    /* CAN FD mode requested. */
+    ixxatCanFdModeRequested = true;
+    /* When the bitrate switch feature is requested, the bitrate switch baudrate value
+     * should be higher than the nominal baudrate.
+     */
+    if (CanConvertFdBaudrate(ixxatVciSettings.brsbaudrate) > CanConvertBaudrate(ixxatVciSettings.baudrate))
+    {
+      /* CAN FD bitrate switch requested. */
+      ixxatCanFdBrsRequested = true;
+    }
+  }
 
   /* Invalidate handles. */
   ixxatVciTerminateEvent = NULL;
@@ -372,55 +421,145 @@ static bool IxxatVciConnect(void)
     }
   }
 
-  /* Initialize the CAN controller for the requested baudrate. */
+  /* Check if the requested CAN FD features are actually supported by the hardware. */
   if (result)
   {
-    /* First convert the baudrate to the values needed by the API. */
-    uint8_t bBtr0, bBtr1;
-    if (!IxxatVciConvertBaudrate(&bBtr0, &bBtr1))
+    /* CAN FD mode requested? */
+    if (ixxatCanFdModeRequested)
+    {
+      /* Does the hardware support CAN FD? */
+      if ((sCanCaps.dwFeatures & CAN_FEATURE_EXTDATA) == 0)
+      {
+        result = false;
+      }
+      /* CAN FD mode supported. */
+      else
+      {
+        /* Bitrate switch feature requested? */
+        if (ixxatCanFdBrsRequested)
+        {
+          /* Does the hardware support CAN FD bitrate switch? */
+          if ((sCanCaps.dwFeatures & CAN_FEATURE_FASTDATA) == 0)
+          {
+            result = false;
+          }
+        }
+      }
+    }
+  }
+
+  /* Attempt to find the bitrate configurations. */
+  if (result)
+  {
+    tIxxatVciPeriphParams periphParams;
+
+    /* Initialize the parameters for the nominal (arbitration) bittiming settings. */
+    periphParams.base_freq = sCanCaps.dwCanClkFreq;
+    periphParams.prescaler_min = sCanCaps.sSdrRangeMin.dwBPS;
+    periphParams.prescaler_max = sCanCaps.sSdrRangeMax.dwBPS;
+    periphParams.tseg1_min = sCanCaps.sSdrRangeMin.wTS1;
+    periphParams.tseg1_max = sCanCaps.sSdrRangeMax.wTS1;
+    periphParams.tseg2_min = sCanCaps.sSdrRangeMin.wTS2;
+    periphParams.tseg2_max = sCanCaps.sSdrRangeMax.wTS2;
+    /* Attempt to calculate the nominal (arbitration) bittiming settings. */
+    if (!IxxatVciCalculateBitTimingConfig(CanConvertBaudrate(ixxatVciSettings.baudrate),
+                                          &periphParams, &nominalBtp))
     {
       result = false;
     }
-    /* Valid BTR0/1 settings found, okay to continue. */
     else
     {
-      uint8_t bOpMode = 0;
-
-      /* Acceptance filter configured to exclusively receive either 11- or 29-bit IDs? */
-      if ((ixxatVciSettings.mask & CAN_MSG_EXT_ID_MASK) != 0)
+      /* Only need to calculate the data bittiming settings if CAN FD bitrate switch
+       * feature is requested.
+       */
+      if ((ixxatCanFdModeRequested) && (ixxatCanFdBrsRequested))
       {
-        /* Should only 11-bit IDs be received? */
-        if ((ixxatVciSettings.code & CAN_MSG_EXT_ID_MASK) == 0)
+        /* Initialize the parameters for the data bittiming settings. */
+        periphParams.base_freq = sCanCaps.dwCanClkFreq;
+        periphParams.prescaler_min = sCanCaps.sFdrRangeMin.dwBPS;
+        periphParams.prescaler_max = sCanCaps.sFdrRangeMax.dwBPS;
+        periphParams.tseg1_min = sCanCaps.sFdrRangeMin.wTS1;
+        periphParams.tseg1_max = sCanCaps.sFdrRangeMax.wTS1;
+        periphParams.tseg2_min = sCanCaps.sFdrRangeMin.wTS2;
+        periphParams.tseg2_max = sCanCaps.sFdrRangeMax.wTS2;
+        /* Attempt to calculate the data bittiming settings. */
+        if (!IxxatVciCalculateBitTimingConfig(CanConvertFdBaudrate(ixxatVciSettings.brsbaudrate),
+                                              &periphParams, &dataBtp))
         {
-          bOpMode |= CAN_OPMODE_STANDARD;
+          result = false;
         }
-        /* Only 29-bit IDs should be received. */
         else
         {
-          bOpMode |= CAN_OPMODE_EXTENDED;
+          /* Configure and enable the transmit delay compensation offset, which is
+           * required if the bitrate switch feature is enabled. recommended settings:
+           * - offset: DataTimeSeg1 * DataPrescaler
+           * - filter: 0
+           * Note that DataTimeSeg1 should include the SYNC segment (1 tq), which is
+           * not included in wTS1 when configured for RAW mode.
+           */
+          dataBtp.wTDO = (uint16_t)((dataBtp.wTS1 + 1) * dataBtp.dwBPS);
         }
       }
-      /* Acceptance filter configured to receive both 11- and 29-bit IDs. */
+    }
+  }
+
+  /* Initialize the CAN controller for the requested baudrate. */
+  if (result)
+  {
+    uint8_t  bOpMode = 0;
+    uint8_t  bExMode = 0;
+    uint8_t  bSFMode = CAN_FILTER_INCL; // Acc. filtering is used and not the ID list.
+    uint8_t  bEFMode = CAN_FILTER_INCL; // Acc. filtering is used and not the ID list.
+    uint32_t dwSFIds = CAN_FILTER_SIZE_STD;
+    uint32_t dwEFIds = CAN_FILTER_SIZE_EXT;
+
+    /* Acceptance filter configured to exclusively receive either 11- or 29-bit IDs? */
+    if ((ixxatVciSettings.mask & CAN_MSG_EXT_ID_MASK) != 0)
+    {
+      /* Should only 11-bit IDs be received? */
+      if ((ixxatVciSettings.code & CAN_MSG_EXT_ID_MASK) == 0)
+      {
+        bOpMode |= CAN_OPMODE_STANDARD;
+      }
+      /* Only 29-bit IDs should be received. */
       else
       {
-        bOpMode |= (CAN_OPMODE_STANDARD | CAN_OPMODE_EXTENDED);
-
-        /* Does the CAN controller actually support this? */
-        if ((sCanCaps.dwFeatures & CAN_FEATURE_STDANDEXT) == 0)
-        {
-          /* Nope, CAN controller does not support this. Configure to only receive 11-bit
-           * identifiers, since this is more common.
-           */
-          bOpMode &= ~CAN_OPMODE_EXTENDED;
-        }
+        bOpMode |= CAN_OPMODE_EXTENDED;
       }
+    }
+    /* Acceptance filter configured to receive both 11- and 29-bit IDs. */
+    else
+    {
+      bOpMode |= (CAN_OPMODE_STANDARD | CAN_OPMODE_EXTENDED);
 
-      /* Initialize the CAN controller's baudrate and operating mode. */
-      if (IxxatVciLibFuncCanControlInitialize(ixxatCanControlHandle, bOpMode, bBtr0, bBtr1) != VCI_OK)
+      /* Does the CAN controller actually support this? */
+      if ((sCanCaps.dwFeatures & CAN_FEATURE_STDANDEXT) == 0)
       {
-        /* Error initializing the CAN controller. */
-        result = false;
+        /* Nope, CAN controller does not support this. Configure to only receive 11-bit
+          * identifiers, since this is more common.
+          */
+        bOpMode &= ~CAN_OPMODE_EXTENDED;
       }
+    }
+
+    /* Support for CAN FD needed? */
+    if (ixxatCanFdModeRequested)
+    {
+      bExMode |= CAN_EXMODE_EXTDATA;
+      /* CAN FD birrate switch feature needed? */
+      if (ixxatCanFdBrsRequested)
+      {
+        bExMode |= CAN_EXMODE_FASTDATA;
+      }
+    }
+
+    /* Initialize the CAN controller's baudrate and operating mode. */
+    if (IxxatVciLibFuncCanControlInitialize(ixxatCanControlHandle, bOpMode, bExMode,
+                                            bSFMode, bEFMode, dwSFIds, dwEFIds, 
+                                            &nominalBtp, &dataBtp) != VCI_OK)
+    {
+      /* Error initializing the CAN controller. */
+      result = false;
     }
   }
 
@@ -493,7 +632,8 @@ static bool IxxatVciConnect(void)
   /* Initialize the CAN message channel. */
   if (result)
   {
-    if (IxxatVciLibFuncCanChannelInitialize(ixxatCanChannelHandle, 128, 1, 128, 1) != VCI_OK)
+    // Note that the acceptance filter is used (1st level) and not the ID list (2nd level).
+    if (IxxatVciLibFuncCanChannelInitialize(ixxatCanChannelHandle, 128, 1, 128, 1, CAN_FILTER_SIZE_EXT, CAN_FILTER_INCL) != VCI_OK)
     {
       /* Unable the initialize the CAN message channel. */
       result = false;
@@ -626,8 +766,19 @@ static bool IxxatVciTransmit(tCanMsg const * msg)
 {
   bool result = false;
   tCanEvents const * pEvents;
-  CANMSG  sCanMsg = { 0 };
-   
+  CANMSG2  sCanMsg = { 0 };
+  uint8_t dataLen;
+  static const uint8_t len2dlc[] = { 0,  1,  2,  3,  4,  5,  6,  7,  8,     /*  0 -  8 */
+                                     9,  9,  9,  9,                         /*  9 - 12 */
+                                     10, 10, 10, 10,                        /* 13 - 16 */
+                                     11, 11, 11, 11,                        /* 17 - 20 */
+                                     12, 12, 12, 12,                        /* 21 - 24 */
+                                     13, 13, 13, 13, 13, 13, 13, 13,        /* 25 - 32 */
+                                     14, 14, 14, 14, 14, 14, 14, 14,        /* 33 - 40 */
+                                     14, 14, 14, 14, 14, 14, 14, 14,        /* 41 - 48 */
+                                     15, 15, 15, 15, 15, 15, 15, 15,        /* 49 - 56 */
+                                     15, 15, 15, 15, 15, 15, 15, 15 };      /* 57 - 64 */
+ 
   /* Check parameters. */
   assert(msg != NULL);
 
@@ -645,8 +796,29 @@ static bool IxxatVciTransmit(tCanMsg const * msg)
       sCanMsg.uMsgInfo.Bits.ext = 1;
     }
     sCanMsg.uMsgInfo.Bytes.bType = CAN_MSGTYPE_DATA;
-    sCanMsg.uMsgInfo.Bits.dlc = ((msg->dlc <= CAN_MSG_MAX_LEN) ? msg->dlc : CAN_MSG_MAX_LEN);
-    for (uint8_t idx = 0; idx < sCanMsg.uMsgInfo.Bits.dlc; idx++)
+    /* CAN FD message? */
+    if (ixxatCanFdModeRequested)
+    {
+      /* Determine data length with out-of-bounds correction. */
+      dataLen = ((msg->len <= CAN_MSG_MAX_LEN) ? msg->len : CAN_MSG_MAX_LEN);
+      /* Set the extended data length bit since this is a CAN FD message. */
+      sCanMsg.uMsgInfo.Bits.edl = 1u;
+      /* Should the bit-rate switch feature be used? */
+      if (ixxatCanFdBrsRequested)
+      {
+        /* Set the fast data bit-rate flag. */
+        sCanMsg.uMsgInfo.Bits.fdr = 1u;
+      }
+    }
+    /* CAN classic message. */
+    else
+    {
+      /* Determine data length with out-of-bounds correction. */
+      dataLen = ((msg->len <= 8u) ? msg->len : 8u);
+    }
+    /* Set the data length code (DLC) of the message. */
+    sCanMsg.uMsgInfo.Bits.dlc = len2dlc[dataLen];
+    for (uint8_t idx = 0; idx < dataLen; idx++)
     {
       sCanMsg.abData[idx] = msg->data[idx];
     }
@@ -685,7 +857,7 @@ static bool IxxatVciTransmit(tCanMsg const * msg)
 static bool IxxatVciIsBusError(void)
 {
   bool result = false;
-  CANCHANSTATUS sChanStatus;
+  CANCHANSTATUS2 sChanStatus;
 
   /* Attempt to obtain the channel status. */
   if (IxxatVciLibFuncCanChannelGetStatus(ixxatCanChannelHandle, &sChanStatus) == VCI_OK)
@@ -751,9 +923,11 @@ static DWORD WINAPI IxxatVciReceptionThread(LPVOID pv)
 {
   DWORD waitResult;
   bool running = true;
-  CANMSG sCanMsg;
+  CANMSG2 sCanMsg;
   tCanMsg rxMsg;
   tCanEvents const* pEvents;
+  static const uint8_t dlc2len[] = { 0,  1,  2,  3,  4,  5,  6,  7,
+                                     8, 12, 16, 20, 24, 32, 48, 64 };
 
   /* Parameter not used. */
   (void)pv;
@@ -774,8 +948,8 @@ static DWORD WINAPI IxxatVciReceptionThread(LPVOID pv)
         {
           rxMsg.id |= CAN_MSG_EXT_ID_MASK;
         }
-        rxMsg.dlc = sCanMsg.uMsgInfo.Bits.dlc;
-        for (uint8_t idx = 0; idx < rxMsg.dlc; idx++)
+        rxMsg.len = dlc2len[sCanMsg.uMsgInfo.Bits.dlc];
+        for (uint8_t idx = 0; idx < rxMsg.len; idx++)
         {
           rxMsg.data[idx] = sCanMsg.abData[idx];
         }
@@ -811,63 +985,140 @@ static DWORD WINAPI IxxatVciReceptionThread(LPVOID pv)
 
 
 /************************************************************************************//**
-** \brief     Converts the baudrate enum value to the Ixxat API's BTR0 and BTR1 values.
-** \param     bBtr0 Storage for the BTR0 setting.
-** \param     bBtr1 Storage for the BTR1 setting.
-** \return    True if the baudrate could be converted, false otherwise.
+** \brief     Search algorithm to match the desired baudrate to a possible bit
+**            timing configuration, taking into account the given CAN peripheral
+**            parameters.
+** \param     baudrate Desired CAN communication speed in bits/sec.
+** \param     periph_params CAN peripheral parameters.
+** \param     bittiming_config Found bit timing configuration.
+** \return    True if a matching CAN bittiming configuration was found, false otherwise.
 **
 ****************************************************************************************/
-static bool IxxatVciConvertBaudrate(UINT8* bBtr0, UINT8* bBtr1)
+static bool IxxatVciCalculateBitTimingConfig(uint32_t baudrate,
+                                             tIxxatVciPeriphParams const* periph_params,
+                                             PCANBTP bittiming_config)
 {
-  bool result = true;
+  bool result = false;
 
-  /* Convert the baudrate to a BTR0/1 values supported by the Ixxat API. */
-  switch(ixxatVciSettings.baudrate)
+  /* Verify parameters. */
+  assert((baudrate > 0) && (periph_params != NULL) && (bittiming_config != NULL));
+
+  /* Only continue with valid parameters. */
+  if ((baudrate > 0) && (periph_params != NULL) && (bittiming_config != NULL))
   {
-  case CAN_BR10K:
-    *bBtr0 = 0x31;
-    *bBtr1 = 0x1C;
-    break;
-  case CAN_BR20K:
-    *bBtr0 = 0x18;
-    *bBtr1 = 0x1C;
-    break;
-  case CAN_BR50K:
-    *bBtr0 = 0x09;
-    *bBtr1 = 0x1C;
-    break;
-  case CAN_BR100K:
-    *bBtr0 = 0x04;
-    *bBtr1 = 0x1C;
-    break;
-  case CAN_BR125K:
-    *bBtr0 = 0x03;
-    *bBtr1 = 0x1C;
-    break;
-  case CAN_BR250K:
-    *bBtr0 = 0x01;
-    *bBtr1 = 0x1C;
-    break;
-  case CAN_BR500K:
-    *bBtr0 = 0x00;
-    *bBtr1 = 0x1C;
-    break;
-  case CAN_BR800K:
-    *bBtr0 = 0x00;
-    *bBtr1 = 0x16;
-    break;
-  case CAN_BR1M:
-    *bBtr0 = 0x00;
-    *bBtr1 = 0x14;
-    break;
-  default:
-    result = false;
-    break;
+    uint16_t bitTq, bitTqMin, bitTqMax;
+    uint16_t tseg1, tseg2;
+    uint32_t prescaler;
+    uint8_t  samplePoint;
+
+    /* Calculate minimum and maximum possible time quanta per bit. Remember that the
+     * bittime in time quanta is 1 (sync) + tseg1 + tseg2.
+     */
+    bitTqMin = 1U + periph_params->tseg1_min + periph_params->tseg2_min;
+    bitTqMax = 1U + periph_params->tseg1_max + periph_params->tseg2_max;
+
+    /* Loop through all the prescaler values from low to high to find one that results
+     * in a time quanta per bit that is in the range bitTqMin.. bitTqMax. Note that
+     * looping through the prescalers low to high is important, because a lower prescaler
+     * would result in a large number of time quanta per bit. This in turns gives you
+     * more flexibility for setting the a bit's sample point.
+     */
+    for (prescaler = periph_params->prescaler_min;
+      prescaler <= periph_params->prescaler_max; prescaler++)
+    {
+      /* Note that for 125K and 250K the found settings are correct, yet the Ixxat
+       * canAnalyser3 reports the occasional form errors. When this happens, the found
+       * prescaler is 2.
+       * However, when using a prescaler 4, the form errors go away. To bypass this
+       * hardware glitch, use a prescaler >= 4 for these baudrates.
+       */
+      if (((baudrate == 125000U) || (baudrate == 250000U)) && (prescaler < 4U))
+      {
+        continue;
+      }
+
+      /* No need to continue if the configured peripheral clock, scaled down by this
+       * prescaler value, is no longer high enough to get to the desired baudrate,
+       * taking into account the minimum possible time quanta per bit.
+       */
+      if (periph_params->base_freq < (baudrate * bitTqMin))
+      {
+        break;
+      }
+      /* Does this prescaler give a fixed (integer) number of time quanta? */
+      if (((periph_params->base_freq % prescaler) == 0U) &&
+        (((periph_params->base_freq / prescaler) % baudrate) == 0U))
+      {
+        /* Calculate how many time quanta per bit this prescaler would give. */
+        bitTq = (uint16_t)((periph_params->base_freq / prescaler) / baudrate);
+        /* Is this a configurable amount of time quanta? */
+        if ((bitTq >= bitTqMin) && (bitTq <= bitTqMax))
+        {
+          /* If the sample point is at the very end of the bit time, the maximum
+           * possible network length can be achieved. an earlier sample point reduces
+           * the achievable network length, but increases robustness. As a reference,
+           * a value of higher than 80% is not recommended for automotive applications
+           * due to robustness reasons.
+           *
+           * For this reason try to get a sample point that is in the 65% - 80% range.
+           * An efficient way of doing this is to calculate Tseg2, which should then
+           * be 20% and round up by doing this calculation.
+           *
+           * Example:
+           *   baud      = 500 kbits/sec
+           *   base_freq = 24 MHz
+           *   prescaler = 1
+           *   bitTq     = 48
+           *
+           *   For 80% sample point, Tseg2 should be 20% of 48 = 9.6 time quanta.
+           *   Rounded up to the next integer = 10. Resulting sample point:
+           *   ((48 - 10) / 48) * 100 = 79.17%
+           */
+          tseg2 = (uint16_t)(((bitTq * 2U) + 9U) / 10U);
+          /* Calculate Tseg1 by deducting Tseg2 and 1 time quanta for the sync seq. */
+          tseg1 = (uint16_t)((bitTq - tseg2) - 1U);
+          /* Are these values within configurable range? */
+          if ((tseg1 >= periph_params->tseg1_min) &&
+            (tseg1 <= periph_params->tseg1_max) &&
+            (tseg2 >= periph_params->tseg2_min) &&
+            (tseg2 <= periph_params->tseg2_max))
+          {
+            /* Calculate the actual sample point, given these Tseg values. */
+            samplePoint = (uint8_t)(((1U + tseg1) * 100UL) / bitTq);
+            /* Is this within the targeted 65% - 80% range? */
+            if ((samplePoint >= 65U) && (samplePoint <= 80U))
+            {
+              /* Store these bittiming settings. */
+              bittiming_config->dwMode = CAN_BTMODE_RAW;
+              bittiming_config->dwBPS = prescaler;
+              bittiming_config->wTS1 = tseg1;
+              bittiming_config->wTS2 = tseg2;
+              /* SJW depends highly on the baudrate tolerances of the other nodes on the
+               * network. SJW 1 allows for only a small window of tolerance between node
+               * baudrate. SJW = TSEG2 allows for a large winow, at the risk of a bit
+               * being incorrectly sampled. A safe approach to to use TSEG2/2 but also
+               * make sure SJW is > 0.
+               */
+              bittiming_config->wSJW = tseg2 / 2U;
+              if (bittiming_config->wSJW == 0U)
+              {
+                bittiming_config->wSJW = 1U;
+              }
+              bittiming_config->wTDO = 0;
+              /* Set the result to success. */
+              result = true;
+              /* All done so no need to continue the loop. */
+              break;
+            }
+          }
+        }
+      }
+    }
   }
 
   /* Give the result back to the caller. */
   return result;
-} /*** end of IxxatVciConvertBaudrate ***/
+} /*** end of IxxatVciCalculateBitTimingConfig ***/
 
 
 /************************************************************************************//**
@@ -898,7 +1149,7 @@ static void IxxatVciLibLoadDll(void)
   ixxatVciLibFuncCanChannelClosePtr = NULL;
 
   /* Attempt to load the library and obtain a handle to it. */
-  ixxatVciDllHandle = LoadLibrary("vcinpl");
+  ixxatVciDllHandle = LoadLibrary("vcinpl2");
 
   /* Assert libary handle. */
   assert(ixxatVciDllHandle != NULL);
@@ -1179,7 +1430,7 @@ static HRESULT IxxatVciLibFuncCanControlReset(HANDLE hCanCtl)
 ** \return    VCI_OK if successful.
 **
 ****************************************************************************************/
-static HRESULT IxxatVciLibFuncCanControlGetCaps(HANDLE hCanCtl, PCANCAPABILITIES pCanCaps)
+static HRESULT IxxatVciLibFuncCanControlGetCaps(HANDLE hCanCtl, PCANCAPABILITIES2 pCanCaps)
 {
   HRESULT result = VCI_E_UNEXPECTED; /*lint !e648 Cannot change Ixxat VCI API macro */
 
@@ -1202,17 +1453,18 @@ static HRESULT IxxatVciLibFuncCanControlGetCaps(HANDLE hCanCtl, PCANCAPABILITIES
 /************************************************************************************//**
 ** \brief     Sets the operating mode and bit rate of a CAN connection.
 ** \param     hCanCtl Handle of the opened CAN controller.
-** \param     bMode Operating mode of the CAN controller.
-** \param     bBtr0 Value for the bus timing register 0 of the CAN controller. The value
-**            corresponds to the BTR0 register of the Philips SJA 1000 CAN controller
-**            with a cycle frequency of 16 MHz.
-** \param     bBtr1 Value for the bus timing register 1 of the CAN controller. The value
-**            corresponds to the BTR1 register of the Philips SJA 1000 CAN controller
-**            with a cycle frequency of 16 MHz.
+** \param     bOpMode Operating mode of the CAN controller.
+** \param     bExMode Extended operating mode of the CAN controller.
+** \param     bSFMode Operating mode of 11-bit ID filter.
+** \param     bEFMode Operating mode of 29-bit ID filter.
+** \param     dwSFIds Size of 11-bit ID filter.
+** \param     dwEFIds Size of 29-bit ID filter.
+** \param     pBtpSDR Pointer to the timing parameters used for nominal bit rate.
+** \param     pBtpFDR Pointer to the timing parameters used for fast data bit rate.
 ** \return    VCI_OK if successful.
 **
 ****************************************************************************************/
-static HRESULT IxxatVciLibFuncCanControlInitialize(HANDLE hCanCtl, UINT8 bMode, UINT8 bBtr0, UINT8 bBtr1)
+static HRESULT IxxatVciLibFuncCanControlInitialize(HANDLE hCanCtl, UINT8 bOpMode, UINT8 bExMode, UINT8 bSFMode, UINT8 bEFMode, UINT32 dwSFIds, UINT32 dwEFIds, PCANBTP pBtpSDR, PCANBTP pBtpFDR)
 {
   HRESULT result = VCI_E_UNEXPECTED; /*lint !e648 Cannot change Ixxat VCI API macro */
 
@@ -1224,7 +1476,7 @@ static HRESULT IxxatVciLibFuncCanControlInitialize(HANDLE hCanCtl, UINT8 bMode, 
   if ((ixxatVciLibFuncCanControlInitializePtr != NULL) && (ixxatVciDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = ixxatVciLibFuncCanControlInitializePtr(hCanCtl, bMode, bBtr0, bBtr1);
+    result = ixxatVciLibFuncCanControlInitializePtr(hCanCtl, bOpMode, bExMode, bSFMode, bEFMode, dwSFIds, dwEFIds, pBtpSDR, pBtpFDR);
   }
 
   /* Give the result back to the caller. */
@@ -1367,7 +1619,7 @@ static HRESULT IxxatVciLibFuncCanChannelOpen(HANDLE hDevice, UINT32 dwCanNo, BOO
 ** \return    VCI_OK if successful.
 **
 ****************************************************************************************/
-static HRESULT IxxatVciLibFuncCanChannelGetStatus(HANDLE hCanChn, PCANCHANSTATUS pStatus)
+static HRESULT IxxatVciLibFuncCanChannelGetStatus(HANDLE hCanChn, PCANCHANSTATUS2 pStatus)
 {
   HRESULT result = VCI_E_UNEXPECTED; /*lint !e648 Cannot change Ixxat VCI API macro */
 
@@ -1398,10 +1650,22 @@ static HRESULT IxxatVciLibFuncCanChannelGetStatus(HANDLE hCanChn, PCANCHANSTATUS
 ** \param     wTxThreshold Threshold value for the transmit event. The event is triggered
 **            when the number of free entries in the transmit buffer reaches or exceeds
 **            the number specified here.
+** \param     dwFilterSize Number of CAN message IDs supported by the extended ID filter.
+**            The standard ID filter support always all of the possible 2048 IDs. If
+**            this parameter is set to 0 CAN message filtering is disabled.
+** \param     bFilterMode Initial mode of the CAN message filter. This can be one of the
+**            following values: 
+**            CAN_FILTER_LOCK - lock filter 
+**            CAN_FILTER_PASS - bypass filter 
+**            CAN_FILTER_INCL - inclusive filtering
+**            CAN_FILTER_EXCL - exclusive filtering. 
+**            The filter mode can be combined with CAN_FILTER_SRRA to pass all self
+**            reception messages sent from other channels which are also connected to the
+**            same CAN controller as this channel.
 ** \return    VCI_OK if successful.
 **
 ****************************************************************************************/
-static HRESULT IxxatVciLibFuncCanChannelInitialize(HANDLE hCanChn, UINT16 wRxFifoSize, UINT16 wRxThreshold, UINT16 wTxFifoSize, UINT16 wTxThreshold)
+static HRESULT IxxatVciLibFuncCanChannelInitialize(HANDLE hCanChn, UINT16 wRxFifoSize, UINT16 wRxThreshold, UINT16 wTxFifoSize, UINT16 wTxThreshold, UINT32 dwFilterSize, UINT8 bFilterMode)
 {
   HRESULT result = VCI_E_UNEXPECTED; /*lint !e648 Cannot change Ixxat VCI API macro */
 
@@ -1413,7 +1677,7 @@ static HRESULT IxxatVciLibFuncCanChannelInitialize(HANDLE hCanChn, UINT16 wRxFif
   if ((ixxatVciLibFuncCanChannelInitializePtr != NULL) && (ixxatVciDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = ixxatVciLibFuncCanChannelInitializePtr(hCanChn, wRxFifoSize, wRxThreshold, wTxFifoSize, wTxThreshold);
+    result = ixxatVciLibFuncCanChannelInitializePtr(hCanChn, wRxFifoSize, wRxThreshold, wTxFifoSize, wTxThreshold, dwFilterSize, bFilterMode);
   }
 
   /* Give the result back to the caller. */
@@ -1459,7 +1723,7 @@ static HRESULT IxxatVciLibFuncCanChannelActivate(HANDLE hCanChn, BOOL fEnable)
 ** \return    VCI_OK if successful.
 **
 ****************************************************************************************/
-static HRESULT IxxatVciLibFuncCanChannelPostMessage(HANDLE hCanChn, PCANMSG pCanMsg)
+static HRESULT IxxatVciLibFuncCanChannelPostMessage(HANDLE hCanChn, PCANMSG2 pCanMsg)
 {
   HRESULT result = VCI_E_UNEXPECTED; /*lint !e648 Cannot change Ixxat VCI API macro */
 
@@ -1495,7 +1759,7 @@ static HRESULT IxxatVciLibFuncCanChannelPostMessage(HANDLE hCanChn, PCANMSG pCan
 **            a new CAN message available. Another value indicates a generic error. 
 **
 ****************************************************************************************/
-static HRESULT IxxatVciLibFuncCanChannelReadMessage(HANDLE hCanChn, UINT32 dwTimeout, PCANMSG pCanMsg)
+static HRESULT IxxatVciLibFuncCanChannelReadMessage(HANDLE hCanChn, UINT32 dwTimeout, PCANMSG2 pCanMsg)
 {
   HRESULT result = VCI_E_UNEXPECTED; /*lint !e648 Cannot change Ixxat VCI API macro */
 
