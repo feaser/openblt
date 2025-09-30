@@ -68,12 +68,25 @@
 /****************************************************************************************
 *   C O M M U N I C A T I O N   I N T E R F A C E   C O N F I G U R A T I O N   C H E C K
 ****************************************************************************************/
+/* This one needs to be before BOOT_COM_CAN_TX_MAX_DATA and BOOT_COM_CAN_RX_MAX_DATA. */
+#ifndef BOOT_COM_CAN_FD_ENABLE
+#define BOOT_COM_CAN_FD_ENABLE         (0)
+#endif
+
 #ifndef BOOT_COM_CAN_TX_MAX_DATA
-#define BOOT_COM_CAN_TX_MAX_DATA       (8)
+# if (BOOT_COM_CAN_FD_ENABLE > 0)
+# define BOOT_COM_CAN_TX_MAX_DATA      (64)
+# else
+# define BOOT_COM_CAN_TX_MAX_DATA      (8)
+# endif
 #endif
 
 #ifndef BOOT_COM_CAN_RX_MAX_DATA
-#define BOOT_COM_CAN_RX_MAX_DATA       (8)
+# if (BOOT_COM_CAN_FD_ENABLE > 0)
+# define BOOT_COM_CAN_RX_MAX_DATA      (64)
+# else
+# define BOOT_COM_CAN_RX_MAX_DATA      (8)
+# endif
 #endif
 
 #ifndef BOOT_COM_RS232_TX_MAX_DATA
@@ -119,6 +132,7 @@
  * - BOOT_COM_CAN_BAUDRATE
  * - BOOT_COM_CAN_TX_MSG_ID
  * - BOOT_COM_CAN_RX_MSG_ID
+ * - BOOT_COM_CAN_FD_BRS_BAUDRATE
  */
 #ifndef BOOT_COM_CAN_BAUDRATE
 #error "BOOT_COM_CAN_BAUDRATE is missing in blt_conf.h"
@@ -136,8 +150,14 @@
 #error "BOOT_COM_CAN_TX_MAX_DATA must be > 0"
 #endif
 
-#if (BOOT_COM_CAN_TX_MAX_DATA > 8)
-#error "BOOT_COM_CAN_TX_MAX_DATA must be <= 8"
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+# if (BOOT_COM_CAN_TX_MAX_DATA > 64)
+# error "BOOT_COM_CAN_TX_MAX_DATA must be <= 64"
+# endif
+#else
+# if (BOOT_COM_CAN_TX_MAX_DATA > 8)
+# error "BOOT_COM_CAN_TX_MAX_DATA must be <= 8"
+# endif
 #endif
 
 #ifndef BOOT_COM_CAN_RX_MSG_ID
@@ -152,8 +172,14 @@
 #error "BOOT_COM_CAN_RX_MAX_DATA must be > 0"
 #endif
 
-#if (BOOT_COM_CAN_RX_MAX_DATA > 8)
-#error "BOOT_COM_CAN_RX_MAX_DATA must be <= 8"
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+# if (BOOT_COM_CAN_RX_MAX_DATA > 64)
+# error "BOOT_COM_CAN_RX_MAX_DATA must be <= 64"
+# endif
+#else
+# if (BOOT_COM_CAN_RX_MAX_DATA > 8)
+# error "BOOT_COM_CAN_RX_MAX_DATA must be <= 8"
+# endif
 #endif
 
 #ifndef BOOT_COM_CAN_CHANNEL_INDEX
@@ -162,6 +188,15 @@
 
 #if (BOOT_COM_CAN_CHANNEL_INDEX < 0)
 #error "BOOT_COM_CAN_CHANNEL_INDEX must be >= 0"
+#endif
+
+#if (BOOT_COM_CAN_FD_ENABLE < 0) || (BOOT_COM_CAN_FD_ENABLE > 1)
+#error "BOOT_COM_CAN_FD_ENABLE must be 0 (disabled) or 1 (enabled)"
+#endif
+
+/* This one is optional and only needed to use the bitrate switch feature. */
+#ifndef BOOT_COM_CAN_FD_BRS_BAUDRATE
+#define BOOT_COM_CAN_FD_BRS_BAUDRATE  (0)
 #endif
 
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
