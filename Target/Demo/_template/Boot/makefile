@@ -95,6 +95,7 @@ LIB_PATH  =
 #|--------------------------------------------------------------------------------------|
 STDFLAGS    = -fdata-sections -ffunction-sections -Wall -g -Wno-strict-aliasing
 STDFLAGS   += -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
+STDFLAGS   += -Wno-unused-variable -Wno-unused-const-variable
 OPTFLAGS    = -Og
 DEPFLAGS    = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
