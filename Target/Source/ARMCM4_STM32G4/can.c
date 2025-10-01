@@ -63,21 +63,22 @@
  */
 typedef struct t_can_periph_params
 {
-  blt_int32u base_freq;                             /**< Source clock frequency [Hz]   */
-  blt_int16u prescaler_min;                         /**< Smallest supported prescaler  */
-  blt_int16u prescaler_max;                         /**< Largest supported prescaler   */
-  blt_int16u tseg1_min;                             /**< Smallest supported Tseg1      */
-  blt_int16u tseg1_max;                             /**< Largest supported Tseg1       */
-  blt_int16u tseg2_min;                             /**< Smallest supported Tseg2      */
-  blt_int16u tseg2_max;                             /**< Largest supported Tseg2       */
+  blt_int32u base_freq;                           /**< Source clock frequency [Hz]     */
+  blt_int16u prescaler_min;                       /**< Smallest supported prescaler    */
+  blt_int16u prescaler_max;                       /**< Largest supported prescaler     */
+  blt_int16u tseg1_min;                           /**< Smallest supported Tseg1        */
+  blt_int16u tseg1_max;                           /**< Largest supported Tseg1         */
+  blt_int16u tseg2_min;                           /**< Smallest supported Tseg2        */
+  blt_int16u tseg2_max;                           /**< Largest supported Tseg2         */
 } tCanPeriphParams;
 
 /** \brief Structure type for grouping CAN bit timing configuration information. */
 typedef struct
 {
-  blt_int16u prescaler;                             /**< CAN clock prescaler           */
-  blt_int16u tseg1;                                 /**< CAN time segment 1            */
-  blt_int16u tseg2;                                 /**< CAN time segment 2            */
+  blt_int16u prescaler;                           /**< CAN clock prescaler             */
+  blt_int16u tseg1;                               /**< CAN time segment 1 (excl. SYNC) */
+  blt_int16u tseg2;                               /**< CAN time segment 2              */
+  blt_int16u sjw;                                 /**< CAN synchronization jump width  */
 } tCanBitTimingConfig;
 
 
@@ -188,6 +189,17 @@ static blt_bool CanCalculateBitTimingConfig(blt_int32u const baud,
               bittiming_config->prescaler = prescaler;
               bittiming_config->tseg1 = tseg1;
               bittiming_config->tseg2 = tseg2;
+              /* SJW depends highly on the baudrate tolerances of the other nodes on the
+               * network. SJW 1 allows for only a small window of tolerance between node
+               * baudrate. SJW = TSEG2 allows for a large winow, at the risk of a bit
+               * being incorrectly sampled. a safe approach to to use TSEG2/2 but also
+               * make sure SJW is > 0.
+               */
+              bittiming_config->sjw = bittiming_config->tseg2 / 2U;
+              if (bittiming_config->sjw == 0U)
+              {
+                bittiming_config->sjw = 1U;
+              }
               /* set the result to success. */
               result = BLT_TRUE;
               /* all done so no need to continue the loop. */
@@ -316,17 +328,7 @@ void CanInit(void)
   canHandle.Init.NominalPrescaler = bittimingConfig.prescaler;
   canHandle.Init.NominalTimeSeg1 = bittimingConfig.tseg1;
   canHandle.Init.NominalTimeSeg2 = bittimingConfig.tseg2;
-  /* SJW depends highly on the baudrate tolerances of the other nodes on the
-   * network. SJW 1 allows for only a small window of tolerance between node
-   * baudrate. SJW = TSEG2 allows for a large winow, at the risk of a bit
-   * being incorrectly sampled. A safe approach to to use TSEG2/2 but also
-   * make sure SJW is > 0.
-   */
-  canHandle.Init.NominalSyncJumpWidth = bittimingConfig.tseg2 / 2U;
-  if (canHandle.Init.NominalSyncJumpWidth == 0U)
-  {
-    canHandle.Init.NominalSyncJumpWidth = 1U;
-  }
+  canHandle.Init.NominalSyncJumpWidth = bittimingConfig.sjw;
   canHandle.Init.DataPrescaler = 1;
   canHandle.Init.DataSyncJumpWidth = 1;
   canHandle.Init.DataTimeSeg1 = 1;
@@ -342,11 +344,7 @@ void CanInit(void)
     canHandle.Init.DataPrescaler = bittimingConfigBRS.prescaler;
     canHandle.Init.DataTimeSeg1 = bittimingConfigBRS.tseg1;
     canHandle.Init.DataTimeSeg2 = bittimingConfigBRS.tseg2;
-    canHandle.Init.DataSyncJumpWidth = bittimingConfigBRS.tseg2 / 2U;
-    if (canHandle.Init.DataSyncJumpWidth == 0U)
-    {
-      canHandle.Init.DataSyncJumpWidth = 1U;
-    }
+    canHandle.Init.DataSyncJumpWidth = bittimingConfigBRS.sjw;
   }
 #endif
   /* does the message to be received have a standard 11-bit CAN identifier? */

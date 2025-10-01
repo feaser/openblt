@@ -282,21 +282,22 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
  */
 typedef struct t_can_periph_params
 {
-  unsigned long base_freq;                          /**< Source clock frequency [Hz]   */
-  unsigned short prescaler_min;                     /**< Smallest supported prescaler  */
-  unsigned short prescaler_max;                     /**< Largest supported prescaler   */
-  unsigned short tseg1_min;                         /**< Smallest supported Tseg1      */
-  unsigned short tseg1_max;                         /**< Largest supported Tseg1       */
-  unsigned short tseg2_min;                         /**< Smallest supported Tseg2      */
-  unsigned short tseg2_max;                         /**< Largest supported Tseg2       */
+  unsigned long base_freq;                        /**< Source clock frequency [Hz]     */
+  unsigned short prescaler_min;                   /**< Smallest supported prescaler    */
+  unsigned short prescaler_max;                   /**< Largest supported prescaler     */
+  unsigned short tseg1_min;                       /**< Smallest supported Tseg1        */
+  unsigned short tseg1_max;                       /**< Largest supported Tseg1         */
+  unsigned short tseg2_min;                       /**< Smallest supported Tseg2        */
+  unsigned short tseg2_max;                       /**< Largest supported Tseg2         */
 } tCanPeriphParams;
 
 /** \brief Structure type for grouping CAN bit timing configuration information. */
 typedef struct
 {
-  unsigned short prescaler;                         /**< CAN clock prescaler           */
-  unsigned short tseg1;                             /**< CAN time segment 1            */
-  unsigned short tseg2;                             /**< CAN time segment 2            */
+  unsigned short prescaler;                       /**< CAN clock prescaler             */
+  unsigned short tseg1;                           /**< CAN time segment 1 (excl. SYNC) */
+  unsigned short tseg2;                           /**< CAN time segment 2              */
+  unsigned short sjw;                             /**< CAN synchronization jump width  */
 } tCanBitTimingConfig;
 
 
@@ -407,6 +408,17 @@ static unsigned char CanCalculateBitTimingConfig(unsigned long const baud,
               bittiming_config->prescaler = prescaler;
               bittiming_config->tseg1 = tseg1;
               bittiming_config->tseg2 = tseg2;
+              /* SJW depends highly on the baudrate tolerances of the other nodes on the
+               * network. SJW 1 allows for only a small window of tolerance between node
+               * baudrate. SJW = TSEG2 allows for a large winow, at the risk of a bit
+               * being incorrectly sampled. a safe approach to to use TSEG2/2 but also
+               * make sure SJW is > 0.
+               */
+              bittiming_config->sjw = bittiming_config->tseg2 / 2U;
+              if (bittiming_config->sjw == 0U)
+              {
+                bittiming_config->sjw = 1U;
+              }
               /* set the result to success. */
               result = 1U;
               /* all done so no need to continue the loop. */
@@ -510,7 +522,7 @@ static void BootComCanInit(void)
   canHandle.Init.NominalPrescaler = bittimingConfig.prescaler;
   canHandle.Init.NominalTimeSeg1 = bittimingConfig.tseg1;
   canHandle.Init.NominalTimeSeg2 = bittimingConfig.tseg2;
-  canHandle.Init.NominalSyncJumpWidth = bittimingConfig.tseg2;
+  canHandle.Init.NominalSyncJumpWidth = bittimingConfig.sjw;
   canHandle.Init.DataPrescaler = 1;
   canHandle.Init.DataSyncJumpWidth = 1;
   canHandle.Init.DataTimeSeg1 = 1;
@@ -526,7 +538,7 @@ static void BootComCanInit(void)
     canHandle.Init.DataPrescaler = bittimingConfigBRS.prescaler;
     canHandle.Init.DataTimeSeg1 = bittimingConfigBRS.tseg1;
     canHandle.Init.DataTimeSeg2 = bittimingConfigBRS.tseg2;
-    canHandle.Init.DataSyncJumpWidth = bittimingConfigBRS.tseg2;
+    canHandle.Init.DataSyncJumpWidth = bittimingConfigBRS.sjw;
   }
 #endif
   /* does the message to be received have a standard 11-bit CAN identifier? */
