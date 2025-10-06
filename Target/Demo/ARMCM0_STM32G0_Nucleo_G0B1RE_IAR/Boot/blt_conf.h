@@ -46,7 +46,7 @@
 /** \brief Frequency of the external crystal or internal (HSI) oscillator. */
 #define BOOT_CPU_XTAL_SPEED_KHZ          (16000)
 /** \brief Desired system speed. */
-#define BOOT_CPU_SYSTEM_SPEED_KHZ        (64000)
+#define BOOT_CPU_SYSTEM_SPEED_KHZ        (60000)
 /** \brief Motorola or Intel style byte ordering. */
 #define BOOT_CPU_BYTE_ORDER_MOTOROLA     (0)
 /** \brief Enable/disable hook function call right before user program start. */
@@ -76,10 +76,13 @@
  * message identifier for sending data from the target to the host is configured with
  * BOOT_COM_CAN_TXMSG_ID. The one for receiving data from the host is configured with
  * BOOT_COM_CAN_RXMSG_ID. Note that an extended 29-bit CAN identifier is configured by
- * OR-ing with mask 0x80000000. It is common for a microcontroller to have more than 1
- * CAN controller on board. The zero-based BOOT_COM_CAN_CHANNEL_INDEX selects the CAN
- * controller channel.
- *
+ * OR-ing with mask 0x80000000. To use CAN classic either remove or set macro
+ * BOOT_COM_CAN_FD_ENABLE to 0. To use CAN FD set this macro to 1. To make use of the
+ * CAN FD bitrate switch to communicate the actual data bytes at a higher speed, add
+ * macro BOOT_COM_CAN_FD_BRS_BAUDRATE and configure it to the desired baudrate for the
+ * bitrate switch. It is common for a microcontroller to have more than 1 CAN controller
+ * on board. The zero-based BOOT_COM_CAN_CHANNEL_INDEX selects the CAN controller
+ * channel.
  */
 /** \brief Enable/disable CAN transport layer. */
 #define BOOT_COM_CAN_ENABLE             (1)
@@ -89,6 +92,10 @@
 #define BOOT_COM_CAN_TX_MSG_ID          (0x7E1 /*| 0x80000000*/)
 /** \brief Configure CAN message ID host->target. */
 #define BOOT_COM_CAN_RX_MSG_ID          (0x667 /*| 0x80000000*/)
+/** \brief Configure CAN classic (0) or CAN FD (1). */
+#define BOOT_COM_CAN_FD_ENABLE          (0)
+/** \brief Configure the CAN FD data baudrate for the bitrate switch.  */
+#define BOOT_COM_CAN_FD_BRS_BAUDRATE    (2000000)
 /** \brief Select the desired CAN peripheral as a zero based index. */
 #define BOOT_COM_CAN_CHANNEL_INDEX      (0)
 
@@ -125,6 +132,17 @@
 #define BOOT_NVM_SIZE_KB                (512)
 /** \brief Enable/disable hooks functions to override the user program checksum handling. */
 #define BOOT_NVM_CHECKSUM_HOOKS_ENABLE  (0)
+
+
+/****************************************************************************************
+*   F L A S H   M E M O R Y   D R I V E R   C O N F I G U R A T I O N
+****************************************************************************************/
+/** \brief Enable support for a custom flash layout table. It is located in
+ *         flash_layout.c. This was done because the default flashLayout[] table
+ *         in the bootloader's core has less flash memory reserved for the bootloader
+ *         than is needed for this demo.
+ */
+#define BOOT_FLASH_CUSTOM_LAYOUT_ENABLE (1)
 
 
 /****************************************************************************************
