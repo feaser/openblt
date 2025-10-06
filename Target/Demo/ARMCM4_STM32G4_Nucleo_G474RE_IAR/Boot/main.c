@@ -111,8 +111,10 @@ static void SystemClock_Config(void)
   }
 
   /* Configure and enable the PLL. */
-  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_6, 85, LL_RCC_PLLR_DIV_2);
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_3, 40, LL_RCC_PLLR_DIV_2);
+  LL_RCC_PLL_ConfigDomain_48M(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_3, 40, LL_RCC_PLLQ_DIV_4);
   LL_RCC_PLL_EnableDomain_SYS();
+  LL_RCC_PLL_EnableDomain_48M();
   LL_RCC_PLL_Enable();
    /* Wait till PLL is ready */
   while(LL_RCC_PLL_IsReady() != 1)
@@ -150,7 +152,7 @@ static void SystemClock_Config(void)
   }
 
   /* Set peripheral clock sources. */
-  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_HSE);
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL);
   LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
 } /*** end of SystemClock_Config ***/
 
