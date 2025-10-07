@@ -172,6 +172,23 @@ static void SystemClock_Config(void)
   {
     ;
   }
+  
+  /* Configure and enable the PLL2. */
+  LL_RCC_PLL2Q_Enable();
+  LL_RCC_PLL2_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
+  LL_RCC_PLL2_SetVCOOutputRange(LL_RCC_PLLVCORANGE_MEDIUM);
+  LL_RCC_PLL2_SetM(1);
+  LL_RCC_PLL2_SetN(20);
+  LL_RCC_PLL2_SetP(2);
+  LL_RCC_PLL2_SetQ(2);
+  LL_RCC_PLL2_SetR(2);
+  LL_RCC_PLL2_Enable();
+
+   /* Wait till PLL is ready */
+  while(LL_RCC_PLL2_IsReady() != 1)
+  {
+    ;
+  }
 
   /* Intermediate AHB prescaler 2 when target frequency clock is higher than 80 MHz */
   LL_RCC_SetAHBPrescaler(LL_RCC_AHB_DIV_2);
@@ -186,7 +203,7 @@ static void SystemClock_Config(void)
 
   /* Configure peripheral clock sources. */
   LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
-  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_HSE);
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL2Q);
   LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL1Q);
 
   /* Update the system clock speed setting. */
