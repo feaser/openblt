@@ -878,7 +878,7 @@ class BltTransportSettingsXcpV10Can:
     baudrate field in this structure is don't care when using the library on a Linux was 
     system. On Windows based systems, the device name is a name that is pre-defined by
     this library for the supported CAN adapters. The device name should be one of the 
-    following: "peak_pcanusb", "kvaser_leaflight", "vector_xldriver", "ixxat_vcidriver",
+    following: "peak_pcanusb", "kvaser_canlib", "vector_xldriver", "ixxat_vcidriver",
     or "lawicel_canusb". Field useExtended is a boolean field. When set to 0, the
     specified transmitId and receiveId are assumed to be 11-bit standard CAN identifier.
     It the field is 1, these identifiers are assumed to be 29-bit extended CAN identifiers.

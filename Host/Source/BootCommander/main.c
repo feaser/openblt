@@ -615,7 +615,7 @@ static void DisplayProgramUsage(void)
   printf("                   can0, slcan0. On Windows it specifies the CAN adapter.\n");
   printf("                   Currently supported CAN adapters:\n");
   printf("                     peak_pcanusb     -> Peak System PCAN-USB.\n");
-  printf("                     kvaser_leaflight -> Kvaser Leaf Light V2.\n");
+  printf("                     kvaser_canlib    -> Kvaser CanLib Driver.\n");
   printf("                     lawicel_canusb   -> Lawicel CANUSB.\n");
   printf("                     vector_xldriver  -> Vector XL Driver.\n");
   printf("                     ixxat_vcidriver  -> Ixxat VCI Driver.\n");

@@ -169,7 +169,7 @@ typedef struct t_blt_transport_settings_xcp_v10_rs232
  *         when using the library on a Linux was system.
  *         On Windows based systems, the device name is a name that is pre-defined by
  *         this library for the supported CAN adapters. The device name should be one of
- *         the following: "peak_pcanusb", "kvaser_leaflight", "vector_xldriver",
+ *         the following: "peak_pcanusb", "kvaser_canlib", "vector_xldriver",
  *         "ixxat_vcidriver", or "lawicel_canusb". Field useExtended is a boolean field.
  *         When set to 0, the specified transmitId and receiveId are assumed to be 11-bit
  *         standard CAN identifier. It the field is 1, these identifiers are assumed to

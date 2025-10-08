@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         leaflight.c
-* \brief        Kvaser Leaf Light v2 interface source file.
-* \ingroup      Kvaser_LeafLight
+* \file         kvcanlib.c
+* \brief        Kvaser CANLIB SDK API interfacae source file.
+* \ingroup      Kvaser_CanLib
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -36,7 +36,7 @@
 #include <stdlib.h>                         /* for standard library                    */
 #include <string.h>                         /* for string library                      */
 #include "candriver.h"                      /* Generic CAN driver module               */
-#include "leaflight.h"                      /* Kvaser Leaf Light v2 interface          */
+#include "kvcanlib.h"                       /* Kvaser CANLIB SDK API                   */
 #include <windows.h>                        /* for Windows API                         */
 /*lint -efile(537, pshpack1.h, poppack.h) */
 /*lint -efile(451, pshpack1.h, poppack.h) */
@@ -49,73 +49,75 @@
 /* Type definitions of the functions in the Kvaser CANLIB API that this CAN interface
  * uses.
  */
-typedef void      (__stdcall * tLeafLightLibFuncInitializeLibrary)(void); 
-typedef canStatus (__stdcall * tLeafLightLibFuncUnloadLibrary)(void); 
-typedef CanHandle (__stdcall * tLeafLightLibFuncOpenChannel)(int32_t channel, int32_t flags);
-typedef canStatus (__stdcall * tLeafLightLibFuncSetBusParams)(const CanHandle hnd, int32_t freq, uint32_t tseg1, uint32_t tseg2, uint32_t sjw, uint32_t noSamp, uint32_t syncmode);
-typedef canStatus (__stdcall * tLeafLightLibFuncSetBusOutputControl)(const CanHandle hnd, const uint32_t drivertype);
-typedef canStatus (__stdcall * tLeafLightLibFuncSetAcceptanceFilter)(const CanHandle hnd, uint32_t code, uint32_t mask, int32_t is_extended);
-typedef canStatus (__stdcall * tLeafLightLibFuncIoCtl)(const CanHandle hnd, uint32_t func, void * buf, uint32_t buflen);
-typedef canStatus (__stdcall * tLeafLightLibFuncBusOn)(const CanHandle hnd);
-typedef canStatus (__stdcall * tLeafLightLibFuncWrite)(const CanHandle hnd, int32_t id, void * msg, uint32_t dlc, uint32_t flag);
-typedef canStatus (__stdcall * tLeafLightLibFuncRead)(const CanHandle hnd, int32_t * id, void * msg, uint32_t * dlc, uint32_t * flag, uint32_t * time);
-typedef canStatus (__stdcall * tLeafLightLibFuncReadStatus)(const CanHandle hnd, uint32_t * const flags);
-typedef canStatus (__stdcall * tLeafLightLibFuncBusOff)(const CanHandle hnd);
-typedef canStatus (__stdcall * tLeafLightLibFuncClose)(const CanHandle hnd);
+typedef void      (__stdcall * tKvaserCanLibFuncInitializeLibrary)(void); 
+typedef canStatus (__stdcall * tKvaserCanLibFuncUnloadLibrary)(void); 
+typedef CanHandle (__stdcall * tKvaserCanLibFuncOpenChannel)(int32_t channel, int32_t flags);
+typedef canStatus (__stdcall * tKvaserCanLibFuncSetBusParams)(const CanHandle hnd, int32_t freq, uint32_t tseg1, uint32_t tseg2, uint32_t sjw, uint32_t noSamp, uint32_t syncmode);
+typedef canStatus (__stdcall * tKvaserCanLibFuncSetBusOutputControl)(const CanHandle hnd, const uint32_t drivertype);
+typedef canStatus (__stdcall * tKvaserCanLibFuncSetAcceptanceFilter)(const CanHandle hnd, uint32_t code, uint32_t mask, int32_t is_extended);
+typedef canStatus (__stdcall * tKvaserCanLibFuncIoCtl)(const CanHandle hnd, uint32_t func, void * buf, uint32_t buflen);
+typedef canStatus (__stdcall * tKvaserCanLibFuncBusOn)(const CanHandle hnd);
+typedef canStatus (__stdcall * tKvaserCanLibFuncWrite)(const CanHandle hnd, int32_t id, void * msg, uint32_t dlc, uint32_t flag);
+typedef canStatus (__stdcall * tKvaserCanLibFuncRead)(const CanHandle hnd, int32_t * id, void * msg, uint32_t * dlc, uint32_t * flag, uint32_t * time);
+typedef canStatus (__stdcall * tKvaserCanLibFuncReadStatus)(const CanHandle hnd, uint32_t * const flags);
+typedef canStatus (__stdcall * tKvaserCanLibFuncBusOff)(const CanHandle hnd);
+typedef canStatus (__stdcall * tKvaserCanLibFuncClose)(const CanHandle hnd);
 
 
 /***************************************************************************************
 * Function prototypes
 ****************************************************************************************/
 /* CAN interface functions. */
-static void LeafLightInit(tCanSettings const * settings);
-static void LeafLightTerminate(void);
-static bool LeafLightConnect(void);
-static void LeafLightDisconnect(void);
-static bool LeafLightTransmit(tCanMsg const * msg);
-static bool LeafLightIsBusError(void);
-static void LeafLightRegisterEvents(tCanEvents const * events);
+static void KvaserCanLibInit(tCanSettings const * settings);
+static void KvaserCanLibTerminate(void);
+static bool KvaserCanLibConnect(void);
+static void KvaserCanLibDisconnect(void);
+static bool KvaserCanLibTransmit(tCanMsg const * msg);
+static bool KvaserCanLibIsBusError(void);
+static void KvaserCanLibRegisterEvents(tCanEvents const * events);
 /* CAN message reception thread. */
-static DWORD WINAPI LeafLightReceptionThread(LPVOID pv);
+static DWORD WINAPI KvaserCanLibReceptionThread(LPVOID pv);
 /* Kvaser CANLIB library handling. */
-static void LeafLightLibLoadDll(void);
-static void LeafLightLibUnloadDll(void);
-static void LeafLightLibFuncInitializeLibrary(void); 
-static canStatus LeafLightLibFuncUnloadLibrary(void); 
-static CanHandle LeafLightLibFuncOpenChannel(int32_t channel, int32_t flags);
-static canStatus LeafLightLibFuncSetBusParams(const CanHandle hnd, int32_t freq, 
+static void KvaserCanLibLoadDll(void);
+static void KvaserCanLibUnloadDll(void);
+static void KvaserCanLibFuncInitializeLibrary(void); 
+static canStatus KvaserCanLibFuncUnloadLibrary(void); 
+static CanHandle KvaserCanLibFuncOpenChannel(int32_t channel, int32_t flags);
+static canStatus KvaserCanLibFuncSetBusParams(const CanHandle hnd, int32_t freq, 
                                               uint32_t tseg1, uint32_t tseg2, 
                                               uint32_t sjw, uint32_t noSamp, 
                                               uint32_t syncmode);
-static canStatus LeafLightLibFuncSetBusOutputControl(const CanHandle hnd, 
+static canStatus KvaserCanLibFuncSetBusOutputControl(const CanHandle hnd, 
                                                      const uint32_t drivertype);
-static canStatus LeafLightLibFuncSetAcceptanceFilter(const CanHandle hnd, uint32_t code,
+static canStatus KvaserCanLibFuncSetAcceptanceFilter(const CanHandle hnd, uint32_t code,
                                                      uint32_t mask, int32_t is_extended);
-static canStatus LeafLightLibFuncIoCtl(const CanHandle hnd, uint32_t func, void * buf, 
+static canStatus KvaserCanLibFuncIoCtl(const CanHandle hnd, uint32_t func, void * buf, 
                                        uint32_t buflen);
-static canStatus LeafLightLibFuncBusOn(const CanHandle hnd);
-static canStatus LeafLightLibFuncWrite(const CanHandle hnd, int32_t id, void * msg, 
+static canStatus KvaserCanLibFuncBusOn(const CanHandle hnd);
+static canStatus KvaserCanLibFuncWrite(const CanHandle hnd, int32_t id, void * msg, 
                                        uint32_t dlc, uint32_t flag);
-static canStatus LeafLightLibFuncRead(const CanHandle hnd, int32_t * id, void * msg, 
+static canStatus KvaserCanLibFuncRead(const CanHandle hnd, int32_t * id, void * msg, 
                                       uint32_t * dlc, uint32_t * flag, uint32_t * time);
-static canStatus LeafLightLibFuncReadStatus(const CanHandle hnd, uint32_t * const flags);
-static canStatus LeafLightLibFuncBusOff(const CanHandle hnd);
-static canStatus LeafLightLibFuncClose(const CanHandle hnd);
+static canStatus KvaserCanLibFuncReadStatus(const CanHandle hnd, uint32_t * const flags);
+static canStatus KvaserCanLibFuncBusOff(const CanHandle hnd);
+static canStatus KvaserCanLibFuncClose(const CanHandle hnd);
 
 
 /****************************************************************************************
 * Local constant declarations
 ****************************************************************************************/
-/** \brief CAN interface structure filled with Kvaser Leaf Light v2 specifics. */
-static const tCanInterface leafLightInterface =
+/** \brief CAN interface structure filled with Kvaser CANLIB SDK interfac driver
+ *         specifics.
+ */
+static const tCanInterface kvaserCanLibInterface =
 {
-  LeafLightInit,
-  LeafLightTerminate,
-  LeafLightConnect,
-  LeafLightDisconnect,
-  LeafLightTransmit,
-  LeafLightIsBusError,
-  LeafLightRegisterEvents
+  KvaserCanLibInit,
+  KvaserCanLibTerminate,
+  KvaserCanLibConnect,
+  KvaserCanLibDisconnect,
+  KvaserCanLibTransmit,
+  KvaserCanLibIsBusError,
+  KvaserCanLibRegisterEvents
 };
 
 
@@ -123,70 +125,70 @@ static const tCanInterface leafLightInterface =
 * Local data declarations
 ****************************************************************************************/
 /** \brief The settings to use in this CAN interface. */
-static tCanSettings leafLightSettings;
+static tCanSettings kvaserCanLibSettings;
 
 /** \brief List with callback functions that this driver should use. */
-static tCanEvents * leafLightEventsList;
+static tCanEvents * kvaserCanLibEventsList;
 
-/** \brief Total number of event entries into the \ref leafLightEventsList list. */
-static uint32_t leafLightEventsEntries;
+/** \brief Total number of event entries into the \ref kvaserCanLibEventsList list. */
+static uint32_t kvaserCanLibEventsEntries;
 
 /** \brief Handle to the Kvaser CANLIB dynamic link library. */
-static HINSTANCE leafLightDllHandle;
+static HINSTANCE kvaserCanLibDllHandle;
 
 /** \brief Handle to the CAN channel. */
-static CanHandle leafLightCanHandle;
+static CanHandle kvaserCanLibCanHandle;
 
 /** \brief Handle to the CAN channel for usage in the CAN reception thread. */
-static CanHandle leafLightRxCanHandle;
+static CanHandle kvaserCanLibRxCanHandle;
 
 /** \brief Function pointer to the Kvaser CANLIB canInitializeLibrary function. */
-static tLeafLightLibFuncInitializeLibrary leafLightLibFuncInitializeLibraryPtr;
+static tKvaserCanLibFuncInitializeLibrary kvaserCanLibFuncInitializeLibraryPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canUnloadLibrary function. */
-static tLeafLightLibFuncUnloadLibrary leafLightLibFuncUnloadLibraryPtr;
+static tKvaserCanLibFuncUnloadLibrary kvaserCanLibFuncUnloadLibraryPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canOpenChannel function. */
-static tLeafLightLibFuncOpenChannel leafLightLibFuncOpenChannelPtr;
+static tKvaserCanLibFuncOpenChannel kvaserCanLibFuncOpenChannelPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canSetBusParams function. */
-static tLeafLightLibFuncSetBusParams leafLightLibFuncSetBusParamsPtr;
+static tKvaserCanLibFuncSetBusParams kvaserCanLibFuncSetBusParamsPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canSetBusOutputControl function. */
-static tLeafLightLibFuncSetBusOutputControl leafLightLibFuncSetBusOutputControlPtr;
+static tKvaserCanLibFuncSetBusOutputControl kvaserCanLibFuncSetBusOutputControlPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canSetAcceptanceFilter function. */
-static tLeafLightLibFuncSetAcceptanceFilter leafLightLibFuncSetAcceptanceFilterPtr;
+static tKvaserCanLibFuncSetAcceptanceFilter kvaserCanLibFuncSetAcceptanceFilterPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canIoCtl function. */
-static tLeafLightLibFuncIoCtl leafLightLibFuncIoCtlPtr;
+static tKvaserCanLibFuncIoCtl kvaserCanLibFuncIoCtlPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canBusOn function. */
-static tLeafLightLibFuncBusOn leafLightLibFuncBusOnPtr;
+static tKvaserCanLibFuncBusOn kvaserCanLibFuncBusOnPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canWrite function. */
-static tLeafLightLibFuncWrite leafLightLibFuncWritePtr;
+static tKvaserCanLibFuncWrite kvaserCanLibFuncWritePtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canRead function. */
-static tLeafLightLibFuncRead leafLightLibFuncReadPtr;
+static tKvaserCanLibFuncRead kvaserCanLibFuncReadPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canReadStatus function. */
-static tLeafLightLibFuncReadStatus leafLightLibFuncReadStatusPtr;
+static tKvaserCanLibFuncReadStatus kvaserCanLibFuncReadStatusPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canBusOff function. */
-static tLeafLightLibFuncBusOff leafLightLibFuncBusOffPtr;
+static tKvaserCanLibFuncBusOff kvaserCanLibFuncBusOffPtr;
 
 /** \brief Function pointer to the Kvaser CANLIB canClose function. */
-static tLeafLightLibFuncClose leafLightLibFuncClosePtr;
+static tKvaserCanLibFuncClose kvaserCanLibFuncClosePtr;
 
 /** \brief Handle for the event to terminate the reception thread. */
-static HANDLE leafLightTerminateEvent;
+static HANDLE kvaserCanLibTerminateEvent;
 
 /** \brief Handle for a CAN related event. */
-static HANDLE leafLightCanEvent;
+static HANDLE kvaserCanLibCanEvent;
 
 /** \brief Handle for the CAN reception thread. */
-static HANDLE leafLightRxThreadHandle;
+static HANDLE kvaserCanLibRxThreadHandle;
 
 
 /***********************************************************************************//**
@@ -195,10 +197,10 @@ static HANDLE leafLightRxThreadHandle;
 ** \return    Pointer to CAN interface structure.
 **
 ****************************************************************************************/
-tCanInterface const * LeafLightGetInterface(void)
+tCanInterface const * KvaserCanLibGetInterface(void)
 {
-  return &leafLightInterface;
-} /*** end of LeafLightGetInterface ***/
+  return &kvaserCanLibInterface;
+} /*** end of KvaserCanLibGetInterface ***/
 
 
 /************************************************************************************//**
@@ -206,40 +208,40 @@ tCanInterface const * LeafLightGetInterface(void)
 ** \param     settings Pointer to the CAN interface settings.
 **
 ****************************************************************************************/
-static void LeafLightInit(tCanSettings const * settings)
+static void KvaserCanLibInit(tCanSettings const * settings)
 {
   char * canDeviceName;
 
   /* Initialize locals. */
-  leafLightEventsList = NULL;
-  leafLightEventsEntries = 0;
-  leafLightTerminateEvent = NULL;
-  leafLightCanEvent = NULL;
-  leafLightRxThreadHandle = NULL;
-  leafLightDllHandle = NULL;
-  leafLightCanHandle = -1;
-  leafLightRxCanHandle = -1;
+  kvaserCanLibEventsList = NULL;
+  kvaserCanLibEventsEntries = 0;
+  kvaserCanLibTerminateEvent = NULL;
+  kvaserCanLibCanEvent = NULL;
+  kvaserCanLibRxThreadHandle = NULL;
+  kvaserCanLibDllHandle = NULL;
+  kvaserCanLibCanHandle = -1;
+  kvaserCanLibRxCanHandle = -1;
   /* Reset library function pointers. */
-  leafLightLibFuncInitializeLibraryPtr = NULL;
-  leafLightLibFuncUnloadLibraryPtr = NULL;
-  leafLightLibFuncOpenChannelPtr = NULL;
-  leafLightLibFuncSetBusParamsPtr = NULL;
-  leafLightLibFuncSetBusOutputControlPtr = NULL;
-  leafLightLibFuncSetAcceptanceFilterPtr = NULL;
-  leafLightLibFuncIoCtlPtr = NULL;
-  leafLightLibFuncBusOnPtr = NULL;
-  leafLightLibFuncWritePtr = NULL;
-  leafLightLibFuncReadPtr = NULL;
-  leafLightLibFuncReadStatusPtr = NULL;
-  leafLightLibFuncBusOffPtr = NULL;
-  leafLightLibFuncClosePtr = NULL;
+  kvaserCanLibFuncInitializeLibraryPtr = NULL;
+  kvaserCanLibFuncUnloadLibraryPtr = NULL;
+  kvaserCanLibFuncOpenChannelPtr = NULL;
+  kvaserCanLibFuncSetBusParamsPtr = NULL;
+  kvaserCanLibFuncSetBusOutputControlPtr = NULL;
+  kvaserCanLibFuncSetAcceptanceFilterPtr = NULL;
+  kvaserCanLibFuncIoCtlPtr = NULL;
+  kvaserCanLibFuncBusOnPtr = NULL;
+  kvaserCanLibFuncWritePtr = NULL;
+  kvaserCanLibFuncReadPtr = NULL;
+  kvaserCanLibFuncReadStatusPtr = NULL;
+  kvaserCanLibFuncBusOffPtr = NULL;
+  kvaserCanLibFuncClosePtr = NULL;
   /* Reset CAN interface settings. */
-  leafLightSettings.devicename = "";
-  leafLightSettings.channel = 0;
-  leafLightSettings.baudrate = CAN_BR500K;
-  leafLightSettings.code = 0x00000000u;
-  leafLightSettings.mask = 0x00000000u;
-  leafLightSettings.brsbaudrate = CANFD_DISABLED;
+  kvaserCanLibSettings.devicename = "";
+  kvaserCanLibSettings.channel = 0;
+  kvaserCanLibSettings.baudrate = CAN_BR500K;
+  kvaserCanLibSettings.code = 0x00000000u;
+  kvaserCanLibSettings.mask = 0x00000000u;
+  kvaserCanLibSettings.brsbaudrate = CANFD_DISABLED;
 
   /* Check parameters. */
   assert(settings != NULL);
@@ -248,7 +250,7 @@ static void LeafLightInit(tCanSettings const * settings)
   if (settings != NULL) /*lint !e774 */
   {
     /* Shallow copy the CAN interface settings for later usage. */
-    leafLightSettings = *settings;
+    kvaserCanLibSettings = *settings;
     /* The devicename is a pointer and it is not gauranteed that it stays valid so we need
      * to deep copy this one. note the +1 for '\0' in malloc.
      */
@@ -260,44 +262,44 @@ static void LeafLightInit(tCanSettings const * settings)
       if (canDeviceName != NULL) /*lint !e774 */
       {
         strcpy(canDeviceName, settings->devicename);
-        leafLightSettings.devicename = canDeviceName;
+        kvaserCanLibSettings.devicename = canDeviceName;
       }
     }
-    /* Perform initialization of Kvaser Leaf Light API. */
-    LeafLightLibLoadDll();
-    LeafLightLibFuncInitializeLibrary();
+    /* Perform initialization of Kvaser CANLIB SDK API. */
+    KvaserCanLibLoadDll();
+    KvaserCanLibFuncInitializeLibrary();
   }
-} /*** end of LeafLightInit ***/
+} /*** end of KvaserCanLibInit ***/
 
 
 /************************************************************************************//**
 ** \brief     Terminates the CAN interface.
 **
 ****************************************************************************************/
-static void LeafLightTerminate(void)
+static void KvaserCanLibTerminate(void)
 {
-  /* Perform termination of Kvaser Leaf Light API. */
-  (void)LeafLightLibFuncUnloadLibrary();
-  LeafLightLibUnloadDll();
+  /* Perform termination of Kvaser CANLIB SDK API. */
+  (void)KvaserCanLibFuncUnloadLibrary();
+  KvaserCanLibUnloadDll();
   /* Release memory that was allocated for storing the device name. */
-  if (leafLightSettings.devicename != NULL)
+  if (kvaserCanLibSettings.devicename != NULL)
   {
-    free((char *)leafLightSettings.devicename);
+    free((char *)kvaserCanLibSettings.devicename);
   }
   /* Reset CAN interface settings. */
-  leafLightSettings.devicename = "";
-  leafLightSettings.channel = 0;
-  leafLightSettings.baudrate = CAN_BR500K;
-  leafLightSettings.code = 0x00000000u;
-  leafLightSettings.mask = 0x00000000u;
-  leafLightSettings.brsbaudrate = CANFD_DISABLED;
+  kvaserCanLibSettings.devicename = "";
+  kvaserCanLibSettings.channel = 0;
+  kvaserCanLibSettings.baudrate = CAN_BR500K;
+  kvaserCanLibSettings.code = 0x00000000u;
+  kvaserCanLibSettings.mask = 0x00000000u;
+  kvaserCanLibSettings.brsbaudrate = CANFD_DISABLED;
   /* Release memory that was allocated for CAN events and reset the entry count. */
-  if ( (leafLightEventsList != NULL) && (leafLightEventsEntries != 0) )
+  if ( (kvaserCanLibEventsList != NULL) && (kvaserCanLibEventsEntries != 0) )
   {
-    free(leafLightEventsList);
-    leafLightEventsEntries = 0;
+    free(kvaserCanLibEventsList);
+    kvaserCanLibEventsEntries = 0;
   }
-} /*** end of LeafLightTerminate ***/
+} /*** end of KvaserCanLibTerminate ***/
 
 
 /************************************************************************************//**
@@ -305,7 +307,7 @@ static void LeafLightTerminate(void)
 ** \return    True if connected, false otherwise.
 **
 ****************************************************************************************/
-static bool LeafLightConnect(void)
+static bool KvaserCanLibConnect(void)
 {
   bool result = false;
   bool baudrateSupported = true;
@@ -318,13 +320,13 @@ static bool LeafLightConnect(void)
   /* This CAN driver does not support CAN FD mode. Cannot connect if CAN FD
    * mode was requested in the settings.
    */
-  if (leafLightSettings.brsbaudrate != CANFD_DISABLED)
+  if (kvaserCanLibSettings.brsbaudrate != CANFD_DISABLED)
   {
     return false;
   }
 
   /* Convert the baudrate to a value supported by the PCAN-Basic API. */
-  switch (leafLightSettings.baudrate)
+  switch (kvaserCanLibSettings.baudrate)
   {
     case CAN_BR10K:
       frequency = canBITRATE_10K;
@@ -373,11 +375,11 @@ static bool LeafLightConnect(void)
   assert(baudrateSupported);
 
   /* Invalidate handles. */
-  leafLightCanHandle = -1;
-  leafLightRxCanHandle = -1;
-  leafLightTerminateEvent = NULL;
-  leafLightCanEvent = NULL;
-  leafLightRxThreadHandle = NULL;
+  kvaserCanLibCanHandle = -1;
+  kvaserCanLibRxCanHandle = -1;
+  kvaserCanLibTerminateEvent = NULL;
+  kvaserCanLibCanEvent = NULL;
+  kvaserCanLibRxThreadHandle = NULL;
 
   /* Only continue with valid settings. */
   if (baudrateSupported)
@@ -387,17 +389,17 @@ static bool LeafLightConnect(void)
     /* Open the CAN channel with support for both 11- and 29-bit CAN identifiers, and 
      *  obtain its handle. 
      */
-    leafLightCanHandle = LeafLightLibFuncOpenChannel(0, canOPEN_REQUIRE_INIT_ACCESS |
+    kvaserCanLibCanHandle = KvaserCanLibFuncOpenChannel(0, canOPEN_REQUIRE_INIT_ACCESS |
                                                      canOPEN_REQUIRE_EXTENDED);
     /* Validate the handle. */
-    if (leafLightCanHandle < 0)
+    if (kvaserCanLibCanHandle < 0)
     {
       result = false;
     }
     /* Configure the baudrate. */
     if (result)
     {
-      if (LeafLightLibFuncSetBusParams(leafLightCanHandle, frequency, tseg1, tseg2, 
+      if (KvaserCanLibFuncSetBusParams(kvaserCanLibCanHandle, frequency, tseg1, tseg2, 
                                        sjw, noSamp, 0) != canOK)
       {
         result = false;
@@ -406,24 +408,24 @@ static bool LeafLightConnect(void)
     /* Set output control to the default normal mode. */
     if (result)
     {
-      if (LeafLightLibFuncSetBusOutputControl(leafLightCanHandle, 
+      if (KvaserCanLibFuncSetBusOutputControl(kvaserCanLibCanHandle, 
                                               canDRIVER_NORMAL) != canOK)
       {
         result = false;
       }
     }
     /* Configure reception acceptance filter. */
-    if ( (result) && (leafLightSettings.mask != 0x00000000u) )
+    if ( (result) && (kvaserCanLibSettings.mask != 0x00000000u) )
     {
       /* Start out by closing the acceptance filters first. */
-      if (LeafLightLibFuncSetAcceptanceFilter(leafLightCanHandle, 0x00000000u, 
+      if (KvaserCanLibFuncSetAcceptanceFilter(kvaserCanLibCanHandle, 0x00000000u, 
                                               0x00000000u, 0) != canOK)
       {
         result = false;
       }
       if (result)
       {
-        if (LeafLightLibFuncSetAcceptanceFilter(leafLightCanHandle, 0x00000000u, 
+        if (KvaserCanLibFuncSetAcceptanceFilter(kvaserCanLibCanHandle, 0x00000000u, 
                                                 0x00000000u, 1) != canOK)
         {
           result = false;
@@ -437,15 +439,15 @@ static bool LeafLightConnect(void)
          *   acceptExtId = ((mask & code & CAN_MSG_EXT_ID_MASK) != 0) ||
          *                 ((mask & CAN_MSG_EXT_ID_MASK) == 0)
          */
-        bool acceptStdID = ((leafLightSettings.mask & leafLightSettings.code & CAN_MSG_EXT_ID_MASK) == 0);
-        bool acceptExtID = ((leafLightSettings.mask & leafLightSettings.code & CAN_MSG_EXT_ID_MASK) != 0) ||
-          ((leafLightSettings.mask & CAN_MSG_EXT_ID_MASK) == 0);
+        bool acceptStdID = ((kvaserCanLibSettings.mask & kvaserCanLibSettings.code & CAN_MSG_EXT_ID_MASK) == 0);
+        bool acceptExtID = ((kvaserCanLibSettings.mask & kvaserCanLibSettings.code & CAN_MSG_EXT_ID_MASK) != 0) ||
+          ((kvaserCanLibSettings.mask & CAN_MSG_EXT_ID_MASK) == 0);
         /* Configure acceptance filter for standard 11-bit identifiers. */
         if (acceptStdID)
         {
-          if (LeafLightLibFuncSetAcceptanceFilter(leafLightCanHandle,
-            leafLightSettings.code & 0x1fffffffu,
-            leafLightSettings.mask & 0x1fffffffu,
+          if (KvaserCanLibFuncSetAcceptanceFilter(kvaserCanLibCanHandle,
+            kvaserCanLibSettings.code & 0x1fffffffu,
+            kvaserCanLibSettings.mask & 0x1fffffffu,
             0) != canOK)
           {
             result = false;
@@ -454,9 +456,9 @@ static bool LeafLightConnect(void)
         /* Configure acceptance filter for extended 29-bit identifiers. */
         if ((acceptExtID) && (result))
         {
-          if (LeafLightLibFuncSetAcceptanceFilter(leafLightCanHandle,
-            leafLightSettings.code & 0x1fffffffu,
-            leafLightSettings.mask & 0x1fffffffu,
+          if (KvaserCanLibFuncSetAcceptanceFilter(kvaserCanLibCanHandle,
+            kvaserCanLibSettings.code & 0x1fffffffu,
+            kvaserCanLibSettings.mask & 0x1fffffffu,
             1) != canOK)
           {
             result = false;
@@ -467,7 +469,7 @@ static bool LeafLightConnect(void)
     /* Go on the bus. */
     if (result)
     {
-      if (LeafLightLibFuncBusOn(leafLightCanHandle) != canOK)
+      if (KvaserCanLibFuncBusOn(kvaserCanLibCanHandle) != canOK)
       {
         result = false;
       }
@@ -477,16 +479,16 @@ static bool LeafLightConnect(void)
      * second handle is needed. Note that no init access is needed for this
      * handle.
      */
-    leafLightRxCanHandle = LeafLightLibFuncOpenChannel(0, canOPEN_NO_INIT_ACCESS);
+    kvaserCanLibRxCanHandle = KvaserCanLibFuncOpenChannel(0, canOPEN_NO_INIT_ACCESS);
     /* Validate the handle. */
-    if (leafLightRxCanHandle < 0)
+    if (kvaserCanLibRxCanHandle < 0)
     {
       result = false;
     }
     /* Go on the bus. */
     if (result)
     {
-      if (LeafLightLibFuncBusOn(leafLightRxCanHandle) != canOK)
+      if (KvaserCanLibFuncBusOn(kvaserCanLibRxCanHandle) != canOK)
       {
         result = false;
       }
@@ -494,14 +496,14 @@ static bool LeafLightConnect(void)
     /* Obtain the handle for CAN events. */
     if (result)
     {
-      leafLightCanEvent = NULL;
-      if (LeafLightLibFuncIoCtl(leafLightRxCanHandle, canIOCTL_GET_EVENTHANDLE,
-                                &leafLightCanEvent, sizeof(leafLightCanEvent)) != canOK)
+      kvaserCanLibCanEvent = NULL;
+      if (KvaserCanLibFuncIoCtl(kvaserCanLibRxCanHandle, canIOCTL_GET_EVENTHANDLE,
+                                &kvaserCanLibCanEvent, sizeof(kvaserCanLibCanEvent)) != canOK)
       {
         result = false;
       }
       /* Validate the handle. */
-      if (leafLightCanEvent == NULL)
+      if (kvaserCanLibCanEvent == NULL)
       {
         result = false;
       }
@@ -509,8 +511,8 @@ static bool LeafLightConnect(void)
     /* Create the terminate event handle used in the reception thread. */
     if (result)
     {
-      leafLightTerminateEvent = CreateEvent(NULL, TRUE, FALSE, "");
-      if (leafLightTerminateEvent == NULL)
+      kvaserCanLibTerminateEvent = CreateEvent(NULL, TRUE, FALSE, "");
+      if (kvaserCanLibTerminateEvent == NULL)
       {
         result = false;
       }
@@ -518,9 +520,9 @@ static bool LeafLightConnect(void)
     /* Start the reception thread as the last step. */
     if (result)
     {
-      leafLightRxThreadHandle = CreateThread(NULL, 0, LeafLightReceptionThread,
+      kvaserCanLibRxThreadHandle = CreateThread(NULL, 0, KvaserCanLibReceptionThread,
                                            NULL, 0, NULL);
-      if (leafLightRxThreadHandle == NULL)
+      if (kvaserCanLibRxThreadHandle == NULL)
       {
         result = false;
       }
@@ -530,69 +532,69 @@ static bool LeafLightConnect(void)
   /* Clean-up in case an error occurred. */
   if (!result)
   {
-    if (leafLightCanHandle >= 0)
+    if (kvaserCanLibCanHandle >= 0)
     {
       /* Go off the bus and close the channel. */
-      (void)LeafLightLibFuncBusOff(leafLightCanHandle);
-      (void)LeafLightLibFuncClose(leafLightCanHandle);
-      leafLightCanHandle = -1;
+      (void)KvaserCanLibFuncBusOff(kvaserCanLibCanHandle);
+      (void)KvaserCanLibFuncClose(kvaserCanLibCanHandle);
+      kvaserCanLibCanHandle = -1;
     }
-    if (leafLightRxCanHandle >= 0)
+    if (kvaserCanLibRxCanHandle >= 0)
     {
       /* Go off the bus and close the channel. */
-      (void)LeafLightLibFuncBusOff(leafLightRxCanHandle);
-      (void)LeafLightLibFuncClose(leafLightRxCanHandle);
-      leafLightRxCanHandle = -1;
+      (void)KvaserCanLibFuncBusOff(kvaserCanLibRxCanHandle);
+      (void)KvaserCanLibFuncClose(kvaserCanLibRxCanHandle);
+      kvaserCanLibRxCanHandle = -1;
     }
-    if (leafLightTerminateEvent != NULL)
+    if (kvaserCanLibTerminateEvent != NULL)
     {
       /* Close the event handle. */
-      (void)CloseHandle(leafLightTerminateEvent);
-      leafLightTerminateEvent = NULL;
+      (void)CloseHandle(kvaserCanLibTerminateEvent);
+      kvaserCanLibTerminateEvent = NULL;
     }
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightConnect ***/
+} /*** end of KvaserCanLibConnect ***/
 
 
 /************************************************************************************//**
 ** \brief     Disconnects the CAN interface.
 **
 ****************************************************************************************/
-static void LeafLightDisconnect(void)
+static void KvaserCanLibDisconnect(void)
 {
    /* Stop the reception thread. */
-  if (leafLightRxThreadHandle != NULL)
+  if (kvaserCanLibRxThreadHandle != NULL)
   {
     /* Trigger event to request the reception thread to stop. */
-    (void)SetEvent(leafLightTerminateEvent);
+    (void)SetEvent(kvaserCanLibTerminateEvent);
     /* Wait for the thread to signal termination. */
-    (void)WaitForSingleObject(leafLightRxThreadHandle, INFINITE);
+    (void)WaitForSingleObject(kvaserCanLibRxThreadHandle, INFINITE);
     /* Close the thread handle. */
-    (void)CloseHandle(leafLightRxThreadHandle);
-    leafLightRxThreadHandle = NULL;
+    (void)CloseHandle(kvaserCanLibRxThreadHandle);
+    kvaserCanLibRxThreadHandle = NULL;
   }
   /* Close the terminate event handle. */
-  if (leafLightTerminateEvent != NULL)
+  if (kvaserCanLibTerminateEvent != NULL)
   {
-    (void)CloseHandle(leafLightTerminateEvent);
-    leafLightTerminateEvent = NULL;
+    (void)CloseHandle(kvaserCanLibTerminateEvent);
+    kvaserCanLibTerminateEvent = NULL;
   }
   /* Go off the bus and close the channel. */
-  if (leafLightCanHandle >= 0)
+  if (kvaserCanLibCanHandle >= 0)
   {
-    (void)LeafLightLibFuncBusOff(leafLightCanHandle);
-    (void)LeafLightLibFuncClose(leafLightCanHandle);
-    leafLightCanHandle = -1;
+    (void)KvaserCanLibFuncBusOff(kvaserCanLibCanHandle);
+    (void)KvaserCanLibFuncClose(kvaserCanLibCanHandle);
+    kvaserCanLibCanHandle = -1;
   }
-  if (leafLightRxCanHandle >= 0)
+  if (kvaserCanLibRxCanHandle >= 0)
   {
-    (void)LeafLightLibFuncBusOff(leafLightRxCanHandle);
-    (void)LeafLightLibFuncClose(leafLightRxCanHandle);
-    leafLightRxCanHandle = -1;
+    (void)KvaserCanLibFuncBusOff(kvaserCanLibRxCanHandle);
+    (void)KvaserCanLibFuncClose(kvaserCanLibRxCanHandle);
+    kvaserCanLibRxCanHandle = -1;
   }
-} /*** end of LeafLightDisconnect ***/
+} /*** end of KvaserCanLibDisconnect ***/
 
 
 /************************************************************************************//**
@@ -601,7 +603,7 @@ static void LeafLightDisconnect(void)
 ** \return    True if successful, false otherwise.
 **
 ****************************************************************************************/
-static bool LeafLightTransmit(tCanMsg const * msg)
+static bool KvaserCanLibTransmit(tCanMsg const * msg)
 {
   bool result = false;
   tCanEvents const * pEvents;
@@ -613,7 +615,7 @@ static bool LeafLightTransmit(tCanMsg const * msg)
   assert(msg != NULL);
 
   /* Only continue with valid parameters and handle. */
-  if ( (msg != NULL) && (leafLightCanHandle >= 0) ) /*lint !e774 */
+  if ( (msg != NULL) && (kvaserCanLibCanHandle >= 0) ) /*lint !e774 */
   {
     /* Prepare message. */
     if ((msg->id & CAN_MSG_EXT_ID_MASK) == 0)
@@ -631,13 +633,13 @@ static bool LeafLightTransmit(tCanMsg const * msg)
       txData[idx] = msg->data[idx];
     }
     /* Submit CAN message for transmission. */
-    if (LeafLightLibFuncWrite(leafLightCanHandle, txId, txData, msg->len, txFlags) == canOK)
+    if (KvaserCanLibFuncWrite(kvaserCanLibCanHandle, txId, txData, msg->len, txFlags) == canOK)
     {
       /* Update result value to success. */
       result = true;
       /* Trigger transmit complete event(s). */
-      pEvents = leafLightEventsList;
-      for (uint32_t idx = 0; idx < leafLightEventsEntries; idx++)
+      pEvents = kvaserCanLibEventsList;
+      for (uint32_t idx = 0; idx < kvaserCanLibEventsEntries; idx++)
       {
         if (pEvents != NULL)
         {
@@ -653,7 +655,7 @@ static bool LeafLightTransmit(tCanMsg const * msg)
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightTransmit ***/
+} /*** end of KvaserCanLibTransmit ***/
 
 
 /************************************************************************************//**
@@ -661,16 +663,16 @@ static bool LeafLightTransmit(tCanMsg const * msg)
 ** \return    True if a bus error situation was detected, false otherwise.
 **
 ****************************************************************************************/
-static bool LeafLightIsBusError(void)
+static bool KvaserCanLibIsBusError(void)
 {
   bool result = false;
   uint32_t statusFlags;
 
   /* Only continue with valid handle. */
-  if (leafLightCanHandle >= 0)
+  if (kvaserCanLibCanHandle >= 0)
   {
     /* Read the status flags. */
-    if (LeafLightLibFuncReadStatus(leafLightCanHandle, &statusFlags) == canOK)
+    if (KvaserCanLibFuncReadStatus(kvaserCanLibCanHandle, &statusFlags) == canOK)
     {
       /* Check for bus off or error passive bits. */
       if ((statusFlags & (canSTAT_BUS_OFF | canSTAT_ERROR_PASSIVE)) != 0)
@@ -681,7 +683,7 @@ static bool LeafLightIsBusError(void)
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightIsBusError ***/
+} /*** end of KvaserCanLibIsBusError ***/
 
 
 /************************************************************************************//**
@@ -690,7 +692,7 @@ static bool LeafLightIsBusError(void)
 ** \param     events Pointer to structure with event callback function pointers.
 **
 ****************************************************************************************/
-static void LeafLightRegisterEvents(tCanEvents const * events)
+static void KvaserCanLibRegisterEvents(tCanEvents const * events)
 {
   /* Check parameters. */
   assert(events != NULL);
@@ -702,26 +704,26 @@ static void LeafLightRegisterEvents(tCanEvents const * events)
      * it is okay to call realloc with a NULL pointer. In this case it simply behaves
      * as malloc. 
      */
-    leafLightEventsList = realloc(leafLightEventsList,
-                                  (sizeof(tCanEvents) * (leafLightEventsEntries + 1)));
+    kvaserCanLibEventsList = realloc(kvaserCanLibEventsList,
+                                  (sizeof(tCanEvents) * (kvaserCanLibEventsEntries + 1)));
     /* Assert reallocation. */
-    assert(leafLightEventsList != NULL);
+    assert(kvaserCanLibEventsList != NULL);
     /* Only continue if reallocation was successful. */
-    if (leafLightEventsList != NULL)
+    if (kvaserCanLibEventsList != NULL)
     {
       /* Increment events entry count. */
-      leafLightEventsEntries++;
+      kvaserCanLibEventsEntries++;
       /* Store the events in the new entry. */
-      leafLightEventsList[leafLightEventsEntries - 1] = *events;
+      kvaserCanLibEventsList[kvaserCanLibEventsEntries - 1] = *events;
     }
     /* Reallocation failed. */
     else
     {
       /* Reset events entry count. */
-      leafLightEventsEntries = 0;
+      kvaserCanLibEventsEntries = 0;
     }
   }
-} /*** end of LeafLightRegisterEvents ***/
+} /*** end of KvaserCanLibRegisterEvents ***/
 
 
 /************************************************************************************//**
@@ -730,13 +732,13 @@ static void LeafLightRegisterEvents(tCanEvents const * events)
 ** \return    Thread exit code.
 **
 ****************************************************************************************/
-static DWORD WINAPI LeafLightReceptionThread(LPVOID pv)
+static DWORD WINAPI KvaserCanLibReceptionThread(LPVOID pv)
 {
   DWORD waitResult;
   HANDLE handles[] = 
   { 
-    leafLightCanEvent, 
-    leafLightTerminateEvent 
+    kvaserCanLibCanEvent, 
+    kvaserCanLibTerminateEvent 
   };
   bool running = true;
   int32_t rxId;
@@ -760,12 +762,12 @@ static DWORD WINAPI LeafLightReceptionThread(LPVOID pv)
       /* CAN reception event. */
       case WAIT_OBJECT_0 + 0: /*lint !e835 */
         /* Only read out the events when the handle is valid. */
-        if (leafLightRxCanHandle >= 0)
+        if (kvaserCanLibRxCanHandle >= 0)
         {
           /* Empty out the event queue. */
           do
           {
-            rxStatus = LeafLightLibFuncRead(leafLightRxCanHandle, &rxId, &rxMsg.data[0], 
+            rxStatus = KvaserCanLibFuncRead(kvaserCanLibRxCanHandle, &rxId, &rxMsg.data[0], 
                                             &rxDlc, &rxFlags, &rxTime);
             /* Only process the result if a message was read. */
             if (rxStatus == canOK)
@@ -774,7 +776,7 @@ static DWORD WINAPI LeafLightReceptionThread(LPVOID pv)
               if ((rxFlags & (canMSG_STD | canMSG_EXT)) != 0)
               {
                 /* Convert the CAN message to the format of the CAN driver module. Note
-                 * that the data was already copied by LeafLightLibFuncRead().
+                 * that the data was already copied by KvaserCanLibFuncRead().
                  */
                 rxMsg.id = (uint32_t)rxId;
                 if ((rxFlags & canMSG_EXT) != 0)
@@ -784,8 +786,8 @@ static DWORD WINAPI LeafLightReceptionThread(LPVOID pv)
                 rxMsg.len = (uint8_t)rxDlc;
 
                 /* Trigger message reception event(s). */
-                pEvents = leafLightEventsList;
-                for (uint32_t idx = 0; idx < leafLightEventsEntries; idx++)
+                pEvents = kvaserCanLibEventsList;
+                for (uint32_t idx = 0; idx < kvaserCanLibEventsEntries; idx++)
                 {
                   if (pEvents != NULL)
                   {
@@ -814,102 +816,102 @@ static DWORD WINAPI LeafLightReceptionThread(LPVOID pv)
   }
   /* Exit thread. */
   return 0;
-} /*** end of LeafLightReceptionThread ***/
+} /*** end of KvaserCanLibReceptionThread ***/
 
 
 /************************************************************************************//**
 ** \brief     Loads the Kvaser CANLIB DLL and initializes the API function pointers.
 **
 ****************************************************************************************/
-static void LeafLightLibLoadDll(void)
+static void KvaserCanLibLoadDll(void)
 {
   /* Reset the channel handles. */
-  leafLightCanHandle = -1;
-  leafLightRxCanHandle = -1;
+  kvaserCanLibCanHandle = -1;
+  kvaserCanLibRxCanHandle = -1;
   /* Start out by resetting the API function pointers. */
-  leafLightLibFuncInitializeLibraryPtr = NULL;
-  leafLightLibFuncUnloadLibraryPtr = NULL;
-  leafLightLibFuncOpenChannelPtr = NULL;
-  leafLightLibFuncSetBusParamsPtr = NULL;
-  leafLightLibFuncSetBusOutputControlPtr = NULL;
-  leafLightLibFuncSetAcceptanceFilterPtr = NULL;
-  leafLightLibFuncIoCtlPtr = NULL;
-  leafLightLibFuncBusOnPtr = NULL;
-  leafLightLibFuncWritePtr = NULL;
-  leafLightLibFuncReadPtr = NULL;
-  leafLightLibFuncReadStatusPtr = NULL;
-  leafLightLibFuncBusOffPtr = NULL;
-  leafLightLibFuncClosePtr = NULL;
+  kvaserCanLibFuncInitializeLibraryPtr = NULL;
+  kvaserCanLibFuncUnloadLibraryPtr = NULL;
+  kvaserCanLibFuncOpenChannelPtr = NULL;
+  kvaserCanLibFuncSetBusParamsPtr = NULL;
+  kvaserCanLibFuncSetBusOutputControlPtr = NULL;
+  kvaserCanLibFuncSetAcceptanceFilterPtr = NULL;
+  kvaserCanLibFuncIoCtlPtr = NULL;
+  kvaserCanLibFuncBusOnPtr = NULL;
+  kvaserCanLibFuncWritePtr = NULL;
+  kvaserCanLibFuncReadPtr = NULL;
+  kvaserCanLibFuncReadStatusPtr = NULL;
+  kvaserCanLibFuncBusOffPtr = NULL;
+  kvaserCanLibFuncClosePtr = NULL;
 
   /* Attempt to load the library and obtain a handle to it. */
-  leafLightDllHandle = LoadLibrary("canlib32");
+  kvaserCanLibDllHandle = LoadLibrary("canlib32");
 
   /* Assert libary handle. */
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue if the library was successfully loaded */
-  if (leafLightDllHandle != NULL) /*lint !e774 */
+  if (kvaserCanLibDllHandle != NULL) /*lint !e774 */
   {
     /* Set canInitializeLibrary function pointer. */
-    leafLightLibFuncInitializeLibraryPtr = (tLeafLightLibFuncInitializeLibrary)GetProcAddress(leafLightDllHandle, "canInitializeLibrary");
+    kvaserCanLibFuncInitializeLibraryPtr = (tKvaserCanLibFuncInitializeLibrary)GetProcAddress(kvaserCanLibDllHandle, "canInitializeLibrary");
     /* Set canUnloadLibrary function pointer. */
-    leafLightLibFuncUnloadLibraryPtr = (tLeafLightLibFuncUnloadLibrary)GetProcAddress(leafLightDllHandle, "canUnloadLibrary");
+    kvaserCanLibFuncUnloadLibraryPtr = (tKvaserCanLibFuncUnloadLibrary)GetProcAddress(kvaserCanLibDllHandle, "canUnloadLibrary");
     /* Set canOpenChannel function pointer. */
-    leafLightLibFuncOpenChannelPtr = (tLeafLightLibFuncOpenChannel)GetProcAddress(leafLightDllHandle, "canOpenChannel");
+    kvaserCanLibFuncOpenChannelPtr = (tKvaserCanLibFuncOpenChannel)GetProcAddress(kvaserCanLibDllHandle, "canOpenChannel");
     /* Set canSetBusParams function pointer. */
-    leafLightLibFuncSetBusParamsPtr = (tLeafLightLibFuncSetBusParams)GetProcAddress(leafLightDllHandle, "canSetBusParams");
+    kvaserCanLibFuncSetBusParamsPtr = (tKvaserCanLibFuncSetBusParams)GetProcAddress(kvaserCanLibDllHandle, "canSetBusParams");
     /* Set canSetBusOutputControl function pointer. */
-    leafLightLibFuncSetBusOutputControlPtr = (tLeafLightLibFuncSetBusOutputControl)GetProcAddress(leafLightDllHandle, "canSetBusOutputControl");
+    kvaserCanLibFuncSetBusOutputControlPtr = (tKvaserCanLibFuncSetBusOutputControl)GetProcAddress(kvaserCanLibDllHandle, "canSetBusOutputControl");
     /* Set canAccept function pointer. */
-    leafLightLibFuncSetAcceptanceFilterPtr = (tLeafLightLibFuncSetAcceptanceFilter)GetProcAddress(leafLightDllHandle, "canSetAcceptanceFilter");
+    kvaserCanLibFuncSetAcceptanceFilterPtr = (tKvaserCanLibFuncSetAcceptanceFilter)GetProcAddress(kvaserCanLibDllHandle, "canSetAcceptanceFilter");
     /* Set canIoCtl function pointer. */
-    leafLightLibFuncIoCtlPtr = (tLeafLightLibFuncIoCtl)GetProcAddress(leafLightDllHandle, "canIoCtl");
+    kvaserCanLibFuncIoCtlPtr = (tKvaserCanLibFuncIoCtl)GetProcAddress(kvaserCanLibDllHandle, "canIoCtl");
     /* Set canBusOn function pointer. */
-    leafLightLibFuncBusOnPtr = (tLeafLightLibFuncBusOn)GetProcAddress(leafLightDllHandle, "canBusOn");
+    kvaserCanLibFuncBusOnPtr = (tKvaserCanLibFuncBusOn)GetProcAddress(kvaserCanLibDllHandle, "canBusOn");
     /* Set canWrite function pointer. */
-    leafLightLibFuncWritePtr = (tLeafLightLibFuncWrite)GetProcAddress(leafLightDllHandle, "canWrite");
+    kvaserCanLibFuncWritePtr = (tKvaserCanLibFuncWrite)GetProcAddress(kvaserCanLibDllHandle, "canWrite");
     /* Set canRead function pointer. */
-    leafLightLibFuncReadPtr = (tLeafLightLibFuncRead)GetProcAddress(leafLightDllHandle, "canRead");
+    kvaserCanLibFuncReadPtr = (tKvaserCanLibFuncRead)GetProcAddress(kvaserCanLibDllHandle, "canRead");
     /* Set canReadStatus function pointer. */
-    leafLightLibFuncReadStatusPtr = (tLeafLightLibFuncReadStatus)GetProcAddress(leafLightDllHandle, "canReadStatus");
+    kvaserCanLibFuncReadStatusPtr = (tKvaserCanLibFuncReadStatus)GetProcAddress(kvaserCanLibDllHandle, "canReadStatus");
     /* Set canBusOff function pointer. */
-    leafLightLibFuncBusOffPtr = (tLeafLightLibFuncBusOff)GetProcAddress(leafLightDllHandle, "canBusOff");
+    kvaserCanLibFuncBusOffPtr = (tKvaserCanLibFuncBusOff)GetProcAddress(kvaserCanLibDllHandle, "canBusOff");
     /* Set canClose function pointer. */
-    leafLightLibFuncClosePtr = (tLeafLightLibFuncClose)GetProcAddress(leafLightDllHandle, "canClose");
+    kvaserCanLibFuncClosePtr = (tKvaserCanLibFuncClose)GetProcAddress(kvaserCanLibDllHandle, "canClose");
   }
-} /*** end of LeafLightLibLoadDll ***/
+} /*** end of KvaserCanLibLoadDll ***/
 
 
 /************************************************************************************//**
 ** \brief     Unloads the Kvaser CANLIB DLL and resets the API function pointers.
 **
 ****************************************************************************************/
-static void LeafLightLibUnloadDll(void)
+static void KvaserCanLibUnloadDll(void)
 {
   /* Reset the API function pointers. */
-  leafLightLibFuncInitializeLibraryPtr = NULL;
-  leafLightLibFuncUnloadLibraryPtr = NULL;
-  leafLightLibFuncOpenChannelPtr = NULL;
-  leafLightLibFuncSetBusParamsPtr = NULL;
-  leafLightLibFuncSetBusOutputControlPtr = NULL;
-  leafLightLibFuncSetAcceptanceFilterPtr = NULL;
-  leafLightLibFuncIoCtlPtr = NULL;
-  leafLightLibFuncBusOnPtr = NULL;
-  leafLightLibFuncWritePtr = NULL;
-  leafLightLibFuncReadPtr = NULL;
-  leafLightLibFuncReadStatusPtr = NULL;
-  leafLightLibFuncBusOffPtr = NULL;
-  leafLightLibFuncClosePtr = NULL;
+  kvaserCanLibFuncInitializeLibraryPtr = NULL;
+  kvaserCanLibFuncUnloadLibraryPtr = NULL;
+  kvaserCanLibFuncOpenChannelPtr = NULL;
+  kvaserCanLibFuncSetBusParamsPtr = NULL;
+  kvaserCanLibFuncSetBusOutputControlPtr = NULL;
+  kvaserCanLibFuncSetAcceptanceFilterPtr = NULL;
+  kvaserCanLibFuncIoCtlPtr = NULL;
+  kvaserCanLibFuncBusOnPtr = NULL;
+  kvaserCanLibFuncWritePtr = NULL;
+  kvaserCanLibFuncReadPtr = NULL;
+  kvaserCanLibFuncReadStatusPtr = NULL;
+  kvaserCanLibFuncBusOffPtr = NULL;
+  kvaserCanLibFuncClosePtr = NULL;
   /* Reset the channel handles. */
-  leafLightCanHandle = -1;
-  leafLightRxCanHandle = -1;
+  kvaserCanLibCanHandle = -1;
+  kvaserCanLibRxCanHandle = -1;
   /* Unload the library and invalidate its handle. */
-  if (leafLightDllHandle != NULL) 
+  if (kvaserCanLibDllHandle != NULL) 
   {
-    (void)FreeLibrary(leafLightDllHandle);
-    leafLightDllHandle = NULL;
+    (void)FreeLibrary(kvaserCanLibDllHandle);
+    kvaserCanLibDllHandle = NULL;
   }
-} /*** end of LeafLightLibUnloadDll **/
+} /*** end of KvaserCanLibUnloadDll **/
 
 
 /************************************************************************************//**
@@ -917,19 +919,19 @@ static void LeafLightLibUnloadDll(void)
 **            initialize the driver.
 **
 ****************************************************************************************/
-static void LeafLightLibFuncInitializeLibrary(void)
+static void KvaserCanLibFuncInitializeLibrary(void)
 {
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncInitializeLibraryPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncInitializeLibraryPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncInitializeLibraryPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncInitializeLibraryPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    leafLightLibFuncInitializeLibraryPtr();
+    kvaserCanLibFuncInitializeLibraryPtr();
   }
-} /*** end of LeafLightLibFuncInitializeLibrary ***/
+} /*** end of KvaserCanLibFuncInitializeLibrary ***/
 
 
 /************************************************************************************//**
@@ -938,23 +940,23 @@ static void LeafLightLibFuncInitializeLibrary(void)
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncUnloadLibrary(void)
+static canStatus KvaserCanLibFuncUnloadLibrary(void)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncUnloadLibraryPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncUnloadLibraryPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncUnloadLibraryPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncUnloadLibraryPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncUnloadLibraryPtr();
+    result = kvaserCanLibFuncUnloadLibraryPtr();
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncUnloadLibrary ***/
+} /*** end of KvaserCanLibFuncUnloadLibrary ***/
 
 
 /************************************************************************************//**
@@ -965,23 +967,23 @@ static canStatus LeafLightLibFuncUnloadLibrary(void)
 **            otherwise.
 **
 ****************************************************************************************/
-static CanHandle LeafLightLibFuncOpenChannel(int32_t channel, int32_t flags)
+static CanHandle KvaserCanLibFuncOpenChannel(int32_t channel, int32_t flags)
 {
   canHandle result = (canHandle)canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncOpenChannelPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncOpenChannelPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncOpenChannelPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncOpenChannelPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncOpenChannelPtr(channel, flags);
+    result = kvaserCanLibFuncOpenChannelPtr(channel, flags);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncOpenChannel ***/
+} /*** end of KvaserCanLibFuncOpenChannel ***/
 
 
 /************************************************************************************//**
@@ -1003,7 +1005,7 @@ static CanHandle LeafLightLibFuncOpenChannel(int32_t channel, int32_t flags)
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncSetBusParams(const CanHandle hnd, int32_t freq, 
+static canStatus KvaserCanLibFuncSetBusParams(const CanHandle hnd, int32_t freq, 
                                               uint32_t tseg1, uint32_t tseg2, 
                                               uint32_t sjw, uint32_t noSamp, 
                                               uint32_t syncmode)
@@ -1011,18 +1013,18 @@ static canStatus LeafLightLibFuncSetBusParams(const CanHandle hnd, int32_t freq,
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncSetBusParamsPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncSetBusParamsPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncSetBusParamsPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncSetBusParamsPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncSetBusParamsPtr(hnd, freq, tseg1, tseg2, sjw, noSamp, syncmode);
+    result = kvaserCanLibFuncSetBusParamsPtr(hnd, freq, tseg1, tseg2, sjw, noSamp, syncmode);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncSetBusParams ***/
+} /*** end of KvaserCanLibFuncSetBusParams ***/
 
 
 /************************************************************************************//**
@@ -1036,24 +1038,24 @@ static canStatus LeafLightLibFuncSetBusParams(const CanHandle hnd, int32_t freq,
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncSetBusOutputControl(const CanHandle hnd, 
+static canStatus KvaserCanLibFuncSetBusOutputControl(const CanHandle hnd, 
                                                      const uint32_t drivertype)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncSetBusOutputControlPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncSetBusOutputControlPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncSetBusOutputControlPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncSetBusOutputControlPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncSetBusOutputControlPtr(hnd, drivertype);
+    result = kvaserCanLibFuncSetBusOutputControlPtr(hnd, drivertype);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncSetBusOutputControl ***/
+} /*** end of KvaserCanLibFuncSetBusOutputControl ***/
 
 
 /************************************************************************************//**
@@ -1065,24 +1067,24 @@ static canStatus LeafLightLibFuncSetBusOutputControl(const CanHandle hnd,
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncSetAcceptanceFilter(const CanHandle hnd, uint32_t code,
+static canStatus KvaserCanLibFuncSetAcceptanceFilter(const CanHandle hnd, uint32_t code,
                                                      uint32_t mask, int32_t is_extended)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncSetAcceptanceFilterPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncSetAcceptanceFilterPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncSetAcceptanceFilterPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncSetAcceptanceFilterPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncSetAcceptanceFilterPtr(hnd, code, mask, is_extended);
+    result = kvaserCanLibFuncSetAcceptanceFilterPtr(hnd, code, mask, is_extended);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncSetAcceptanceFilter ***/
+} /*** end of KvaserCanLibFuncSetAcceptanceFilter ***/
 
 
 /************************************************************************************//**
@@ -1100,24 +1102,24 @@ static canStatus LeafLightLibFuncSetAcceptanceFilter(const CanHandle hnd, uint32
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncIoCtl(const CanHandle hnd, uint32_t func, void * buf, 
+static canStatus KvaserCanLibFuncIoCtl(const CanHandle hnd, uint32_t func, void * buf, 
                                        uint32_t buflen)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncIoCtlPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncIoCtlPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncIoCtlPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncIoCtlPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncIoCtlPtr(hnd, func, buf, buflen);
+    result = kvaserCanLibFuncIoCtlPtr(hnd, func, buf, buflen);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncIoCtl ***/
+} /*** end of KvaserCanLibFuncIoCtl ***/
 
 
 /************************************************************************************//**
@@ -1126,23 +1128,23 @@ static canStatus LeafLightLibFuncIoCtl(const CanHandle hnd, uint32_t func, void 
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncBusOn(const CanHandle hnd)
+static canStatus KvaserCanLibFuncBusOn(const CanHandle hnd)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncBusOnPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncBusOnPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncBusOnPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncBusOnPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncBusOnPtr(hnd);
+    result = kvaserCanLibFuncBusOnPtr(hnd);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncBusOn ***/
+} /*** end of KvaserCanLibFuncBusOn ***/
 
 
 /************************************************************************************//**
@@ -1159,24 +1161,24 @@ static canStatus LeafLightLibFuncBusOn(const CanHandle hnd)
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncWrite(const CanHandle hnd, int32_t id, void * msg, 
+static canStatus KvaserCanLibFuncWrite(const CanHandle hnd, int32_t id, void * msg, 
                                        uint32_t dlc, uint32_t flag)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncWritePtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncWritePtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncWritePtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncWritePtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncWritePtr(hnd, id, msg, dlc, flag);
+    result = kvaserCanLibFuncWritePtr(hnd, id, msg, dlc, flag);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncWrite ***/
+} /*** end of KvaserCanLibFuncWrite ***/
 
 
 /************************************************************************************//**
@@ -1197,24 +1199,24 @@ static canStatus LeafLightLibFuncWrite(const CanHandle hnd, int32_t id, void * m
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncRead(const CanHandle hnd, int32_t * id, void * msg, 
+static canStatus KvaserCanLibFuncRead(const CanHandle hnd, int32_t * id, void * msg, 
                                       uint32_t * dlc, uint32_t * flag, uint32_t * time)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncReadPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncReadPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncReadPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncReadPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncReadPtr(hnd, id, msg, dlc, flag, time);
+    result = kvaserCanLibFuncReadPtr(hnd, id, msg, dlc, flag, time);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncRead ***/
+} /*** end of KvaserCanLibFuncRead ***/
 
 
 /************************************************************************************//**
@@ -1226,23 +1228,23 @@ static canStatus LeafLightLibFuncRead(const CanHandle hnd, int32_t * id, void * 
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncReadStatus(const CanHandle hnd, uint32_t * const flags)
+static canStatus KvaserCanLibFuncReadStatus(const CanHandle hnd, uint32_t * const flags)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncReadStatusPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncReadStatusPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncReadStatusPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncReadStatusPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncReadStatusPtr(hnd, flags);
+    result = kvaserCanLibFuncReadStatusPtr(hnd, flags);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncReadStatus ***/
+} /*** end of KvaserCanLibFuncReadStatus ***/
 
 
 /************************************************************************************//**
@@ -1251,23 +1253,23 @@ static canStatus LeafLightLibFuncReadStatus(const CanHandle hnd, uint32_t * cons
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncBusOff(const CanHandle hnd)
+static canStatus KvaserCanLibFuncBusOff(const CanHandle hnd)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncBusOffPtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncBusOffPtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncBusOffPtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncBusOffPtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncBusOffPtr(hnd);
+    result = kvaserCanLibFuncBusOffPtr(hnd);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncBusOff ***/
+} /*** end of KvaserCanLibFuncBusOff ***/
 
 
 /************************************************************************************//**
@@ -1279,24 +1281,24 @@ static canStatus LeafLightLibFuncBusOff(const CanHandle hnd)
 ** \return    canOK if successful, canERR_xxx otherwise.
 **
 ****************************************************************************************/
-static canStatus LeafLightLibFuncClose(const CanHandle hnd)
+static canStatus KvaserCanLibFuncClose(const CanHandle hnd)
 {
   canStatus result = canERR_NOTINITIALIZED;
   
   /* Check function pointer and library handle. */
-  assert(leafLightLibFuncClosePtr != NULL);
-  assert(leafLightDllHandle != NULL);
+  assert(kvaserCanLibFuncClosePtr != NULL);
+  assert(kvaserCanLibDllHandle != NULL);
 
   /* Only continue with valid function pointer and library handle. */
-  if ((leafLightLibFuncClosePtr != NULL) && (leafLightDllHandle != NULL)) /*lint !e774 */
+  if ((kvaserCanLibFuncClosePtr != NULL) && (kvaserCanLibDllHandle != NULL)) /*lint !e774 */
   {
     /* Call library function. */
-    result = leafLightLibFuncClosePtr(hnd);
+    result = kvaserCanLibFuncClosePtr(hnd);
   }
   /* Give the result back to the caller. */
   return result;
-} /*** end of LeafLightLibFuncClose ***/
+} /*** end of KvaserCanLibFuncClose ***/
 
 
-/*********************************** end of leaflight.c ********************************/
+/*********************************** end of kvcanlib.c *********************************/
 

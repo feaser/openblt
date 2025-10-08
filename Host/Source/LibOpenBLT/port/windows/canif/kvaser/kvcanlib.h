@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         leaflight.h
-* \brief        Kvaser Leaf Light v2 interface header file.
-* \ingroup      Kvaser_LeafLight
+* \file         kvcanlib.h
+* \brief        Kvaser CANLIB SDK API interfacae header file.
+* \ingroup      Kvaser_CanLib
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -26,8 +26,8 @@
 * \endinternal
 ****************************************************************************************/
 /************************************************************************************//**
-* \defgroup   Kvaser_LeafLight Kvaser Leaf Light v2 interface
-* \brief      This module implements the CAN interface for the Kvaser Leaf Light v2.
+* \defgroup   Kvaser_CanLib Kvaser CANLIB SDK interface
+* \brief      This module implements the CAN interface for the Kvaser CANLIB SDK.
 * \ingroup    CanDriver
 ****************************************************************************************/
 #ifndef LEAFLIGHT_H
@@ -40,11 +40,11 @@ extern "C" {
 /***************************************************************************************
 * Function prototypes
 ****************************************************************************************/
-tCanInterface const * LeafLightGetInterface(void);
+tCanInterface const * KvaserCanLibGetInterface(void);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* LEAFLIGHT_H */
-/*********************************** end of leaflight.h ********************************/
+/*********************************** end of kvcanlib.h *********************************/

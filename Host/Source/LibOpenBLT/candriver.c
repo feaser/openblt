@@ -39,7 +39,7 @@
 #include "socketcan.h"                      /* SocketCAN interface                     */
 #else
 #include "pcanusb.h"                        /* Peak PCAN-USB interface                 */
-#include "leaflight.h"                      /* Kvaser Leaf Light v2 interface          */
+#include "kvcanlib.h"                       /* Kvaser CANLIB SDK API                   */
 #include "canusb.h"                         /* Lawicel CANUSB interface                */
 #include "xldriver.h"                       /* Vector XL driver interface              */
 #include "vcidriver.h"                      /* Ixxat VCI driver interface              */
@@ -92,9 +92,14 @@ void CanInit(tCanSettings const * settings)
       {
         canIfPtr = PCanUsbGetInterface();
       }
+      else if (strcmp(settings->devicename, "kvaser_canlib") == 0)
+      {
+        canIfPtr = KvaserCanLibGetInterface();
+      }
+      /* Deprecated. Use kvaser_canlib instead of kvaser_leaflight. */
       else if (strcmp(settings->devicename, "kvaser_leaflight") == 0)
       {
-        canIfPtr = LeafLightGetInterface();
+        canIfPtr = KvaserCanLibGetInterface();
       }
       else if (strcmp(settings->devicename, "lawicel_canusb") == 0)
       {

@@ -1,39 +1,38 @@
-/**
- * \section LICENSE
- *                   Copyright 1998-2011 by KVASER AB, SWEDEN
+/*
+ *                   Copyright 1998-2017 by KVASER AB, SWEDEN
  *
  *                        WWW: http://www.kvaser.com
  *
  * This software is furnished under a license and may be used and copied
  * only in accordance with the terms of such license.
  *
- * \section DESCRIPTION
- *
- *   This file contains definitions which are retained for compatibility.
- *
+*/
+
+/**
  * \file obsolete.h
- * \author Kvaser AB
- */
+ * \brief Definitions which are retained for compatibility.
+ * \details
+ * \defgroup Obsolete Obsolete API Reference
+ * \ingroup grp_canlib
+ * \brief Definitions which are retained for compatibility.
+ * @{
+*/
 
 #ifndef _OBSOLETE_H_
 #define _OBSOLETE_H_
 
-/**
- * \defgroup Obsolete Obsolete API Reference
- * @{
- */
 
-#define canCIRCUIT_ANY          -1   ///< Any circuit will do \warning Obsolete! 
-#define canCARD_ANY             -1   ///< Any card will do    \warning Obsolete! 
-#define canCHANNEL_ANY          -1   ///< Any channel will do \warning Obsolete! 
+#define canCIRCUIT_ANY          -1   ///< Any circuit will do \warning Obsolete!
+#define canCARD_ANY             -1   ///< Any card will do    \warning Obsolete!
+#define canCHANNEL_ANY          -1   ///< Any channel will do \warning Obsolete!
 
-#define CANID_METAMSG  (-1L)        ///< Like msgs containing bus status changes. \warning Obsolete! 
-#define CANID_WILDCARD (-2L)        ///< We don't care or don't know. \warning Obsolete! 
+#define CANID_METAMSG  (-1L)        ///< Like msgs containing bus status changes. \warning Obsolete!
+#define CANID_WILDCARD (-2L)        ///< We don't care or don't know. \warning Obsolete!
 
 /**
  * Retained for compatibility.
  */
- 
+
 /**
  * \warning Obsolete!
  */
@@ -72,7 +71,7 @@ typedef struct {
     unsigned int rxBufSize;
     unsigned int txBufSize;
 } canSWDescriptorEx;
-#endif
+#endif /* __WIN32__ */
 
 /**
  * \warning Obsolete!
@@ -119,13 +118,15 @@ canStatus CANLIBAPI canGetCircuits(int * context,
 #define canCIRCSTAT_ERROR_WARNING 0x0004    ///< Error counter > 96 \warning Obsolete!
 /** @} */
 
-
 /**
  * \name retained for compatibility
  * \warning Obsolete!
  * @{
  */
-#define canCHANNEL_CAP_REMOTE canCHANNEL_CAP_RESERVED_1 ///< Obsolete, use \ref canCHANNEL_CAP_REMOTE_ACCESS or \ref canCHANNELDATA_IS_REMOTE
+#define canCHANNEL_CAP_DIAGNOSTICS      0x10000000L               ///< Obsolete, use canCHANNEL_CAP_CANTEGRITY instead.
+#define canCHANNEL_CAP_CAN_DIAGNOSTICS  canCHANNEL_CAP_RESERVED_2 ///< Obsolete, can report CAN diagnostics. Only used by LAPcan driver.
+#define canCHANNEL_CAP_REMOTE           canCHANNEL_CAP_RESERVED_1 ///< Obsolete, use \ref canCHANNEL_CAP_REMOTE_ACCESS or \ref canCHANNELDATA_IS_REMOTE
+/** @} */
 
 
 /**
@@ -144,7 +145,6 @@ canStatus CANLIBAPI canGetCircuits(int * context,
 /** @} */
 
 #define canSTAT_INACTIVE          canSTAT_RESERVED_1    ///< The circuit is not active (removed from the sw bus) \warning Obsolete!
-
 
 /*
 #define canCIRCSTAT_TXERR       0x0001      // TX error has occurred
@@ -181,9 +181,7 @@ Even more.
 #define canWANT_ERROR_COUNTERS  0x04  ///< \warning Obsolete!
 #define canWANT_EXCLUSIVE       0x08  ///< \warning Obsolete! Use \ref canOPEN_xxx instead.
 #define canWANT_EXTENDED        0x10  ///< \warning Obsolete! Use \ref canOPEN_xxx instead.
-#if defined(CANLIB_DECLARE_ALL)
-# define canWANT_VIRTUAL        0x20  ///< \warning Obsolete! Use \ref canOPEN_xxx instead.
-#endif
+#define canWANT_VIRTUAL         0x20  ///< \warning Obsolete! Use \ref canOPEN_xxx instead.
 
 /** @} */
 
@@ -273,7 +271,7 @@ Even more.
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /**
  * \warning Obsolete!
@@ -297,8 +295,8 @@ canStatus CANLIBAPI canInstallOwnBuffer(int handle, long id, unsigned int len,
 canStatus CANLIBAPI canUninstallOwnBuffer(int handle, long id);
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
+
+#endif /* _OBSOLETE_H_ */
 
 /** @} */
-
-#endif
