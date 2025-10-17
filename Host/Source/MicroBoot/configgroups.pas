@@ -825,6 +825,9 @@ begin
   FReceiveId := XmlConfig.GetValue('receive_id', FReceiveId);
   FExtendedId := XmlConfig.GetValue('extended_id', FExtendedId);
   FBrsBaudrate := XmlConfig.GetValue('brs_baudrate', FBrsBaudrate);
+  // Check for deprecated 'kvaser_leaflight' and set to 'kvaser_canlib' since this is the
+  // new name.
+  if FDevice = 'kvaser_leaflight' then FDevice := 'kvaser_canlib';
   // Close this group's key.
   XmlConfig.CloseKey;
 end; //*** end of LoadFromFile ***/
