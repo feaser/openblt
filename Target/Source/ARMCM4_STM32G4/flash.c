@@ -43,10 +43,6 @@
 #define FLASH_INVALID_ADDRESS           (0xffffffff)
 /** \brief Standard size of a flash block for writing. */
 #define FLASH_WRITE_BLOCK_SIZE          (512)
-/** \brief Standard size of a flash page for erasing. note that a flash sector can
- *         have multiple pages.
- */
-#define FLASH_ERASE_PAGE_SIZE           (FLASH_PAGE_SIZE)
 /** \brief Total numbers of sectors in array flashLayout[]. */
 #define FLASH_TOTAL_SECTORS             (sizeof(flashLayout)/sizeof(flashLayout[0]))
 /** \brief End address of the bootloader programmable flash. */
@@ -120,9 +116,10 @@ static blt_bool   FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool   FlashEraseSectors(blt_int8u first_sector_idx,
                                     blt_int8u last_sector_idx);
 static blt_int8u  FlashGetSectorIdx(blt_addr address);
+static blt_int32u FlashGetPageSize(void);
 static blt_int32u FlashGetPage(blt_addr address);
+static blt_addr FlashGetBankBaseAddr(blt_int32u bank);
 static blt_int32u FlashGetBank(blt_addr address);
-static blt_bool   FlashVerifyBankMode(void);
 
 
 /****************************************************************************************
@@ -142,69 +139,74 @@ static blt_bool   FlashVerifyBankMode(void);
  *             bootloader. If the bootloader size changes, the reserved sectors for the
  *             bootloader might need adjustment to make sure the bootloader doesn't get
  *             overwritten.
- *  \attention For category 3 flash device, which have dual banking mode support, this
- *             flash driver only supports dual banking mode configuration, not single
- *             banking mode. Simply because that is the default configuration that ST
- *             programs in the option bytes. This means that flash pages are always 2kb
- *             in size. Some sectors span multiple pages in this table. The only reason
- *             for this is to not make the table unnecessarily long, which would just
- *             waste flash space.
+ *  \attention (1) Category 3 flash devices (STM32G47x/48x) have dual banking mode
+ *                 support, which is enabled as the factory default setting. In dual
+ *                 banking mode, the second bank always starts at 0x08040000. This means
+ *                 that for devices with < 512kb flash, there is actually a gap between
+ *                 the first and second banks. In this case it is recommended to change
+ *                 the DBANK option bit to switch to single banking mode. That way
+ *                 both banks form one contiguous block in the memory map, removing the
+ *                 gap. When using dual banking mode for those < 512 kb flash devices
+ *                 with dual banking support, you need to update the contents of 
+ *                 flashLayout[] to incorporate this gap between the banks. The best 
+ *                 way to do this is to set BOOT_FLASH_CUSTOM_LAYOUT_ENABLE to 1 in
+ *                 "blt_conf.h" and then add the custom table to "flash_layout.c".
+ *             (2) The minimum sector size of 4k is used, even though the minimum
+ *                 flash erase size is 2k most of the time. However, Category 3 flash
+ *                 devices (STM32G47x/48x) configured for single bank mode (DBANK=0),
+ *                 the minimum flash erase size changes to 4k. For compatibility with all
+ *                 flash devices, the minimum sector size was therefore set to 4k.
+ *                 Some sectors span multiple 4k pages in this table. The only reason for
+ *                 this is to not make the table unnecessarily long, which would just
+ *                 waste flash space.
  */
 static const tFlashSector flashLayout[] =
 {
-  /* { 0x08000000, 0x00800 },              flash sector  0 - reserved for bootloader   */
-  /* { 0x08000800, 0x00800 },              flash sector  1 - reserved for bootloader   */
-  /* { 0x08001000, 0x00800 },              flash sector  2 - reserved for bootloader   */
-  /* { 0x08001800, 0x00800 },              flash sector  3 - reserved for bootloader   */
-  /* { 0x08002000, 0x00800 },              flash sector  4 - reserved for bootloader   */
-  /* { 0x08002800, 0x00800 },              flash sector  5 - reserved for bootloader   */
-  { 0x08003000, 0x00800 },              /* flash sector  6 - 2kb                       */
-  { 0x08003800, 0x00800 },              /* flash sector  7 - 2kb                       */
-  { 0x08004000, 0x00800 },              /* flash sector  8 - 2kb                       */
-  { 0x08004800, 0x00800 },              /* flash sector  9 - 2kb                       */
-  { 0x08005000, 0x00800 },              /* flash sector 10 - 2kb                       */
-  { 0x08005800, 0x00800 },              /* flash sector 11 - 2kb                       */
-  { 0x08006000, 0x00800 },              /* flash sector 12 - 2kb                       */
-  { 0x08006800, 0x00800 },              /* flash sector 13 - 2kb                       */
-  { 0x08007000, 0x00800 },              /* flash sector 14 - 2kb                       */
-  { 0x08007800, 0x00800 },              /* flash sector 15 - 2kb                       */
+  /* { 0x08000000, 0x01000 },              flash sector  0 - reserved for bootloader   */
+  /* { 0x08001000, 0x01000 },              flash sector  1 - reserved for bootloader   */
+  /* { 0x08002000, 0x01000 },              flash sector  2 - reserved for bootloader   */
+  { 0x08003000, 0x01000 },              /* flash sector  3 - 4kb                       */
+  { 0x08004000, 0x01000 },              /* flash sector  4 - 4kb                       */
+  { 0x08005000, 0x01000 },              /* flash sector  5 - 4kb                       */
+  { 0x08006000, 0x01000 },              /* flash sector  6 - 4kb                       */
+  { 0x08007000, 0x01000 },              /* flash sector  7 - 4kb                       */
 #if (BOOT_NVM_SIZE_KB > 32)
-  { 0x08008000, 0x04000 },              /* flash sector 16 - 16kb                      */
-  { 0x0800C000, 0x04000 },              /* flash sector 17 - 16kb                      */
+  { 0x08008000, 0x04000 },              /* flash sector  8 - 16kb                      */
+  { 0x0800C000, 0x04000 },              /* flash sector  9 - 16kb                      */
 #endif
 #if (BOOT_NVM_SIZE_KB > 64)
-  { 0x08010000, 0x4000 },               /* flash sector 18 - 16kb                      */
-  { 0x08014000, 0x4000 },               /* flash sector 19 - 16kb                      */
-  { 0x08018000, 0x4000 },               /* flash sector 20 - 16kb                      */
-  { 0x0801C000, 0x4000 },               /* flash sector 21 - 16kb                      */
+  { 0x08010000, 0x4000 },               /* flash sector 10 - 16kb                      */
+  { 0x08014000, 0x4000 },               /* flash sector 11 - 16kb                      */
+  { 0x08018000, 0x4000 },               /* flash sector 12 - 16kb                      */
+  { 0x0801C000, 0x4000 },               /* flash sector 13 - 16kb                      */
 #endif
 #if (BOOT_NVM_SIZE_KB > 128)
-  { 0x08020000, 0x4000 },               /* flash sector 22 - 16kb                      */
-  { 0x08024000, 0x4000 },               /* flash sector 23 - 16kb                      */
-  { 0x08028000, 0x4000 },               /* flash sector 24 - 16kb                      */
-  { 0x0802C000, 0x4000 },               /* flash sector 25 - 16kb                      */
-  { 0x08030000, 0x4000 },               /* flash sector 26 - 16kb                      */
-  { 0x08034000, 0x4000 },               /* flash sector 27 - 16kb                      */
-  { 0x08038000, 0x4000 },               /* flash sector 28 - 16kb                      */
-  { 0x0803C000, 0x4000 },               /* flash sector 29 - 16kb                      */
+  { 0x08020000, 0x4000 },               /* flash sector 14 - 16kb                      */
+  { 0x08024000, 0x4000 },               /* flash sector 15 - 16kb                      */
+  { 0x08028000, 0x4000 },               /* flash sector 16 - 16kb                      */
+  { 0x0802C000, 0x4000 },               /* flash sector 17 - 16kb                      */
+  { 0x08030000, 0x4000 },               /* flash sector 18 - 16kb                      */
+  { 0x08034000, 0x4000 },               /* flash sector 19 - 16kb                      */
+  { 0x08038000, 0x4000 },               /* flash sector 20 - 16kb                      */
+  { 0x0803C000, 0x4000 },               /* flash sector 21 - 16kb                      */
 #endif
 #if (BOOT_NVM_SIZE_KB > 256)
-  { 0x08040000, 0x4000 },               /* flash sector 30 - 16kb                      */
-  { 0x08044000, 0x4000 },               /* flash sector 31 - 16kb                      */
-  { 0x08048000, 0x4000 },               /* flash sector 32 - 16kb                      */
-  { 0x0804C000, 0x4000 },               /* flash sector 33 - 16kb                      */
-  { 0x08050000, 0x4000 },               /* flash sector 34 - 16kb                      */
-  { 0x08054000, 0x4000 },               /* flash sector 35 - 16kb                      */
-  { 0x08058000, 0x4000 },               /* flash sector 36 - 16kb                      */
-  { 0x0805C000, 0x4000 },               /* flash sector 37 - 16kb                      */
-  { 0x08060000, 0x4000 },               /* flash sector 38 - 16kb                      */
-  { 0x08064000, 0x4000 },               /* flash sector 39 - 16kb                      */
-  { 0x08068000, 0x4000 },               /* flash sector 40 - 16kb                      */
-  { 0x0806C000, 0x4000 },               /* flash sector 41 - 16kb                      */
-  { 0x08070000, 0x4000 },               /* flash sector 42 - 16kb                      */
-  { 0x08074000, 0x4000 },               /* flash sector 43 - 16kb                      */
-  { 0x08078000, 0x4000 },               /* flash sector 44 - 16kb                      */
-  { 0x0807C000, 0x4000 },               /* flash sector 45 - 16kb                      */
+  { 0x08040000, 0x4000 },               /* flash sector 22 - 16kb                      */
+  { 0x08044000, 0x4000 },               /* flash sector 23 - 16kb                      */
+  { 0x08048000, 0x4000 },               /* flash sector 24 - 16kb                      */
+  { 0x0804C000, 0x4000 },               /* flash sector 25 - 16kb                      */
+  { 0x08050000, 0x4000 },               /* flash sector 26 - 16kb                      */
+  { 0x08054000, 0x4000 },               /* flash sector 27 - 16kb                      */
+  { 0x08058000, 0x4000 },               /* flash sector 28 - 16kb                      */
+  { 0x0805C000, 0x4000 },               /* flash sector 29 - 16kb                      */
+  { 0x08060000, 0x4000 },               /* flash sector 30 - 16kb                      */
+  { 0x08064000, 0x4000 },               /* flash sector 31 - 16kb                      */
+  { 0x08068000, 0x4000 },               /* flash sector 32 - 16kb                      */
+  { 0x0806C000, 0x4000 },               /* flash sector 33 - 16kb                      */
+  { 0x08070000, 0x4000 },               /* flash sector 34 - 16kb                      */
+  { 0x08074000, 0x4000 },               /* flash sector 35 - 16kb                      */
+  { 0x08078000, 0x4000 },               /* flash sector 36 - 16kb                      */
+  { 0x0807C000, 0x4000 },               /* flash sector 37 - 16kb                      */
 #endif
 #if (BOOT_NVM_SIZE_KB > 512)
 #error "BOOT_NVM_SIZE_KB > 512 is currently not supported."
@@ -765,14 +767,6 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
-  /* this flash driver currently supports only the default banking mode, as configured
-   * by ST in the option bytes. verify that this configuration has not been altered.
-   */
-  if (FlashVerifyBankMode() == BLT_FALSE)
-  {
-    result = BLT_FALSE;
-  }
-
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
@@ -843,14 +837,6 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
     }
   }
 
-  /* this flash driver currently supports only the default banking mode, as configured
-   * by ST in the option bytes. verify that this configuration has not been altered.
-   */
-  if (FlashVerifyBankMode() == BLT_FALSE)
-  {
-    result = BLT_FALSE;
-  }
-
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
@@ -870,7 +856,7 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
       sectorSize = flashLayout[sectorIdx].sector_size;
       /* validate the sector information */
       if ( (sectorBaseAddr == FLASH_INVALID_ADDRESS) || (sectorSize == 0) ||
-           ((sectorSize % FLASH_ERASE_PAGE_SIZE) != 0) )
+           ((sectorSize % FlashGetPageSize()) != 0) )
       {
         /* invalid sector information. flag error and abort erase operation */
         result = BLT_FALSE;
@@ -878,7 +864,7 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
       }
       
       /* determine the total number of pages inside this sector. */
-      pageTotal = sectorSize / FLASH_ERASE_PAGE_SIZE;
+      pageTotal = sectorSize / FlashGetPageSize();
       /* initialize the erase info structure. */
       eraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
       eraseInitStruct.Banks = FlashGetBank(sectorBaseAddr);
@@ -937,6 +923,39 @@ static blt_int8u FlashGetSectorIdx(blt_addr address)
 
 
 /************************************************************************************//**
+** \brief     Determines the size of a flash page in bytes. Note that this equals the
+**            minimum erase size as defined by the hardware.
+** \details   STM32G4 variants with a category 3 flash device (STM32G47x/G48x) support
+**            both single and dual bank mode for the flash memory. Dual bank mode is
+**            the factory default. If the DBANK option bit was change to 0, single bank
+**            mode is active. In this case the size of a flash page is doubled.
+** \return    The flash page size in bytes.
+**
+****************************************************************************************/
+static blt_int32u FlashGetPageSize(void)
+{
+  blt_int32u result = FLASH_PAGE_SIZE;
+  
+  /* flash devices support that dual banking, could be configured for single bank
+   * mode using the DBANK option bit. in single bank mode, the page size is doubled.
+   */
+#if defined (FLASH_OPTR_DBANK)
+  /* is the flash device configured for single bank mode? */
+  if ((FLASH->OPTR & FLASH_OPTR_DBANK) == 0U)
+  {
+    /* single bank mode with 128 bits data read width is configured. in this case the
+     * page size is different. update the result accordingly.
+     */
+    result = FLASH_PAGE_SIZE_128_BITS;
+  }
+#endif
+  
+  /* give the result back to the caller */
+  return result;
+} /*** end of FlashGetPageSize ***/
+
+
+/************************************************************************************//**
 ** \brief     Determines the flash page number that the specified address belongs to.
 ** \param     address Flash memory address.
 ** \return    The flash page number that this address belongs to.
@@ -945,27 +964,74 @@ static blt_int8u FlashGetSectorIdx(blt_addr address)
 static blt_int32u FlashGetPage(blt_addr address)
 {
   blt_int32u result;
+  blt_addr   bank_base;
+  blt_addr   offset_in_bank;
+  blt_int32u bank_size = FLASH_BANK_SIZE;
+  
+  /* flash devices that support dual banking, could be configured for single bank
+   * mode using the DBANK option bit. in single bank mode, both banks are treated as 
+   * one large one.
+   */
+#if defined (FLASH_OPTR_DBANK)
+  /* is the flash device configured for single bank mode? */
+  if ((FLASH->OPTR & FLASH_OPTR_DBANK) == 0U)
+  {
+    /* update the bank size to be the size of both banks, so the entire flash. */
+    bank_size = FLASH_SIZE;
+  }
+#endif  
+  
+  /* determine the base address of the bank that this address belongs to. */
+  bank_base = FlashGetBankBaseAddr(FlashGetBank(address));
+  /* sanity check. */
+  ASSERT_RT(address >= bank_base);
 
-  /* does the page belong to the first bank? */
-  if (FlashGetBank(address) == FLASH_BANK_1)
-  {
-    /* sanity check. */
-    ASSERT_RT(address >= FLASH_BASE);
-    /* calculate the page number. */
-    result = (address - FLASH_BASE) / FLASH_ERASE_PAGE_SIZE;
-  }
-  /* the page belongs to the second bank. */
-  else
-  {
-    /* sanity check. */
-    ASSERT_RT(address >= (FLASH_BASE + FLASH_BANK_SIZE));
-    /* calculate the page number. */
-    result = (address - (FLASH_BASE + FLASH_BANK_SIZE)) / FLASH_ERASE_PAGE_SIZE;
-  }
+  /* calculate the offset in the bank. */
+  offset_in_bank = address - bank_base;
+  /* sanity check. */
+  ASSERT_RT(offset_in_bank <= bank_size);
+  
+  /* calculate the flash page number that the specified address belongs to. */
+  result = offset_in_bank / FlashGetPageSize();
 
   /* give the result back to the caller */
   return result;
 } /*** end of FlashGetPage ***/
+
+
+/************************************************************************************//**
+** \brief     Determines the base address in the memory map of the specified flash bank.
+** \param     bank Flash bank. It can be either FLASH_BANK_1 or FLASH_BANK_2.
+** \return    The base address of the bank in the memory map.
+**
+****************************************************************************************/
+static blt_addr FlashGetBankBaseAddr(blt_int32u bank)
+{
+  blt_addr result;
+  
+  /* initialize the result for the first bank. */
+  result = FLASH_BASE;
+  
+  /* bank can only be bank 2 if the flash device supports dual banking. */
+#if defined (FLASH_OPTR_DBANK)
+  /* is the flash device configured for dual bank mode (factory default)? */
+  if ((FLASH->OPTR & FLASH_OPTR_DBANK) != 0U)
+  {
+    /* second flash bank? */
+    if (bank != FLASH_BANK_1)
+    {
+      /* in this case the second bank always starts at 0x08040000. note that for < 512kb
+       * flash this consequently means that there is a gap between the first and second
+       * bank.
+       */
+      result = FLASH_BASE + 0x40000u;
+    }    
+  }  
+#endif
+  
+  /* give the result back to the caller */
+  return result;
+} /*** end of FlashGetBankBaseAddr ***/
 
 
 /************************************************************************************//**
@@ -979,49 +1045,28 @@ static blt_int32u FlashGetBank(blt_addr address)
 {
   blt_int32u result = FLASH_BANK_1;
 
-  /* address can only be in bank 2 if the flash device supports dual banking. */
+  /* address can only be in bank 2 if the flash device supports dual banking and has
+   * dual banking mode enabled (DBANK=1).
+   */
 #if defined (FLASH_OPTR_DBANK)
-  /* is this an address in the second bank? */
-  if (address >= (FLASH_BASE + FLASH_BANK_SIZE))
+  /* is the flash device configured for dual bank mode (factory default)? */
+  if ((FLASH->OPTR & FLASH_OPTR_DBANK) != 0U)
   {
-    /* update the result. */
-    result = FLASH_BANK_2;
+    /* is this an address in the second bank? note that in dual banking mode, the second
+     * bank always starts at 0x08040000. note that for < 512kb flash this consequently
+     * means that there is a gap between the first and second bank.
+     */
+    if (address >= (FLASH_BASE + 0x40000u))
+    {
+      /* update the result. */
+      result = FLASH_BANK_2;
+    }
   }
 #endif
 
   /* give the result back to the caller. */
   return result;
 } /*** end of FlashGetBank ***/
-
-
-/************************************************************************************//**
-** \brief     Determines the flash banking mode is configured properly for this flash
-**            driver. This flash driver assumes that dual banking mode is configured,
-**            if the flash device supports dual banking mode. This is default mode as
-**            configured by ST in the option bytes.
-** \return    BLT_TRUE if the flash banking mode is configured properly as supported by
-**            this flash driver, BLT_FALSE otherwise.
-**
-****************************************************************************************/
-static blt_bool FlashVerifyBankMode(void)
-{
-  blt_bool result = BLT_TRUE;
-
-  /* only need to verify banking mode, if the flash device actually supports different
-   * banking modes.
-   */
-#if defined (FLASH_OPTR_DBANK)
-  /* is the flash device configured for single bank mode? */
-  if ((FLASH->OPTR & FLASH_OPTR_DBANK) == 0U)
-  {
-    /* single bank mode is not supported. update the result accordingly. */
-    result = BLT_FALSE;
-  }
-#endif
-
-  /* give the result back to the caller. */
-  return result;
-} /*** end of FlashVerifyBankMode ***/
 
 
 /*********************************** end of flash.c ************************************/
