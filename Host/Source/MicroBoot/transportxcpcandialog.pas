@@ -136,7 +136,7 @@ const
   {$IFNDEF UNIX}
   CanInterfaceRecArray: array[0..4] of TCanInterfaceRec =
   (
-    (DisplayStr: 'Peak System PCAN-USB'; InterfaceStr: 'peak_pcanusb';    CanFdSupported: False),
+    (DisplayStr: 'Peak System PCAN-USB'; InterfaceStr: 'peak_pcanusb';    CanFdSupported: True),
     (DisplayStr: 'Kvaser CanLib Driver'; InterfaceStr: 'kvaser_canlib';   CanFdSupported: True),
     (DisplayStr: 'Lawicel CANUSB';       InterfaceStr: 'lawicel_canusb';  CanFdSupported: False),
     (DisplayStr: 'Vector XL Driver';     InterfaceStr: 'vector_xldriver'; CanFdSupported: True),
