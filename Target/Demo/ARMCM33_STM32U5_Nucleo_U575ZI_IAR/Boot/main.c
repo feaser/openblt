@@ -126,7 +126,7 @@ void SystemClock_Config(void)
 
   /* Configure and enable the PLL. */
   LL_RCC_PLL1_ConfigDomain_SYS(LL_RCC_PLL1SOURCE_HSI, 1, 10, 1);
-  LL_RCC_PLL1_ConfigDomain_48M(LL_RCC_PLL1SOURCE_HSI, 1, 10, 4);
+  LL_RCC_PLL1_ConfigDomain_48M(LL_RCC_PLL1SOURCE_HSI, 1, 10, 2);
   LL_RCC_PLL1_EnableDomain_48M();
   LL_RCC_PLL1_EnableDomain_SYS();
   LL_RCC_SetPll1EPodPrescaler(LL_RCC_PLL1MBOOST_DIV_1);
@@ -211,6 +211,7 @@ void HAL_MspInit(void)
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN clock enable. */
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL1);
   LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_FDCAN1);
 #endif
   /* Configure GPIO pin for the LED. */

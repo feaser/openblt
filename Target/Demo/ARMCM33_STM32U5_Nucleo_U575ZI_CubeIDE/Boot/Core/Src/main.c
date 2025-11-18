@@ -150,7 +150,7 @@ void SystemClock_Config(void)
   }
 
   LL_RCC_PLL1_ConfigDomain_SYS(LL_RCC_PLL1SOURCE_HSI, 1, 10, 1);
-  LL_RCC_PLL1_ConfigDomain_48M(LL_RCC_PLL1SOURCE_HSI, 1, 10, 4);
+  LL_RCC_PLL1_ConfigDomain_48M(LL_RCC_PLL1SOURCE_HSI, 1, 10, 2);
   LL_RCC_PLL1_EnableDomain_48M();
   LL_RCC_PLL1_EnableDomain_SYS();
   LL_RCC_SetPll1EPodPrescaler(LL_RCC_PLL1MBOOST_DIV_1);
