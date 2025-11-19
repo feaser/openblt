@@ -95,14 +95,14 @@ static void Init(void)
 static void SystemClock_Config(void)
 {
   /* Set flash latency. */
-  LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
-  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_4)
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_3);
+  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_3)
   {
     ;
   }
 
   /* Configure the main internal regulator output voltage. */
-  LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE0);
+  LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
 
   /* Enable the HSI clock. */
   LL_RCC_HSI_Enable();
@@ -122,8 +122,8 @@ static void SystemClock_Config(void)
   }
 
   /* Configure and enable the PLL. */
-  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 48, LL_RCC_PLLR_DIV_2);
-  LL_RCC_PLL_ConfigDomain_48M(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 48, LL_RCC_PLLQ_DIV_4);
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 40, LL_RCC_PLLR_DIV_2);
+  LL_RCC_PLL_ConfigDomain_48M(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 40, LL_RCC_PLLQ_DIV_2);
   LL_RCC_PLL_EnableDomain_48M();
   LL_RCC_PLL_EnableDomain_SYS();
   LL_RCC_PLL_Enable();
@@ -133,8 +133,6 @@ static void SystemClock_Config(void)
     ;
   }
 
-  /* Intermediate AHB prescaler 2 when target frequency clock is higher than 80 MHz. */
-  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_2);
   /* Set the source for the system clock. */
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
   /* Wait till System clock is ready */
@@ -142,12 +140,6 @@ static void SystemClock_Config(void)
   {
     ;
   }
-
-  /* Insure 1µs transition state at intermediate medium speed clock based on DWT. */
-  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
-  DWT->CYCCNT = 0;
-  while(DWT->CYCCNT < 100);
 
   /* Configure peripheral bus prescalers. */
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
@@ -189,6 +181,7 @@ void HAL_MspInit(void)
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN clock enable. */
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL);
   LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_FDCAN1);
 #endif
   /* Configure GPIO pin for the LED. */

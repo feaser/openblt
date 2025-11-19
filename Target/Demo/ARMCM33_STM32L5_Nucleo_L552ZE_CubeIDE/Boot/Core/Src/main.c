@@ -121,12 +121,12 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
-  LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
-  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_4)
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_3);
+  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_3)
   {
   }
 
-  LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE0);
+  LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
   LL_RCC_HSI_Enable();
 
    /* Wait till HSI is ready */
@@ -142,8 +142,8 @@ void SystemClock_Config(void)
   {
   }
 
-  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 48, LL_RCC_PLLR_DIV_2);
-  LL_RCC_PLL_ConfigDomain_48M(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 48, LL_RCC_PLLQ_DIV_4);
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 40, LL_RCC_PLLR_DIV_2);
+  LL_RCC_PLL_ConfigDomain_48M(LL_RCC_PLLSOURCE_HSI, LL_RCC_PLLM_DIV_4, 40, LL_RCC_PLLQ_DIV_2);
   LL_RCC_PLL_EnableDomain_48M();
   LL_RCC_PLL_EnableDomain_SYS();
   LL_RCC_PLL_Enable();
@@ -153,9 +153,6 @@ void SystemClock_Config(void)
   {
   }
 
-   /* Intermediate AHB prescaler 2 when target frequency clock is higher than 80 MHz */
-   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_2);
-
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
 
    /* Wait till System clock is ready */
@@ -163,13 +160,10 @@ void SystemClock_Config(void)
   {
   }
 
-  /* Insure 1us transition state at intermediate medium speed clock*/
-  for (__IO uint32_t i = (RCC_MAX_FREQUENCY_MHZ >> 1); i !=0; i--);
-
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
   LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
-  LL_SetSystemCoreClock(96000000);
+  LL_SetSystemCoreClock(80000000);
 
    /* Update the time base */
   if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)

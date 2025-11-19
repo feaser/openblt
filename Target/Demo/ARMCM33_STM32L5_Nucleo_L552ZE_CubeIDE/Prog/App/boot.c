@@ -277,46 +277,28 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
-/** \brief Structure type for grouping CAN bus timing related information. */
-typedef struct t_can_bus_timing
-{
-  unsigned char tseg1;                                /**< CAN time segment 1          */
-  unsigned char tseg2;                                /**< CAN time segment 2          */
-} tCanBusTiming;
-
-
-/****************************************************************************************
-* Local constant declarations
-****************************************************************************************/
-/** \brief CAN bittiming table for dynamically calculating the bittiming settings.
- *  \details According to the CAN protocol 1 bit-time can be made up of between 8..25
- *           time quanta (TQ). The total TQ in a bit is SYNC + TSEG1 + TSEG2 with SYNC
- *           always being 1. The sample point is (SYNC + TSEG1) / (SYNC + TSEG1 + SEG2) *
- *           100%. This array contains possible and valid time quanta configurations with
- *           a sample point between 68..78%.
+/** \brief Structure type for grouping together CAN peripheral parameters needed for
+ *         performing bittiming calculations.
  */
-static const tCanBusTiming canTiming[] =
-{                       /*  TQ | TSEG1 | TSEG2 | SP  */
-                        /* ------------------------- */
-    {  5, 2 },          /*   8 |   5   |   2   | 75% */
-    {  6, 2 },          /*   9 |   6   |   2   | 78% */
-    {  6, 3 },          /*  10 |   6   |   3   | 70% */
-    {  7, 3 },          /*  11 |   7   |   3   | 73% */
-    {  8, 3 },          /*  12 |   8   |   3   | 75% */
-    {  9, 3 },          /*  13 |   9   |   3   | 77% */
-    {  9, 4 },          /*  14 |   9   |   4   | 71% */
-    { 10, 4 },          /*  15 |  10   |   4   | 73% */
-    { 11, 4 },          /*  16 |  11   |   4   | 75% */
-    { 12, 4 },          /*  17 |  12   |   4   | 76% */
-    { 12, 5 },          /*  18 |  12   |   5   | 72% */
-    { 13, 5 },          /*  19 |  13   |   5   | 74% */
-    { 14, 5 },          /*  20 |  14   |   5   | 75% */
-    { 15, 5 },          /*  21 |  15   |   5   | 76% */
-    { 15, 6 },          /*  22 |  15   |   6   | 73% */
-    { 16, 6 },          /*  23 |  16   |   6   | 74% */
-    { 16, 7 },          /*  24 |  16   |   7   | 71% */
-    { 16, 8 }           /*  25 |  16   |   8   | 68% */
-};
+typedef struct t_can_periph_params
+{
+  unsigned long base_freq;                        /**< Source clock frequency [Hz]     */
+  unsigned short prescaler_min;                   /**< Smallest supported prescaler    */
+  unsigned short prescaler_max;                   /**< Largest supported prescaler     */
+  unsigned short tseg1_min;                       /**< Smallest supported Tseg1        */
+  unsigned short tseg1_max;                       /**< Largest supported Tseg1         */
+  unsigned short tseg2_min;                       /**< Smallest supported Tseg2        */
+  unsigned short tseg2_max;                       /**< Largest supported Tseg2         */
+} tCanPeriphParams;
+
+/** \brief Structure type for grouping CAN bit timing configuration information. */
+typedef struct
+{
+  unsigned short prescaler;                       /**< CAN clock prescaler             */
+  unsigned short tseg1;                           /**< CAN time segment 1 (excl. SYNC) */
+  unsigned short tseg2;                           /**< CAN time segment 2              */
+  unsigned short sjw;                             /**< CAN synchronization jump width  */
+} tCanBitTimingConfig;
 
 
 /****************************************************************************************
@@ -325,96 +307,240 @@ static const tCanBusTiming canTiming[] =
 /** \brief CAN handle to be used in API calls. */
 static FDCAN_HandleTypeDef canHandle;
 
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+/** \brief Boolean flag to determine if the bitrate switch feature is used for CAN FD. */
+static unsigned char canFdBitrateSwitchUsed;
+#endif
+
 
 /************************************************************************************//**
-** \brief     Search algorithm to match the desired baudrate to a possible bus
-**            timing configuration.
-** \param     baud The desired baudrate in kbps. Valid values are 10..1000.
-** \param     prescaler Pointer to where the value for the prescaler will be stored.
-** \param     tseg1 Pointer to where the value for TSEG2 will be stored.
-** \param     tseg2 Pointer to where the value for TSEG2 will be stored.
-** \return    1 if the CAN bustiming register values were found, 0 otherwise.
+** \brief     Search algorithm to match the desired baudrate to a possible bit
+**            timing configuration, taking into account the given CAN peripheral
+**            parameters.
+** \param     baud The desired baudrate in bps. Valid values are 10 kbps ..8000 Mbps.
+** \param     periph_params CAN peripheral parameters.
+** \param     bittiming_config Found bit timing configuration.
+** \return    BLT_TRUE if a matching CAN bittiming configuration was found, BLT_FALSE
+**            otherwise.
 **
 ****************************************************************************************/
-static unsigned char CanGetSpeedConfig(unsigned short baud, unsigned short *prescaler,
-                                       unsigned char *tseg1, unsigned char *tseg2)
+static unsigned char CanCalculateBitTimingConfig(unsigned long const baud,
+                                                 tCanPeriphParams const * periph_params,
+                                                 tCanBitTimingConfig * bittiming_config)
 {
-  unsigned char      cnt;
-  unsigned long      canClockFreqkHz;
-  RCC_OscInitTypeDef oscConfig = {0};
+  unsigned char  result = 0U;
+  unsigned short bitTq, bitTqMin, bitTqMax;
+  unsigned short tseg1, tseg2;
+  unsigned short prescaler;
+  unsigned char  samplePoint;
 
-  /* obtain the current clock configuration */
-  HAL_RCC_GetOscConfig(&oscConfig);
-  /* determine the CAN peripheral clock frequency in kHz. this code assumes that the
-   * PLL is used as the FDCAN clock source. you basically need to determine the PLLQ
-   * frequency in kHz.
-   */
-  canClockFreqkHz = (HAL_RCC_GetSysClockFreq() / 1000u);
-  canClockFreqkHz *= oscConfig.PLL.PLLR;
-  canClockFreqkHz /= oscConfig.PLL.PLLQ;
-  /* the CAN peripheral clock should not be higher than 48 MHz. so only continue if
-   * this is the case. when too high, increase the Q divider in the clock configuration
-   * to get to a PLLQ frequency that is below 48 MHz. A multiple of 8 MHz for the
-   * PLLQ frequency gives the best support for most commonly CAN baudrates.
-   */
-  if (canClockFreqkHz <= 48000u)
+  /* only continue with valid parameters. */
+  if ( (baud >= 10000UL) && (baud <= 8000000UL) && (periph_params != NULL) &&
+       (bittiming_config != NULL) )
   {
-    /* loop through all possible time quanta configurations to find a match */
-    for (cnt=0; cnt < sizeof(canTiming)/sizeof(canTiming[0]); cnt++)
-    {
-      if ((canClockFreqkHz % (baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1))) == 0)
-      {
-        /* compute the prescaler that goes with this TQ configuration */
-        *prescaler = canClockFreqkHz/(baud*(canTiming[cnt].tseg1+canTiming[cnt].tseg2+1));
+    /* calculate minimum and maximum possible time quanta per bit. remember that the
+     * bittime in time quanta is 1 (sync) + tseg1 + tseg2.
+     */
+    bitTqMin = 1U + periph_params->tseg1_min + periph_params->tseg2_min;
+    bitTqMax = 1U + periph_params->tseg1_max + periph_params->tseg2_max;
 
-        /* make sure the prescaler is valid */
-        if ( (*prescaler > 0) && (*prescaler <= 512) )
+    /* loop through all the prescaler values from low to high to find one that results
+     * in a time quanta per bit that is in the range bitTqMin .. bitTqMax. note that
+     * looping through the prescalers low to high is important, because a lower prescaler
+     * would result in a large number of time quanta per bit. This in turns gives you
+     * more flexibility for setting the a bit's sample point.
+     */
+    for (prescaler = periph_params->prescaler_min;
+         prescaler <= periph_params->prescaler_max; prescaler++)
+    {
+      /* no need to continue if the configured peripheral clock, scaled down by this
+       * prescaler value, is no longer high enough to get to the desired baudrate,
+       * taking into account the minimum possible time quanta per bit.
+       */
+      if (periph_params->base_freq < (baud * bitTqMin))
+      {
+        break;
+      }
+      /* does this prescaler give a fixed (integer) number of time quanta? */
+      if ( ((periph_params->base_freq % prescaler) == 0U) &&
+           (((periph_params->base_freq / prescaler) % baud) == 0U) )
+      {
+        /* calculate how many time quanta per bit this prescaler would give. */
+        bitTq = (periph_params->base_freq / prescaler) / baud;
+        /* is this a configurable amount of time quanta? */
+        if ( (bitTq >= bitTqMin) && (bitTq <= bitTqMax) )
         {
-          /* store the bustiming configuration */
-          *tseg1 = canTiming[cnt].tseg1;
-          *tseg2 = canTiming[cnt].tseg2;
-          /* found a good bus timing configuration */
-          return 1;
+          /* if the sample point is at the very end of the bit time, the maximum
+           * possible network length can be achieved. an earlier sample point reduces
+           * the achievable network length, but increases robustness. as a reference,
+           * a value of higher than 80% is not recommended for automotive applications
+           * due to robustness reasons.
+           *
+           * for this reason try to get a sample point that is in the 65% - 80% range.
+           * an efficient way of doing this is to calculate Tseg2, which should then
+           * be 20% and round up by doing this calculation.
+           *
+           * example:
+           *   baud      = 500 kbits/sec
+           *   base_freq = 24 MHz
+           *   prescaler = 1
+           *   bitTq     = 48
+           *
+           *   for 80% sample point, Tseg2 should be 20% of 48 = 9.6 time quanta.
+           *   rounded up to the next integer = 10. resulting sample point:
+           *   ((48 - 10) / 48) * 100 = 79.17%
+           */
+          tseg2 = ((bitTq * 2U) + 9U) / 10U;
+          /* calculate Tseg1 by deducting Tseg2 and 1 time quanta for the sync seq. */
+          tseg1 = bitTq - tseg2 - 1;
+          /* are these values within configurable range? */
+          if ( (tseg1 >= periph_params->tseg1_min) &&
+               (tseg1 <= periph_params->tseg1_max) &&
+               (tseg2 >= periph_params->tseg2_min) &&
+               (tseg2 <= periph_params->tseg2_max) )
+          {
+            /* calculate the actual sample point, given these Tseg values. */
+            samplePoint = (unsigned char)(((1U + tseg1) * 100UL) / bitTq);
+            /* is this within the targeted 65% - 80% range? */
+            if ( (samplePoint >= 65U) && (samplePoint <= 80U) )
+            {
+              /* store these bittiming settings. */
+              bittiming_config->prescaler = prescaler;
+              bittiming_config->tseg1 = tseg1;
+              bittiming_config->tseg2 = tseg2;
+              /* SJW depends highly on the baudrate tolerances of the other nodes on the
+               * network. SJW 1 allows for only a small window of tolerance between node
+               * baudrate. SJW = TSEG2 allows for a large winow, at the risk of a bit
+               * being incorrectly sampled. a safe approach to to use TSEG2/2 but also
+               * make sure SJW is > 0.
+               */
+              bittiming_config->sjw = bittiming_config->tseg2 / 2U;
+              if (bittiming_config->sjw == 0U)
+              {
+                bittiming_config->sjw = 1U;
+              }
+              /* set the result to success. */
+              result = 1U;
+              /* all done so no need to continue the loop. */
+              break;
+            }
+          }
         }
       }
     }
   }
-  /* could not find a good bus timing configuration */
-  return 0;
-} /*** end of CanGetSpeedConfig ***/
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of CanCalculateBitTimingConfig ***/
 
 
 /************************************************************************************//**
 ** \brief     Initializes the CAN communication interface.
+** \details   It is up to the user to configure the desired CAN clock source. By default
+**            it is HSE. Alternatives are PLL or PLLSAI1. To meet the clock tolerance
+**            requirement of CAN 2.0B, an external crystal oscillator (HSE) is
+**            recommended. A multiple of 8 MHz gives the best support for most commonly
+**            used CAN baudrates, so that is recommended.
 ** \return    none.
 **
 ****************************************************************************************/
 static void BootComCanInit(void)
 {
-  unsigned short prescaler = 0;
-  unsigned char tseg1 = 0, tseg2 = 0;
+  unsigned long       rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   FDCAN_FilterTypeDef filterConfig;
-  unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  tCanPeriphParams    periphParams;
+  tCanBitTimingConfig bittimingConfig = { 0 };
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+  tCanBitTimingConfig bittimingConfigBRS = { 0 };
+#endif
 
-  /* obtain bittiming configuration information. */
-  CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &tseg1, &tseg2);
+  /* set the CAN controller channel, which is needed by HAL_FDCAN_MspInit(). */
+  canHandle.Instance = FDCAN1;
+  /* call HAL_FDCAN_MspInit() here already, even though this is done automatically later
+   * on in the call to HAL_FDCAN_Init(). HAL_FDCAN_MspInit() configures the source clock,
+   * which should be done first, otherwise the call to LL_RCC_GetFDCANClockFreq() to
+   * obtain the FDCAN clock frequency returns an incorrect value. the FDCAN clock
+   * frequency is needed to properly calculate the bittiming, which is turn needs to be
+   * done before calling HAL_FDCAN_Init(). explicitly calling HAL_FDCAN_MspInit() here
+   * one extra time works around this chicken and egg type problem. when CubeMX is not
+   * used in a project and therefore HAL_FDCAN_MspInit() is not generated, it still works
+   * because the weak HAL_FDCAN_MspInit() is then called.
+   */
+  HAL_FDCAN_MspInit(&canHandle);
+
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+  /* determine if the bitrate switch feature should be used. note that you cannot use
+   * BOOT_COM_CAN_FD_BRS_BAUDRATE in a preprocessor compile-time check, because this
+   * macro might be set to a function call, instead of just a baudrate value.
+   */
+  if (BOOT_COM_CAN_FD_BRS_BAUDRATE > 0)
+  {
+    canFdBitrateSwitchUsed = 1U;
+  }
+  else
+  {
+    canFdBitrateSwitchUsed = 0U;
+  }
+
+  /* calculate the data bittiming configuration with enabled bitrate switch feature. */
+  if (canFdBitrateSwitchUsed == 1U)
+  {
+    /* store CAN peripheral parameters related to the data bittiming configuration. */
+    periphParams.base_freq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_FDCAN);
+    periphParams.prescaler_min = 1U;
+    periphParams.prescaler_max = 32U;
+    periphParams.tseg1_min = 1U;
+    periphParams.tseg1_max = 32U;
+    periphParams.tseg2_min = 1U;
+    periphParams.tseg2_max = 16U;
+    /* attempt to find a matching data bittiming configuration. */
+    (void)CanCalculateBitTimingConfig(BOOT_COM_CAN_FD_BRS_BAUDRATE, &periphParams,
+                                      &bittimingConfigBRS);
+  }
+#endif
+
+  /* store CAN peripheral parameters related to the nominal bittiming configuration. */
+  periphParams.base_freq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_FDCAN);
+  periphParams.prescaler_min = 1U;
+  periphParams.prescaler_max = 512U;
+  periphParams.tseg1_min = 1U;
+  periphParams.tseg1_max = 256U;
+  periphParams.tseg2_min = 1U;
+  periphParams.tseg2_max = 128U;
+  /* attempt to find a matching nominal bittiming configuration. */
+  (void)CanCalculateBitTimingConfig(BOOT_COM_CAN_BAUDRATE, &periphParams,
+                                    &bittimingConfig);
 
   /* set the CAN controller configuration. */
-  canHandle.Instance = FDCAN1;
+  canHandle.Init.ClockDivider = FDCAN_CLOCK_DIV1;
   canHandle.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
   canHandle.Init.Mode = FDCAN_MODE_NORMAL;
   canHandle.Init.AutoRetransmission = ENABLE;
-  canHandle.Init.TransmitPause = DISABLE;
+  canHandle.Init.TransmitPause = ENABLE;
   canHandle.Init.ProtocolException = DISABLE;
-  canHandle.Init.NominalPrescaler = prescaler;
-  canHandle.Init.NominalSyncJumpWidth = 1;
-  canHandle.Init.NominalTimeSeg1 = tseg1;
-  canHandle.Init.NominalTimeSeg2 = tseg2;
-  /* FD mode is not used by this driver, so the .Init.DataXxx values are don't care. */
+  canHandle.Init.NominalPrescaler = bittimingConfig.prescaler;
+  canHandle.Init.NominalTimeSeg1 = bittimingConfig.tseg1;
+  canHandle.Init.NominalTimeSeg2 = bittimingConfig.tseg2;
+  canHandle.Init.NominalSyncJumpWidth = bittimingConfig.sjw;
   canHandle.Init.DataPrescaler = 1;
   canHandle.Init.DataSyncJumpWidth = 1;
   canHandle.Init.DataTimeSeg1 = 1;
   canHandle.Init.DataTimeSeg2 = 1;
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+  if (canFdBitrateSwitchUsed == 0U)
+  {
+    canHandle.Init.FrameFormat = FDCAN_FRAME_FD_NO_BRS;
+  }
+  else
+  {
+    canHandle.Init.FrameFormat = FDCAN_FRAME_FD_BRS;
+    canHandle.Init.DataPrescaler = bittimingConfigBRS.prescaler;
+    canHandle.Init.DataTimeSeg1 = bittimingConfigBRS.tseg1;
+    canHandle.Init.DataTimeSeg2 = bittimingConfigBRS.tseg2;
+    canHandle.Init.DataSyncJumpWidth = bittimingConfigBRS.sjw;
+  }
+#endif
   /* does the message to be received have a standard 11-bit CAN identifier? */
   if ((rxMsgId & 0x80000000) == 0)
   {
@@ -458,6 +584,19 @@ static void BootComCanInit(void)
   HAL_FDCAN_ConfigGlobalFilter(&canHandle, FDCAN_REJECT, FDCAN_REJECT, 
                                FDCAN_REJECT_REMOTE, FDCAN_REJECT_REMOTE);
   
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+  if (canFdBitrateSwitchUsed == 1U)
+  {
+    /* configure and enable the transmit delay compensation, which is required if the
+     * bitrate switch feature is enabled. recommended settings:
+     * - offset: DataTimeSeg1 * DataPrescaler
+     * - filter: 0
+     */
+    (void)HAL_FDCAN_ConfigTxDelayCompensation(&canHandle, bittimingConfigBRS.tseg1 *
+                                              bittimingConfigBRS.prescaler, 0U);
+  }
+#endif
+
   /* start the CAN peripheral. no need to evaluate the return value as there is nothing
    * we can do about a faulty CAN controller. */
   (void)HAL_FDCAN_Start(&canHandle);
@@ -475,10 +614,15 @@ static void BootComCanCheckActivationRequest(void)
   unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   unsigned char packetIdMatches = 0;
   FDCAN_RxHeaderTypeDef rxMsgHeader;
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+  static const unsigned char dlc2len[] = { 0,  1,  2,  3,  4,  5,  6,  7,
+                                           8, 12, 16, 20, 24, 32, 48, 64 };
+  unsigned char rxMsgData[64];
+#else
   unsigned char rxMsgData[8];
+#endif
   unsigned char rxMsgLen;
   HAL_StatusTypeDef rxStatus = HAL_ERROR;
-
 
   /* poll for received CAN messages that await processing. */
   if (HAL_FDCAN_GetRxFifoFillLevel(&canHandle, FDCAN_RX_FIFO0) > 0)
@@ -519,7 +663,15 @@ static void BootComCanCheckActivationRequest(void)
     if (packetIdMatches == 1)
     {
       /* obtain the CAN message length. */
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+      rxMsgLen = 0;
+      if (rxMsgHeader.DataLength <= sizeof(dlc2len)/sizeof(dlc2len[0]))
+      {
+        rxMsgLen = dlc2len[rxMsgHeader.DataLength];
+      }
+#else
       rxMsgLen = (unsigned char)(rxMsgHeader.DataLength);
+#endif
       /* check if this was an XCP CONNECT command */
       if ((rxMsgData[0] == 0xff) && (rxMsgLen == 2))
       {
