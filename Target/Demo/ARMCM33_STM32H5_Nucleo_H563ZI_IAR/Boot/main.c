@@ -218,6 +218,26 @@ static void SystemClock_Config(void)
   LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1);
 #endif
   
+#if (BOOT_COM_CAN_ENABLE > 0)
+  /* CAN clock source configuration. */
+  LL_RCC_PLL2_SetSource(LL_RCC_PLL2SOURCE_HSE);
+  LL_RCC_PLL2_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
+  LL_RCC_PLL2_SetVCOOutputRange(LL_RCC_PLLVCORANGE_WIDE);
+  LL_RCC_PLL2_SetM(1);
+  LL_RCC_PLL2_SetN(20);
+  LL_RCC_PLL2_SetP(2);
+  LL_RCC_PLL2_SetQ(2);
+  LL_RCC_PLL2_SetR(2);
+  LL_RCC_PLL2Q_Enable();
+  LL_RCC_PLL2_Enable();
+  /* Wait till PLL is ready */
+  while(LL_RCC_PLL2_IsReady() != 1)
+  {
+    ;
+  }
+  LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL2Q);  
+#endif
+  
 #if (BOOT_COM_USB_ENABLE > 0)
   /* USB clock source configuration. */
   LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_HSI48);

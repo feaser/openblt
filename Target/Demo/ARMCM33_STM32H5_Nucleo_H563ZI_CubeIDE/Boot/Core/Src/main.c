@@ -58,6 +58,7 @@ PCD_HandleTypeDef hpcd_USB_DRD_FS;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void PeriphCommonClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_ICACHE_Init(void);
@@ -97,6 +98,9 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
+
+/* Configure the peripherals common clocks */
+  PeriphCommonClock_Config();
 
   /* USER CODE BEGIN SysInit */
 
@@ -200,6 +204,30 @@ void SystemClock_Config(void)
   LL_CRS_SetReloadCounter(__LL_CRS_CALC_CALCULATE_RELOADVALUE(48000000,1000));
   LL_CRS_SetFreqErrorLimit(34);
   LL_CRS_SetHSI48SmoothTrimming(32);
+}
+
+/**
+  * @brief Peripherals Common Clock Configuration
+  * @retval None
+  */
+void PeriphCommonClock_Config(void)
+{
+  LL_RCC_PLL2_SetSource(LL_RCC_PLL2SOURCE_HSE);
+  LL_RCC_PLL2_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
+  LL_RCC_PLL2_SetVCOOutputRange(LL_RCC_PLLVCORANGE_WIDE);
+  LL_RCC_PLL2_SetM(1);
+  LL_RCC_PLL2_SetN(20);
+  LL_RCC_PLL2_SetP(2);
+  LL_RCC_PLL2_SetQ(2);
+  LL_RCC_PLL2_SetR(2);
+  LL_RCC_PLL2Q_Enable();
+  LL_RCC_PLL2_Enable();
+
+   /* Wait till PLL is ready */
+  while(LL_RCC_PLL2_IsReady() != 1)
+  {
+  }
+
 }
 
 /**
