@@ -75,6 +75,8 @@ static void SocketCanRegisterEvents(tCanEvents const * events);
 static bool  SocketCanStartEventThread(void);
 static void  SocketCanStopEventThread(void);
 static void *SocketCanEventThread(void *param);
+/* Utility functions. */
+static uint8_t SocketCanSanitizeFrameLen(uint8_t len);
 
 
 /****************************************************************************************
@@ -98,6 +100,12 @@ static const tCanInterface socketCanInterface =
 ****************************************************************************************/
 /** \brief The settings to use in this CAN interface. */
 static tCanSettings socketCanSettings;
+
+/** \brief Boolean flag to track if CAN classic or CAN FD should be used. */
+static bool socketCanFdModeRequested;
+
+/** \brief Boolean flag to track if the CAN FD bitrate switch feature should be used. */
+static bool socketCanFdBrsRequested;
 
 /** \brief List with callback functions that this driver should use. */
 static volatile tCanEvents * socketCanEventsList;
@@ -147,6 +155,8 @@ static void SocketCanInit(tCanSettings const * settings)
   socketCanEventsList = NULL;
   socketCanEventsEntries = 0;
   socketCanErrorDetected = false;
+  socketCanFdModeRequested = false;
+  socketCanFdBrsRequested = false;
   /* Reset CAN interface settings. */
   socketCanSettings.devicename = "";
   socketCanSettings.channel = 0;
@@ -229,12 +239,23 @@ static bool SocketCanConnect(void)
   struct can_filter rxFilter;
   can_err_mask_t errMask;
 
-  /* This CAN driver does not support CAN FD mode. Cannot connect if CAN FD
-   * mode was requested in the settings.
-   */
+  /* Reset CAN FD related flags. */
+  socketCanFdModeRequested = false;
+  socketCanFdBrsRequested = false;
+
+  /* Set flags to determine if and which CAN FD features are requested. */
   if (socketCanSettings.brsbaudrate != CANFD_DISABLED)
   {
-    return false;
+    /* CAN FD mode requested. */
+    socketCanFdModeRequested = true;
+    /* When the bitrate switch feature is requested, the bitrate switch baudrate value
+     * should be higher than the nominal baudrate.
+     */
+    if (CanConvertFdBaudrate(socketCanSettings.brsbaudrate) > CanConvertBaudrate(socketCanSettings.baudrate))
+    {
+      /* CAN FD bitrate switch requested. */
+      socketCanFdBrsRequested = true;
+    }
   }
 
   /* Reset the error flag. */
@@ -257,6 +278,37 @@ static bool SocketCanConnect(void)
     if ((canSocket = socket(PF_CAN, (int)SOCK_RAW, CAN_RAW)) < 0)
     {
       result = false;
+    }
+
+    if (result)
+    {
+      /* CAN FD mode requested? */
+      if (socketCanFdModeRequested)
+      {
+        /* Determine if the CAN device is configured for CAN classic or CAN FD mode. Do so
+         * by reading the MTU size of the CAN device. For CAN classic it will be CAN_MTU.
+         * For CAN FD it will be CANFD_MTU. Assume that CAN FD is not supported by default.
+         */
+        result = false;
+        /* Attempt to read the MTU value from the CAN device. */
+        if (ioctl(canSocket, SIOCGIFMTU, &ifr) >= 0)
+        {
+          /* Is the CAN device configured for CAN FD? */
+          if (ifr.ifr_mtu == (int)CANFD_MTU)
+          {
+            /* CAN device configured for CAN FD. Attempt to switch the socket into CAN FD
+             * mode.
+             */
+            int enable_canfd = 1;
+            if (setsockopt(canSocket, SOL_CAN_RAW, CAN_RAW_FD_FRAMES,
+                           &enable_canfd, sizeof(enable_canfd)) == 0)
+            {
+              /* Successfully switched to CAN FD mode. Update the result accordingly. */
+              result = true;
+            }
+          }
+        }
+      }
     }
 
     if (result)
@@ -375,8 +427,10 @@ static void SocketCanDisconnect(void)
 static bool SocketCanTransmit(tCanMsg const * msg)
 {
   bool result = false;
-  struct can_frame canTxFrame;
+  struct canfd_frame canTxFrame;
   tCanEvents volatile const * pEvents;
+  uint8_t frameLenMax;
+  size_t frameSizeMax;
 
   /* Check parameters. */
   assert(msg != NULL);
@@ -386,22 +440,43 @@ static bool SocketCanTransmit(tCanMsg const * msg)
   {
     /* Construct the message frame. */
     canTxFrame.can_id = msg->id;
+    /* Reset the flags. */
+    canTxFrame.flags = 0;
     if ((msg->id & CAN_MSG_EXT_ID_MASK) != 0)
     {
       canTxFrame.can_id &= ~CAN_MSG_EXT_ID_MASK;
       canTxFrame.can_id |= CAN_EFF_FLAG;
     }
+    /* CAN classic mode? */
+    if (!socketCanFdModeRequested)
+    {
+      /* Set frame length and size max values for CAN classic. */
+      frameLenMax = CAN_MAX_DLEN;
+      frameSizeMax = CAN_MTU;
+    }
+    /* CAN FD mode. */
+    else
+    {
+      /* Set frame length and size max values for CAN classic. */
+      frameLenMax = CANFD_MAX_DLEN;
+      frameSizeMax = CANFD_MTU;
+      /* Bitrate switch feature enabled? */
+      if (socketCanFdBrsRequested)
+      {
+        canTxFrame.flags |= CANFD_BRS;
+      }
+    }
     /* Determine data length with out-of-bounds correction. */
-    uint8_t dataLen = ((msg->len <= CAN_MSG_MAX_LEN) ? msg->len : CAN_MSG_MAX_LEN);
-    /* Set the data length coe (DLC) of the message. */
-    canTxFrame.can_dlc = dataLen;
+    uint8_t dataLen = ((msg->len <= frameLenMax) ? msg->len : frameLenMax);
+    /* Set the data length of the message. */
+    canTxFrame.len = SocketCanSanitizeFrameLen(dataLen);
     for (uint8_t idx = 0; idx < dataLen; idx++)
     {
       canTxFrame.data[idx] = msg->data[idx];
     }
 
     /* Submit the frame for transmission. */
-    if (write(canSocket, &canTxFrame,  sizeof(struct can_frame)) == (ssize_t)sizeof(struct can_frame))
+    if (write(canSocket, &canTxFrame, frameSizeMax) == (ssize_t)frameSizeMax)
     {
       /* Update result value to success. */
       result = true;
@@ -550,9 +625,11 @@ static void SocketCanStopEventThread(void)
 ****************************************************************************************/
 static void *SocketCanEventThread(void *param)
 {
+  /* TODO ##Vg Update this for CAN FD support. */
   bool terminateRequest = false;
-  struct can_frame canRxFrame;
+  struct canfd_frame canRxFrame;
   tCanMsg rxMsg;
+  ssize_t frameSize = 0;
   tCanEvents volatile const * pEvents;
 
   /* Unused parameter. */
@@ -567,69 +644,76 @@ static void *SocketCanEventThread(void *param)
     UtilCriticalSectionExit();
 
     /* Check if CAN frames were received. */
-    while (read(canSocket, &canRxFrame, sizeof(struct can_frame)) == (ssize_t)sizeof(struct can_frame))
+    do
     {
-      /* Ignore remote frames */
-      if (canRxFrame.can_id & CAN_RTR_FLAG)
+      /* Attempt to read the next frame from the queue. */
+      frameSize = read(canSocket, &canRxFrame, CANFD_MTU);
+      /* CAN FD or CAN classic frames are the only valid ones. */
+      if ( (frameSize == (ssize_t)CANFD_MTU) || (frameSize == (ssize_t)CAN_MTU) )
       {
-        continue;
-      }
-      /* Does the message contain error information? */
-      else if (canRxFrame.can_id & CAN_ERR_FLAG)
-      {
-        /* Was it a bus off event? */
-        if ((canRxFrame.can_id & CAN_ERR_BUSOFF) != 0)
+        /* Ignore remote frames */
+        if (canRxFrame.can_id & CAN_RTR_FLAG)
         {
-          /* Set the error flag. */
-          UtilCriticalSectionEnter();
-          socketCanErrorDetected = true;
-          UtilCriticalSectionExit();
+          continue;
         }
-        /* Was it a CAN controller event? */
-        else if ((canRxFrame.can_id & CAN_ERR_CRTL) != 0)
+        /* Does the message contain error information? */
+        else if (canRxFrame.can_id & CAN_ERR_FLAG)
         {
-          /* Is the controller in error passive mode (bus heavy)? */
-          if ((canRxFrame.data[1] & (CAN_ERR_CRTL_RX_PASSIVE | CAN_ERR_CRTL_TX_PASSIVE)) != 0)
+          /* Was it a bus off event? */
+          if ((canRxFrame.can_id & CAN_ERR_BUSOFF) != 0)
           {
             /* Set the error flag. */
             UtilCriticalSectionEnter();
             socketCanErrorDetected = true;
             UtilCriticalSectionExit();
           }
-        }
-      }
-      /* It was a regular CAN message with either 11- or 29-bit identifier. */
-      else
-      {
-        /* Copy it to the CAN message object */
-        rxMsg.id = canRxFrame.can_id;
-        if (rxMsg.id & CAN_EFF_FLAG)
-        {
-          rxMsg.id &= ~CAN_EFF_FLAG;
-          rxMsg.id |= CAN_MSG_EXT_ID_MASK;
-        }
-        rxMsg.len = canRxFrame.can_dlc;
-        for (uint8_t idx = 0; idx < rxMsg.len; idx++)
-        {
-          rxMsg.data[idx] = canRxFrame.data[idx];
-        }
-
-        /* Trigger message reception event(s). */
-        pEvents = socketCanEventsList;
-        for (uint32_t idx = 0; idx < socketCanEventsEntries; idx++)
-        {
-          if (pEvents != NULL)
+          /* Was it a CAN controller event? */
+          else if ((canRxFrame.can_id & CAN_ERR_CRTL) != 0)
           {
-            if (pEvents->MsgRxed != NULL)
+            /* Is the controller in error passive mode (bus heavy)? */
+            if ((canRxFrame.data[1] & (CAN_ERR_CRTL_RX_PASSIVE | CAN_ERR_CRTL_TX_PASSIVE)) != 0)
             {
-              pEvents->MsgRxed(&rxMsg);
+              /* Set the error flag. */
+              UtilCriticalSectionEnter();
+              socketCanErrorDetected = true;
+              UtilCriticalSectionExit();
             }
-            /* Move on to the next entry in the list. */
-            pEvents++;
+          }
+        }
+        /* It was a regular CAN message with either 11- or 29-bit identifier. */
+        else
+        {
+          /* Copy it to the CAN message object */
+          rxMsg.id = canRxFrame.can_id;
+          if (rxMsg.id & CAN_EFF_FLAG)
+          {
+            rxMsg.id &= ~CAN_EFF_FLAG;
+            rxMsg.id |= CAN_MSG_EXT_ID_MASK;
+          }
+          rxMsg.len = canRxFrame.len;
+          for (uint8_t idx = 0; idx < rxMsg.len; idx++)
+          {
+            rxMsg.data[idx] = canRxFrame.data[idx];
+          }
+
+          /* Trigger message reception event(s). */
+          pEvents = socketCanEventsList;
+          for (uint32_t idx = 0; idx < socketCanEventsEntries; idx++)
+          {
+            if (pEvents != NULL)
+            {
+              if (pEvents->MsgRxed != NULL)
+              {
+                pEvents->MsgRxed(&rxMsg);
+              }
+              /* Move on to the next entry in the list. */
+              pEvents++;
+            }
           }
         }
       }
     }
+    while ((frameSize == (ssize_t)CANFD_MTU) || (frameSize == (ssize_t)CAN_MTU));
     /* Wait a little to not starve the CPU, but not too long to prevent interference with
      * data throughput.
      */
@@ -644,6 +728,49 @@ static void *SocketCanEventThread(void *param)
   /* exit the thread */
   return NULL;
 } /*** end of SocketCanEventThread ***/
+
+
+/************************************************************************************//**
+** \brief     Helper function to sanitize the CAN frame length, specifically for CAN FD.
+**            On CAN FD, the frame lengths can be: 0..8, 12, 16, 20, 24, 32, 48, 64.
+**            This means that if a frame length of 14 is specified, it should be rounded
+**            up to the next supported frame length value, 16 in this case.
+** \param     len Unsanitized frame length. 0..64.
+** \return    Sanitized frame length in the range 0..8, 12, 16, 20, 24, 32, 48, 64.
+**
+****************************************************************************************/
+static uint8_t SocketCanSanitizeFrameLen(uint8_t len)
+{
+  uint8_t result;
+  uint8_t frame_len;
+  uint8_t frame_dlc;
+  static const uint8_t len2dlc[] =
+  {  0,  1,  2,  3,  4,  5,  6,  7,  8,    /*  0 -  8 */
+     9,  9,  9,  9,                        /*  9 - 12 */
+    10, 10, 10, 10,                        /* 13 - 16 */
+    11, 11, 11, 11,                        /* 17 - 20 */
+    12, 12, 12, 12,                        /* 21 - 24 */
+    13, 13, 13, 13, 13, 13, 13, 13,        /* 25 - 32 */
+    14, 14, 14, 14, 14, 14, 14, 14,        /* 33 - 40 */
+    14, 14, 14, 14, 14, 14, 14, 14,        /* 41 - 48 */
+    15, 15, 15, 15, 15, 15, 15, 15,        /* 49 - 56 */
+    15, 15, 15, 15, 15, 15, 15, 15         /* 57 - 64 */
+  };
+  static const uint8_t dlc2len[] =
+  {
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 20, 24, 32, 48, 64
+  };
+
+  /* Make sure the specified len parameter is valid. If not, correct it. */
+  frame_len = (len > CANFD_MAX_DLEN) ? CANFD_MAX_DLEN : len;
+  /* Convert the lenght value to the CAN FD dlc value (0..15). */
+  frame_dlc = len2dlc[frame_len];
+  /* Convert the CAN FD dlc value to its representive frame length value. */
+  result = dlc2len[frame_dlc];
+
+  /* Give the result back to the caller. */
+  return result;
+} /*** end of SocketCanSanitizeFrameLen ***/
 
 
 /*********************************** end of socketcan.c ********************************/
