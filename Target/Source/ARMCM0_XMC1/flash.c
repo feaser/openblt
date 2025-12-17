@@ -616,7 +616,7 @@ static blt_bool FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
     if ((blt_addr)(dst-&(block->data[0])) >= FLASH_WRITE_BLOCK_SIZE)
     {
       /* need to switch to a new block, so program the current one and init the next */
-      block = FlashSwitchBlock(block, current_base_addr+FLASH_WRITE_BLOCK_SIZE);
+      block = FlashSwitchBlock(block, block->base_addr+FLASH_WRITE_BLOCK_SIZE);
       if (block == BLT_NULL)
       {
         return BLT_FALSE;
