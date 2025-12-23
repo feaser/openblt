@@ -43,6 +43,16 @@
 #define CAN_MSG_TX_TIMEOUT_MS          (50u)
 
 
+/* map the configured CAN channel index to the STM32's CAN peripheral */
+#if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
+/** \brief Set CAN base address to CAN1. */
+#define CAN_CHANNEL   CAN1
+#elif (BOOT_COM_CAN_CHANNEL_INDEX == 1)
+/** \brief Set CAN base address to CAN2. */
+#define CAN_CHANNEL   CAN2
+#endif
+
+
 /****************************************************************************************
 * Type definitions
 ****************************************************************************************/
@@ -155,11 +165,10 @@ void CanInit(void)
   CAN_FilterTypeDef filterConfig;
   blt_int32u rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   blt_int32u rxFilterId, rxFilterMask;
-
-  /* the current implementation supports CAN1. throw an assertion error in case a
+  /* the current implementation supports CAN1 and 2. throw an assertion error in case a
    * different CAN channel is configured.
    */
-  ASSERT_CT(BOOT_COM_CAN_CHANNEL_INDEX == 0);
+  ASSERT_CT((BOOT_COM_CAN_CHANNEL_INDEX == 0 || BOOT_COM_CAN_CHANNEL_INDEX == 1));
   /* obtain bittiming configuration information. */
   if (CanGetSpeedConfig(BOOT_COM_CAN_BAUDRATE/1000, &prescaler, &tseg1, &tseg2) == BLT_FALSE)
   {
@@ -173,7 +182,7 @@ void CanInit(void)
   }
 
   /* set the CAN controller configuration. */
-  canHandle.Instance = CAN;
+  canHandle.Instance = CAN_CHANNEL;
   canHandle.Init.TimeTriggeredMode = DISABLE;
   canHandle.Init.AutoBusOff = DISABLE;
   canHandle.Init.AutoWakeUp = DISABLE;
@@ -208,7 +217,13 @@ void CanInit(void)
   /* configure the reception filter. note that the implementation of this function
    * always returns HAL_OK, so no need to evaluate the return value.
    */
+#if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
+  /* filter 0 is the first filter assigned to the bxCAN master (CAN1) */
   filterConfig.FilterBank = 0;
+#else
+  /* filter 14 is the first filter assigned to the bxCAN slave (CAN2) */
+  filterConfig.FilterBank = 14;
+#endif
   filterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
   filterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
   filterConfig.FilterIdHigh = (rxFilterId >> 16) & 0x0000FFFFu;
@@ -217,6 +232,9 @@ void CanInit(void)
   filterConfig.FilterMaskIdLow = rxFilterMask & 0x0000FFFFu;
   filterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
   filterConfig.FilterActivation = ENABLE;
+  /* select the start slave bank number (for CAN1). this configuration assigns filter
+   * banks 0..13 to CAN1 and 14..27 to CAN2.
+   */
   filterConfig.SlaveStartFilterBank = 14;
   (void)HAL_CAN_ConfigFilter(&canHandle, &filterConfig);
   /* start the CAN peripheral. no need to evaluate the return value as there is nothing
