@@ -6,7 +6,7 @@ OpenBLT enables you and your customers to update the firmware on your microcontr
 
 OpenBLT can be ported to any 8-bit, 16-bit, or 32-bit microcontroller and currently runs on runs on ST STM32, Infineon XMC, NXP S12, and TI TM4C and LM3S microcontrollers. It is most popular on STM32 microcontrollers.
 
-By default, it supports communication interfaces such as: RS232, CAN, USB, TCP/IP, Modbus RTU and it ships with the easy-to-use [MicroBoot](https://www.feaser.com/openblt/doku.php?id=manual:microboot) PC tool for initiating and monitoring the firmware update. Performing firmware updates directly from an SD-card is also supported.
+By default, it supports communication interfaces such as: RS232, CAN, CAN FD, USB, TCP/IP, Modbus RTU and it ships with the easy-to-use [MicroBoot](https://www.feaser.com/openblt/doku.php?id=manual:microboot) PC tool for initiating and monitoring the firmware update. Performing firmware updates directly from an SD-card is also supported.
 
 For those that prefer a command line program for performing firmware updates, there is [BootCommander](https://www.feaser.com/openblt/doku.php?id=manual:bootcommander). If you would rather build your own firmware update tool for seamless integration into your existing toolset, then have a look at the OpenBLT host library ([LibOpenBLT](https://www.feaser.com/openblt/doku.php?id=manual:libopenblt)). This is an easy-to-use shared library, enabling you to develop your own firmware update tool quickly, in the programming language of your liking.
 
