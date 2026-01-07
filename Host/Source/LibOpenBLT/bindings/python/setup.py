@@ -40,7 +40,7 @@ from setuptools import setup
 # ***************************************************************************************
 setup ( \
     name = 'openblt',
-    version = '1.4.0',
+    version = '1.5.0',
     description = 'Python wrapper for the OpenBLT host library (LibOpenBLT).',
     long_description = open('README.rst', 'r').read(),
     author = 'Frank Voorburg',
