@@ -100,7 +100,7 @@ void TimerReset(void)
   S32_SysTick->CSR = 0;
   S32_SysTick->RVR = 0;
   S32_SysTick->CVR = 0;
-  S32_SCB->ICSR |= S32_SCB_ICSR_PENDSTCLR_MASK;
+  S32_SCB->ICSR = S32_SCB_ICSR_PENDSTCLR_MASK;
 } /*** end of TimerReset ***/
 
 
