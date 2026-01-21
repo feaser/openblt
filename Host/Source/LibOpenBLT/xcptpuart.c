@@ -239,7 +239,8 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
    * need a checksum which could theoretically be one or two bytes.
    */
   static uint8_t uartBuffer[XCPLOADER_PACKET_SIZE_MAX + 3]; 
-  uint32_t responseTimeoutTime = 0;
+  uint32_t responseRxStartTime = 0;
+  uint32_t deltaTime;
   bool packetReceptionComplete;
 
   /* Check parameters. */
@@ -288,14 +289,14 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
     /* Only continue if the transmission was successful. */
     if (result)
     {
-      /* Determine timeout time for the response packet. */
-      responseTimeoutTime = UtilTimeGetSystemTimeMs() + timeout;
+      /* Determine start time of response packet reception. */
+      responseRxStartTime = UtilTimeGetSystemTimeMs();
       /* Initialize packet reception length. */
       rxPacket->len = 0;
       /* Poll with timeout detection to receive the first byte. This one contains the
        * packet length and cannot be zero.
        */
-      while (UtilTimeGetSystemTimeMs() < responseTimeoutTime)
+      do
       {
         if (SerialPortRead(&rxPacket->len, 1))
         {
@@ -308,7 +309,10 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
             break;
           }
         }
-      }
+        /* Determine elapsed time. Also works in case of an overflow. */
+        deltaTime = UtilTimeGetSystemTimeMs() - responseRxStartTime;
+      } 
+      while (deltaTime < timeout);
       /* Check if a valid start of packet was received, in which case the first 
        * byte won't have a zero value.
        */
@@ -327,7 +331,7 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
       byteIdx = 0;
       csByte = rxPacket->len;
       /* Poll with timeout detection to receive the full packet. */
-      while (UtilTimeGetSystemTimeMs() < responseTimeoutTime)
+      do
       {
         /* Check if the next byte was received. */
         if (SerialPortRead(&rxPacket->data[byteIdx], 1))
@@ -344,7 +348,10 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
           /* Increment indexer to the next byte. */
           byteIdx++;
         }
+        /* Determine elapsed time. Also works in case of an overflow. */
+        deltaTime = UtilTimeGetSystemTimeMs() - responseRxStartTime;
       }
+      while (deltaTime < timeout);
       /* Check if a timeout occurred. */
       if (!packetReceptionComplete)
       {
@@ -361,7 +368,7 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
       csReceptionComplete = false;
       csIdx = 0;
       /* Poll with timeout detection to receive the full packet. */
-      while (UtilTimeGetSystemTimeMs() < responseTimeoutTime)
+      do
       {
         /* Check if the next byte was received. */
         if (SerialPortRead(&csBuffer[csIdx], 1))
@@ -376,7 +383,10 @@ static bool XcpTpUartSendPacket(tXcpTransportPacket const * txPacket,
           /* Increment indexer to the next byte. */
           csIdx++;
         }
+        /* Determine elapsed time. Also works in case of an overflow. */
+        deltaTime = UtilTimeGetSystemTimeMs() - responseRxStartTime;
       }
+      while (deltaTime < timeout);
       /* Check if a timeout occurred. */
       if (!csReceptionComplete)
       {

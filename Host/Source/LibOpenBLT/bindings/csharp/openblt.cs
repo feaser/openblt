@@ -1436,10 +1436,12 @@ namespace OpenBLT
             public static class Time
             {
                 [DllImport(LIBNAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-                private static extern Int32 BltUtilTimeGetSystemTime();
+                private static extern UInt32 BltUtilTimeGetSystemTime();
 
                 /// <summary>
-                /// Get the system time in milliseconds.
+                /// Get the system time in milliseconds. Note that the 32-bit unsigned system
+                /// time could potentially overflow, which needs to be properly handled by
+                /// the caller.
                 /// </summary>
                 /// <returns>
                 /// Time in milliseconds.
@@ -1449,7 +1451,7 @@ namespace OpenBLT
                 /// Console.WriteLine("Current system time: {0}", OpenBLT.Lib.Util.Time.GetSystemTime());
                 /// </code>
                 /// </example>
-                public static Int32 GetSystemTime()
+                public static UInt32 GetSystemTime()
                 {
                     return BltUtilTimeGetSystemTime();
                 }

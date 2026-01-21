@@ -326,7 +326,8 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
 {
   bool result = false;
   tCanMsg canMsg;
-  uint32_t responseTimeoutTime = 0;
+  uint32_t responseRxStartTime = 0;
+  uint32_t deltaTime;
   
   /* Check parameters. */
   assert(txPacket != NULL);
@@ -376,12 +377,12 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
       /* Only continue if the transmission was successful. */
       if (result)
       {
-        /* Determine timeout time for the response packet. */
-        responseTimeoutTime = UtilTimeGetSystemTimeMs() + timeout;
+        /* Determine start time of response packet reception. */
+        responseRxStartTime = UtilTimeGetSystemTimeMs();
         /* Poll with timeout detection to receive the response packet as a CAN message
          * on the CAN bus.
          */
-        while (UtilTimeGetSystemTimeMs() < responseTimeoutTime)
+        do
         {
           /* Enter critical section. */
           UtilCriticalSectionEnter();
@@ -401,7 +402,11 @@ static bool XcpTpCanSendPacket(tXcpTransportPacket const * txPacket,
           }
           /* Exit critical section. */
           UtilCriticalSectionExit();
-        }
+          /* Determine elapsed time. Also works in case of an overflow. */
+          deltaTime = UtilTimeGetSystemTimeMs() - responseRxStartTime;
+        } 
+        while (deltaTime < timeout);
+
         /* Enter critical section. */
         UtilCriticalSectionEnter();
         /* Check if a timeout occurred and no response was received. */

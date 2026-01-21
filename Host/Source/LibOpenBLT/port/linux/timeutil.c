@@ -38,7 +38,9 @@
 
 
 /************************************************************************************//**
-** \brief     Get the system time in milliseconds.
+** \brief     Get the system time in milliseconds. Note that the 32-bit unsigned system
+**            time could potentially overflow, which needs to be properly handled by
+**            the caller.
 ** \return    Time in milliseconds.
 **
 ****************************************************************************************/

@@ -656,7 +656,8 @@ def util_crc32_calculate(data, len):
 
 def util_time_get_system_time():
     """
-    Get the system time in milliseconds.
+    Get the system time in milliseconds. Note that the 32-bit unsigned system time could
+    potentially overflow, which needs to be properly handled by the caller.
 
     :returns: Time in milliseconds.
     :rtype: int

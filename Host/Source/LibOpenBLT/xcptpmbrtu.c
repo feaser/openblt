@@ -196,8 +196,11 @@ static bool XcpTpMbRtuConnect(void)
   bool result = false;
   bool baudrateSupported;
   tSerialPortBaudrate baudrate;
-  uint32_t idleTimeoutTime;
-  uint32_t waitTimeoutTime;
+  uint32_t idleDetectStartTime = 0;
+  uint32_t idleDeltaTime;
+  uint32_t waitDetectStartTime = 0;
+  uint32_t waitDeltaTime;
+  const uint32_t waitTime = 500U;
   uint32_t currentTime;
   uint8_t rxByte = 0;
   tSerialPortParity parity;
@@ -283,26 +286,28 @@ static bool XcpTpMbRtuConnect(void)
      * state on the communication line here.
      */
     currentTime = UtilTimeGetSystemTimeMs();
-    idleTimeoutTime = currentTime + tpMbRtuT3_5Ms;
+    idleDetectStartTime = currentTime;
     /* Add a second timeout to make sure this logic doesn't hang, in case the serial
      * line is flooded with data for some weird unexpected reason. It really shouldn't
      * take more a few hundred milliseconds for the idle line to occur.
      */
-    waitTimeoutTime = currentTime + 500;
+    waitDetectStartTime = currentTime;
 
     /* Poll for T3_5 timeout, but restart when a character was received. */
     do
     {
-      /* Get the current system time. */
+      /* Determine elapsed times. Also works in case of an overflow. */
       currentTime = UtilTimeGetSystemTimeMs();
+      idleDeltaTime = currentTime - idleDetectStartTime;
+      waitDeltaTime = currentTime - waitDetectStartTime;
       /* Check if a byte was received. */
       if (SerialPortRead(&rxByte, 1))
       {
         /* Transmission line not idle, so restart the 3.5 character timeout. */
-        idleTimeoutTime = currentTime + tpMbRtuT3_5Ms;
+        idleDetectStartTime = currentTime;
       }
       /* Check if an overall timeout occurred. */
-      if (currentTime >= waitTimeoutTime)
+      if (waitDeltaTime >= waitTime)
       {
         /* Could not detect an idle communication line. Flag the error, disconnected
          * the serial port again and stop the loop.
@@ -312,7 +317,7 @@ static bool XcpTpMbRtuConnect(void)
         break;
       }
     } 
-    while (currentTime < idleTimeoutTime);
+    while (idleDeltaTime < tpMbRtuT3_5Ms);
   }
 
   /* Give the result back to the caller. */
@@ -345,9 +350,9 @@ static bool XcpTpMbRtuSendPacket(tXcpTransportPacket const * txPacket,
                                 tXcpTransportPacket * rxPacket, uint16_t timeout)
 {
   bool     result = false;
-  uint32_t idleTimeoutTime;
-  uint32_t waitTimeoutTime = 0;
-  uint32_t currentTime;
+  uint32_t idleDetectStartTime = 0;
+  uint32_t deltaTime;
+  uint32_t waitDetectStartTime = 0;
   uint16_t byteIdx;
   uint16_t checksumCalculated;
   uint16_t checksumReceived;
@@ -395,13 +400,13 @@ static bool XcpTpMbRtuSendPacket(tXcpTransportPacket const * txPacket,
 
     /* ------------ Guarantee idle time ---------------------------------------------- */
     /* Poll for T3_5 timeout. */
-    idleTimeoutTime = UtilTimeGetSystemTimeMs() + tpMbRtuT3_5Ms;
+    idleDetectStartTime = UtilTimeGetSystemTimeMs();
     do
     {
-      /* Get the current system time. */
-      currentTime = UtilTimeGetSystemTimeMs();
+      /* Determine elapsed time. Note that this also works in case of an overflow. */
+      deltaTime = UtilTimeGetSystemTimeMs() - idleDetectStartTime;
     }
-    while (currentTime < idleTimeoutTime);
+    while (deltaTime < tpMbRtuT3_5Ms);
 
     /* ------------ Packet transmission ---------------------------------------------- */
     /* Construct the Modbus RTU packet. Start by adding the slave address. */
@@ -442,14 +447,16 @@ static bool XcpTpMbRtuSendPacket(tXcpTransportPacket const * txPacket,
     if (result)
     {
       /* Determine timeout time for the response packet. */
-      waitTimeoutTime = UtilTimeGetSystemTimeMs() + timeout;
+      waitDetectStartTime = UtilTimeGetSystemTimeMs();
       /* Reset the indexer used for storing the received data. */
       rxModbusPacketLen = 0;
       /* Poll with timeout detection to receive the header of the XCP on Modbus RTU
        * response packet. This is everything up to the actual XCP packet data. The
        * header includes the slave address, function code and extra XCP length. 
        */
-      while ((UtilTimeGetSystemTimeMs() < waitTimeoutTime) && (rxModbusPacketLen < 3))
+      /* Determine elapsed time. Note that this also works in case of an overflow. */
+      deltaTime = UtilTimeGetSystemTimeMs() - waitDetectStartTime;
+      while ((deltaTime < timeout) && (rxModbusPacketLen < 3))
       {
         /* Attempt to receive a new byte. */
         if (SerialPortRead(&mbRtuBuffer[rxModbusPacketLen], 1))
@@ -457,6 +464,8 @@ static bool XcpTpMbRtuSendPacket(tXcpTransportPacket const * txPacket,
           /* Continue with the next byte. */
           rxModbusPacketLen++;
         }
+        /* Refresh elapsed time. Note that this also works in case of an overflow. */
+        deltaTime = UtilTimeGetSystemTimeMs() - waitDetectStartTime;
       }
 
       /* Check if the entire packet header was received. */
@@ -492,7 +501,9 @@ static bool XcpTpMbRtuSendPacket(tXcpTransportPacket const * txPacket,
       /* Poll with timeout detection to receive the remainder of the response
        * packet. This is the XCP packet data and 16-byte CRC.
        */
-      while ((UtilTimeGetSystemTimeMs() < waitTimeoutTime) && (rxModbusPacketLen < (3 + rxPacket->len + 2)))
+       /* Determine elapsed time. Note that this also works in case of an overflow. */
+      deltaTime = UtilTimeGetSystemTimeMs() - waitDetectStartTime;
+      while ((deltaTime < timeout) && (rxModbusPacketLen < (3 + rxPacket->len + 2)))
       {
         /* Attempt to receive a new byte. */
         if (SerialPortRead(&mbRtuBuffer[rxModbusPacketLen], 1))
@@ -500,6 +511,8 @@ static bool XcpTpMbRtuSendPacket(tXcpTransportPacket const * txPacket,
           /* Continue with the next byte. */
           rxModbusPacketLen++;
         }
+        /* Refresh elapsed time. Note that this also works in case of an overflow. */
+        deltaTime = UtilTimeGetSystemTimeMs() - waitDetectStartTime;
       }
 
       /* Check if the entire packet remainder was received. */

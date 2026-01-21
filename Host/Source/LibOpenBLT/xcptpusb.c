@@ -152,7 +152,8 @@ static bool XcpTpUsbSendPacket(tXcpTransportPacket const * txPacket,
    * packet on the USB transport layer contains the packet lenght. 
    */
   static uint8_t usbBuffer[XCPLOADER_PACKET_SIZE_MAX + 1]; 
-  uint32_t responseTimeoutTime = 0;
+  uint32_t responseRxStartTime = 0;
+  uint32_t deltaTime;
 
   /* Check parameters. */
   assert(txPacket != NULL);
@@ -188,8 +189,8 @@ static bool XcpTpUsbSendPacket(tXcpTransportPacket const * txPacket,
     /* Only continue if the transmission was successful. */
     if (result)
     {
-      /* Determine timeout time for the response packet. */
-      responseTimeoutTime = UtilTimeGetSystemTimeMs() + timeout;
+      /* Determine start time of response packet reception. */
+      responseRxStartTime = UtilTimeGetSystemTimeMs();
       /* Initialize packet reception length. */
       rxPacket->len = 0;
       /* Receive the first byte. This one contains the packet length and cannot be
@@ -212,16 +213,17 @@ static bool XcpTpUsbSendPacket(tXcpTransportPacket const * txPacket,
     /* Only continue with reception if a valid packet length was received. */
     if (result)
     {
+      /* Determine elapsed time. Also works in case of an overflow. */
+      deltaTime = UtilTimeGetSystemTimeMs() - responseRxStartTime;
       /* Check if there is still time available before the initial timeout. */
-      uint32_t currentTime = UtilTimeGetSystemTimeMs();
-      if (currentTime >= responseTimeoutTime)
+      if (deltaTime >= timeout)
       {
         result = false;
       }
       else
       {
         /* Receive the actual packet data. */
-        if (!UsbBulkRead(&rxPacket->data[0], rxPacket->len, responseTimeoutTime - currentTime))
+        if (!UsbBulkRead(&rxPacket->data[0], rxPacket->len, timeout - deltaTime))
         {
           result = false;
         }
