@@ -1,7 +1,7 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM0_STM32C0_Nucleo_C092RC_CubeIDE/Prog/App/boot.c
-* \brief        Demo program bootloader interface source file.
-* \ingroup      Prog_ARMCM0_STM32C0_Nucleo_C092RC_CubeIDE
+* \file         Source/ARMCM0_STM32C0/can.c
+* \brief        Bootloader CAN communication interface source file.
+* \ingroup      Target_ARMCM0_STM32C0
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
@@ -20,258 +20,34 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
+
 
 /****************************************************************************************
 * Include files
 ****************************************************************************************/
-#include "header.h"                                    /* generic header               */
-
-
-/****************************************************************************************
-* Function prototypes
-****************************************************************************************/
-#if (BOOT_COM_RS232_ENABLE > 0)
-static void BootComRs232Init(void);
-static void BootComRs232CheckActivationRequest(void);
-#endif
+#include "boot.h"                                /* bootloader generic header          */
 #if (BOOT_COM_CAN_ENABLE > 0)
-static void BootComCanInit(void);
-static void BootComCanCheckActivationRequest(void);
-#endif
+#include "stm32c0xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32c0xx_ll_rcc.h"                    /* STM32 LL RCC header                */
 
-
-/************************************************************************************//**
-** \brief     Initializes the communication interface.
-** \return    none.
-**
-****************************************************************************************/
-void BootComInit(void)
-{
-#if (BOOT_COM_RS232_ENABLE > 0)
-  BootComRs232Init();
-#endif
-#if (BOOT_COM_CAN_ENABLE > 0)
-  BootComCanInit();
-#endif
-} /*** end of BootComInit ***/
-
-
-/************************************************************************************//**
-** \brief     Receives the CONNECT request from the host, which indicates that the
-**            bootloader should be activated and, if so, activates it.
-** \return    none.
-**
-****************************************************************************************/
-void BootComCheckActivationRequest(void)
-{
-#if (BOOT_COM_RS232_ENABLE > 0)
-  BootComRs232CheckActivationRequest();
-#endif
-#if (BOOT_COM_CAN_ENABLE > 0)
-  BootComCanCheckActivationRequest();
-#endif
-} /*** end of BootComCheckActivationRequest ***/
-
-
-/************************************************************************************//**
-** \brief     Bootloader activation function.
-** \return    none.
-**
-****************************************************************************************/
-void BootActivate(void)
-{
-  /* perform software reset to activate the bootoader again */
-  NVIC_SystemReset();
-} /*** end of BootActivate ***/
-
-
-#if (BOOT_COM_RS232_ENABLE > 0)
-/****************************************************************************************
-*     U N I V E R S A L   A S Y N C H R O N O U S   R X   T X   I N T E R F A C E
-****************************************************************************************/
 
 /****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
-/** \brief Timeout time for the reception of a CTO packet. The timer is started upon
- *         reception of the first packet byte.
- */
-#define RS232_CTO_RX_PACKET_TIMEOUT_MS (100u)
+/** \brief Timeout for transmitting a CAN message in milliseconds. */
+#define CAN_MSG_TX_TIMEOUT_MS          (50u)
 
-/** \brief Maximum bytes in a CTO packet on RS232, excluding the one extra for length and
- *         two extra for possibly configured checksum byte(s).
- */
-#define RS232_CTO_RX_MAX_DATA          (129u)
+/* map the configured CAN channel index to the STM32's CAN peripheral */
+#if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
+/** \brief Set CAN base address to CAN1. */
+#define CAN_CHANNEL   FDCAN1
+#endif
 
-
-/****************************************************************************************
-* Local data declarations
-****************************************************************************************/
-/** \brief UART handle to be used in API calls. */
-static UART_HandleTypeDef rs232Handle;
-
-
-/****************************************************************************************
-* Function prototypes
-****************************************************************************************/
-static unsigned char Rs232ReceiveByte(unsigned char *data);
-
-
-/************************************************************************************//**
-** \brief     Initializes the UART communication interface.
-** \return    none.
-**
-****************************************************************************************/
-static void BootComRs232Init(void)
-{
-  /* Configure UART peripheral. */
-  rs232Handle.Instance            = USART2;
-  rs232Handle.Init.BaudRate       = BOOT_COM_RS232_BAUDRATE;
-  rs232Handle.Init.WordLength     = UART_WORDLENGTH_8B;
-  rs232Handle.Init.StopBits       = UART_STOPBITS_1;
-  rs232Handle.Init.Parity         = UART_PARITY_NONE;
-  rs232Handle.Init.HwFlowCtl      = UART_HWCONTROL_NONE;
-  rs232Handle.Init.Mode           = UART_MODE_TX_RX;
-  rs232Handle.Init.OverSampling   = UART_OVERSAMPLING_16;
-  rs232Handle.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_ENABLE;
-  rs232Handle.Init.ClockPrescaler = UART_PRESCALER_DIV1;
-  /* Initialize the UART peripheral. */
-  HAL_UART_Init(&rs232Handle);
-} /*** end of BootComRs232Init ***/
-
-
-/************************************************************************************//**
-** \brief     Receives the CONNECT request from the host, which indicates that the
-**            bootloader should be activated and, if so, activates it.
-** \return    none.
-**
-****************************************************************************************/
-static void BootComRs232CheckActivationRequest(void)
-{
-  static unsigned char xcpCtoReqPacket[RS232_CTO_RX_MAX_DATA+3];
-  static unsigned char xcpCtoRxLength;
-  static unsigned char xcpCtoRxInProgress = 0;
-  static unsigned long xcpCtoRxStartTime = 0;
-  #if (BOOT_COM_RS232_CS_TYPE == 1)
-  unsigned char  csLen = 1;
-  unsigned char  csByte;
-  unsigned short csIdx;
-  #else
-  unsigned char  csLen = 0;
-  #endif
-  unsigned char  csCorrect = 1;
-
-  /* start of cto packet received? */
-  if (xcpCtoRxInProgress == 0)
-  {
-    /* store the message length when received */
-    if (Rs232ReceiveByte(&xcpCtoReqPacket[0]) == 1)
-    {
-      /* check that the length has a valid value. it should not be 0 */
-      if ( (xcpCtoReqPacket[0] > 0) &&
-           (xcpCtoReqPacket[0] <= RS232_CTO_RX_MAX_DATA) )
-      {
-        /* store the start time */
-        xcpCtoRxStartTime = TimerGet();
-        /* indicate that a cto packet is being received */
-        xcpCtoRxInProgress = 1;
-        /* reset packet data count */
-        xcpCtoRxLength = 0;
-      }
-    }
-  }
-  else
-  {
-    /* store the next packet byte */
-    if (Rs232ReceiveByte(&xcpCtoReqPacket[xcpCtoRxLength+1]) == 1)
-    {
-      /* increment the packet data count */
-      xcpCtoRxLength++;
-
-      /* check to see if the entire packet was received */
-      if (xcpCtoRxLength == (xcpCtoReqPacket[0] + csLen))
-      {
-        #if (BOOT_COM_RS232_CS_TYPE == 1)
-        /* calculate the byte checksum. */
-        csByte = 0;
-        for (csIdx = 0; csIdx < xcpCtoRxLength; csIdx++)
-        {
-          csByte += xcpCtoReqPacket[csIdx];
-        }
-        /* verify the checksum. */
-        if (csByte != xcpCtoReqPacket[xcpCtoRxLength])
-        {
-          /* flag incorrect checksum. */
-          csCorrect = 0;
-          /* cancel the packet reception due to invalid checksum. */
-          xcpCtoRxInProgress = 0;
-        }
-        #endif
-
-        /* only continue with a valid checksum. */
-        if (csCorrect != 0)
-        {
-          /* subtract the checksum from the packet length. */
-          xcpCtoRxLength -= csLen;
-          /* done with cto packet reception */
-          xcpCtoRxInProgress = 0;
-          /* check if this was an XCP CONNECT command */
-          if ((xcpCtoReqPacket[1] == 0xff) && (xcpCtoRxLength == 2))
-          {
-            /* connection request received so start the bootloader */
-            BootActivate();
-          }
-        }
-      }
-    }
-    else
-    {
-      /* check packet reception timeout */
-      if (TimerGet() > (xcpCtoRxStartTime + RS232_CTO_RX_PACKET_TIMEOUT_MS))
-      {
-        /* cancel cto packet reception due to timeout. note that this automatically
-         * discards the already received packet bytes, allowing the host to retry.
-         */
-        xcpCtoRxInProgress = 0;
-      }
-    }
-  }
-} /*** end of BootComRs232CheckActivationRequest ***/
-
-
-/************************************************************************************//**
-** \brief     Receives a communication interface byte if one is present.
-** \param     data Pointer to byte where the data is to be stored.
-** \return    1 if a byte was received, 0 otherwise.
-**
-****************************************************************************************/
-static unsigned char Rs232ReceiveByte(unsigned char *data)
-{
-  HAL_StatusTypeDef result;
-
-  /* receive a byte in a non-blocking manner */
-  result = HAL_UART_Receive(&rs232Handle, data, 1, 0);
-  /* process the result */
-  if (result == HAL_OK)
-  {
-    /* success */
-    return 1;
-  }
-  /* error occurred */
-  return 0;
-} /*** end of Rs232ReceiveByte ***/
-#endif /* BOOT_COM_RS232_ENABLE > 0 */
-
-
-#if (BOOT_COM_CAN_ENABLE > 0)
-/****************************************************************************************
-*        C O N T R O L L E R   A R E A   N E T W O R K   I N T E R F A C E
-****************************************************************************************/
 
 /****************************************************************************************
 * Type definitions
@@ -281,22 +57,22 @@ static unsigned char Rs232ReceiveByte(unsigned char *data)
  */
 typedef struct t_can_periph_params
 {
-  unsigned long base_freq;                        /**< Source clock frequency [Hz]     */
-  unsigned short prescaler_min;                   /**< Smallest supported prescaler    */
-  unsigned short prescaler_max;                   /**< Largest supported prescaler     */
-  unsigned short tseg1_min;                       /**< Smallest supported Tseg1        */
-  unsigned short tseg1_max;                       /**< Largest supported Tseg1         */
-  unsigned short tseg2_min;                       /**< Smallest supported Tseg2        */
-  unsigned short tseg2_max;                       /**< Largest supported Tseg2         */
+  blt_int32u base_freq;                           /**< Source clock frequency [Hz]     */
+  blt_int16u prescaler_min;                       /**< Smallest supported prescaler    */
+  blt_int16u prescaler_max;                       /**< Largest supported prescaler     */
+  blt_int16u tseg1_min;                           /**< Smallest supported Tseg1        */
+  blt_int16u tseg1_max;                           /**< Largest supported Tseg1         */
+  blt_int16u tseg2_min;                           /**< Smallest supported Tseg2        */
+  blt_int16u tseg2_max;                           /**< Largest supported Tseg2         */
 } tCanPeriphParams;
 
 /** \brief Structure type for grouping CAN bit timing configuration information. */
 typedef struct
 {
-  unsigned short prescaler;                       /**< CAN clock prescaler             */
-  unsigned short tseg1;                           /**< CAN time segment 1 (excl. SYNC) */
-  unsigned short tseg2;                           /**< CAN time segment 2              */
-  unsigned short sjw;                             /**< CAN synchronization jump width  */
+  blt_int16u prescaler;                           /**< CAN clock prescaler             */
+  blt_int16u tseg1;                               /**< CAN time segment 1 (excl. SYNC) */
+  blt_int16u tseg2;                               /**< CAN time segment 2              */
+  blt_int16u sjw;                                 /**< CAN synchronization jump width  */
 } tCanBitTimingConfig;
 
 
@@ -308,7 +84,7 @@ static FDCAN_HandleTypeDef canHandle;
 
 #if (BOOT_COM_CAN_FD_ENABLE > 0)
 /** \brief Boolean flag to determine if the bitrate switch feature is used for CAN FD. */
-static unsigned char canFdBitrateSwitchUsed;
+static blt_bool canFdBitrateSwitchUsed;
 #endif
 
 
@@ -323,19 +99,19 @@ static unsigned char canFdBitrateSwitchUsed;
 **            otherwise.
 **
 ****************************************************************************************/
-static unsigned char CanCalculateBitTimingConfig(unsigned long const baud,
-                                                 tCanPeriphParams const * periph_params,
-                                                 tCanBitTimingConfig * bittiming_config)
+static blt_bool CanCalculateBitTimingConfig(blt_int32u const baud,
+                                            tCanPeriphParams const * periph_params,
+                                            tCanBitTimingConfig * bittiming_config)
 {
-  unsigned char  result = 0U;
-  unsigned short bitTq, bitTqMin, bitTqMax;
-  unsigned short tseg1, tseg2;
-  unsigned short prescaler;
-  unsigned char  samplePoint;
+  blt_bool   result = BLT_FALSE;
+  blt_int16u bitTq, bitTqMin, bitTqMax;
+  blt_int16u tseg1, tseg2;
+  blt_int16u prescaler;
+  blt_int8u  samplePoint;
 
   /* only continue with valid parameters. */
-  if ( (baud >= 10000UL) && (baud <= 8000000UL) && (periph_params != NULL) &&
-       (bittiming_config != NULL) )
+  if ( (baud >= 10000UL) && (baud <= 8000000UL) && (periph_params != BLT_NULL) &&
+       (bittiming_config != BLT_NULL) )
   {
     /* calculate minimum and maximum possible time quanta per bit. remember that the
      * bittime in time quanta is 1 (sync) + tseg1 + tseg2.
@@ -346,7 +122,7 @@ static unsigned char CanCalculateBitTimingConfig(unsigned long const baud,
     /* loop through all the prescaler values from low to high to find one that results
      * in a time quanta per bit that is in the range bitTqMin .. bitTqMax. note that
      * looping through the prescalers low to high is important, because a lower prescaler
-     * would result in a large number of time quanta per bit. This in turns gives you
+     * would result in a large number of time quanta per bit. this in turns gives you
      * more flexibility for setting the a bit's sample point.
      */
     for (prescaler = periph_params->prescaler_min;
@@ -391,7 +167,7 @@ static unsigned char CanCalculateBitTimingConfig(unsigned long const baud,
            */
           tseg2 = ((bitTq * 2U) + 9U) / 10U;
           /* calculate Tseg1 by deducting Tseg2 and 1 time quanta for the sync seq. */
-          tseg1 = bitTq - tseg2 - 1;
+          tseg1 = (bitTq - tseg2) - 1U;
           /* are these values within configurable range? */
           if ( (tseg1 >= periph_params->tseg1_min) &&
                (tseg1 <= periph_params->tseg1_max) &&
@@ -399,7 +175,7 @@ static unsigned char CanCalculateBitTimingConfig(unsigned long const baud,
                (tseg2 <= periph_params->tseg2_max) )
           {
             /* calculate the actual sample point, given these Tseg values. */
-            samplePoint = (unsigned char)(((1U + tseg1) * 100UL) / bitTq);
+            samplePoint = (blt_int8u)(((1U + tseg1) * 100UL) / bitTq);
             /* is this within the targeted 65% - 80% range? */
             if ( (samplePoint >= 65U) && (samplePoint <= 80U) )
             {
@@ -419,7 +195,7 @@ static unsigned char CanCalculateBitTimingConfig(unsigned long const baud,
                 bittiming_config->sjw = 1U;
               }
               /* set the result to success. */
-              result = 1U;
+              result = BLT_TRUE;
               /* all done so no need to continue the loop. */
               break;
             }
@@ -435,7 +211,7 @@ static unsigned char CanCalculateBitTimingConfig(unsigned long const baud,
 
 
 /************************************************************************************//**
-** \brief     Initializes the CAN communication interface.
+** \brief     Initializes the CAN controller and synchronizes it to the CAN bus.
 ** \details   It is up to the user to configure the desired CAN clock source. By default
 **            it is PCLK. Alternatives are HSE or HSIKER. To meet the clock tolerance
 **            requirement of CAN 2.0B, an external crystal oscillator (HSE) is
@@ -444,9 +220,9 @@ static unsigned char CanCalculateBitTimingConfig(unsigned long const baud,
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootComCanInit(void)
+void CanInit(void)
 {
-  unsigned long       rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  blt_int32u          rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
   FDCAN_FilterTypeDef filterConfig;
   tCanPeriphParams    periphParams;
   tCanBitTimingConfig bittimingConfig = { 0 };
@@ -454,8 +230,13 @@ static void BootComCanInit(void)
   tCanBitTimingConfig bittimingConfigBRS = { 0 };
 #endif
 
+  /* the current implementation supports CAN1. throw an assertion error in case a
+   * different CAN channel is configured.
+   */
+  ASSERT_CT(BOOT_COM_CAN_CHANNEL_INDEX == 0);
+
   /* set the CAN controller channel, which is needed by HAL_FDCAN_MspInit(). */
-  canHandle.Instance = FDCAN1;
+  canHandle.Instance = CAN_CHANNEL;
   /* call HAL_FDCAN_MspInit() here already, even though this is done automatically later
    * on in the call to HAL_FDCAN_Init(). HAL_FDCAN_MspInit() configures the source clock,
    * which should be done first, otherwise the call to LL_RCC_GetFDCANClockFreq() to
@@ -475,18 +256,18 @@ static void BootComCanInit(void)
    */
   if (BOOT_COM_CAN_FD_BRS_BAUDRATE > 0)
   {
-    canFdBitrateSwitchUsed = 1U;
+    canFdBitrateSwitchUsed = BLT_TRUE;
   }
   else
   {
-    canFdBitrateSwitchUsed = 0U;
+    canFdBitrateSwitchUsed = BLT_FALSE;
   }
 
   /* calculate the data bittiming configuration with enabled bitrate switch feature. */
-  if (canFdBitrateSwitchUsed == 1U)
+  if (canFdBitrateSwitchUsed == BLT_TRUE)
   {
     /* store CAN peripheral parameters related to the data bittiming configuration. */
-    periphParams.base_freq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_FDCAN1);
+    periphParams.base_freq = LL_RCC_GetFDCANClockFreq(LL_RCC_FDCAN1_CLKSOURCE);
     periphParams.prescaler_min = 1U;
     periphParams.prescaler_max = 32U;
     periphParams.tseg1_min = 1U;
@@ -494,13 +275,22 @@ static void BootComCanInit(void)
     periphParams.tseg2_min = 1U;
     periphParams.tseg2_max = 16U;
     /* attempt to find a matching data bittiming configuration. */
-    (void)CanCalculateBitTimingConfig(BOOT_COM_CAN_FD_BRS_BAUDRATE, &periphParams,
-                                      &bittimingConfigBRS);
+    if (CanCalculateBitTimingConfig(BOOT_COM_CAN_FD_BRS_BAUDRATE, &periphParams,
+                                    &bittimingConfigBRS) == BLT_FALSE)
+    {
+      /* Incorrect configuration. The specified baudrate is not supported for the given
+       * clock configuration. Verify the following settings in blt_conf.h:
+       *   - BOOT_COM_CAN_FD_BRS_BAUDRATE
+       *   - BOOT_CPU_XTAL_SPEED_KHZ
+       *   - BOOT_CPU_SYSTEM_SPEED_KHZ
+       */
+      ASSERT_RT(BLT_FALSE);
+    }
   }
 #endif
 
   /* store CAN peripheral parameters related to the nominal bittiming configuration. */
-  periphParams.base_freq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_FDCAN1);
+  periphParams.base_freq = LL_RCC_GetFDCANClockFreq(LL_RCC_FDCAN1_CLKSOURCE);
   periphParams.prescaler_min = 1U;
   periphParams.prescaler_max = 512U;
   periphParams.tseg1_min = 1U;
@@ -508,8 +298,17 @@ static void BootComCanInit(void)
   periphParams.tseg2_min = 1U;
   periphParams.tseg2_max = 128U;
   /* attempt to find a matching nominal bittiming configuration. */
-  (void)CanCalculateBitTimingConfig(BOOT_COM_CAN_BAUDRATE, &periphParams,
-                                    &bittimingConfig);
+  if (CanCalculateBitTimingConfig(BOOT_COM_CAN_BAUDRATE, &periphParams,
+                                  &bittimingConfig) == BLT_FALSE)
+  {
+    /* Incorrect configuration. The specified baudrate is not supported for the given
+     * clock configuration. Verify the following settings in blt_conf.h:
+     *   - BOOT_COM_CAN_BAUDRATE
+     *   - BOOT_CPU_XTAL_SPEED_KHZ
+     *   - BOOT_CPU_SYSTEM_SPEED_KHZ
+     */
+    ASSERT_RT(BLT_FALSE);
+  }
 
   /* set the CAN controller configuration. */
   canHandle.Init.ClockDivider = FDCAN_CLOCK_DIV1;
@@ -527,7 +326,7 @@ static void BootComCanInit(void)
   canHandle.Init.DataTimeSeg1 = 1;
   canHandle.Init.DataTimeSeg2 = 1;
 #if (BOOT_COM_CAN_FD_ENABLE > 0)
-  if (canFdBitrateSwitchUsed == 0U)
+  if (canFdBitrateSwitchUsed == BLT_FALSE)
   {
     canHandle.Init.FrameFormat = FDCAN_FRAME_FD_NO_BRS;
   }
@@ -584,7 +383,7 @@ static void BootComCanInit(void)
                                FDCAN_REJECT_REMOTE, FDCAN_REJECT_REMOTE);
   
 #if (BOOT_COM_CAN_FD_ENABLE > 0)
-  if (canFdBitrateSwitchUsed == 1U)
+  if (canFdBitrateSwitchUsed == BLT_TRUE)
   {
     /* configure and enable the transmit delay compensation, which is required if the
      * bitrate switch feature is enabled. recommended settings:
@@ -599,36 +398,123 @@ static void BootComCanInit(void)
   /* start the CAN peripheral. no need to evaluate the return value as there is nothing
    * we can do about a faulty CAN controller. */
   (void)HAL_FDCAN_Start(&canHandle);
-} /*** end of BootComCanInit ***/
+} /*** end of CanInit ***/
 
 
 /************************************************************************************//**
-** \brief     Receives the CONNECT request from the host, which indicates that the
-**            bootloader should be activated and, if so, activates it.
+** \brief     Transmits a packet formatted for the communication interface.
+** \param     data Pointer to byte array with data that it to be transmitted.
+** \param     len  Number of bytes that are to be transmitted.
 ** \return    none.
 **
 ****************************************************************************************/
-static void BootComCanCheckActivationRequest(void)
+void CanTransmitPacket(blt_int8u *data, blt_int8u len)
 {
-  unsigned long rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
-  unsigned char packetIdMatches = 0;
-  FDCAN_RxHeaderTypeDef rxMsgHeader;
+  blt_int32u             txMsgId = BOOT_COM_CAN_TX_MSG_ID;
+  FDCAN_TxHeaderTypeDef  txMsgHeader;
+  blt_int32u             timeout;
+  HAL_StatusTypeDef      status;
+  blt_int32u             txMsgBuffer;
 #if (BOOT_COM_CAN_FD_ENABLE > 0)
-  static const unsigned char dlc2len[] = { 0,  1,  2,  3,  4,  5,  6,  7,
-                                           8, 12, 16, 20, 24, 32, 48, 64 };
-  unsigned char rxMsgData[64];
-#else
-  unsigned char rxMsgData[8];
+  static const blt_int8u len2dlc[] = { 0,  1,  2,  3,  4,  5,  6,  7,  8,   /*  0 -  8 */
+                                       9,  9,  9,  9,                       /*  9 - 12 */
+                                       10, 10, 10, 10,                      /* 13 - 16 */
+                                       11, 11, 11, 11,                      /* 17 - 20 */
+                                       12, 12, 12, 12,                      /* 21 - 24 */
+                                       13, 13, 13, 13, 13, 13, 13, 13,      /* 25 - 32 */
+                                       14, 14, 14, 14, 14, 14, 14, 14,      /* 33 - 40 */
+                                       14, 14, 14, 14, 14, 14, 14, 14,      /* 41 - 48 */
+                                       15, 15, 15, 15, 15, 15, 15, 15,      /* 49 - 56 */
+                                       15, 15, 15, 15, 15, 15, 15, 15 };    /* 57 - 64 */
 #endif
-  unsigned char rxMsgLen;
-  HAL_StatusTypeDef rxStatus = HAL_ERROR;
 
-  /* poll for received CAN messages that await processing. */
+  /* validate the specified length. */
+  ASSERT_RT(len <= BOOT_COM_CAN_TX_MAX_DATA);
+
+  /* configure the message that should be transmitted. */
+  if ((txMsgId & 0x80000000) == 0)
+  {
+    /* set the 11-bit CAN identifier. */
+    txMsgHeader.Identifier = txMsgId;
+    txMsgHeader.IdType = FDCAN_STANDARD_ID;
+  }
+  else
+  {
+    /* negate the ID-type bit. */
+    txMsgId &= ~0x80000000;
+    /* set the 29-bit CAN identifier. */
+    txMsgHeader.Identifier = txMsgId;
+    txMsgHeader.IdType = FDCAN_EXTENDED_ID;
+  }
+
+  txMsgHeader.TxFrameType = FDCAN_DATA_FRAME;
+  txMsgHeader.FDFormat = FDCAN_CLASSIC_CAN;
+  txMsgHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
+  txMsgHeader.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
+  txMsgHeader.MessageMarker = 0x52;
+  txMsgHeader.BitRateSwitch = FDCAN_BRS_OFF;
+  txMsgHeader.DataLength = len;
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+  txMsgHeader.FDFormat = FDCAN_FD_CAN;
+  txMsgHeader.DataLength = len2dlc[len];
+  if (canFdBitrateSwitchUsed == BLT_TRUE)
+  {
+    txMsgHeader.BitRateSwitch = FDCAN_BRS_ON;
+  }
+#endif
+
+  /* add the message to the transmit FIFO to request its transmission. */
+  status = HAL_FDCAN_AddMessageToTxFifoQ(&canHandle, &txMsgHeader, data);
+  /* read out which FIFO buffer was used for the last transmit request. */
+  txMsgBuffer = HAL_FDCAN_GetLatestTxFifoQRequestBuffer(&canHandle);
+
+  /* only continue with polling for transmit completion if the message transmit request
+   * could be submitted to a valid FIFO buffer.
+   */
+  if ((status == HAL_OK) && (txMsgBuffer != 0))
+  {
+    /* determine timeout time for the transmit completion. */
+    timeout = TimerGet() + CAN_MSG_TX_TIMEOUT_MS;
+    /* poll for completion of the transmit operation. */
+    while (HAL_FDCAN_IsTxBufferMessagePending(&canHandle, txMsgBuffer) != 0)
+    {
+      /* service the watchdog. */
+      CopService();
+      /* break loop upon timeout. this would indicate a hardware failure or no other
+       * nodes connected to the bus.
+       */
+      if (TimerGet() > timeout)
+      {
+        break;
+      }
+    }
+  }
+} /*** end of CanTransmitPacket ***/
+
+
+/************************************************************************************//**
+** \brief     Receives a communication interface packet if one is present.
+** \param     data Pointer to byte array where the data is to be stored.
+** \param     len Pointer where the length of the packet is to be stored.
+** \return    BLT_TRUE is a packet was received, BLT_FALSE otherwise.
+**
+****************************************************************************************/
+blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
+{
+  blt_bool               result = BLT_FALSE;
+  blt_int32u             rxMsgId = BOOT_COM_CAN_RX_MSG_ID;
+  FDCAN_RxHeaderTypeDef  rxMsgHeader;
+  HAL_StatusTypeDef      rxStatus = HAL_ERROR;
+#if (BOOT_COM_CAN_FD_ENABLE > 0)
+  static const blt_int8u dlc2len[] = { 0,  1,  2,  3,  4,  5,  6,  7,
+                                       8, 12, 16, 20, 24, 32, 48, 64 };
+#endif
+
+  /* check if the expected CAN message was received? */
   if (HAL_FDCAN_GetRxFifoFillLevel(&canHandle, FDCAN_RX_FIFO0) > 0)
   {
     /* attempt to read the newly received CAN message from its buffer. */
-    rxStatus = HAL_FDCAN_GetRxMessage(&canHandle, FDCAN_RX_FIFO0, &rxMsgHeader,
-                                      rxMsgData);
+    rxStatus = HAL_FDCAN_GetRxMessage(&canHandle, FDCAN_RX_FIFO0, &rxMsgHeader, data);
   }
 
   /* only continue processing the CAN message if something was received. */
@@ -642,45 +528,42 @@ static void BootComCanCheckActivationRequest(void)
            (rxMsgHeader.IdType == FDCAN_STANDARD_ID) )
       {
         /* set flag that a packet with a matching CAN identifier was received. */
-        packetIdMatches = 1;
+        result = BLT_TRUE;
       }
     }
     else
     {
-      /* negate the ID-type bit */
+      /* negate the ID-type bit. */
       rxMsgId &= ~0x80000000;
       /* was an 29-bit CAN message received that matches? */
       if ( (rxMsgHeader.Identifier == rxMsgId) &&
            (rxMsgHeader.IdType == FDCAN_EXTENDED_ID) )
       {
         /* set flag that a packet with a matching CAN identifier was received. */
-        packetIdMatches = 1;
+        result = BLT_TRUE;
       }
     }
-
-    /* only continue if a packet with a matching CAN identifier was received. */
-    if (packetIdMatches == 1)
+    /* store the data length. */
+    if (result == BLT_TRUE)
     {
-      /* obtain the CAN message length. */
 #if (BOOT_COM_CAN_FD_ENABLE > 0)
-      rxMsgLen = 0;
+      *len = 0;
       if (rxMsgHeader.DataLength <= sizeof(dlc2len)/sizeof(dlc2len[0]))
       {
-        rxMsgLen = dlc2len[rxMsgHeader.DataLength];
+        *len = dlc2len[rxMsgHeader.DataLength];
       }
 #else
-      rxMsgLen = (unsigned char)(rxMsgHeader.DataLength);
+      *len = (blt_int8u)(rxMsgHeader.DataLength);
 #endif
-      /* check if this was an XCP CONNECT command */
-      if ((rxMsgData[0] == 0xff) && (rxMsgLen == 2))
-      {
-        /* connection request received so start the bootloader */
-        BootActivate();
-      }
+      /* validate the received length. */
+      ASSERT_RT(*len <= BOOT_COM_CAN_RX_MAX_DATA);
     }
   }
-} /*** end of BootComCanCheckActivationRequest ***/
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of CanReceivePacket ***/
 #endif /* BOOT_COM_CAN_ENABLE > 0 */
 
 
-/*********************************** end of boot.c *************************************/
+/*********************************** end of can.c **************************************/
