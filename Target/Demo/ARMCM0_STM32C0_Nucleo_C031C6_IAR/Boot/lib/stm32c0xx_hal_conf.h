@@ -59,7 +59,6 @@ extern "C" {
 #define HAL_FLASH_MODULE_ENABLED
 #define HAL_PWR_MODULE_ENABLED
 #define HAL_CORTEX_MODULE_ENABLED
-
 /* ########################## Register Callbacks selection ############################## */
 /**
   * @brief Set below the peripheral configuration  to "1U" to add the support

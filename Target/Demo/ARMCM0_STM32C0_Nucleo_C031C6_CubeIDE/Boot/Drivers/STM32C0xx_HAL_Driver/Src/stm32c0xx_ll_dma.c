@@ -74,10 +74,28 @@
                                                  ((__VALUE__) == LL_DMA_PRIORITY_HIGH)   || \
                                                  ((__VALUE__) == LL_DMA_PRIORITY_VERYHIGH))
 
+#if defined(LL_DMA_CHANNEL_7)
+#define IS_LL_DMA_ALL_CHANNEL_INSTANCE(INSTANCE, CHANNEL)  ((((INSTANCE) == DMA1) && \
+                                                             (((CHANNEL) == LL_DMA_CHANNEL_1) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_2) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_3) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_4) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_5) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_6) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_7))))
+#elif defined(LL_DMA_CHANNEL_5)
+#define IS_LL_DMA_ALL_CHANNEL_INSTANCE(INSTANCE, CHANNEL)  ((((INSTANCE) == DMA1) && \
+                                                             (((CHANNEL) == LL_DMA_CHANNEL_1) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_2) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_3) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_4) || \
+                                                              ((CHANNEL) == LL_DMA_CHANNEL_5))))
+#else
 #define IS_LL_DMA_ALL_CHANNEL_INSTANCE(INSTANCE, CHANNEL)  ((((INSTANCE) == DMA1) && \
                                                              (((CHANNEL) == LL_DMA_CHANNEL_1) || \
                                                               ((CHANNEL) == LL_DMA_CHANNEL_2) || \
                                                               ((CHANNEL) == LL_DMA_CHANNEL_3))))
+#endif /* LL_DMA_CHANNEL_7 */
 
 /**
   * @}
@@ -101,7 +119,12 @@
   *         @arg @ref LL_DMA_CHANNEL_1
   *         @arg @ref LL_DMA_CHANNEL_2
   *         @arg @ref LL_DMA_CHANNEL_3
+  *         @arg @ref LL_DMA_CHANNEL_4 (*)
+  *         @arg @ref LL_DMA_CHANNEL_5 (*)
+  *         @arg @ref LL_DMA_CHANNEL_6 (*)
+  *         @arg @ref LL_DMA_CHANNEL_7 (*)
   *         @arg @ref LL_DMA_CHANNEL_ALL
+  * @note (*) Availability depends on devices
   * @retval An ErrorStatus enumeration value:
   *          - SUCCESS: DMA registers are de-initialized
   *          - ERROR: DMA registers are not de-initialized
@@ -167,6 +190,30 @@ ErrorStatus LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
       /* Reset interrupt pending bits for DMAx Channel3 */
       LL_DMA_ClearFlag_GI3(DMAx);
     }
+#if defined(DMA1_Channel4)
+    else if (Channel == LL_DMA_CHANNEL_4)
+    {
+      /* Reset interrupt pending bits for DMAx Channel4 */
+      LL_DMA_ClearFlag_GI4(DMAx);
+    }
+    else if (Channel == LL_DMA_CHANNEL_5)
+    {
+      /* Reset interrupt pending bits for DMAx Channel5 */
+      LL_DMA_ClearFlag_GI5(DMAx);
+    }
+#endif /* DMA1_Channel4 */
+#if defined(DMA1_Channel6)
+    else if (Channel == LL_DMA_CHANNEL_6)
+    {
+      /* Reset interrupt pending bits for DMAx Channel6 */
+      LL_DMA_ClearFlag_GI6(DMAx);
+    }
+    else if (Channel == LL_DMA_CHANNEL_7)
+    {
+      /* Reset interrupt pending bits for DMAx Channel7 */
+      LL_DMA_ClearFlag_GI7(DMAx);
+    }
+#endif /* DMA1_Channel6 */
     else
     {
       status = ERROR;
@@ -186,6 +233,11 @@ ErrorStatus LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
   *         @arg @ref LL_DMA_CHANNEL_1
   *         @arg @ref LL_DMA_CHANNEL_2
   *         @arg @ref LL_DMA_CHANNEL_3
+  *         @arg @ref LL_DMA_CHANNEL_4 (*)
+  *         @arg @ref LL_DMA_CHANNEL_5 (*)
+  *         @arg @ref LL_DMA_CHANNEL_6 (*)
+  *         @arg @ref LL_DMA_CHANNEL_7 (*)
+  * @note (*) Availability depends on devices
   * @param  DMA_InitStruct pointer to a @ref LL_DMA_InitTypeDef structure.
   * @retval An ErrorStatus enumeration value:
   *          - SUCCESS: DMA registers are initialized

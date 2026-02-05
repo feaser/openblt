@@ -169,7 +169,6 @@ HAL_StatusTypeDef HAL_DMA_Init(DMA_HandleTypeDef *hdma)
   /* calculation of the channel index */
   hdma->ChannelIndex = (((uint32_t)hdma->Instance - (uint32_t)DMA1_Channel1) / ((uint32_t)DMA1_Channel2 - \
                                                                                 (uint32_t)DMA1_Channel1)) << 2U;
-
   /* Change DMA peripheral state */
   hdma->State = HAL_DMA_STATE_BUSY;
 
@@ -201,7 +200,7 @@ HAL_StatusTypeDef HAL_DMA_Init(DMA_HandleTypeDef *hdma)
   /* Clear the DMAMUX synchro overrun flag */
   hdma->DMAmuxChannelStatus->CFR = hdma->DMAmuxChannelStatusMask;
 
-  if (((hdma->Init.Request >  0UL) && (hdma->Init.Request <= DMA_REQUEST_GENERATOR3)))
+  if (((hdma->Init.Request > 0UL) && (hdma->Init.Request <= DMA_REQUEST_GENERATOR3)))
   {
     /* Initialize parameters for DMAMUX request generator :
        DMAmuxRequestGen, DMAmuxRequestGenStatus and DMAmuxRequestGenStatusMask
@@ -922,8 +921,6 @@ HAL_StatusTypeDef HAL_DMA_UnRegisterCallback(DMA_HandleTypeDef *hdma, HAL_DMA_Ca
   * @}
   */
 
-
-
 /** @defgroup DMA_Exported_Functions_Group3 Peripheral State and Errors functions
   *  @brief    Peripheral State and Errors functions
   *
@@ -946,7 +943,7 @@ HAL_StatusTypeDef HAL_DMA_UnRegisterCallback(DMA_HandleTypeDef *hdma, HAL_DMA_Ca
   *               the configuration information for the specified DMA Channel.
   * @retval HAL state
   */
-HAL_DMA_StateTypeDef HAL_DMA_GetState(DMA_HandleTypeDef *hdma)
+HAL_DMA_StateTypeDef HAL_DMA_GetState(const DMA_HandleTypeDef *hdma)
 {
   /* Return DMA handle state */
   return hdma->State;
@@ -958,7 +955,7 @@ HAL_DMA_StateTypeDef HAL_DMA_GetState(DMA_HandleTypeDef *hdma)
   *              the configuration information for the specified DMA Channel.
   * @retval DMA Error Code
   */
-uint32_t HAL_DMA_GetError(DMA_HandleTypeDef *hdma)
+uint32_t HAL_DMA_GetError(const DMA_HandleTypeDef *hdma)
 {
   return hdma->ErrorCode;
 }

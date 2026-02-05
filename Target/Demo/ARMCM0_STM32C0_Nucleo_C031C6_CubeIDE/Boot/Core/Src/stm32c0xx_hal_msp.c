@@ -78,5 +78,33 @@ void HAL_MspInit(void)
 }
 
 /* USER CODE BEGIN 1 */
+/**
+  * De-Initializes the Global MSP.
+  */
+void HAL_MspDeInit(void)
+{
+  /* Reset the RCC clock configuration to the default reset state. */
+  LL_RCC_DeInit();
 
+  /* Reset GPIO pin for the LED to turn it off. */
+  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
+
+  /* Deinit used GPIOs. */
+  LL_GPIO_DeInit(GPIOF);
+  LL_GPIO_DeInit(GPIOC);
+  LL_GPIO_DeInit(GPIOA);
+
+  /* UART clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USART2);
+
+  /* GPIO ports clock disable. */
+  LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOF);
+  LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOC);
+  LL_IOP_GRP1_DisableClock(LL_IOP_GRP1_PERIPH_GPIOA);
+
+  /* PWR clock disable. */
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_PWR);
+  /* SYSCFG clock disable. */
+  LL_APB1_GRP2_DisableClock(LL_APB1_GRP2_PERIPH_SYSCFG);
+}
 /* USER CODE END 1 */
