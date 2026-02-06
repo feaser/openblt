@@ -11,7 +11,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>33</version>
+                <version>34</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -88,7 +88,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>9.40.2.67586</state>
+                    <state>9.70.1.13552</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -253,6 +253,14 @@
                 <option>
                     <name>AuthEnforce</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>VectorTableOverride</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>VectorTableExpr</name>
+                    <state>__vector_table</state>
                 </option>
             </data>
         </settings>
@@ -493,7 +501,7 @@
             <name>E2_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>0</version>
+                <version>1</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -518,6 +526,10 @@
                 </option>
                 <option>
                     <name>OCDriverInfo</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>OCE2DeviceName</name>
                     <state>1</state>
                 </option>
             </data>
@@ -560,10 +572,31 @@
             </data>
         </settings>
         <settings>
+            <name>GPLINK_ID</name>
+            <archiveVersion>2</archiveVersion>
+            <data>
+                <version>0</version>
+                <wantNonLocal>1</wantNonLocal>
+                <debug>1</debug>
+                <option>
+                    <name>OCDriverInfo</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>DoLogfile</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>LogFile</name>
+                    <state>$PROJ_DIR$\cspycomm.log</state>
+                </option>
+            </data>
+        </settings>
+        <settings>
             <name>IJET_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>9</version>
+                <version>10</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -838,6 +871,10 @@
                 <option>
                     <name>CatchV8ARREL3S</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>IjetHWResetTimingOverride</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -1547,11 +1584,19 @@
         </settings>
         <debuggerPlugins>
             <plugin>
-                <file>$TOOLKIT_DIR$\plugins\rtos\CMX\CmxArmPlugin.ENU.ewplugin</file>
+                <file>$TOOLKIT_DIR$\plugins\rtos\CesiumOS2\CesiumOS2Plugin.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
-                <file>$TOOLKIT_DIR$\plugins\rtos\CMX\CmxTinyArmPlugin.ENU.ewplugin</file>
+                <file>$TOOLKIT_DIR$\plugins\rtos\CesiumOS3\CesiumOS3Plugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\EclipseThreadX\EclipseThreadXArmPlugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\ELThreadX\ELThreadXArmPlugin.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -1575,15 +1620,15 @@
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\PX5RTOS\PX5RTOSArmPlugin.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\SafeRTOS\SafeRTOSPlugin.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\SMX\smxAwareIarArm9a.ewplugin</file>
-                <loadFlag>0</loadFlag>
-            </plugin>
-            <plugin>
-                <file>$TOOLKIT_DIR$\plugins\rtos\ThreadX\ThreadXArmPlugin.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -1596,6 +1641,10 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\uCOS-III\uCOS-III-KA-CSpy.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\Zephyr\ZephyrArmPlugin.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
