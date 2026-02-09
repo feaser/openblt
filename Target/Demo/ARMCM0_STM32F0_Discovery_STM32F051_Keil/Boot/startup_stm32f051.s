@@ -91,7 +91,7 @@ __Vectors       DCD     __initial_sp                   ; Top of Stack
                 DCD     EXTI0_1_IRQHandler             ; EXTI Line 0 and 1
                 DCD     EXTI2_3_IRQHandler             ; EXTI Line 2 and 3
                 DCD     EXTI4_15_IRQHandler            ; EXTI Line 4 to 15
-                DCD     TS_IRQHandler                  ; TS
+                DCD     TSC_IRQHandler                 ; TS
                 DCD     DMA1_Channel1_IRQHandler       ; DMA1 Channel 1
                 DCD     DMA1_Channel2_3_IRQHandler     ; DMA1 Channel 2 and Channel 3
                 DCD     DMA1_Channel4_5_IRQHandler     ; DMA1 Channel 4 and Channel 5
@@ -115,7 +115,7 @@ __Vectors       DCD     __initial_sp                   ; Top of Stack
                 DCD     0                              ; Reserved
                 DCD     CEC_IRQHandler                 ; CEC
                 DCD     0                              ; Reserved
-                
+
 __Vectors_End
 
 __Vectors_Size  EQU  __Vectors_End - __Vectors
@@ -126,35 +126,9 @@ __Vectors_Size  EQU  __Vectors_End - __Vectors
 Reset_Handler    PROC
                  EXPORT  Reset_Handler                 [WEAK]
         IMPORT  __main
-        IMPORT  SystemInit
-
-
-
-        LDR     R0, =__initial_sp          ; set stack pointer 
-        MSR     MSP, R0  
-
-;;Check if boot space corresponds to test memory 
-
-        LDR R0,=0x00000004
-        LDR R1, [R0]
-        LSRS R1, R1, #24
-        LDR R2,=0x1F
-        CMP R1, R2
-        
-        BNE ApplicationStart  
-     
-;; SYSCFG clock enable    
-     
-        LDR R0,=0x40021018 
-        LDR R1,=0x00000001
-        STR R1, [R0]
-        
-;; Set CFGR1 register with flash memory remap at address 0
-
-        LDR R0,=0x40010000 
-        LDR R1,=0x00000000
-        STR R1, [R0]
-ApplicationStart        
+        IMPORT  SystemInit  
+                 LDR     R0, =__initial_sp          ; set stack pointer 
+                 MSR     MSP, R0  
                  LDR     R0, =SystemInit
                  BLX     R0
                  LDR     R0, =__main
@@ -195,7 +169,7 @@ Default_Handler PROC
                 EXPORT  EXTI0_1_IRQHandler             [WEAK]
                 EXPORT  EXTI2_3_IRQHandler             [WEAK]
                 EXPORT  EXTI4_15_IRQHandler            [WEAK]
-                EXPORT  TS_IRQHandler                  [WEAK]
+                EXPORT  TSC_IRQHandler                 [WEAK]
                 EXPORT  DMA1_Channel1_IRQHandler       [WEAK]
                 EXPORT  DMA1_Channel2_3_IRQHandler     [WEAK]
                 EXPORT  DMA1_Channel4_5_IRQHandler     [WEAK]
@@ -226,11 +200,11 @@ RCC_IRQHandler
 EXTI0_1_IRQHandler
 EXTI2_3_IRQHandler
 EXTI4_15_IRQHandler
-TS_IRQHandler
+TSC_IRQHandler
 DMA1_Channel1_IRQHandler
 DMA1_Channel2_3_IRQHandler
 DMA1_Channel4_5_IRQHandler
-ADC1_COMP_IRQHandler 
+ADC1_COMP_IRQHandler
 TIM1_BRK_UP_TRG_COM_IRQHandler
 TIM1_CC_IRQHandler
 TIM2_IRQHandler
@@ -246,7 +220,7 @@ SPI1_IRQHandler
 SPI2_IRQHandler
 USART1_IRQHandler
 USART2_IRQHandler
-CEC_IRQHandler   
+CEC_IRQHandler
 
                 B       .
 
@@ -258,16 +232,16 @@ CEC_IRQHandler
 ; User Stack and Heap initialization
 ;*******************************************************************************
                  IF      :DEF:__MICROLIB
-                
+
                  EXPORT  __initial_sp
                  EXPORT  __heap_base
                  EXPORT  __heap_limit
-                
+
                  ELSE
-                
+
                  IMPORT  __use_two_region_memory
                  EXPORT  __user_initial_stackheap
-                 
+
 __user_initial_stackheap
 
                  LDR     R0, =  Heap_Mem

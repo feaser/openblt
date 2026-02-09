@@ -67,33 +67,33 @@ __heap_limit
                 EXPORT  __Vectors_Size
 
 __Vectors       DCD     __initial_sp                   ; Top of Stack
-                        DCD     Reset_Handler                  ; Reset Handler
-                        DCD     NMI_Handler                    ; NMI Handler
-                        DCD     HardFault_Handler              ; Hard Fault Handler
-                        DCD     0                              ; Reserved
-                        DCD     0                              ; Reserved
-                        DCD     0                              ; Reserved
-                        DCD     0                              ; Reserved
-                        DCD     0                              ; Reserved
-                        DCD     0                              ; Reserved
-                        DCD     0                              ; Reserved
-                        DCD     SVC_Handler                    ; SVCall Handler
-                        DCD     0                              ; Reserved
-                        DCD     0                              ; Reserved
-                        DCD     PendSV_Handler                 ; PendSV Handler
-                        DCD     SysTick_Handler                ; SysTick Handler
+                DCD     Reset_Handler                  ; Reset Handler
+                DCD     NMI_Handler                    ; NMI Handler
+                DCD     HardFault_Handler              ; Hard Fault Handler
+                DCD     0                              ; Reserved
+                DCD     0                              ; Reserved
+                DCD     0                              ; Reserved
+                DCD     0                              ; Reserved
+                DCD     0                              ; Reserved
+                DCD     0                              ; Reserved
+                DCD     0                              ; Reserved
+                DCD     SVC_Handler                    ; SVCall Handler
+                DCD     0                              ; Reserved
+                DCD     0                              ; Reserved
+                DCD     PendSV_Handler                 ; PendSV Handler
+                DCD     SysTick_Handler                ; SysTick Handler
 
                 ; External Interrupts
                 DCD     WWDG_IRQHandler                ; Window Watchdog
-                DCD     PVD_VDDIO2_IRQHandler          ; PVD and VDDIO2 through EXTI Line detect
+                DCD     PVD_VDDIO2_IRQHandler          ; PVD through EXTI Line detect
                 DCD     RTC_IRQHandler                 ; RTC through EXTI Line
                 DCD     FLASH_IRQHandler               ; FLASH
                 DCD     RCC_CRS_IRQHandler             ; RCC and CRS
                 DCD     EXTI0_1_IRQHandler             ; EXTI Line 0 and 1
                 DCD     EXTI2_3_IRQHandler             ; EXTI Line 2 and 3
                 DCD     EXTI4_15_IRQHandler            ; EXTI Line 4 to 15
-                DCD     TSC_IRQHandler                  ; TS
-                DCD     DMA1_Ch1_IRQHandler       		 ; DMA1 Channel 1
+                DCD     TSC_IRQHandler                 ; TS
+                DCD     DMA1_Ch1_IRQHandler            ; DMA1 Channel 1
                 DCD     DMA1_Ch2_3_DMA2_Ch1_2_IRQHandler ; DMA1 Channel 2 and 3 & DMA2 Channel 1 and 2
                 DCD     DMA1_Ch4_7_DMA2_Ch3_5_IRQHandler ; DMA1 Channel 4 to 7 & DMA2 Channel 3 to 5 
                 DCD     ADC1_COMP_IRQHandler           ; ADC1, COMP1 and COMP2 
@@ -117,7 +117,7 @@ __Vectors       DCD     __initial_sp                   ; Top of Stack
                 DCD     CEC_CAN_IRQHandler             ; CEC and CAN
                 DCD     0                              ; Reserved
                 DCD     0x55AA11EE                     ; Reserved for OpenBLT checksum
-                
+
 __Vectors_End
 
 __Vectors_Size  EQU  __Vectors_End - __Vectors
@@ -128,35 +128,9 @@ __Vectors_Size  EQU  __Vectors_End - __Vectors
 Reset_Handler    PROC
                  EXPORT  Reset_Handler                 [WEAK]
         IMPORT  __main
-        IMPORT  SystemInit
-
-
-
-        LDR     R0, =__initial_sp          ; set stack pointer 
-        MSR     MSP, R0  
-
-;;Check if boot space corresponds to test memory 
-
-        LDR R0,=0x00000004
-        LDR R1, [R0]
-        LSRS R1, R1, #24
-        LDR R2,=0x1F
-        CMP R1, R2
-        
-        BNE ApplicationStart  
-     
-;; SYSCFG clock enable    
-     
-        LDR R0,=0x40021018 
-        LDR R1,=0x00000001
-        STR R1, [R0]
-        
-;; Set CFGR1 register with flash memory remap at address 0
-
-        LDR R0,=0x40010000 
-        LDR R1,=0x00000000
-        STR R1, [R0]
-ApplicationStart        
+        IMPORT  SystemInit  
+                 LDR     R0, =__initial_sp          ; set stack pointer 
+                 MSR     MSP, R0  
                  LDR     R0, =SystemInit
                  BLX     R0
                  LDR     R0, =__main
@@ -197,23 +171,23 @@ Default_Handler PROC
                 EXPORT  EXTI0_1_IRQHandler             [WEAK]
                 EXPORT  EXTI2_3_IRQHandler             [WEAK]
                 EXPORT  EXTI4_15_IRQHandler            [WEAK]
-                EXPORT  TSC_IRQHandler                  [WEAK]
-                EXPORT  DMA1_Ch1_IRQHandler              [WEAK]
+                EXPORT  TSC_IRQHandler                 [WEAK]
+                EXPORT  DMA1_Ch1_IRQHandler            [WEAK]
                 EXPORT  DMA1_Ch2_3_DMA2_Ch1_2_IRQHandler [WEAK]
                 EXPORT  DMA1_Ch4_7_DMA2_Ch3_5_IRQHandler [WEAK]
-                EXPORT  ADC1_COMP_IRQHandler             [WEAK]
-                EXPORT  TIM1_BRK_UP_TRG_COM_IRQHandler   [WEAK]
-                EXPORT  TIM1_CC_IRQHandler               [WEAK]
-                EXPORT  TIM2_IRQHandler                  [WEAK]
-                EXPORT  TIM3_IRQHandler                  [WEAK]
-                EXPORT  TIM6_DAC_IRQHandler              [WEAK]
-                EXPORT  TIM7_IRQHandler                  [WEAK]
-                EXPORT  TIM14_IRQHandler                 [WEAK]
-                EXPORT  TIM15_IRQHandler                 [WEAK]
-                EXPORT  TIM16_IRQHandler                 [WEAK]
-                EXPORT  TIM17_IRQHandler                 [WEAK]
-                EXPORT  I2C1_IRQHandler                  [WEAK]
-                EXPORT  I2C2_IRQHandler                  [WEAK]
+                EXPORT  ADC1_COMP_IRQHandler           [WEAK]
+                EXPORT  TIM1_BRK_UP_TRG_COM_IRQHandler [WEAK]
+                EXPORT  TIM1_CC_IRQHandler             [WEAK]
+                EXPORT  TIM2_IRQHandler                [WEAK]
+                EXPORT  TIM3_IRQHandler                [WEAK]
+                EXPORT  TIM6_DAC_IRQHandler            [WEAK]
+                EXPORT  TIM7_IRQHandler                [WEAK]
+                EXPORT  TIM14_IRQHandler               [WEAK]
+                EXPORT  TIM15_IRQHandler               [WEAK]
+                EXPORT  TIM16_IRQHandler               [WEAK]
+                EXPORT  TIM17_IRQHandler               [WEAK]
+                EXPORT  I2C1_IRQHandler                [WEAK]
+                EXPORT  I2C2_IRQHandler                [WEAK]
                 EXPORT  SPI1_IRQHandler                [WEAK]
                 EXPORT  SPI2_IRQHandler                [WEAK]
                 EXPORT  USART1_IRQHandler              [WEAK]
@@ -234,7 +208,7 @@ TSC_IRQHandler
 DMA1_Ch1_IRQHandler
 DMA1_Ch2_3_DMA2_Ch1_2_IRQHandler
 DMA1_Ch4_7_DMA2_Ch3_5_IRQHandler
-ADC1_COMP_IRQHandler 
+ADC1_COMP_IRQHandler
 TIM1_BRK_UP_TRG_COM_IRQHandler
 TIM1_CC_IRQHandler
 TIM2_IRQHandler
@@ -264,16 +238,16 @@ CEC_CAN_IRQHandler
 ; User Stack and Heap initialization
 ;*******************************************************************************
                  IF      :DEF:__MICROLIB
-                
+
                  EXPORT  __initial_sp
                  EXPORT  __heap_base
                  EXPORT  __heap_limit
-                
+
                  ELSE
-                
+
                  IMPORT  __use_two_region_memory
                  EXPORT  __user_initial_stackheap
-                 
+
 __user_initial_stackheap
 
                  LDR     R0, =  Heap_Mem

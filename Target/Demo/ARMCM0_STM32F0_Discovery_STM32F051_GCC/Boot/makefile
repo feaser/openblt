@@ -57,7 +57,7 @@ rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filte
 
 # Collect all application files in the current directory and its subdirectories, but 
 # exclude flash-layout.c as this one is directly included in a source file, when used.
-PROJ_FILES  = $(filter-out flash_layout.c, $(call rwildcard, , *.c *.h *.S))
+PROJ_FILES  = $(filter-out flash_layout.c, $(call rwildcard, , *.c *.h *.s))
 # Collect bootloader core files
 PROJ_FILES += $(wildcard ../../../Source/*.c)
 PROJ_FILES += $(wildcard ../../../Source/*.h)
@@ -84,7 +84,7 @@ SZ = $(TOOL_PATH)arm-none-eabi-size
 #|--------------------------------------------------------------------------------------|
 #| Filter project files
 #|--------------------------------------------------------------------------------------|
-PROJ_ASRCS  = $(filter %.S,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
+PROJ_ASRCS  = $(filter %.s,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CSRCS  = $(filter %.c,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 
 
@@ -114,7 +114,7 @@ CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
 LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 LFLAGS     += -Wl,--defsym=__HEAP_SIZE=$(HEAP_SIZE) -Wl,--defsym=__STACK_SIZE=$(STACK_SIZE)
-LFLAGS     += -T"stm32f051r8_flash.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -T"STM32F051R8TX_FLASH.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS     += -specs=nano.specs -Wl,--gc-sections $(LIB_PATH)
 OFLAGS      = -O srec
 ODFLAGS     = -x
@@ -131,7 +131,7 @@ LIBS =
 #|--------------------------------------------------------------------------------------|
 #| Define targets                                                                       |
 #|--------------------------------------------------------------------------------------|
-AOBJS = $(patsubst %.S,%.o,$(PROJ_ASRCS))
+AOBJS = $(patsubst %.s,%.o,$(PROJ_ASRCS))
 COBJS = $(patsubst %.c,%.o,$(PROJ_CSRCS))
 
 
@@ -156,7 +156,7 @@ $(BIN_PATH)/$(PROJ_NAME).elf : $(AOBJS) $(COBJS)
 #|--------------------------------------------------------------------------------------|
 #| Compile and assemble                                                                 |
 #|--------------------------------------------------------------------------------------|
-$(AOBJS): %.o: %.S
+$(AOBJS): %.o: %.s
 	@echo +++ Assembling [$(notdir $<)]
 	@$(AS) $(AFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 

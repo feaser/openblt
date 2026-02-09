@@ -79,19 +79,19 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief CAN MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hcan: CAN handle pointer
-* @retval None
-*/
+  * @brief CAN MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hcan: CAN handle pointer
+  * @retval None
+  */
 void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(hcan->Instance==CAN)
   {
-  /* USER CODE BEGIN CAN_MspInit 0 */
+    /* USER CODE BEGIN CAN_MspInit 0 */
 
-  /* USER CODE END CAN_MspInit 0 */
+    /* USER CODE END CAN_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_CAN1_CLK_ENABLE();
 
@@ -107,26 +107,27 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
     GPIO_InitStruct.Alternate = GPIO_AF4_CAN;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN CAN_MspInit 1 */
+    /* USER CODE BEGIN CAN_MspInit 1 */
 
-  /* USER CODE END CAN_MspInit 1 */
+    /* USER CODE END CAN_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief CAN MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hcan: CAN handle pointer
-* @retval None
-*/
+  * @brief CAN MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hcan: CAN handle pointer
+  * @retval None
+  */
 void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan)
 {
   if(hcan->Instance==CAN)
   {
-  /* USER CODE BEGIN CAN_MspDeInit 0 */
+    /* USER CODE BEGIN CAN_MspDeInit 0 */
 
-  /* USER CODE END CAN_MspDeInit 0 */
+    /* USER CODE END CAN_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_CAN1_CLK_DISABLE();
 
@@ -136,27 +137,27 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan)
     */
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9);
 
-  /* USER CODE BEGIN CAN_MspDeInit 1 */
+    /* USER CODE BEGIN CAN_MspDeInit 1 */
 
-  /* USER CODE END CAN_MspDeInit 1 */
+    /* USER CODE END CAN_MspDeInit 1 */
   }
 
 }
 
 /**
-* @brief UART MSP Initialization
-* This function configures the hardware resources used in this example
-* @param huart: UART handle pointer
-* @retval None
-*/
+  * @brief UART MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param huart: UART handle pointer
+  * @retval None
+  */
 void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(huart->Instance==USART2)
   {
-  /* USER CODE BEGIN USART2_MspInit 0 */
+    /* USER CODE BEGIN USART2_MspInit 0 */
 
-  /* USER CODE END USART2_MspInit 0 */
+    /* USER CODE END USART2_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_USART2_CLK_ENABLE();
 
@@ -172,26 +173,27 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     GPIO_InitStruct.Alternate = GPIO_AF1_USART2;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN USART2_MspInit 1 */
+    /* USER CODE BEGIN USART2_MspInit 1 */
 
-  /* USER CODE END USART2_MspInit 1 */
+    /* USER CODE END USART2_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief UART MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param huart: UART handle pointer
-* @retval None
-*/
+  * @brief UART MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param huart: UART handle pointer
+  * @retval None
+  */
 void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
 {
   if(huart->Instance==USART2)
   {
-  /* USER CODE BEGIN USART2_MspDeInit 0 */
+    /* USER CODE BEGIN USART2_MspDeInit 0 */
 
-  /* USER CODE END USART2_MspDeInit 0 */
+    /* USER CODE END USART2_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_USART2_CLK_DISABLE();
 
@@ -201,9 +203,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
     */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2|GPIO_PIN_3);
 
-  /* USER CODE BEGIN USART2_MspDeInit 1 */
+    /* USER CODE BEGIN USART2_MspDeInit 1 */
 
-  /* USER CODE END USART2_MspDeInit 1 */
+    /* USER CODE END USART2_MspDeInit 1 */
   }
 
 }
