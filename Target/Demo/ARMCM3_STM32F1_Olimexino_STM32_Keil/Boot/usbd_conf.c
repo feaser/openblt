@@ -195,10 +195,12 @@ static void PCD_SuspendCallback(PCD_HandleTypeDef *hpcd)
 void HAL_PCD_SuspendCallback(PCD_HandleTypeDef *hpcd)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 {
+#if (BOOT_COM_USB_ENABLE > 0)  
   /* Invoke hook function to allow the application to prepare entry into low power
    * mode.
    */
   UsbEnterLowPowerModeHook();
+#endif  
   /* Inform USB library that core enters in suspend Mode. */
   USBD_LL_Suspend((USBD_HandleTypeDef*)hpcd->pData);
   /* Enter in STOP mode. */
@@ -227,10 +229,12 @@ void HAL_PCD_ResumeCallback(PCD_HandleTypeDef *hpcd)
 
   /* USER CODE END 3 */
   USBD_LL_Resume((USBD_HandleTypeDef*)hpcd->pData);
+#if (BOOT_COM_USB_ENABLE > 0)  
   /* Invoke hook function to allow the application to process exit from low power
    * mode.
    */
   UsbLeaveLowPowerModeHook();
+#endif  
 }
 
 /**
@@ -602,13 +606,17 @@ void HAL_PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state)
   /* USER CODE BEGIN 6 */
   if (state == 1)
   {
+#if (BOOT_COM_USB_ENABLE > 0)  
     /* Configure Low connection state. */
     UsbConnectHook(BLT_TRUE);
+#endif    
   }
   else
   {
+#if (BOOT_COM_USB_ENABLE > 0)  
     /* Configure High connection state. */
     UsbConnectHook(BLT_FALSE);
+#endif    
   }
   /* USER CODE END 6 */
 }

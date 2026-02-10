@@ -117,7 +117,7 @@ __Vectors       DCD     __initial_sp               ; Top of Stack
                 DCD     USART2_IRQHandler          ; USART2
                 DCD     USART3_IRQHandler          ; USART3
                 DCD     EXTI15_10_IRQHandler       ; EXTI Line 15..10
-                DCD     RTC_Alarm_IRQHandler       ; RTC Alarm through EXTI Line
+                DCD     RTC_Alarm_IRQHandler        ; RTC Alarm through EXTI Line
                 DCD     USBWakeUp_IRQHandler       ; USB Wakeup from suspend
                 DCD     0x55AA11EE                 ; Reserved for OpenBLT checksum
 __Vectors_End

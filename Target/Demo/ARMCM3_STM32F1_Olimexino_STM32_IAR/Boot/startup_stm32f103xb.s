@@ -129,7 +129,7 @@ __vector_table
         DCD     USART2_IRQHandler         ; USART2
         DCD     USART3_IRQHandler         ; USART3
         DCD     EXTI15_10_IRQHandler      ; EXTI Line 15..10
-        DCD     RTC_Alarm_IRQHandler      ; RTC Alarm through EXTI Line
+        DCD     RTC_Alarm_IRQHandler       ; RTC Alarm through EXTI Line
         DCD     USBWakeUp_IRQHandler      ; USB Wakeup from suspend
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

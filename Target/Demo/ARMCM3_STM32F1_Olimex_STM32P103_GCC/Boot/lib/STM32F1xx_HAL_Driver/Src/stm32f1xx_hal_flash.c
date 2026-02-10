@@ -265,9 +265,6 @@ HAL_StatusTypeDef HAL_FLASH_Program(uint32_t TypeProgram, uint32_t Address, uint
 HAL_StatusTypeDef HAL_FLASH_Program_IT(uint32_t TypeProgram, uint32_t Address, uint64_t Data)
 {
   HAL_StatusTypeDef status = HAL_OK;
-  
-  /* Process Locked */
-  __HAL_LOCK(&pFlash);
 
   /* Check the parameters */
   assert_param(IS_FLASH_TYPEPROGRAM(TypeProgram));
@@ -587,8 +584,6 @@ void HAL_FLASH_IRQHandler(void)
     __HAL_FLASH_DISABLE_IT(FLASH_IT_EOP | FLASH_IT_ERR);
 #endif /* FLASH_BANK2_END */
 
-    /* Process Unlocked */
-    __HAL_UNLOCK(&pFlash);
   }
 }
 
