@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>36</version>
+                <version>37</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -70,7 +70,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>9.40.2.67586</state>
+                    <state>9.70.1.13552</state>
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
@@ -98,7 +98,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>33</version>
+                    <version>35</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -115,7 +115,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>33</version>
+                    <version>35</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -138,7 +138,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>33</version>
+                    <version>35</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -213,8 +213,12 @@
                 </option>
                 <option>
                     <name>OG_32_64DeviceCoreSlave</name>
-                    <version>33</version>
+                    <version>35</version>
                     <state>38</state>
+                </option>
+                <option>
+                    <name>GOutputSo</name>
+                    <state>0</state>
                 </option>
             </data>
         </settings>
@@ -222,7 +226,7 @@
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>38</version>
+                <version>40</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -483,6 +487,22 @@
                     <name>CCBranchTargetIdentification</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>CCPosRadRwpi</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCPosSharedSlave</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCUseIarExtensions</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>CCUseGnuExtensions</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -687,11 +707,10 @@
         </settings>
         <settings>
             <name>CUSTOM</name>
-            <archiveVersion>3</archiveVersion>
+            <archiveVersion>4</archiveVersion>
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>0</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -699,7 +718,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>27</version>
+                <version>28</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1067,13 +1086,17 @@
                     <name>IlinkFpuProcessor</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>IlinkSharedSlave</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>IARCHIVE</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>0</version>
+                <version>1</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1087,6 +1110,14 @@
                 <option>
                     <name>IarchiveOutput</name>
                     <state>###Unitialized###</state>
+                </option>
+                <option>
+                    <name>IarchiveExtraOptionsCheck</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IarchiveExtraOptions</name>
+                    <state></state>
                 </option>
             </data>
         </settings>
@@ -1106,7 +1137,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>36</version>
+                <version>37</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1193,7 +1224,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>33</version>
+                    <version>35</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1210,7 +1241,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>33</version>
+                    <version>35</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1233,7 +1264,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>33</version>
+                    <version>35</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1308,8 +1339,12 @@
                 </option>
                 <option>
                     <name>OG_32_64DeviceCoreSlave</name>
-                    <version>33</version>
+                    <version>35</version>
                     <state>38</state>
+                </option>
+                <option>
+                    <name>GOutputSo</name>
+                    <state>0</state>
                 </option>
             </data>
         </settings>
@@ -1317,7 +1352,7 @@
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>38</version>
+                <version>40</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1567,6 +1602,22 @@
                     <name>CCBranchTargetIdentification</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>CCPosRadRwpi</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCPosSharedSlave</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCUseIarExtensions</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>CCUseGnuExtensions</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1771,11 +1822,10 @@
         </settings>
         <settings>
             <name>CUSTOM</name>
-            <archiveVersion>3</archiveVersion>
+            <archiveVersion>4</archiveVersion>
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>0</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -1783,7 +1833,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>27</version>
+                <version>28</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -2151,13 +2201,17 @@
                     <name>IlinkFpuProcessor</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>IlinkSharedSlave</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>IARCHIVE</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>0</version>
+                <version>1</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -2171,6 +2225,14 @@
                 <option>
                     <name>IarchiveOutput</name>
                     <state>###Unitialized###</state>
+                </option>
+                <option>
+                    <name>IarchiveExtraOptionsCheck</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IarchiveExtraOptions</name>
+                    <state></state>
                 </option>
             </data>
         </settings>
@@ -2308,18 +2370,6 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_rcc_ex.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_tim.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_tim.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_tim_ex.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_tim_ex.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\STM32F2xx_HAL_Driver\Inc\stm32f2xx_ll_bus.h</name>
@@ -2537,4 +2587,9 @@
             <name>$PROJ_DIR$\..\..\..\..\Source\xcp.h</name>
         </file>
     </group>
+    <projectSettings>
+        <general>
+            <resolveSourceForBinaries>true</resolveSourceForBinaries>
+        </general>
+    </projectSettings>
 </project>
