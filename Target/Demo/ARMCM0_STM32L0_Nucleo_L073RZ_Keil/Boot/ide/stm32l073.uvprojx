@@ -10,8 +10,8 @@
       <TargetName>Target </TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32L073RZTx</Device>
@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>2</Optim>
+            <Optim>3</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -322,7 +322,7 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>2</wLevel>
+            <wLevel>3</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
@@ -336,7 +336,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls>--diag_suppress=111</MiscControls>
+              <MiscControls></MiscControls>
               <Define>USE_FULL_LL_DRIVER,USE_HAL_DRIVER,STM32L073xx</Define>
               <Undefine></Undefine>
               <IncludePath>..\lib;..\lib\CMSIS\Device\ST\STM32L0xx\Include;..\lib\CMSIS\Include;..\lib\STM32L0xx_HAL_Driver\Inc;..\lib\STM32L0xx_HAL_Driver\Inc\Legacy;..\..\Boot;..\..\..\..\Source;..\..\..\..\Source\ARMCM0_STM32L0;..\..\..\..\Source\ARMCM0_STM32L0\Keil</IncludePath>
@@ -514,16 +514,6 @@
               <FilePath>..\lib\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_rcc_ex.h</FilePath>
             </File>
             <File>
-              <FileName>stm32l0xx_hal_tim.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_tim.h</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_tim_ex.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_tim_ex.h</FilePath>
-            </File>
-            <File>
               <FileName>stm32l0xx_ll_bus.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\STM32L0xx_HAL_Driver\Inc\stm32l0xx_ll_bus.h</FilePath>
@@ -652,16 +642,6 @@
               <FileName>stm32l0xx_hal_rcc_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_rcc_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_tim.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_tim_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_tim_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32l0xx_ll_dma.c</FileName>
