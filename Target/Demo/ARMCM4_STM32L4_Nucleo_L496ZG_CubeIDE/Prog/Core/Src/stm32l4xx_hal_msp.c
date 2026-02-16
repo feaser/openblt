@@ -79,20 +79,20 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief UART MSP Initialization
-* This function configures the hardware resources used in this example
-* @param huart: UART handle pointer
-* @retval None
-*/
+  * @brief UART MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param huart: UART handle pointer
+  * @retval None
+  */
 void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(huart->Instance==LPUART1)
   {
-  /* USER CODE BEGIN LPUART1_MspInit 0 */
+    /* USER CODE BEGIN LPUART1_MspInit 0 */
 
-  /* USER CODE END LPUART1_MspInit 0 */
+    /* USER CODE END LPUART1_MspInit 0 */
 
   /** Initializes the peripherals clock
   */
@@ -119,26 +119,27 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     GPIO_InitStruct.Alternate = GPIO_AF8_LPUART1;
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN LPUART1_MspInit 1 */
+    /* USER CODE BEGIN LPUART1_MspInit 1 */
 
-  /* USER CODE END LPUART1_MspInit 1 */
+    /* USER CODE END LPUART1_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief UART MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param huart: UART handle pointer
-* @retval None
-*/
+  * @brief UART MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param huart: UART handle pointer
+  * @retval None
+  */
 void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
 {
   if(huart->Instance==LPUART1)
   {
-  /* USER CODE BEGIN LPUART1_MspDeInit 0 */
+    /* USER CODE BEGIN LPUART1_MspDeInit 0 */
 
-  /* USER CODE END LPUART1_MspDeInit 0 */
+    /* USER CODE END LPUART1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_LPUART1_CLK_DISABLE();
 
@@ -148,9 +149,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
     */
     HAL_GPIO_DeInit(GPIOG, GPIO_PIN_7|GPIO_PIN_8);
 
-  /* USER CODE BEGIN LPUART1_MspDeInit 1 */
+    /* USER CODE BEGIN LPUART1_MspDeInit 1 */
 
-  /* USER CODE END LPUART1_MspDeInit 1 */
+    /* USER CODE END LPUART1_MspDeInit 1 */
   }
 
 }

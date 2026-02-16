@@ -1094,7 +1094,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
   *         (for more details refer to section above "Initialization/de-initialization functions")
   * @retval None
   */
-HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, uint32_t FLatency)
+HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef  *RCC_ClkInitStruct, uint32_t FLatency)
 {
   uint32_t tickstart;
 #if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || \
@@ -1854,7 +1854,11 @@ static HAL_StatusTypeDef RCC_SetFlashLatencyFromMSIRange(uint32_t msirange)
         /* MSI 8Mhz */
         latency = FLASH_LATENCY_1; /* 1WS */
       }
-      /* else MSI < 8Mhz default FLASH_LATENCY_0 0WS */
+      else
+      {
+        /* else MSI < 8Mhz default FLASH_LATENCY_0 0WS */
+        /* nothing to do */
+      }
     }
 #endif
   }

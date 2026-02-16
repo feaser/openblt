@@ -100,7 +100,7 @@ CFLAGS     += -DUSE_HAL_DRIVER -DSTM32L476xx
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
 LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-LFLAGS     += -T"stm32l4_flash.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -T"STM32L476RGTX_FLASH.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS     += -specs=nano.specs -Wl,--gc-sections $(LIB_PATH)
 OFLAGS      = -O srec
 ODFLAGS     = -x

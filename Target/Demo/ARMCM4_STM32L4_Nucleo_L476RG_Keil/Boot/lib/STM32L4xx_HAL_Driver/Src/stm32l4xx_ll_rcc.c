@@ -255,16 +255,16 @@ ErrorStatus LL_RCC_DeInit(void)
 #endif
 
   /* Reset PLLCFGR register */
-  LL_RCC_WriteReg(PLLCFGR, 16U << RCC_PLLCFGR_PLLN_Pos);
+  LL_RCC_WriteReg(PLLCFGR, 16UL << RCC_PLLCFGR_PLLN_Pos);
 
 #if defined(RCC_PLLSAI1_SUPPORT)
   /* Reset PLLSAI1CFGR register */
-  LL_RCC_WriteReg(PLLSAI1CFGR, 16U << RCC_PLLSAI1CFGR_PLLSAI1N_Pos);
+  LL_RCC_WriteReg(PLLSAI1CFGR, 16UL << RCC_PLLSAI1CFGR_PLLSAI1N_Pos);
 #endif /*RCC_PLLSAI1_SUPPORT*/
 
 #if defined(RCC_PLLSAI2_SUPPORT)
   /* Reset PLLSAI2CFGR register */
-  LL_RCC_WriteReg(PLLSAI2CFGR, 16U << RCC_PLLSAI2CFGR_PLLSAI2N_Pos);
+  LL_RCC_WriteReg(PLLSAI2CFGR, 16UL << RCC_PLLSAI2CFGR_PLLSAI2N_Pos);
 #endif /*RCC_PLLSAI2_SUPPORT*/
 
   /* Reset HSEBYP bit */
@@ -1284,7 +1284,7 @@ uint32_t LL_RCC_GetSWPMIClockFreq(uint32_t SWPMIxSource)
   switch (LL_RCC_GetSWPMIClockSource(SWPMIxSource))
   {
     case LL_RCC_SWPMI1_CLKSOURCE_HSI:        /* SWPMI1 Clock is HSI Osc. */
-      if (LL_RCC_HSI_IsReady())
+      if (LL_RCC_HSI_IsReady() != 0UL)
       {
         swpmi_frequency = HSI_VALUE;
       }

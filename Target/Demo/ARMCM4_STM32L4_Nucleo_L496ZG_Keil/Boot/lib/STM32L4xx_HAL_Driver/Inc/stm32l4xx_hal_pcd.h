@@ -394,11 +394,11 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
   * @{
   */
 #if defined (USB_OTG_FS)
-#define USB_OTG_FS_WAKEUP_EXTI_LINE                                   (0x1U << 17)  /*!< USB FS EXTI Line WakeUp Interrupt */
+#define USB_OTG_FS_WAKEUP_EXTI_LINE                                   (0x1UL << 17)  /*!< USB FS EXTI Line WakeUp Interrupt */
 #endif /* defined (USB_OTG_FS) */
 
 #if defined (USB)
-#define USB_WAKEUP_EXTI_LINE                                          (0x1U << 17)  /*!< USB FS EXTI Line WakeUp Interrupt */
+#define USB_WAKEUP_EXTI_LINE                                          (0x1UL << 17)  /*!< USB FS EXTI Line WakeUp Interrupt */
 #endif /* defined (USB) */
 
 /**
@@ -476,8 +476,8 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
   */
 #if defined (USB)
 /********************  Bit definition for USB_COUNTn_RX register  *************/
-#define USB_CNTRX_NBLK_MSK                    (0x1FU << 10)
-#define USB_CNTRX_BLSIZE                      (0x1U << 15)
+#define USB_CNTRX_NBLK_MSK                    (0x1FUL << 10)
+#define USB_CNTRX_BLSIZE                      (0x1UL << 15)
 
 /* SetENDPOINT */
 #define PCD_SET_ENDPOINT(USBx, bEpNum, wRegValue) \
@@ -864,20 +864,17 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
     \
     *(pdwReg) &= 0x3FFU; \
     \
-    if ((wCount) > 62U) \
+    if ((wCount) == 0U) \
     { \
-      PCD_CALC_BLK32((pdwReg), (wCount), wNBlocks); \
+      *(pdwReg) |= USB_CNTRX_BLSIZE; \
+    } \
+    else if ((wCount) <= 62U) \
+    { \
+      PCD_CALC_BLK2((pdwReg), (wCount), wNBlocks); \
     } \
     else \
     { \
-      if ((wCount) == 0U) \
-      { \
-        *(pdwReg) |= USB_CNTRX_BLSIZE; \
-      } \
-      else \
-      { \
-        PCD_CALC_BLK2((pdwReg), (wCount), wNBlocks); \
-      } \
+      PCD_CALC_BLK32((pdwReg), (wCount), wNBlocks); \
     } \
   } while(0) /* PCD_SET_EP_CNT_RX_REG */
 

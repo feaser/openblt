@@ -234,7 +234,7 @@ void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
 
         /* Configure Alternate function mapped with the current IO */
         temp = GPIOx->AFR[position >> 3u];
-        temp &= ~(0xFu << ((position & 0x07u) * 4u));
+        temp &= ~(0xFul << ((position & 0x07u) * 4u));
         temp |= ((GPIO_Init->Alternate) << ((position & 0x07u) * 4u));
         GPIOx->AFR[position >> 3u] = temp;
       }
@@ -301,7 +301,7 @@ void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
   * @brief  De-initialize the GPIOx peripheral registers to their default reset values.
   * @param  GPIOx where x can be (A..H) to select the GPIO peripheral for STM32L4 family
   * @param  GPIO_Pin specifies the port bit to be written.
-  *         This parameter can be any combination of GPIO_Pin_x where x can be (0..15).
+  *         This parameter can be any combination of GPIO_PIN_x where x can be (0..15).
   * @retval None
   */
 void HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
@@ -346,7 +346,7 @@ void HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
       GPIOx->MODER |= (GPIO_MODER_MODE0 << (position * 2u));
 
       /* Configure the default Alternate Function in current IO */
-      GPIOx->AFR[position >> 3u] &= ~(0xFu << ((position & 0x07u) * 4u)) ;
+      GPIOx->AFR[position >> 3u] &= ~(0xFul << ((position & 0x07u) * 4u)) ;
 
       /* Configure the default value for IO Speed */
       GPIOx->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEED0 << (position * 2u));
@@ -387,7 +387,7 @@ void HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
   * @brief  Read the specified input port pin.
   * @param  GPIOx where x can be (A..H) to select the GPIO peripheral for STM32L4 family
   * @param  GPIO_Pin specifies the port bit to read.
-  *         This parameter can be any combination of GPIO_Pin_x where x can be (0..15).
+  *         This parameter can be any combination of GPIO_PIN_x where x can be (0..15).
   * @retval The input port pin value.
   */
 GPIO_PinState HAL_GPIO_ReadPin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
@@ -417,7 +417,7 @@ GPIO_PinState HAL_GPIO_ReadPin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
   *
   * @param  GPIOx where x can be (A..H) to select the GPIO peripheral for STM32L4 family
   * @param  GPIO_Pin specifies the port bit to be written.
-  *         This parameter can be any combination of GPIO_Pin_x where x can be (0..15).
+  *         This parameter can be any combination of GPIO_PIN_x where x can be (0..15).
   * @param  PinState specifies the value to be written to the selected bit.
   *         This parameter can be one of the GPIO_PinState enum values:
   *            @arg GPIO_PIN_RESET: to clear the port pin
@@ -468,7 +468,7 @@ void HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
   *         until the next reset.
   * @param  GPIOx where x can be (A..H) to select the GPIO peripheral for STM32L4 family
   * @param  GPIO_Pin specifies the port bits to be locked.
-  *         This parameter can be any combination of GPIO_Pin_x where x can be (0..15).
+  *         This parameter can be any combination of GPIO_PIN_x where x can be (0..15).
   * @retval None
   */
 HAL_StatusTypeDef HAL_GPIO_LockPin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
