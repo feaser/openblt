@@ -114,7 +114,6 @@ static HAL_StatusTypeDef RCCEx_PLL3_Config(const RCC_PLL3InitTypeDef *Pll3);
   *            @arg @ref RCC_PERIPHCLK_I2C3    I2C3 peripheral clock (*)
   *            @arg @ref RCC_PERIPHCLK_I2C4    I2C4 peripheral clock (*)
   *            @arg @ref RCC_PERIPHCLK_I3C1    I3C1 peripheral clock
-  *            @arg @ref RCC_PERIPHCLK_I3C2    I3C2 peripheral clock (***)
   *            @arg @ref RCC_PERIPHCLK_LPTIM1  LPTIM1 peripheral clock
   *            @arg @ref RCC_PERIPHCLK_LPTIM2  LPTIM2 peripheral clock
   *            @arg @ref RCC_PERIPHCLK_SAI1    SAI1 peripheral clock (*)
@@ -142,6 +141,7 @@ static HAL_StatusTypeDef RCCEx_PLL3_Config(const RCC_PLL3InitTypeDef *Pll3);
   *            @arg @ref RCC_PERIPHCLK_LPTIM6  LPTIM6 peripheral clock (*)
   *            @arg @ref RCC_PERIPHCLK_DAC_LP  DAC peripheral low-power clock
   *            @arg @ref RCC_PERIPHCLK_TIM     TIM peripheral clock
+  *            @arg @ref RCC_PERIPHCLK_ETH     ETH peripheral clock
   *
   * @note   Care must be taken when HAL_RCCEx_PeriphCLKConfig() is used to select
   *         the RTC clock source: in this case the access to Backup domain is enabled.
@@ -1147,7 +1147,7 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(const RCC_PeriphCLKInitTypeDef  *pPe
 
     switch (pPeriphClkInit->I3c2ClockSelection)
     {
-      case RCC_I3C2CLKSOURCE_PCLK3:      /* PCLK1 is used as clock source for I3C2*/
+      case RCC_I3C2CLKSOURCE_PCLK3:      /* PCLK3 is used as clock source for I3C2*/
 
         /* I3C2 clock source config set later after clock selection check */
         break;
@@ -1172,7 +1172,6 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(const RCC_PeriphCLKInitTypeDef  *pPe
         ret = HAL_ERROR;
         break;
     }
-
     if (ret == HAL_OK)
     {
       /* Set the source of I3C2 clock*/
@@ -2373,6 +2372,7 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(const RCC_PeriphCLKInitTypeDef  *pPe
     }
   }
 
+#if defined(USB_DRD_FS)
   /*------------------------------ USB Configuration -------------------------*/
   if (((pPeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_USB) == RCC_PERIPHCLK_USB)
   {
@@ -2423,6 +2423,7 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(const RCC_PeriphCLKInitTypeDef  *pPe
     }
 
   }
+#endif /* USB_DRD_FS */
 
 #if defined(CEC)
   /*-------------------------- CEC clock source configuration ----------------*/
@@ -2441,7 +2442,6 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(const RCC_PeriphCLKInitTypeDef  *pPe
   return status;
 }
 
-
 /**
   * @brief  Get the pPeriphClkInit according to the internal RCC configuration registers.
   * @param  pPeriphClkInit  pointer to an RCC_PeriphCLKInitTypeDef structure that
@@ -2449,7 +2449,7 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(const RCC_PeriphCLKInitTypeDef  *pPe
   *         clocks (ADC12, DAC, SDMMC1, SDMMC2, OCTOSPI1, TIM, LPTIM1, LPTIM2, LPTIM3, LPTIM4, LPTIM5, LPTIM6,
   *         SPI1, SPI2, SPI3, SPI4, SPI5, SPI6, USART1, USART2, USART3, UART4, UART5, USART6, UART7, UART8,
   *         UART9, USART10, USART11, UART12, LPUART1, I2C1, I2C2, I2C3, I2C4, I3C1, I3C2, CEC, FDCAN, SAI1,
-  *         SAI2, USB,), PLL2 and PLL3.
+  *         SAI2, USB), PLL2 and PLL3.
   * @retval None
   */
 void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *pPeriphClkInit)
@@ -2460,8 +2460,11 @@ void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *pPeriphClkInit)
                                          RCC_PERIPHCLK_LPTIM1 | RCC_PERIPHCLK_LPTIM2 | RCC_PERIPHCLK_ADCDAC  | \
                                          RCC_PERIPHCLK_DAC_LP | RCC_PERIPHCLK_RTC  | RCC_PERIPHCLK_RNG | \
                                          RCC_PERIPHCLK_I3C1 | RCC_PERIPHCLK_SPI1 | RCC_PERIPHCLK_SPI2 | \
-                                         RCC_PERIPHCLK_SPI3 | RCC_PERIPHCLK_CKPER | RCC_PERIPHCLK_USB;
+                                         RCC_PERIPHCLK_SPI3 | RCC_PERIPHCLK_CKPER;
 
+#if defined(USB_DRD_FS)
+  pPeriphClkInit->PeriphClockSelection |= RCC_PERIPHCLK_USB;
+#endif /* USB_DRD_FS */
 #if defined(UART4)
   pPeriphClkInit->PeriphClockSelection |= RCC_PERIPHCLK_UART4;
 #endif /* UART4 */
@@ -2742,8 +2745,10 @@ void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *pPeriphClkInit)
   pPeriphClkInit->CecClockSelection = __HAL_RCC_GET_CEC_SOURCE();
 #endif /* CEC */
 
+#if defined(USB_DRD_FS)
   /* Get the USB clock source ------------------------------------------------*/
   pPeriphClkInit->UsbClockSelection = __HAL_RCC_GET_USB_SOURCE();
+#endif /* USB_DRD_FS */
 
   /* Get the TIM Prescaler configuration -------------------------------------*/
   if ((RCC->CFGR1 & RCC_CFGR1_TIMPRE) == 0U)
@@ -2788,7 +2793,7 @@ void HAL_RCCEx_GetPLL1ClockFreq(PLL1_ClocksTypeDef *pPLL1_Clocks)
   pll1n = (RCC->PLL1DIVR & RCC_PLL1DIVR_PLL1N);
   pll1source = (RCC->PLL1CFGR & RCC_PLL1CFGR_PLL1SRC);
   pll1m = ((RCC->PLL1CFGR & RCC_PLL1CFGR_PLL1M) >> RCC_PLL1CFGR_PLL1M_Pos);
-  pll1fracen = RCC->PLL1CFGR & RCC_PLL1CFGR_PLL1FRACEN;
+  pll1fracen = ((RCC->PLL1CFGR & RCC_PLL1CFGR_PLL1FRACEN) >> RCC_PLL1CFGR_PLL1FRACEN_Pos);
   fracn1 = (float_t)(uint32_t)(pll1fracen * ((RCC->PLL1FRACR & RCC_PLL1FRACR_PLL1FRACN) >> \
                                              RCC_PLL1FRACR_PLL1FRACN_Pos));
 
@@ -2924,7 +2929,7 @@ void HAL_RCCEx_GetPLL2ClockFreq(PLL2_ClocksTypeDef *pPLL2_Clocks)
   pll2n = (RCC->PLL2DIVR & RCC_PLL2DIVR_PLL2N);
   pll2source = (RCC->PLL2CFGR & RCC_PLL2CFGR_PLL2SRC);
   pll2m = ((RCC->PLL2CFGR & RCC_PLL2CFGR_PLL2M) >> RCC_PLL2CFGR_PLL2M_Pos);
-  pll2fracen = RCC->PLL2CFGR & RCC_PLL2CFGR_PLL2FRACEN;
+  pll2fracen = ((RCC->PLL2CFGR & RCC_PLL2CFGR_PLL2FRACEN) >> RCC_PLL2CFGR_PLL2FRACEN_Pos);
   fracn2 = (float_t)(uint32_t)(pll2fracen * ((RCC->PLL2FRACR & RCC_PLL2FRACR_PLL2FRACN) >> \
                                              RCC_PLL2FRACR_PLL2FRACN_Pos));
 
@@ -3058,7 +3063,7 @@ void HAL_RCCEx_GetPLL3ClockFreq(PLL3_ClocksTypeDef *pPLL3_Clocks)
   pll3n = (RCC->PLL3DIVR & RCC_PLL3DIVR_PLL3N);
   pll3source = (RCC->PLL3CFGR & RCC_PLL3CFGR_PLL3SRC);
   pll3m = ((RCC->PLL3CFGR & RCC_PLL3CFGR_PLL3M) >> RCC_PLL3CFGR_PLL3M_Pos);
-  pll3fracen = RCC->PLL3CFGR & RCC_PLL3CFGR_PLL3FRACEN;
+  pll3fracen = ((RCC->PLL3CFGR & RCC_PLL3CFGR_PLL3FRACEN) >> RCC_PLL3CFGR_PLL3FRACEN_Pos);
   fracn3 = (float_t)(uint32_t)(pll3fracen * ((RCC->PLL3FRACR & RCC_PLL3FRACR_PLL3FRACN) >> \
                                              RCC_PLL3FRACR_PLL3FRACN_Pos));
 
@@ -3184,7 +3189,6 @@ void HAL_RCCEx_GetPLL3ClockFreq(PLL3_ClocksTypeDef *pPLL3_Clocks)
   *            @arg @ref RCC_PERIPHCLK_I2C3    I2C3 peripheral clock (*)
   *            @arg @ref RCC_PERIPHCLK_I2C4    I2C4 peripheral clock (*)
   *            @arg @ref RCC_PERIPHCLK_I3C1    I3C1 peripheral clock
-  *            @arg @ref RCC_PERIPHCLK_I3C2    I3C2 peripheral clock (***)
   *            @arg @ref RCC_PERIPHCLK_LPTIM1  LPTIM1 peripheral clock
   *            @arg @ref RCC_PERIPHCLK_LPTIM2  LPTIM2 peripheral clock
   *            @arg @ref RCC_PERIPHCLK_SAI1    SAI1 peripheral clock (*)
@@ -4185,7 +4189,6 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint64_t PeriphClk)
       case RCC_PERIPHCLK_I3C2:
         /* Get the current I3C2 source */
         srcclk = __HAL_RCC_GET_I3C2_SOURCE();
-
         if (srcclk == RCC_I3C2CLKSOURCE_PCLK3)
         {
           frequency = HAL_RCC_GetPCLK3Freq();
@@ -4207,6 +4210,12 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint64_t PeriphClk)
         {
           frequency = (HSI_VALUE >> (__HAL_RCC_GET_HSI_DIVIDER() >> RCC_CR_HSIDIV_Pos));
         }
+#if defined(STM32H5E5xx) || defined(STM32H5E4xx) || defined(STM32H5F5xx) || defined(STM32H5F4xx)
+        else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_CSIRDY)) && (srcclk ==  RCC_I3C2CLKSOURCE_CSI))
+        {
+          frequency = CSI_VALUE;
+        }
+#endif /* defined(STM32H5E5xx) || defined(STM32H5E4xx) || defined(STM32H5F5xx) || defined(STM32H5F4xx) */
         /* Clock not enabled for I3C2 */
         else
         {
@@ -5204,6 +5213,7 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint64_t PeriphClk)
         }
         break;
 
+#if defined(USB_DRD_FS)
       case RCC_PERIPHCLK_USB:
         /* Get the current USB kernel source */
         srcclk = __HAL_RCC_GET_USB_SOURCE();
@@ -5243,9 +5253,9 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint64_t PeriphClk)
       default:
         frequency = 0U;
         break;
+#endif /* USB_DRD_FS */
     }
   }
-
   return (frequency);
 }
 

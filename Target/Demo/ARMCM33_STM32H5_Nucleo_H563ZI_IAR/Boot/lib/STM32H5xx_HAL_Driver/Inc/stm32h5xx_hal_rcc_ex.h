@@ -346,12 +346,13 @@ typedef struct
                                         This parameter can be a value of @ref RCCEx_CEC_Clock_Source */
 #endif /* CEC */
 
+#if defined(USB_DRD_FS)
   uint32_t UsbClockSelection;      /*!< Specifies USB clock source.
                                         This parameter can be a value of @ref RCCEx_USB_Clock_Source */
+#endif /* USB_DRD_FS */
 
   uint32_t TimPresSelection;       /*!< Specifies TIM Clock Prescalers Selection.
                                        This parameter can be a value of @ref RCCEx_TIM_Prescaler_Selection */
-
 } RCC_PeriphCLKInitTypeDef;
 
 #if defined(CRS)
@@ -427,6 +428,16 @@ typedef struct
 /**
   * @}
   */
+
+#if defined(PWR_USBSCR_OTGHSEN)
+/** @defgroup OTGHS_CLK48_VALUE OTG_HS output clock
+  * @{
+  */
+#define OTGHS_CLK48_VALUE        48000000U    /*!< Value of the OTGHS_CLK48 in Hz*/
+/**
+  * @}
+  */
+#endif /* PWR_USBSCR_OTGHSEN */
 
 /** @defgroup RCCEx_Periph_Clock_Selection  RCCEx Periph Clock Selection
   * @{
@@ -507,7 +518,9 @@ typedef struct
 #if defined(CEC)
 #define RCC_PERIPHCLK_CEC              ((uint64_t)0x800000000U)
 #endif /* CEC */
+#if defined(USB_DRD_FS)
 #define RCC_PERIPHCLK_USB              ((uint64_t)0x1000000000U)
+#endif /* USB_DRD_FS */
 #if defined(LPTIM3)
 #define RCC_PERIPHCLK_LPTIM3           ((uint64_t)0x2000000000U)
 #endif /* LPTIM3 */
@@ -528,7 +541,6 @@ typedef struct
 #if defined(I3C2)
 #define RCC_PERIPHCLK_I3C2             ((uint64_t)0x100000000000U)
 #endif /* I3C2 */
-
 /**
   * @}
   */
@@ -1209,6 +1221,7 @@ typedef struct
   */
 #endif /* CEC */
 
+#if defined(USB_DRD_FS)
 /** @defgroup RCCEx_USB_Clock_Source  RCCEx USB Clock Source
   * @{
   */
@@ -1222,6 +1235,7 @@ typedef struct
 /**
   * @}
   */
+#endif /* USB_DRD_FS */
 
 /** @defgroup RCCEx_TIM_Prescaler_Selection RCCEx TIM Prescaler Selection
   * @{
@@ -1252,9 +1266,11 @@ typedef struct
 /** @defgroup RCCEx_CRS_SynchroSource RCCEx CRS SynchroSource
   * @{
   */
-#define RCC_CRS_SYNC_SOURCE_GPIO       ((uint32_t)0x00000000U) /*!< Synchro Signal source GPIO */
-#define RCC_CRS_SYNC_SOURCE_LSE        CRS_CFGR_SYNCSRC_0      /*!< Synchro Signal source LSE */
-#define RCC_CRS_SYNC_SOURCE_USB        CRS_CFGR_SYNCSRC_1      /*!< Synchro Signal source USB SOF (default)*/
+#define RCC_CRS_SYNC_SOURCE_GPIO       ((uint32_t)0x00000000U)                     /*!< Synchro Signal source GPIO */
+#define RCC_CRS_SYNC_SOURCE_LSE        CRS_CFGR_SYNCSRC_0                          /*!< Synchro Signal source LSE */
+#if defined(USB_DRD_FS)
+#define RCC_CRS_SYNC_SOURCE_USB        CRS_CFGR_SYNCSRC_1                          /*!< Synchro Signal source USB SOF (default)*/
+#endif /* USB_DRD_FS */
 /**
   * @}
   */
@@ -2361,9 +2377,13 @@ typedef struct
   * @param  __I3C2_CLKSOURCE__ specifies the I3C2 clock source.
   *          This parameter can be one of the following values:
   *            @arg @ref RCC_I3C2CLKSOURCE_PCLK3  PCLK3 selected as I3C2 clock
+  *            @arg @ref RCC_I3C2CLKSOURCE_PLL3R  PLL3R selected as I3C2 clock (*)
   *            @arg @ref RCC_I3C2CLKSOURCE_PLL2R  PLL2R selected as I3C2 clock
   *            @arg @ref RCC_I3C2CLKSOURCE_HSI    HSI selected as I3C2 clock
+  *
   * @retval None
+  *
+  *  (*)  : Not available for all stm32h5xxxx family lines.
   */
 #define __HAL_RCC_I3C2_CONFIG(__I3C2_CLKSOURCE__) \
   MODIFY_REG(RCC->CCIPR4, RCC_CCIPR4_I3C2SEL, (uint32_t)(__I3C2_CLKSOURCE__))
@@ -2371,8 +2391,11 @@ typedef struct
 /** @brief  Macro to get the I3C2 clock source.
   * @retval The clock source can be one of the following values:
   *            @arg @ref RCC_I3C2CLKSOURCE_PCLK3  PCLK3 selected as I3C2 clock
+  *            @arg @ref RCC_I3C2CLKSOURCE_PLL3R  PLL3R selected as I3C2 clock (*)
   *            @arg @ref RCC_I3C2CLKSOURCE_PLL2R  PLL2R selected as I3C2 clock
   *            @arg @ref RCC_I3C2CLKSOURCE_HSI    HSI selected as I3C2 clock
+  *
+  *  (*)  : Not available for all stm32h5xxxx family lines.
   */
 #define __HAL_RCC_GET_I3C2_SOURCE() ((uint32_t)(READ_BIT(RCC->CCIPR4, RCC_CCIPR4_I3C2SEL)))
 #endif /* I3C2 */
@@ -2921,6 +2944,7 @@ typedef struct
 #define __HAL_RCC_GET_CEC_SOURCE() ((uint32_t)(READ_BIT(RCC->CCIPR5, RCC_CCIPR5_CECSEL)))
 #endif /* CEC */
 
+#if defined(USB_DRD_FS)
 /** @brief  Macro to configure the USB clock (USBCLK).
   * @param  __USBCLKSource__ specifies the USB clock source.
   *         This parameter can be one of the following values:
@@ -2946,6 +2970,7 @@ typedef struct
   *  (**) : For stm32h503xx family line.
   */
 #define __HAL_RCC_GET_USB_SOURCE() ((uint32_t)(READ_BIT(RCC->CCIPR4, RCC_CCIPR4_USBSEL)))
+#endif /* USB_DRD_FS */
 
 /** @brief  Macro to configure the Timers clocks prescalers
   * @param  __PRESC__  specifies the Timers clocks prescalers selection
@@ -3465,12 +3490,12 @@ typedef struct
 #if defined(RCC_CR_PLL3ON)
 #define IS_RCC_I3C2CLKSOURCE(__SOURCE__)   \
   (((__SOURCE__) == RCC_I3C2CLKSOURCE_PCLK3) || \
-   ((__SOURCE__) == RCC_I3C2CLKSOURCE_PLL3R)  || \
+   ((__SOURCE__) == RCC_I3C2CLKSOURCE_PLL3R) || \
    ((__SOURCE__) == RCC_I3C2CLKSOURCE_HSI))
 #else
 #define IS_RCC_I3C2CLKSOURCE(__SOURCE__)   \
   (((__SOURCE__) == RCC_I3C2CLKSOURCE_PCLK3) || \
-   ((__SOURCE__) == RCC_I3C2CLKSOURCE_PLL2R)  || \
+   ((__SOURCE__) == RCC_I3C2CLKSOURCE_PLL2R) || \
    ((__SOURCE__) == RCC_I3C2CLKSOURCE_HSI))
 #endif /* PLL3 */
 #endif /* I3C2 */
@@ -3685,6 +3710,7 @@ typedef struct
    ((__SOURCE__) == RCC_SPI6CLKSOURCE_HSE))
 #endif /* SPI6 */
 
+#if defined(USB_DRD_FS)
 #if defined(RCC_CR_PLL3ON)
 #define IS_RCC_USBCLKSOURCE(__SOURCE__) \
   (((__SOURCE__) == RCC_USBCLKSOURCE_PLL1Q) || \
@@ -3696,6 +3722,7 @@ typedef struct
    ((__SOURCE__) == RCC_USBCLKSOURCE_PLL2Q) || \
    ((__SOURCE__) == RCC_USBCLKSOURCE_HSI48))
 #endif /* RCC_CR_PLL3ON */
+#endif /* USB_DRD_FS */
 
 #if defined(CEC)
 #define IS_RCC_CECCLKSOURCE(__SOURCE__) \
@@ -3709,10 +3736,11 @@ typedef struct
    ((VALUE) == RCC_TIMPRES_ACTIVATED))
 
 #if defined(CRS)
-
+#if defined(USB_DRD_FS)
 #define IS_RCC_CRS_SYNC_SOURCE(__SOURCE__) (((__SOURCE__) == RCC_CRS_SYNC_SOURCE_GPIO) || \
                                             ((__SOURCE__) == RCC_CRS_SYNC_SOURCE_LSE) || \
                                             ((__SOURCE__) == RCC_CRS_SYNC_SOURCE_USB))
+#endif /* USB_DRD_FS */
 
 #define IS_RCC_CRS_SYNC_DIV(__DIV__)       (((__DIV__) == RCC_CRS_SYNC_DIV1) || ((__DIV__) == RCC_CRS_SYNC_DIV2) || \
                                             ((__DIV__) == RCC_CRS_SYNC_DIV4) || ((__DIV__) == RCC_CRS_SYNC_DIV8) || \
