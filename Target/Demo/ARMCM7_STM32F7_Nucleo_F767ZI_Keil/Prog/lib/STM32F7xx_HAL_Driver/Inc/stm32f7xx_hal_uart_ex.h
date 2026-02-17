@@ -113,8 +113,10 @@ HAL_StatusTypeDef HAL_RS485Ex_Init(UART_HandleTypeDef *huart, uint32_t Polarity,
   */
 
 #if defined(USART_CR1_UESM)
+#if defined(USART_CR3_WUFIE)
 void HAL_UARTEx_WakeupCallback(UART_HandleTypeDef *huart);
 
+#endif /* USART_CR3_WUFIE */
 #endif /* USART_CR1_UESM */
 /**
   * @}
@@ -144,7 +146,7 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
 HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
 HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_DMA(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
 
-HAL_UART_RxEventTypeTypeDef HAL_UARTEx_GetRxEventType(UART_HandleTypeDef *huart);
+HAL_UART_RxEventTypeTypeDef HAL_UARTEx_GetRxEventType(const UART_HandleTypeDef *huart);
 
 
 /**
