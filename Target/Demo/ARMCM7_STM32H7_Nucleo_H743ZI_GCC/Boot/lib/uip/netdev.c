@@ -127,9 +127,12 @@ ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT];
 #elif defined ( __CC_ARM )  /* MDK ARM Compiler */
 __attribute__((at(0x30040000))) ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT];
 __attribute__((at(0x30040100))) ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT];
+#elif defined ( __ARMCC_VERSION )  /* MDK ARM v6 Compiler */
+__attribute__((section(".bss.ARM.__at_0x30040000"))) ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT];
+__attribute__((section(".bss.ARM.__at_0x30040100"))) ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT];
 #elif defined ( __GNUC__ ) /* GNU Compiler */
-ETH_DMADescTypeDef DMARxDscrTab[ETH_RX_DESC_CNT] __attribute__((section(".RxDecripSection")));
-ETH_DMADescTypeDef DMATxDscrTab[ETH_TX_DESC_CNT] __attribute__((section(".TxDecripSection")));
+ETH_DMADescTypeDef DMARxDscrTab[ETH_RX_DESC_CNT] __attribute__((section(".RxDescripSection")));
+ETH_DMADescTypeDef DMATxDscrTab[ETH_TX_DESC_CNT] __attribute__((section(".TxDescripSection")));
 #endif
 
 
@@ -190,6 +193,8 @@ static lan8742_IOCtx_t     lan8742IOCtx =
 static tRxBuf              rxBufs[ETH_RX_DESC_CNT * 2U];
 #elif defined ( __CC_ARM )  /* MDK ARM Compiler */
 __attribute__((at(0x30040200))) static tRxBuf rxBufs[ETH_RX_DESC_CNT * 2U];
+#elif defined ( __ARMCC_VERSION )  /* MDK ARM v6 Compiler */
+__attribute__((section(".bss.ARM.__at_0x30040200"))) static tRxBuf rxBufs[ETH_RX_DESC_CNT * 2U];
 #elif defined ( __GNUC__ ) /* GNU Compiler */
 static tRxBuf              rxBufs[ETH_RX_DESC_CNT * 2U] __attribute__((section(".RxBufSection")));
 #endif
@@ -205,6 +210,8 @@ static uint32_t            rxBufAllocFlags = 0U;
 static tTxBuf              txBufs[2U];
 #elif defined ( __CC_ARM )  /* MDK ARM Compiler */
 __attribute__((at(0x30044200))) static tTxBuf txBufs[2U];
+#elif defined ( __ARMCC_VERSION )  /* MDK ARM v6 Compiler */
+__attribute__((section(".bss.ARM.__at_0x30044200"))) static tTxBuf txBufs[2U];
 #elif defined ( __GNUC__ ) /* GNU Compiler */
 static tTxBuf              txBufs[2U] __attribute__((section(".TxBufSection")));
 #endif

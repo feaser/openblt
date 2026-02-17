@@ -71,9 +71,9 @@ SECTIONS
   /* Ethernet Rx and Tx descriptors go to RAM_D2. */
   .uip_sec (NOLOAD) : {
     . = ABSOLUTE(0x30040000);
-    *(.RxDecripSection)
+    *(.RxDescripSection)
     . = ABSOLUTE(0x30040100);
-    *(.TxDecripSection)
+    *(.TxDescripSection)
     . = ABSOLUTE(0x30040200);
     *(.RxBufSection)
     . = ABSOLUTE(0x30044200);
