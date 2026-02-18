@@ -56,7 +56,7 @@ TOOL_PATH=
 rwildcard = $(strip $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d)))
 
 # Collect all application files in the current directory and its subdirectories
-PROJ_FILES = $(call rwildcard, , *.c *.h *.S)
+PROJ_FILES = $(call rwildcard, , *.c *.h *.s)
 
 
 #|--------------------------------------------------------------------------------------|
@@ -74,7 +74,7 @@ SZ = $(TOOL_PATH)arm-none-eabi-size
 #|--------------------------------------------------------------------------------------|
 #| Filter project files
 #|--------------------------------------------------------------------------------------|
-PROJ_ASRCS  = $(filter %.S,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
+PROJ_ASRCS  = $(filter %.s,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 PROJ_CSRCS  = $(filter %.c,$(foreach file,$(PROJ_FILES),$(notdir $(file))))
 
 
@@ -91,20 +91,16 @@ LIB_PATH  =
 #|--------------------------------------------------------------------------------------|
 #| Options for toolchain binaries                                                       |
 #|--------------------------------------------------------------------------------------|
-HEAP_SIZE   = 0x0000
-STACK_SIZE  = 0x0100
 STDFLAGS    = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fno-strict-aliasing
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
 OPTFLAGS    = -Og
-DEPFLAGS  = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
+DEPFLAGS    = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_HAL_DRIVER -DSTM32F303x8
-CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
 LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-LFLAGS     += -Wl,--defsym=__HEAP_SIZE=$(HEAP_SIZE) -Wl,--defsym=__STACK_SIZE=$(STACK_SIZE)
-LFLAGS     += -T"stm32f303k8_flash.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
+LFLAGS     += -T"STM32F303K8TX_FLASH.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS     += -specs=nano.specs -Wl,--gc-sections $(LIB_PATH)
 OFLAGS      = -O srec
 ODFLAGS     = -x
@@ -121,7 +117,7 @@ LIBS =
 #|--------------------------------------------------------------------------------------|
 #| Define targets                                                                       |
 #|--------------------------------------------------------------------------------------|
-AOBJS = $(patsubst %.S,%.o,$(PROJ_ASRCS))
+AOBJS = $(patsubst %.s,%.o,$(PROJ_ASRCS))
 COBJS = $(patsubst %.c,%.o,$(PROJ_CSRCS))
 
 
@@ -146,7 +142,7 @@ $(BIN_PATH)/$(PROJ_NAME).elf : $(AOBJS) $(COBJS)
 #|--------------------------------------------------------------------------------------|
 #| Compile and assemble                                                                 |
 #|--------------------------------------------------------------------------------------|
-$(AOBJS): %.o: %.S
+$(AOBJS): %.o: %.s
 	@echo +++ Assembling [$(notdir $<)]
 	@$(AS) $(AFLAGS) -c $< -o $(OBJ_PATH)/$(@F)
 

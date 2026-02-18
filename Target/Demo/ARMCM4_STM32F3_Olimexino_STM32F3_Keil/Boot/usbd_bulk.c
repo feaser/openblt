@@ -31,6 +31,7 @@
 #include "usbd_bulk.h"
 #include "usbd_desc.h"
 #include "usbd_ctlreq.h"
+#include "boot.h"
 
 
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
@@ -71,9 +72,10 @@
 /** @defgroup USBD_Bulk_Private_FunctionPrototypes
   * @{
   */
+#if (BOOT_COM_USB_ENABLE > 0)
 extern void UsbReceivePipeBulkOUT(uint8_t epnum);
 extern void UsbTransmitPipeBulkIN(void);
-
+#endif
 
 static uint8_t  USBD_Bulk_Init (USBD_HandleTypeDef *pdev,
                                 uint8_t cfgidx);
@@ -391,8 +393,10 @@ static uint8_t  USBD_Bulk_Setup (USBD_HandleTypeDef *pdev,
   */
 static uint8_t  USBD_Bulk_DataIn (USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
+#if (BOOT_COM_USB_ENABLE > 0)  
   /* endpoint finished the previous transmission so see if more data is left */
   UsbTransmitPipeBulkIN();
+#endif  
   return USBD_OK;
 }
 
@@ -405,8 +409,10 @@ static uint8_t  USBD_Bulk_DataIn (USBD_HandleTypeDef *pdev, uint8_t epnum)
   */
 static uint8_t  USBD_Bulk_DataOut (USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
+#if (BOOT_COM_USB_ENABLE > 0)  
   /* read the data from the bulk OUT pipe */
   UsbReceivePipeBulkOUT(epnum);
+#endif  
   return USBD_OK;
 }
 
@@ -420,8 +426,10 @@ static uint8_t USBD_Bulk_SOF (USBD_HandleTypeDef *pdev)
 {
   if (pdev->dev_state == USBD_STATE_CONFIGURED )
   {
+#if (BOOT_COM_USB_ENABLE > 0)  
     /* Check the data to be sent through IN pipe */
     UsbTransmitPipeBulkIN();
+#endif    
   }
   return USBD_OK;
 
