@@ -11,7 +11,7 @@ LR_IROM1 0x08000000 0x00008000  {    ; load region size_region
   }
   
   RW_IRAM1 0x20000000 UNINIT 0x00000040  {  ; no init for shared params
-   *(shared)
+   *(.bss.shared)
   }
   
   RW_IRAM2 0x20000040 0x0002FFC0  {  ; RW data
