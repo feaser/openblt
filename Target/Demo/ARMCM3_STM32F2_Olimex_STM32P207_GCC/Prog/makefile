@@ -99,11 +99,9 @@ OPTFLAGS    = -Og
 DEPFLAGS    = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_HAL_DRIVER -DSTM32F207xx
-CFLAGS     += -D__HEAP_SIZE=$(HEAP_SIZE) -D__STACK_SIZE=$(STACK_SIZE)
 CFLAGS     += $(INC_PATH)
 AFLAGS      = $(CFLAGS)
 LFLAGS      = $(STDFLAGS) $(OPTFLAGS)
-LFLAGS     += -Wl,--defsym=__HEAP_SIZE=$(HEAP_SIZE) -Wl,--defsym=__STACK_SIZE=$(STACK_SIZE)
 LFLAGS     += -T"STM32F207ZETX_FLASH.ld" -Wl,-Map=$(BIN_PATH)/$(PROJ_NAME).map
 LFLAGS     += -specs=nano.specs -Wl,--gc-sections $(LIB_PATH)
 OFLAGS      = -O srec
