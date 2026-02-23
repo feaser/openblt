@@ -1,12 +1,12 @@
 /************************************************************************************//**
-* \file         Demo/ARMCM3_LM3S_EK_LM3S8962_IAR/Boot/main.c
-* \brief        Bootloader application source file.
+* \file         Demo/ARMCM3_LM3S_EK_LM3S8962_IAR/Boot/led.c
+* \brief        LED driver source file.
 * \ingroup      Boot_ARMCM3_LM3S_EK_LM3S8962_IAR
 * \internal
 *----------------------------------------------------------------------------------------
 *                          C O P Y R I G H T
 *----------------------------------------------------------------------------------------
-*   Copyright (c) 2012  by Feaser    http://www.feaser.com    All rights reserved
+*   Copyright (c) 2026  by Feaser    http://www.feaser.com    All rights reserved
 *
 *----------------------------------------------------------------------------------------
 *                            L I C E N S E
@@ -20,9 +20,9 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 * PURPOSE. See the GNU General Public License for more details.
 *
-* You have received a copy of the GNU General Public License along with OpenBLT. It 
+* You have received a copy of the GNU General Public License along with OpenBLT. It
 * should be located in ".\Doc\license.html". If not, contact Feaser to obtain a copy.
-* 
+*
 * \endinternal
 ****************************************************************************************/
 
@@ -30,81 +30,73 @@
 * Include files
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
-#include "inc/hw_ints.h"
+#include "led.h"                                 /* module header                      */
 #include "inc/hw_memmap.h"
-#include "inc/hw_nvic.h"
-#include "inc/hw_sysctl.h"
 #include "inc/hw_types.h"
-#include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
 
 
 /****************************************************************************************
-* Function prototypes
+* Local data declarations
 ****************************************************************************************/
-static void Init(void);
+/** \brief Holds the desired LED blink interval time. */
+static blt_int16u ledBlinkIntervalMs;
 
 
 /************************************************************************************//**
-** \brief     This is the entry point for the bootloader application and is called 
-**            by the reset interrupt vector after the C-startup routines executed.
+** \brief     Initializes the LED blink driver.
+** \param     interval_ms Specifies the desired LED blink interval time in milliseconds.
 ** \return    none.
 **
 ****************************************************************************************/
-void main(void)
+void LedBlinkInit(blt_int16u interval_ms)
 {
-  /* initialize the microcontroller */
-  Init();
-  /* initialize the bootloader */
-  BootInit();
+  /* store the interval time between LED toggles */
+  ledBlinkIntervalMs = interval_ms;
+} /*** end of LedBlinkInit ***/
 
-  /* start the infinite program loop */
-  while (1)
+
+/************************************************************************************//**
+** \brief     Task function for blinking the LED as a fixed timer interval.
+** \return    none.
+**
+****************************************************************************************/
+void LedBlinkTask(void)
+{
+  static blt_bool ledOn = BLT_FALSE;
+  static blt_int32u nextBlinkEvent = 0;
+
+  /* check for blink event */
+  if (TimerGet() >= nextBlinkEvent)
   {
-    /* run the bootloader task */
-    BootTask();
+    /* toggle the LED state */
+    if (ledOn == BLT_FALSE)
+    {
+      ledOn = BLT_TRUE;
+      GPIOPinWrite(GPIO_PORTF_BASE, 0x01, 1);
+    }
+    else
+    {
+      ledOn = BLT_FALSE;
+      GPIOPinWrite(GPIO_PORTF_BASE, 0x01, 0);
+    }
+    /* schedule the next blink event */
+    nextBlinkEvent = TimerGet() + ledBlinkIntervalMs;
   }
-} /*** end of main ***/
+} /*** end of LedBlinkTask ***/
 
 
 /************************************************************************************//**
-** \brief     Initializes the microcontroller. 
+** \brief     Cleans up the LED blink driver. This is intended to be used upon program
+**            exit.
 ** \return    none.
 **
 ****************************************************************************************/
-static void Init(void)
+void LedBlinkExit(void)
 {
-  /* set the clocking to run at 50MHz from the PLL */
-  SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_8MHZ);
-  
-  /* enable the peripherals used by the LED driver */
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-  /* configure the LED as digital output and turn off the LED */
-  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, 0x01);
+  /* turn the LED off */
   GPIOPinWrite(GPIO_PORTF_BASE, 0x01, 0);
-  
-  /* initialize the status button as a digital input. it is used to override the
-   * starting of the user program.
-   */
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-  GPIODirModeSet(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_DIR_MODE_IN);
-  GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
-  
-#if (BOOT_COM_RS232_ENABLE > 0)
-  #if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
-  /* enable the and configure UART0 related peripherals and pins */
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-  GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-  #endif
-#endif
-#if (BOOT_COM_CAN_ENABLE > 0)
-  #if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
-  /* configure the CAN pins */
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-  GPIOPinTypeCAN(GPIO_PORTD_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-  #endif
-#endif
-} /*** end of Init ***/
+} /*** end of LedBlinkExit ***/
 
 
-/*********************************** end of main.c *************************************/
+/*********************************** end of led.c **************************************/

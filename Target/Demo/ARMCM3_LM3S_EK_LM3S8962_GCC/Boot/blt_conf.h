@@ -44,13 +44,13 @@
  * de-initialize application specific parts, for example to stop blinking an LED, etc.
  */ 
 /** \brief Frequency of the external crystal oscillator. */
-#define BOOT_CPU_XTAL_SPEED_KHZ         (8000)
+#define BOOT_CPU_XTAL_SPEED_KHZ          (8000)
 /** \brief Desired system speed. */
-#define BOOT_CPU_SYSTEM_SPEED_KHZ       (50000)
+#define BOOT_CPU_SYSTEM_SPEED_KHZ        (50000)
 /** \brief Motorola or Intel style byte ordering. */
-#define BOOT_CPU_BYTE_ORDER_MOTOROLA    (0)
+#define BOOT_CPU_BYTE_ORDER_MOTOROLA     (0)
 /** \brief Enable/disable hook function call right before user program start. */
-#define BOOT_CPU_USER_PROGRAM_START_HOOK (0)
+#define BOOT_CPU_USER_PROGRAM_START_HOOK (1)
 
 
 /****************************************************************************************
@@ -148,7 +148,7 @@
  * hook functions.
  */
 /** \brief Enable/disable the hook functions for controlling the watchdog. */
-#define BOOT_COP_HOOKS_ENABLE           (0)
+#define BOOT_COP_HOOKS_ENABLE           (1)
 
 
 /****************************************************************************************

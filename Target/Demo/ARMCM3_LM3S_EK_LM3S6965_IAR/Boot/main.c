@@ -113,6 +113,12 @@ static void Init(void)
   /* set the clocking to run at 50MHz from the PLL */
   SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_8MHZ);
   
+  /* enable the peripherals used by the LED driver */
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+  /* configure the LED as digital output and turn off the LED */
+  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, 0x01);
+  GPIOPinWrite(GPIO_PORTF_BASE, 0x01, 0);
+  
   /* initialize the status button as a digital input. it is used to override the
    * starting of the user program.
    */

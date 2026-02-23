@@ -130,7 +130,7 @@ STDFLAGS    = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -fno-strict-aliasing
 STDFLAGS   += -Wno-unused-but-set-variable -Wno-maybe-uninitialized
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g3
 OPTFLAGS    = -O2
-DEPFLAGS  = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
+DEPFLAGS    = -MT $@ -MMD -MP -MF $(OBJ_PATH)/$*.d
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DDEBUG -Dgcc
 CFLAGS     += $(INC_PATH)
