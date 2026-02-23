@@ -8,7 +8,7 @@ SECTIONS
 {
     __STACKSIZE__ = 1024;
 
-    .text :
+    .text (READONLY): /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
     {
 		    KEEP(*(.isr_vector))
 		    *(.text*)
@@ -36,7 +36,7 @@ SECTIONS
         _etext = .;
     } > FLASH
 
-    .data : AT (ADDR(.text) + SIZEOF(.text))
+    .data (READONLY): AT (ADDR(.text) + SIZEOF(.text)) /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
     {
         _data = .;
         *(vtable)
@@ -46,7 +46,7 @@ SECTIONS
         _edata = .;
     } > SRAM
 
-    .bss :
+    .bss (READONLY): /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
     {
         _bss = .;
         *(.bss*)
