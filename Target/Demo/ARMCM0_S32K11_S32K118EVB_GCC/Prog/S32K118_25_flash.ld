@@ -6,7 +6,7 @@
 **     Abstract:
 **         Linker file for the GNU C Compiler
 **
-**     Copyright 2018 NXP
+**     Copyright 2018-2021 NXP
 **     All rights reserved.
 **
 **     THIS SOFTWARE IS PROVIDED BY NXP "AS IS" AND ANY EXPRESSED OR
@@ -21,8 +21,7 @@
 **     IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 **     THE POSSIBILITY OF SUCH DAMAGE.
 **
-**     http:                 www.freescale.com
-**     mail:                 support@freescale.com
+**     http:                 www.nxp.com
 **
 ** ###################################################################
 */
@@ -53,7 +52,7 @@ MEMORY
   m_text                (RX)  : ORIGIN = 0x00002410, LENGTH = 0x0003FBF0 - 0x2000
 
   /* SRAM_L */
-
+  m_custom              (RW)  : ORIGIN = 0x1FFFFC00, LENGTH = 0x00000400
   /* SRAM_U */
   m_data                (RW)  : ORIGIN = 0x20000000, LENGTH = 0x000030C0
   m_data_2              (RW)  : ORIGIN = 0x200030C0, LENGTH = 0x00002740
@@ -214,13 +213,16 @@ SECTIONS
 
   /* Custom Section Block that can be used to place data at absolute address. */
   /* Use __attribute__((section (".customSection"))) to place data here. */
-  .customSectionBlock  ORIGIN(m_data_2) : AT(__CUSTOM_ROM)
+  /* Use this section only when MTB (Micro Trace Buffer) is not used, because MTB uses the same RAM area, as described in S32K Reference Manual. */
+  .customSectionBlock  ORIGIN(m_custom) : AT(__CUSTOM_ROM)
   {
+    __customSectionStart = .;
     __customSection_start__ = .;
     KEEP(*(.customSection))  /* Keep section even if not referenced. */
     __customSection_end__ = .;
-  } > m_data_2
+  } > m_custom
   __CUSTOM_END = __CUSTOM_ROM + (__customSection_end__ - __customSection_start__);
+  __rom_end    = __CUSTOM_END;
 
   /* Uninitialized data section. */
   .bss :
