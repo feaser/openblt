@@ -73,29 +73,28 @@ static void Init(void)
   /* Configure the system clock. */
   SystemClockConfig();
   /* Enable the peripheral clock for the ports that are used. */
-  PCC->PCCn[PCC_PORTB_INDEX] |= PCC_PCCn_CGC_MASK;
-  PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
-  PCC->PCCn[PCC_PORTE_INDEX] |= PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_PORTB_INDEX] |= PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_PORTE_INDEX] |= PCC_PCCn_CGC_MASK;
 
   /* Configure SW2 (PD3) GPIO pin for (optional) backdoor entry input. */
   /* Input GPIO pin configuration. PD3 = GPIO, MUX = ALT1. */
-  PORTD->PCR[3] |= PORT_PCR_MUX(1);
+  IP_PORTD->PCR[3] |= PORT_PCR_MUX(1);
   /* Disable pull device, as SW2 already has a pull down resistor on the board. */
-  PORTD->PCR[3] &= ~PORT_PCR_PE(1);
+  IP_PORTD->PCR[3] &= ~PORT_PCR_PE(1);
   /* Configure and enable Port D pin 3 GPIO as digital input */
-  PTD->PDDR &= ~GPIO_PDDR_PDD(1 << 3U);
-  PTD->PIDR &= ~GPIO_PIDR_PID(1 << 3U);
+  IP_PTD->PDDR &= ~GPIO_PDDR_PDD(1 << 3U);
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART RX GPIO pin configuration. PB0 = UART0 RX, MUX = ALT2. */
-  PORTB->PCR[0] |= PORT_PCR_MUX(2);
+  IP_PORTB->PCR[0] |= PORT_PCR_MUX(2);
   /* UART TX GPIO pin configuration. PB1 = UART0 TX, MUX = ALT2. */
-  PORTB->PCR[1] |= PORT_PCR_MUX(2);
+  IP_PORTB->PCR[1] |= PORT_PCR_MUX(2);
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN RX GPIO pin configuration. PE4 = CAN0 RX, MUX = ALT5. */
-  PORTE->PCR[4] |= PORT_PCR_MUX(5);
+  IP_PORTE->PCR[4] |= PORT_PCR_MUX(5);
   /* CAN TX GPIO pin configuration. PE5 = CAN0 TX, MUX = ALT5. */
-  PORTE->PCR[5] |= PORT_PCR_MUX(5);
+  IP_PORTE->PCR[5] |= PORT_PCR_MUX(5);
 #endif
 } /*** end of Init ***/
 
@@ -123,14 +122,14 @@ static void SystemClockConfig(void)
 {
   /* --------- SOSC Initialization (40 MHz) ------------------------------------------ */
   /* SOSCDIV1 & SOSCDIV2 =1: divide by 1. */
-  SCG->SOSCDIV = SCG_SOSCDIV_SOSCDIV1(1) | SCG_SOSCDIV_SOSCDIV2(1);
+  IP_SCG->SOSCDIV = SCG_SOSCDIV_SOSCDIV1(1) | SCG_SOSCDIV_SOSCDIV2(1);
   /* Range=3: High freq (SOSC betw 8MHz - 40MHz).
    * HGO=0:   Config xtal osc for low power.
    * EREFS=1: Input is external XTAL.
    */
-  SCG->SOSCCFG = SCG_SOSCCFG_RANGE(3) | SCG_SOSCCFG_EREFS_MASK;
+  IP_SCG->SOSCCFG = SCG_SOSCCFG_RANGE(3) | SCG_SOSCCFG_EREFS_MASK;
   /* Ensure SOSCCSR unlocked. */
-  while (SCG->SOSCCSR & SCG_SOSCCSR_LK_MASK)
+  while (IP_SCG->SOSCCSR & SCG_SOSCCSR_LK_MASK)
   {
     ;
   }
@@ -143,9 +142,9 @@ static void SystemClockConfig(void)
    * SOSCSTEN=0:    Sys OSC disabled in Stop modes.
    * SOSCEN=1:      Enable oscillator.
    */
-  SCG->SOSCCSR = SCG_SOSCCSR_SOSCEN_MASK;
+  IP_SCG->SOSCCSR = SCG_SOSCCSR_SOSCEN_MASK;
   /* Wait for system OSC clock to become valid. */
-  while (!(SCG->SOSCCSR & SCG_SOSCCSR_SOSCVLD_MASK))
+  while (!(IP_SCG->SOSCCSR & SCG_SOSCCSR_SOSCVLD_MASK))
   {
     ;
   }
@@ -154,13 +153,13 @@ static void SystemClockConfig(void)
   /* Fast IRC is enabled and trimmed to 48 MHz in reset (default). Enable FIRCDIV2_CLK
    * and FIRCDIV1_CLK, divide by 1 = 48 MHz.
    */
-  SCG->FIRCDIV = SCG_FIRCDIV_FIRCDIV1(1) | SCG_FIRCDIV_FIRCDIV2(1);
+  IP_SCG->FIRCDIV = SCG_FIRCDIV_FIRCDIV1(1) | SCG_FIRCDIV_FIRCDIV2(1);
 
   /* --------- SIRC Initialization --------------------------------------------------- */
   /* Slow IRC is enabled with high range (8 MHz) in reset. Enable SIRCDIV2_CLK and
    * SIRCDIV1_CLK, divide by 1 = 8MHz asynchronous clock source.
    */
-  SCG->SIRCDIV = SCG_SIRCDIV_SIRCDIV1(1) | SCG_SIRCDIV_SIRCDIV2(1);
+  IP_SCG->SIRCDIV = SCG_SIRCDIV_SIRCDIV1(1) | SCG_SIRCDIV_SIRCDIV2(1);
 
   /* --------- Change to normal RUN mode with 48MHz FIRC ----------------------------- */
   /* Select FIRC as clock source.
@@ -168,11 +167,11 @@ static void SystemClockConfig(void)
    * DIVBUS=0, div. by 1: bus clock = 48 MHz.
    * DIVSLOW=1, div. by 2: SCG slow, flash clock= 24 MHz
    */
-  SCG->RCCR = SCG_RCCR_SCS(3) | SCG_RCCR_DIVCORE(0) | SCG_RCCR_DIVBUS(0) |
-              SCG_RCCR_DIVSLOW(1);
+  IP_SCG->RCCR = SCG_RCCR_SCS(3) | SCG_RCCR_DIVCORE(0) | SCG_RCCR_DIVBUS(0) |
+                 SCG_RCCR_DIVSLOW(1);
 
   /* Wait until system clock source is FIRC. */
-  while (((SCG->CSR & SCG_CSR_SCS_MASK) >> SCG_CSR_SCS_SHIFT ) != 3U)
+  while (((IP_SCG->CSR & SCG_CSR_SCS_MASK) >> SCG_CSR_SCS_SHIFT ) != 3U)
   {
     ;
   }

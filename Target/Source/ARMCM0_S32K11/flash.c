@@ -730,26 +730,26 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
       /* keep the watchdog happy */
       CopService();
       /* check CCIF to verify that the previous command is completed. */
-      if ((FTFC->FSTAT & FTFC_FSTAT_CCIF_MASK) == FTFC_FSTAT_CCIF(0))
+      if ((IP_FTFC->FSTAT & FTFC_FSTAT_CCIF_MASK) == FTFC_FSTAT_CCIF(0))
       {
         /* FTFC module should not be busy anymore. flag error and abort. */
         result = BLT_FALSE;
         break;
       }
       /* clear the old errors that might still be set from a previous operation. */
-      FTFC->FSTAT = FTFC_FSTAT_FPVIOL_MASK | FTFC_FSTAT_ACCERR_MASK | FTFC_FSTAT_RDCOLERR_MASK;
+      IP_FTFC->FSTAT = FTFC_FSTAT_FPVIOL_MASK | FTFC_FSTAT_ACCERR_MASK | FTFC_FSTAT_RDCOLERR_MASK;
       /* prepare the program phrase command.
        * FTFC->FCCOB[3] = FCCOB0
        */
-      FTFC->FCCOB[3] = FLASH_FTFC_CMD_PROGRAM_PHRASE;
+      IP_FTFC->FCCOB[3] = FLASH_FTFC_CMD_PROGRAM_PHRASE;
       /* set the program base address.
        * FTFC->FCCOB[2] = FCCOB1
        * FTFC->FCCOB[1] = FCCOB2
        * FTFC->FCCOB[0] = FCCOB3
        */
-      FTFC->FCCOB[2] = (blt_int8u)(((blt_addr)(prog_addr >> 16U)) & 0xFFU);
-      FTFC->FCCOB[1] = (blt_int8u)(((blt_addr)(prog_addr >>  8U)) & 0xFFU);
-      FTFC->FCCOB[0] = (blt_int8u)(prog_addr & 0xFFU);
+      IP_FTFC->FCCOB[2] = (blt_int8u)(((blt_addr)(prog_addr >> 16U)) & 0xFFU);
+      IP_FTFC->FCCOB[1] = (blt_int8u)(((blt_addr)(prog_addr >>  8U)) & 0xFFU);
+      IP_FTFC->FCCOB[0] = (blt_int8u)(prog_addr & 0xFFU);
       /* set the phrase bytes that should be programmed.
        * FTFC->FCCOB[7]  = FCCOB4
        * FTFC->FCCOB[6]  = FCCOB5
@@ -760,18 +760,18 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
        * FTFC->FCCOB[9]  = FCCOBA
        * FTFC->FCCOB[8]  = FCCOBB
        */
-      FTFC->FCCOB[4]  = prog_data[0];
-      FTFC->FCCOB[5]  = prog_data[1];
-      FTFC->FCCOB[6]  = prog_data[2];
-      FTFC->FCCOB[7]  = prog_data[3];
-      FTFC->FCCOB[8]  = prog_data[4];
-      FTFC->FCCOB[9]  = prog_data[5];
-      FTFC->FCCOB[10] = prog_data[6];
-      FTFC->FCCOB[11] = prog_data[7];
+      IP_FTFC->FCCOB[4]  = prog_data[0];
+      IP_FTFC->FCCOB[5]  = prog_data[1];
+      IP_FTFC->FCCOB[6]  = prog_data[2];
+      IP_FTFC->FCCOB[7]  = prog_data[3];
+      IP_FTFC->FCCOB[8]  = prog_data[4];
+      IP_FTFC->FCCOB[9]  = prog_data[5];
+      IP_FTFC->FCCOB[10] = prog_data[6];
+      IP_FTFC->FCCOB[11] = prog_data[7];
       /* Execute the command. Note that it needs to run from RAM. */
       FlashCommandSequence();
       /* Check the results. */
-      if ((FTFC->FSTAT & (FTFC_FSTAT_MGSTAT0_MASK | FTFC_FSTAT_FPVIOL_MASK |
+      if ((IP_FTFC->FSTAT & (FTFC_FSTAT_MGSTAT0_MASK | FTFC_FSTAT_FPVIOL_MASK |
           FTFC_FSTAT_ACCERR_MASK | FTFC_FSTAT_RDCOLERR_MASK)) != 0U)
       {
         /* could not perform program operation */
@@ -884,31 +884,31 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
         /* store the block base address. */
         blockBaseAddr = sectorBaseAddr + (blockIdx * FLASH_ERASE_BLOCK_SIZE);
         /* check CCIF to verify that the previous command is completed. */
-        if ((FTFC->FSTAT & FTFC_FSTAT_CCIF_MASK) == FTFC_FSTAT_CCIF(0))
+        if ((IP_FTFC->FSTAT & FTFC_FSTAT_CCIF_MASK) == FTFC_FSTAT_CCIF(0))
         {
           /* FTFC module should not be busy anymore. flag error and abort. */
           result = BLT_FALSE;
           break;
         }
         /* clear the old errors that might still be set from a previous operation. */
-        FTFC->FSTAT = FTFC_FSTAT_FPVIOL_MASK | FTFC_FSTAT_ACCERR_MASK | FTFC_FSTAT_RDCOLERR_MASK;
+        IP_FTFC->FSTAT = FTFC_FSTAT_FPVIOL_MASK | FTFC_FSTAT_ACCERR_MASK | FTFC_FSTAT_RDCOLERR_MASK;
         /* prepare the sector erase command.
          * FTFC->FCCOB[3] = FCCOB0
          */
-        FTFC->FCCOB[3] = FLASH_FTFC_CMD_ERASE_SECTOR;
+        IP_FTFC->FCCOB[3] = FLASH_FTFC_CMD_ERASE_SECTOR;
         /* set the erase sector base address. note that in this function that means the
          * block base address.
          * FTFC->FCCOB[2] = FCCOB1
          * FTFC->FCCOB[1] = FCCOB2
          * FTFC->FCCOB[0] = FCCOB3
          */
-        FTFC->FCCOB[2] = (blt_int8u)(((blt_addr)(blockBaseAddr >> 16U)) & 0xFFU);
-        FTFC->FCCOB[1] = (blt_int8u)(((blt_addr)(blockBaseAddr >>  8U)) & 0xFFU);
-        FTFC->FCCOB[0] = (blt_int8u)(blockBaseAddr & 0xFFU);
+        IP_FTFC->FCCOB[2] = (blt_int8u)(((blt_addr)(blockBaseAddr >> 16U)) & 0xFFU);
+        IP_FTFC->FCCOB[1] = (blt_int8u)(((blt_addr)(blockBaseAddr >>  8U)) & 0xFFU);
+        IP_FTFC->FCCOB[0] = (blt_int8u)(blockBaseAddr & 0xFFU);
         /* Execute the command. Note that it needs to run from RAM. */
         FlashCommandSequence();
         /* Check the results. */
-        if ((FTFC->FSTAT & (FTFC_FSTAT_MGSTAT0_MASK | FTFC_FSTAT_FPVIOL_MASK |
+        if ((IP_FTFC->FSTAT & (FTFC_FSTAT_MGSTAT0_MASK | FTFC_FSTAT_FPVIOL_MASK |
             FTFC_FSTAT_ACCERR_MASK | FTFC_FSTAT_RDCOLERR_MASK)) != 0U)
         {
           /* could not perform erase operation */
@@ -978,7 +978,7 @@ START_FUNCTION_DEFINITION_RAMSECTION
 static void FlashCommandSequence(void)
 {
   /* Clear CCIF to launch command. This is done by writing a 1 to the bit. */
-  FTFC->FSTAT |= FTFC_FSTAT_CCIF_MASK;
+  IP_FTFC->FSTAT |= FTFC_FSTAT_CCIF_MASK;
 
   /* Wait for operation to complete.
    * From S32K Reference Manual:
@@ -992,7 +992,7 @@ static void FlashCommandSequence(void)
    * function call.  If an operation hangs we have a processor hardware error, and have
    * more to worry about than a hanging while loop.
    */
-  while ((FTFC->FSTAT & FTFC_FSTAT_CCIF_MASK) == 0U)
+  while ((IP_FTFC->FSTAT & FTFC_FSTAT_CCIF_MASK) == 0U)
   {
     /* Ideally, the watchdog is serviced in this function. But function CopService() is
      * located in the flash partition and can therefore not be accessed. This does mean

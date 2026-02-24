@@ -46,7 +46,7 @@
 
 #if (BOOT_COM_RS232_CHANNEL_INDEX == 0)
 /** \brief Set the peripheral LPUART0 base pointer. */
-#define LPUARTx                        (LPUART0)
+#define LPUARTx                        (IP_LPUART0)
 /** \brief Set the PCC index offset for LPUART0. */
 #define PCC_LPUARTx_INDEX              (PCC_LPUART0_INDEX)
 #elif (BOOT_COM_RS232_CHANNEL_INDEX == 1)
@@ -95,16 +95,16 @@ void Rs232Init(void)
   /* Make sure the UART peripheral clock is disabled before configuring its source
    * clock.
    */
-  PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_CGC_MASK;
   /* Reset the currently selected clock. */
-  PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_PCS_MASK;
+  IP_PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_PCS_MASK;
   /* Select option 3 as the UART peripheral source clock and enable the clock. Option 3
    * is the FIRCDIV2_CLK, which is available on all peripherals and configurations. The
    * FIRC clock also has a 3 times better accuracy than the SIRC clock.
    */
-  PCC->PCCn[PCC_LPUARTx_INDEX] |= PCC_PCCn_PCS(3) | PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_LPUARTx_INDEX] |= PCC_PCCn_PCS(3) | PCC_PCCn_CGC_MASK;
   /* Obtain the DIV2 divider value of the FIRC_CLK. */
-  div2RegValue = (SCG->FIRCDIV & SCG_FIRCDIV_FIRCDIV2_MASK) >> SCG_FIRCDIV_FIRCDIV2_SHIFT;
+  div2RegValue = (IP_SCG->FIRCDIV & SCG_FIRCDIV_FIRCDIV2_MASK) >> SCG_FIRCDIV_FIRCDIV2_SHIFT;
   /* Check if the DIV2 register value for FIRC is 0. In this case FIRCDIV2_CLK is
    * currently disabled.
    */
@@ -114,7 +114,7 @@ void Rs232Init(void)
      * actually enabled.
      */
     div2RegValue = 1U;
-    SCG->FIRCDIV |= SCG_FIRCDIV_FIRCDIV2(div2RegValue);
+    IP_SCG->FIRCDIV |= SCG_FIRCDIV_FIRCDIV2(div2RegValue);
   }
   /* Determine the FIRCDIV2_CLK frequency. The FIRC_CLK is trimmed to 48 MHz during
    * reset. Process the configued DIV2 divider factor to get the actual frequency

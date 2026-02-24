@@ -81,7 +81,7 @@ blt_bool CpuUserProgramStartHook(void)
   /* additional and optional backdoor entry through the pushbutton (SW2) on the board. to
    * force the bootloader to stay active after reset, keep it pressed during reset.
    */
-  if ((PTD->PDIR & GPIO_PDIR_PDI(1 << 3U)) != 0U)
+  if ((IP_PTD->PDIR & GPIO_PDIR_PDI(1 << 3U)) != 0U)
   {
     /* pushbutton pressed, so do not start the user program and keep the
      * bootloader active instead.

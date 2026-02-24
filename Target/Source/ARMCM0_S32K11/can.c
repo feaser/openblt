@@ -44,7 +44,7 @@
 
 #if (BOOT_COM_CAN_CHANNEL_INDEX == 0)
 /** \brief Set the peripheral CAN0 base pointer. */
-#define CANx                           (CAN0)
+#define CANx                           (IP_FLEXCAN0)
 /** \brief Set the PCC index offset for CAN0. */
 #define PCC_FlexCANx_INDEX             (PCC_FlexCAN0_INDEX)
 /** \brief Set the number of message boxes supported by CAN0. */
@@ -152,7 +152,7 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u * prescaler,
   };
 
   /* Obtain the DIV2 divider value of the SOSC_CLK. */
-  div2RegValue = (SCG->SOSCDIV & SCG_SOSCDIV_SOSCDIV2_MASK) >> SCG_SOSCDIV_SOSCDIV2_SHIFT;
+  div2RegValue = (IP_SCG->SOSCDIV & SCG_SOSCDIV_SOSCDIV2_MASK) >> SCG_SOSCDIV_SOSCDIV2_SHIFT;
   /* Check if the DIV2 register value for SOSC is 0. In this case SOSCDIV2_CLK is
    * currently disabled.
    */
@@ -162,7 +162,7 @@ static blt_bool CanGetSpeedConfig(blt_int16u baud, blt_int16u * prescaler,
      * actually enabled.
      */
     div2RegValue = 1U;
-    SCG->SOSCDIV = SCG_SOSCDIV_SOSCDIV2(div2RegValue);
+    IP_SCG->SOSCDIV = SCG_SOSCDIV_SOSCDIV2(div2RegValue);
   }
   /* Determine the SOSC clock frequency. */
   canClockFreqkHz = BOOT_CPU_XTAL_SPEED_KHZ;
@@ -205,15 +205,15 @@ static void CanFreezeModeEnter(void)
   blt_int32u timeout;
 
   /* This function should only be called with the module enabled. */
-  ASSERT_RT((CANx->MCR & CAN_MCR_MDIS_MASK) == 0U);
+  ASSERT_RT((CANx->MCR & FLEXCAN_MCR_MDIS_MASK) == 0U);
 
   /* Request to enter freeze mode. */
-  CANx->MCR = (CANx->MCR & ~CAN_MCR_FRZ_MASK)  | CAN_MCR_FRZ(1U);
-  CANx->MCR = (CANx->MCR & ~CAN_MCR_HALT_MASK) | CAN_MCR_HALT(1U);
+  CANx->MCR = (CANx->MCR & ~FLEXCAN_MCR_FRZ_MASK)  | FLEXCAN_MCR_FRZ(1U);
+  CANx->MCR = (CANx->MCR & ~FLEXCAN_MCR_HALT_MASK) | FLEXCAN_MCR_HALT(1U);
   /* Set timeout time for entering freeze mode. */
   timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
   /* Wait for freeze mode acknowledgement. */
-  while (((CANx->MCR & CAN_MCR_FRZACK_MASK)) == 0U)
+  while (((CANx->MCR & FLEXCAN_MCR_FRZACK_MASK)) == 0U)
   {
     /* Keep the watchdog happy. */
     CopService();
@@ -237,15 +237,15 @@ static void CanFreezeModeExit(void)
   blt_int32u timeout;
 
   /* This function should only be called with the module enabled. */
-  ASSERT_RT((CANx->MCR & CAN_MCR_MDIS_MASK) == 0U);
+  ASSERT_RT((CANx->MCR & FLEXCAN_MCR_MDIS_MASK) == 0U);
 
   /* Request to leave freeze mode. */
-  CANx->MCR = (CANx->MCR & ~CAN_MCR_FRZ_MASK)  | CAN_MCR_FRZ(0U);
-  CANx->MCR = (CANx->MCR & ~CAN_MCR_HALT_MASK) | CAN_MCR_HALT(0U);
+  CANx->MCR = (CANx->MCR & ~FLEXCAN_MCR_FRZ_MASK)  | FLEXCAN_MCR_FRZ(0U);
+  CANx->MCR = (CANx->MCR & ~FLEXCAN_MCR_HALT_MASK) | FLEXCAN_MCR_HALT(0U);
   /* Set timeout time for leaving freeze mode. */
   timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
   /* Wait for non freeze mode acknowledgement. */
-  while (((CANx->MCR & CAN_MCR_FRZACK_MASK)) != 0U)
+  while (((CANx->MCR & FLEXCAN_MCR_FRZACK_MASK)) != 0U)
   {
     /* Keep the watchdog happy. */
     CopService();
@@ -268,14 +268,14 @@ static void CanDisabledModeEnter(void)
   blt_int32u timeout;
 
   /* Only continue if the CAN controller is currently enabled. */
-  if ((CANx->MCR & CAN_MCR_MDIS_MASK) == 0U)
+  if ((CANx->MCR & FLEXCAN_MCR_MDIS_MASK) == 0U)
   {
     /* Request disabled mode. */
-    CANx->MCR = (CANx->MCR & ~CAN_MCR_MDIS_MASK) | CAN_MCR_MDIS(1U);
+    CANx->MCR = (CANx->MCR & ~FLEXCAN_MCR_MDIS_MASK) | FLEXCAN_MCR_MDIS(1U);
     /* Set timeout time for entering disabled mode. */
     timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
     /* Wait for disabled mode acknowledgement. */
-    while (((CANx->MCR & CAN_MCR_LPMACK_MASK)) == 0U)
+    while (((CANx->MCR & FLEXCAN_MCR_LPMACK_MASK)) == 0U)
     {
       /* Keep the watchdog happy. */
       CopService();
@@ -298,14 +298,14 @@ static void CanDisabledModeExit(void)
   blt_int32u timeout;
 
   /* Only continue if the CAN controller is currently disabled. */
-  if ((CANx->MCR & CAN_MCR_MDIS_MASK) != 0U)
+  if ((CANx->MCR & FLEXCAN_MCR_MDIS_MASK) != 0U)
   {
     /* Request enabled mode. */
-    CANx->MCR = (CANx->MCR & ~CAN_MCR_MDIS_MASK) | CAN_MCR_MDIS(0U);
+    CANx->MCR = (CANx->MCR & ~FLEXCAN_MCR_MDIS_MASK) | FLEXCAN_MCR_MDIS(0U);
     /* Set timeout time for leaving disabled mode. */
     timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
     /* Wait for disabled mode acknowledgement. */
-    while (((CANx->MCR & CAN_MCR_LPMACK_MASK)) != 0U)
+    while (((CANx->MCR & FLEXCAN_MCR_LPMACK_MASK)) != 0U)
     {
       /* Keep the watchdog happy. */
       CopService();
@@ -343,7 +343,7 @@ void CanInit(void)
   ASSERT_CT(CAN_RX_MSGBOX_NUM < CANx_MAX_MB_NUM);
 
   /* Enable the CAN peripheral clock. */
-  PCC->PCCn[PCC_FlexCANx_INDEX] |= PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_FlexCANx_INDEX] |= PCC_PCCn_CGC_MASK;
 
   /* The source clock needs to be configured first. For this the CAN controller must be
    * in disabled mode, but that can only be entered after first entering freeze mode,
@@ -357,7 +357,7 @@ void CanInit(void)
    * is available, which is typically the case to meet the clock tolerance requirements
    * of the CAN 2.0B secification.
    */
-  CANx->CTRL1 &= ~CAN_CTRL1_CLKSRC_MASK;
+  CANx->CTRL1 &= ~FLEXCAN_CTRL1_CLKSRC_MASK;
   /* Leave disabled mode. */
   CanDisabledModeExit();
   /* Make sure freeze mode is active to be able to initialize the CAN controller. */
@@ -376,25 +376,25 @@ void CanInit(void)
   }
 
   /* Reset the current bittiming configuration. */
-  CANx->CTRL1 &= ~(CAN_CTRL1_PRESDIV_MASK | CAN_CTRL1_PROPSEG_MASK |
-                   CAN_CTRL1_PSEG1_MASK | CAN_CTRL1_PSEG2_MASK | CAN_CTRL1_RJW_MASK |
-                   CAN_CTRL1_SMP_MASK);
+  CANx->CTRL1 &= ~(FLEXCAN_CTRL1_PRESDIV_MASK | FLEXCAN_CTRL1_PROPSEG_MASK |
+                   FLEXCAN_CTRL1_PSEG1_MASK | FLEXCAN_CTRL1_PSEG2_MASK |
+                   FLEXCAN_CTRL1_RJW_MASK | FLEXCAN_CTRL1_SMP_MASK);
   /* Configure the baudrate prescaler. */
-  CANx->CTRL1 |= CAN_CTRL1_PRESDIV(prescaler - 1U);
+  CANx->CTRL1 |= FLEXCAN_CTRL1_PRESDIV(prescaler - 1U);
   /* Configure the propagation segment. */
-  CANx->CTRL1 |= CAN_CTRL1_PROPSEG(timingCfg.propSeg - 1U);
+  CANx->CTRL1 |= FLEXCAN_CTRL1_PROPSEG(timingCfg.propSeg - 1U);
   /* Configure the phase segments. */
-  CANx->CTRL1 |= CAN_CTRL1_PSEG1(timingCfg.phaseSeg1 - 1U);
-  CANx->CTRL1 |= CAN_CTRL1_PSEG2(timingCfg.phaseSeg2 - 1U);
+  CANx->CTRL1 |= FLEXCAN_CTRL1_PSEG1(timingCfg.phaseSeg1 - 1U);
+  CANx->CTRL1 |= FLEXCAN_CTRL1_PSEG2(timingCfg.phaseSeg2 - 1U);
   /* The resynchronization jump width (RJW) can be 1 - 4 TQ, yet should never be larger
    * than pseg1. Configure the longest possible value for RJW.
    */
   rjw = (timingCfg.phaseSeg1 < 4) ? timingCfg.phaseSeg1 : 4;
-  CANx->CTRL1 |= CAN_CTRL1_RJW(rjw - 1U);
+  CANx->CTRL1 |= FLEXCAN_CTRL1_RJW(rjw - 1U);
   /* All the entries in canTiming[] have a PSEG1 >= 2, so three samples can be used to
    * determine the value of the received bit, instead of the default one.
    */
-  CANx->CTRL1 |= CAN_CTRL1_SMP(1U);
+  CANx->CTRL1 |= FLEXCAN_CTRL1_SMP(1U);
 
   /* Clear the message box RAM. Each message box covers 4 words (1 word = 32-bits. */
   for (idx = 0; idx < (CANx_MAX_MB_NUM * 4U); idx++)
@@ -407,18 +407,18 @@ void CanInit(void)
     CANx->RXIMR[idx] = 0U;
   }
   /* Configure the maximum number of message boxes. */
-  CANx->MCR = (CANx->MCR & ~CAN_MCR_MAXMB_MASK) | CAN_MCR_MAXMB(CANx_MAX_MB_NUM - 1U);
+  CANx->MCR = (CANx->MCR & ~FLEXCAN_MCR_MAXMB_MASK) | FLEXCAN_MCR_MAXMB(CANx_MAX_MB_NUM - 1U);
   /* Disable the self reception feature. */
-  CANx->MCR = (CANx->MCR & ~CAN_MCR_SRXDIS_MASK) | CAN_MCR_SRXDIS(1U);
+  CANx->MCR = (CANx->MCR & ~FLEXCAN_MCR_SRXDIS_MASK) | FLEXCAN_MCR_SRXDIS(1U);
 
   /* Enable individual reception masking. This disables the legacy support for the
    * global reception mask and the mailbox 14/15 individual reception mask.
    */
-  CANx->MCR = (CANx->MCR & ~CAN_MCR_IRMQ_MASK) | CAN_MCR_IRMQ(1U);
+  CANx->MCR = (CANx->MCR & ~FLEXCAN_MCR_IRMQ_MASK) | FLEXCAN_MCR_IRMQ(1U);
   /* Disable the reception FIFO. This driver only needs to receive one CAN message
    * identifier. It is sufficient to use just one dedicated mailbox for this.
    */
-  CANx->MCR &= ~CAN_MCR_RFEN_MASK;
+  CANx->MCR &= ~FLEXCAN_MCR_RFEN_MASK;
   /* Configure the mask of the invididual message reception mailbox to check all ID bits
    * and also the IDE bit.
    */
@@ -437,34 +437,35 @@ void CanInit(void)
     /* It is a 29-bit extended CAN identifier. */
     rxMsgId &= ~0x80000000U;
     /* Set the IDE bit to configure the message for a 29-bit identifier. */
-    CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 0U] |= CAN_WMBn_CS_IDE_MASK;
+    CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 0U] |= FLEXCAN_WMBn_CS_IDE_MASK;
     /* Store the 29-bit CAN identifier. */
-    CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 1U] = CAN_WMBn_ID_ID(rxMsgId);
+    CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 1U] = FLEXCAN_WMBn_ID_ID(rxMsgId);
   }
   else
   {
     /* Store the 11-bit CAN identifier. */
-   CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 1U] = CAN_WMBn_ID_ID(rxMsgId << 18U);
+   CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 1U] = FLEXCAN_WMBn_ID_ID(rxMsgId << 18U);
   }
 
   /* Disable all message box interrupts. */
   CANx->IMASK1 = 0U;
   /* Clear all mesasge box interrupt flags. */
-  CANx->IFLAG1 = CAN_IMASK1_BUF31TO0M_MASK;
+  CANx->IFLAG1 = FLEXCAN_IMASK1_BUF31TO0M_MASK;
   /* Clear all error interrupt flags */
-  CANx->ESR1 = CAN_ESR1_ERRINT_MASK | CAN_ESR1_BOFFINT_MASK | CAN_ESR1_RWRNINT_MASK |
-               CAN_ESR1_TWRNINT_MASK | CAN_ESR1_BOFFDONEINT_MASK |
-               CAN_ESR1_ERRINT_FAST_MASK | CAN_ESR1_ERROVR_MASK;
+  CANx->ESR1 = FLEXCAN_ESR1_ERRINT_MASK | FLEXCAN_ESR1_BOFFINT_MASK |
+               FLEXCAN_ESR1_RWRNINT_MASK | FLEXCAN_ESR1_TWRNINT_MASK |
+               FLEXCAN_ESR1_BOFFDONEINT_MASK | FLEXCAN_ESR1_ERRINT_FAST_MASK |
+               FLEXCAN_ESR1_ERROVR_MASK;
 
   /* Switch to normal user mode. */
-  CANx->MCR &= ~CAN_MCR_SUPV_MASK;
-  CANx->CTRL1 &= ~(CAN_CTRL1_LOM_MASK | CAN_CTRL1_LPB_MASK);
+  CANx->MCR &= ~FLEXCAN_MCR_SUPV_MASK;
+  CANx->CTRL1 &= ~(FLEXCAN_CTRL1_LOM_MASK | FLEXCAN_CTRL1_LPB_MASK);
   /* Exit freeze mode. */
   CanFreezeModeExit();
   /* Set timeout time for entering normal user mode. */
   timeout = TimerGet() + CAN_INIT_TIMEOUT_MS;
   /* Wait for normal user mode acknowledgement. */
-  while (((CANx->MCR & CAN_MCR_NOTRDY_MASK)) != 0U)
+  while (((CANx->MCR & FLEXCAN_MCR_NOTRDY_MASK)) != 0U)
   {
     /* Keep the watchdog happy. */
     CopService();
@@ -508,12 +509,12 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
    */
   CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] &= ~0xE0000000U;
   /* Configure SRR, IDE, RTR bits for a standard 11-bit transmit frame. */
-  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] &= ~(CAN_WMBn_CS_IDE_MASK |
-                                                 CAN_WMBn_CS_RTR_MASK);
-  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= CAN_WMBn_CS_SRR_MASK;
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] &= ~(FLEXCAN_WMBn_CS_IDE_MASK |
+                                                 FLEXCAN_WMBn_CS_RTR_MASK);
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= FLEXCAN_WMBn_CS_SRR_MASK;
   /* Configure the DLC. */
-  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] &= ~CAN_WMBn_CS_DLC_MASK;
-  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= CAN_WMBn_CS_DLC(len);
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] &= ~FLEXCAN_WMBn_CS_DLC_MASK;
+  CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= FLEXCAN_WMBn_CS_DLC(len);
   /* Write the data bytes of the CAN message to the mailbox RAM. */
   pMsgBoxData = (blt_int8u * )(&CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 2U]);
   for (byteIdx = 0; byteIdx < len; byteIdx++)
@@ -524,14 +525,14 @@ void CanTransmitPacket(blt_int8u *data, blt_int8u len)
   if (isExtId == BLT_FALSE)
   {
      /* Store the 11-bit CAN identifier. */
-    CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 1U] = CAN_WMBn_ID_ID(txMsgId << 18U);
+    CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 1U] = FLEXCAN_WMBn_ID_ID(txMsgId << 18U);
   }
   else
   {
     /* Set the IDE bit to configure the message for a 29-bit identifier. */
-    CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= CAN_WMBn_CS_IDE_MASK;
+    CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= FLEXCAN_WMBn_CS_IDE_MASK;
     /* Store the 29-bit CAN identifier. */
-    CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 1U] = CAN_WMBn_ID_ID(txMsgId);
+    CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 1U] = FLEXCAN_WMBn_ID_ID(txMsgId);
   }
   /* Activate the mailbox to start the transmission by writing 0x0C to the CODE field. */
   CANx->RAMn[(CAN_TX_MSGBOX_NUM * 4U) + 0U] |= (0x0CU << 24U) & 0x0F000000U;
@@ -576,7 +577,7 @@ blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
      * mailbox is configured to only receive the BOOT_COM_CAN_TX_MSG_ID message. Start
      * by reading out the DLC of the newly received CAN message.
      */
-    *len = (CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 0U] & CAN_WMBn_CS_DLC_MASK) >> CAN_WMBn_CS_DLC_SHIFT;
+    *len = (CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 0U] & FLEXCAN_WMBn_CS_DLC_MASK) >> FLEXCAN_WMBn_CS_DLC_SHIFT;
     /* Read the data bytes of the CAN message from the mailbox RAM. */
     pMsgBoxData = (blt_int8u *)(&CANx->RAMn[(CAN_RX_MSGBOX_NUM * 4U) + 2U]);
     for (byteIdx = 0; byteIdx < *len; byteIdx++)

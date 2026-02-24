@@ -1,18 +1,19 @@
 /*
- * Copyright 2017-2018 NXP
- * All rights reserved.
+ * Copyright 2017-2023 NXP
  *
- * THIS SOFTWARE IS PROVIDED BY NXP "AS IS" AND ANY EXPRESSED OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL NXP OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the License); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License
  */
 
 /**
@@ -69,21 +70,21 @@ void SystemInit(void)
 
 #if (DISABLE_WDOG)
     /* Write of the WDOG unlock key to CNT register, must be done in order to allow any modifications*/
-    WDOG->CNT = (uint32_t ) FEATURE_WDOG_UNLOCK_VALUE;
+    IP_WDOG->CNT = (uint32_t ) FEATURE_WDOG_UNLOCK_VALUE;
     /* The dummy read is used in order to make sure that the WDOG registers will be configured only
      * after the write of the unlock value was completed. */
-    (void)WDOG->CNT;
+    (void)IP_WDOG->CNT;
 
     /* Initial write of WDOG configuration register:
      * enables support for 32-bit refresh/unlock command write words,
      * clock select from LPO, update enable, watchdog disabled */
-    WDOG->CS  = (uint32_t ) ( (1UL << WDOG_CS_CMD32EN_SHIFT)                       |
+   IP_WDOG->CS  = (uint32_t ) ( (1UL << WDOG_CS_CMD32EN_SHIFT)                       |
                               (FEATURE_WDOG_CLK_FROM_LPO << WDOG_CS_CLK_SHIFT)     |
                               (0U << WDOG_CS_EN_SHIFT)                             |
                               (1U << WDOG_CS_UPDATE_SHIFT)                         );
 
     /* Configure timeout */
-    WDOG->TOVAL = (uint32_t )0xFFFF;
+    IP_WDOG->TOVAL = (uint32_t )0xFFFF;
 #endif /* (DISABLE_WDOG) */
 }
 
@@ -103,9 +104,9 @@ void SystemCoreClockUpdate(void)
     uint32_t divider;
     bool validSystemClockSource = true;
 
-    divider = ((SCG->CSR & SCG_CSR_DIVCORE_MASK) >> SCG_CSR_DIVCORE_SHIFT) + 1U;
+    divider = ((IP_SCG->CSR & SCG_CSR_DIVCORE_MASK) >> SCG_CSR_DIVCORE_SHIFT) + 1U;
 
-    switch ((SCG->CSR & SCG_CSR_SCS_MASK) >> SCG_CSR_SCS_SHIFT)
+    switch ((IP_SCG->CSR & SCG_CSR_SCS_MASK) >> SCG_CSR_SCS_SHIFT)
     {
         case 0x1:
             /* System OSC */
@@ -113,7 +114,7 @@ void SystemCoreClockUpdate(void)
             break;
         case 0x2:
             /* Slow IRC */
-            regValue = (SCG->SIRCCFG & SCG_SIRCCFG_RANGE_MASK) >> SCG_SIRCCFG_RANGE_SHIFT;
+            regValue = (IP_SCG->SIRCCFG & SCG_SIRCCFG_RANGE_MASK) >> SCG_SIRCCFG_RANGE_SHIFT;
             if (regValue != 0UL)
             {
                 SCGOUTClock = FEATURE_SCG_SIRC_HIGH_RANGE_FREQ;
@@ -125,7 +126,7 @@ void SystemCoreClockUpdate(void)
             break;
         case 0x3:
             /* Fast IRC */
-            regValue = (SCG->FIRCCFG & SCG_FIRCCFG_RANGE_MASK) >> SCG_FIRCCFG_RANGE_SHIFT;
+            regValue = (IP_SCG->FIRCCFG & SCG_FIRCCFG_RANGE_MASK) >> SCG_FIRCCFG_RANGE_SHIFT;
             if (regValue == 0x0UL)
             {
                 SCGOUTClock = FEATURE_SCG_FIRC_FREQ0;

@@ -34,6 +34,35 @@
 
 
 /****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief SysTick register layout. */
+typedef struct {
+  __IO uint32_t CSR;             /**< SysTick Control and Status Register, offset: 0x0 */
+  __IO uint32_t RVR;             /**< SysTick Reload Value Register, offset: 0x4       */
+  __IO uint32_t CVR;             /**< SysTick Current Value Register, offset: 0x8      */
+  __I  uint32_t CALIB;           /**< SysTick Calibration Value Register, offset: 0xC  */
+} S32_SysTick_Type;
+
+
+/****************************************************************************************
+* Macro definitions
+****************************************************************************************/
+/** Peripheral S32_SysTick base address */
+#define S32_SysTick_BASE                         (0xE000E010u)
+/** Peripheral S32_SysTick base pointer */
+#define S32_SysTick                              ((S32_SysTick_Type *)S32_SysTick_BASE)
+/* Systick CSR Bit Fields */
+#define S32_SysTick_CSR_ENABLE_MASK              0x1u
+#define S32_SysTick_CSR_TICKINT_MASK             0x2u
+#define S32_SysTick_CSR_CLKSOURCE_MASK           0x4u
+/* Systick RVR Bit Fields */
+#define S32_SysTick_RVR_RELOAD_MASK              0xFFFFFFu
+/* Systick CVR Bit Fields */
+#define S32_SysTick_CVR_CURRENT_MASK             0xFFFFFFu
+
+
+/****************************************************************************************
 * External data declarations
 ****************************************************************************************/
 /** \brief The system clock frequency supplied to the SysTick timer and the processor
