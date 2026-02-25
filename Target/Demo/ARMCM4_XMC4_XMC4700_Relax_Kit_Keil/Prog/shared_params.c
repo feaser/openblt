@@ -111,7 +111,7 @@ typedef struct t_shared_params_buffer
  *           * Keil MDK:
  *               http://www.keil.com/support/docs/3480.htm
  */
-static tSharedParamsBuffer sharedParamsBuffer __attribute__((section("shared"),zero_init));
+static tSharedParamsBuffer sharedParamsBuffer __attribute__((section(".bss.shared")));
 
 
 /****************************************************************************************

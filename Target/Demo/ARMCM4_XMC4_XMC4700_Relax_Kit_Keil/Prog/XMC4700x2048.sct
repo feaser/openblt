@@ -1,4 +1,4 @@
-#! armcc -E
+#! armclang -E --target=arm-arm-none-eabi -mcpu=cortex-m4 -xc
 ; command above MUST be in first line (no comment above!)
 
 ; *************************************************************
@@ -122,7 +122,7 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
  *----------------------------------------------------------------------------*/
 
   RW_IRAM1 __DSRAM1_BASE UNINIT __DSRAM1_SIZE  {  ; no init for shared params
-   *(shared)
+   *(.bss.shared)
   }
 
   RW_IRAM2 __DSRAM2_BASE (__DSRAM2_SIZE + __DSRAM2_SIZE - __NO_INIT)  {
