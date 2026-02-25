@@ -7,7 +7,7 @@
 **         Linker file for the GNU C Compiler
 **
 **     Copyright (c) 2015-2016 Freescale Semiconductor, Inc.
-**     Copyright 2017 NXP
+**     Copyright 2017-2021 NXP
 **     All rights reserved.
 **
 **     THIS SOFTWARE IS PROVIDED BY NXP "AS IS" AND ANY EXPRESSED OR
@@ -22,8 +22,7 @@
 **     IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 **     THE POSSIBILITY OF SUCH DAMAGE.
 **
-**     http:                 www.freescale.com
-**     mail:                 support@freescale.com
+**     http:                 www.nxp.com
 **
 ** ###################################################################
 */
