@@ -49,17 +49,17 @@ typedef struct {
 * Macro definitions
 ****************************************************************************************/
 /** Peripheral S32_SysTick base address */
-#define S32_SysTick_BASE                         (0xE000E010u)
+#define S32_SysTick_BASE               (0xE000E010u)
 /** Peripheral S32_SysTick base pointer */
-#define S32_SysTick                              ((S32_SysTick_Type *)S32_SysTick_BASE)
+#define S32_SysTick                    ((S32_SysTick_Type *)S32_SysTick_BASE)
 /* Systick CSR Bit Fields */
-#define S32_SysTick_CSR_ENABLE_MASK              0x1u
-#define S32_SysTick_CSR_TICKINT_MASK             0x2u
-#define S32_SysTick_CSR_CLKSOURCE_MASK           0x4u
+#define S32_SysTick_CSR_ENABLE_MASK    (0x1u)
+#define S32_SysTick_CSR_TICKINT_MASK   (0x2u)
+#define S32_SysTick_CSR_CLKSOURCE_MASK (0x4u)
 /* Systick RVR Bit Fields */
-#define S32_SysTick_RVR_RELOAD_MASK              0xFFFFFFu
+#define S32_SysTick_RVR_RELOAD_MASK    (0xFFFFFFu)
 /* Systick CVR Bit Fields */
-#define S32_SysTick_CVR_CURRENT_MASK             0xFFFFFFu
+#define S32_SysTick_CVR_CURRENT_MASK   (0xFFFFFFu)
 
 
 /****************************************************************************************

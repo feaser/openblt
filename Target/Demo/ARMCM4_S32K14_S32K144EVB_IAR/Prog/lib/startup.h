@@ -1,19 +1,8 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
- * Copyright 2016-2019 NXP
- * All rights reserved.
- *
- * THIS SOFTWARE IS PROVIDED BY NXP "AS IS" AND ANY EXPRESSED OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL NXP OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
+ * Copyright 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright 2016-2021, 2023 NXP
+ *                                                                                                                                                                                                                                                     
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #ifndef STARTUP_H
@@ -42,7 +31,9 @@
 /*!
  * @brief define symbols that specific start and end addres of some basic sections.
  */
-#if (defined(S32K14x_SERIES) || defined(S32K11x_SERIES) || defined(S32V234_SERIES) || defined(MPC574x_SERIES) || defined(S32R_SERIES) || defined(S32MTV_SERIES) || defined(SJA1110_SERIES)) || defined (S32K144W_M4_SERIES)
+#if (defined(S32K14x_SERIES) || defined(S32K11x_SERIES) || defined(S32V234_SERIES) || \
+     defined(MPC574x_SERIES) || defined(S32R_SERIES) || defined(S32MTV_SERIES) || \
+     defined(SJA1110_SERIES)) || defined (S32K144W_M4_SERIES) || defined (S32K142W_M4_SERIES)
     #if (defined(__ICCARM__))
         #define INTERRUPTS_SECTION_START               __section_begin(".intvec")
         #define INTERRUPTS_SECTION_END                 __section_end(".intvec")

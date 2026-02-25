@@ -47,11 +47,11 @@
 void LedInit(void)
 {
   /* LED GPIO pin configuration. PD0 = GPIO, MUX = ALT1. */
-  PORTD->PCR[0] |= PORT_PCR_MUX(1);
+  IP_PORTD->PCR[0] |= PORT_PCR_MUX(1);
   /* configure Port D pin 0 GPIO as digital output */
-  PTD->PDDR |= GPIO_PDDR_PDD(0x00000001);
+  IP_PTD->PDDR |= GPIO_PDDR_PDD(0x00000001);
   /* turn the LED off on Port D pin 0 */
-  PTD->PSOR |= GPIO_PSOR_PTSO(0x00000001);
+  IP_PTD->PSOR |= GPIO_PSOR_PTSO(0x00000001);
 } /*** end of LedInit ***/
 
 
@@ -79,13 +79,13 @@ void LedToggle(void)
   {
     led_toggle_state = 1;
     /* Turn the LED on. */
-    PTD->PCOR |= GPIO_PCOR_PTCO(0x00000001);
+    IP_PTD->PCOR |= GPIO_PCOR_PTCO(0x00000001);
   }
   else
   {
     led_toggle_state = 0;
     /* Turn the LED off. */
-    PTD->PSOR |= GPIO_PSOR_PTSO(0x00000001);
+    IP_PTD->PSOR |= GPIO_PSOR_PTSO(0x00000001);
   }
 
   /* Store toggle time to determine next toggle interval. */

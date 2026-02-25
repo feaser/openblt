@@ -35,6 +35,18 @@
 
 
 /****************************************************************************************
+* Type definitions
+****************************************************************************************/
+/** \brief SysTick register layout. */
+typedef struct {
+  __IO uint32_t CSR;             /**< SysTick Control and Status Register, offset: 0x0 */
+  __IO uint32_t RVR;             /**< SysTick Reload Value Register, offset: 0x4       */
+  __IO uint32_t CVR;             /**< SysTick Current Value Register, offset: 0x8      */
+  __I  uint32_t CALIB;           /**< SysTick Calibration Value Register, offset: 0xC  */
+} S32_SysTick_Type;
+
+
+/****************************************************************************************
 * Macro definitions
 ****************************************************************************************/
 /** \brief Timeout for transmitting a byte in milliseconds. */
@@ -42,15 +54,22 @@
 
 #if (BOOT_COM_MBRTU_CHANNEL_INDEX == 0)
 /** \brief Set the peripheral LPUART0 base pointer. */
-#define LPUARTx                        (LPUART0)
+#define LPUARTx                        (IP_LPUART0)
 /** \brief Set the PCC index offset for LPUART0. */
 #define PCC_LPUARTx_INDEX              (PCC_LPUART0_INDEX)
 #elif (BOOT_COM_MBRTU_CHANNEL_INDEX == 1)
 /** \brief Set the peripheral LPUART1 base pointer. */
-#define LPUARTx                        (LPUART1)
+#define LPUARTx                        (IP_LPUART1)
 /** \brief Set the PCC index offset for LPUART1. */
 #define PCC_LPUARTx_INDEX              (PCC_LPUART1_INDEX)
 #endif
+
+/** Peripheral S32_SysTick base address */
+#define S32_SysTick_BASE               (0xE000E010u)
+/** Peripheral S32_SysTick base pointer */
+#define S32_SysTick                    ((S32_SysTick_Type *)S32_SysTick_BASE)
+/* Systick CVR Bit Fields */
+#define S32_SysTick_CVR_CURRENT_MASK   (0xFFFFFFu)
 
 
 /****************************************************************************************
@@ -136,16 +155,16 @@ void MbRtuInit(void)
   /* Make sure the UART peripheral clock is disabled before configuring its source
    * clock.
    */
-  PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_CGC_MASK;
   /* Reset the currently selected clock. */
-  PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_PCS_MASK;
+  IP_PCC->PCCn[PCC_LPUARTx_INDEX] &= ~PCC_PCCn_PCS_MASK;
   /* Select option 3 as the UART peripheral source clock and enable the clock. Option 3
    * is the FIRCDIV2_CLK, which is available on all peripherals and configurations. The
    * FIRC clock also has a 3 times better accuracy than the SIRC clock.
    */
-  PCC->PCCn[PCC_LPUARTx_INDEX] |= PCC_PCCn_PCS(3) | PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_LPUARTx_INDEX] |= PCC_PCCn_PCS(3) | PCC_PCCn_CGC_MASK;
   /* Obtain the DIV2 divider value of the FIRC_CLK. */
-  div2RegValue = (SCG->FIRCDIV & SCG_FIRCDIV_FIRCDIV2_MASK) >> SCG_FIRCDIV_FIRCDIV2_SHIFT;
+  div2RegValue = (IP_SCG->FIRCDIV & SCG_FIRCDIV_FIRCDIV2_MASK) >> SCG_FIRCDIV_FIRCDIV2_SHIFT;
   /* Check if the DIV2 register value for FIRC is 0. In this case FIRCDIV2_CLK is
    * currently disabled.
    */
@@ -155,7 +174,7 @@ void MbRtuInit(void)
      * actually enabled.
      */
     div2RegValue = 1U;
-    SCG->FIRCDIV |= SCG_FIRCDIV_FIRCDIV2(div2RegValue);
+    IP_SCG->FIRCDIV |= SCG_FIRCDIV_FIRCDIV2(div2RegValue);
   }
   /* Determine the FIRCDIV2_CLK frequency. The FIRC_CLK is trimmed to 48 MHz during
    * reset. Process the configued DIV2 divider factor to get the actual frequency

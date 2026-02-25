@@ -73,28 +73,28 @@ static void Init(void)
   /* Configure the system clock. */
   SystemClockConfig();
   /* Enable the peripheral clock for the ports that are used. */
-  PCC->PCCn[PCC_PORTC_INDEX] |= PCC_PCCn_CGC_MASK;
-  PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
-  PCC->PCCn[PCC_PORTE_INDEX] |= PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_PORTC_INDEX] |= PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_PORTD_INDEX] |= PCC_PCCn_CGC_MASK;
+  IP_PCC->PCCn[PCC_PORTE_INDEX] |= PCC_PCCn_CGC_MASK;
   /* Configure SW2 (PC12) GPIO pin for (optional) backdoor entry input. */
   /* Input GPIO pin configuration. PC12 = GPIO, MUX = ALT1. */
-  PORTC->PCR[12] |= PORT_PCR_MUX(1);
+  IP_PORTC->PCR[12] |= PORT_PCR_MUX(1);
   /* Disable pull device, as SW2 already has a pull down resistor on the board. */
-  PORTC->PCR[12] &= ~PORT_PCR_PE(1);
+  IP_PORTC->PCR[12] &= ~PORT_PCR_PE(1);
   /* Configure and enable Port C pin 12 GPIO as digital input */
-  PTC->PDDR &= ~GPIO_PDDR_PDD(1 << 12U);
-  PTC->PIDR &= ~GPIO_PIDR_PID(1 << 12U);
+  IP_PTC->PDDR &= ~GPIO_PDDR_PDD(1 << 12U);
+  IP_PTC->PIDR &= ~GPIO_PIDR_PID(1 << 12U);
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART RX GPIO pin configuration. PC6 = UART1 RX, MUX = ALT2. */
-  PORTC->PCR[6] |= PORT_PCR_MUX(2);
+  IP_PORTC->PCR[6] |= PORT_PCR_MUX(2);
   /* UART TX GPIO pin configuration. PC7 = UART1 TX, MUX = ALT2. */
-  PORTC->PCR[7] |= PORT_PCR_MUX(2);
+  IP_PORTC->PCR[7] |= PORT_PCR_MUX(2);
 #endif
 #if (BOOT_COM_CAN_ENABLE > 0)
   /* CAN RX GPIO pin configuration. PE4 = CAN0 RX, MUX = ALT5. */
-  PORTE->PCR[4] |= PORT_PCR_MUX(5);
+  IP_PORTE->PCR[4] |= PORT_PCR_MUX(5);
   /* CAN TX GPIO pin configuration. PE5 = CAN0 TX, MUX = ALT5. */
-  PORTE->PCR[5] |= PORT_PCR_MUX(5);
+  IP_PORTE->PCR[5] |= PORT_PCR_MUX(5);
 #endif
 } /*** end of Init ***/
 
@@ -117,14 +117,14 @@ static void SystemClockConfig(void)
 {
   /* --------- SOSC Initialization (8 MHz) ------------------------------------------- */
   /* SOSCDIV1 & SOSCDIV2 =1: divide by 1. */
-  SCG->SOSCDIV = SCG_SOSCDIV_SOSCDIV1(1) | SCG_SOSCDIV_SOSCDIV2(1);
+  IP_SCG->SOSCDIV = SCG_SOSCDIV_SOSCDIV1(1) | SCG_SOSCDIV_SOSCDIV2(1);
   /* Range=2: Medium freq (SOSC betw 1MHz-8MHz).
    * HGO=0:   Config xtal osc for low power.
    * EREFS=1: Input is external XTAL.
    */
-  SCG->SOSCCFG = SCG_SOSCCFG_RANGE(2) | SCG_SOSCCFG_EREFS_MASK;
+  IP_SCG->SOSCCFG = SCG_SOSCCFG_RANGE(2) | SCG_SOSCCFG_EREFS_MASK;
   /* Ensure SOSCCSR unlocked. */
-  while (SCG->SOSCCSR & SCG_SOSCCSR_LK_MASK)
+  while (IP_SCG->SOSCCSR & SCG_SOSCCSR_LK_MASK)
   {
     ;
   }
@@ -136,30 +136,30 @@ static void SystemClockConfig(void)
    * SOSCSTEN=0:    Sys OSC disabled in Stop modes.
    * SOSCEN=1:      Enable oscillator.
    */
-  SCG->SOSCCSR = SCG_SOSCCSR_SOSCEN_MASK;
+  IP_SCG->SOSCCSR = SCG_SOSCCSR_SOSCEN_MASK;
   /* Wait for system OSC clock to become valid. */
-  while (!(SCG->SOSCCSR & SCG_SOSCCSR_SOSCVLD_MASK))
+  while (!(IP_SCG->SOSCCSR & SCG_SOSCCSR_SOSCVLD_MASK))
   {
     ;
   }
 
   /* --------- SPLL Initialization (160 MHz) ----------------------------------------- */
   /* Ensure SPLLCSR is unlocked. */
-  while (SCG->SPLLCSR & SCG_SPLLCSR_LK_MASK)
+  while (IP_SCG->SPLLCSR & SCG_SPLLCSR_LK_MASK)
   {
     ;
   }
   /* SPLLEN=0: SPLL is disabled (default). */
-  SCG->SPLLCSR &= ~SCG_SPLLCSR_SPLLEN_MASK;
+  IP_SCG->SPLLCSR &= ~SCG_SPLLCSR_SPLLEN_MASK;
   /* SPLLDIV1 divide by 2 and SPLLDIV2 divide by 4. */
-  SCG->SPLLDIV |= SCG_SPLLDIV_SPLLDIV1(2) | SCG_SPLLDIV_SPLLDIV2(3);
+  IP_SCG->SPLLDIV |= SCG_SPLLDIV_SPLLDIV1(2) | SCG_SPLLDIV_SPLLDIV2(3);
   /* PREDIV=0: Divide SOSC_CLK by 0+1=1.
    * MULT=24:  Multiply sys pll by 4+24=40.
    * SPLL_CLK = 8MHz / 1 * 40 / 2 = 160 MHz.
    */
-  SCG->SPLLCFG = SCG_SPLLCFG_MULT(24);
+  IP_SCG->SPLLCFG = SCG_SPLLCFG_MULT(24);
   /* Ensure SPLLCSR is unlocked. */
-  while (SCG->SPLLCSR & SCG_SPLLCSR_LK_MASK)
+  while (IP_SCG->SPLLCSR & SCG_SPLLCSR_LK_MASK)
   {
     ;
   }
@@ -169,9 +169,9 @@ static void SystemClockConfig(void)
    * SPLLSTEN=0:  SPLL disabled in Stop modes.
    * SPLLEN=1:    Enable SPLL.
    */
-  SCG->SPLLCSR |= SCG_SPLLCSR_SPLLEN_MASK;
+  IP_SCG->SPLLCSR |= SCG_SPLLCSR_SPLLEN_MASK;
   /* Wait for SPLL to become valid. */
-  while (!(SCG->SPLLCSR & SCG_SPLLCSR_SPLLVLD_MASK))
+  while (!(IP_SCG->SPLLCSR & SCG_SPLLCSR_SPLLVLD_MASK))
   {
     ;
   }
@@ -180,7 +180,7 @@ static void SystemClockConfig(void)
   /* Slow IRC is enabled with high range (8 MHz) in reset. Enable SIRCDIV2_CLK and
    * SIRCDIV1_CLK, divide by 1 = 8MHz asynchronous clock source.
    */
-  SCG->SIRCDIV = SCG_SIRCDIV_SIRCDIV1(1) | SCG_SIRCDIV_SIRCDIV2(1);
+  IP_SCG->SIRCDIV = SCG_SIRCDIV_SIRCDIV1(1) | SCG_SIRCDIV_SIRCDIV2(1);
 
   /* --------- Change to normal RUN mode with 8MHz SOSC, 80 MHz PLL ------------------ */
   /* Note that flash memory should not be programmed or erased when the microcontroller
@@ -191,10 +191,10 @@ static void SystemClockConfig(void)
    * DIVBUS=1, div. by 2: bus clock = 40 MHz.
    * DIVSLOW=2, div. by 2: SCG slow, flash clock= 26 2/3 MHz.
    */
-   SCG->RCCR= SCG_RCCR_SCS(6) | SCG_RCCR_DIVCORE(1) | SCG_RCCR_DIVBUS(1) |
-              SCG_RCCR_DIVSLOW(2);
+  IP_SCG->RCCR= SCG_RCCR_SCS(6) | SCG_RCCR_DIVCORE(1) | SCG_RCCR_DIVBUS(1) |
+                SCG_RCCR_DIVSLOW(2);
    /* Wait until system clock source is SPLL. */
-   while (((SCG->CSR & SCG_CSR_SCS_MASK) >> SCG_CSR_SCS_SHIFT ) != 6U)
+   while (((IP_SCG->CSR & SCG_CSR_SCS_MASK) >> SCG_CSR_SCS_SHIFT ) != 6U)
    {
      ;
    }
