@@ -1,4 +1,4 @@
-#! armcc -E
+#! armclang -E --target=arm-arm-none-eabi -mcpu=cortex-m4 -xc
 ; command above MUST be in first line (no comment above!)
 
 ;*********************************************************************************************************************
@@ -65,8 +65,8 @@
 ;------------- <<< end of configuration section >>> ---------------------------
 */
 
-#define __ROM_BASE     0x10003000
-#define __ROM_SIZE     0x00030000
+#define __ROM_BASE     0x10004000
+#define __ROM_SIZE     0x0002F000
 
 #define __RAM_BASE     0x20000000
 #define __RAM_SIZE     0x00004000

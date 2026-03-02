@@ -78,6 +78,17 @@ blt_bool BackDoorEntryHook(void)
 ****************************************************************************************/
 blt_bool CpuUserProgramStartHook(void)
 {
+  /* additional and optional backdoor entry through P2_2 on the board. to force the
+   * bootloader to stay active after reset, connect it to GND.
+   */
+  if (XMC_GPIO_GetInput(P2_2) == 0U)
+  {
+    /* P2_2 connected to GND, so do not start the user program and keep the bootloader
+     * active instead.
+     */
+    return BLT_FALSE;
+  }
+
   /* clean up the LED driver */
   LedBlinkExit();
   /*  okay to start the user program.*/
