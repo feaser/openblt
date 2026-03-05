@@ -1,0 +1,38 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "XMC 4700 Relax Kit",
+      "cwd": "${workspaceFolder}",
+      "executable": "${command:cmake.launchTargetPath}",
+      "request": "launch",
+      "type": "cortex-debug",
+      "gdbPath": "arm-none-eabi-gdb",
+
+      // When using openOCD:
+      //"servertype": "openocd",
+      //"configFiles": [
+      //  "board/xmc4700-relax.cfg"
+      //  ],
+
+      // When using J-Link GDB server:
+      "servertype": "jlink",
+      "serverpath": "C:/Program Files/SEGGER/JLink/JLinkGDBServerCL.exe",
+      "serverArgs": ["-speed", "4000"],
+      "device": "XMC4700-2048",
+      "interface": "swd",
+      "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+
+      "svdFile": "${workspaceFolder}/XMC4700.svd",
+      "runToEntryPoint": "main",
+      // Give restart the same functionality as runToEntryPoint - main
+      "postRestartCommands": [
+          "break main",
+          "continue"
+      ]
+    }
+  ]
+}
