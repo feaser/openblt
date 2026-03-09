@@ -55,7 +55,6 @@ set(PROJECT_LIBRARIES
     openblt-net-uip 
     openblt-file-fatfs  
     openblt-usb-tinyusb 
-    openblt-usb-tinyusb-armcm4-xmc4    
 )
 
 # Configure project macro definitions.
