@@ -16,7 +16,6 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../../Source openblt)
 # Include other third party components.
 include("${CMAKE_SOURCE_DIR}/.cmake/Cmsis.cmake")
 include("${CMAKE_SOURCE_DIR}/.cmake/XmcLib.cmake")
-include("${CMAKE_SOURCE_DIR}/.cmake/TinyUSB.cmake")
 
 # Configure project include directories.
 set(PROJECT_INCLUDES
@@ -25,7 +24,7 @@ set(PROJECT_INCLUDES
     "${CMAKE_CURRENT_LIST_DIR}/lib/fatfs"
     "${CMAKE_CURRENT_LIST_DIR}/lib/fatfs/SDMMC_BLOCK"
     "${CMAKE_CURRENT_LIST_DIR}/lib/uip"
-    "${CMAKE_CURRENT_LIST_DIR}/lib/tinyusb/cfg"
+    "${CMAKE_CURRENT_LIST_DIR}/lib/tinyusb"
 )
 
 # Configure project sources.
@@ -41,7 +40,7 @@ set(PROJECT_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/lib/fatfs/SDMMC_BLOCK/sdmmc_block.c"
     "${CMAKE_CURRENT_LIST_DIR}/lib/fatfs/SDMMC_BLOCK/sdmmc_block_conf.c"
     "${CMAKE_CURRENT_LIST_DIR}/lib/fatfs/SDMMC_BLOCK/sdmmc_block_private_sd.c"
-    "${CMAKE_CURRENT_LIST_DIR}/lib/tinyusb/cfg/usb_descriptors.c"
+    "${CMAKE_CURRENT_LIST_DIR}/lib/tinyusb/usb_descriptors.c"
     "${CMAKE_CURRENT_LIST_DIR}/lib/uip/clock-arch.c"
     "${CMAKE_CURRENT_LIST_DIR}/lib/uip/netdev.c"
 )
@@ -50,13 +49,13 @@ set(PROJECT_SOURCES
 set(PROJECT_LIBRARIES
     infineon-xmc4-cmsis
     infineon-xmc-lib
-    tinyusb-core
-    tinyusb-port-xmc4000
     openblt-core 
     openblt-armcm4-xmc4 
     openblt-armcm4-xmc4-gcc 
     openblt-net-uip 
-    openblt-file-fatfs    
+    openblt-file-fatfs  
+    openblt-usb-tinyusb 
+    openblt-usb-tinyusb-armcm4-xmc4    
 )
 
 # Configure project macro definitions.

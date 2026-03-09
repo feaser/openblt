@@ -33,8 +33,8 @@ set(CMAKE_C_FLAGS "-fdata-sections -ffunction-sections")
 set(CMAKE_CXX_FLAGS "-fdata-sections -ffunction-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit")
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections")
 # Set extra flags for the DEBUG build type.
-set(CMAKE_C_FLAGS_DEBUG "-O2 -g")
-set(CMAKE_CXX_FLAGS_DEBUG "-O2 -g")
+set(CMAKE_C_FLAGS_DEBUG "-Os -g")
+set(CMAKE_CXX_FLAGS_DEBUG "-Os -g")
 # Set extra flags for the RELEASE build type.
 set(CMAKE_C_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")

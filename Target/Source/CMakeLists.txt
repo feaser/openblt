@@ -155,6 +155,44 @@ target_include_directories(openblt-file-fatfs INTERFACE
     "${CMAKE_CURRENT_LIST_DIR}/third_party/fatfs/source"
 )
 
+# OpenBLT TinyUSB library target. Only needed for firmware update via USB device.
+add_library(openblt-usb-tinyusb INTERFACE)
+
+target_sources(openblt-usb-tinyusb INTERFACE
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/tusb.c"
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/class/vendor/vendor_device.c"
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/common/tusb_fifo.c"
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/device/usbd.c"
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/device/usbd_control.c"
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/portable/usb_board.c"
+)
+
+target_include_directories(openblt-usb-tinyusb INTERFACE 
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src"
+)
+
+# OpenBLT TinyUSB port for the ST STM32H5.
+add_library(openblt-usb-tinyusb-armcm33-stm32h5 INTERFACE)
+
+target_sources(openblt-usb-tinyusb-armcm33-stm32h5 INTERFACE
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/portable/st/stm32_fsdev/dcd_stm32_fsdev.c"
+)
+
+# OpenBLT TinyUSB port for the Infineon XMC4.
+add_library(openblt-usb-tinyusb-armcm4-xmc4 INTERFACE)
+
+target_sources(openblt-usb-tinyusb-armcm4-xmc4 INTERFACE
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/portable/synopsys/dwc2/dwc2_common.c"
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/portable/synopsys/dwc2/dcd_dwc2.c"
+)
+
+# OpenBLT TinyUSB port for the Texas Instruments TM4C.
+add_library(openblt-usb-tinyusb-armcm4-tm4c INTERFACE)
+
+target_sources(openblt-usb-tinyusb-armcm4-tm4c INTERFACE
+    "${CMAKE_CURRENT_LIST_DIR}/third_party/tinyusb/src/portable/mentor/musb/dcd_musb.c"
+)
+
 
 #----------------------------------------------------------------------------------------
 #           O P E N B L T   S T   S T M 3 2 C 0   P O R T
