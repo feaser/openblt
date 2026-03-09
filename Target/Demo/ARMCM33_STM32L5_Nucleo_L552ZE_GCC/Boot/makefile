@@ -67,6 +67,22 @@ PROJ_FILES += $(wildcard ../../../Source/ARMCM33_STM32L5/*.h)
 # Collect bootloader port compiler specific files
 PROJ_FILES += $(wildcard ../../../Source/ARMCM33_STM32L5/GCC/*.c)
 PROJ_FILES += $(wildcard ../../../Source/ARMCM33_STM32L5/GCC/*.h)
+# Collect TinyUSB third party library files
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/*.c)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/*.h)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/class/vendor/*.c)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/class/vendor/*.h)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/common/*.c)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/common/*.h)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/device/*.c)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/device/*.h)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/osal/*.c)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/osal/*.h)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/portable/*.c)
+PROJ_FILES += $(wildcard ../../../Source/third_party/tinyusb/src/portable/*.h)
+PROJ_FILES += ../../../Source/third_party/tinyusb/src/portable/st/stm32_fsdev/dcd_stm32_fsdev.c
+PROJ_FILES += ../../../Source/third_party/tinyusb/src/portable/st/stm32_fsdev/fsdev_stm32.h
+PROJ_FILES += ../../../Source/third_party/tinyusb/src/portable/st/stm32_fsdev/fsdev_type.h
 
 
 #|--------------------------------------------------------------------------------------|
