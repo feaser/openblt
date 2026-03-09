@@ -62,7 +62,6 @@ void PeriphCommonClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_ICACHE_Init(void);
-static void MX_USB_PCD_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -109,7 +108,6 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   MX_ICACHE_Init();
-  MX_USB_PCD_Init();
   /* USER CODE BEGIN 2 */
   /* Initialize the bootloader application. */
   AppInit();
@@ -415,7 +413,7 @@ static void MX_USART3_UART_Init(void)
   * @param None
   * @retval None
   */
-static void MX_USB_PCD_Init(void)
+void MX_USB_PCD_Init(void)
 {
 
   /* USER CODE BEGIN USB_Init 0 */

@@ -33,6 +33,7 @@
 #if (BOOT_COM_USB_ENABLE > 0)
 #include "usb.h"                                      /* USB bootloader driver         */
 #include "tusb.h"                                     /* TinyUSB stack                 */
+#include "stm32h5xx.h"                                /* STM32 CPU and HAL header      */
 
 
 /****************************************************************************************
@@ -69,6 +70,13 @@
 static blt_bool  UsbReceiveByte(blt_int8u *data);
 
 
+/****************************************************************************************
+* Local data declarations
+****************************************************************************************/
+/** \brief USB handle. */
+static PCD_HandleTypeDef usbHandle;
+
+
 /************************************************************************************//**
 ** \brief     Initializes the USB communication interface.
 ** \return    none.
@@ -76,6 +84,15 @@ static blt_bool  UsbReceiveByte(blt_int8u *data);
 ****************************************************************************************/
 void UsbInit(void)
 {
+  /* make sure the USB power and clock are enabled and that the GPIO pins are configured.
+   * note that this is only actually used for CubeMX generated projects. These projects
+   * should be configured to not call MX_USB_PCD_Init() to do this. This is because
+   * MX_USB_PCD_Init() relies on a running SysTick, which is not the case at the point
+   * where the CubeMX generate code calls MX_USB_PCD_Init(). for non CubeMX generated
+   * projects, the call to HAL_PCD_MspInit() simply goes to the empty "__weak" function.
+   */
+  usbHandle.Instance = USB_DRD_FS;
+  HAL_PCD_MspInit(&usbHandle);
   /* initialize the TinyUSB device stack on the configured roothub port */
   tud_init(BOARD_TUD_RHPORT);
   /* extend the time that the backdoor is open in case the default timed backdoor
@@ -99,6 +116,13 @@ void UsbFree(void)
 {
   /* disconnect the TinyUSB device stack.*/
   tud_disconnect();
+  /* disable the USB power and clock and undo the the GPIO pins are configuration. note
+   * that this is only actually used for CubeMX generated projects. for non CubeMX
+   * generated projects, the call to HAL_PCD_MspDeInit() simply goes to the empty
+   * "__weak" function.
+   */
+  usbHandle.Instance = USB_DRD_FS;
+  HAL_PCD_MspDeInit(&usbHandle);
 } /*** end of UsbFree ***/
 
 
