@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_FULL_LL_DRIVER,USE_HAL_DRIVER,STM32U575xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Boot;..\lib;..\lib\CMSIS\Device\ST\STM32U5xx\Include;..\lib\CMSIS\Include;..\lib\STM32_USB_Device_Library\Core\Inc;..\lib\STM32U5xx_HAL_Driver\Inc;..\..\..\..\Source;..\..\..\..\Source\ARMCM33_STM32U5</IncludePath>
+              <IncludePath>..\..\Boot;..\lib;..\lib\CMSIS\Device\ST\STM32U5xx\Include;..\lib\CMSIS\Include;..\lib\STM32U5xx_HAL_Driver\Inc;..\lib\TinyUSB;..\..\..\..\Source;..\..\..\..\Source\ARMCM33_STM32U5;..\..\..\..\Source\third_party\tinyusb\src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -422,41 +422,6 @@
               <FileName>tz_context.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\lib\CMSIS\Include\tz_context.h</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_core.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\STM32_USB_Device_Library\Core\Inc\usbd_core.h</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_ctlreq.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\STM32_USB_Device_Library\Core\Inc\usbd_ctlreq.h</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_def.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\STM32_USB_Device_Library\Core\Inc\usbd_def.h</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_ioreq.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\lib\STM32_USB_Device_Library\Core\Inc\usbd_ioreq.h</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_core.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\STM32_USB_Device_Library\Core\Src\usbd_core.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_ctlreq.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_ioreq.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\STM32_USB_Device_Library\Core\Src\usbd_ioreq.c</FilePath>
             </File>
             <File>
               <FileName>stm32u5xx_hal.h</FileName>
@@ -788,6 +753,16 @@
               <FileType>1</FileType>
               <FilePath>..\lib\system_stm32u5xx.c</FilePath>
             </File>
+            <File>
+              <FileName>tusb_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\lib\TinyUSB\tusb_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>usb_descriptors.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\TinyUSB\usb_descriptors.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -817,36 +792,6 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_bulk.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\usbd_bulk.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_bulk.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\usbd_bulk.h</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_conf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\usbd_conf.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_conf.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\usbd_conf.h</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\usbd_desc.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_desc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\usbd_desc.h</FilePath>
             </File>
             <File>
               <FileName>startup_stm32u575xx.s</FileName>
@@ -1037,6 +982,146 @@
               <FileName>mbrtu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Source\ARMCM33_STM32U5\mbrtu.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Core/third_party/tinyusb</GroupName>
+          <Files>
+            <File>
+              <FileName>tusb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\tusb.c</FilePath>
+            </File>
+            <File>
+              <FileName>tusb.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\tusb.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_option.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\tusb_option.h</FilePath>
+            </File>
+            <File>
+              <FileName>vendor_device.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\class\vendor\vendor_device.c</FilePath>
+            </File>
+            <File>
+              <FileName>vendor_device.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\class\vendor\vendor_device.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_common.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_common.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_compiler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_compiler.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_debug.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_debug.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_fifo.c</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_fifo.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_fifo.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_mcu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_mcu.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_private.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_private.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_types.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_types.h</FilePath>
+            </File>
+            <File>
+              <FileName>tusb_verify.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_verify.h</FilePath>
+            </File>
+            <File>
+              <FileName>dcd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\device\dcd.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\device\usbd.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\device\usbd.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\device\usbd_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_pvt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\device\usbd_pvt.h</FilePath>
+            </File>
+            <File>
+              <FileName>osal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\osal\osal.h</FilePath>
+            </File>
+            <File>
+              <FileName>osal_none.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\osal\osal_none.h</FilePath>
+            </File>
+            <File>
+              <FileName>usb_board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\portable\usb_board.c</FilePath>
+            </File>
+            <File>
+              <FileName>dcd_dwc2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dcd_dwc2.c</FilePath>
+            </File>
+            <File>
+              <FileName>dwc2_common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dwc2_common.c</FilePath>
+            </File>
+            <File>
+              <FileName>dwc2_common.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dwc2_common.h</FilePath>
+            </File>
+            <File>
+              <FileName>dwc2_stm32.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dwc2_stm32.h</FilePath>
+            </File>
+            <File>
+              <FileName>dwc2_type.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dwc2_type.h</FilePath>
             </File>
           </Files>
         </Group>
