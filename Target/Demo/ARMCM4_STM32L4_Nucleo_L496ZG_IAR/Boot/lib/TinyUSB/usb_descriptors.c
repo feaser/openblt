@@ -38,7 +38,7 @@
 //--------------------------------------------------------------------+
 // Unique ID string
 //--------------------------------------------------------------------+
-// Length of the unique ID in bytes. On the STM32U5, the unique
+// Length of the unique ID in bytes. On the STM32L4, the unique
 // identifier is 96 bits.
 #define UID_STR_BYTE_LEN          (96U/8U)
 #define UID_STR_WORD_LEN          (UID_STR_BYTE_LEN / sizeof(uint32_t))
