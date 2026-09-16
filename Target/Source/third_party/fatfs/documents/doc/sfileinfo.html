@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/sfileinfo.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - FILINFO</title>
 </head>
@@ -16,10 +14,14 @@
 <p>The <tt>FILINFO</tt> structure holds information about the object retrieved by <tt>f_readdir</tt>, <tt>f_findfirst</tt>, <tt>f_findnext</tt> and <tt>f_stat</tt> function. Be careful in the size of structure when LFN is enabled.</p>
 <pre>
 <span class="k">typedef struct</span> {
-    FSIZE_t fsize;               <span class="c">/* File size */</span>
-    WORD    fdate;               <span class="c">/* Last modified date */</span>
-    WORD    ftime;               <span class="c">/* Last modified time */</span>
-    BYTE    fattrib;             <span class="c">/* Attribute */</span>
+    FSIZE_t fsize;               <span class="c">/* File size (invalid for directory) */</span>
+    WORD    fdate;               <span class="c">/* Date of file modification or directory creation */</span>
+    WORD    ftime;               <span class="c">/* Time of file modification or directory creation */</span>
+<span class="k">#if</span> FF_FS_CRTIME
+    WORD    crdate;              <span class="c">/* Date of object createion */</span>
+    WORD    crtime;              <span class="c">/* Time of object createion */</span>
+<span class="k">#endif</span>
+    BYTE    fattrib;             <span class="c">/* Object attribute */</span>
 <span class="k">#if</span> FF_USE_LFN
     TCHAR   altname[FF_SFN_BUF + 1]; <span class="c">/* Alternative object name */</span>
     TCHAR   fname[FF_LFN_BUF + 1];   <span class="c">/* Primary object name */</span>
@@ -56,6 +58,12 @@
 <dd>Second / 2 (0..29)</dd>
 </dl>
 </dd>
+<dt>crdate</dt>
+<dd>The date when the file/directory was created. This member is available when <tt><a href="config.html#fs_ctime">FF_FS_CRTIME</a> = 1</tt>.
+</dd>
+<dt>crtime</dt>
+<dd>The time when the file/directory was created. This member is available when <tt>FF_FS_CRTIME = 1</tt>
+</dd>
 <dt>fattrib</dt>
 <dd>The attribute flags in combination of:<br>
 <table class="lst">
@@ -68,11 +76,12 @@
 </table>
 </dd>
 <dt>fname[]</dt>
-<dd>Null-terminated object name. A null string is stored when no item to read and it indicates this structure is invalid. The size of <tt>fname[]</tt> and <tt>altname[]</tt> each can be configured in LFN configuration.</dd>
+<dd>Null-terminated object name is stored. If no item to read or an error occured in the function, a null string is stored to indicate this structure is invalid. The size of <tt>fname[]</tt> and <tt>altname[]</tt> each can be configured in LFN configuration.</dd>
 <dt>altname[]</dt>
 <dd>Alternative object name is stored if available. This member is not available in non-LFN configuration.</dd>
 </dl>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

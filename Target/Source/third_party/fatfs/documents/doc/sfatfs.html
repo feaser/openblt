@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/sfatfs.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - FATFS</title>
 </head>
@@ -17,7 +15,8 @@
 <pre>
 <span class="k">typedef</span> <span class="k">struct</span> {
     BYTE    fs_type;      <span class="c">/* FAT type (0, FS_FAT12, FS_FAT16, FS_FAT32 or FS_EXFAT) */</span>
-    BYTE    pdrv;         <span class="c">/* Hosting physical drive of this volume */</span>
+    BYTE    pdrv;         <span class="c">/* Physical drive that holds this volume */</span>
+    BYTE    ldrv;         <span class="c">/* Logical drive number (used only when FF_FS_REENTRANT) */</span>
     BYTE    n_fats;       <span class="c">/* Number of FAT copies (1,2) */</span>
     BYTE    wflag;        <span class="c">/* win[] flag (b0:win[] is dirty) */</span>
     BYTE    fsi_flag;     <span class="c">/* FSINFO flags (b7:Disabled, b0:Dirty) */</span>
@@ -27,36 +26,36 @@
 <span class="k">#if</span> FF_MAX_SS != FF_MIN_SS
     WORD    ssize;        <span class="c">/* Sector size (512,1024,2048 or 4096) */</span>
 <span class="k">#endif</span>
-<span class="k">#if</span> FF_FS_EXFAT
-    BYTE*   dirbuf;       <span class="c">/* Directory entry block scratchpad buffer */</span>
-<span class="k">#endif</span>
-<span class="k">#if</span> FF_FS_REENTRANT
-    FF_SYNC_t sobj;       <span class="c">/* Identifier of sync object */</span>
+<span class="k">#if</span> FF_USE_LFN
+    WCHAR*  lfnbuf;       <span class="c">/* Pointer to LFN working buffer */</span>
 <span class="k">#endif</span>
 <span class="k">#if</span> !FF_FS_READONLY
-    DWORD   last_clust;   <span class="c">/* FSINFO: Last allocated cluster (0xFFFFFFFF if invalid) */</span>
-    DWORD   free_clust;   <span class="c">/* FSINFO: Number of free clusters (0xFFFFFFFF if invalid) */</span>
+    DWORD   last_clust;   <span class="c">/* FSINFO: Last allocated cluster (invalid if &gt;=n_fatent) */</span>
+    DWORD   free_clust;   <span class="c">/* FSINFO: Number of free clusters (invalid if &gt;=fs->n_fatent-2) */</span>
 <span class="k">#endif</span>
 <span class="k">#if</span> FF_FS_RPATH
     DWORD   cdir;         <span class="c">/* Cluster number of current directory (0:root) */</span>
-<span class="k">#if</span> FF_FS_EXFAT
-    DWORD   cdc_scl;      <span class="c">/* Containing directory start cluster (invalid when cdir is 0) */</span>
-    DWORD   cdc_size;     <span class="c">/* b31-b8:Size of containing directory, b7-b0: Chain status */</span>
-    DWORD   cdc_ofs;      <span class="c">/* Offset in the containing directory (invalid when cdir is 0) */</span>
-<span class="k">#endif</span>
 <span class="k">#endif</span>
     DWORD   n_fatent;     <span class="c">/* Number of FAT entries (Number of clusters + 2) */</span>
     DWORD   fsize;        <span class="c">/* Sectors per FAT */</span>
+    LBA_t   winsect;      <span class="c">/* Sector LBA appearing in the win[] */</span>
     LBA_t   volbase;      <span class="c">/* Volume base LBA */</span>
     LBA_t   fatbase;      <span class="c">/* FAT base LBA */</span>
     LBA_t   dirbase;      <span class="c">/* Root directory base (LBA|Cluster) */</span>
     LBA_t   database;     <span class="c">/* Data base LBA */</span>
-    LBA_t   winsect;      <span class="c">/* Sector LBA appearing in the win[] */</span>
+<span class="k">#if</span> FF_FS_EXFAT
+    LBA_t   bitbase;      <span class="c">/* Allocation bitmap base sector */</span>
+    BYTE*   dirbuf;       <span class="c">/* Directory entry block scratchpad buffer */</span>
+<span class="k">#if</span> FF_FS_RPATH
+    <a href="sxcwds.html">FFXCWDS</a> xcwds;        <span class="c">/* Current working directory structure */</span>
+    FFXCWDS xcwds2;       <span class="c">/* Working buffer to follow the path */</span>
+<span class="k">#endif</span>
+<span class="k">#endif</span>
     BYTE    win[FF_MAX_SS]; <span class="c">/* Disk access window for directory, FAT (and file data at tiny cfg) */</span>
 } FATFS;
 </pre>
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

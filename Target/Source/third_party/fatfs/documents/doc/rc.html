@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/rc.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - API Return Code</title>
 </head>
@@ -19,7 +17,7 @@
 <dd>The function succeeded.</dd>
 
 <dt id="de">FR_DISK_ERR</dt>
-<dd>The lower layer, <tt>disk_read</tt>, <tt>disk_write</tt> or <tt>disk_ioctl</tt> function, reported that an unrecoverable hard error occured.<br>Note that if once this error occured at any operation to an open file, the file object is aborted and any operations to the file except for close will be rejected.</dd>
+<dd>The lower layer, <tt>disk_read</tt>, <tt>disk_write</tt> or <tt>disk_ioctl</tt> function, reported that an unrecoverable hard error occured.<br>Note that if once this error occured in the operation to an open file, the file object is aborted and any operations to the file except <tt>f_close</tt> will be rejected.</dd>
 
 <dt id="ie">FR_INT_ERR</dt>
 <dd>Assertion failed and an insanity is detected in the internal process. One of the following possibilities is suspected.
@@ -29,7 +27,7 @@
 <li>There is a bug in the FatFs module itself.</li>
 <li>Wrong lower layer implementation.</li>
 </ul>
-Note that if once this error occured in the operation to an open file, the file object is aborted and any operation to the file except for close will be rejected.
+Note that if once this error occured in the operation to an open file, the file object is aborted and any operation to the file except <tt>f_close</tt> will be rejected.
 </dd>
 
 <dt id="nr">FR_NOT_READY</dt>
@@ -46,14 +44,14 @@ Note that if once this error occured in the operation to an open file, the file 
 <dd>Could not find the file in the directory.</dd>
 
 <dt id="np">FR_NO_PATH</dt>
-<dd>Could not find the path. A directory in the path name could not be found.</dd>
+<dd>Could not follow the path. A sub-directory in the path name could not be found.</dd>
 
 <dt id="in">FR_INVALID_NAME</dt>
 <dd>The given string is invalid as a <a href="filename.html">path name</a>. One of the following possibilities is suspected.
 <ul>
-<li>There is a character not allowed for the file name.</li>
+<li>There is a character not allowed for the file name .</li>
 <li>The file name is out of 8.3 format. (at non-LFN cfg.)</li>
-<li><tt>FF_MAX_LFN</tt> is insufficient for the file name. (at LFN cfg.)</li>
+<li><tt>FF_MAX_LFN</tt> is insufficient for the length of file name. (at LFN cfg.)</li>
 <li>There is a character encoding error in the string.</li>
 </ul>
 </dd>
@@ -61,30 +59,30 @@ Note that if once this error occured in the operation to an open file, the file 
 <dt id="dn">FR_DENIED</dt>
 <dd>The required access was denied due to one of the following reasons:
 <ul>
-<li>Write mode open against the read-only file. (f_open)</li>
-<li>Deleting the read-only file or directory. (f_unlink)</li>
-<li>Deleting the non-empty directory or current directory. (f_unlink)</li>
-<li>Reading the file opened without <tt>FA_READ</tt> flag. (f_read)</li>
-<li>Any modification to the file opened without <tt>FA_WRITE</tt> flag. (f_write, f_truncate, f_expand)</li>
-<li>Could not create the object due to root directory full or disk full. (f_open, f_mkdir)</li>
-<li>Could not find a contiguous area for the file. (f_expand)</li>
+<li>Write mode open against the read-only file. (<tt>f_open</tt>)</li>
+<li>Deleting the read-only file or directory. (<tt>f_unlink</tt>)</li>
+<li>Deleting the non-empty directory or current directory. (<tt>f_unlink</tt>)</li>
+<li>Reading the file opened without <tt>FA_READ</tt> flag. (<tt>f_read</tt>)</li>
+<li>Any modification to the file opened without <tt>FA_WRITE</tt> flag. (<tt>f_write, f_truncate, f_expand</tt>)</li>
+<li>Could not create the object due to root directory full or disk full. (<tt>f_open, f_mkdir</tt>)</li>
+<li>Could not find a contiguous data area for the file. (<tt>f_expand</tt>)</li>
 </ul>
 </dd>
 
 <dt id="ex">FR_EXIST</dt>
-<dd>Name collision. An object with the same name is already existing in the directory.</dd>
+<dd>Name collision. A file or sub-directory with the same name is already existing in the directory.</dd>
 
 <dt id="io">FR_INVALID_OBJECT</dt>
-<dd>The file/directory object is invalid or a null pointer is given. There are some reasons as follows:
+<dd>The file/directory object is invalid or the pointer is null. There are some reasons as follows:
 <ul>
-<li>It has been closed, or the structure has been collapsed.</li>
-<li>It has been invalidated. Open objects on the volume are invalidated by voulme mount process.</li>
+<li>The file/directory object has been closed.</li>
+<li>The file/directory object has been invalidated or the structure has been collapsed. Open objects on the volume will be invalidated by a voulme mount process.</li>
 <li>Physical drive is not ready to work due to a media removal.</li>
 </ul>
 </dd>
 
 <dt id="wp">FR_WRITE_PROTECTED</dt>
-<dd>A write mode operation against the write-protected media.</dd>
+<dd>A write mode operation against the write-protected medium.</dd>
 
 <dt id="id">FR_INVALID_DRIVE</dt>
 <dd>Invalid drive number is specified in the path name or a null pointer is given as the path name. (Related option: <tt><a href="config.html#volumes">FF_VOLUMES</a></tt>)</dd>
@@ -113,13 +111,14 @@ Note that if once this error occured in the operation to an open file, the file 
 <dd>The function was canceled due to a timeout of <a href="appnote.html#reentrant">thread-safe control</a>. (Related option: <tt><a href="config.html#timeout">FF_TIMEOUT</a></tt>)</dd>
 
 <dt id="lo">FR_LOCKED</dt>
-<dd>The operation to the object was rejected by <a href="appnote.html#dup">file sharing control</a>. (Related option: <tt><a href="config.html#fs_lock">FF_FS_LOCK</a></tt>)</dd>
+<dd>The operation to the file or sub-directory was rejected by <a href="appnote.html#dup">file sharing control</a>. (Related option: <tt><a href="config.html#fs_lock">FF_FS_LOCK</a></tt>)</dd>
 
 <dt id="nc">FR_NOT_ENOUGH_CORE</dt>
 <dd>Not enough memory for the operation. There is one of the following reasons:
 <ul>
 <li>Could not allocate a memory for LFN working buffer. (Related option: <tt><a href="config.html#use_lfn">FF_USE_LFN</a></tt>)</li>
 <li>Size of the given buffer is insufficient for the size required.</li>
+<li><tt><a href="config.html#fs_depth">FF_PATH_DEPTH</a></tt> is insufficient to follow the deep path. (on exFAT volume)</li>
 </ul>
 </dd>
 
@@ -130,6 +129,7 @@ Note that if once this error occured in the operation to an open file, the file 
 <dd>The given parameter is invalid or there is an inconsistent for the volume.</dd>
 </dl>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

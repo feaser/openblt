@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - ff_uni2oem</title>
+</head>
+
+<body>
+
+<div class="para func">
+<h2>ff_uni2oem</h2>
+<p>The ff_uni2oem function converts a Unicode character into OEM character.</p>
+<pre>
+WCHAR ff_uni2oem (
+  DWORD <span class="arg">uni</span>,           <span class="c">/* [IN] Unicode character */</span>
+  WORD <span class="arg">cp</span>              <span class="c">/* [IN] Code page */</span>
+);
+</pre>
+</div>
+
+<div class="para arg">
+<h4>Parameters</h4>
+<dl class="par">
+<dt>uni</dt>
+<dd>A Unicode character in UTF-16 encoding to be converted into OEM code. For the characters out of BMP, high-word is high-surrogate and low word is low-surrogate.</dd>
+<dt>cp</dt>
+<dd>Code page of output character. If <tt><a href="config.html#code_page">FF_CODE_PAGE</a></tt> specifies a code page, only this code page can be specified. If it specifies all code page, any supported code page can be specified.</dd>
+</dl>
+</div>
+
+
+<div class="para ret">
+<h4>Return Value</h4>
+<p>The function returns an OEM character converted from input Unicode character. If the Unicode character has no mapping to the OEM character in specified code page, a null character is returned.</p>
+</div>
+
+<div class="para comp">
+<h4>QuickInfo</h4>
+<p>This function is provided in <tt>ffunicode.c</tt> and required when <tt><a href="config.html#use_lfn">FF_USE_LFN != 0</a></tt>. It is intended to be used by FatFs but also application program may use this function.</p>
+</div>
+
+
+<p class="foot"><a href="../index.html">Return</a></p>
+</body>
+</html>

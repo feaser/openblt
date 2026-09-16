@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - ff_mutex_create</title>
+</head>
+
+<body>
+
+<div class="para func">
+<h2>ff_mutex_create</h2>
+<p>The ff_mutex_create function is for mutal exclusion control of file system object. It is called on register a file system object and create its mutex.</p>
+<pre>
+int ff_mutex_create (
+  int <span class="arg">vol</span>           <span class="c">/* [IN] Volume ID */</span>
+);
+</pre>
+</div>
+
+<div class="para arg">
+<h4>Parameter</h4>
+<dl class="par">
+<dt>vol</dt>
+<dd>Volume ID number in range from 0 to <tt><a href="config.html#volumes">FF_VOLUMES</a></tt>. The value is used for the index of internal table of mutexes.</dd>
+</dl>
+</div>
+
+
+<div class="para ret">
+<h4>Return Values</h4>
+<p>A non-zero value is returned if a new mutex was created or alreay created. If not, a zero is returned and <tt>f_mount</tt> function will fail with <tt>FR_INT_ERR</tt>.</p>
+</div>
+
+
+<div class="para comp">
+<h4>QuickInfo</h4>
+<p>This function is required when <tt><a href="config.html#fs_reentrant">FF_FS_REENTRANT = 1</a></tt>.</p>
+</div>
+
+
+<p class="foot"><a href="../index.html">Return</a></p>
+</body>
+</html>

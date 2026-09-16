@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/sync.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_sync</title>
 </head>
@@ -68,7 +66,7 @@ C - f_close()
 w - f_write()
 S - f_sync()
 </pre>
-<p>However there is no sense in <tt>f_sync</tt> function immediataly before <tt>f_close</tt> function because it performs <tt>f_sync</tt> function in it. In other words, the differnce between those functions is that the file object is invalidated or not.</p>
+<p>However there is no sense in <tt>f_sync</tt> function jsut before <tt>f_close</tt> function, because the <tt>f_close</tt> performs <tt>f_sync</tt> in it. Actually, the differnce between these functions is that the file object is invalidated or not.</p>
 </div>
 
 
@@ -83,6 +81,7 @@ S - f_sync()
 <p><tt><a href="close.html">f_close</a></tt>, <a href="appnote.html#critical">Critical section</a></p>
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

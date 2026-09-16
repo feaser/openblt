@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/forward.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_forward</title>
 </head>
@@ -28,13 +26,13 @@ FRESULT f_forward (
 <h4>Parameters</h4>
 <dl class="par">
 <dt>fp</dt>
-<dd>Pointer to the open file object.</dd>
+<dd>Pointer to the open file object. If a null pointer is given, the function fails with <tt>FR_INVALID_OBJECT</tt>.</dd>
 <dt>func</dt>
 <dd>Pointer to the user-defined data streaming function. For details, refer to the sample code.</dd>
 <dt>btf</dt>
 <dd>Number of bytes to forward in range of <tt>UINT</tt>.</dd>
 <dt>bf</dt>
-<dd>Pointer to the <tt>UINT</tt> variable to return number of bytes forwarded.</dd>
+<dd>Pointer to the variable in <tt>UINT</tt> type to return number of bytes forwarded.</dd>
 </dl>
 </div>
 
@@ -109,11 +107,11 @@ FRESULT play_file (
     UINT dmy;
 
     <span class="c">/* Open the audio file in read only mode */</span>
-    rc = f_open(&amp;fil, fn, FA_READ);
+    rc = <em>f_open</em>(&amp;fil, fn, FA_READ);
     if (rc) return rc;
 
     <span class="c">/* Repeat until the file pointer reaches end of the file */</span>
-    while (rc == FR_OK &amp;&amp; !f_eof(&amp;fil)) {
+    while (rc == FR_OK &amp;&amp; !<em>f_eof</em>(&amp;fil)) {
 
         <span class="c">/* some processes... */</span>
 
@@ -122,7 +120,7 @@ FRESULT play_file (
     }
 
     <span class="c">/* Close the file and return */</span>
-    f_close(&amp;fil);
+    <em>f_close</em>(&amp;fil);
     return rc;
 }
 </pre>
@@ -134,6 +132,7 @@ FRESULT play_file (
 <p><tt><a href="open.html">f_open</a>, <a href="gets.html">fgets</a>, <a href="write.html">f_write</a>, <a href="close.html">f_close</a>, <a href="sfile.html">FIL</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

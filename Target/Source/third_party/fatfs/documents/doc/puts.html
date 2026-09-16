@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/puts.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_puts</title>
 </head>
@@ -41,7 +39,7 @@ int f_puts (
 
 <div class="para desc">
 <h4>Description</h4>
-<p>When FatFs is configured for Unicode API (<tt><a href="config.html#lfn_unicode">FF_LFN_UNICODE</a> &gt;= 1</tt>), character encoding on the string fuctions, <tt>f_putc</tt>, <tt>f_puts</tt>, <tt>f_printf</tt> and <tt>f_gets</tt> function, is also switched to Unicode. The input Unicode characters in multiple encoding unit, such as surrogate pair and multi-byte sequence, should not be divided into two function calls, or the character will be lost. The character encoding <em>on the file</em> to be written via this functions is selected by <tt><a href="config.html#strf_encode">FF_STRF_ENCODE</a></tt>. The characters with wrong encoding or invalid for the output encoding will be lost.</p>
+<p>When FatFs is configured for Unicode API (<tt><a href="config.html#lfn_unicode">FF_LFN_UNICODE</a> &gt;= 1</tt>), character encoding on the string fuctions, <tt>f_putc</tt>, <tt>f_puts</tt>, <tt>f_printf</tt> and <tt>f_gets</tt> function, is also switched to Unicode. The input Unicode characters in multiple encoding unit, such as surrogate pair and multi-byte sequence, should not be divided into two function calls, or the character will be lost. The character encoding <em>on the file</em> to be written via this functions is selected by <tt><a href="config.html#strf_encode">FF_STRF_ENCODE</a></tt>. If the character encoding differs between file data and API, it is converted in this function. Input characters with wrong encoding for output will be lost.</p>
 </div>
 
 
@@ -56,6 +54,7 @@ int f_puts (
 <p><tt><a href="open.html">f_open</a>, <a href="putc.html">f_putc</a>, <a href="printf.html">f_printf</a>, <a href="gets.html">f_gets</a>, <a href="close.html">f_close</a>, <a href="sfile.html">FIL</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

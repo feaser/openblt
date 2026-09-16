@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/dioctl.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - disk_ioctl</title>
 </head>
@@ -58,9 +56,9 @@ DRESULT disk_ioctl (
 <caption>Standard ioctl command used by FatFs</caption>
 <tr><th>Command</th><th>Description</th></tr>
 <tr><td>CTRL_SYNC</td><td>Makes sure that the device has finished pending write process. If the disk I/O layer or storage device has a write-back cache, the dirty cache data must be committed to the medium immediately. Nothing to do for this command if each write operation to the medium is completed in the <tt>disk_write</tt> function.</td></tr>
-<tr><td>GET_SECTOR_COUNT</td><td>Retrieves number of available sectors, the largest allowable LBA + 1, on the drive into the <tt>LBA_t</tt> variable that pointed by <tt class="arg">buff</tt>. This command is used by <tt>f_mkfs</tt> and <tt>f_fdisk</tt> function to determine the size of volume/partition to be created.</td></tr>
-<tr><td>GET_SECTOR_SIZE</td><td>Retrieves sector size, minimum data unit for generic read/write, into the <tt>WORD</tt> variable that pointed by <tt class="arg">buff</tt>. Valid sector sizes are 512, 1024, 2048 and 4096. This command is required only if <tt>FF_MAX_SS &gt; FF_MIN_SS</tt>. When <tt>FF_MAX_SS == FF_MIN_SS</tt>, this command will never be used and the <tt>disk_read</tt> and <tt>disk_write</tt> function must work in <tt>FF_MAX_SS</tt> bytes/sector.</td></tr>
-<tr><td>GET_BLOCK_SIZE</td><td>Retrieves <em>erase block size in unit of sector</em> of the flash memory media into the <tt>DWORD</tt> variable that pointed by <tt class="arg">buff</tt>. The allowable value is 1 to 32768 in power of 2. Return 1 if it is unknown or in non flash memory media. This command is used by <tt>f_mkfs</tt> function with block size not specified and it attempts to align the data area on the suggested block boundary. Note that FatFs does not have FTL (flash translation layer), so that either disk I/O layter or storage device must have an FTL in it.</td></tr>
+<tr><td>GET_SECTOR_COUNT</td><td>Retrieves number of available sectors (the largest allowable LBA + 1) on the drive into the <tt>LBA_t</tt> variable that pointed by <tt class="arg">buff</tt>. This command is used by <tt>f_mkfs</tt> and <tt>f_fdisk</tt> function to determine the size of volume/partition to be created.</td></tr>
+<tr><td>GET_SECTOR_SIZE</td><td>Retrieves sector size (minimum data unit for generic read/write) into the <tt>WORD</tt> variable that pointed by <tt class="arg">buff</tt>. Valid sector sizes are 512, 1024, 2048 and 4096. This command is required only if <tt>FF_MAX_SS &gt; FF_MIN_SS</tt>. When <tt>FF_MAX_SS == FF_MIN_SS</tt>, this command will never be used and the <tt>disk_read</tt> and <tt>disk_write</tt> function must work in <tt>FF_MAX_SS</tt> bytes/sector.</td></tr>
+<tr><td>GET_BLOCK_SIZE</td><td>Retrieves <em>erase block size in unit of sector</em> of the flash memory media into the <tt>DWORD</tt> variable that pointed by <tt class="arg">buff</tt>. The allowable value is 1 to 32768 in power of 2. Return 1 if it is unknown or in non-flash memory media. This command is used by <tt>f_mkfs</tt> function with block size not specified and it attempts to align the data area on the suggested block boundary. Note that FatFs does not have FTL (flash translation layer), so that either disk I/O layter or storage device must have an FTL in it.</td></tr>
 <tr><td>CTRL_TRIM</td><td>Informs the disk I/O layter or the storage device that the data on the block of sectors is no longer needed and it can be erased. The sector block is specified in an <tt>LBA_t</tt> array <tt>{&lt;Start LBA&gt;, &lt;End LBA&gt;}</tt> that pointed by <tt class="arg">buff</tt>. This is an identical command to Trim of ATA device. Nothing to do for this command if this funcion is not supported or not a flash memory device. FatFs does not check the result code and the file function is not affected even if the sector block was not erased well. This command is called on remove a cluster chain and in the <tt>f_mkfs</tt> function. It is required when <tt>FF_USE_TRIM == 1</tt>.</td></tr>
 </table>
 
@@ -96,6 +94,6 @@ DRESULT disk_ioctl (
 </div>
 
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

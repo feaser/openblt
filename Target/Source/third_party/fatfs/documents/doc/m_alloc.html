@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - ff_memalloc</title>
+</head>
+
+<body>
+
+<div class="para func">
+<h2>ff_memalloc</h2>
+<p>The ff_memalloc function is an equivarent or alias of POSIX malloc function.</p>
+<pre>
+void* ff_memalloc (
+  UINT <span class="arg">msize</span>           <span class="c">/* [IN] Size of memory block */</span>
+);
+</pre>
+</div>
+
+<div class="para arg">
+<h4>Parameter</h4>
+<dl class="par">
+<dt>msize</dt>
+<dd>Size of memory block to allocate in unit of byte.</dd>
+</dl>
+</div>
+
+
+<div class="para ret">
+<h4>Return Value</h4>
+<p>A void type pointer to the allocated memory block. If the memory block could not be allocated, a null pointer is returned and the file function may fail with <tt>FR_NOT_ENOUPH_CORE</tt>.</p>
+</div>
+
+
+<div class="para comp">
+<h4>QuickInfo</h4>
+<p>This function is required when <tt><a href="config.html#use_lfn">FF_USE_LFN = 3</a></tt>. It is intended to be used by FatFs but also application program may use this function.</p>
+</div>
+
+
+<p class="foot"><a href="../index.html">Return</a></p>
+</body>
+</html>

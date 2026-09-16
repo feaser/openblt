@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/getcwd.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_getcwd</title>
 </head>
@@ -13,11 +11,11 @@
 
 <div class="para func">
 <h2>f_getcwd</h2>
-<p>The f_getcwd function retrieves the current directory of the current drive.</p>
+<p>The f_getcwd function retrieves the current directory and current drive.</p>
 <pre>
 FRESULT f_getcwd (
   TCHAR* <span class="arg">buff</span>, <span class="c">/* [OUT] Buffer to return path name */</span>
-  UINT <span class="arg">len</span>     <span class="c">/* [IN] The length of the buffer */</span>
+  UINT <span class="arg">len</span>     <span class="c">/* [IN] Buffer length */</span>
 );
 </pre>
 </div>
@@ -26,9 +24,9 @@ FRESULT f_getcwd (
 <h4>Parameters</h4>
 <dl class="par">
 <dt>buff</dt>
-<dd>Pointer to the buffer to receive the current directory string.</dd>
+<dd>Pointer to the string buffer to receive the current directory path.</dd>
 <dt>len</dt>
-<dd>Size of the buffer in unit of <tt>TCHAR</tt>.</dd>
+<dd>Size of the buffer in unit of <tt>(TCHAR)</tt>.</dd>
 </dl>
 </div>
 
@@ -50,8 +48,7 @@ FRESULT f_getcwd (
 
 <div class="para desc">
 <h4>Description</h4>
-<p>The <tt>f_getcwd</tt> function retrieves full path name of the current directory of the current drive. When <tt><a href="config.html#volumes">FF_VOLUMES</a> &gt;= 2</tt>, a heading drive prefix is added to the path name. The style of drive prefix depends on <tt><a href="config.html#str_volume_id">FF_STR_VOLUME_ID</a></tt>.</p>
-<p><em>Note: In this revision, this function cannot retrieve the current directory path on the exFAT volume. It always returns the root directory path.</em></p>
+<p>The <tt>f_getcwd</tt> function retrieves the full path name to the current directory of the current drive. When <tt><a href="config.html#volumes">FF_VOLUMES</a> &gt;= 2</tt>, a heading drive prefix is added to the path name. The style of drive prefix depends on <tt><a href="config.html#str_volume_id">FF_STR_VOLUME_ID</a></tt>.</p>
 </div>
 
 
@@ -78,6 +75,7 @@ FRESULT f_getcwd (
 <p><tt><a href="chdrive.html">f_chdrive</a>, <a href="chdir.html">f_chdir</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

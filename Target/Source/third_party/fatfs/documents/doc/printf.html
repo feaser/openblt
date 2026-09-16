@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/printf.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_printf</title>
 </head>
@@ -57,20 +55,20 @@ int f_printf (
 <dt>type</dt><dd>Specifies type of the output format and the argument as shown below. The length of generated string is in assumtion of int is 32-bit.
 <table class="lst1">
 <tr><th>Type</th><th>Format</th><th>Argument</th><th>Length</th></tr>
-<tr><td><tt>c</tt></td><td>Character</td><td rowspan="6"><tt>int</tt>,<br><tt>long</tt>,<br><tt>long long</tt></td><td>1 character.</td></tr>
+<tr><td><tt>c</tt></td><td>Character</td><td rowspan="6"><tt>int</tt>,<br><tt>long</tt>,<br><tt>long&nbsp;long</tt></td><td>1 character.</td></tr>
 <tr><td><tt>d</tt></td><td>Signed&nbsp;decimal</td><td>1 to 11 (20 for ll) characters.</td></tr>
 <tr><td><tt>u</tt></td><td>Unsigned&nbsp;decimal</td><td>1 to 10 (20 for ll) characters.</td></tr>
 <tr><td><tt>o</tt></td><td>Unsigned&nbsp;octal</td><td>1 to 11 (22 for ll) characters.</td></tr>
 <tr><td><tt>x X</tt></td><td>Unsigned&nbsp;hexdecimal</td><td>1 to 8 (16 for ll) characters.</td></tr>
 <tr><td><tt>b</tt></td><td>Unsigned&nbsp;binary</td><td>1 to 32 characters. Limited to lower 32 digits when ll is specified.</td></tr>
-<tr><td><tt>s</tt></td><td>String</td><td><tt>TCHAR*</tt></td><td>As input string. Null pointer generates a null string.</td></tr>
-<tr><td><tt>f</tt></td><td>Floating point<br>(decimal)</td><td rowspan="2"><tt>double</tt></td><td>1 to 31 characters. If the number of characters exceeds 31, it writes <tt>"±OV"</tt>. Not a number and infinite write <tt>"NaN"</tt> and <tt>"±INF"</tt>.</td></tr>
+<tr><td><tt>s</tt></td><td>String</td><td><tt>TCHAR*</tt></td><td>As input string. A null pointer generates a zero-length string.</td></tr>
+<tr><td><tt>f</tt></td><td>Floating point<br>(decimal)</td><td rowspan="2"><tt>double</tt></td><td>1 to 31 characters. If the number of characters exceeds 31, it writes <tt>"±OV"</tt>. Not a number and infinite value write <tt>"NaN"</tt> and <tt>"±INF"</tt> respectively.</td></tr>
 <tr><td><tt>e E</tt></td><td>Floating point<br>(e notation)</td><td>4 to 31 characters. If the number of characters exceeds 31 or exponent exceeds +99, it writes <tt>"±OV"</tt>.</td></tr>
 </table>
 </dd>
 </dl>
-<p>When FatFs is configured for Unicode API (<tt><a href="config.html#lfn_unicode">FF_LFN_UNICODE</a> &gt;= 1</tt>), character encoding on the string fuctions, <tt>f_putc</tt>, <tt>f_puts</tt>, <tt>f_printf</tt> and <tt>f_gets</tt> function, is also switched to Unicode. The Unicode characters in multiple encoding unit, such as surrogate pair and multi-byte sequence, should not be divided into two function calls, or the character will be lost. The character encoding <em>on the file</em> to be written via this function is selected by <tt><a href="config.html#strf_encode">FF_STRF_ENCODE</a></tt>. The characters with wrong encoding or invalid for the output encoding will be lost.</p>
-<p>If <tt>sprintf</tt> is used in the project and code conversion is not needed, <tt>f_write</tt> with <tt>sprintf</tt> will be efficient in code size and performance rather than <tt>f_printf</tt>.</p>
+<p>When FatFs is configured for Unicode API (<tt><a href="config.html#lfn_unicode">FF_LFN_UNICODE</a> &gt;= 1</tt>), character encoding on the string fuctions, <tt>f_putc</tt>, <tt>f_puts</tt>, <tt>f_printf</tt> and <tt>f_gets</tt> function, is also switched to Unicode. The Unicode characters in multiple encoding unit, such as surrogate pair and multi-byte sequence, should not be divided into two function calls, or the character will be lost. The character encoding <em>on the file</em> to be written via this function is selected by <tt><a href="config.html#strf_encode">FF_STRF_ENCODE</a></tt>. If the character encoding differs between file data and API, it is converted in this function. Input characters with wrong encoding for output will be lost.</p>
+<p>If <tt>sprintf</tt> is used in the project and code conversion is not needed, <tt>f_write</tt> with <tt>sprintf</tt> will be better in code size and write throughput rather than <tt>f_printf</tt>.</p>
 </div>
 
 
@@ -110,6 +108,7 @@ int f_printf (
 <p><tt><a href="open.html">f_open</a>, <a href="putc.html">f_putc</a>, <a href="puts.html">f_puts</a>, <a href="gets.html">f_gets</a>, <a href="close.html">f_close</a>, <a href="sfile.html">FIL</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

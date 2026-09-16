@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/sfile.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - FIL</title>
 </head>
@@ -17,18 +15,18 @@
 
 <pre>
 <span class="k">typedef</span> <span class="k">struct</span> {
-    FFOBJID obj;          <span class="c">/* Object identifier */</span>
-    BYTE    flag;         <span class="c">/* File object status flags */</span>
+    <a href="sobjid.html">FFOBJID</a> obj;          <span class="c">/* Object identifier */</span>
+    BYTE    flag;         <span class="c">/* File status flags */</span>
     BYTE    err;          <span class="c">/* Abort flag (error code) */</span>
-    FSIZE_t fptr;         <span class="c">/* File read/write pointer (Byte offset origin from top of the file) */</span>
-    DWORD   clust;        <span class="c">/* Current cluster of fptr (One cluster behind if fptr is on the cluster boundary. Invalid if fptr == 0.) */</span>
-    LBA_t   sect;         <span class="c">/* Current data sector (Can be invalid if fptr is on the cluster boundary.)*/</span>
+    FSIZE_t fptr;         <span class="c">/* File read/write pointer (byte offset origin from top of the file; 0 on open) */</span>
+    DWORD   clust;        <span class="c">/* Current cluster of fptr (one cluster behind if fptr is on the cluster boundary; invalid if fptr == 0) */</span>
+    LBA_t   sect;         <span class="c">/* Current data sector (can be invalid if fptr is on the cluster boundary)*/</span>
 <span class="k">#if</span> !FF_FS_READONLY
     LBA_t   dir_sect;     <span class="c">/* Sector number containing the directory entry */</span>
-    BYTE*   dir_ptr;      <span class="c">/* Ponter to the directory entry in the window */</span>
+    BYTE*   dir_ptr;      <span class="c">/* Pointer to the directory entry in the window */</span>
 <span class="k">#endif</span>
 <span class="k">#if</span> FF_USE_FASTSEEK
-    DWORD*  cltbl;        <span class="c">/* Pointer to the cluster link map table (Nulled on file open. Set by application.) */</span>
+    DWORD*  cltbl;        <span class="c">/* Pointer to the cluster link map table (nulled on file open; set by application) */</span>
 <span class="k">#endif</span>
 <span class="k">#if</span> !FF_FS_TINY
     BYTE    buf[FF_MAX_SS]; <span class="c">/* File private data transfer buffer (Always valid if fptr is not on the sector boundary but can be invalid if fptr is on the sector boundary.) */</span>
@@ -38,6 +36,7 @@
 
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

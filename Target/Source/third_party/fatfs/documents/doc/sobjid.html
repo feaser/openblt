@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - FFOBJID</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>FFOBJID</h2>
+<p>The <tt>FFOBJID</tt> structure is an object identifier that holds the common status of open objects. This structure is for only internal use and it does not appear on the API.</p>
+
+<pre>
+<span class="k">typedef</span> <span class="k">struct</span> {
+    FATFS*  fs;         <span class="c">/* Pointer to the volume holds this object */</span>
+    WORD    id;         <span class="c">/* Volume mount ID when this object was opened */</span>
+    BYTE    attr;       <span class="c">/* Object attribute */</span>
+    BYTE    stat;       <span class="c">/* Object chain status (exFAT: b1-0: =0:not contiguous, =2:contiguous, =3:fragmented in this session, b2:sub-directory stretched) */</span>
+    DWORD   sclust;     <span class="c">/* Object data cluster (0:no data or root directory) */</span>
+    FSIZE_t objsize;    <span class="c">/* Object size (valid when sclust != 0) */</span>
+<span class="k">#if</span> FF_FS_EXFAT
+    DWORD   n_cont;     <span class="c">/* Size of first fragment - 1 (valid when stat == 3) */</span>
+    DWORD   n_frag;     <span class="c">/* Size of last fragment needs to be written to FAT (valid when not zero) */</span>
+    DWORD   c_scl;      <span class="c">/* Cluster of directory holds this object (valid when sclust != 0) */</span>
+    DWORD   c_size;     <span class="c">/* Size of directory holds this object (b7-b0: allocation status, valid when c_scl != 0) */</span>
+    DWORD   c_ofs;      <span class="c">/* Offset of entry of this object in the directory */</span>
+<span class="k">#endif</span>
+<span class="k">#if</span> FF_FS_LOCK
+    UINT    lockid;     <span class="c">/* File lock ID origin from 1 (index of file semaphore table Files[]) */</span>
+<span class="k">#endif</span>
+} FFOBJID;
+</pre>
+
+</div>
+
+
+<p class="foot"><a href="../index.html">Return</a></p>
+</body>
+</html>

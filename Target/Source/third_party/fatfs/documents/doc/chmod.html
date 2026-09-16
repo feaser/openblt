@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/chmod.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_chmod</title>
 </head>
@@ -27,7 +25,7 @@ FRESULT f_chmod (
 <h4>Parameters</h4>
 <dl class="par">
 <dt>path</dt>
-<dd>Pointer to the null-terminated string that specifies an <a href="filename.html">object</a> to be changed</dd>
+<dd>Pointer to the null-terminated string that specifies an <a href="filename.html">object</a> to be changed. If a null pointer is given, the function fails with <tt>FR_INVALID_OBJECT</tt>.</dd>
 <dt>attr</dt>
 <dd>Attribute flags to be set in one or more combination of the following flags. The specified flags are set and others are cleard.<br>
 <table class="lst">
@@ -84,6 +82,7 @@ FRESULT f_chmod (
 </pre>
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

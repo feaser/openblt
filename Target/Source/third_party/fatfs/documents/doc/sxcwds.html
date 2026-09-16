@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - FFXCWDS</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>FFXCWDS</h2>
+<p>The <tt>FFXCWDS</tt> structure holds a current working directory path. It is defined and used only when <tt>FF_FS_EXFAT == 1 &amp;&amp; FF_FS_RPATH != 0</tt>. This structure is for only internal use and it does not appear on the API.</p>
+<pre>
+<span class="k">typedef struct</span> {
+    DWORD   d_scl;        <span class="c">/* Directory start cluster (0:root dir) */</span>
+    DWORD   d_size;       <span class="c">/* Size of directory (b7-b0: cluster chain status) (invalid if d_scl == 0) */</span>
+    DWORD   nxt_ofs;      <span class="c">/* Offset of entry of next dir in this directory (invalid if last link) */</span>
+} FFXCWDL;
+
+<span class="k">typedef struct</span> {
+    UINT    depth;        <span class="c">/* Current directory depth (0:root dir) */</span>
+    FFXCWDL tbl[FF_PATH_DEPTH + 1]; <span class="c">/* Directory chain of current directory path */</span>
+} FFXCWDS;
+</pre>
+</div>
+
+<p class="foot"><a href="../index.html">Return</a></p>
+</body>
+</html>

@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/chdir.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_chdir</title>
 </head>
@@ -50,8 +48,8 @@ FRESULT f_chdir (
 
 <div class="para desc">
 <h4>Description</h4>
-<p>The <tt>f_chdir</tt> function changes the current directory of the logical drive. Also the current drive will be changed when in Unix style drive prefix, <tt><a href="config.html#str_volume_id">FF_STR_VOLUME_ID</a> == 2</tt>. The current directory of each logical drive is initialized to the root directory on mount.</p>
-<p>Note that the current directory is retained in the each file system object and the current drive is retained in a static variable, so that it also affects other tasks that use the file functions.</p>
+<p>The <tt>f_chdir</tt> function changes the current directory of the logical drive. Also the current drive will be changed when FatFs is configured <tt><a href="config.html#str_volume_id">FF_STR_VOLUME_ID</a> == 2</tt> and an full path is specified. The current directory of each logical drive is set root directory on mount.</p>
+<p>Note that the current directory is retained in the each filesystem object and the current drive is retained in a static variable, so that they also affect other tasks that use the file functions.</p>
 </div>
 
 
@@ -64,16 +62,16 @@ FRESULT f_chdir (
 <div class="para use">
 <h4>Example</h4>
 <pre>
-    <span class="c">/* Change current direcoty of the current drive ("dir1" under root directory) */</span>
+    <span class="c">/* Set current direcoty of the current drive ("dir1" in the root directory) */</span>
     <em>f_chdir</em>("/dir1");
 
-    <span class="c">/* Change current direcoty of current drive (parent directory of drive 2) */</span>
+    <span class="c">/* Set current direcoty of drive 2 (parent directory of current directory) */</span>
     <em>f_chdir</em>("2:..");
 
-    <span class="c">/* Change current direcoty of the drive "sdcard" (at DOS/Windows style volume ID) */</span>
+    <span class="c">/* Set current direcoty of drive "sdcard" (<tt>FF_STR_VOLUME_ID == 1</tt>) */</span>
     <em>f_chdir</em>("sdcard:/dir1");
 
-    <span class="c">/* Change current direcoty of the drive "flash" and set it as current drive (at Unix style volume ID) */</span>
+    <span class="c">/* Set current direcoty of drive "flash" and set this drive current drive (<tt>FF_STR_VOLUME_ID == 2</tt>) */</span>
     <em>f_chdir</em>("/flash/dir1");
 </pre>
 </div>
@@ -83,6 +81,7 @@ FRESULT f_chdir (
 <p><tt><a href="chdrive.html">f_chdrive</a>, <a href="getcwd.html">f_getcwd</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

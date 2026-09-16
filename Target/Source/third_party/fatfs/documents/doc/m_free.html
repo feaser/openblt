@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - ff_memfree</title>
+</head>
+
+<body>
+
+<div class="para func">
+<h2>ff_memfree</h2>
+<p>The ff_memfree function is an equivalent or an alias of POSIX free function.</p>
+<pre>
+void ff_memfree (
+  void* <span class="arg">mblock</span>           <span class="c">/* [IN] Pointer to the memory block */</span>
+);
+</pre>
+</div>
+
+<div class="para arg">
+<h4>Parameter</h4>
+<dl class="par">
+<dt>mblock</dt>
+<dd>Pointer to the valid memory block allocated by ff_memalloc function. A null pointer has no effect.</dd>
+</dl>
+</div>
+
+
+<div class="para comp">
+<h4>QuickInfo</h4>
+<p>This function is required when <tt><a href="config.html#use_lfn">FF_USE_LFN = 3</a></tt>. It is intended to be used by FatFs but also application program may use this function.</p>
+</div>
+
+
+<p class="foot"><a href="../index.html">Return</a></p>
+</body>
+</html>

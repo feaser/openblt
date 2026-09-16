@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/unlink.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_unlink</title>
 </head>
@@ -25,7 +23,7 @@ FRESULT f_unlink (
 <h4>Parameter</h4>
 <dl class="par">
 <dt>path</dt>
-<dd>Pointer to a null-terminated string that specifies the <a href="filename.html">file or sub-directory</a> to be removed.</dd>
+<dd>Pointer to a null-terminated string that specifies the <a href="filename.html">file or sub-directory</a> to be removed. If a null pointer is given, the function fails with <tt>FR_INVALID_DRIVE</tt>.</dd>
 </dl>
 </div>
 
@@ -69,6 +67,6 @@ If condition of the object to be removed is applicable to the following terms, t
 </div>
 
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

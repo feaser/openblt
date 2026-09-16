@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/truncate.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_truncate</title>
 </head>
@@ -25,7 +23,7 @@ FRESULT f_truncate (
 <h4>Parameter</h4>
 <dl class="par">
 <dt>fp</dt>
-<dd>Pointer to the open file object to be truncated.</dd>
+<dd>Pointer to the open file object to be truncated. If a null pointer is given, the function fails with <tt>FR_INVALID_OBJECT</tt>.</dd>
 </dl>
 </div>
 
@@ -61,6 +59,6 @@ FRESULT f_truncate (
 </div>
 
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>

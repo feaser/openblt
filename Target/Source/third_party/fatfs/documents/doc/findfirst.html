@@ -3,8 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="up" title="FatFs" href="../00index_e.html">
-<link rel="alternate" hreflang="ja" title="Japanese" href="../ja/findfirst.html">
 <link rel="stylesheet" href="../css_e.css" type="text/css" media="screen" title="ELM Default">
 <title>FatFs - f_findfirst</title>
 </head>
@@ -28,7 +26,7 @@ FRESULT f_findfirst (
 <h4>Parameters</h4>
 <dl class="par">
 <dt>dp</dt>
-<dd>Pointer to the blank directory object.</dd>
+<dd>Pointer to the blank directory object. If a null pointer is given, the function fails with <tt>FR_INVALID_OBJECT</tt>.</dd>
 <dt>fno</dt>
 <dd>Pointer to the <a href="sfileinfo.html">file information structure</a> to store the information about the found item.</dd>
 <dt>path</dt>
@@ -64,15 +62,16 @@ FRESULT f_findfirst (
 <p>After the directory specified by <tt class="arg">path</tt> could be opened, it starts to search the directory for items with the matching pattern specified by <tt class="arg">pattern</tt>. If the first item is found, the information about the item is stored into the file information structure <tt class="arg">fno</tt>. If not found, <tt>fno-&gt;fname[]</tt> has a null string.</p>
 <p>The matching pattern string can contain wildcards. For example:</p>
 <ul>
-<li><tt>?</tt> - An any character.</li>
-<li><tt>???</tt> - An any string in length of three characters.</li>
-<li><tt>*</tt> - An any string in length of zero or longer.</li>
-<li><tt>????*</tt> - An any string in length of four characters or longer.</li>
+<li><tt>?</tt> - Any character.</li>
+<li><tt>???</tt> - Any string in length of three characters.</li>
+<li><tt>*</tt> - Any string in length of zero or longer.</li>
+<li><tt>????*</tt> - Any string in length of four characters or longer.</li>
+<li><tt>"?* ?*.txt"</tt> - Text file with two or more words of body.</li>
 </ul>
-<p>Since the matching algorithm uses recursion, number of wildcards in the matching pattern is limited to four to limit the stack usage. Any pattern with too many wildcards does not match any name. In LFN configuration, only <tt>fname[]</tt> is tested when <tt>FF_USE_FIND == 1</tt> and also <tt>altname[]</tt> is tested when <tt>FF_USE_FIND == 2</tt>. There are some differences listed below between FatFs and standard systems in matching condition.</p>
+<p>Since the matching algorithm uses recursion, number of wildcards in the matching pattern is limited to four to limit the stack usage. The pattern with too many wildcards does not match any name. In LFN configuration, only <tt>fname[]</tt> is tested when <tt>FF_USE_FIND == 1</tt> and also <tt>altname[]</tt> is tested when <tt>FF_USE_FIND == 2</tt>. There are some differences listed below between FatFs and standard systems in matching condition.</p>
 <ul>
 <li><tt>"*.*"</tt> does not match any name without extension while it matches any name with or without extension in standard systems.</li>
-<li>Any pattern terminated with a dot does not match any name while it matches the name without extensiton in standard systems.</li>
+<li>The pattern terminated with a dot does not match any name while it matches the name without extensiton in standard systems.</li>
 <li><a href="filename.html#case">DBCS extended characters</a> are compared in case-sensitive when LFN is enabled with <tt>!FF_LFN_UNICODE</tt>.</li>
 </ul>
 </div>
@@ -95,14 +94,14 @@ void find_image_file (void)
     DIR dj;         <span class="c">/* Directory object */</span>
     FILINFO fno;    <span class="c">/* File information */</span>
 
-    fr = <em>f_findfirst</em>(&amp;dj, &amp;fno, "", "????????.JPG"); <span class="c">/* Start to search for photo files */</span>
+    fr = <em>f_findfirst</em>(&amp;dj, &amp;fno, "", "*.jpg"); <span class="c">/* Start to find JPEG image files */</span>
 
-    while (fr == FR_OK &amp;&amp; fno.fname[0]) {         <span class="c">/* Repeat while an item is found */</span>
-        printf("%s\n", fno.fname);                <span class="c">/* Print the object name */</span>
-        fr = f_findnext(&amp;dj, &amp;fno);               <span class="c">/* Search for next item */</span>
+    while (fr == FR_OK &amp;&amp; fno.fname[0]) {     <span class="c">/* Repeat while an item is found */</span>
+        printf("%s\n", fno.fname);            <span class="c">/* Print the object name */</span>
+        fr = <em>f_findnext</em>(&amp;dj, &amp;fno);           <span class="c">/* Search for next item */</span>
     }
 
-    f_closedir(&amp;dj);
+    <em>f_closedir</em>(&amp;dj);
 }
 </pre>
 </div>
@@ -113,6 +112,6 @@ void find_image_file (void)
 <p><tt><a href="findnext.html">f_findnext</a>, <a href="closedir.html">f_closedir</a>, <a href="sdir.html">DIR</a>, <a href="sfileinfo.html">FILINFO</a></tt></p>
 </div>
 
-<p class="foot"><a href="../00index_e.html">Return</a></p>
+<p class="foot"><a href="../index.html">Return</a></p>
 </body>
 </html>
