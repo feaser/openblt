@@ -593,6 +593,7 @@ static void BootComCanInit(void)
      */
     (void)HAL_FDCAN_ConfigTxDelayCompensation(&canHandle, bittimingConfigBRS.tseg1 *
                                               bittimingConfigBRS.prescaler, 0U);
+    (void)HAL_FDCAN_EnableTxDelayCompensation(&canHandle);
   }
 #endif
 
@@ -664,7 +665,7 @@ static void BootComCanCheckActivationRequest(void)
       /* obtain the CAN message length. */
 #if (BOOT_COM_CAN_FD_ENABLE > 0)
       rxMsgLen = 0;
-      if (rxMsgHeader.DataLength <= sizeof(dlc2len)/sizeof(dlc2len[0]))
+      if (rxMsgHeader.DataLength < sizeof(dlc2len)/sizeof(dlc2len[0]))
       {
         rxMsgLen = dlc2len[rxMsgHeader.DataLength];
       }

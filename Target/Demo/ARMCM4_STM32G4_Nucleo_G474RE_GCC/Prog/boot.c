@@ -594,6 +594,7 @@ static void BootComCanInit(void)
      */
     (void)HAL_FDCAN_ConfigTxDelayCompensation(&canHandle, bittimingConfigBRS.tseg1 *
                                               bittimingConfigBRS.prescaler, 0U);
+    (void)HAL_FDCAN_EnableTxDelayCompensation(&canHandle);
   }
 #endif
 

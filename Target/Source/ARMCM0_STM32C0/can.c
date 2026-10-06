@@ -392,6 +392,7 @@ void CanInit(void)
      */
     (void)HAL_FDCAN_ConfigTxDelayCompensation(&canHandle, bittimingConfigBRS.tseg1 *
                                               bittimingConfigBRS.prescaler, 0U);
+    (void)HAL_FDCAN_EnableTxDelayCompensation(&canHandle);
   }
 #endif
 
@@ -548,7 +549,7 @@ blt_bool CanReceivePacket(blt_int8u *data, blt_int8u *len)
     {
 #if (BOOT_COM_CAN_FD_ENABLE > 0)
       *len = 0;
-      if (rxMsgHeader.DataLength <= sizeof(dlc2len)/sizeof(dlc2len[0]))
+      if (rxMsgHeader.DataLength < sizeof(dlc2len)/sizeof(dlc2len[0]))
       {
         *len = dlc2len[rxMsgHeader.DataLength];
       }
