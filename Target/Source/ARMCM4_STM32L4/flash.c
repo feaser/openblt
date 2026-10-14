@@ -502,25 +502,34 @@ blt_bool FlashVerifyChecksum(void)
 ****************************************************************************************/
 blt_bool FlashDone(void)
 {
-  /* check if there is still data waiting to be programmed in the boot block */
-  if (bootBlockInfo.base_addr != FLASH_INVALID_ADDRESS)
-  {
-    if (FlashWriteBlock(&bootBlockInfo) == BLT_FALSE)
-    {
-      return BLT_FALSE;
-    }
-  }
+  blt_bool result = BLT_TRUE;
 
   /* check if there is still data waiting to be programmed */
   if (blockInfo.base_addr != FLASH_INVALID_ADDRESS)
   {
     if (FlashWriteBlock(&blockInfo) == BLT_FALSE)
     {
-      return BLT_FALSE;
+      /* update the result value to flag the error */
+      result = BLT_FALSE;
     }
   }
-  /* still here so all is okay */
-  return BLT_TRUE;
+
+  /* only continue if all is okay so far */
+  if (result == BLT_TRUE)
+  {
+    /* check if there is still data waiting to be programmed in the boot block */
+    if (bootBlockInfo.base_addr != FLASH_INVALID_ADDRESS)
+    {
+      if (FlashWriteBlock(&bootBlockInfo) == BLT_FALSE)
+      {
+        /* update the result value to flag the error */
+        result = BLT_FALSE;
+      }
+    }
+  }
+
+  /* give the result back to the caller */
+  return result;
 } /*** end of FlashDone ***/
 
 

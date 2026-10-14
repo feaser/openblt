@@ -486,10 +486,10 @@ blt_bool FlashDone(void)
 {
   blt_bool result = BLT_TRUE;
 
-  /* check if there is still data waiting to be programmed in the boot block */
-  if (bootBlockInfo.base_addr != FLASH_INVALID_ADDRESS)
+  /* check if there is still data waiting to be programmed */
+  if (blockInfo.base_addr != FLASH_INVALID_ADDRESS)
   {
-    if (FlashWriteBlock(&bootBlockInfo) == BLT_FALSE)
+    if (FlashWriteBlock(&blockInfo) == BLT_FALSE)
     {
       /* update the result value to flag the error */
       result = BLT_FALSE;
@@ -499,10 +499,10 @@ blt_bool FlashDone(void)
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
-    /* check if there is still data waiting to be programmed */
-    if (blockInfo.base_addr != FLASH_INVALID_ADDRESS)
+    /* check if there is still data waiting to be programmed in the boot block */
+    if (bootBlockInfo.base_addr != FLASH_INVALID_ADDRESS)
     {
-      if (FlashWriteBlock(&blockInfo) == BLT_FALSE)
+      if (FlashWriteBlock(&bootBlockInfo) == BLT_FALSE)
       {
         /* update the result value to flag the error */
         result = BLT_FALSE;

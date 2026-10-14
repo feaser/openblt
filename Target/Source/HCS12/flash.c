@@ -648,19 +648,19 @@ blt_bool FlashDone(void)
 {
   blt_int8u cnt;
 
-  /* check if there is still data waiting to be programmed in the boot block */
-  if (bootBlockInfo.base_addr != FLASH_INVALID_ADDRESS)
+  /* check if there is still data waiting to be programmed */
+  if (blockInfo.base_addr != FLASH_INVALID_ADDRESS)
   {
-    if (FlashWriteBlock(&bootBlockInfo) == BLT_FALSE)
+    if (FlashWriteBlock(&blockInfo) == BLT_FALSE)
     {
       return BLT_FALSE;
     }
   }
 
-  /* check if there is still data waiting to be programmed */
-  if (blockInfo.base_addr != FLASH_INVALID_ADDRESS)
+  /* check if there is still data waiting to be programmed in the boot block */
+  if (bootBlockInfo.base_addr != FLASH_INVALID_ADDRESS)
   {
-    if (FlashWriteBlock(&blockInfo) == BLT_FALSE)
+    if (FlashWriteBlock(&bootBlockInfo) == BLT_FALSE)
     {
       return BLT_FALSE;
     }
