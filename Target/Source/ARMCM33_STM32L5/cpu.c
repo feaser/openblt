@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32l5xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32l5xx_ll_icache.h"                 /* STM32 LL internal cache header     */
 
 
 /****************************************************************************************
@@ -63,6 +64,12 @@ void CpuInit(void)
    * peripherals.
    */
   CpuIrqDisable();
+  /* make sure the instruction cache is enabled for improved run-time performance. */
+  if (LL_ICACHE_IsEnabled() == 0U)
+  {
+    LL_ICACHE_SetMode(LL_ICACHE_1WAY);
+    LL_ICACHE_Enable();
+  }
 } /*** end of CpuInit ***/
 
 
@@ -131,6 +138,8 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the HAL */
   HAL_DeInit();
+  /* disable the instruction cache. */
+  LL_ICACHE_Disable();
   /* reset the timer */
   TimerReset();
   /* remap user program's vector table */

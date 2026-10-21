@@ -251,8 +251,6 @@ void FlashInit(void)
   /* init the flash block info structs by setting the address to an invalid address */
   blockInfo.base_addr = FLASH_INVALID_ADDRESS;
   bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
-  /* make sure the instruction cache is disabled prior to updating cacheable memory. */
-  LL_ICACHE_Disable();
 } /*** end of FlashInit ***/
 
 
@@ -783,6 +781,9 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
     HAL_FLASH_Lock();
   }
 
+  /* flush the instruction cache because flash memory was just changed (programmed). */
+  LL_ICACHE_Invalidate();
+
   /* only continue with verification if all is okay so far */
   if (result == BLT_TRUE)
   {
@@ -947,6 +948,9 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
     /* lock the flash peripheral to disable the flash control register access. */
     HAL_FLASH_Lock();
   }
+
+  /* flush the instruction cache because flash memory was just changed (erased). */
+  LL_ICACHE_Invalidate();
 
   /* give the result back to the caller */
   return result;

@@ -31,6 +31,7 @@
 ****************************************************************************************/
 #include "boot.h"                                /* bootloader generic header          */
 #include "stm32l5xx.h"                           /* STM32 CPU and HAL header           */
+#include "stm32l5xx_ll_icache.h"                 /* STM32 LL internal cache header     */
 
 
 /****************************************************************************************
@@ -237,8 +238,6 @@ void FlashInit(void)
   /* init the flash block info structs by setting the address to an invalid address */
   blockInfo.base_addr = FLASH_INVALID_ADDRESS;
   bootBlockInfo.base_addr = FLASH_INVALID_ADDRESS;
-  /* make sure the instruction cache is disabled prior to updating cacheable memory. */
-  HAL_ICACHE_Disable();
 } /*** end of FlashInit ***/
 
 
@@ -714,6 +713,9 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   blt_addr   prog_addr;
   blt_int64u prog_data;
   blt_int32u dword_cnt;
+  blt_addr   word_addr;
+  blt_int32u word_data;
+  blt_int32u word_cnt;
 
   /* check that the address is actually within flash */
   if (FlashGetSectorIdx(block->base_addr) == FLASH_INVALID_SECTOR_IDX)
@@ -741,7 +743,6 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
-
     /* unlock the flash peripheral to enable the flash control register access. */
     HAL_FLASH_Unlock();
 
@@ -758,16 +759,31 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
         result = BLT_FALSE;
         break;
       }
-      /* verify that the written data is actually there */
-      if (*(volatile blt_int64u *)prog_addr != prog_data)
+    }
+    /* lock the flash peripheral to disable the flash control register access. */
+    HAL_FLASH_Lock();
+  }
+
+  /* flush the instruction cache because flash memory was just changed (programmed). */
+  LL_ICACHE_Invalidate();
+
+  /* only continue with verification if all is okay so far */
+  if (result == BLT_TRUE)
+  {
+    /* keep the watchdog happy */
+    CopService();
+    /* verify all words in the block one by one */
+    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+    {
+      word_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
+      word_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+      /* verify that the written data is actually there. */
+      if (*(volatile blt_int32u *)word_addr != word_data)
       {
         result = BLT_FALSE;
         break;
       }
     }
-
-    /* lock the flash peripheral to disable the flash control register access. */
-    HAL_FLASH_Lock();
   }
 
   /* Give the result back to the caller. */
@@ -861,6 +877,9 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
     /* lock the flash peripheral to disable the flash control register access. */
     HAL_FLASH_Lock();
   }
+
+  /* flush the instruction cache because flash memory was just changed (erased). */
+  LL_ICACHE_Invalidate();
 
   /* give the result back to the caller */
   return result;

@@ -29,6 +29,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l5xx_hal.h"
+#include "stm32l5xx_ll_icache.h"
 #include "stm32l5xx_ll_lpuart.h"
 #include "stm32l5xx_ll_rcc.h"
 #include "stm32l5xx_ll_pwr.h"
