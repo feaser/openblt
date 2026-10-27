@@ -63,16 +63,17 @@ void CpuInit(void)
    * peripherals.
    */
   CpuIrqDisable();
-  /* run the bootloader without I-cache and D-cache to keep things simple. it doesn't
-   * need the performance improvements that these caches offer.
+  /* run the bootloader without D-cache to keep things simple. it doesn't need the
+   * performance improvements that this cache offers.
    */
-  if ((SCB->CCR & SCB_CCR_IC_Msk) != 0U)
-  {
-    SCB_DisableICache();
-  }
   if ((SCB->CCR & SCB_CCR_DC_Msk) != 0U)
   {
     SCB_DisableDCache();
+  }
+  /* make sure the instruction cache is enabled for improved run-time performance. */
+  if ((SCB->CCR & SCB_CCR_IC_Msk) == 0U)
+  {
+    SCB_EnableICache();
   }
 } /*** end of CpuInit ***/
 
@@ -142,6 +143,8 @@ void CpuStartUserProgram(void)
 #endif
   /* reset the HAL */
   HAL_DeInit();
+  /* disable the instruction cache */
+  SCB_DisableICache();
   /* reset the timer */
   TimerReset();
   /* remap user program's vector table */

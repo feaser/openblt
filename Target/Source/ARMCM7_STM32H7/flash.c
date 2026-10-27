@@ -698,7 +698,8 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   blt_int8u  volatile * prog_data;
   blt_int32u            word_cnt;
   blt_int8u  const      word_size = FLASH_NB_32BITWORD_IN_FLASHWORD * 4U;
-  blt_int8u             byte_idx;
+  blt_addr              word_addr;
+  blt_int32u            word_data;
 
   /* check that the address is actually within flash */
   if (FlashGetSectorIdx(block->base_addr) == FLASH_INVALID_SECTOR_IDX)
@@ -743,30 +744,31 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
         result = BLT_FALSE;
         break;
       }
-      /* verify that the written data is actually there */
-      for (byte_idx = 0; byte_idx < word_size; byte_idx++)
-      {
-        /* compare the byte value located in flash with the one that was supposed to
-         * be programmed there
-         */
-        if (((blt_int8u *)prog_addr)[byte_idx] != prog_data[byte_idx])
-        {
-          /* byte value in flash is not as expected, so a programming error must have
-           * happened
-           */
-          result = BLT_FALSE;
-          break;
-        }
-      }
-      /* check if an error was flagged during the verification step */
-      if (result == BLT_FALSE)
-      {
-        /* no point in continuing with the programming loop */
-        break;
-      }
     }
     /* lock the flash array again */
     HAL_FLASH_Lock();
+  }
+  
+  /* flush the instruction cache because flash memory was just changed (programmed). */
+  SCB_InvalidateICache();
+  
+  /* only continue with verification if all is okay so far */
+  if (result == BLT_TRUE)
+  {
+    /* keep the watchdog happy */
+    CopService();
+    /* verify all words in the block one by one */
+    for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int32u)); word_cnt++)
+    {
+      word_addr = block->base_addr + (word_cnt * sizeof(blt_int32u));
+      word_data = *(volatile blt_int32u *)(&block->data[word_cnt * sizeof(blt_int32u)]);
+      /* verify that the written data is actually there. */
+      if (*(volatile blt_int32u *)word_addr != word_data)
+      {
+        result = BLT_FALSE;
+        break;
+      }
+    }
   }
 
   /* Give the result back to the caller. */
@@ -901,6 +903,9 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
     /* lock the flash array again */
     HAL_FLASH_Lock();
   }
+  
+  /* flush the instruction cache because flash memory was just changed (erased). */
+  SCB_InvalidateICache();
 
   /* give the result back to the caller */
   return result;
