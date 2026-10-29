@@ -94,6 +94,12 @@ static blt_bool netInitializationDeferred = BLT_TRUE;
  */
 static blt_bool netInitializationDeferred = BLT_FALSE;
 #endif
+/** \brief Boolean flag to signal if a new XCP packet was received. */
+static blt_bool    netRxDataReceived;
+/** \brief Data pointer of a newly received XCP packet. */
+static blt_int8u * netRxPacketDataPtr;
+/** \brief Length of a newly received XCP packet. */
+static blt_int8u   netRxPacketDataLen;
 
 
 /************************************************************************************//**
@@ -104,6 +110,11 @@ static blt_bool netInitializationDeferred = BLT_FALSE;
 void NetInit(void)
 {
   uip_ipaddr_t ipaddr;
+
+  /* initialize new packet reception related control variables. */
+  netRxDataReceived = BLT_FALSE;
+  netRxPacketDataPtr = BLT_NULL;
+  netRxPacketDataLen = 0U;
 
   /* only perform the initialization if there is no request to defer it */
   if (netInitializationDeferred == BLT_FALSE)
@@ -230,6 +241,9 @@ void NetTransmitPacket(blt_int8u *data, blt_int8u len)
 ****************************************************************************************/
 blt_bool NetReceivePacket(blt_int8u *data, blt_int8u *len)
 {
+  blt_bool  result = BLT_FALSE;
+  blt_int8u byteIdx;
+
   /* no need to check for newly received packets if this module is not initialized */
   if (netInitializedFlag == BLT_TRUE)
   {
@@ -237,11 +251,26 @@ blt_bool NetReceivePacket(blt_int8u *data, blt_int8u *len)
      * transmission of XCP packets
      */
     NetServerTask();
+    /* check if a new packets was received and awaits further processing */
+    if (netRxDataReceived == BLT_TRUE)
+    {
+      /* reset the flag for the reception of the next packet */
+      netRxDataReceived = BLT_FALSE;
+      /* only actually process the packet if it seems valid */
+      if ( (netRxPacketDataPtr != BLT_NULL) && (netRxPacketDataLen > 0U) )
+      {
+        /* process the packet */
+        for (byteIdx = 0U; byteIdx < netRxPacketDataLen; byteIdx++)
+        {
+          data[byteIdx] = netRxPacketDataPtr[byteIdx];
+        }
+        *len = netRxPacketDataLen;
+        result = BLT_TRUE;
+      }
+    }
   }
-  /* packet reception and transmission is completely handled by the NetServerTask so
-   * always return BLT_FALSE here.
-   */
-  return BLT_FALSE;
+  /* give the result back to the caller */
+  return result;
 } /*** end of NetReceivePacket ***/
 
 
@@ -312,17 +341,30 @@ void NetApp(void)
 
   if (uip_newdata())
   {
-    /* only process the data if its length is not longer than expected. otherwise just
-     * ignore it. XCP is request/response. this means that a new requests should
-     * only be processed when the response the the previous request was sent. new
-     * requests before the last response was sent can therefore also be ignored.
+    /* only process the data if its length meets the minimum requirements. for an XCP
+     * packet, the first 4 bytes contain a counter value. After that comes the actual
+     * XCP packet data, which must as least have one byte in it.
      */
-    if ( ((uip_datalen() - 4) <= BOOT_COM_NET_RX_MAX_DATA) &&
-         (s->dto_tx_pending == BLT_FALSE) )
+    if (uip_datalen() > 4)
     {
-      /* the first 4 bytes contain a counter value in which we are not really interested */
-      newDataPtr = uip_appdata;
-      XcpPacketReceived(&newDataPtr[4], (blt_int8u)(uip_datalen() - 4));
+      /* only process the data if its length is not longer than expected. otherwise just
+       * ignore it. XCP is request/response. this means that a new requests should
+       * only be processed when the response the the previous request was sent. new
+       * requests before the last response was sent can therefore also be ignored.
+       */
+      if ( ((uip_datalen() - 4) <= BOOT_COM_NET_RX_MAX_DATA) &&
+          (s->dto_tx_pending == BLT_FALSE) )
+      {
+        /* set pointer to the received data. */
+        newDataPtr = uip_appdata;
+        /* update the new XCP packet reception control variables to indicate that a new
+         * packet was received and is awaiting processing. note that first 4 bytes
+         * contain a counter value in which we are not really interested.
+         */
+        netRxDataReceived = BLT_TRUE;
+        netRxPacketDataPtr = &newDataPtr[4];
+        netRxPacketDataLen = (blt_int8u)(uip_datalen() - 4);
+      }
     }
   }
 } /*** end of NetApp ***/
