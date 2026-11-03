@@ -305,8 +305,6 @@ blt_bool FileIsFirmwareUpdateRequestedHook(void)
   /* Current example implementation looks for a predetermined firmware file on the
    * SD-card. If the SD-card is accessible and the firmware file was found the firmware
    * update is started. When successfully completed, the firmware file is deleted.
-   * During the firmware update, progress information is written to a file called
-   * bootlog.txt and additionally outputted on UART @57600 bps for debugging purposes.
    */
   /* check if firmware file is present and SD-card is accessible */
   if (f_stat(firmwareFilename, &fileInfoObject) == FR_OK)
@@ -358,13 +356,18 @@ const blt_char *FileGetFirmwareFilenameHook(void)
 ****************************************************************************************/
 void EventsHook(tEventsId id, void const *info)
 {
-  blt_addr         base_addr;
-  blt_int32u       num_bytes;
-  blt_int8u        progress;
-  blt_char const * filename;
-  blt_int8u        node_id;
-  tEventsErrorId   error_id;
-  static blt_bool  update_from_file = BLT_FALSE;
+  blt_addr                 base_addr;
+  blt_int32u               num_bytes;
+  blt_int8u                progress;
+  blt_char         const * filename;
+  blt_int8u                node_id;
+  tEventsErrorId           error_id;
+  tEventsStartType         update_type;
+  static blt_bool          update_from_file = BLT_FALSE;
+  static blt_char  const * update_types[] = { "Normal firmware update", 
+                                              "Create new rollback image",
+                                              "Restore from rollback image"
+                                            };
 
   /* Filter on the events identifier. */
   switch (id)
@@ -393,6 +396,7 @@ void EventsHook(tEventsId id, void const *info)
 
     case EVENT_ID_ON_START:
       update_from_file = BLT_FALSE;
+      update_type = ((tEventsInfoStart const *)info)->type;
       filename = ((tEventsInfoStart const *)info)->filename;
       node_id = ((tEventsInfoStart const *)info)->node_id;
       SEGGER_RTT_WriteString(0, "Firmware update started");
@@ -405,7 +409,7 @@ void EventsHook(tEventsId id, void const *info)
       {
         SEGGER_RTT_printf(0, " (%d)", node_id);
       }
-      SEGGER_RTT_WriteString(0, ".\n");
+      SEGGER_RTT_printf(0, " [%s].\n", update_types[update_type]);
       break;
 
     case EVENT_ID_ON_SUCCESS:

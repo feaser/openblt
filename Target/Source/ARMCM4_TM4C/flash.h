@@ -37,7 +37,8 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len);
 blt_bool FlashWriteChecksum(void);
 blt_bool FlashVerifyChecksum(void);
 blt_bool FlashDone(void);
-blt_addr   FlashGetUserProgBaseAddress(void);
+blt_addr FlashGetUserProgBaseAddress(void);
+blt_addr FlashGetUserProgLastAddress(void);
 
 
 #endif /* FLASH_H */

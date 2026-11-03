@@ -106,6 +106,17 @@ blt_bool NvmWrite(blt_addr addr, blt_int32u len, blt_int8u *data)
   }
 #endif
 
+#if (ADDON_ROLLBACK_MOD_ENABLE > 0)
+  /* check if non-volatile memory operations are allowed on this memory range. */
+  if (RollbackCheckNvmRange(addr, len) == BLT_FALSE)
+  {
+    /* memory range is outside of the range that the rollback module currently allows to
+     * be operated on.
+     */
+    return BLT_FALSE;
+  }
+#endif
+
   /* still here so the internal driver should try and perform the program operation */
   return FlashWrite(addr, len, data);
 } /*** end of NvmWrite ***/
@@ -147,6 +158,17 @@ blt_bool NvmErase(blt_addr addr, blt_int32u len)
   }
 #endif
 
+#if (ADDON_ROLLBACK_MOD_ENABLE > 0)
+  /* check if non-volatile memory operations are allowed on this memory range. */
+  if (RollbackCheckNvmRange(addr, len) == BLT_FALSE)
+  {
+    /* memory range is outside of the range that the rollback module currently allows to
+     * be operated on.
+     */
+    return BLT_FALSE;
+  }
+#endif
+
   /* still here so the internal driver should try and perform the erase operation */
   return FlashErase(addr, len);
 } /*** end of NvmErase ***/
@@ -180,6 +202,18 @@ blt_addr NvmGetUserProgBaseAddress(void)
 {
   return FlashGetUserProgBaseAddress();
 } /*** end of NvmGetUserProgBaseAddress ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the last address of the non-volatile memory available to the user
+**            program. 
+** \return    Last address.
+**
+****************************************************************************************/
+blt_addr NvmGetUserProgLastAddress(void)
+{
+  return FlashGetUserProgLastAddress();
+} /*** end of NvmGetUserProgLastAddress ***/
 
 
 /************************************************************************************//**

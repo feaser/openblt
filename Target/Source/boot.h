@@ -68,6 +68,9 @@
 #if (ADDON_GATEWAY_MOD_ENABLE > 0)
 #include "gateway.h"                                  /* gateway add-on module         */
 #endif
+#if (ADDON_ROLLBACK_MOD_ENABLE > 0)
+#include "rollback.h"                                 /* rollback add-on module        */
+#endif
 
 
 /****************************************************************************************

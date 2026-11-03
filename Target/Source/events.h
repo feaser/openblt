@@ -50,6 +50,8 @@ typedef enum
 typedef enum
 {
   EVENT_START_TYPE_NORMAL = 0U,        /**< Normal firmware update.                    */
+  EVENT_START_TYPE_ROLLBACK_CREATE,    /**< Create a new rollback image.               */
+  EVENT_START_TYPE_ROLLBACK_RESTORE,   /**< Restore from the rollback image.           */  
   NUM_EVENT_START_TYPES                /**< Total number of firmware update types.     */
 } tEventsStartType;
 
@@ -67,6 +69,7 @@ typedef enum
   EVENT_ERROR_ID_FILE_READ,            /**< Cannot read from firmware file.            */
   EVENT_ERROR_ID_FILE_REWIND_READ_PTR, /**< Cannot rewind firmware file read pointer.  */
   EVENT_ERROR_ID_FILE_CHECKSUM,        /**< Invalid checksum detected in firmware file.*/
+  EVENT_ERROR_ID_ROLLBACK_OPERATION,   /**< Rollback manager could not copy firmware.  */
   NUM_EVENT_ERROR_IDS                  /**< Total number of event error identifiers.   */
 } tEventsErrorId;
 

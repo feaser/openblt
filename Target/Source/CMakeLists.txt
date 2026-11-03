@@ -218,6 +218,19 @@ target_include_directories(openblt-addon-gateway INTERFACE
     "${CMAKE_CURRENT_LIST_DIR}/addons/gatewaymod"
 )
 
+# OpenBLT Firmware Rollback add-on library target.
+# https://www.feaser.com/en/addons.php#rollback
+add_library(openblt-addon-rollback INTERFACE)
+
+target_sources(openblt-addon-rollback INTERFACE
+    "${CMAKE_CURRENT_LIST_DIR}/addons/rollbackmod/rollback.c"
+)
+
+target_include_directories(openblt-addon-rollback INTERFACE 
+    "${CMAKE_CURRENT_LIST_DIR}/addons/rollbackmod"
+)
+
+
 #----------------------------------------------------------------------------------------
 #           O P E N B L T   S T   S T M 3 2 C 0   P O R T
 #----------------------------------------------------------------------------------------

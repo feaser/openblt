@@ -139,6 +139,13 @@ void EventsProcess(tEventsId id, void * info)
     /* Pass the event on to the application for further processing. */
     EventsHook(id, info);
   }
+#if (ADDON_ROLLBACK_MOD_ENABLE > 0)
+  if (id == EVENT_ID_ON_ERROR)
+  {
+    /* Inform the rollback module about the error event. */
+    RollbackProcessError(((tEventsInfoError const *)info)->error_id);
+  }
+#endif
 } /*** end of EventsProcess ***/
 #endif /* BOOT_EVENTS_ENABLE > 0 */
 

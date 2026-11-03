@@ -173,6 +173,8 @@ static tFlashBlockInfo *FlashSwitchBlock(tFlashBlockInfo *block, blt_addr base_a
 static blt_bool   FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
                                   blt_int8u *data, blt_int32u len);
 static blt_bool   FlashWriteBlock(tFlashBlockInfo *block);
+static blt_bool   FlashEmptyCheck(blt_addr base_addr, blt_int16u len);
+static blt_bool   FlashEmptyCheckBlockData(tFlashBlockInfo *block);
 static blt_int8u  FlashGetLinearAddrByte(blt_addr addr);
 static blt_int8u  FlashGetPhysPage(blt_addr addr);
 static blt_int16u FlashGetPhysAddr(blt_addr addr);
@@ -507,14 +509,18 @@ blt_bool FlashErase(blt_addr addr, blt_int32u len)
   /* erase all blocks one by one */
   for (block_cnt=0; block_cnt<nr_of_erase_blocks; block_cnt++)
   {
-    /* keep the watchdog happy */
-    CopService();
-
-    /* erase the block */
-    if (FlashOperate(FLASH_ERASE_SECTOR_CMD, erase_base_addr, 0x55aa) == BLT_FALSE)
+    /* only need to erase if the data in this block is not yet in the erased state. */ 
+    if (FlashEmptyCheck(erase_base_addr, FLASH_ERASE_BLOCK_SIZE) == BLT_FALSE)
     {
-      /* error occurred */
-      return BLT_FALSE;
+      /* keep the watchdog happy */
+      CopService();
+
+      /* erase the block */
+      if (FlashOperate(FLASH_ERASE_SECTOR_CMD, erase_base_addr, 0x55aa) == BLT_FALSE)
+      {
+        /* error occurred */
+        return BLT_FALSE;
+      }
     }
     /* point to the next block's base address */
     erase_base_addr += FLASH_ERASE_BLOCK_SIZE;
@@ -682,6 +688,8 @@ blt_bool FlashDone(void)
 **            This is basically the last address in the flashLayout table converted to
 **            the physical address on the last page (0x3f), because this is where the
 **            address will be in.
+** \attention Note that this is a physical address directly accessible in the memory 
+**            map, without having to access it through the page window.
 ** \return    Base address.
 **
 ****************************************************************************************/
@@ -696,6 +704,20 @@ blt_addr FlashGetUserProgBaseAddress(void)
   end_address_physical_page_3f = end_address_physical_page_window + FLASH_PAGE_SIZE;
   return end_address_physical_page_3f;
 } /*** end of FlashGetUserProgBaseAddress ***/
+
+
+/************************************************************************************//**
+** \brief     Obtains the last address of the flash memory available to the user program.
+**            This is basically the first address in the flashLayout table.
+** \attention Note that this is a global address because it is not directly accessible
+**            in the memory map.
+** \return    Base address.
+**
+****************************************************************************************/
+blt_addr FlashGetUserProgLastAddress(void)
+{
+  return FLASH_START_ADDRESS;
+} /*** end of FlashGetUserProgLastAddress ***/
 
 
 /************************************************************************************//**
@@ -907,6 +929,18 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
+  /* before programming new data, its destination in flash memory should have been erased
+   * prior. if the data that is about to be programmed represent the erased state of
+   * flash memory, the actual programming can be skipped.
+   */
+  if (FlashEmptyCheckBlockData(block) == BLT_TRUE)
+  {
+    /* nothing to do. the data values to be programmed are already in flash with the same
+     * values.
+     */
+    return BLT_TRUE;
+  }
+
   /* program all words in the block one by one */
   for (word_cnt=0; word_cnt<(FLASH_WRITE_BLOCK_SIZE/sizeof(blt_int16u)); word_cnt++)
   {
@@ -938,6 +972,76 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   /* still here so all is okay */
   return result;
 } /*** end of FlashWriteBlock ***/
+
+
+/************************************************************************************//**
+** \brief     Checks if the data in the specified memory range is already in the flash
+**            erased state.
+** \attention The to be checked memory range should fit in one flash page window.
+** \param     base_addr Base address of the memory to check.
+** \param     len Number of bytes starting at the base_addr to check.
+** \return    BLT_TRUE if the memory range is already in the flash erased state, 
+**            BLT_FALSE otherwise.
+**
+****************************************************************************************/
+static blt_bool FlashEmptyCheck(blt_addr base_addr, blt_int16u len) 
+{
+  blt_bool   result = BLT_TRUE;
+  blt_int16u byte_cnt;
+  
+  /* read memory data 8-bits at a time */
+  for (byte_cnt=0; byte_cnt<len; byte_cnt++)
+  {
+    if (FlashGetLinearAddrByte(base_addr+byte_cnt) != 0xffu)
+    {
+      /* data not all in the flash empty state, update the result accordingly */
+      result = BLT_FALSE;
+      /* no point in continuing the loop */
+      break;
+    }
+  }
+    
+  /* give the result back to the caller */
+  return result;
+} /*** end of FlashEmptyCheck ***/
+
+
+/************************************************************************************//**
+** \brief     Checks if the buffered block data is already in the flash erased state.
+** \param     block   Pointer to flash block info structure to operate on.
+** \return    BLT_TRUE if the block data is already in the flash erased state, 
+**            BLT_FALSE otherwise.
+**
+****************************************************************************************/
+static blt_bool FlashEmptyCheckBlockData(tFlashBlockInfo *block)
+{
+  blt_bool result = BLT_TRUE;
+  blt_int32u byteIdx;
+  blt_int8u volatile const * byteArray;
+
+  /* initialize the pointer to the first data byte in the data block to check */
+  byteArray = (blt_int8u volatile const *)&block->data[0];
+  /* read block data one byte at a time */
+  for (byteIdx = 0; byteIdx < FLASH_WRITE_BLOCK_SIZE; byteIdx++)
+  {
+    /* service the watchdog every 128th loop iteration */
+    if ((byteIdx % 128) == 0)
+    {
+      CopService();
+    }
+    /* byte not in the erased state? */
+    if (byteArray[byteIdx] != 0xffu)
+    {
+      /* data not all in the flash empty state, update the result accordingly */
+      result = BLT_FALSE;
+      /* no point in continuing the loop */
+      break;
+    }
+  }
+
+  /* give the result back to the caller. */
+  return result;  
+} /*** end of FlashEmptyCheckBlockData ***/
 
 
 /************************************************************************************//**

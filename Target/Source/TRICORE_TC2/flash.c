@@ -136,6 +136,7 @@ static blt_bool  FlashEraseSectors(blt_int8u first_sector_idx,
                                    blt_int8u last_sector_idx);
 static blt_bool  FlashEraseLogicalSector(blt_addr log_sector_base_addr);
 static blt_bool  FlashWritePage(blt_addr page_base_addr, blt_int8u const * page_data);
+static blt_bool  FlashEmptyCheck(blt_addr base_addr, blt_int32u len);
 static blt_int8u FlashGetSectorIdx(blt_addr address);
 static blt_addr  FlashTranslateToNonCachedAddress(blt_addr address);
 
@@ -609,6 +610,18 @@ blt_addr FlashGetUserProgBaseAddress(void)
 
 
 /************************************************************************************//**
+** \brief     Obtains the last address of the flash memory available to the user program.
+**            This is basically the last address in the flashLayout table.
+** \return    Base address.
+**
+****************************************************************************************/
+blt_addr FlashGetUserProgLastAddress(void)
+{
+  return FLASH_END_ADDRESS;
+} /*** end of FlashGetUserProgLastAddress ***/
+
+
+/************************************************************************************//**
 ** \brief     Copies data currently in flash to the block->data and sets the
 **            base address.
 ** \param     block   Pointer to flash block info structure to operate on.
@@ -837,6 +850,18 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
+  /* before programming new data, its destination in flash memory should have been erased
+   * prior. if the data that is about to be programmed represent the erased state of
+   * flash memory, the actual programming can be skipped.
+   */
+  if (FlashEmptyCheck((blt_addr)block->data, FLASH_WRITE_BLOCK_SIZE) == BLT_TRUE)
+  {
+    /* nothing to do. the data values to be programmed are already in flash with the same
+     * values.
+     */
+    return BLT_TRUE;
+  }
+
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
@@ -899,8 +924,6 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
     /* erase the sectors one by one */
     for (sectorIdx = first_sector_idx; sectorIdx <= last_sector_idx; sectorIdx++)
     {
-      /* service the watchdog */
-      CopService();
       /* get information about the sector */
       sectorBaseAddr = flashLayout[sectorIdx].sector_start;
       sectorSize = flashLayout[sectorIdx].sector_size;
@@ -911,16 +934,23 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
         result = BLT_FALSE;
         break;
       }
-      /* perform the flash erase operation of a sector that starts at 'sectorBaseAddr'.
-       * the hardware knows the sector size and therefore does not need to be
-       * specified.
-       */
-      if(FlashEraseLogicalSector(sectorBaseAddr) == BLT_FALSE)
+
+      /* only need to erase if the data in this page is not yet in the erased state. */
+      if (FlashEmptyCheck(sectorBaseAddr, sectorSize) == BLT_FALSE)
       {
-        /* could not perform erase operation */
-        result = BLT_FALSE;
-        /* error detected so don't bother continuing with the loop */
-        break;
+        /* service the watchdog */
+        CopService();
+        /* perform the flash erase operation of a sector that starts at 'sectorBaseAddr'.
+         * the hardware knows the sector size and therefore does not need to be
+         * specified.
+         */
+        if(FlashEraseLogicalSector(sectorBaseAddr) == BLT_FALSE)
+        {
+          /* could not perform erase operation */
+          result = BLT_FALSE;
+          /* error detected so don't bother continuing with the loop */
+          break;
+        }
       }
     }
   }
@@ -1093,6 +1123,63 @@ static blt_bool FlashWritePage(blt_addr page_base_addr, blt_int8u const * page_d
   return result;
 } /*** end of FlashWritePage ***/
 BLT_RAM_FUNC_END
+
+
+/************************************************************************************//**
+** \brief     Checks if the data in the specified memory range is already in the flash
+**            erased state.
+** \param     base_addr Base address of the memory to check.
+** \param     len Number of bytes starting at the base_addr to check.
+** \return    BLT_TRUE if the memory range is already in the flash erased state,
+**            BLT_FALSE otherwise.
+**
+****************************************************************************************/
+static blt_bool FlashEmptyCheck(blt_addr base_addr, blt_int32u len)
+{
+  blt_bool result = BLT_TRUE;
+  blt_int32u wordCnt;
+  blt_int32u totalWords;
+  blt_int32u volatile const * wordPtr;
+
+  /* calculate the number of words to check. checking one word at a time is more run-time
+   * efficient that one byte at a time. this does require the len parameter to be a
+   * multiple of 4.
+   */
+  totalWords = len / sizeof(blt_int32u);
+  if ( (totalWords % sizeof(blt_int32u)) > 0)
+  {
+    /* adjust the number of words in case the len parameter was not a multiple of 4. this
+     * does have the side effect of potentially up to 3 more bytes to be checked, but
+     * that is a worthy trade-off given the gained run-time efficiency.
+     */
+    totalWords++;
+  }
+
+  /* initialize the pointer to the first data byte in the memory range to check */
+  wordPtr = (blt_int32u volatile const *)base_addr;
+  /* read memory data 32-bits at a time */
+  for (wordCnt = 0; wordCnt < totalWords; wordCnt++)
+  {
+    /* service the watchdog every 32nd loop iteration */
+    if ((wordCnt % 32) == 0)
+    {
+      CopService();
+    }
+    /* word not in the erased state? */
+    if (*wordPtr != 0x00000000u)
+    {
+      /* data not all in the flash empty state, update the result accordingly */
+      result = BLT_FALSE;
+      /* no point in continuing the loop */
+      break;
+    }
+    /* set pointer to the next word in the sector */
+    wordPtr++;
+  }
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashEmptyCheck ***/
 
 
 /************************************************************************************//**

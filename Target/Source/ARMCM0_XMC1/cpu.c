@@ -74,6 +74,13 @@ void CpuStartUserProgram(void)
 {
   void (*pProgResetHandler)(void);
 
+#if (ADDON_ROLLBACK_MOD_ENABLE > 0)
+    /* run the rollback manager to check if a firmware rollback needs to be performed or
+     * if a refresh of the rollback image is needed.
+     */
+    RollbackManager();
+#endif
+
   /* check if a user program is present by verifying the checksum */
   if (NvmVerifyChecksum() == BLT_FALSE)
   {

@@ -115,10 +115,11 @@ static blt_bool   FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
 static blt_bool   FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool   FlashEraseSectors(blt_int8u first_sector_idx,
                                     blt_int8u last_sector_idx);
+static blt_bool   FlashEmptyCheck(blt_addr base_addr, blt_int32u len);
 static blt_int8u  FlashGetSectorIdx(blt_addr address);
 static blt_int32u FlashGetPageSize(void);
 static blt_int32u FlashGetPage(blt_addr address);
-static blt_addr FlashGetBankBaseAddr(blt_int32u bank);
+static blt_addr   FlashGetBankBaseAddr(blt_int32u bank);
 static blt_int32u FlashGetBank(blt_addr address);
 
 
@@ -542,6 +543,18 @@ blt_addr FlashGetUserProgBaseAddress(void)
 
 
 /************************************************************************************//**
+** \brief     Obtains the last address of the flash memory available to the user program.
+**            This is basically the last address in the flashLayout table.
+** \return    Base address.
+**
+****************************************************************************************/
+blt_addr FlashGetUserProgLastAddress(void)
+{
+  return FLASH_END_ADDRESS;
+} /*** end of FlashGetUserProgLastAddress ***/
+
+
+/************************************************************************************//**
 ** \brief     Copies data currently in flash to the block->data and sets the
 **            base address.
 ** \param     block   Pointer to flash block info structure to operate on.
@@ -767,6 +780,18 @@ static blt_bool FlashWriteBlock(tFlashBlockInfo *block)
   }
 #endif
 
+  /* before programming new data, its destination in flash memory should have been erased
+   * prior. if the data that is about to be programmed represent the erased state of
+   * flash memory, the actual programming can be skipped.
+   */
+  if (FlashEmptyCheck((blt_addr)block->data, FLASH_WRITE_BLOCK_SIZE) == BLT_TRUE)
+  {
+    /* nothing to do. the data values to be programmed are already in flash with the same
+     * values.
+     */
+    return BLT_TRUE;
+  }
+  
   /* only continue if all is okay so far */
   if (result == BLT_TRUE)
   {
@@ -863,21 +888,25 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
         break;
       }
       
-      /* determine the total number of pages inside this sector. */
-      pageTotal = sectorSize / FlashGetPageSize();
-      /* initialize the erase info structure. */
-      eraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
-      eraseInitStruct.Banks = FlashGetBank(sectorBaseAddr);
-      eraseInitStruct.Page = FlashGetPage(sectorBaseAddr);
-      eraseInitStruct.NbPages= pageTotal;
-
-      /* perform the flash erase operation of the pages in the segment. */
-      if (HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&pageError) != HAL_OK)
+      /* only need to erase if the data in the sector is not yet in the erased state. */ 
+      if (FlashEmptyCheck(sectorBaseAddr, sectorSize) == BLT_FALSE)    
       {
-        /* could not perform erase operation */
-        result = BLT_FALSE;
-        /* error detected so don't bother continuing with the loop */
-        break;
+        /* determine the total number of pages inside this sector. */
+        pageTotal = sectorSize / FlashGetPageSize();
+        /* initialize the erase info structure. */
+        eraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
+        eraseInitStruct.Banks = FlashGetBank(sectorBaseAddr);
+        eraseInitStruct.Page = FlashGetPage(sectorBaseAddr);
+        eraseInitStruct.NbPages= pageTotal;
+
+        /* perform the flash erase operation of the pages in the segment. */
+        if (HAL_FLASHEx_Erase(&eraseInitStruct, (uint32_t *)&pageError) != HAL_OK)
+        {
+          /* could not perform erase operation */
+          result = BLT_FALSE;
+          /* error detected so don't bother continuing with the loop */
+          break;
+        }
       }
     }
     /* lock the flash peripheral to disable the flash control register access. */
@@ -887,6 +916,63 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector_idx, blt_int8u last_sec
   /* give the result back to the caller */
   return result;
 } /*** end of FlashEraseSectors ***/
+
+
+/************************************************************************************//**
+** \brief     Checks if the data in the specified memory range is already in the flash
+**            erased state.
+** \param     base_addr Base address of the memory to check.
+** \param     len Number of bytes starting at the base_addr to check.
+** \return    BLT_TRUE if the memory range is already in the flash erased state, 
+**            BLT_FALSE otherwise.
+**
+****************************************************************************************/
+static blt_bool FlashEmptyCheck(blt_addr base_addr, blt_int32u len)
+{
+  blt_bool result = BLT_TRUE;
+  blt_int32u wordCnt;
+  blt_int32u totalWords;
+  blt_int32u volatile const * wordPtr;
+  
+  /* calculate the number of words to check. checking one word at a time is more run-time
+   * efficient that one byte at a time. this does require the len parameter to be a 
+   * multiple of 4. 
+   */
+  totalWords = len / sizeof(blt_int32u);
+  if ( (totalWords % sizeof(blt_int32u)) > 0)
+  {
+    /* adjust the number of words in case the len parameter was not a multiple of 4. this
+     * does have the side effect of potentially up to 3 more bytes to be checked, but
+     * that is a worthy trade-off given the gained run-time efficiency. 
+     */
+    totalWords++;
+  }
+                      
+  /* initialize the pointer to the first data byte in the memory range to check */
+  wordPtr = (blt_int32u volatile const *)base_addr;
+  /* read memory data 32-bits at a time */
+  for (wordCnt = 0; wordCnt < totalWords; wordCnt++)
+  {
+    /* service the watchdog every 32nd loop iteration */
+    if ((wordCnt % 32) == 0)
+    {
+      CopService();
+    }
+    /* word not in the erased state? */
+    if (*wordPtr != 0xffffffffu)
+    {
+      /* data not all in the flash empty state, update the result accordingly */
+      result = BLT_FALSE;
+      /* no point in continuing the loop */
+      break;
+    }
+    /* set pointer to the next word in the sector */
+    wordPtr++;
+  }
+
+  /* give the result back to the caller. */
+  return result;
+} /*** end of FlashEmptyCheck ***/
 
 
 /************************************************************************************//**
