@@ -186,7 +186,6 @@ add_library(openblt-addon-checksum INTERFACE)
 
 target_sources(openblt-addon-checksum INTERFACE
     "${CMAKE_CURRENT_LIST_DIR}/addons/csmod/checksum.c"
-    "${CMAKE_CURRENT_LIST_DIR}/addons/csmod/crc16.c"
 )
 
 target_include_directories(openblt-addon-checksum INTERFACE 
