@@ -143,7 +143,6 @@ static blt_bool  FlashAddToBlock(tFlashBlockInfo *block, blt_addr address,
                                  blt_int8u *data, blt_int32u len);
 static blt_bool  FlashWriteBlock(tFlashBlockInfo *block);
 static blt_bool  FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector);
-static blt_bool  FlashEmptyCheckSector(blt_int8u sector_num);
 static blt_bool  FlashEmptyCheck(blt_addr base_addr, blt_int32u len);
 static blt_int8u FlashGetSector(blt_addr address);
 static blt_addr  FlashGetSectorBaseAddr(blt_int8u sector);
@@ -799,79 +798,44 @@ static blt_bool FlashEraseSectors(blt_int8u first_sector, blt_int8u last_sector)
       return BLT_FALSE;
     }
     
-    /* no need to erase the sector if it is already empty */
-    if (FlashEmptyCheckSector(sector_cnt) == BLT_FALSE)
+    /* note that the XMC4 flash array has a quirk that if you don't first fully erase a
+     * sector before programming it, it might leave it in an undefined state, if a
+     * powerloss occurs during the programming. it seems the only way to recover from
+     * this is reprogramming the bootloader with the debugger interface or the infineon 
+     * memtool. for this reason, the flash sector empty check is not performed here, so
+     * that the sector is always erased, even though its contents seem to already be in
+     * the erased state (issue #2602).
+     */
+    /* determine timeout time of the operation */
+    timeoutTime = TimerGet() + FLASH_ERASE_TIME_MAX_MS;
+    /* start erase operation */
+    XMC_FLASH_EraseSector((uint32_t *)sectorBaseAddr);
+    /* wait for the flash operation to complete */
+    while (XMC_FLASH_IsBusy() > 0)
     {
-      /* determine timeout time of the operation */
-      timeoutTime = TimerGet() + FLASH_ERASE_TIME_MAX_MS;
-      /* start erase operation */
-      XMC_FLASH_EraseSector((uint32_t *)sectorBaseAddr);
-      /* wait for the flash operation to complete */
-      while (XMC_FLASH_IsBusy() > 0)
+      /* check for operation timeout */
+      if (TimerGet() > timeoutTime)
       {
-        /* check for operation timeout */
-        if (TimerGet() > timeoutTime)
-        {
-          /* timeout occurred. cannot continue */
-          return BLT_FALSE;
-        }
-        /* keep the watchdog happy */
-        CopService();
-      }
-      /* check the result */
-      status = XMC_FLASH_GetStatus();
-      /* reset the erase finished flag */
-      status &= ~XMC_FLASH_STATUS_ERASE_STATE;
-      if (status != XMC_FLASH_STATUS_OK)
-      {
-        /* error occurred during flash erase, abort */
+        /* timeout occurred. cannot continue */
         return BLT_FALSE;
       }
+      /* keep the watchdog happy */
+      CopService();
+    }
+    /* check the result */
+    status = XMC_FLASH_GetStatus();
+    /* reset the erase finished flag */
+    status &= ~XMC_FLASH_STATUS_ERASE_STATE;
+    if (status != XMC_FLASH_STATUS_OK)
+    {
+      /* error occurred during flash erase, abort */
+      return BLT_FALSE;
     }
   }
 
   /* still here so all went okay */
   return BLT_TRUE;
 } /*** end of FlashEraseSectors ***/
-
-
-/************************************************************************************//**
-** \brief     Checks if the flash sector is already completely erased.
-** \param     sector_num Sector number. Note that this is the sector_num element of the
-**            flashLayout array, not an index into the array.
-** \return    BLT_TRUE if the flash sector is already erased, BLT_FALSE otherwise.
-**
-****************************************************************************************/
-static blt_bool FlashEmptyCheckSector(blt_int8u sector_num)
-{
-  blt_bool   result = BLT_FALSE;
-  blt_addr   sectorAddr;
-  blt_int32u sectorSize;
-  blt_int8u  sectorIdx;
-  
-  /* find the index of this sector into the flashLayout array */
-  for (sectorIdx = 0; sectorIdx < FLASH_TOTAL_SECTORS; sectorIdx++)
-  {
-    /* is this the index that the sector number belongs to? */
-    if (flashLayout[sectorIdx].sector_num == sector_num)
-    {
-      /* retrieve sector info */
-      sectorAddr = flashLayout[sectorIdx].sector_start;
-      sectorSize = flashLayout[sectorIdx].sector_size;
-      /* sanity check. sector base address should be 32-bit aligned and the size
-       * should be a multiple of 32-bits.
-       */
-      ASSERT_RT(((sectorAddr % sizeof(blt_int32u)) == 0) && 
-                ((sectorSize % sizeof(blt_int32u)) == 0)); 
-      /* perform the actual flash empty check on this sector. */
-      result = FlashEmptyCheck(sectorAddr, sectorSize);
-      /* sector index found and checked. no need to continue with another one.*/
-      break;
-    }
-  }  
-  /* give the result back to the caller. */
-  return result;
-} /*** end of FlashEmptyCheckSector ***/
 
 
 /************************************************************************************//**
